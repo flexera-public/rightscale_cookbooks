@@ -20,7 +20,12 @@
 
 require 'rubygems'
 require 'chef'
-require 'json'
+#require 'json'
+require 'yard'
+
+YARD::Rake::YardocTask.new do |yard|
+  yard.options = ['--load=chef-yard.rb']
+end
 
 # Make sure you have loaded constants first
 require File.join(File.dirname(__FILE__), 'config', 'rake')
@@ -33,3 +38,4 @@ elsif File.directory?(File.join(TOPDIR, ".git"))
 end
 
 load 'chef/tasks/chef_repo.rake'
+
