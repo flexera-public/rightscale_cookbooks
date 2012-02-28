@@ -30,11 +30,7 @@ module RightScale
         resrc = Chef::Resource::ServerCollection.new(collection_name)
         resrc.tags tag
         provider = nil      
-        if (Chef::VERSION =~ /0\.9/) # provider signature changed in Chef 0.9
-          provider = Chef::Provider::ServerCollection.new(resrc, run_context)
-        else 
-          provider = Chef::Provider::ServerCollection.new(node, resrc)
-        end
+        provider = Chef::Provider::ServerCollection.new(resrc, run_context)
         provider.send("action_load")
       end
             
