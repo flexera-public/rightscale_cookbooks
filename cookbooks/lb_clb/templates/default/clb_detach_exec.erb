@@ -1,0 +1,87 @@
+#
+# Cookbook Name:: lb_clb
+#
+# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
+# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
+# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+
+
+#
+# File created by RightScale
+# DO NOT EDIT
+#
+
+# IP of the server to attach/detach
+CLB_NODE_IP="<%= @backend_ip %>"
+
+# Rackspace location where CLB is located (eg ORD)
+CLB_REGION="<%= @clb_region %>"
+
+# Rackspace API token - obtain from environment
+# RACKSPACE_API_TOKEN= env variable
+
+# Rackspace username - obtain from environment
+# RACKSPACE_USERNAME= env variable
+
+# Name of the CLB to register the server with (ie myapp)
+RAX_CLB_NAME="<%= @clb_name %>"
+
+# Error out and print message if missing env vars.
+if [ -z ${RACKSPACE_API_TOKEN} ] || [ -z ${RACKSPACE_USERNAME} ]; then
+  echo "You must setup the environment for this script to run."
+  exit 1
+fi
+
+case "$CLB_NODE_IP" in
+   "Public"  ) CLB_NODE_IP=$RS_PUBLIC_IP;;
+   "Private" ) CLB_NODE_IP=$RS_PRIVATE_IP;;
+   *         ) echo "Using the provided IP";;
+esac
+
+case "$CLB_REGION" in
+  ORD*   ) auth_url="https://auth.api.rackspacecloud.com/v1.0" && service_endpoint="https://ord.loadbalancers.api.rackspacecloud.com/v1.0/";;
+  DFW*   ) auth_url="https://auth.api.rackspacecloud.com/v1.0" && service_endpoint="https://dfw.loadbalancers.api.rackspacecloud.com/v1.0/";;
+  LON*   ) auth_url="https://lon.auth.api.rackspacecloud.com/v1.0" && service_endpoint="https://lon.loadbalancers.api.rackspacecloud.com/v1.0/";;
+  *      ) echo "Unsupported region" && exit 1;;
+esac
+
+#auth and setup variables
+output=`curl -D - -H "X-Auth-Key: $RACKSPACE_API_TOKEN" -H "X-Auth-User: $RACKSPACE_USERNAME" $auth_url 2>&1`
+x_auth_token=`grep -i "X-Auth-Token:"<<<"$output" | awk '{print $2}' | sed -e 's/\s//g'`
+account_id=`grep -i "X-Server-Management-Url"<<<"$output" | sed -r 's/.+\/([0-9]+).*/\1/'`
+service_endpoint+=$account_id
+
+if [[ $account_id =~ ^[0-9]+$ ]] ; then
+    echo "Identified account id: $account_id"
+else
+    echo 'Cannot parse account it. Aborting!'
+    exit 1
+fi
+
+#get LB id for $RAX_CLB_NAME
+output=`curl -k -H "X-Auth-Token: $x_auth_token" $service_endpoint/loadbalancers.xml 2>&1`
+clb_id=`grep -i "loadBalancer"<<<"$output" | sed -r 's/.+lancer id="([0-9]+)" name="'$RAX_CLB_NAME'".+>/\1/'`
+
+if [[ $clb_id =~ ^[0-9]+$ ]] ; then
+    echo "Identified CLB id: $clb_id"
+else
+    echo 'Cannot parse CLB id. Aborting!'
+    exit 1
+fi
+
+#get node id based on listening IP
+output=`curl -k -H "X-Auth-Token: $x_auth_token" $service_endpoint/loadbalancers/$clb_id/nodes.xml 2>&1`
+
+node_id=`grep -i "loadBalancer"<<<"$output"  | sed -r 's/.+node id="([0-9]+)" address="'$CLB_NODE_IP'".+>/\1/'`
+
+if [[ $node_id =~ ^[0-9]+$ ]] ; then
+    echo "Identified node id: $node_id"
+else
+    echo 'Cannot parse node id. Aborting!'
+    exit 1
+fi
+ 
+#remove a node($node_id) from a load balancer  
+curl -k -X DELETE -H "X-Auth-Token: $x_auth_token" $service_endpoint/loadbalancers/$clb_id/nodes/$node_id 2>&1
+
+exit 0

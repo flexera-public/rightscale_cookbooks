@@ -1,0 +1,37 @@
+# 
+# Cookbook Name:: lb_haproxy
+#
+# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
+# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
+# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+
+#
+# File created by RightScale
+# DO NOT EDIT
+#
+
+global
+        <%= @stats_file_line %>
+        log 127.0.0.1        syslog info
+        maxconn 4096
+        ulimit-n 8250
+        chroot /home/lb
+        user haproxy
+        group haproxy
+        daemon
+        quiet
+        pidfile haproxy.pid
+
+defaults
+        log     global
+        mode    http
+        option  httplog
+        option  dontlognull
+        option httpchk GET <%= node[:lb][:health_check_uri] %>
+        retries 3
+        redispatch
+        maxconn 2000
+        contimeout        5000
+        clitimeout        60000
+        srvtimeout        60000
+

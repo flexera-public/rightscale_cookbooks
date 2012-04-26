@@ -1,0 +1,14 @@
+#!/bin/bash                              
+# 
+# Cookbook Name:: block_device
+#
+# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
+# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
+# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+
+vgscan                                   
+lvchange -ay /dev/vg-data/lvol0          
+mount /dev/vg-data/lvol0                 
+lvchange -ay /dev/vg-ebs-rightscale/lvol0
+mount /dev/vg-ebs-rightscale/lvol0       
+

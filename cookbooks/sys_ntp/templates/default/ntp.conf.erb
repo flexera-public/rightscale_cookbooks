@@ -1,0 +1,34 @@
+# 
+# Cookbook Name:: sys_ntp
+#
+# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
+# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
+# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# 
+# Managed by RightScale
+# DO NOT EDIT BY HAND
+#
+
+tinker panic 0 dispersion 1.000
+
+driftfile /var/lib/ntp/ntp.drift
+statsdir /var/log/ntpstats/
+
+statistics loopstats peerstats clockstats
+filegen loopstats file loopstats type day enable
+filegen peerstats file peerstats type day enable
+filegen clockstats file clockstats type day enable
+
+<% if node[:sys_ntp][:is_server] -%>
+server 0.pool.ntp.org
+server 1.pool.ntp.org
+server 2.pool.ntp.org
+server 3.pool.ntp.org
+<% else -%>
+<% node[:sys_ntp][:servers].split(',').each do |ntpserver| -%>
+  server <%= ntpserver %> burst iburst
+<% end -%>
+<% end -%>
+restrict default kod notrap nomodify nopeer noquery
+
+restrict 127.0.0.1 nomodify

@@ -1,0 +1,8 @@
+*.swn
+*.swo
+*.swp
+.DEV_TEMP
+.DS_Store
+.idea
+.rake_test_cache
+chefignoredoc

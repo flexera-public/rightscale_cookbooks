@@ -1,0 +1,61 @@
+= RightScale Utilities Cookbook 
+
+== DESCRIPTION:
+
+Base recipes used to setup services used by the RightScale Cloud Management Platform
+
+== DETAILS:
+
+== REQUIREMENTS:
+
+Requires a VM launched from a RightScale managed RightImage
+
+== SETUP:
+
+== USAGE:
+
+Run the rs_utils::default recipe to perform common server configuration steps  
+such as enabling monitoring and logging on the RightScale Dashboard.
+
+== KNOWN LIMITATIONS:
+
+== DEFINITIONS
+
+rs_utils_enable_collectd_plugin
+---------------------------------------------
+* Accepts only one parameter "name" which is the name of the collectd plugin to enable
+* The plugin name is added to node[:rs_utils][:plugin_list_ary] which is used to create the list of plugins in the /etc/collectd/collectd.conf file
+* The node[:rs_utils][:plugin_list_ary] will have any plugins listed in node[:rs_utils][:plugin_list] merged into it.  This is to support any legacy recipes as well as allow the input to be manipulated in the RS dashboard.
+
+Syntax:
+
+```rs_utils_enable_collectd_plugin "curl_json"```
+
+
+rs_utils_monitor_process
+------------------------------------
+* Accepts only one parameter, "name" which is the name of the process to monitor
+* The process name is added to node[:rs_utils][:process_list_ary] which is used to create the list of processes in the /etc/collectd/conf/processes.conf file
+* The node[:rs_utils][:process_list_ary] will have any processes listed in node[:rs_utils][:process_list] merged into it.  This is to support any legacy recipes as well as allow the input to be manipulated in the RS dashboard.
+
+Syntax:
+
+```rs_utils_monitor_process "nginx"```
+
+
+rs_utils_marker
+------------------------------------
+* Accepts only one parameter, "location" which can be :start or :end.  Can also be :begin, :stop, and the string versions.
+* Used to log the start and end of a recipe using the 'log' chef resource.  Should be added at the beginning and end of a recipe.
+* Log marker: ========================= recipe::name : START/END =========================
+
+Syntax:
+
+```rs_utils_marker :start```
+```rs_utils_marker :end```
+
+= LICENSE
+
+Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
+RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
+if applicable, other agreements such as a RightScale Master Subscription Agreement.

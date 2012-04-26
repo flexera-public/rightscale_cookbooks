@@ -1,0 +1,1 @@
+        server <%= @backend_name %> <%= @backend_ip %>:<%= @backend_port %><% if @session_sticky.to_s.match(/^(true|yes|on)$/i) %> cookie <%= @backend_name %><% end %><% if @health_check_uri %> check<% end %> inter 3000 rise 2 fall 3 maxconn <%= @max_conn_per_server %>

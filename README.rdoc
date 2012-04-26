@@ -1,0 +1,32 @@
+= RightScale Cookbooks
+
+= DESCRIPTION
+
+== Synopsis
+
+RightScale now supports server configuration using the open source integration 
+framework called Chef[1].
+
+Please contact support@rightscale.com to report any issues.
+
+== Supported Configuration
+
+These cookbooks have been tested on multiple clouds and multiple OSes using ServerTemplates
+on the RightScale Cloud Management Platform.
+
+== Work in Progress
+
+RightScale cookbooks are a work in progress, expect more documentation and examples in the near
+future. 
+
+= ADDITIONAL RESOURCES
+
+* [1] Chef is http://wiki.opscode.com/display/chef/Home
+
+= LICENSE
+
+<b>RightScale Cookbooks</b>
+
+Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
+RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
+if applicable, other agreements such as a RightScale Master Subscription Agreement.

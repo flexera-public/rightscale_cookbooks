@@ -1,0 +1,50 @@
+{
+  "dependencies": {
+    "rs_utils": ">= 0.0.0"
+  },
+  "name": "sys_ntp",
+  "maintainer_email": "support@rightscale.com",
+  "attributes": {
+    "sys_ntp/servers": {
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+
+      ],
+      "default": "time.rightscale.com, ec2-us-east.time.rightscale.com, ec2-us-west.time.rightscale.com",
+      "type": "string",
+      "recipes": [
+
+      ],
+      "display_name": "NTP Servers",
+      "description": "A comma-separated list of fully qualified domain names for the array of servers we should talk to."
+    }
+  },
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "suggestions": {
+  },
+  "platforms": {
+    "debian": ">= 0.0.0",
+    "fedora": ">= 0.0.0",
+    "centos": ">= 0.0.0",
+    "ubuntu": ">= 0.0.0",
+    "redhat": ">= 0.0.0"
+  },
+  "maintainer": "RightScale, Inc.",
+  "long_description": "DESCRIPTION\n===========\n\nInstalls and configures ntp client.\n\nREQUIREMENTS\n============\n\nShould work on any Red Hat-family or Debian-family Linux distribution.\n\n\n",
+  "version": "1.0.0",
+  "recommendations": {
+  },
+  "recipes": {
+    "sys_ntp": "Installs and configures ntp client"
+  },
+  "groupings": {
+  },
+  "conflicting": {
+  },
+  "replacing": {
+  },
+  "description": "Installs and configures ntp as a client or server",
+  "providing": {
+  }
+}

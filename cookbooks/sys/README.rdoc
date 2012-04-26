@@ -1,0 +1,40 @@
+= RightScale System Cookbook 
+
+== DESCRIPTION:
+
+RightScale system utilities 
+
+== DETAILS:
+
+== REQUIREMENTS:
+
+Requires a VM launched from a RightScale managed RightImage
+
+== SETUP:
+
+== USAGE:
+
+=== Sysem Consistency (re-convergence)
+
+  To enforce a consistent system state, one can use this LWRP to schedule
+  a cron job to periodically run a recipe.  Currently the period is hard-coded
+  to every 15 minutes -- with a random starting offset (to distribute runs
+  being performed by multiple systems).
+
+  To start a periodic reconverge:
+
+      sys_reconverge "mycookbook::myrecipe"
+
+  To stop a periodic reconverge:
+
+      sys_reconverge "mycookbook::myrecipe" do
+        action :disable
+      end
+
+== KNOWN LIMITATIONS:
+
+= LICENSE
+
+Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
+RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
+if applicable, other agreements such as a RightScale Master Subscription Agreement.
