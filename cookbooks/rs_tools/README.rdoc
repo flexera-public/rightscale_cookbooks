@@ -1,0 +1,27 @@
+= RightScale Tools Cookbook 
+
+== DESCRIPTION:
+Chef definitions for RightScale tools installer
+
+== DETAILS:
+
+== REQUIREMENTS:
+
+None
+
+== SETUP:
+
+== USAGE:
+
+rs_tools "dbtools-0.18.12.tgz"
+rs_tools "rightscale_dnstools.tgz"
+rs_tools "rightscale_ebstools-0.1.3.tgz"
+rs_tools "rightscale_s3tools-1.0.1.tgz"
+
+== KNOWN LIMITATIONS:
+
+= LICENSE
+
+Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
+RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
+if applicable, other agreements such as a RightScale Master Subscription Agreement.
