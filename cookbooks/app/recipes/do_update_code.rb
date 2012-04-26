@@ -9,7 +9,6 @@ rs_utils_marker :begin
 
 log "  Updating project code repository"
 app "default" do
-  persist true
   destination node[:app][:destination]
   action :code_update
 end
