@@ -66,6 +66,21 @@
       "display_name": "Keep Yearly Backups (1)",
       "description": "The number of yearly primary backups to keep (i.e., rotation size)."
     },
+    "block_device/devices/device1/backup/lineage_override": {
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+
+      ],
+      "default": "",
+      "type": "string",
+      "recipes": [
+        "block_device::do_primary_restore",
+        "block_device::do_secondary_restore"
+      ],
+      "display_name": "Backup Lineage Override",
+      "description": "If defined, this will override the input defined for 'Backup Lineage' (block_device/devices/device1/backup/lineage) so that you can restore the volume from another backup that has as different lineage name. The most recently completed snapshots will be used unless a specific timestamp value is specified for 'Restore Timestamp Override' (block_device/devices/device1/backup/timestamp_override). Although this input allows you to restore from a different set of snapshots, subsequent backups will use 'Backup Lineage' to name the snapshots. Be sure to remove the 'Backup Lineage Override' input after the new master is operational."
+    },
     "block_device/devices/default/backup/secondary/cred/user": {
       "required": "recommended",
       "calculated": false,
@@ -221,6 +236,21 @@
       ],
       "display_name": "Backup Cron Hour (2)",
       "description": "Defines the hour when the backup will be taken. Use a value of 1-24, or set to 'Ignore' to create a backup every hour."
+    },
+    "block_device/devices/device2/backup/lineage_override": {
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+
+      ],
+      "default": "",
+      "type": "string",
+      "recipes": [
+        "block_device::do_primary_restore",
+        "block_device::do_secondary_restore"
+      ],
+      "display_name": "Backup Lineage Override",
+      "description": "If defined, this will override the input defined for 'Backup Lineage' (block_device/devices/device2/backup/lineage) so that you can restore the volume from another backup that has as different lineage name. The most recently completed snapshots will be used unless a specific timestamp value is specified for 'Restore Timestamp Override' (block_device/devices/device2/backup/timestamp_override). Although this input allows you to restore from a different set of snapshots, subsequent backups will use 'Backup Lineage' to name the snapshots. Be sure to remove the 'Backup Lineage Override' input after the new master is operational."
     },
     "block_device/devices/device1/backup/primary/keep/max_snapshots": {
       "required": "optional",
