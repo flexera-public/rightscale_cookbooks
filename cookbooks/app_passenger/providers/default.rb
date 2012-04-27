@@ -234,7 +234,7 @@ action :code_update do
   end
 
   log"  Generating new logrotatate config for rails application"
-  rs_utils_logrotate_app "rails" do
+  rightscale_logrotate_app "rails" do
     cookbook "app_passenger"
     template "logrotate_rails.erb"
     path ["#{deploy_dir}/log/*.log" ]

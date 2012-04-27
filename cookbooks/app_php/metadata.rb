@@ -10,7 +10,7 @@ depends "web_apache"
 depends "db_mysql"
 depends "db_postgres"
 depends "repo"
-depends "rs_utils"
+depends "rightscale"
  
 recipe  "app_php::default", "Installs the php application server."
 

@@ -10,7 +10,7 @@
 # This recipe ensures that the volume is deleted prior to the instance
 # being terminated
 #
-rs_utils_marker :begin
+rightscale_marker :begin
 
 class Chef::Recipe
   include RightScale::BlockDeviceHelper
@@ -32,4 +32,4 @@ rs_shutdown "Terminate the server now" do
   action :terminate
 end
 
-rs_utils_marker :end
+rightscale_marker :end

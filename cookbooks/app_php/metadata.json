@@ -5,7 +5,7 @@
     "app": ">= 0.0.0",
     "db_postgres": ">= 0.0.0",
     "web_apache": ">= 0.0.0",
-    "rs_utils": ">= 0.0.0"
+    "rightscale": ">= 0.0.0"
   },
   "name": "app_php",
   "maintainer_email": "support@rightscale.com",

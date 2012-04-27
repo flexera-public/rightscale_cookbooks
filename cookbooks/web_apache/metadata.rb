@@ -30,7 +30,7 @@ other_recipes = [
               ]
 
 depends "apache2"
-depends "rs_utils"
+depends "rightscale"
 
 attribute "web_apache",
   :display_name => "apache hash",

@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "apache2": ">= 0.0.0",
-    "rs_utils": ">= 0.0.0"
+    "rightscale": ">= 0.0.0"
   },
   "name": "web_apache",
   "maintainer_email": "support@rightscale.com",

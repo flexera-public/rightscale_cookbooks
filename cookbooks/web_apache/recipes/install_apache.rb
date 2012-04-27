@@ -5,7 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-rs_utils_marker :begin
+rightscale_marker :begin
 
 # include the public recipe for basic installation
 include_recipe "apache2"
@@ -69,4 +69,4 @@ end
 # Log resource submitted to opscode. http://tickets.opscode.com/browse/CHEF-923
 log "Started the apache server."
 
-rs_utils_marker :end
+rightscale_marker :end
