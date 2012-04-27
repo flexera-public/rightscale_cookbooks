@@ -1,4 +1,4 @@
-# 
+#
 # Cookbook Name:: block_device
 #
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
@@ -41,7 +41,7 @@ root_device = `mount`.find {|dev| dev.include? " on / "}.split[0]
 current_mnt_device = `mount`.find {|dev| dev.include? " on /mnt "}
 current_mnt_device = current_mnt_device ? current_mnt_device.split[0] : nil
 
-mnt_device = current_mnt_device || 
+mnt_device = current_mnt_device ||
              case root_device
              when /sda/ then "/dev/sdb"
              when /sde/ then "/dev/sdf"
@@ -49,14 +49,15 @@ mnt_device = current_mnt_device ||
              when /xvde/ then (node[:platform] == "redhat") ? "/dev/xvdj" : "/dev/xvdf"
              end
 
-# Generate fstab entry here to check if it already exists
-fstab_entry = "/dev/vg-data/#{lvm_device}\t#{mount_point}\t#{filesystem_type}\t#{options}\t0 0"
-
 # Only EC2 is currently supported
-if cloud == 'ec2' 
+if cloud == 'ec2'
 
-  # if fstab entry exists, assume a reboot and skip to end
-  if File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$")
+  # Generate fstab entry here
+  fstab_entry = "/dev/vg-data/#{lvm_device}\t#{mount_point}\t#{filesystem_type}\t#{options}\t0 0"
+
+  # if fstab & mtab entry exists, assume a reboot and skip to end
+  if ( File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$") ) &&
+     ( File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " ) )
     log "Ephemeral entry already exists in fstab"
   else
     # Create init script to activate LVM on start for Ubuntu
@@ -117,12 +118,12 @@ if cloud == 'ec2'
         # Make sure to skip EBS volumes attached on boot
         my_devices = []
         dev_index = 0
-        while (1)
+        loop do
           if node[:ec2][:block_device_mapping]["ephemeral#{dev_index}".to_sym]
             device = node[:ec2][:block_device_mapping]["ephemeral#{dev_index}".to_sym]
             device = '/dev/' + device if device !~ /^\/dev\//
             device = @api.unmap_device_for_ec2(device)
-            # verify that device is actually on the instance and is a blockSpecial 
+            # verify that device is actually on the instance and is a blockSpecial
             if ( File.exists?(device) && File.ftype(device) == "blockSpecial" )
               my_devices << device
             else
@@ -148,7 +149,7 @@ if cloud == 'ec2'
         fstab = File.readlines("/etc/fstab")
         File.open("/etc/fstab", "w") do |f|
           fstab.each do |line|
-            f.puts(line)  
+            f.puts(line)
           end
           Chef::Log.info "ADDING DEVICE /etc/fstab: #{fstab_entry}"
           f.puts(fstab_entry)
