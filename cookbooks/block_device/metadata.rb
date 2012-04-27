@@ -175,6 +175,13 @@ end.each do |device, number|
     :default => "data_storage#{number}",
     :recipes => [ "block_device::default" ]
 
+  attribute "block_device/devices/#{device}/backup/lineage_override",
+    :display_name => "Backup Lineage Override",
+    :description => "If defined, this will override the input defined for 'Backup Lineage' (block_device/devices/#{device}/backup/lineage) so that you can restore the volume from another backup that has as different lineage name. The most recently completed snapshots will be used unless a specific timestamp value is specified for 'Restore Timestamp Override' (block_device/devices/#{device}/backup/timestamp_override). Although this input allows you to restore from a different set of snapshots, subsequent backups will use 'Backup Lineage' to name the snapshots. Be sure to remove the 'Backup Lineage Override' input after the new master is operational.",
+    :required => "optional",
+    :default => "",
+    :recipes => restore_recipes
+
   attribute "block_device/devices/#{device}/backup/timestamp_override",
     :display_name => "Backup Restore Timestamp Override (#{number})",
     :description => "Another optional variable to restore from a specific timestamp. Specify a string matching the timestamp tags on the volume snapshot set. You will need to specify the timestamp that's defined by the snapshot's tag (not name). For example, if the snapshot's tag is 'rs_backup:timestamp=1303613371' you would specify '1303613371' for this input.",
