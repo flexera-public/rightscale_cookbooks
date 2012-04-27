@@ -9,8 +9,7 @@ rs_utils_marker :begin
 
 log "  Stopping application server now..."
 app "default" do
-    action :stop
-    persist true
+  action :stop
 end
 
 rs_utils_marker :end
