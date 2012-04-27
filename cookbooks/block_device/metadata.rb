@@ -10,10 +10,10 @@ recipe "block_device::default", "Installs RubyGem for rightscale_tools. Sets up 
 recipe "block_device::setup_block_device", "Creates, formats, and mounts a brand new block device on the instance."
 recipe "block_device::setup_ephemeral", "Creates, formats, and mounts a brand new block device on the instances ephemeral drives. Does nothing on clouds without ephemeral drives."
 
-recipe "block_device::do_primary_backup","Creates a primary backup in the local cloud where the server is currently running."
+recipe "block_device::do_primary_backup", :description => "Creates a primary backup in the local cloud where the server is currently running.", :thread => 'block_backup'
 recipe "block_device::do_primary_restore","Restores a primary backup from the local cloud where the server is currently running."
 
-recipe "block_device::do_secondary_backup","Creates a secondary backup to the remote cloud specified by block_device/secondary provider"
+recipe "block_device::do_secondary_backup", :description => "Creates a secondary backup to the remote cloud specified by block_device/secondary provider", :thread => 'block_backup'
 recipe "block_device::do_secondary_restore","Restores a secondary backup from the remote cloud specified by block_device/secondary provider"
 
 recipe "block_device::do_primary_backup_schedule_enable", "Enables continuous primary backups by updating the crontab file."
