@@ -5,10 +5,10 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-rs_utils_marker :begin
+rightscale_marker :begin
 
 db node[:db][:data_dir] do
   action :grant_replication_slave
 end
 
-rs_utils_marker :end
+rightscale_marker :end

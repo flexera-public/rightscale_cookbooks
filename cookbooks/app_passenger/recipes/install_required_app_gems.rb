@@ -5,7 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-rs_utils_marker :begin
+rightscale_marker :begin
 
 # Installing bundler
 gem_package "bundler" do
@@ -27,4 +27,4 @@ bash "Bundle gem install" do
   only_if do File.exists?("#{node[:app_passenger][:deploy_dir]}/Gemfile")  end
 end
 
-rs_utils_marker :end
+rightscale_marker :end

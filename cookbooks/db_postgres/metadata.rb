@@ -7,7 +7,7 @@ version          "0.0.1"
 
 depends "sys_dns"
 depends "db"
-depends "rs_utils"
+depends "rightscale"
 depends "block_device"
 
 recipe  "db_postgres::default", "Runs the client 'db::install_client' recipes."

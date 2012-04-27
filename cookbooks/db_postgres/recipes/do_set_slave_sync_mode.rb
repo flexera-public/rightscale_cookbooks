@@ -5,7 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-rs_utils_marker :begin
+rightscale_marker :begin
 
 # Run only on master server
 if node[:rightscale][:instance_uuid] == "#{node[:db][:current_master_uuid]}"
@@ -25,4 +25,4 @@ else
   raise "This is not master server! This script only runs on master: #{node[:db][:current_master_uuid]}"
 end
 
-rs_utils_marker :end
+rightscale_marker :end

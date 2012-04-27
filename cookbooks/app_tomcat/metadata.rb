@@ -9,7 +9,7 @@ depends "app"
 depends "db_mysql"
 depends "db_postgres"
 depends "repo"
-depends "rs_utils"
+depends "rightscale"
 
 recipe  "app_tomcat::default", "Installs the tomcat application server."
 

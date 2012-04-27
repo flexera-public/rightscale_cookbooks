@@ -369,7 +369,7 @@ end
 action :setup_monitoring do
 
   log "  Setup of collectd monitoring for tomcat"
-  rs_utils_enable_collectd_plugin 'exec'
+  rightscale_enable_collectd_plugin 'exec'
 
   #installing and configuring collectd for tomcat
   cookbook_file "/usr/share/java/collectd.jar" do

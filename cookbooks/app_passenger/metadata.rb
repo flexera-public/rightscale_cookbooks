@@ -5,7 +5,7 @@ description      "Installs/Configures Apache Passenger Rails application server"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "0.1.1"
 
-depends "rs_utils"
+depends "rightscale"
 depends "web_apache"
 depends "repo"
 depends "logrotate"

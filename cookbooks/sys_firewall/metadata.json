@@ -2,7 +2,7 @@
   "dependencies": {
     "sys": ">= 0.0.0",
     "iptables": ">= 0.0.0",
-    "rs_utils": ">= 0.0.0"
+    "rightscale": ">= 0.0.0"
   },
   "name": "sys_firewall",
   "maintainer_email": "support@rightscale.com",

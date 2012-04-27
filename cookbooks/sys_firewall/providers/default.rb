@@ -43,7 +43,7 @@ action :update do
     end
 
     if machine_tag
-      rs_utils_server_collection collection_name do
+      rightscale_server_collection collection_name do
         tags machine_tag
         secondary_tags ip_tag
       end

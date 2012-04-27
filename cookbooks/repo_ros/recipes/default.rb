@@ -6,8 +6,8 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-rs_utils_marker :begin
+rightscale_marker :begin
 
-raise "  ROS gem missing, please add rs_utils::install_tools or rs_tools::default recipes to runlist." unless File.exists?("/opt/rightscale/sandbox/bin/ros_util")
+raise "  ROS gem missing, please add rightscale::install_tools or rs_tools::default recipes to runlist." unless File.exists?("/opt/rightscale/sandbox/bin/ros_util")
 
-rs_utils_marker :end
+rightscale_marker :end
