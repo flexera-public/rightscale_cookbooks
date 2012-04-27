@@ -8,6 +8,6 @@
 
 rightscale_marker :begin
 
-raise "  ROS gem missing, please add rightscale::install_tools or rs_tools::default recipes to runlist." unless File.exists?("/opt/rightscale/sandbox/bin/ros_util")
+raise "  ROS gem missing, please add rightscale::install_tools recipes to runlist." unless File.exists?("/opt/rightscale/sandbox/bin/ros_util")
 
 rightscale_marker :end
