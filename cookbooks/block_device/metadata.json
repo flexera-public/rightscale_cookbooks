@@ -690,11 +690,17 @@
   "recipes": {
     "block_device::setup_block_device": "Creates, formats, and mounts a brand new block device on the instance.",
     "block_device::do_primary_backup_schedule_disable": "Disables continuous primary backups by updating the crontab file.",
-    "block_device::do_primary_backup": "Creates a primary backup in the local cloud where the server is currently running.",
+    "block_device::do_primary_backup": {
+      "thread": "block_backup",
+      "description": "Creates a primary backup in the local cloud where the server is currently running."
+    },
     "block_device::do_delete_volumes_and_terminate_server": "Deletes any currently attached volumes from the instance and then terminates the machine. WARNING: Execution of this script will delete any data on your block device!",
     "block_device::do_primary_backup_schedule_enable": "Enables continuous primary backups by updating the crontab file.",
     "block_device::do_secondary_restore": "Restores a secondary backup from the remote cloud specified by block_device/secondary provider",
-    "block_device::do_secondary_backup": "Creates a secondary backup to the remote cloud specified by block_device/secondary provider",
+    "block_device::do_secondary_backup": {
+      "thread": "block_backup",
+      "description": "Creates a secondary backup to the remote cloud specified by block_device/secondary provider"
+    },
     "block_device::do_primary_restore": "Restores a primary backup from the local cloud where the server is currently running.",
     "block_device::default": "Installs RubyGem for rightscale_tools. Sets up input dependancies for use by other cookbooks.",
     "block_device::do_force_reset": "Unmount and delete the attached block device(s) for this lineage. For test and development purposes. WARNING: Execution of this script will delete any data on your block device!",
