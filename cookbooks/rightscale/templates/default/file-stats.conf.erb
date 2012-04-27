@@ -5,15 +5,11 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 # 
-#
 # Managed by RightScale
 # DO NOT EDIT BY HAND
 #
-/var/log/messages /var/log/secure /var/log/maillog /var/log/spooler /var/log/boot.log /var/log/cron {
-    sharedscripts
-    missingok
-    notifempty
-    postrotate
-        service syslog-ng reload
-    endscript
-}
+
+<Plugin exec>
+  #    userid    plugin executable                   plugin args
+  Exec "nobody" "<%= node[:rightscale][:collectd_lib] %>/plugins/file-stats.rb" "-h" "<%= node[:rightscale][:instance_uuid] %>" "-i" "20" "<%= node[:rightscale][:db_backup_file] %>"
+</Plugin>
