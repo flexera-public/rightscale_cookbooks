@@ -22,6 +22,7 @@ do_for_block_devices node[:block_device] do |device|
   block_device get_device_or_default(node, device, :nickname) do
     # Backup/Restore arguments
     lineage lineage
+    lineage_override get_device_or_default(node, device, :backup, :lineage_override)
     timestamp_override get_device_or_default(node, device, :backup, :timestamp_override)
 
     max_snapshots get_device_or_default(node, device, :backup, :primary, :keep, :max_snapshots)
