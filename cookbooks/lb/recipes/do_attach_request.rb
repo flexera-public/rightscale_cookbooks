@@ -19,7 +19,7 @@ vhosts(node[:lb][:vhost_names]).each do | vhost_name |
   lb vhost_name do
     backend_ip             node[:cloud][:private_ips][0]
     backend_id             node[:rightscale][:instance_uuid]
-    backend_port           8000
+    backend_port           node[:lb][:backend][:port]
     service_region         node[:lb][:service][:region]
     service_lb_name        node[:lb][:service][:lb_name]
     service_account_id     node[:lb][:service][:account_id]

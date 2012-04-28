@@ -21,4 +21,6 @@ vhosts(node[:lb][:vhost_names]).each do | vhost_name |
   end
 end
 
+right_link_tag "loadbalancer:backend_port=#{node[:lb][:backend][:port]}"
+
 rightscale_marker :end
