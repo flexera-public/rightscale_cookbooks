@@ -21,7 +21,7 @@ attribute "rightscale",
 # purposes.
 #
 # This list may change so care must be taken when adding or changing node[:rightscale] attributes.
-# Only RightScale can make changes to the attributes in this cookbook and name space.
+# Doing so may break ServerTemplate functionality.
 
 #attribute "rightscale/instance_uuid",
 #  :display_name => "Instance UUID",
