@@ -138,3 +138,16 @@ attribute "lb/service/account_secret",
                 'lb::do_detach_request',
                 ],
   :required => "optional"
+  
+attribute "lb/backend/port",
+  :display_name => "Application Listen Port",
+  :description => "The port that the application service is listening on.",
+  :default => "8000",
+  :recipes => [
+                'lb::setup_app_server',
+                'lb::do_attach_request',
+                'lb::do_detach_request'
+                ],
+  :required => "optional"
+  
+

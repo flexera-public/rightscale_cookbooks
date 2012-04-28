@@ -40,7 +40,7 @@ vhosts(node[:lb][:vhost_names]).each do | vhost_name |
     lb vhost_name do
       backend_id uuid
       backend_ip deployment_servers[uuid]
-      backend_port 8000
+      backend_port deployment_servers[backend_port]
       action :attach
     end
   end

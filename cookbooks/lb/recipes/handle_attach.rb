@@ -16,7 +16,7 @@ vhosts(node[:remote_recipe][:vhost_names]).each do | vhost_name |
   lb vhost_name do
     backend_id node[:remote_recipe][:backend_id]
     backend_ip node[:remote_recipe][:backend_ip]
-    backend_port 8000
+    backend_port node[:remote_recipe][:backend_port]
     session_sticky node[:lb][:session_stickiness]
     action :attach
   end
