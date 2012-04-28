@@ -177,7 +177,7 @@ end.each do |device, number|
 
   attribute "block_device/devices/#{device}/backup/lineage_override",
     :display_name => "Backup Lineage Override",
-    :description => "If defined, this will override the input defined for 'Backup Lineage' (block_device/devices/#{device}/backup/lineage) so that you can restore the volume from another backup that has as different lineage name. The most recently completed snapshots will be used unless a specific timestamp value is specified for 'Restore Timestamp Override' (block_device/devices/#{device}/backup/timestamp_override). Although this input allows you to restore from a different set of snapshots, subsequent backups will use 'Backup Lineage' to name the snapshots. Be sure to remove the 'Backup Lineage Override' input after the new master is operational.",
+    :description => "If defined, this will override the input defined for 'Backup Lineage' (block_device/devices/#{device}/backup/lineage) so that you can restore the volume from another backup that has as different lineage name. The most recently completed snapshots will be used unless a specific timestamp value is specified for 'Restore Timestamp Override' (block_device/devices/#{device}/backup/timestamp_override). ",
     :required => "optional",
     :default => "",
     :recipes => restore_recipes
