@@ -36,7 +36,7 @@ module RightScale
           ip = RightScale::Utils::Helper.get_tag_value('loadbalancer:backend_ip',tags)
           port = RightScale::Utils::Helper.get_tag_value('loadbalancer:backend_port',tags)
           app_servers[uuid] = ip
-          app_servers[backend_port] = port
+          app_servers[backend_port] = port.to_i
         end
 
         return app_servers
