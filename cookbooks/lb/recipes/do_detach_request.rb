@@ -19,9 +19,9 @@ vhosts(node[:lb][:vhost_names]).each do | vhost_name |
 
   log "  Sending remote detach request..."
   lb vhost_name do
-    backend_ip             node[:cloud][:private_ips][0]
     backend_id             node[:rightscale][:instance_uuid]
-    backend_port           node[:lb][:backend][:port].to_i
+    backend_ip             node[:app][:ip]
+    backend_port           node[:app][:port].to_i
     service_region         node[:lb][:service][:region]
     service_lb_name        node[:lb][:service][:lb_name]
     service_account_id     node[:lb][:service][:account_id]
