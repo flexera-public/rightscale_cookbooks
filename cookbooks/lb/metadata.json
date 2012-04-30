@@ -169,6 +169,22 @@
       "display_name": "Load Balance Service Region",
       "description": "If using Rackspace Cloud Load Balancing, specify the cloud region or data center being used for this service."
     },
+    "lb/backend/port": {
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+
+      ],
+      "default": "8000",
+      "type": "string",
+      "recipes": [
+        "lb::setup_app_server",
+        "lb::do_attach_request",
+        "lb::do_detach_request"
+      ],
+      "display_name": "Application Listen Port",
+      "description": "The port that the application service is listening on."
+    },
     "lb/stats_uri": {
       "required": "optional",
       "calculated": false,
