@@ -3,13 +3,13 @@ maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "RighScale LB Manager"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "0.0.1"
+version          "1.0.0"
 
 depends "lb_haproxy"
 depends "lb_clb"
 depends "lb_elb"
 depends "apache2"
-depends "app"
+depends "app", ">= 1.0"
 
 recipe "lb::default", "This loads the required load balancer resources."
 recipe "lb::setup_load_balancer", "Installs the load balancer and adds the loadbalancer:<vhost_name>=lb tags to your server, which identifies it as a load balancer for a given listener pool. This tag is used by application servers to request connection/disconnection."
@@ -136,17 +136,6 @@ attribute "lb/service/account_secret",
                 'lb::default',
                 'lb::do_attach_request',
                 'lb::do_detach_request',
-                ],
-  :required => "optional"
-  
-attribute "lb/backend/port",
-  :display_name => "Application Listen Port",
-  :description => "The port that the application service is listening on.",
-  :default => "8000",
-  :recipes => [
-                'lb::setup_app_server',
-                'lb::do_attach_request',
-                'lb::do_detach_request'
                 ],
   :required => "optional"
   
