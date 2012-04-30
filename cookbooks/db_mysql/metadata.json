@@ -1,8 +1,8 @@
 {
   "dependencies": {
     "sys_dns": ">= 0.0.0",
+    "rightscale": ">= 0.0.0",
     "db": ">= 0.0.0",
-    "rs_utils": ">= 0.0.0",
     "block_device": ">= 0.0.0"
   },
   "name": "db_mysql",

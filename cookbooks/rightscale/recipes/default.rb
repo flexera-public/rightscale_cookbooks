@@ -7,7 +7,7 @@
  
  
 # Sets node[:rightscale] variables via attribute and metadata.
-rs_utils_marker :begin
+rightscale_marker :begin
  
 # Make sure these inputs are set.
 raise "rightscale/instance_uuid must be set" unless node[:rightscale][:instance_uuid]
@@ -16,5 +16,11 @@ raise "rightscale/servers/sketchy/hostname must be set" unless node[:rightscale]
 log "rightscale/instance_uuid is  #{node[:rightscale][:instance_uuid]}"
 log "rightscale/servers/sketchy/hostname is #{node[:rightscale][:servers][:sketchy][:hostname]}"
 
-rs_utils_marker :end
+include_recipe "rightscale::setup_server_tags"
+include_recipe "rightscale::setup_timezone"
+include_recipe "rightscale::setup_logging"
+include_recipe "rightscale::setup_mail"
+include_recipe "rightscale::setup_monitoring"
+
+rightscale_marker :end
 

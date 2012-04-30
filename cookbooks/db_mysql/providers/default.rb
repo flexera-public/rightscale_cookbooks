@@ -384,7 +384,7 @@ action :setup_monitoring do
     source TMP_FILE
   end
 
-  template ::File.join(node[:rs_utils][:collectd_plugin_dir], 'mysql.conf') do
+  template ::File.join(node[:rightscale][:collectd_plugin_dir], 'mysql.conf') do
     source "collectd-plugin-mysql.conf.erb"
     mode "0644"
     backup false

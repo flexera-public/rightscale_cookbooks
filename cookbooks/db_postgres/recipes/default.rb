@@ -7,7 +7,7 @@
 
 # Setup default values for database resource
 #
-rs_utils_marker :begin
+rightscale_marker :begin
 
 node[:db][:provider] = "db_postgres"
 version="#{node[:db_postgres][:version]}"
@@ -29,4 +29,4 @@ else
   raise "Unsupported platform #{platform} for PostgreSQL Version #{version}"
 end
 
-rs_utils_marker :end
+rightscale_marker :end

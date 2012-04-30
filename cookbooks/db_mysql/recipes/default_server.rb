@@ -9,6 +9,6 @@
 # variables.
 # This recipe adds server specific input variables to the node for use by other recipes.
 
-rs_utils_marker :begin
+rightscale_marker :begin
 
-rs_utils_marker :end
+rightscale_marker :end

@@ -4,8 +4,8 @@
     "app_php": ">= 0.0.0",
     "app_tomcat": ">= 0.0.0",
     "app_passenger": ">= 0.0.0",
-    "sys_firewall": ">= 0.0.0",
-    "rs_utils": ">= 0.0.0"
+    "rightscale": ">= 0.0.0",
+    "sys_firewall": ">= 0.0.0"
   },
   "name": "app",
   "maintainer_email": "support@rightscale.com",
