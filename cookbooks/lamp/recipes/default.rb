@@ -7,8 +7,8 @@
 
 # Set the LAMP specific node variables.  Make sure and run this recipe after the php application
 # server default recipe to ensure that it does not over write these values.
-rs_utils_marker :begin
+rightscale_marker :begin
   node[:db_mysql][:bind_address] = "localhost"
   node[:app][:port] = "80"
   log "LAMP set to listen on #{node[:db_mysql][:bind_address]}:#{node[:app][:port]}"
-rs_utils_marker :end
+rightscale_marker :end

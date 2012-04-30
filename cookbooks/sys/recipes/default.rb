@@ -5,6 +5,6 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-rs_utils_marker :begin
+rightscale_marker :begin
 include_recipe "sys::do_reconverge_list_enable"
-rs_utils_marker :end
+rightscale_marker :end

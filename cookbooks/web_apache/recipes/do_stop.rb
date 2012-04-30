@@ -21,11 +21,11 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-rs_utils_marker :begin
+rightscale_marker :begin
 
 log "Stoping apache"
 service "apache2" do
   action :stop
 end
  
-rs_utils_marker :end
+rightscale_marker :end

@@ -5,7 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-rs_utils_marker :begin
+rightscale_marker :begin
 
 # convert inputs into parameters usable by the firewall_rule definition
 # TODO add support for 'any' and port ranges '80,8000,3000-4000'
@@ -29,4 +29,4 @@ else
   log "Firewall not enabled. Not adding rule for #{rule_port}."
 end
 
-rs_utils_marker :end
+rightscale_marker :end

@@ -5,7 +5,7 @@ description      "Installs/Configures block device storage."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "0.1"
 
-depends "rs_utils"
+depends "rightscale"
 recipe "block_device::default", "Installs RubyGem for rightscale_tools. Sets up input dependancies for use by other cookbooks."
 recipe "block_device::setup_block_device", "Creates, formats, and mounts a brand new block device on the instance."
 recipe "block_device::setup_ephemeral", "Creates, formats, and mounts a brand new block device on the instances ephemeral drives. Does nothing on clouds without ephemeral drives."

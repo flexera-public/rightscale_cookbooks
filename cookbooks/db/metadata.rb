@@ -5,7 +5,7 @@ description      "RightScale Database Manager"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "0.2"
 
-depends "rs_utils"
+depends "rightscale"
 depends "block_device"
 depends "sys_firewall"
 depends "db_mysql"

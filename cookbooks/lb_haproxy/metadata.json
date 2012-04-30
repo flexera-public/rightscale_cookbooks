@@ -2,8 +2,7 @@
   "dependencies": {
     "lb": ">= 0.0.0",
     "app": ">= 0.0.0",
-    "rs_tools": ">= 0.0.0",
-    "rs_utils": ">= 0.0.0"
+    "rightscale": ">= 0.0.0"
   },
   "name": "lb_haproxy",
   "maintainer_email": "support@rightscale.com",
