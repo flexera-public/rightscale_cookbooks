@@ -24,7 +24,7 @@ when "ubuntu", "debian"
   end
 when "centos","fedora","suse","redhat"
   if node[:php][:db_adapter] == "mysql"
-    node[:php][:packages] = ["php53u", "php53u-mysql", "php53u-pear", "php53u-zts"]
+    node[:app][:packages] = ["php53u", "php53u-mysql", "php53u-pear", "php53u-zts"]
   elsif node[:php][:db_adapter] == "postgresql"
     node[:app][:packages] = ["php53u", "php53u-pgsql", "php53u-pear", "php53u-zts"]
   else
