@@ -3,13 +3,13 @@ maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "RighScale LB Manager"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "0.0.1"
+version          "1.0.0"
 
 depends "lb_haproxy"
 depends "lb_clb"
 depends "lb_elb"
 depends "apache2"
-depends "app"
+depends "app", ">= 1.0"
 
 recipe "lb::default", "This loads the required load balancer resources."
 recipe "lb::setup_load_balancer", "Installs the load balancer and adds the loadbalancer:<vhost_name>=lb tags to your server, which identifies it as a load balancer for a given listener pool. This tag is used by application servers to request connection/disconnection."
@@ -18,7 +18,6 @@ recipe "lb::handle_detach", "Remote recipe executed by do_detach_request. DO NOT
 recipe "lb::do_attach_all", "Registers all running application servers with the loadbalancer:<vhost_name>=app tags. This should be run on a load balancer to connect all application servers in deployment."
 recipe "lb::do_attach_request", "Sends request to all servers with loadbalancer:<vhost_name>=lb tag to attach current server to listener pool. This should be run by a new application server that is ready to accept connections."
 recipe "lb::do_detach_request", "Sends request to all servers with loadbalancer:<vhost_name>=lb tag to detach current server from listener pool. This should be run by an application server at decommission."
-recipe "lb::setup_app_server", "Adds the loadbalancer:<vhost_name>=lb tags to your server, which identifies it as a application server for a given vhost."
 recipe "lb::setup_reverse_proxy_config", "Configures Apache reverse proxy."
 recipe "lb::setup_monitoring", "Installs the load balancer collectd plugin for monitoring support."
 
@@ -34,7 +33,6 @@ attribute "lb/vhost_names",
                 'lb::do_detach_request',
                 'lb::handle_detach',
                 'lb::setup_load_balancer',
-                'lb::setup_app_server',
                 'lb::do_attach_all'
                 ]
 
@@ -138,3 +136,5 @@ attribute "lb/service/account_secret",
                 'lb::do_detach_request',
                 ],
   :required => "optional"
+  
+

@@ -25,12 +25,6 @@ define :lb_tag, :action => :publish  do
   vhost_name = params[:name] == "" ? "localhost" : params[:name]
   tag_action = params[:action] 
 
-  # tag this Application Server with its IP address and 
-  # app listener name so load balancers can find it
-  right_link_tag "loadbalancer:backend_ip=#{node[:cloud][:private_ips][0]}" do
-    action tag_action
-  end
-
   right_link_tag "loadbalancer:#{vhost_name}=app" do
     action tag_action
   end
