@@ -8,9 +8,11 @@
 rightscale_marker :begin
 
 log "  Provider is #{node[:app][:provider]}"
+log "  Application IP is #{node[:app][:ip]}"
+log "  Application port is #{node[:app][:port]}"
 log "  Installing #{node[:app][:packages]}" if node[:app][:packages]
 
-# Setup default values for database resource and install required packages
+# Setup default values for application resource and install required packages
 app "default" do
   persist true
   provider node[:app][:provider]
@@ -18,8 +20,9 @@ app "default" do
   action :install
 end
 
-
 # Let others know we are an appserver
 right_link_tag "appserver:active=true"
+right_link_tag "appserver:listen_ip=#{node[:app][:ip]}"
+right_link_tag "appserver:listen_port=#{node[:app][:port]}"
 
 rightscale_marker :end
