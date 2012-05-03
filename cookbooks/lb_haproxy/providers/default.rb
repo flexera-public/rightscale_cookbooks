@@ -188,6 +188,7 @@ action :attach_request do
     attributes :remote_recipe => {
                   :backend_ip  => new_resource.backend_ip,
                   :backend_id  => new_resource.backend_id,
+                  :backend_port => new_resource.backend_port,
                   :vhost_names => vhost_name
                 }
     recipients_tags "loadbalancer:#{vhost_name}=lb"
