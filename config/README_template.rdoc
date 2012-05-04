@@ -1,0 +1,52 @@
+= RightScale *** cookbook
+
+== DESCRIPTION:
+Give a very high-level overview of what this cookbook manages and the features it contains. 
+
+== REQUIREMENTS:
+=== General
+
+What OSs does this support?
+Is this cloud specific?  If so, which clouds?
+Requires a virtual machine launched from a RightScale-managed RightImage.
+
+=== Cookbooks dependencies
+Please see metadata.rb file for the latest dependencies.
+
+== KNOWN LIMITATIONS:
+List any known limitation here that might affect functionality and usability. Be sure to include a ticket number.
+For Example:
+  * Currently only primary backups to Remote Object Storage (ROS) are supported for KVM hypervisors (w-1234)
+
+== SETUP:
+TEXT
+
+== USAGE:
+TEXT
+
+== DETAILS:
+=== General
+TEXT
+=== Attributes
+TEXT
+=== Templates
+TEXT
+=== Recipes
+TEXT
+==== Recipes Usage Examples
+TEXT
+=== Definitions
+TEXT
+==== Definitions Usage Examples
+TEXT
+=== Libraries-helpers
+TEXT
+==== Helpers Usage Examples
+TEXT
+=== LWRP
+TEXT
+==== Providers or Resources Usage Examples
+TEXT
+
+= LICENSE
+TEXT
