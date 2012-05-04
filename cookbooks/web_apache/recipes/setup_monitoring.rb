@@ -23,14 +23,9 @@ end
 
 if node[:platform] =~ /redhat|centos/
 
-  TMP_FILE = "/tmp/collectd-apache.rpm"
-
-  remote_file TMP_FILE do
-    source "collectd-apache-4.10.0-4.el5.#{node[:kernel][:machine]}.rpm"
-  end
-
-  package TMP_FILE do
-    source TMP_FILE
+  package collectd-postgresql do
+    version "4.10.0-4"
+    provider Chef::Provider::Package::Rpm
   end
 
   if node[:web_apache][:mpm] == "prefork"
@@ -38,7 +33,7 @@ if node[:platform] =~ /redhat|centos/
   else
     rightscale_monitor_process "httpd.worker"
   end
- 
+
 elsif node[:platform] == 'ubuntu'
 
   rightscale_monitor_process 'apache2'
