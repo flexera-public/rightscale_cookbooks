@@ -376,8 +376,7 @@ action :setup_monitoring do
   TMP_FILE = "/tmp/collectd.rpm"
   remote_file TMP_FILE do
     only_if { platform =~ /redhat|centos/ }
-    source "collectd-mysql-4.10.0-4.el5.#{node[:kernel][:machine]}.rpm"
-    cookbook 'db_mysql'
+    source "http://mirrors.rightscale.com/attachments/db_mysql/#{platform}/collectd-mysql-4.10.0-4.el5.x86_64.rpm"
   end
   package TMP_FILE do
     only_if { platform =~ /redhat|centos/ }
