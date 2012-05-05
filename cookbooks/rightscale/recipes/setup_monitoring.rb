@@ -16,9 +16,6 @@ node[:rightscale][:process_list_ary] = node[:rightscale][:process_list].split | 
 # Installs collectd packages that are matched to the RightScale monitoring
 # system.  These packages are locked/pinned to avoid accidental update.
 #
-# TODO: move these packages into RightScale specific mirror to improve
-#       cookbook download time.
-#
 package "librrd4" if node[:platform] == 'ubuntu'
 
 type = (node[:platform] == 'ubuntu') ? "deb" : "rpm"
@@ -37,19 +34,12 @@ package "collectd" do
   action :remove
 end
 
-# Find and install local packages
-packages = ::File.join(::File.dirname(__FILE__), "..", "files", "packages", "*64.#{type}")
-Dir.glob(packages).each do |p|
+# Install collectd packages
+packages = node[:rightscale][:collectd_packages]
+
+packages.each do |p|
   package p do
-    not_if { type == "deb" }
-    source p
-    action :install
-  end
-  # Using dpkg because apt resource does not handle local deb files correctly.
-  dpkg_package p do
-    only_if { type == "deb" }
-    source p
-    options "--ignore-depends=libcollectdclient0 --ignore-depends=collectd-core"
+    version "#{node[:rightscale][:collectd_packages_version]}"
     action :install
   end
 end
