@@ -35,8 +35,9 @@ module RightScale
           uuid = RightScale::Utils::Helper.get_tag_value('server:uuid', tags)
           ip = RightScale::Utils::Helper.get_tag_value('appserver:listen_ip',tags)
           port = RightScale::Utils::Helper.get_tag_value('appserver:listen_port',tags)
-          app_servers[uuid] = ip
-          app_servers[backend_port] = port.to_i
+          app_servers[uuid] = {} 
+          app_servers[uuid][:ip] = ip
+          app_servers[uuid][:backend_port] = port.to_i
         end
 
         return app_servers
