@@ -148,9 +148,9 @@ Describe resource purpose and functionality. describe its attributes
 
 <b>Example:</b>
 
-<em>#Common attributes
+<em>Common attributes
 
-:destination - Path to where project repo will be pulled
+<tt>:destination</tt> - Path to where project repo will be pulled
 
 :repository - Repository Url
 
