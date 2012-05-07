@@ -6,7 +6,7 @@
 Replace this text with a high-level overview of what this cookbook configures or manages.  Don't go into too much detail here, save that for the 'details' section below.
 
 Example:
-#This cookbook provides abstract 'repo' resource for managing code download from GIT, SVN or ROS code repositories.
+This cookbook provides abstract 'repo' resource for managing code download from GIT, SVN or ROS code repositories.
 
 == REQUIREMENTS:
 === General
@@ -17,7 +17,7 @@ Is this cloud specific?  If so, which clouds?
 Requires a virtual machine launched from a RightScale-managed RightImage.
 
 Example:
-`One of 'repo' provider: 'repo_git', 'repo_svn' or 'repo_ros' cookbooks must be present in your cookbook repository`
+One of 'repo' provider: 'repo_git', 'repo_svn' or 'repo_ros' cookbooks must be present in your cookbook repository`
 `Ros implementation depends on either the 'rs_utils::install_tools' or 'rs_tools:default' recipe`
 
 === Cookbooks dependencies
@@ -141,16 +141,18 @@ Return the IP address of the interface that this application server listens on.
 `RuntimeError::` If nether a valid private nor public ip can be found
 
 === LWRP's
+
 Use this section only if your cookbook contain resources and/or providers.
 Describe resource purpose and functionality. describe its attributes
-Example:
-#Common attributes
+<b>Example:</b>
+<i>#Common attributes
 :destination - Path to where project repo will be pulled
 :repository - Repository Url
 :revision - Remote repo Branch or revision
+</i>
 
-Example:
 Give provider usage examples.
+<b>Example:</b>
 Update Action
 -------------
 To open a local port to all servers with a given tag use:
@@ -187,7 +189,7 @@ requested ports opened.
 Cookbook license section.
 
 
-Example:
+<b>Example:</b>
 <b>RightScale Cookbooks</b>
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
