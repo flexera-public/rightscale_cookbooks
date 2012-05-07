@@ -39,8 +39,8 @@ vhosts(node[:lb][:vhost_names]).each do | vhost_name |
   servers_to_attach.each do |uuid|
     lb vhost_name do
       backend_id uuid
-      backend_ip deployment_servers[uuid]
-      backend_port deployment_servers[backend_port].to_i
+      backend_ip deployment_servers[uuid][:ip]
+      backend_port deployment_servers[uuid][:backend_port].to_i
       action :attach
     end
   end
