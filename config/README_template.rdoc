@@ -143,18 +143,27 @@ Return the IP address of the interface that this application server listens on.
 === LWRP's
 
 Use this section only if your cookbook contain resources and/or providers.
+
 Describe resource purpose and functionality. describe its attributes
+
 <b>Example:</b>
+
 <i>#Common attributes
+
 :destination - Path to where project repo will be pulled
+
 :repository - Repository Url
+
 :revision - Remote repo Branch or revision
 </i>
 
 Give provider usage examples.
+
 <b>Example:</b>
+
 Update Action
 -------------
+
 To open a local port to all servers with a given tag use:
 
   sys_firewall "Open this database's ports to all appservers" do
