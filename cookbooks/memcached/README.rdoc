@@ -26,7 +26,7 @@ Has memcached configuration templates for CentOS/Redhat and Ubuntu, a collectd p
 == REQUIREMENTS:
 === General
 === Cookbooks dependecies
-Uses "rs_utils", "sys_firewall" and "logrotate".
+Uses "rightscale", "sys_firewall" and "logrotate".
 
 
 == SETUP:

@@ -5,7 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-rs_utils_marker :begin
+rightscale_marker :begin
 
 
 ## memcached install
@@ -121,8 +121,8 @@ end  # need to restart/start after configuration in order for the monitoring to 
 
 ruby_block "process_memcached" do
     block do
-        processes = File.readlines("#{node[:rs_utils][:collectd_plugin_dir]}/processes.conf")
-        File.open("#{node[:rs_utils][:collectd_plugin_dir]}/processes.conf", "w") do |f|
+        processes = File.readlines("#{node[:rightscale][:collectd_plugin_dir]}/processes.conf")
+        File.open("#{node[:rightscale][:collectd_plugin_dir]}/processes.conf", "w") do |f|
             processes.each do |line|
                 next if line =~ /<\/Plugin>/  # will add memcached process monitoring as last in list regardless of how file may change in the future
                 f.puts(line)
@@ -134,7 +134,7 @@ ruby_block "process_memcached" do
     action :create
 end
 
-template "#{node[:rs_utils][:collectd_plugin_dir]}/memcached.conf" do
+template "#{node[:rightscale][:collectd_plugin_dir]}/memcached.conf" do
     source "memcached_collectd.conf.erb"
     variables(
             :ip              => node[:memcached][:ip],
@@ -149,8 +149,8 @@ log "    Disabling collectd swap monitoring."
 # disable collectd swap
 ruby_block "disable_collectd_swap" do
     block do
-        collectd = File.readlines("#{node[:rs_utils][:collectd_config]}")
-        File.open("#{node[:rs_utils][:collectd_config]}", "w") do |f|
+        collectd = File.readlines("#{node[:rightscale][:collectd_config]}")
+        File.open("#{node[:rightscale][:collectd_config]}", "w") do |f|
             collectd.each do |line|
                 next if line =~ /LoadPlugin swap/  # simply cut out useless line
                 f.puts(line)
@@ -176,4 +176,4 @@ rs_utils_logrotate_app "memcached" do
 end # no restarts or anything needed: logrotate is a cron task
 
 
-rs_utils_marker :end
+rightscale_marker :end

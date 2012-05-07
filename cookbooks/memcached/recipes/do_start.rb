@@ -5,12 +5,12 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-rs_utils_marker :begin
+rightscale_marker :begin
 
 log "    memcached: starting"
 
 service "memcached" do
     action :start
 end
- 
-rs_utils_marker :end
+
+rightscale_marker :end
