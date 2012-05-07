@@ -14,8 +14,11 @@ This cookbook provides abstract 'repo' resource for managing code download from 
 === General
 
 Replace this text with a description of cookbook requirements, what user will have to add to template to make recipes from this cookbook work correctly
+
 What OSs does this support?
+
 Is this cloud specific?  If so, which clouds?
+
 Requires a virtual machine launched from a RightScale-managed RightImage.
 
 ==== Example:
@@ -24,7 +27,7 @@ Requires a virtual machine launched from a RightScale-managed RightImage.
 One of 'repo' provider: <tt>repo_git</tt>, <tt>repo_svn</tt> or <tt>repo_ros</tt> cookbooks must be present in your cookbook repository
 Ros implementation depends on either the <tt>rs_utils::install_tools</tt> or <tt>rs_tools:default</tt> recipe
 
-=== Cookbooks dependencies
+== Cookbooks dependencies
 Please see metadata.rb file for the latest dependencies.
 
 == KNOWN LIMITATIONS:
@@ -89,9 +92,8 @@ template name - description - recipe/recipes where this tempalte is called
 ==== Example:
 -------------
 
+<b>server.rb.erb</b>
 
-server.rb.erb
--------------
 Configuration for the server and server components used in the <tt>chef-server::rubygems-install</tt> recipe.
 
 
@@ -161,13 +163,16 @@ Give complete description of library purpose and  functionality. Provide example
 Return the IP address of the interface that this application server listens on.
 
 Parameters
+
 * <tt>private_ips(Array)::</tt> List of private ips assigned to the application server
 * <tt>public_ips(Array)::</tt> List of public ips assigned to the application server
 
 Returns
+
 <tt>String::</tt> IP Address
 
 Raise
+
 <tt>RuntimeError::</tt> If nether a valid private nor public ip can be found
 
 === LWRP's
