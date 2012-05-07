@@ -166,8 +166,8 @@ log "    Collectd configuration done."
 ## log rotation
 log "    Generating new logrotatate config for memcached application."
 
-rs_utils_logrotate_app "memcached" do
-    cookbook "rs_utils"
+rightscale_logrotate_app "memcached" do
+    cookbook "rightscale"
     template "logrotate.erb"
     path ["/var/log/memcached.log"]
     frequency "size 10M"
