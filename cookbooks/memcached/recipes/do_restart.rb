@@ -10,7 +10,7 @@ rs_utils_marker :begin
 log "    memcached: restarting"
 
 service "memcached" do
-  action :restart
+    action :restart
 end
  
 rs_utils_marker :end

@@ -1,14 +1,14 @@
 {
   "name": "memcached",
   "description": "Cookbook for a memcached server setup.",
-  "long_description": "= RightScale Memcached Server Template\n\n== DESCRIPTION:\nThis cookbook provides recipes for setting up and running a Memcached server.\n\n\n== DETAILS:\n\n=== General\nThe cookbook installs memcached with needed configuration for CentOS, Redhat and Ubuntu.\nOpens lisnening port in systems' firewall, setups server tags, monitoring and log rotation.\n=== Recipes\nrecipe  \"memcached::default\",        \"Default recipe for memcached setup. Installs server tags.\"\nrecipe  \"memcached::install_server\", \"Installation and configuration recipe for memcached.\n                                      Does memcached setup and configuration, opens port in firewall,\n                                      configures collectd and logrotate.\"\nrecipe  \"memcached::do_start\",       \"Start memcached service.\"\nrecipe  \"memcached::do_restart\",     \"Restart memcached service.\"\nrecipe  \"memcached::do_reload\",      \"Reload memcached service.\"\nrecipe  \"memcached::do_stop\",        \"Stop memcached service.\"\n=== Attributes\nThe amount of memory used for item storage is calculated as user defined percent from total system memory.\nOthers are system-dependant and/or have default values.\n=== Templates\nHas memcached configuration templates for CentOS/Redhat and Ubuntu, a collectd plugin template.\n\n\n== REQUIREMENTS:\n=== General\n=== Cookbooks dependecies\nUses \"rs_utils\", \"sys_firewall\" and \"logrotate\".\n\n\n== SETUP:\n\n\n== USAGE:\n=== General\n=== Examples\n\n\n= LICENSE\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to the\nRightScale Terms of Service available at http://www.rightscale.com/terms.php and,\nif applicable, other agreements such as a RightScale Master Subscription Agreement.",
+  "long_description": "= RightScale Memcached Server Template\n\n== DESCRIPTION:\nThis cookbook provides recipes for setting up and running a Memcached server.\n\n\n== DETAILS:\n\n=== General\nThe cookbook installs memcached with needed configuration for CentOS, Redhat and Ubuntu.\nOpens lisnening port in systems' firewall, setups server tags, monitoring and log rotation.\n=== Recipes\nrecipe  \"memcached::default\",        \"Default recipe for memcached setup. Installs server tags.\"\nrecipe  \"memcached::install_server\", \"Installation and configuration recipe for memcached.Does memcached setup and configuration, opens port in firewall, configures collectd and logrotate.\"\nrecipe  \"memcached::do_start\",       \"Start memcached service.\"\nrecipe  \"memcached::do_restart\",     \"Restart memcached service.\"\nrecipe  \"memcached::do_reload\",      \"Reload memcached service.\"\nrecipe  \"memcached::do_stop\",        \"Stop memcached service.\"\n=== Attributes\nThe amount of memory used for item storage is calculated as user defined percent from total system memory.\nOthers are system-dependant and/or have default values.\n=== Templates\nHas memcached configuration templates for CentOS/Redhat and Ubuntu, a collectd plugin template.\n\n\n== REQUIREMENTS:\n=== General\n=== Cookbooks dependecies\nUses \"rs_utils\", \"sys_firewall\" and \"logrotate\".\n\n\n== SETUP:\n\n\n== USAGE:\n=== General\n=== Examples\n\n\n= LICENSE\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to the\nRightScale Terms of Service available at http://www.rightscale.com/terms.php and,\nif applicable, other agreements such as a RightScale Master Subscription Agreement.",
   "maintainer": "RightScale, Inc.",
   "maintainer_email": "support@rightscale.com",
   "license": "Copyright RightScale, Inc. All rights reserved.  All access and use subject to the RightScale Terms of Service available at http://www.rightscale.com/terms.php and, if applicable, other agreements such as a RightScale Master Subscription Agreement.\n",
   "platforms": {
   },
   "dependencies": {
-    "rs_utils": ">= 0.0.0",
+    "rightscale": ">= 0.0.0",
     "sys_firewall": ">= 0.0.0",
     "logrotate": ">= 0.0.0"
   },
@@ -105,7 +105,7 @@
     },
     "memcached/threads": {
       "display_name": "Memcached used threads",
-      "description": "Use a number from 1 to <maximum number of threads for the instance>.",
+      "description": "Use a number from 1 to %maximum number of threads for the instance%.",
       "required": "recommended",
       "default": "1",
       "recipes": [

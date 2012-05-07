@@ -19,6 +19,7 @@ else
     log "    Installation complete."
 end
 
+# initializing supported commands for memcached services for further usage
 service "memcached" do
     action :nothing
     persist true

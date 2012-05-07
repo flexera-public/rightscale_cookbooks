@@ -6,7 +6,7 @@ long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "0.1.0"
 
 
-depends "rs_utils"
+depends "rightscale"
 depends "sys_firewall"
 depends "logrotate"
 
@@ -57,7 +57,7 @@ attribute "memcached/memtotal_percent",
 
 attribute "memcached/threads",
           :display_name => "Memcached used threads",
-          :description  => "Use a number from 1 to <maximum number of threads for the instance>.",
+          :description  => "Use a number from 1 to %maximum number of threads for the instance%.",
           :required     => "recommended",
           :default      => "1",
           :recipes      => ["memcached::install_server"]

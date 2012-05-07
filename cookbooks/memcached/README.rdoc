@@ -11,9 +11,7 @@ The cookbook installs memcached with needed configuration for CentOS, Redhat and
 Opens lisnening port in systems' firewall, setups server tags, monitoring and log rotation.
 === Recipes
 recipe  "memcached::default",        "Default recipe for memcached setup. Installs server tags."
-recipe  "memcached::install_server", "Installation and configuration recipe for memcached.
-                                      Does memcached setup and configuration, opens port in firewall,
-                                      configures collectd and logrotate."
+recipe  "memcached::install_server", "Installation and configuration recipe for memcached.Does memcached setup and configuration, opens port in firewall, configures collectd and logrotate."
 recipe  "memcached::do_start",       "Start memcached service."
 recipe  "memcached::do_restart",     "Restart memcached service."
 recipe  "memcached::do_reload",      "Reload memcached service."
