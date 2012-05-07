@@ -185,7 +185,7 @@ To open a local port to all servers with a given tag use:
 This can be useful as a server is booting to open up access for multiple
 systems at once.
 
-==== Update Request Action
+===== Update Request Action
 ---------------------
 To request all servers with a given tag close a port to a given IP address use:
 
@@ -208,6 +208,7 @@ Cookbook license section.
 
 
 <b>Example:</b>
+
 <b>RightScale Cookbooks</b>
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
