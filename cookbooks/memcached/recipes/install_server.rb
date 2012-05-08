@@ -7,7 +7,7 @@
 
 rightscale_marker :begin
 
-## memcached install
+# memcached install
 #
 if File.exists?("#{node[:memcached][:config_file]}") # to get the correct output lines after a reboot
   log "  Memcached already installed."
@@ -28,7 +28,7 @@ service "memcached" do
 end
 
 
-## memcached config
+# memcached config
 #
 # based on the "memcached/memtotal_percent" input this calculates the amount of memory memcached will be using
 node[:memcached][:memtotal] = (((node[:memcached][:memtotal_percent].to_i/100.0)*node[:memory][:total].to_i)/1024.0).to_i
@@ -74,7 +74,7 @@ end
 log "  Memcached configuration done."
 
 
-## firewall configuration
+# firewall configuration
 #
 log "  Attention: when using a listening public ip make sure the #{node[:memcached][:tcp_port]} port is open in the firewall (Security Group for EC2)."
 log "  Opening port #{node[:memcached][:tcp_port]} in iptables."
@@ -86,7 +86,7 @@ sys_firewall "Open memcached port" do
 end
 
 
-## checking if memcached actually started
+# checking if memcached actually started
 #   problem: when starting memcached on amazon with a public listening ip the daemon doesn't really start though says so
 #   there is no interface with public ip on amazon thus you can find
 #   "failed to listen on TCP port XXXXX: Cannot assign requested address" in /var/log/memcached.log
@@ -110,7 +110,7 @@ ruby_block "memcached_check" do
 end
 
 
-## collectd configuration
+# collectd configuration
 #
 log "  Configuring collectd memcached plugin."
 
@@ -159,7 +159,7 @@ end # memcached server has swap disabled due to the nature of the system
 log "  Collectd configuration done."
 
 
-## log rotation
+# log rotation
 #
 log "  Generating new logrotatate config for memcached application."
 
