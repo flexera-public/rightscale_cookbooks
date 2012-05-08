@@ -21,7 +21,7 @@ end
 
 # initializing supported commands for memcached services for further usage
 service "memcached" do
-  action :nothing
+  action :enable
   persist true
   reload_command "/etc/init.d/memcached force-reload" # had to override because ubuntu doesn't have a "reload" option
   supports :status => true, :start => true, :stop => true, :restart => true, :reload => true
@@ -68,11 +68,8 @@ template "#{node[:memcached][:config_file]}" do
     :log_level => node[:memcached][:log_level]
   )
   cookbook "memcached"
+  notifies :restart, resources(:service => "memcached"), :immediately # restart needed for new settings to apply
 end
-
-service "memcached" do
-  action :restart # restart needed for new settings to apply
-end # had to move the restart out of the template due to start problem after server reboot
 
 log "  Memcached configuration done."
 
