@@ -43,17 +43,23 @@ current_mnt_device = current_mnt_device ? current_mnt_device.split[0] : nil
 
 mnt_device = current_mnt_device || 
              case root_device
-             when /sda/ then "/dev/sdb"
-             when /sde/ then "/dev/sdf"
-             when /xvda/ then "/dev/xvdb"
-             when /xvde/ then (node[:platform] == "redhat") ? "/dev/xvdj" : "/dev/xvdf"
+             when /sda/
+               "/dev/sdb"
+             when /sde/
+               "/dev/sdf"
+             when /vda/
+               "/dev/vdb"
+             when /xvda/
+               "/dev/xvdb"
+             when /xvde/
+               (node[:platform] == "redhat") ? "/dev/xvdj" : "/dev/xvdf"
              end
 
 # Generate fstab entry here to check if it already exists
 fstab_entry = "/dev/vg-data/#{lvm_device}\t#{mount_point}\t#{filesystem_type}\t#{options}\t0 0"
 
 # Only EC2 is currently supported
-if cloud == 'ec2' 
+if cloud == 'ec2' || cloud == 'openstack'
 
   # if fstab entry exists, assume a reboot and skip to end
   if File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$")
@@ -118,8 +124,8 @@ if cloud == 'ec2'
         my_devices = []
         dev_index = 0
         while (1)
-          if node[:ec2][:block_device_mapping]["ephemeral#{dev_index}".to_sym]
-            device = node[:ec2][:block_device_mapping]["ephemeral#{dev_index}".to_sym]
+          if node[cloud][:block_device_mapping]["ephemeral#{dev_index}".to_sym]
+            device = node[cloud][:block_device_mapping]["ephemeral#{dev_index}".to_sym]
             device = '/dev/' + device if device !~ /^\/dev\//
             device = @api.unmap_device_for_ec2(device)
             # verify that device is actually on the instance and is a blockSpecial 
@@ -160,7 +166,7 @@ if cloud == 'ec2'
     end
   end
 else
-  log "Skipping LVM on ephemeral drives setup for non-EC2 cloud #{cloud}"
+  log "Skipping LVM on ephemeral drives setup for non-ephemeral cloud #{cloud}"
 end
 
 rightscale_marker :end
