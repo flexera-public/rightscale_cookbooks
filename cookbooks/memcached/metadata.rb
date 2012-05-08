@@ -66,7 +66,7 @@ attribute "memcached/interface",
   :display_name => "Memcached listening interface",
   :description => "Interface to listen on.",
   :required => "recommended",
-  :choice => ["localhost", "private", "public", "any"],
+  :choice => ["localhost", "private", "any"],
   :default => "any",
   :recipes => ["memcached::install_server"]
 

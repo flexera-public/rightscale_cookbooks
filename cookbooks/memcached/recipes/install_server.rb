@@ -45,22 +45,14 @@ elsif node[:memcached][:threads].to_i > node[:cpu][:total].to_i
   node[:memcached][:threads] = node[:cpu][:total]
 end # now user cannot input wrong thread quantity leading to misconfiguration
 
-# listening and test ip configuration
+# listening ip configuration
 case node[:memcached][:interface]
   when "localhost"
-    node[:memcached][:interface] = node[:memcached][:check_ip] = "127.0.0.1" # note: not using "localhost" because value also goes into collectd plugin which doesn't understand it
+    node[:memcached][:interface] = "127.0.0.1" # note: not using "localhost" because value also goes into collectd plugin which doesn't understand it
   when "private"
-    node[:memcached][:interface] = node[:memcached][:check_ip] = node[:cloud][:private_ips][0]
-  when "public"
-    if "#{node[:cloud][:provider]}" == "ec2"                       # to avoid server strand because of no public interface
-      node[:memcached][:interface] = node[:cloud][:private_ips][0] # binding to private on aws (they have nat to route the traffic)
-      node[:memcached][:check_ip] = node[:cloud][:public_ips][0]   # will run a test later on: ruby_block "memcached_check"
-    else
-      node[:memcached][:interface] = node[:memcached][:check_ip] = node[:cloud][:public_ips][0]
-    end
+    node[:memcached][:interface] = node[:cloud][:private_ips][0]
   when "any"
     node[:memcached][:interface] = "0.0.0.0"
-    node[:memcached][:check_ip] = node[:cloud][:public_ips][0]     # for the test: can't run TCPSocket with 0.0.0.0
 end
 
 # writing settings
@@ -105,6 +97,12 @@ end
 #   any other wrong configured entry might also cause this behaviour so this check is useful
 ruby_block "memcached_check" do
   block do
+    # test ip configuration
+    if "#{node[:memcached][:interface]}" == "0.0.0.0"
+      node[:memcached][:check_ip] = node[:cloud][:public_ips][0] # can't run TCPSocket with 0.0.0.0
+    else
+      node[:memcached][:check_ip] = node[:memcached][:interface]
+    end
     begin
       TCPSocket.new("#{node[:memcached][:check_ip]}", "#{node[:memcached][:tcp_port]}").close # thus you'll be sure memcached is really running
       Chef::Log.info("  Memcached server started.")
