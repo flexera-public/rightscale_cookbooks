@@ -124,8 +124,8 @@ if cloud == 'ec2' || cloud == 'openstack'
         my_devices = []
         dev_index = 0
         while (1)
-          if node[cloud][:block_device_mapping]["ephemeral#{dev_index}".to_sym]
-            device = node[cloud][:block_device_mapping]["ephemeral#{dev_index}".to_sym]
+          if node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
+            device = node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
             device = '/dev/' + device if device !~ /^\/dev\//
             device = @api.unmap_device_for_ec2(device)
             # verify that device is actually on the instance and is a blockSpecial 
