@@ -165,6 +165,7 @@ action :setup_vhost do
     cookbook 'app_tomcat'
     variables(
             :doc_root => node[:app_tomcat][:docroot]
+            :app_port => node[:app][:port]
           )
   end
 
