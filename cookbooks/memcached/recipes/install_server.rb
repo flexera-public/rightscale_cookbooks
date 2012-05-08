@@ -9,8 +9,8 @@ rightscale_marker :begin
 
 ## memcached install
 #
-if File.exists?("#{node[:memcached][:config_file]}") # to avoid reinstall after a reboot
-  log "  Memcached already installed."               # and get the correct output lines
+if File.exists?("#{node[:memcached][:config_file]}") # to get the correct output lines after a reboot
+  log "  Memcached already installed."
 else
   log "  Installing memcached package for #{node[:platform]}"
   package "memcached" do
@@ -26,11 +26,10 @@ service "memcached" do
   reload_command "/etc/init.d/memcached force-reload" # had to override because ubuntu doesn't have a "reload" option
   supports :status => true, :start => true, :stop => true, :restart => true, :reload => true
 end
-##
+
 
 ## memcached config
 #
-
 # based on the "memcached/memtotal_percent" input this calculates the amount of memory memcached will be using
 node[:memcached][:memtotal] = (((node[:memcached][:memtotal_percent].to_i/100.0)*node[:memory][:total].to_i)/1024.0).to_i
 
@@ -76,7 +75,7 @@ service "memcached" do
 end # had to move the restart out of the template due to start problem after server reboot
 
 log "  Memcached configuration done."
-##
+
 
 ## firewall configuration
 #
@@ -88,7 +87,7 @@ sys_firewall "Open memcached port" do
   enable true
   action :update
 end
-##
+
 
 ## checking if memcached actually started
 #   problem: when starting memcached on amazon with a public listening ip the daemon doesn't really start though says so
@@ -112,7 +111,7 @@ ruby_block "memcached_check" do
   end
   action :create
 end
-##
+
 
 ## collectd configuration
 #
@@ -161,7 +160,7 @@ ruby_block "disable_collectd_swap" do
 end # memcached server has swap disabled due to the nature of the system
 
 log "  Collectd configuration done."
-##
+
 
 ## log rotation
 #
@@ -175,6 +174,6 @@ rightscale_logrotate_app "memcached" do
   rotate 4
   create "644 root root"
 end # no restarts or anything needed: logrotate is a cron task
-##
+
 
 rightscale_marker :end
