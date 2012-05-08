@@ -20,7 +20,6 @@
 
 require 'rubygems'
 require 'chef'
-#require 'json'
 require 'yard'
 
 YARD::Config.load_plugin 'chef'
@@ -37,4 +36,3 @@ elsif File.directory?(File.join(TOPDIR, ".git"))
 end
 
 load 'chef/tasks/chef_repo.rake'
-
