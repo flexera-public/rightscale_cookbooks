@@ -95,7 +95,7 @@ Configuration for the server and server components used in the <tt>chef-server::
 === Definitions:
 Use this section only if your cookbook contain definitions.
 
-Give complete description of difinition functionality and provide examples of how we use it in recipes.
+Give complete description of definition functionality and provide examples of how we use it in recipes.
 
 ==== Example:
 -------------
