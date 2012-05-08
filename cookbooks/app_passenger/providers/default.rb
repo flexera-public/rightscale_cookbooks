@@ -60,13 +60,6 @@ action :install do
     cookbook 'app_passenger'
   end
 
-  cookbook_file "/tmp/ruby-enterprise-installed.tar.gz" do
-    source "ruby-enterprise_i686.tar.gz"
-    mode "0644"
-    only_if do node[:kernel][:machine].include? "i686" end
-    cookbook 'app_passenger'
-  end
-
   bash "install_ruby_EE" do
     flags "-ex"
     code <<-EOH
@@ -166,10 +159,10 @@ action :setup_db_connection do
   deploy_dir = new_resource.destination
   db_name = new_resource.database_name
   db_adapter = node[:app_passenger][:project][:db][:adapter]
-  
-  log "  Generating database.yml"  
+
+  log "  Generating database.yml"
   # Tell MySQL to fill in our connection template
-  if db_adapter == "mysql"  
+  if db_adapter == "mysql"
     db_mysql_connect_app "#{deploy_dir.chomp}/config/database.yml"  do
       template      "database.yml.erb"
       cookbook      "app_passenger"
@@ -177,8 +170,8 @@ action :setup_db_connection do
       group         node[:app_passenger][:apache][:user]
       database      db_name
     end
-  # Tell PostgreSQL to fill in our connection template    
-  elsif db_adapter == "postgresql"  
+  # Tell PostgreSQL to fill in our connection template
+  elsif db_adapter == "postgresql"
     db_postgres_connect_app "#{deploy_dir.chomp}/config/database.yml"  do
       template      "database.yml.erb"
       cookbook      "app_passenger"
@@ -188,7 +181,7 @@ action :setup_db_connection do
     end
   else
     raise "Unrecognized database adapter #{node[:app_passenger][:project][:db][:adapter]}, exiting "
-  end 
+  end
 
   # Defining $RAILS_ENV
   ENV['RAILS_ENV'] = node[:app_passenger][:project][:environment]
@@ -223,7 +216,7 @@ action :code_update do
   directory "/home/rails/" do
     recursive true
   end
-  
+
   log "  Starting source code download sequence..."
   repo "default" do
     destination deploy_dir
