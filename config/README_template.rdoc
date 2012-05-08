@@ -48,10 +48,6 @@ Place tomcat::default recipe into your runlist to setup the application server.
 When using a RightScale ServerTemplate, this will also automatically add the common attributes to your ServerTemplate inputs.
 Set ‘jdbc/ConnDB’ as your datasource name to setup database connection with the application server.
 
-or
-
-Using this cookbook is relatively straightforward. Add the desired recipes to the run list of a node, or create a role.
-Depending on your environment, you may have multiple roles that use different recipes from this cookbook. Adjust any attributes as desired.
 
 == DETAILS:
 === General
@@ -97,36 +93,9 @@ template name - description - recipe/recipes where this tempalte is called
 Configuration for the server and server components used in the <tt>chef-server::rubygems-install</tt> recipe.
 
 
-=== Recipes:
-Replace this text with a complete overview of cookbook recipes.
-Each recipe description must be a section which will contain info about recipe purpose and usage.
-
-==== Example:
--------------
-
-
-<b>rubygems-install</b>
-
-ONLY FOR RUBYGEMS INSTALLATIONS. Do not use this recipe if you installed Chef from packages for your platform.
-Use this recipe to "bootstrap" a system to become a Chef Server. This recipe does the following:
-
-* Creates a `chef` user.
-* Installs CouchDB from package or source depending on the platform.
-* Installs Java for the `chef-solr` search engine.
-* Installs RabbitMQ with the `chef-server::rabbitmq` recipe for the chef-expander consumer.
-* Installs Gecode with the `gecode` cookbook. On Debian/Ubuntu, Opscode's APT repository will be used. On other platforms, Gecode will be installed from source, which can take a long time.
-* Installs all the Server-related RubyGems.
-
-Minimal JSON to use for the server configuration:
-    {
-      "chef_server": {
-        "url": "http://localhost.localdomain:4000",
-      },
-      "run_list": "recipe[chef-server::rubygems-install]"
-    }
-
 === Definitions:
 Use this section only if your cookbook contain definitions.
+
 Give complete description of difinition functionality and provide examples of how we use it in recipes.
 
 ==== Example:
@@ -179,7 +148,19 @@ Raise
 
 Use this section only if your cookbook contain resources and/or providers.
 
-Describe resource purpose and functionality. describe its attributes
+* Give common information about LWRP's existing in your cookbook, and point user to common info about Rightscale LWRP's
+
+==== Example:
+-------------
+
+The ‘db’ interface is defined by a Lightweight Resource, which can be found in the resources/default.rb file.
+
+For more about Lightweight Resources and Providers (LWRPs), please see:
+ http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)
+
+
+
+* Describe resource purpose and functionality. describe its attributes
 
 ==== Example:
 -------------
@@ -193,7 +174,7 @@ Common attributes
 <tt>:revision</tt> - Remote repo Branch or revision
 
 
-Give provider usage examples.
+* Give provider usage examples.
 
 ==== Example:
 -------------
@@ -231,15 +212,3 @@ requested ports opened.
 * all tag based actions are scoped to the deployment
 
 = LICENSE:
-Cookbook license section.
-
-
-==== Example:
--------------
-
-<b>RightScale Cookbooks</b>
-
-Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-if applicable, other agreements such as a RightScale Master Subscription Agreement.
-
