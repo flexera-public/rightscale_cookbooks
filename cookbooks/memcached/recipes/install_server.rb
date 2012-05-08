@@ -36,10 +36,10 @@ node[:memcached][:memtotal] = (((node[:memcached][:memtotal_percent].to_i/100.0)
 log "  Cache size will be set to #{node[:memcached][:memtotal_percent]}% of total system memory : #{node[:memcached][:memtotal]}mb"
 
 # thread input check
-if node[:memcached][:threads] < "1"
+if node[:memcached][:threads].to_i < 1
   log "  Number of threads less than 1, using minimum possible"
   node[:memcached][:threads] = "1"
-elsif node[:memcached][:threads] > node[:cpu][:total]
+elsif node[:memcached][:threads].to_i > node[:cpu][:total].to_i
   log "  Number of threads more than #{node[:cpu][:total]}, using maximum available"
   node[:memcached][:threads] = node[:cpu][:total]
 end # now user cannot input wrong thread quantity leading to misconfiguration
