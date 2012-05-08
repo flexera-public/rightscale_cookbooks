@@ -29,11 +29,15 @@ cookbooks must be present in ServerTemplate repository
   When using a RightScale ServerTemplate, this will also automatically add the required attributes to your ServerTemplate inputs.
 
 * Add 'repo' resource call in your recipe and provide all required parameters.
+
 * Add 'destination' and 'action' attributes to your 'repo' resource.
 
 * Set desired action for your 'repo' resource
+
   It can be :pull or :capistrano_pull
+
   :pull - perform basic 'repo' action, just pulling your code from remote repo.
+
   :capistrano_pull - performs pulling and backup of yuor code.
 
   For code implementation examples look at <b>LWRP's</b> section of this readme
@@ -50,31 +54,31 @@ All attributes in this cookbook are generally used to assign values for correspo
 All attributes in this cookbook has inputs except <b>Additional capistrano attributes</b> which are used internally in recipes.
 
 ===== Common attributes
-<tt>node[:repo][:default][:destination]</tt> - Path to where project repo will be pulled. Default is: "/tmp/repo"
-<tt>node[:repo][:default][:repository]</tt> - The URL of your svn or git repository where your application code will be checked out.
-<tt>node[:repo][:default][:revision]</tt> -  Remote repo Branch, Tag or revision. Default is:"HEAD"
-<tt>node[:repo][:default][:provider]</tt> - A repository provider: repo_git for Git, repo_svn for SVN or repo_ros for Remote Ojbect Store. Default is:"repo_git"
-<tt>node[:repo][:default][:perform_action]</tt> - The type pull action which will be performed, 'pull'- standard repo pull, 'capistrano_pull' standard pull and then capistrano deployment style will be applied. Default is: "pull"
+* <tt>node[:repo][:default][:destination]</tt> - Path to where project repo will be pulled. Default is: "/tmp/repo"
+* <tt>node[:repo][:default][:repository]</tt> - The URL of your svn or git repository where your application code will be checked out.
+* <tt>node[:repo][:default][:revision]</tt> -  Remote repo Branch, Tag or revision. Default is:"HEAD"
+* <tt>node[:repo][:default][:provider]</tt> - A repository provider: repo_git for Git, repo_svn for SVN or repo_ros for Remote Ojbect Store. Default is:"repo_git"
+* <tt>node[:repo][:default][:perform_action]</tt> - The type pull action which will be performed, 'pull'- standard repo pull, 'capistrano_pull' standard pull and then capistrano deployment style will be applied. Default is: "pull"
 
 ===== SVN attributes
-<tt>node[:repo][:default][:svn_username]</tt> - Username for SVN repository.
-<tt>node[:repo][:default][:svn_password]</tt> - Password for SVN repository.
+* <tt>node[:repo][:default][:svn_username]</tt> - Username for SVN repository.
+* <tt>node[:repo][:default][:svn_password]</tt> - Password for SVN repository.
 
 ===== GIT attributes
-<tt>node[:repo][:default][:ssh_key]</tt> - The private SSH key of the git repository.
+* <tt>node[:repo][:default][:ssh_key]</tt> - The private SSH key of the git repository.
 
 ===== ROS attributes
-<tt>node[:repo][:default][:storage_account_provider]</tt> - Location where the source file is saved. Used by recipes to upload to Amazon S3 or Rackspace Cloud Files. Default is:"S3"
-<tt>node[:repo][:default][:storage_account_id]</tt> -  Cloud storage account ID required to access specified cloud storage location.
-<tt>node[:repo][:default][:storage_account_secret]</tt> - Cloud storage account secret required to access specified cloud storage location.
-<tt>node[:repo][:default][:container]</tt> - The cloud storage location where source project repo is located. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name.
-<tt>node[:repo][:default][:prefix]</tt> - Filename of required source repository archive. Ex: source.tar.gz
+* <tt>node[:repo][:default][:storage_account_provider]</tt> - Location where the source file is saved. Used by recipes to upload to Amazon S3 or Rackspace Cloud Files. Default is:"S3"
+* <tt>node[:repo][:default][:storage_account_id]</tt> -  Cloud storage account ID required to access specified cloud storage location.
+* <tt>node[:repo][:default][:storage_account_secret]</tt> - Cloud storage account secret required to access specified cloud storage location.
+* <tt>node[:repo][:default][:container]</tt> - The cloud storage location where source project repo is located. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name.
+* <tt>node[:repo][:default][:prefix]</tt> - Filename of required source repository archive. Ex: source.tar.gz
 
 ===== Additional capistrano attributes
-<tt>node[:repo][:default][:environment]</tt> - A hash of the form {"ENV_VARIABLE"=>"VALUE"} ({})
-<tt>node[:repo][:default][:symlinks]</tt> - An array of paths, relative to app root, to be removed from a checkout before symlinking. Default is:({})
-<tt>node[:repo][:default][:purge_before_symlink]</tt> - An array of paths, relative to app root, to be removed from a checkout before symlinking. Default is: %w{}
-<tt>node[:repo][:default][:create_dirs_before_symlink]</tt> - Directories to create before symlinking. Runs after purge_before_symlink. Default is: %w{}
+* <tt>node[:repo][:default][:environment]</tt> - A hash of the form {"ENV_VARIABLE"=>"VALUE"} ({})
+* <tt>node[:repo][:default][:symlinks]</tt> - An array of paths, relative to app root, to be removed from a checkout before symlinking. Default is:({})
+* <tt>node[:repo][:default][:purge_before_symlink]</tt> - An array of paths, relative to app root, to be removed from a checkout before symlinking. Default is: %w{}
+* <tt>node[:repo][:default][:create_dirs_before_symlink]</tt> - Directories to create before symlinking. Runs after purge_before_symlink. Default is: %w{}
 
 
 === Templates:
@@ -90,17 +94,17 @@ More info about capistrano you can find at http://wiki.opscode.com/display/chef/
 Parameters:
 All parmetres in this definition are linked to corresponding attributes. However if you use this definition for your own purposes you can redifine them. See example below.
 
-<tt>:destination</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:destination]</tt> in attributes section of this readme.
-<tt>:repository</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:repository]</tt> in attributes section of this readme.
-<tt>:revision</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:revision]</tt> in attributes section of this readme.
-<tt>:svn_username</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:svn_username]</tt> in attributes section of this readme.
-<tt>:svn_password</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:svn_password]</tt> in attributes section of this readme.
-<tt>:app_user</tt> - User wich will be owner of created project deployment.
-<tt>:environment</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:environment]</tt> in attributes section of this readme.
-<tt>:create_dirs_before_symlink</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:create_dirs_before_symlink]</tt> in attributes section of this readme.
-<tt>:purge_before_symlink</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:purge_before_symlink]</tt> in attributes section of this readme.
-<tt>:symlinks</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:symlinks]</tt> in attributes section of this readme.
-<tt>:scm_provider</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:provider]</tt> in attributes section of this readme.
+* <tt>:destination</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:destination]</tt> in attributes section of this readme.
+* <tt>:repository</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:repository]</tt> in attributes section of this readme.
+* <tt>:revision</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:revision]</tt> in attributes section of this readme.
+* <tt>:svn_username</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:svn_username]</tt> in attributes section of this readme.
+* <tt>:svn_password</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:svn_password]</tt> in attributes section of this readme.
+* <tt>:app_user</tt> - User wich will be owner of created project deployment.
+* <tt>:environment</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:environment]</tt> in attributes section of this readme.
+* <tt>:create_dirs_before_symlink</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:create_dirs_before_symlink]</tt> in attributes section of this readme.
+* <tt>:purge_before_symlink</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:purge_before_symlink]</tt> in attributes section of this readme.
+* <tt>:symlinks</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:symlinks]</tt> in attributes section of this readme.
+* <tt>:scm_provider</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:provider]</tt> in attributes section of this readme.
 
 Example:
 
@@ -178,22 +182,22 @@ For Amazon S3, use your AWS secret access key (e.g., cred:AWS_SECRET_ACCESS_KEY)
 
 :pull
 
-repo 'default' do
-  destination '/tmp/repo'
-  action :pull
-end
+  repo "default" do
+    destination "/tmp/repo"
+    action :pull
+  end
 
 :capistrano_pull
 
-repo 'default' do
-  destination '/tmp/repo'
-  action :capistrano_pull
-  app_user                    'rightscale' #owner of created repo directories
-  purge_before_symlink        %w{tmp} #An array of paths, relative to app root, to be removed from a checkout before symlinking
-  create_dirs_before_symlink  %w{log dir2}  #A hash that maps files in the shared directory to their paths in the current release
-  symlinks                    ({}) #A hash that maps files in the shared directory to their paths in the current release
-  environment                 ({}) #A hash of the form {'ENV_VARIABLE'=>'VALUE'}
-end
+  repo "default" do
+    destination "/tmp/repo"
+    action :capistrano_pull
+    app_user                    'rightscale' #owner of created repo directories
+    purge_before_symlink        %w{tmp} #An array of paths, relative to app root, to be removed from a checkout before symlinking
+    create_dirs_before_symlink  %w{log dir2}  #A hash that maps files in the shared directory to their paths in the current release
+    symlinks                    ({}) #A hash that maps files in the shared directory to their paths in the current release
+    environment                 ({}) #A hash of the form {'ENV_VARIABLE'=>'VALUE'}
+  end
 
 = LICENSE
 
