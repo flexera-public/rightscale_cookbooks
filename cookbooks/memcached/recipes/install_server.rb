@@ -52,7 +52,7 @@ case node[:memcached][:interface]
   when "private"
     node[:memcached][:interface] = node[:memcached][:check_ip] = node[:cloud][:private_ips][0]
   when "public"
-    if cloud[:provider] == "ec2"                                   # to avoid server strand because of no public interface
+    if "#{node[:cloud][:provider]}" == "ec2"                       # to avoid server strand because of no public interface
       node[:memcached][:interface] = node[:cloud][:private_ips][0] # binding to private on aws (they have nat to route the traffic)
       node[:memcached][:check_ip] = node[:cloud][:public_ips][0]   # will run a test later on: ruby_block "memcached_check"
     else
