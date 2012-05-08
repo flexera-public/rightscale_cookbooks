@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: memcached
+# Cookbook Name::memcached
 #
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
@@ -7,10 +7,10 @@
 
 rightscale_marker :begin
 
-log "    memcached: restarting"
+log "  memcached: restarting"
 
 service "memcached" do
-    action :restart
+  action :restart
 end
 
 rightscale_marker :end
