@@ -53,9 +53,18 @@ action :install do
   end
 
   log "  Installing Ruby Enterprise Edition..."
-  remote_file "/tmp/ruby-enterprise-installed.tar.gz" do
-    source "http://mirrors.rightscale.com/attachments/app_passenger/#{os=='ubuntu'?'ubuntu':'default'}/ruby-enterprise_x86_64.tar.gz"
+  cookbook_file "/tmp/ruby-enterprise-installed.tar.gz" do
+    source "ruby-enterprise_x86_64.tar.gz"
     mode "0644"
+    only_if do node[:kernel][:machine].include? "x86_64" end
+    cookbook 'app_passenger'
+  end
+
+  cookbook_file "/tmp/ruby-enterprise-installed.tar.gz" do
+    source "ruby-enterprise_i686.tar.gz"
+    mode "0644"
+    only_if do node[:kernel][:machine].include? "i686" end
+    cookbook 'app_passenger'
   end
 
   bash "install_ruby_EE" do
