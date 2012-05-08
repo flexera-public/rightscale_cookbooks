@@ -124,7 +124,6 @@
       "choice": [
         "localhost",
         "private",
-        "public",
         "any"
       ],
       "default": "any",
@@ -177,5 +176,5 @@
     "memcached::do_reload": "Reload memcached service.",
     "memcached::do_stop": "Stop memcached service."
   },
-  "version": "0.1.2"
+  "version": "0.1.3"
 }

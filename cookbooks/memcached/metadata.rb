@@ -3,7 +3,7 @@ maintainer_email "support@rightscale.com"
 license "Copyright RightScale, Inc. All rights reserved."
 description "Cookbook for a memcached server setup."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version "0.1.2"
+version "0.1.3"
 
 
 depends "rightscale"
