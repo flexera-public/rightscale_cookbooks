@@ -70,9 +70,10 @@ action :install do
   elsif db_adapter == "postgresql"
     # Copy to /usr/share/java/postgresql-9.1-901.jdbc4.jar
     remote_file "/usr/share/java/postgresql-9.1-901.jdbc4.jar" do
-      source "http://mirrors.rightscale.com/attachments/app_tomcat/default/postgresql-9.1-901.jdbc4.jar"
+      source "postgresql-9.1-901.jdbc4.jar"
       owner "root"
       group "root"
+      cookbook 'app_tomcat'
     end
     ## Link postgresql-connector plugin to Tomcat6 lib
     link "/usr/share/tomcat6/lib/postgresql-9.1-901.jdbc4.jar" do
@@ -208,8 +209,9 @@ action :setup_vhost do
           options "-y"
         end
 
-      remote_file "/tmp/#{connectors_source}" do
-        source "http://mirrors.rightscale.com/attachments/app_tomcat/default/#{connectors_source}"
+      cookbook_file "/tmp/#{connectors_source}" do
+        source "#{connectors_source}"
+        cookbook 'app_tomcat'
       end
 
       bash "install_tomcat_connectors" do
@@ -345,18 +347,21 @@ action :setup_db_connection do
     cookbook 'app_tomcat'
   end
 
-  remote_file "/usr/share/tomcat6/lib/jstl-api-1.2.jar" do
-    source "http://mirrors.rightscale.com/attachments/app_tomcat/default/jstl-api-1.2.jar"
+  cookbook_file "/usr/share/tomcat6/lib/jstl-api-1.2.jar" do
+    source "jstl-api-1.2.jar"
     owner "#{node[:tomcat][:app_user]}"
     group "root"
     mode "0644"
+    cookbook 'app_tomcat'
   end
 
-  remote_file "/usr/share/tomcat6/lib/jstl-impl-1.2.jar" do
-    source "http://mirrors.rightscale.com/attachments/app_tomcat/default/jstl-impl-1.2.jar"
+
+  cookbook_file "/usr/share/tomcat6/lib/jstl-impl-1.2.jar" do
+    source "jstl-impl-1.2.jar"
     owner "#{node[:tomcat][:app_user]}"
     group "root"
     mode "0644"
+    cookbook 'app_tomcat'
   end
 end
 
@@ -367,9 +372,10 @@ action :setup_monitoring do
   rightscale_enable_collectd_plugin 'exec'
 
   #installing and configuring collectd for tomcat
-  remote_file "/usr/share/java/collectd.jar" do
-    source "http://mirrors.rightscale.com/attachments/app_tomcat/default/collectd.jar"
+  cookbook_file "/usr/share/java/collectd.jar" do
+    source "collectd.jar"
     mode "0644"
+    cookbook 'app_tomcat'
   end
 
   #Linking collectd
