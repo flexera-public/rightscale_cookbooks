@@ -36,10 +36,10 @@ node[:memcached][:memtotal] = (((node[:memcached][:memtotal_percent].to_i/100.0)
 log "  Cache size will be set to #{node[:memcached][:memtotal_percent]}% of total system memory : #{node[:memcached][:memtotal]}mb"
 
 # thread input check
-if node[:memcached][:threads].to_i < 1
+if node[:memcached][:threads] < "1"
   log "  Number of threads less than 1, using minimum possible"
   node[:memcached][:threads] = "1"
-elsif node[:memcached][:threads].to_i > node[:cpu][:total].to_i
+elsif node[:memcached][:threads] > node[:cpu][:total]
   log "  Number of threads more than #{node[:cpu][:total]}, using maximum available"
   node[:memcached][:threads] = node[:cpu][:total]
 end # now user cannot input wrong thread quantity leading to misconfiguration
@@ -98,7 +98,7 @@ ruby_block "memcached_check" do
   block do
     # test ip configuration
     if "#{node[:memcached][:interface]}" == "0.0.0.0"
-      node[:memcached][:check_ip] = node[:cloud][:public_ips][0] # can't run TCPSocket with 0.0.0.0
+      node[:memcached][:check_ip] = "127.0.0.1" # can't run TCPSocket with 0.0.0.0
     else
       node[:memcached][:check_ip] = node[:memcached][:interface]
     end
@@ -139,7 +139,7 @@ template "#{node[:rightscale][:collectd_plugin_dir]}/memcached.conf" do
     :interface => node[:memcached][:interface],
     :tcp_port => node[:memcached][:tcp_port]
   )
-  cookbook 'memcached'
+  cookbook "memcached"
   notifies :restart, resources(:service => "collectd"), :immediately # need to restart/start after configuration in order for the monitoring to run correctly
 end
 
