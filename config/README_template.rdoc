@@ -27,8 +27,7 @@ Requires a virtual machine launched from a RightScale-managed RightImage.
 One of 'repo' provider: <tt>repo_git</tt>, <tt>repo_svn</tt> or <tt>repo_ros</tt> cookbooks must be present in your cookbook repository
 Ros implementation depends on either the <tt>rs_utils::install_tools</tt> or <tt>rs_tools:default</tt> recipe
 
-== COOKBOOKS DEPENDENCIES
-Please see metadata.rb file for the latest dependencies.
+
 
 == KNOWN LIMITATIONS:
 List any known limitation here that might affect functionality and usability. Be sure to include a ticket number.
@@ -155,7 +154,7 @@ Use this section only if your cookbook contain resources and/or providers.
 
 The ‘db’ interface is defined by a Lightweight Resource, which can be found in the resources/default.rb file.
 
-For more about Lightweight Resources and Providers (LWRPs), please see:
+For more information about Lightweight Resources and Providers (LWRPs), please see:
  http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)
 
 
