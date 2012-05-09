@@ -137,7 +137,6 @@ action :install_client do
       package p do
         action :install
         version "9.1.1-1PGDG.rhel5"
-        provider Chef::Provider::Package::Rpm
       end
     end
   else
@@ -170,7 +169,6 @@ action :install_server do
     package p do
       action :install
       version "9.1.1-1PGDG.rhel5"
-      provider Chef::Provider::Package::Rpm
     end
   end
 
@@ -386,7 +384,6 @@ action :setup_monitoring do
     package collectd-postgresql do
       action :install
       version "4.10.0-4.el5"
-      provider Chef::Provider::Package::Rpm
     end
 
     template ::File.join(node[:rightscale][:collectd_plugin_dir], 'postgresql.conf') do

@@ -25,7 +25,6 @@ if node[:platform] =~ /redhat|centos/
 
   package collectd-apache do
     version "4.10.0-4.el5"
-    provider Chef::Provider::Package::Rpm
   end
 
   if node[:web_apache][:mpm] == "prefork"
