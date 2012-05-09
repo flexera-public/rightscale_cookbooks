@@ -23,7 +23,7 @@ end
 
 if node[:platform] =~ /redhat|centos/
 
-  package collectd-apache do
+  package "collectd-apache" do
     version "4.10.0-4.el5"
   end
 

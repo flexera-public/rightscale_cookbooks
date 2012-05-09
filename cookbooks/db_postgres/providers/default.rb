@@ -381,7 +381,7 @@ action :setup_monitoring do
 
   if node[:platform] == 'centos'
 
-    package collectd-postgresql do
+    package "collectd-postgresql" do
       action :install
       version "4.10.0-4.el5"
     end
