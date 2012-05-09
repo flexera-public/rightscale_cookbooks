@@ -23,8 +23,8 @@ end
 
 if node[:platform] =~ /redhat|centos/
 
-  package collectd-postgresql do
-    version "4.10.0-4"
+  package collectd-apache do
+    version "4.10.0-4.el5"
     provider Chef::Provider::Package::Rpm
   end
 
