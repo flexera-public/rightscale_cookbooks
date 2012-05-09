@@ -136,7 +136,7 @@ action :install_client do
     packages.each do |p|
       package p do
         action :install
-        version "9.1.1-1PGDG"
+        version "9.1.1-1PGDG.rhel5"
         provider Chef::Provider::Package::Rpm
       end
     end
@@ -169,7 +169,7 @@ action :install_server do
   packages.each do |p|
     package p do
       action :install
-      version "9.1.1-1PGDG"
+      version "9.1.1-1PGDG.rhel5"
       provider Chef::Provider::Package::Rpm
     end
   end
@@ -385,7 +385,7 @@ action :setup_monitoring do
 
     package collectd-postgresql do
       action :install
-      version "4.10.0-4"
+      version "4.10.0-4.el5"
       provider Chef::Provider::Package::Rpm
     end
 
