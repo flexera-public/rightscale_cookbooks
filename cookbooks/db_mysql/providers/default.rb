@@ -376,7 +376,6 @@ action :setup_monitoring do
   package collectd-mysql do
     action :install
     version "4.10.0-4.el5"
-    provider Chef::Provider::Package::Rpm
     only_if { platform =~ /redhat|centos/ }
   end
 
