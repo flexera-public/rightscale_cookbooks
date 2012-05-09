@@ -18,9 +18,9 @@ log "rightscale/servers/sketchy/hostname is #{node[:rightscale][:servers][:sketc
 
 case node[:platform]
   when "ubuntu", "debian"
-    node[:rightscale][:collectd_packages] = ["collectd","collectd-core","collectd-utils","libcollectdclient0"]
+    node[:rightscale][:collectd_packages] = ["collectd", "collectd-core", "collectd-utils", "libcollectdclient0"]
     node[:rightscale][:collectd_packages_version] = "4.10.1-2"
-  when "centos","redhat"
+  when "centos", "redhat"
     node[:rightscale][:collectd_packages] = ["collectd"]
     node[:rightscale][:collectd_packages_version] = "4.10.0-4.el5"
   else
