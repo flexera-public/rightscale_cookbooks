@@ -373,7 +373,7 @@ action :setup_monitoring do
 
   platform = node[:platform]
   # Centos specific items
-  package collectd-mysql do
+  package "collectd-mysql" do
     action :install
     version "4.10.0-4.el5"
     only_if { platform =~ /redhat|centos/ }
