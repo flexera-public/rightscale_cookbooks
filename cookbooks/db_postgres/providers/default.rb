@@ -110,7 +110,7 @@ action :set_privileges do
   slave_state = RightScale::Database::PostgreSQL::Helper.detect_if_slave(node)
   if ( slave_state == "true")
     Chef::Log.info "No need to re-run the recipe on slave"
-  else  
+  else
     db_postgres_set_privileges "setup db privileges" do
       preset priv
       username priv_username
@@ -126,7 +126,7 @@ action :install_client do
   if node[:platform] == "centos"
     arch = node[:kernel][:machine]
     raise "Unsupported platform detected!" unless arch == "x86_64"
-    
+
     package "libxslt" do
       action :install
     end
@@ -134,11 +134,9 @@ action :install_client do
     packages = node[:db_postgres][:client_packages_install]
     Chef::Log.info("Packages to install: #{packages.join(",")}")
     packages.each do |p|
-      pkg = ::File.join(::File.dirname(__FILE__), "..", "files", "centos", "#{p}-9.1.1-1PGDG.rhel5.#{arch}.rpm")
       package p do
         action :install
-        source "#{pkg}"
-        provider Chef::Provider::Package::Rpm 
+        version "9.1.1-1PGDG.rhel5"
       end
     end
   else
@@ -160,7 +158,7 @@ action :install_server do
 
   arch = node[:kernel][:machine]
   raise "Unsupported platform detected!" unless arch == "x86_64"
- 
+
   package "uuid" do
     action :install
   end
@@ -168,11 +166,9 @@ action :install_server do
   packages = node[:db_postgres][:server_packages_install]
   Chef::Log.info("Packages to install: #{packages.join(",")}")
   packages.each do |p|
-    pkg = ::File.join(::File.dirname(__FILE__), "..", "files", "centos", "#{p}-9.1.1-1PGDG.rhel5.#{arch}.rpm")
     package p do
       action :install
-      source "#{pkg}"
-      provider Chef::Provider::Package::Rpm 
+      version "9.1.1-1PGDG.rhel5"
     end
   end
 
@@ -187,7 +183,7 @@ action :install_server do
     creates touchfile
     not_if "test -f #{touchfile}"
   end
-  
+
   # == Configure system for PostgreSQL
   #
   # Stop PostgreSQL
@@ -262,20 +258,20 @@ action :install_server do
     # supports :status => true, :restart => true, :reload => true
     action :start
   end
-    
+
 end
 
 action :grant_replication_slave do
   require 'rubygems'
   Gem.clear_paths
   require 'pg'
-  
+
   Chef::Log.info "GRANT REPLICATION SLAVE to user #{node[:db][:replication][:user]}"
   # Opening connection for pg operation
   conn = PGconn.open("localhost", nil, nil, nil, nil, "postgres", nil)
-  
+
   # Enable admin/replication user
-  # Check if server is in read_only mode, if found skip this... 
+  # Check if server is in read_only mode, if found skip this...
   res = conn.exec("show transaction_read_only")
   slavestatus = res.getvalue(0,0)
   if ( slavestatus == 'off' )
@@ -362,17 +358,17 @@ action :promote do
   previous_master = node[:db][:current_master_ip]
   raise "FATAL: could not determine master host from slave status" if previous_master.nil?
   Chef::Log.info "host: #{previous_master}}"
-  
+
   begin
-  
-    # Promote the slave into the new master  
+
+    # Promote the slave into the new master
     Chef::Log.info "Promoting slave.."
     RightScale::Database::PostgreSQL::Helper.write_trigger(node)
     sleep 10
 
     # Let the new slave loose and thus let him become the new master
     Chef::Log.info  "New master is ReadWrite."
-    
+
   rescue => e
     Chef::Log.info "WARNING: caught exception #{e} during critical operations on the MASTER"
   end
@@ -383,20 +379,11 @@ action :setup_monitoring do
     action :nothing
   end
 
-  arch = node[:kernel][:machine]
-  arch = "i386" if arch == "i686"
-
   if node[:platform] == 'centos'
 
-    TMP_FILE = "/tmp/collectd.rpm"
-
-    cookbook_file TMP_FILE do
-      source "collectd-postgresql-4.10.0-4.el5.#{arch}.rpm"
-      cookbook 'db_postgres'
-    end
-
-    package TMP_FILE do
-      source TMP_FILE
+    package "collectd-postgresql" do
+      action :install
+      version "4.10.0-4.el5"
     end
 
     template ::File.join(node[:rightscale][:collectd_plugin_dir], 'postgresql.conf') do
@@ -489,7 +476,7 @@ action :generate_dump_file do
 
   db_name     = new_resource.db_name
   dumpfile    = new_resource.dumpfile
-  
+
   bash "Write the postgres DB backup file" do
       user 'postgres'
       code <<-EOH
@@ -528,5 +515,5 @@ action :restore_from_dump_file do
       gunzip < #{dumpfile} | psql -U postgres -h /var/run/postgresql #{db_name}
     EOH
   end
-  
+
 end
