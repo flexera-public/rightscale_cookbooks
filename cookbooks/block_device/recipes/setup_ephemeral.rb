@@ -110,7 +110,7 @@ if cloud == 'ec2' || cloud == 'openstack'
       block do
         require 'rightscale_tools'
 
-        @api = RightScale::Tools::API.factory('1.0')
+        @api = RightScale::Tools::API.factory('1.0') if cloud == 'ec2'
 
         def run_command(command, ignore_failure = false)
           Chef::Log.info "Running: #{command}"
@@ -127,7 +127,7 @@ if cloud == 'ec2' || cloud == 'openstack'
           if node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
             device = node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
             device = '/dev/' + device if device !~ /^\/dev\//
-            device = @api.unmap_device_for_ec2(device)
+            device = @api.unmap_device_for_ec2(device) if cloud == 'ec2'
             # verify that device is actually on the instance and is a blockSpecial 
             if ( File.exists?(device) && File.ftype(device) == "blockSpecial" )
               my_devices << device
