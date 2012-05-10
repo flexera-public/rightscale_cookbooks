@@ -10,14 +10,8 @@ rightscale_marker :begin
 
 # memcached install
 #
-if File.exists?("#{node[:memcached][:config_file]}") # to get the correct output lines after a reboot
-  log "  Memcached already installed."
-else
-  log "  Installing memcached package for #{node[:platform]}"
-  package "memcached" do
-    action :install
-  end
-  log "  Installation complete."
+package "memcached" do
+  action :install
 end
 
 # initializing supported commands for memcached services for further usage
