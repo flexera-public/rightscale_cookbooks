@@ -20,22 +20,26 @@ This cookbook provides abstract 'repo' resource for managing code download from 
 -------------
 
 == REQUIREMENTS:
-=== General
 
-Replace this text with a description of cookbook requirements, what user will have to add to template to make recipes from this cookbook work correctly
+Replace this text with a description of cookbook requirements,
 
-What OSs does this support?
+* What user will have to add to template to make recipes from this cookbook work correctly
 
-Is this cloud specific?  If so, which clouds?
+* What OSs does this support?
 
-Requires a virtual machine launched from a RightScale-managed RightImage.
+* Is this cloud specific?  If so, which clouds?
+
 
 ==== Example:
 
-One of 'repo' provider: <tt>repo_git</tt>, <tt>repo_svn</tt> or <tt>repo_ros</tt> cookbooks must be present in your cookbook repository
+* One of 'repo' provider: <tt>repo_git</tt>, <tt>repo_svn</tt> or <tt>repo_ros</tt> cookbooks must be present in your cookbook repository
 ROS implementation depends on either the <tt>rs_utils::install_tools</tt> or <tt>rs_tools:default</tt> recipe
 
+* Requires a virtual machine launched from a RightScale-managed RightImage.
+
 -------------
+== COOKBOOKS DEPENDENCIES
+Please see metadata.rb file for the latest dependencies.
 
 == KNOWN LIMITATIONS:
 List any known limitation here that might affect functionality and usability. Be sure to include a ticket number.
@@ -69,8 +73,6 @@ This cookbook is intended to be used in conjunction with cookbooks that contain
 Lightweight Providers which implement the <tt>repo</tt> interface. See the RightScale
 repo_git cookbook for an example.
 
-For more about Lightweight Resources and Providers (LWRPs), please see the Chef
-wiki at:  http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)
 
 -------------
 
