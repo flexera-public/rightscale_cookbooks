@@ -5,7 +5,7 @@ Copyright RightScale, Inc. All rights reserved.  All access and use subject to t
 RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-## for Rdoc markup syntax and options please see:http://rdoc.sourceforge.net/doc/ EXAMPLE and MARKUP sections
+For Rdoc markup syntax and options please see:http://rdoc.sourceforge.net/doc/ EXAMPLE and MARKUP sections
 
 = RightScale *** cookbook
 
@@ -82,10 +82,10 @@ You can create subsections to split attributes by their specs Ex: <tt>General</t
 ==== Example:
 
 These are settings used in recipes and templates. Default values are noted.
-* <tt>node['apache']['dir']</tt> - Location for the Apache configuration
-* <tt>node['apache']['log_dir']</tt> - Location for Apache logs
-* <tt>node['apache']['prefork']['startservers']</tt> - initial number of server processes to start. Default is 16.
-* <tt>node['apache']['prefork']['minspareservers']</tt> - minimum number of spare server processes. Default 16.
+* <tt>node[apache][dir]</tt> - Location for the Apache configuration
+* <tt>node[apache][log_dir]</tt> - Location for Apache logs
+* <tt>node[apache][prefork][startservers]</tt> - initial number of server processes to start. Default is 16.
+* <tt>node[apache][prefork][minspareservers]</tt> - minimum number of spare server processes. Default 16.
 
 -------------
 === Templates:
