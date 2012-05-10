@@ -124,11 +124,11 @@ Example:
 === Libraries-helpers:
  none
 
-=== LWRP's:
+=== LWRPs:
 ==== Resources
 This cookbook provides abstract <tt>repo</tt> resource. Which will be used to call existing or user defined LightWeight repo_* providers.
 
-For now we have repo_ros, repo_git and repo_svn cookboks. Each of them contain definition of corresponding repo_* LightWeight provider
+For now we have repo_ros, repo_git and repo_svn cookboks. Each of them contain implementation of corresponding repo_* LightWeight Provider
 which can be called using this resource.
 
 ===== Actions:
