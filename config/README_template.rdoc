@@ -1,9 +1,9 @@
-#
-# README.rdoc template
-#
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+
+README.rdoc template
+
+ Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
+ RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
+ if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 ## for Rdoc markup syntax and options please see:http://rdoc.sourceforge.net/doc/ EXAMPLE and MARKUP sections
 
@@ -11,7 +11,7 @@
 
 == DESCRIPTION:
 Replace this text with a high-level overview of what this cookbook configures or manages.
-  Don't go into too much detail here, save that for the 'details' section below.
+Don't go into too much detail here, save that for the 'details' section below.
 
 ==== Example:
 
@@ -177,7 +177,7 @@ which can be called using this resource.
 
 
 For more information about Lightweight Resources and Providers (LWRPs), please see:
- http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)
+http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)
 
 * Describe resource purpose and functionality. Describe its attributes
 
