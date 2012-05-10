@@ -7,6 +7,7 @@
 
 rightscale_marker :begin
 
+
 # memcached install
 #
 if File.exists?("#{node[:memcached][:config_file]}") # to get the correct output lines after a reboot
@@ -21,7 +22,7 @@ end
 
 # initializing supported commands for memcached services for further usage
 service "memcached" do
-  action :enable
+  action :enable # we need the service to autostart after reboot
   persist true
   reload_command "/etc/init.d/memcached force-reload" # had to override because ubuntu doesn't have a "reload" option
   supports :status => true, :start => true, :stop => true, :restart => true, :reload => true
@@ -49,7 +50,7 @@ case node[:memcached][:interface]
   when "localhost"
     node[:memcached][:interface] = "127.0.0.1" # note: not using "localhost" because value also goes into collectd plugin which doesn't understand it
   when "private"
-    node[:memcached][:interface] = node[:cloud][:private_ips][0]
+    node[:memcached][:interface] = node[:cloud][:private_ips][0] # when binding to private on aws you also listen to public because of amazons traffic forwarding
   when "any"
     node[:memcached][:interface] = "0.0.0.0"
 end
@@ -87,9 +88,8 @@ end
 
 
 # checking if memcached actually started
-#   problem: when starting memcached on amazon with a public listening ip the daemon doesn't really start though says so
-#   there is no interface with public ip on amazon thus you can find
-#   "failed to listen on TCP port XXXXX: Cannot assign requested address" in /var/log/memcached.log
+#   problem: when trying to start memcached on a closed listening port the daemon doesn't really start though says so
+#  "failed to listen on TCP port XXXXX: Cannot assign requested address" @ /var/log/memcached.log
 #   any other wrong configured entry might also cause this behaviour so this check is useful
 ruby_block "memcached_check" do
   block do
