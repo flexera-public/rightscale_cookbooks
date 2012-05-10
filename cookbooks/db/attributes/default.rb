@@ -22,7 +22,7 @@ set_unless[:db][:dns][:ttl] = "120"
 #
 # Server state variables
 #
-set_unless[:db][:init_status] = :uninitialized  # Checks if DB has been initialezed
+set_unless[:db][:init_status] = :uninitialized  # Checks if DB has been initialized
 set_unless[:db][:this_is_master] = false
 set_unless[:db][:current_master_uuid] = nil
 set_unless[:db][:current_master_ip] = nil
