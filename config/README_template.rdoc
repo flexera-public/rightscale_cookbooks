@@ -1,11 +1,11 @@
 
 README.rdoc template
 
- Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
- RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
- if applicable, other agreements such as a RightScale Master Subscription Agreement.
+Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
+RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
+if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-## for Rdoc markup syntax and options please see:http://rdoc.sourceforge.net/doc/ EXAMPLE and MARKUP sections
+ for Rdoc markup syntax and options please see:http://rdoc.sourceforge.net/doc/ EXAMPLE and MARKUP sections
 
 = RightScale *** cookbook
 
@@ -15,7 +15,7 @@ Don't go into too much detail here, save that for the 'details' section below.
 
 ==== Example:
 
-This cookbook provides abstract 'repo' resource for managing code download from GIT, SVN or ROS code repositories.
+ This cookbook provides abstract 'repo' resource for managing code download from GIT, SVN or ROS code repositories.
 
 -------------
 
@@ -32,8 +32,8 @@ Requires a virtual machine launched from a RightScale-managed RightImage.
 
 ==== Example:
 
-One of 'repo' provider: <tt>repo_git</tt>, <tt>repo_svn</tt> or <tt>repo_ros</tt> cookbooks must be present in your cookbook repository
-ROS implementation depends on either the <tt>rs_utils::install_tools</tt> or <tt>rs_tools:default</tt> recipe
+ One of 'repo' provider: <tt>repo_git</tt>, <tt>repo_svn</tt> or <tt>repo_ros</tt> cookbooks must be present in your cookbook repository
+ ROS implementation depends on either the <tt>rs_utils::install_tools</tt> or <tt>rs_tools:default</tt> recipe
 
 -------------
 
@@ -42,7 +42,7 @@ List any known limitation here that might affect functionality and usability. Be
 
 ==== Example:
 
-Currently only primary backups to Remote Object Storage (ROS) are supported for KVM hypervisors (w-1234)
+ Currently only primary backups to Remote Object Storage (ROS) are supported for KVM hypervisors (w-1234)
 
 -------------
 
@@ -52,9 +52,9 @@ Describe minimum required set of actions required for correct work of recipes fr
 ==== Example:
 
 
-Place <tt>app_tomcat::default</tt> recipe into your runlist to setup the application server.
-When using a RightScale ServerTemplate, this will also automatically add the common attributes to your ServerTemplate inputs.
-Set ‘jdbc/ConnDB’ as your datasource name to set up database connection with the application server.
+ Place <tt>app_tomcat::default</tt> recipe into your runlist to setup the application server.
+ When using a RightScale ServerTemplate, this will also automatically add the common attributes to your ServerTemplate inputs.
+ Set ‘jdbc/ConnDB’ as your datasource name to set up database connection with the application server.
 
 -------------
 
@@ -65,12 +65,12 @@ Replace this text with a common information about cookbook elements and anything
 
 ==== Example:
 
-This cookbook is intended to be used in conjunction with cookbooks that contain
-Lightweight Providers which implement the <tt>repo</tt> interface. See the RightScale
-repo_git cookbook for an example.
+ This cookbook is intended to be used in conjunction with cookbooks that contain
+ Lightweight Providers which implement the <tt>repo</tt> interface. See the RightScale
+ repo_git cookbook for an example.
 
-For more about Lightweight Resources and Providers (LWRPs), please see the Chef
-wiki at:  http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)
+ For more about Lightweight Resources and Providers (LWRPs), please see the Chef
+ wiki at:  http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)
 
 -------------
 
@@ -81,11 +81,11 @@ You can create subsections to split attributes by their specs Ex: <tt>General</t
 
 ==== Example:
 
-These are settings used in recipes and templates. Default values are noted.
-* <tt>node['apache']['dir']</tt> - Location for the Apache configuration
-* <tt>node['apache']['log_dir']</tt> - Location for Apache logs
-* <tt>node['apache']['prefork']['startservers']</tt> - initial number of server processes to start. Default is 16.
-* <tt>node['apache']['prefork']['minspareservers']</tt> - minimum number of spare server processes. Default 16.
+ These are settings used in recipes and templates. Default values are noted.
+ * <tt>node['apache']['dir']</tt> - Location for the Apache configuration
+ * <tt>node['apache']['log_dir']</tt> - Location for Apache logs
+ * <tt>node['apache']['prefork']['startservers']</tt> - initial number of server processes to start. Default is 16.
+ * <tt>node['apache']['prefork']['minspareservers']</tt> - minimum number of spare server processes. Default 16.
 
 -------------
 === Templates:
@@ -100,9 +100,9 @@ Add link to the production templates that use this cookbook.
 ==== Example:
 
 
-<b>server.rb.erb</b>
+ <b>server.rb.erb</b>
 
-Configuration for the server and server components used in the <tt>chef-server::rubygems-install</tt> recipe.
+ Configuration for the server and server components used in the <tt>chef-server::rubygems-install</tt> recipe.
 
 -------------
 === Definitions:
@@ -113,19 +113,19 @@ Give complete description of definition functionality and provide examples of ho
 ==== Example:
 
 
-<b>apache\_module</b>
+ <b>apache\_module</b>
 
-Enable or disable an Apache module in <tt>#{node['apache']['dir']}/mods-available</tt> by calling <tt>a2enmod</tt> or <tt>a2dismod</tt> to manage the symbolic link in `#{node['apache']['dir']}/mods-enabled`. If the module has a configuration file, a template should be created in the cookbook where the definition is used. See __Examples__.
+ Enable or disable an Apache module in <tt>#{node['apache']['dir']}/mods-available</tt> by calling <tt>a2enmod</tt> or <tt>a2dismod</tt> to manage the symbolic link in `#{node['apache']['dir']}/mods-enabled`. If the module has a configuration file, a template should be created in the cookbook where the definition is used. See __Examples__.
 
-Parameters:
-* name - Name of the module enabled or disabled with the `a2enmod` or `a2dismod` scripts.
-* enable - Default true, which uses `a2enmod` to enable the module. If false, the module will be disabled with `a2dismod`.
-* conf - Default false. Set to true if the module has a config file, which will use `apache_conf` for the file.
-* filename - specify the full name of the file, e.g.
+ Parameters:
+ * name - Name of the module enabled or disabled with the `a2enmod` or `a2dismod` scripts.
+ * enable - Default true, which uses `a2enmod` to enable the module. If false, the module will be disabled with `a2dismod`.
+ * conf - Default false. Set to true if the module has a config file, which will use `apache_conf` for the file.
+ * filename - specify the full name of the file, e.g.
 
-Examples:
+ Examples:
 
-Enable the ssl module, which also has a configuration template in `templates/default/ssl.conf.erb`.
+ Enable the ssl module, which also has a configuration template in `templates/default/ssl.conf.erb`.
 
     apache_module "ssl" do
       conf true
@@ -140,22 +140,22 @@ Give complete description of library purpose and  functionality. Provide example
 ==== Example:
 
 
-<b>RightScale::App::Helper.bind_ip(private_ips = [ ], public_ips = [ ])</b>
+ <b>RightScale::App::Helper.bind_ip(private_ips = [ ], public_ips = [ ])</b>
 
-Return the IP address of the interface that this application server listens on.
+ Return the IP address of the interface that this application server listens on.
 
-Parameters
+ Parameters
 
-* <tt>private_ips(Array)::</tt> List of private ips assigned to the application server
-* <tt>public_ips(Array)::</tt> List of public ips assigned to the application server
+ * <tt>private_ips(Array)::</tt> List of private ips assigned to the application server
+ * <tt>public_ips(Array)::</tt> List of public ips assigned to the application server
 
-Returns
+ Returns
 
-<tt>String::</tt> IP Address
+ <tt>String::</tt> IP Address
 
-Raise
+ Raise
 
-<tt>RuntimeError::</tt> If nether a valid private nor public ip can be found
+ <tt>RuntimeError::</tt> If nether a valid private nor public ip can be found
 
 -------------
 === LWRPs:
