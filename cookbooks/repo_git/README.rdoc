@@ -6,7 +6,7 @@ manage source code download from GIT repositories.
 
 == REQUIREMENTS:
 
-* Requires repo LightWeight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/sprint12_4_a38540_cookbook_doc_structure/cookbooks/repo
+* Requires repo LightWeight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/repo
 or your own implementation of "repo" provider. See "repo" cookbook readme for details.
 
 * Requires a virtual machine launched from a RightScale-managed RightImage.
@@ -41,7 +41,7 @@ The 'repo_git' implementation can be called with help of Lightweight Resource, w
 found in the <tt>repo</tt> cookbook.
 
 For more about Lightweight Resources and Providers (LWRPs), please see the Rigtscale
-Gide at:  http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)
+Guide at:  http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)
 
 === Attributes:
 none
@@ -53,9 +53,9 @@ none
 none
 === Libraries-helpers:
 
-RightScale::Repo::Ssh_key(ssh_key)
+<b>RightScale::Repo::Ssh_key.create(ssh_key)</b>
 
-Create environment variable, which will contain user defined shh key required to access to private git source code repositories.
+Create bash script, which will set user defined ssh key required to access to private git source code repositories.
 
 Parameters
 
@@ -64,6 +64,14 @@ Parameters
 Raise
 
 <tt>RuntimeError::</tt> if ssh key string is empty
+
+<b>RightScale::Repo::Ssh_key.delete</b>
+
+Remove bash script created by <tt>create</tt> method, after successful pull operation.
+
+Parameters
+
+none
 
 === LWRPs:
 
