@@ -3,47 +3,70 @@
 == DESCRIPTION:
 This cookbook provides recipes for setting up and running a Memcached server.
 
-== DETAILS:
+-------------
 
+== REQUIREMENTS:
+=== General
+
+* Requires a VM launched from a RightScale managed RightImage
+* Tested on CentOS 5.6 RightImage
+* Tested on RHEL 5.6 RightImage
+* Tested on Ubuntu 10.04 RightImage
+
+Implementation depends on <tt>rightscale</tt> and <tt>sys_firewall</tt> cookbooks.
+
+-------------
+
+== KNOWN LIMITATIONS:
+
+* If you need memcached to listen on public interface must set to listen on any.
+
+-------------
+
+== SETUP/USAGE:
+
+* Choose image and cloud.
+* Fill required input fields.
+* When using a RightScale ServerTemplate, use memcached::default recipe to automatically add the server tags.
+* Place memcached::install_server recipe into your runlist to setup the memcached server.
+
+-------------
+
+== DETAILS:
 === General
 
 The cookbook installs memcached with needed configuration for CentOS, Redhat and Ubuntu.
 Opens lisnening port in systems' firewall, setups server tags, monitoring and log rotation.
 
-=== Recipes
+-------------
+=== Attributes:
 
-recipe "memcached::default", "Default recipe for memcached setup. Installs server tags."
-recipe "memcached::install_server", "Installation and configuration recipe for memcached. Does memcached setup and configuration, opens port in firewall, configures collectd and logrotate."
-recipe "memcached::do_start", "Start memcached service."
-recipe "memcached::do_restart", "Restart memcached service."
-recipe "memcached::do_reload", "Reload memcached service."
-recipe "memcached::do_stop", "Stop memcached service."
+These are the settings used in recipes and templates. Default values are noted.
+<tt>node[:memcached][:tcp_port]</tt> - TCP port number to listen on. Default is 11211.
+<tt>node[:memcached][:udp_port]</tt> - UDP port number to listen on. Default is 11211.
+<tt>node[:memcached][:user]</tt> - Username to run memcached. Default is nobody.
+<tt>node[:memcached][:connection_limit]</tt> - Number of simultaneous connections. Default is 1024.
+<tt>node[:memcached][:memtotal_percent]</tt> - Max memory to use for items. Default is 90.
+<tt>node[:memcached][:threads]</tt> - Number of threads. Default is 1.
+<tt>node[:memcached][:interface]</tt> - Interface to listen on. Default is any.
+<tt>node[:memcached][:log_level]</tt> - Memcached logging output level
+<tt>node[:memcached][:cluster_id]</tt> - Cluster assosiation string.
 
-=== Attributes
+<tt>node[:platform][:memcached][:config_file]</tt> - Location of memcached configuration file.
+<tt>node[:platform][:memcached][:iptables_rules]</tt> - Location of iptables.
 
-The amount of memory used for item storage is calculated as user defined percent from total system memory.
-Others are system-dependant and/or have default values.
+-------------
+=== Templates:
 
-=== Templates
+<b>memcached.conf.erb</b>
 
-Has memcached configuration templates for CentOS/Redhat and Ubuntu, a collectd plugin template.
+Memcached configuration file. Unique for CentOS and Ubuntu. Used is the <tt>memcached::install_server</tt> recipe.
 
+<b>memcached_collectd.conf.erb</b>
 
-== REQUIREMENTS:
+Memcached collectd plugin template. Used is the <tt>memcached::install_server</tt> recipe.
 
-=== General
-
-=== Cookbooks dependecies
-
-Uses "rightscale", "sys_firewall" and "logrotate".
-
-== SETUP:
-
-== USAGE:
-
-=== General
-
-=== Examples
+-------------
 
 = LICENSE
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
