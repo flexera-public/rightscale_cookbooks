@@ -352,9 +352,11 @@
         "50",
         "60",
         "70",
+        "80",
+        "90",
         "100"
       ],
-      "default": "60",
+      "default": "90",
       "type": "string",
       "recipes": [
         "block_device::setup_block_device",
@@ -413,9 +415,11 @@
         "50",
         "60",
         "70",
+        "80",
+        "90",
         "100"
       ],
-      "default": "60",
+      "default": "90",
       "type": "string",
       "recipes": [
         "block_device::setup_block_device",
