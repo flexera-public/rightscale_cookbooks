@@ -81,15 +81,15 @@ action :secondary_restore do
   secondary_checks(new_resource)
   device = init(new_resource)
   restore_args = {
+    :timestamp => new_resource.timestamp_override,
+    :force => new_resource.force
     :volume_size => new_resource.volume_size,
     :new_size_gb => new_resource.volume_size,
     :stripe_count => new_resource.stripe_count,
-    :timestamp => new_resource.timestamp_override,
     :vg_data_percentage => new_resource.vg_data_percentage,
-    :force => new_resource.force
   }
 
-  device.secondary_restore(new_resource.restore, restore_args)
+  device.secondary_restore(new_resource.lineage, restore_args)
 end
 
 action :reset do
