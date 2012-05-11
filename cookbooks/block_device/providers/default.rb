@@ -68,8 +68,7 @@ action :primary_restore do
     :storage_secret => new_resource.primary_secret
   }
 
-  restore_lineage = new_resource.lineage_override.empty? ? new_resource.lineage : new_resource.lineage_override
-  device.primary_restore(restore_lineage, restore_args)
+  device.primary_restore(new_resource.lineage, restore_args)
 end
 
 action :secondary_backup do
@@ -90,8 +89,7 @@ action :secondary_restore do
     :force => new_resource.force
   }
 
-  restore_lineage = new_resource.lineage_override.empty? ? new_resource.lineage : new_resource.lineage_override
-  device.secondary_restore(restore_lineage, restore_args)
+  device.secondary_restore(new_resource.restore, restore_args)
 end
 
 action :reset do

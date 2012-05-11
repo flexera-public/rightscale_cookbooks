@@ -19,10 +19,15 @@ do_for_block_devices node[:block_device] do |device|
   # Do the restore.
   log "  Creating block device and restoring data from primary backup for device #{device}..."
   lineage = get_device_or_default(node, device, :backup, :lineage)
+  lineage_override = get_device_or_default(node, device, :backup, :lineage_override)
+  restore_lineage = lineage_override == nil || lineage_override.empty? ? lineage : lineage_override
+  log "  Input lineage #{restore_lineage}"
+  log "  Input lineage_override #{lineage_override}"
+  log "  Using lineage #{restore_lineage}"
+
   block_device get_device_or_default(node, device, :nickname) do
     # Backup/Restore arguments
-    lineage lineage
-    lineage_override get_device_or_default(node, device, :backup, :lineage_override)
+    lineage restore_lineage
     timestamp_override get_device_or_default(node, device, :backup, :timestamp_override)
 
     max_snapshots get_device_or_default(node, device, :backup, :primary, :keep, :max_snapshots)
