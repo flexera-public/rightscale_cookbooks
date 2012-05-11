@@ -26,6 +26,6 @@ RightScale::BlockDeviceHelper.do_for_all_block_devices block_device do |device, 
   set_unless[:block_device][:devices][device][:backup][:primary][:cron][:minute] = "#{5+rand(50)}"
 
   set_unless[:block_device][:devices][device][:mount_point] = "/mnt/storage#{number}"
-  set_unless[:block_device][:devices][device][:vg_data_percentage] = "60"
+  set_unless[:block_device][:devices][device][:vg_data_percentage] = "90"
   set_unless[:block_device][:devices][device][:nickname] = "data_storage#{number}"
 end
