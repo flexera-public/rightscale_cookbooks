@@ -76,9 +76,9 @@ for more info please see: http://support.rightscale.com/03-Tutorials/02-AWS/02-W
 
 === Attributes
 
-<tt>node[:app][:provider]</tt> - Set a default provider.
-<tt>node[:app][:port]</tt> - Set a default port to listen on. Default: 8000
-<tt>node[:app][:ip]</tt> - Ip to listen on. Default: First private IP
+* <tt>node[:app][:provider]</tt> - Set a default provider.
+* <tt>node[:app][:port]</tt> - Set a default port to listen on. Default: 8000
+* <tt>node[:app][:ip]</tt> - Ip to listen on. Default: First private IP
 
 === Templates:
 none
