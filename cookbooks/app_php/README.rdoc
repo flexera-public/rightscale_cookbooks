@@ -43,12 +43,12 @@ for more info see: http://support.rightscale.com/03-Tutorials/PHP_Application_Se
 === General
 <tt>app_php</tt> cookbook will help you to install and setup Apache + Zend Engine PHP application server, which can be able to connect, to MySQL or Postgres database server.
 
-Apache
+<b>Apache</b>
 Server version: Apache/2.2.3
 
 Server built: Mar 27 2010 13:52:45
 
-PHP
+<b>PHP</b>
 PHP 5.3.6 (cli) (built: Apr 25 2011 10:45:29)
 
 Copyright (c) 1997-2011 The PHP Group

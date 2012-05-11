@@ -36,13 +36,13 @@ none
 === General
 <tt>app_tocmat</tt> cookbook will help you to install and setup tocmat application server, which can be able to connect, to MySQL or Postgres database server.
 
-Apache
+<b>Apache</b>
 
 Server version: Apache/2.2.3
 
 Server built: Feb 8 2012 08:19:50
 
-Apache Tomcat
+<b>Apache Tomcat</b>
 
 Server.info=Apache Tomcat/6.0.16
 
@@ -54,7 +54,7 @@ Tomcat Native library 1.1.20
 
 mod_jk/1.2.32
 
-Java
+<b>Java</b>
 
 Java version "1.6.0_27"
 
