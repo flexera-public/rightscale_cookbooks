@@ -79,11 +79,15 @@ repo_git cookbook for an example.
 === Attributes:
 Describe cookbook attributes here.
 
+Please create description only for "internal" attributes here e.g those which have no inputs. 'set' directive in attributes/default.rb cookbook file.
+
 You can create subsections to split attributes by their specs Ex: <tt>General</tt> <tt>Apache common</tt>, <tt>Apache worker</tt> etc.
 
 ==== Example:
-
 These are settings used in recipes and templates. Default values are noted.
+
+Note: Only "internal" cookbook attributes are described here. Descriptions of attributes which have inputs you can find in metadata.rb cookbook file.
+
 * <tt>node[apache][dir]</tt> - Location for the Apache configuration
 * <tt>node[apache][log_dir]</tt> - Location for Apache logs
 * <tt>node[apache][prefork][startservers]</tt> - initial number of server processes to start. Default is 16.
