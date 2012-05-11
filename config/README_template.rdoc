@@ -164,7 +164,7 @@ Raise
 
 Use this section only if your cookbook contain resources and/or providers.
 
-* Give common information about existing LWRPs in your cookbook", and point user to common info about RightScale LWRPs.
+* Give common information about existing LWRPs in your cookbook, and point user to common info about RightScale LWRPs.
 
 ==== Example:
 

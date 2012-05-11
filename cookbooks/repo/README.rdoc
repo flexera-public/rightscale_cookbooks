@@ -38,7 +38,7 @@ cookbooks must be present in ServerTemplate repository
 
   :pull - perform basic 'repo' action, just pulling your code from remote repo.
 
-  :capistrano_pull - performs pulling and backup of yuor code.
+  :capistrano_pull - performs pulling and backup of your code.
 
   For code implementation examples look at <b>LWRP's</b> section of this readme
 
@@ -92,7 +92,8 @@ Definition used to create Capistrano style project deployment.
 More info about capistrano you can find at http://wiki.opscode.com/display/chef/Deploy+Resource#DeployResource-TheDeployStrategies
 
 Parameters:
-All parmetres in this definition are linked to corresponding attributes. However if you use this definition for your own purposes you can redifine them. See example below.
+
+All parameters in this definition are linked to corresponding attributes. However if you use this definition for your own purposes you can redefine them. See example below.
 
 * <tt>:destination</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:destination]</tt> in attributes section of this readme.
 * <tt>:repository</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:repository]</tt> in attributes section of this readme.
@@ -128,7 +129,7 @@ Example:
 ==== Resources
 This cookbook provides abstract <tt>repo</tt> resource. Which will be used to call existing or user defined LightWeight repo_* providers.
 
-For now we have repo_ros, repo_git and repo_svn cookboks. Each of them contain implementation of corresponding repo_* LightWeight Provider
+For now we have repo_ros, repo_git and repo_svn cookbooks. Each of them contain implementation of corresponding repo_* LightWeight Provider
 which can be called using this resource.
 
 ===== Actions:
