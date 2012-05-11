@@ -28,7 +28,7 @@ module RightScale
       options[:primary_storage_cloud] = new_resource.primary_cloud if new_resource.primary_cloud
       options[:primary_storage_key] = new_resource.primary_user if new_resource.primary_user
       options[:primary_storage_secret] = new_resource.primary_secret if new_resource.primary_secret
-      options[:primary_storage_container] = new_resource.lineage if new_resource.lineage
+      options[:primary_storage_container] = new_resource.lineage
 
       # Secondary ROS options
       options[:secondary_storage_cloud] = new_resource.secondary_cloud if new_resource.secondary_cloud
