@@ -147,7 +147,7 @@ if cloud == 'ec2' || cloud == 'openstack'
         end
 
         run_command("vgcreate vg-data #{my_devices.join(' ')}")
-        run_command("lvcreate vg-data -n #{lvm_device} -i #{my_devices.size} -I 256 -l 60%VG")
+        run_command("lvcreate vg-data -n #{lvm_device} -i #{my_devices.size} -I 256 -l 100%VG")
         run_command("mkfs.#{filesystem_type} /dev/vg-data/#{lvm_device}")
 
         # Add the mount to fstab
