@@ -258,8 +258,8 @@ end.each do |device, number|
     :description => "The percentage of the total Volume Group extents (LVM) that is used for data. (e.g. 50 percent - 1/2 used for data and remainder used for overhead and snapshots, 100 percent - all space is allocated for data (therefore snapshots can not be taken) WARNING: if the space used for data is to large LVM snapshots can not be performed.  Using a non-default value it not reccommended.  Make sure you understand what you are doing before changing this value.",
     :type => "string",
     :required => 'optional',
-    :choice => ["50","60","70","100"],
-    :default => "60",
+    :choice => ["50", "60", "70", "80", "90", "100"],
+    :default => "90",
     :recipes => [ "block_device::setup_block_device", "block_device::default" ]
 end
 
