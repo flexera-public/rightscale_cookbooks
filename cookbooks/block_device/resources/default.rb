@@ -14,7 +14,6 @@ attribute :nickname, :kind_of => String, :name_attribute => true
 attribute :cloud, :required => true
 attribute :hypervisor, :kind_of => String
 attribute :mount_point, :kind_of => String, :required => true
-attribute :lineage_override, :kind_of => String, :default => ""
 attribute :force, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :is_master, :kind_of => [TrueClass, FalseClass], :default => false
 
