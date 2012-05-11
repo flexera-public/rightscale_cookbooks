@@ -133,5 +133,95 @@ EOF
         result
       end
     end
+
+    class CloudDNS < DNS
+      def action_set(id, user, password, address, clouddns_region, clouddns_domain_id)
+
+        # assign links for regions
+        # case "$RAX_REGION" in
+        # ORD*   ) echo "Chicago" && auth_url="https://auth.api.rackspacecloud.com/v1.0" && service_endpoint="https://dns.api.rackspacecloud.com/v1.0/";;
+        # DFW*   ) echo "Dallas" && auth_url="https://auth.api.rackspacecloud.com/v1.0" && service_endpoint="https://dns.api.rackspacecloud.com/v1.0/";;
+        # LON*   ) echo "London" && auth_url="https://lon.auth.api.rackspacecloud.com/v1.0" && service_endpoint="https://lon.dns.api.rackspacecloud.com/v1.0/";;
+        # *       ) echo "unsupported region" && exit 1;;
+        # esac
+        case clouddns_region
+          when "Chicago" or "Dallas"
+            auth_url = "https://auth.api.rackspacecloud.com/v1.0"
+            service_endpoint = "https://dns.api.rackspacecloud.com/v1.0/"
+          when "London"
+            auth_url = "https://lon.auth.api.rackspacecloud.com/v1.0"
+            service_endpoint = "https://lon.dns.api.rackspacecloud.com/v1.0/"
+          else
+            raise "Don't override CloudDNS region dropdown options."
+        end
+
+        # assign dns_record_ip
+        # case "$DNS_RECORD_IP" in
+        # Public   ) DNS_RECORD_IP=$RS_PUBLIC_IP;;
+        # Private   ) DNS_RECORD_IP=$RS_PRIVATE_IP;;
+        # *       ) echo "Using the defined IP";;
+        # esac
+        # TODO    though looks like already passed by sys_dns::do_set_private: address node[:cloud][:private_ips][0]
+
+        # auth and setup variables
+        # output=`curl -D - -H "X-Auth-Key: $RACKSPACE_API_TOKEN" -H "X-Auth-User: $RACKSPACE_USERNAME" $auth_url 2>&1`
+        output = `curl -D - -H "X-Auth-Key: #{password}" -H "X-Auth-User: #{user}" #{auth_url}` # password is actually the CloudDNS API key
+
+        # x_auth_token = `grep -i "X-Auth-Token:"<<<"$output" | awk '{print $2}' | sed -e 's/\s//g'`
+        x_auth_token = "" # or else it will be local
+        output.each do |line|
+          if line =~ /X-Auth-Token:/                        # finds the line with "X-Auth-Token:" in output
+            x_auth_token = line.gsub!(/X-Auth-Token: /, '') # cuts out the "X-Auth-Token: " part and saves the x_auth_token
+          end
+        end
+
+        # account_id = `grep -i "X-Server-Management-Url"<<<"$output" | sed -r 's/.+\/([0-9]+).*/\1/'`
+        # service_endpoint+=$account_id
+        output.each do |line|
+          if line =~ /X-Server-Management-Url:/ # finds the line with "X-Server-Management-Url:" in output
+            service_endpoint += line[/\d+$/]    # adds the account id (last several digits in url) to service_endpoint for further use
+          end
+        end # merge this with previous block later
+
+        # list available domains
+        # curl -k -H "X-Auth-Token: $x_auth_token" $service_endpoint/domains.xml | sed "s/>/>\n/g"
+        # `curl -k -H "X-Auth-Token: #{x_auth_token}" #{service_endpoint}/domains.xml`                                            # why do we run this?
+
+        # list records for domain "$DNS_DOMAIN_ID"      TODO: what is $DNS_DOMAIN_ID should i get it as an input?  sys_dns/clouddns_domain_id
+        # curl -k -H "X-Auth-Token: $x_auth_token" $service_endpoint/domains/$DNS_DOMAIN_ID/records.xml | sed "s/>/>\n/g"
+        # `curl -k -H "X-Auth-Token: #{x_auth_token}" #{service_endpoint}/domains/#{dns_domain_id}/records.xml`                   # and this?
+                                                                                                                                  # just for info, right?
+
+        # get the record name for "$DNS_RECORD_ID"
+        # output = `curl -k -H "X-Auth-Token: $x_auth_token" $service_endpoint/domains/$DNS_DOMAIN_ID/records.xml`
+        # dns_record_name = `sed -r 's/.+record id="'$DNS_RECORD_ID'" [^>]*?name="(\S+)".+>/\1/'<<<"$output"`
+        output = `curl -k -H "X-Auth-Token: #{x_auth_token}" #{service_endpoint}/domains/#{clouddns_domain_id}/records.xml`
+        dns_record_name = ""
+
+        # need to find dns_record_id but don't know how the output looks like
+        # output.each do |line|
+        #   if something
+        #     dns_record_name = gets a value
+        #   end
+        # end
+
+        # update IP($DNS_RECORD_IP) for record id "$DNS_RECORD_ID", domain id "$DNS_DOMAIN_ID"
+        # new_ip_json = '{ "name":"'$dns_record_name'", "data":"'$DNS_RECORD_IP'", "comment":"updated by a RightScale script" }'
+        new_ip_json = "{ \"name\":\"'#{dns_record_name}'\", \"data\":\"'#{address}'\", \"comment\":\"updated by RightScale\" }"
+
+        #curl -k -X PUT -H Content-Type:\ application/json --data "$new_ip_json" -H "X-Auth-Token: $x_auth_token" $service_endpoint/domains/$DNS_DOMAIN_ID/records/$DNS_RECORD_ID
+        result = `curl -k -X PUT -H Content-Type:\\ application/json --data "#{new_ip_json}" -H "X-Auth-Token: #{x_auth_token}" #{service_endpoint}/domains/#{clouddns_domain_id}/records/#{dns_record_name}`
+
+        # must have a check too but don't have anything to use yet
+
+        # if(result =~ /success/ ) then
+        #   @logger.info("DNSID #{dns_record_name} set to this instance IP: #{address}")
+        # else
+        #   raise "Error setting the DNS, curl exited with code: #{$?}, output: #{result}"
+        # end
+
+        # result
+      end
+    end
   end
 end

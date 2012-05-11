@@ -14,7 +14,7 @@ attribute "sys_dns/choice",
   :display_name => "DNS Service Provider",
   :description => "The name of your DNS provider. Select the DNS provider that you're using to manage the DNS A records of your master/slave database servers (e.g., DNSMadeEasy, DynDNS, Route53).",
   :required => "required",
-  :choice => ["DNSMadeEasy", "DynDNS", "Route53"],
+  :choice => ["DNSMadeEasy", "DynDNS", "Route53", "CloudDNS"],
   :recipes => ["sys_dns::do_set_private", "sys_dns::default"]
 
 attribute "sys_dns/id",
@@ -29,8 +29,22 @@ attribute "sys_dns/user",
   :required => "required",
   :recipes => ["sys_dns::do_set_private", "sys_dns::default"]
 
-attribute "sys_dns/password",
+attribute "sys_dns/password", # will pass API key for CloudDNS < DNS
   :display_name => "DNS Password",
   :description => "The password that is used to access and modify your DNS A Records. For DNS Made Easy and DynDNS, enter your password (e.g., cred:DNS_PASSWORD). For Amazon DNS, enter your AWS secret access key (e.g., cred:AWS_SECRET_ACCESS_KEY)",  
   :required => "required",
   :recipes => ["sys_dns::do_set_private", "sys_dns::default"]
+
+attribute "sys_dns/clouddns_region",
+  :display_name => "CloudDNS region",
+  :description => "",
+  :required => "optional",
+  :choice => ["Chicago", "Dallas", "London"],
+  :recipes => ["sys_dns::do_set_private", "sys_dns::default"]
+
+attribute "sys_dns/clouddns_domain_id",
+  :display_name => "CloudDNS Domain ID",
+  :description => "",
+  :required => "optional",
+  :recipes => ["sys_dns::do_set_private", "sys_dns::default"]
+
