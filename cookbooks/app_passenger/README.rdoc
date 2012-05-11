@@ -38,26 +38,17 @@ none
 === General
 <tt>app_passenger</tt> cookbook will help you to install and setup Apache + Phusion passenger application server, which can be able to connect, to MySQL or Postgres database server.
 
-Apache
+<b>Apache</b>
 
 Server version: Apache/2.2.3
 
 Server built: Feb 8 2012 08:19:50
 
-Phusion Passenger
+<b>Phusion Passenger</b>
 
 Phusion Passenger version 3.0.9
 
 ruby 1.8.7 (2011-02-18 patchlevel 334) (x86_64-linux), MBARI 0x6770, Ruby Enterprise Edition 2011.03
-
-MySQL client
-
-mysql Ver 14.14 Distrib 5.1.55, for unknown-linux-gnu (x86_64) using readline 5.1
-
-or
-
-mysql Ver 14.14 Distrib 5.5.20, for Linux (x86_64) using readline 5.1
-
 
 also:
 * <tt>Rails spawn method input</tt>
