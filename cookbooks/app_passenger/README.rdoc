@@ -6,12 +6,12 @@
 * Installs and configures, apache+passenger application server.
 
 == REQUIREMENTS:
- * Requires "app" LightWeight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
-   or your own implementation of "app" resource. See "app" cookbook readme for details.
- * Requires a VM launched from a RightScale managed RightImage
- * Tested on CentOS 5.6 RightImage
- * Tested on Ubuntu 10.04 RightImage
- * Tested on RedHat 5.8 RightImage
+* Requires "app" LightWeight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
+  or your own implementation of "app" resource. See "app" cookbook readme for details.
+* Requires a VM launched from a RightScale managed RightImage
+* Tested on CentOS 5.6 RightImage
+* Tested on Ubuntu 10.04 RightImage
+* Tested on RedHat 5.8 RightImage
 
 == COOKBOOKS DEPENDENCIES
 Please see metadata.rb file for the latest dependencies.
@@ -36,7 +36,29 @@ none
 
 == DETAILS:
 === General
-<tt>app_passenger</tt> cookbook will help you to install and setup Apache + Phusion passenger application server, wich can be able to connect, to MySQL or Postgres database server.
+<tt>app_passenger</tt> cookbook will help you to install and setup Apache + Phusion passenger application server, which can be able to connect, to MySQL or Postgres database server.
+
+Apache
+
+Server version: Apache/2.2.3
+
+Server built: Feb 8 2012 08:19:50
+
+Phusion Passenger
+
+Phusion Passenger version 3.0.9
+
+ruby 1.8.7 (2011-02-18 patchlevel 334) (x86_64-linux), MBARI 0x6770, Ruby Enterprise Edition 2011.03
+
+MySQL client
+
+mysql Ver 14.14 Distrib 5.1.55, for unknown-linux-gnu (x86_64) using readline 5.1
+
+or
+
+mysql Ver 14.14 Distrib 5.5.20, for Linux (x86_64) using readline 5.1
+
+
 also:
 * <tt>Rails spawn method input</tt>
 * <tt>Custom rails command input</tt>
@@ -51,11 +73,12 @@ for more info see: http://support.rightscale.com/18-Release_Notes/ServerTemplate
 
 Server Template built on this cookbook can be combined in two modes:
 
-  1 For apps with bundler support
-    You have to add "install_required app gems" recipe, and "run_custom_rails_commands" for migration commands
-  2 For apps without bundler support
-    You have to add "install_custom_gems"  recipe, and "run_custom_rails_commands" for migration commands
-  Anyway you can mix these recipes to fit needs of your project.
+1 For apps with bundler support
+You have to add "install_required app gems" recipe, and "run_custom_rails_commands" for migration commands
+2 For apps without bundler support
+You have to add "install_custom_gems"  recipe, and "run_custom_rails_commands" for migration commands
+
+Anyway you can mix these recipes to fit needs of your project.
 
 Note: RubyEE packages coming from official RubyEE project page
 http://code.google.com/p/rubyenterpriseedition/downloads/detail?name=ruby-enterprise-1.8.7-2011.03.tar.gz&can=2&q=
@@ -67,7 +90,7 @@ These are settings used in recipes and templates. Default values are noted.
 
 Note: Only "internal" cookbook attributes are described here. Descriptions of attributes which have inputs you can find in metadata.rb cookbook file.
 
-====== Platform General attributes
+====== General attributes
 * <tt>node[:app_passenger][:module_dependencies]</tt> - Modules required for apache
 * <tt>node[:app_passenger][:deploy_dir]</tt> - Path to directory which will contain application.
 * <tt>node[:app_passenger][:ruby_gem_base_dir]</tt> - Path to RubyEE gem directory
@@ -123,9 +146,10 @@ actions.
 For more info about these actions please see <tt>app</tt> cookbook readme.
 
 For normal operations it requires "app" resource which will act as interface to all <tt>app_passenger</tt> provider logic.
-* <tt>:install</tt> - Install packages required for application server setup
 
 ===== Actions
+
+* <tt>:install</tt> - Install packages required for application server setup
 
 * <tt>:setup_vhost</tt> - Will setup apache vhost file, with passenger module directives included.
 
@@ -135,9 +159,9 @@ For normal operations it requires "app" resource which will act as interface to 
 
 * <tt>:restart</tt> - Restart sequence for Passenger application server.
 
-* <tt>:code_update</tt> - Perform project source code update/download using user selected "repo" LWRP. Setup logrotation config.
+* <tt>:code_update</tt> - Perform project source code update/download using user selected "repo" LWRP. Setup logrotate config.
 
-* <tt>:setup_db_connection</tt> - Perform project config/database.yml database file configuration
+* <tt>:setup_db_connection</tt> - Perform project config/database.yml database connection configuration
 
 * <tt>:setup_monitoring</tt> - Install and setup of required monitoring software.
 
