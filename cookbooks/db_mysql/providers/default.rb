@@ -359,7 +359,7 @@ action :setup_monitoring do
 
   ruby_block "evaluate db type" do
     block do
-      if node[:db][:init_status].to_s == "initialized"
+      if node[:db][:init_status].to_sym == :initialized
         node[:db_mysql][:collectd_master_slave_mode] = ( node[:db][:this_is_master] == true ? "Master" : "Slave" ) + "Stats true"
       else
         node[:db_mysql][:collectd_master_slave_mode] = ""
