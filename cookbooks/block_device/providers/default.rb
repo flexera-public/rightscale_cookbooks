@@ -68,8 +68,7 @@ action :primary_restore do
     :storage_secret => new_resource.primary_secret
   }
 
-  restore_lineage = new_resource.lineage_override.empty? ? new_resource.lineage : new_resource.lineage_override
-  device.primary_restore(restore_lineage, restore_args)
+  device.primary_restore(new_resource.lineage, restore_args)
 end
 
 action :secondary_backup do
@@ -82,16 +81,15 @@ action :secondary_restore do
   secondary_checks(new_resource)
   device = init(new_resource)
   restore_args = {
+    :timestamp => new_resource.timestamp_override,
+    :force => new_resource.force,
     :volume_size => new_resource.volume_size,
     :new_size_gb => new_resource.volume_size,
     :stripe_count => new_resource.stripe_count,
-    :timestamp => new_resource.timestamp_override,
-    :vg_data_percentage => new_resource.vg_data_percentage,
-    :force => new_resource.force
+    :vg_data_percentage => new_resource.vg_data_percentage
   }
 
-  restore_lineage = new_resource.lineage_override.empty? ? new_resource.lineage : new_resource.lineage_override
-  device.secondary_restore(restore_lineage, restore_args)
+  device.secondary_restore(new_resource.lineage, restore_args)
 end
 
 action :reset do
