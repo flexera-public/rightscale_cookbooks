@@ -11,6 +11,5 @@ attribute :id, :kind_of => String
 attribute :user, :kind_of => String
 attribute :password, :kind_of => String
 attribute :address, :kind_of => String # TODO: , :regex =>
-attribute :clouddns_region, :kind_of => String
-attribute :clouddns_domain_id, :kind_of => String
+attribute :region, :kind_of => String
 attribute :choice, :equal_to => [ "DNSMadeEasy", "DynDNS", "Route53", "CloudDNS" ]

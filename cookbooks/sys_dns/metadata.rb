@@ -18,7 +18,7 @@ attribute "sys_dns/choice",
   :recipes => ["sys_dns::do_set_private", "sys_dns::default"]
 
 attribute "sys_dns/id",
-  :display_name => "DNS Record ID",
+  :display_name => "DNS Record ID or URL for CloudDNS",
   :description => "The unique identifier that is associated with the DNS A record of the server.  The unique identifier is assigned by the DNS provider when you create a dynamic DNS A record. This ID is used to update the associated A record with the private IP address of the server when this recipe is run.  If you are using DNS Made Easy as your DNS provider, a 7-digit number is used (e.g., 4403234).",
   :required => "required",
   :recipes => ["sys_dns::do_set_private"]
@@ -30,21 +30,16 @@ attribute "sys_dns/user",
   :recipes => ["sys_dns::do_set_private", "sys_dns::default"]
 
 attribute "sys_dns/password", # will pass API key for CloudDNS < DNS
-  :display_name => "DNS Password",
+  :display_name => "DNS Password or API key for CloudDNS",
   :description => "The password that is used to access and modify your DNS A Records. For DNS Made Easy and DynDNS, enter your password (e.g., cred:DNS_PASSWORD). For Amazon DNS, enter your AWS secret access key (e.g., cred:AWS_SECRET_ACCESS_KEY)",  
   :required => "required",
   :recipes => ["sys_dns::do_set_private", "sys_dns::default"]
 
-attribute "sys_dns/clouddns_region",
+attribute "sys_dns/region",
   :display_name => "CloudDNS region",
-  :description => "",
+  :description => "You must specify the region when using CloudDNS",
   :required => "optional",
   :choice => ["Chicago", "Dallas", "London"],
   :recipes => ["sys_dns::do_set_private", "sys_dns::default"]
 
-attribute "sys_dns/clouddns_domain_id",
-  :display_name => "CloudDNS Domain ID",
-  :description => "",
-  :required => "optional",
-  :recipes => ["sys_dns::do_set_private", "sys_dns::default"]
 

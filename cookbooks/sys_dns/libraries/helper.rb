@@ -134,11 +134,10 @@ EOF
       end
     end
 
-=begin
     class CloudDNS < DNS
       def action_set(id, user, password, address, region)
 
-        # id = id of the dns entry
+        # id = id of the dns entry                 # but we will have to use this for domain_name
         # address = IP to change DNS entry to
 
         case region
@@ -151,33 +150,46 @@ EOF
           else
             raise "Unsupported region '#{region}'."
         end
+        @logger.info("region: #{region}")
 
-        # get tmp token and account_id
-        x_auth_info = `curl -D - -H "X-Auth-Key: #{password}" -H "X-Auth-User: #{user}" $auth_url`
-        account_id = string commands to get  X-Server-Management-Url: get last number at end of string
-                    ie https://servers.api.rackspacecloud.com/v1.0/418866
+        output = `curl -D - -H "X-Auth-Key: #{password}" -H "X-Auth-User: #{user}" #{auth_url}`
+        x_auth_token = "" # or else it will be local
+        output.each do |line|
+          if line =~ /X-Auth-Token:/                        # finds the line with "X-Auth-Token:" in output
+            x_auth_token = line.gsub!(/X-Auth-Token: /, '') # cuts out the "X-Auth-Token: " part and saves the x_auth_token
+          end
+          if line =~ /X-Server-Management-Url:/ # finds the line with "X-Server-Management-Url:" in output
+            service_endpoint += line[/\d+$/]    # adds the account id (last several digits in url) to service_endpoint for further use
+            @logger.info("service_endpoint: #{service_endpoint}")
+          end
+        end
 
-        auth_token = String commands to get X-Auth-Token: to get token
-                     ie X-Auth-Token: 15eb6e74-893b-4fbe-bd26-2d101a159c17
+        output = `curl -k -H "X-Auth-Token: #{x_auth_token}" #{service_endpoint}/domains?name=#{id.sub(/^.+?\./, '')}`
+        if output =~ /"totalEntries":0/
+          raise "no domain entries found"
+        else
+           dns_domain_id = output[/"id":(\d+)/]
+           @logger.info("dns_domain_id: #{dns_domain_id}")
+        end
 
-        service_endpoint << account_id
+        output = `curl -k -H "X-Auth-Token: #{x_auth_token}" #{service_endpoint}/domains/#{dns_domain_id}/records`
+        dns_record_id = output[/"name":"#{id}","id":"(A.\d+)/][$1]
+        @logger.info("dns_record_id: #{dns_record_id}")
 
-        # grab domain ID from domain name of address
-        
-        domain_info = `curl -k -H "X-Auth-Token: #{auth_token}" $service_endpoint/domains?name=#{address.split(".").drop(1).join(".")}`
-# example output:        {"domains":[{"name":"test-rightscale.com","id":3251446,"comment":"This would be my comment","updated":"2012-05-11T18:55:44.000+0000","created":"2012-05-11T18:55:43.000+0000"}],"totalEntries":1}
-        domain_id = ruby code to extract from domain_info  - shoul derror out if you get nothing ie: {"domains":[],"totalEntries":0}
+        new_ip_json = "{ \"name\":\"'#{id}'\", \"data\":\"'#{address}'\", \"comment\":\"updated by RightScale recipe\" }"
+        @logger.info("new_ip_json: #{new_ip_json}")
+        result = `curl -k -X PUT -H Content-Type:\\ application/json --data "#{new_ip_json}" -H "X-Auth-Token: #{x_auth_token}" #{service_endpoint}/domains/#{dns_domain_id}/records/#{dns_record_id}`
+        @logger.info("result: #{result}")
 
-        # set  record
-        new_ip_jason="{ \"name\":\"#{id}\", \"data\":\"#{address}\", \"comment\":\"updated by a RightScale recipe\" }"
-        result = `curl -k -X PUT -H "Content-Type: application/json --data "#{new_ip_jason}" -H "X-Auth-Token: #{auth_token}"`
-      
-     
-        comfirm result is what we want          
+        if result =~ /#{id}/
+          @logger.info("DNSID #{id} set to this instance IP: #{address}")
+        else
+          raise "Error setting the DNS, curl exited with code: #{$?}, output: #{result}"
+        end
 
+        result
       end
     end
-=end
 
   end
 end
