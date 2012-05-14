@@ -53,11 +53,11 @@ action :install do
   end
 
   execute "alternatives" do
-    command "#{node[:tomcat][:alternatives_cmd]}"
+    command "#{node[:app_tomcat][:alternatives_cmd]}"
     action :run
   end
 
-  db_adapter = node[:tomcat][:db_adapter]
+  db_adapter = node[:app_tomcat][:db_adapter]
   if db_adapter == "mysql"
     # Link mysql-connector plugin to Tomcat6 lib
     file "/usr/share/tomcat6/lib/mysql-connector-java.jar" do
@@ -80,7 +80,7 @@ action :install do
       to "/usr/share/java/postgresql-9.1-901.jdbc4.jar"
     end
   else
-    raise "Unrecognized database adapter #{node[:tomcat][:db_adapter]}, exiting "
+    raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting "
   end
 
   # "Linking RightImage JAVA_HOME to what Tomcat6 expects to be..."
@@ -92,8 +92,8 @@ action :install do
   # Moving tomcat logs to mnt
   if ! ::File.directory?("/mnt/log/tomcat6")
     directory "/mnt/log/tomcat6" do
-      owner node[:tomcat][:app_user]
-      group node[:tomcat][:app_user]
+      owner node[:app_tomcat][:app_user]
+      group node[:app_tomcat][:app_user]
       mode "0755"
       action :create
       recursive true
@@ -145,13 +145,13 @@ action :setup_vhost do
     mode "0644"
     cookbook 'app_tomcat'
     variables(
-      :app_user => node[:tomcat][:app_user],
-      :java_xms => node[:tomcat][:java][:xms],
-      :java_xmx => node[:tomcat][:java][:xms],
-      :java_permsize => node[:tomcat][:java][:permsize],
-      :java_maxpermsize => node[:tomcat][:java][:maxpermsize],
-      :java_newsize => node[:tomcat][:java][:newsize],
-      :java_maxnewsize => node[:tomcat][:java][:maxnewsize]
+      :app_user => node[:app_tomcat][:app_user],
+      :java_xms => node[:app_tomcat][:java][:xms],
+      :java_xmx => node[:app_tomcat][:java][:xms],
+      :java_permsize => node[:app_tomcat][:java][:permsize],
+      :java_maxpermsize => node[:app_tomcat][:java][:maxpermsize],
+      :java_newsize => node[:app_tomcat][:java][:newsize],
+      :java_maxnewsize => node[:app_tomcat][:java][:maxnewsize]
     )
   end
 
@@ -160,11 +160,11 @@ action :setup_vhost do
     action :create
     source "server_xml.erb"
     group "root"
-    owner "#{node[:tomcat][:app_user]}"
+    owner "#{node[:app_tomcat][:app_user]}"
     mode "0644"
     cookbook 'app_tomcat'
     variables(
-            :doc_root => node[:tomcat][:docroot]
+            :doc_root => node[:app_tomcat][:docroot]
           )
   end
 
@@ -251,10 +251,10 @@ action :setup_vhost do
       cookbook 'app_tomcat'
     end
 
-    log "Finished configuring mod_jk, creating the application vhost..."
+    log "  Finished configuring mod_jk, creating the application vhost..."
 
     # Enabling required apache modules
-    node[:tomcat][:module_dependencies].each do |mod|
+    node[:app_tomcat][:module_dependencies].each do |mod|
       apache_module mod
     end
 
@@ -274,12 +274,12 @@ action :setup_vhost do
     end
 
      # Configuring document root for apache
-    if ("#{node[:tomcat][:code][:root_war]}" == "")
-      log "root_war not defined, setting apache docroot to #{node[:tomcat][:docroot]}"
-      docroot4apache = "#{node[:tomcat][:docroot]}"
+    if ("#{node[:app_tomcat][:code][:root_war]}" == "")
+      log "  root_war not defined, setting apache docroot to #{node[:app_tomcat][:docroot]}"
+      docroot4apache = "#{node[:app_tomcat][:docroot]}"
     else
-      log "root_war defined, setting apache docroot to #{node[:tomcat][:docroot]}/ROOT"
-      docroot4apache = "#{node[:tomcat][:docroot]}/ROOT"
+      log "  root_war defined, setting apache docroot to #{node[:app_tomcat][:docroot]}/ROOT"
+      docroot4apache = "#{node[:app_tomcat][:docroot]}/ROOT"
     end
 
     port = new_resource.port
@@ -313,13 +313,13 @@ end
 action :setup_db_connection do
 
   db_name = new_resource.database_name
-  db_adapter = node[:tomcat][:db_adapter]
+  db_adapter = node[:app_tomcat][:db_adapter]
   
   log "  Creating context.xml"
   if db_adapter == "mysql"  
     db_mysql_connect_app "/etc/tomcat6/context.xml"  do
       template      "context_xml.erb"
-      owner         "#{node[:tomcat][:app_user]}"
+      owner         "#{node[:app_tomcat][:app_user]}"
       group         "root"
       mode          "0644"
       database      db_name
@@ -328,20 +328,20 @@ action :setup_db_connection do
   elsif db_adapter == "postgresql"  
     db_postgres_connect_app "/etc/tomcat6/context.xml"  do
       template      "context_xml.erb"
-      owner         "#{node[:tomcat][:app_user]}"
+      owner         "#{node[:app_tomcat][:app_user]}"
       group         "root"
       mode          "0644"
       database      db_name
       cookbook      'app_tomcat'
     end
   else
-    raise "Unrecognized database adapter #{node[:tomcat][:db_adapter]}, exiting "
+    raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting "
   end
 
   log "  Creating context.xml"
   template "/etc/tomcat6/web.xml" do
     source "web_xml.erb"
-    owner "#{node[:tomcat][:app_user]}"
+    owner "#{node[:app_tomcat][:app_user]}"
     group "root"
     mode "0644"
     cookbook 'app_tomcat'
@@ -349,7 +349,7 @@ action :setup_db_connection do
 
   cookbook_file "/usr/share/tomcat6/lib/jstl-api-1.2.jar" do
     source "jstl-api-1.2.jar"
-    owner "#{node[:tomcat][:app_user]}"
+    owner "#{node[:app_tomcat][:app_user]}"
     group "root"
     mode "0644"
     cookbook 'app_tomcat'
@@ -358,7 +358,7 @@ action :setup_db_connection do
 
   cookbook_file "/usr/share/tomcat6/lib/jstl-impl-1.2.jar" do
     source "jstl-impl-1.2.jar"
-    owner "#{node[:tomcat][:app_user]}"
+    owner "#{node[:app_tomcat][:app_user]}"
     group "root"
     mode "0644"
     cookbook 'app_tomcat'
@@ -402,11 +402,11 @@ action :code_update do
 
   log "  Starting code update sequence"
   # Check that we have the required attributes set
-  raise "You must provide a destination for your application code." if ("#{node[:tomcat][:docroot]}" == "")
+  raise "You must provide a destination for your application code." if ("#{node[:app_tomcat][:docroot]}" == "")
 
   # Reading app name from tmp file (for execution in "operational" phase))
   # Waiting for "run_lists"
-  deploy_dir = node[:tomcat][:docroot]
+  deploy_dir = node[:app_tomcat][:docroot]
   if(deploy_dir == "/srv/tomcat6/webapps/")
     app_name = IO.read('/tmp/appname')
     deploy_dir = "/srv/tomcat6/webapps/#{app_name.to_s.chomp}"
@@ -421,7 +421,7 @@ action :code_update do
   repo "default" do
     destination deploy_dir
     action :capistrano_pull
-    app_user node[:tomcat][:app_user]
+    app_user node[:app_tomcat][:app_user]
     persist false
   end
 
@@ -429,14 +429,14 @@ action :code_update do
   bash "set_root_war_and_chown_home" do
     flags "-ex"
     code <<-EOH
-      cd #{node[:tomcat][:docroot]}
-      if [ ! -z "#{node[:tomcat][:code][:root_war]}" -a -e "#{node[:tomcat][:docroot]}/#{node[:tomcat][:code][:root_war]}" ] ; then
-        mv #{node[:tomcat][:docroot]}/#{node[:tomcat][:code][:root_war]} #{node[:tomcat][:docroot]}/ROOT.war
+      cd #{node[:app_tomcat][:docroot]}
+      if [ ! -z "#{node[:app_tomcat][:code][:root_war]}" -a -e "#{node[:app_tomcat][:docroot]}/#{node[:app_tomcat][:code][:root_war]}" ] ; then
+        mv #{node[:app_tomcat][:docroot]}/#{node[:app_tomcat][:code][:root_war]} #{node[:app_tomcat][:docroot]}/ROOT.war
       fi
-      chown -R #{node[:tomcat][:app_user]}:#{node[:tomcat][:app_user]} #{node[:tomcat][:docroot]}
+      chown -R #{node[:app_tomcat][:app_user]}:#{node[:app_tomcat][:app_user]} #{node[:app_tomcat][:docroot]}
       sleep 5
     EOH
-    only_if do node[:tomcat][:code][:root_war] != "ROOT.war" end
+    only_if do node[:app_tomcat][:code][:root_war] != "ROOT.war" end
   end
 
   action_restart
