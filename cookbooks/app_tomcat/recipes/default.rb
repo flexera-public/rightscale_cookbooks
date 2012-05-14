@@ -10,12 +10,12 @@ rightscale_marker :begin
 log "  Setting provider specific settings for tomcat"
 
 node[:app][:provider] = "app_tomcat"
-node[:app][:database_name] = node[:tomcat][:db_name]
+node[:app][:database_name] = node[:app_tomcat][:db_name]
 node[:app][:port] = 8000
 
 case node[:platform]
 when "ubuntu", "debian"
-  case node[:tomcat][:db_adapter]
+  case node[:app_tomcat][:db_adapter]
   when "mysql"
     node[:app][:packages] = [
       "ecj-gcj",
@@ -38,10 +38,10 @@ when "ubuntu", "debian"
       "libtcnative-1"
     ]
   else
-    raise "Unrecognized database adapter #{node[:tomcat][:db_adapter]}, exiting "
+    raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting "
   end
 when "centos", "fedora", "suse", "redhat", "redhatenterpriseserver"
-  case node[:tomcat][:db_adapter]
+  case node[:app_tomcat][:db_adapter]
   when "mysql"
     node[:app][:packages] = [
       "eclipse-ecj",
@@ -60,7 +60,7 @@ when "centos", "fedora", "suse", "redhat", "redhatenterpriseserver"
       "tomcat-native"
     ]
   else
-    raise "Unrecognized database adapter #{node[:tomcat][:db_adapter]}, exiting "
+    raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting "
   end
 else
   raise "Unrecognized distro #{node[:platform]}, exiting "
