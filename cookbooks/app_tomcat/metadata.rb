@@ -64,9 +64,9 @@ attribute "tomcat/java/MaxNewSize",
   :required => "optional",
   :default => "256m"
 
-attribute "tomcat/db_adapter",
+attribute "app_tomcat/db_adapter",
   :display_name => "Database adapter for application ",
-  :description => "Enter database adpter wich will be used to connect to the database Default: postgresql",
+  :description => "Enter database adapter which will be used to connect to the database. example: mysql",
   :default => "mysql",
   :choice => [ "mysql", "postgresql" ],
   :recipes => ["app_tomcat::default"]
