@@ -1,32 +1,102 @@
 = RightScale "repo_git" Provider
 
 == DESCRIPTION:
-
 Provides the GIT implementation of the 'repo' resource to
 manage source code download from GIT repositories.
 
+== REQUIREMENTS:
 
-== DETAILS:
+* Requires repo LightWeight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/repo or your own implementation of "repo" resource. See "repo" cookbook readme for details.
 
-=== General
-The 'repo' implementation is defined by a Lightweight Provider, which can be
-found in the providers/default.rb file.
+* Requires a virtual machine launched from a RightScale-managed RightImage.
+
+== COOKBOOKS DEPENDENCIES
+Please see metadata.rb file for the latest dependencies.
+
+* <tt>rightscale</tt>
+* <tt>repo</tt>
 
 
-== SETUP:
+== KNOWN LIMITATIONS:
+
+none
+
+
+== SETUP/USAGE:
 
 * Provider will be automatically initialized when you add "repo:default" recipe to your ServerTemplate runlist
 
-== USAGE:
+* Once setup, use the recipes in the 'repo' cookbook to install and manage your code repo.
+  See the repo/README.rdoc for usage details.
 
-=== Basic usage
-Once setup, use the recipes in the 'repo' cookbook to install and manage your
-code repo.  See the repo/README.rdoc for usage details.
+* Select 'repo_git' option in repo/default/provider input.
 
+* To perform correct operations  repo/url, and repo/branch inputs must be filled.
 
+* To access to private git repositories repo/ssh_key input must contain string with private ssh key or 'key'-type variable from RightScale dashboard.
+
+== DETAILS:
+=== General
+
+The 'repo_git' implementation can be called with help of Lightweight Resource, which can be
+found in the <tt>repo</tt> cookbook.
+
+For more about Lightweight Resources and Providers (LWRPs), please see the Rigtscale
+Guide at:  http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)
+
+=== Attributes:
+none
+
+=== Templates:
+none
+
+=== Definitions:
+none
+=== Libraries-helpers:
+
+<b>RightScale::Repo::Ssh_key.create(ssh_key)</b>
+
+Create bash script, which will set user defined ssh key required to access to private git source code repositories.
+
+Parameters
+
+<tt>ssh_key(String)::</tt> Git private ssh key
+
+Raise
+
+<tt>RuntimeError::</tt> if ssh key string is empty
+
+<b>RightScale::Repo::Ssh_key.delete</b>
+
+Remove bash script created by <tt>create</tt> method, after successful pull operation.
+
+Parameters
+
+none
+
+=== LWRPs:
+
+<tt>repo_git</tt> provider is defined in providers/default.rb file, it contains source for <tt>:pull</tt> and <tt>:capistrano_pull</tt> actions.
+For more info about these actions please see <tt>repo</tt> cookbook readme.
+
+<tt>repo_git</tt> provider allows to get source code from GIT remote repositories. It supports repositories with public and private (ssh key protected) access.
+
+For normal operations it requires "repo" resource which will act as interface to all <tt>repo_git</tt> provider logic.
+
+===== Actions:
+<tt>:pull</tt>
+Standard repo pull. Your source code repository will be pulled from remote url to specified destination.
+
+<tt>:capistrano_pull</tt>
+Perform standard pull and then capistrano deployment style will be applied.
+
+===== Usage Example:
+
+For usage examples please see corresponding section in <tt>repo</tt> cookbook readme.
 
 = LICENSE
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 if applicable, other agreements such as a RightScale Master Subscription Agreement.
+
