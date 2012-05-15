@@ -2,12 +2,25 @@
 
 == DESCRIPTION:
 
-This cookbook provides the building blocks for Multi-Cloud backup/restore support.  This leverages the RightScale platform's 1.0 and 1.5 API for performing volume management across multiple clouds.
-
-== DETAILS:
-
+This cookbook provides the building blocks for Multi-Cloud backup/restore
+support. This leverages the RightScale platform's 1.0 and 1.5 API for performing
+volume management across multiple clouds.
 
 == REQUIREMENTS:
+
+* The block device tools depend on the <tt>rightscale::install_tools</tt>
+  recipe.
+* Requires a virtual machine launched from a RightScale-managed RightImage.
+
+== COOKBOOKS DEPENDENCIES
+
+Please see metadata.rb file for the latest dependencies.
+
+== KNOWN LIMITATIONS:
+
+* Rackspace requires an instance size of 512MB or larger. An instance size of
+  256MG is not supported. (w-3947)
+* Multiple block devices are not supported on Rackspace.
 
 == SETUP:
 
@@ -15,41 +28,50 @@ This cookbook provides the building blocks for Multi-Cloud backup/restore suppor
 
 === Getting started and taking the first backup:
 
-1. Import the latest version of 'Storage Toolbox (Chef)' ServerTemplate into your RightScale account.
+1. Import the latest version of 'Storage Toolbox (Chef)' ServerTemplate into
+   your RightScale account.
 2. Set up a deployment and Launch.
-3. Once the Server is operational consider it in a 'pristine state'.  Nothing will happen other than installing the tools until you run an operational recipe.  You can modify this behavior by cloning the ServerTemplate and changing the list of recipes to run on boot.
-4. Run the recipe "block_device::setup_block_device".  This recipe attaches storage based on the volume size and number of volumes you have specified.  The storage is located in '/mnt/storage' by default.
-5. Add your data into /mnt/storage.
-6. Run the recipe "block_device::do_primary_backup".  This recipe detects what cloud you are on and performs a backup to local cloud persistence service.
+3. Once the Server is operational consider it in a 'pristine state'. Nothing
+   will happen other than installing the tools until you run an operational
+   recipe. You can modify this behavior by cloning the ServerTemplate and
+   changing the list of recipes to run on boot.
+4. Run the recipe "block_device::setup_block_device".  This recipe attaches
+   storage based on the volume size and number of volumes you have specified.
+   The storage is located in '/mnt/storage1' by default.
+5. Add your data into /mnt/storage1.
+6. Run the recipe "block_device::do_primary_backup". This recipe detects
+   what cloud you are on and performs a backup to local cloud persistence
+   service.
 
 === Continuous Backups with CRON:
 
-1. Enable continuous backups by running the recipe "block_device::setup_continuous_backups_\[type\]" where type is one of "s3", "cloud_files", or "volume".  This sets up a cron job.
-2. You can disable backups at any time by running "block_device::do_disable_continuous_backups_\[type\]".  This removes the cron job that was performing backups for this \[type\].
+1. Enable continuous backups by running the recipe
+   "block_device::setup_continuous_backups".  This sets up a cron job.
+2. You can disable backups at any time by running
+   "block_device::do_disable_continuous_backups". This removes the cron job
+   that was performing backups.
 
 === Force Reset:
 
-1. WARNING: this detaches all storage related to your lineage and DESTROYs the volumes\!  This is to be used if you'd like to force run a restore but you already have storage attached that you don't want.  After running the recipe "block_device::do_force_reset" you can then run "block_device::setup_block_device" or "block_device::do_restore".
+1. WARNING: this detaches all storage related to your lineage and DESTROYs the
+   volumes\! This is to be used if you'd like to force run a restore but you
+   already have storage attached that you don't want. After running the recipe
+   "block_device::do_force_reset" you can then run
+   "block_device::setup_block_device" or "block_device::do_restore".
 
 === Restore:
 
-1. Start from a pristine state (fresh launch of a new server or using a server that's been reset).
-2. Run the recipe "block_device::do_restore"
-
-=== Additional example recipes:
-
-Additional recipes are named with a \_\[type\] on the end.  (Such as "block_device::do_backups_cloud_files").  These recipes are provided as an example and can be used to perform a specific type of backup by overriding the inputs with the settings for using "cloud_files" or "s3".  For example, if you're on EC2 you can take backups to both EBS (volume) and to S3.  This comes in handy for Disaster Recovery.
+1. Start from a pristine state (fresh launch of a new server or using a server
+   that's been reset).
+2. Run the recipe "block_device::do_restore".
 
 Mix and match recipes to get the right combination for your deployments.
 
-== KNOWN LIMITATIONS:
-
-* Only one block_device can be attached to a server at a time.
-* Rackspace: requires an instance size of 512MB or larger. An instance size of 256MG is not supported. (w-3947)
-
+== DETAILS:
 
 = LICENSE
 
-Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-if applicable, other agreements such as a RightScale Master Subscription Agreement.
+Copyright RightScale, Inc. All rights reserved.  All access and use subject to
+the RightScale Terms of Service available at http://www.rightscale.com/terms.php
+and, if applicable, other agreements such as a RightScale Master Subscription
+Agreement.
