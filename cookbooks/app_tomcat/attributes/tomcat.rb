@@ -25,9 +25,9 @@ case node[:platform]
 when "ubuntu", "debian"
   set[:app_tomcat][:app_user] = "tomcat6"
   set[:app_tomcat][:alternatives_cmd] = "update-alternatives  --auto java"
-  if(tomcat[:db_adapter] == "mysql")
+  if app_tomcat[:db_adapter] == "mysql"
     set[:db_mysql][:socket] = "/var/run/mysqld/mysqld.sock"
-  elsif(tomcat[:db_adapter] == "postgresql")
+  elsif app_tomcat[:db_adapter] == "postgresql"
     set[:db_postgres][:socket] = "/var/run/postgresql"
   else
     raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting "
@@ -35,9 +35,9 @@ when "ubuntu", "debian"
 when "centos", "fedora", "suse", "redhat", "redhatenterpriseserver"
   set[:app_tomcat][:app_user] = "tomcat"
   set[:app_tomcat][:alternatives_cmd] = "alternatives --auto java"
-  if(tomcat[:db_adapter] == "mysql")
+  if app_tomcat[:db_adapter] == "mysql"
     set[:db_mysql][:socket] = "/var/lib/mysql/mysql.sock"
-  elsif(tomcat[:db_adapter] == "postgresql")
+  elsif app_tomcat[:db_adapter] == "postgresql"
     set[:db_postgres][:socket] = "/var/run/postgresql"
   else
     raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting "

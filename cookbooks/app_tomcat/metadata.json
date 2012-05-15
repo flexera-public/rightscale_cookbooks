@@ -1,161 +1,171 @@
 {
-  "dependencies": {
-    "repo": ">= 0.0.0",
-    "db_mysql": ">= 0.0.0",
-    "app": ">= 0.0.0",
-    "db_postgres": ">= 0.0.0",
-    "rightscale": ">= 0.0.0"
-  },
-  "name": "app_tomcat",
-  "maintainer_email": "support@rightscale.com",
-  "attributes": {
-    "tomcat/java/MaxNewSize": {
-      "required": "optional",
-      "calculated": false,
-      "choice": [
-
-      ],
-      "default": "256m",
-      "type": "string",
-      "recipes": [
-
-      ],
-      "display_name": "Tomcat Java MaxNewSize",
-      "description": "The java MaxNewSize argument (i.e. 256m)"
-    },
-    "tomcat/db_name": {
-      "required": "required",
-      "calculated": false,
-      "choice": [
-
-      ],
-      "type": "string",
-      "recipes": [
-
-      ],
-      "display_name": "Database Name",
-      "description": "Enter the name of the MySQL database to use. Ex: mydatabase"
-    },
-    "tomcat/code/root_war": {
-      "required": "recommended",
-      "calculated": false,
-      "choice": [
-
-      ],
-      "default": "",
-      "type": "string",
-      "recipes": [
-
-      ],
-      "display_name": "War file for ROOT",
-      "description": "The path to the war file relative to project repo root directory. Will be renamed to ROOT.war. Ex: /dist/app_test.war"
-    },
-    "tomcat/java/xmx": {
-      "required": "optional",
-      "calculated": false,
-      "choice": [
-
-      ],
-      "default": "512m",
-      "type": "string",
-      "recipes": [
-
-      ],
-      "display_name": "Tomcat Java XMX",
-      "description": "The java Xmx argument (i.e. 512m)"
-    },
-    "tomcat/db_adapter": {
-      "required": "optional",
-      "calculated": false,
-      "choice": [
-        "mysql",
-        "postgresql"
-      ],
-      "default": "mysql",
-      "type": "string",
-      "recipes": [
-        "app_tomcat::default"
-      ],
-      "display_name": "Database adapter for application ",
-      "description": "Enter database adpter wich will be used to connect to the database Default: postgresql"
-    },
-    "tomcat/java/NewSize": {
-      "required": "optional",
-      "calculated": false,
-      "choice": [
-
-      ],
-      "default": "256m",
-      "type": "string",
-      "recipes": [
-
-      ],
-      "display_name": "Tomcat Java NewSize",
-      "description": "The java NewSize argument (i.e. 256m)"
-    },
-    "tomcat/java/MaxPermSize": {
-      "required": "optional",
-      "calculated": false,
-      "choice": [
-
-      ],
-      "default": "256m",
-      "type": "string",
-      "recipes": [
-
-      ],
-      "display_name": "Tomcat Java MaxPermSize",
-      "description": "The java MaxPermSize argument (i.e. 256m)"
-    },
-    "tomcat/java/PermSize": {
-      "required": "optional",
-      "calculated": false,
-      "choice": [
-
-      ],
-      "default": "256m",
-      "type": "string",
-      "recipes": [
-
-      ],
-      "display_name": "Tomcat Java PermSize",
-      "description": "The java PermSize argument (i.e. 256m)"
-    },
-    "tomcat/java/xms": {
-      "required": "optional",
-      "calculated": false,
-      "choice": [
-
-      ],
-      "default": "512m",
-      "type": "string",
-      "recipes": [
-
-      ],
-      "display_name": "Tomcat Java XMS",
-      "description": "The java Xms argument (i.e. 512m)"
-    }
-  },
-  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "maintainer": "RightScale, Inc.",
   "suggestions": {
+  },
+  "maintainer_email": "support@rightscale.com",
+  "long_description": "= RightScale App Tomcat Cookbook\n\n== DESCRIPTION:\n\n* Cookbook provides tomcat implementation of app LWRP.\n* Installs and configures, tomcat application server.\n\n== REQUIREMENTS:\n\n* Requires a VM launched from a RightScale managed RightImage\n* Tested on CentOS 5.6 RightImage\n* Tested on Ubuntu RightImage\n\n== SETUP:\n\n* Place tomcat::default recipe into your runlist to setup the application server.\n* When using a RightScale ServerTemplate, this will also automatically add the\n  common attributes to your ServerTemplate inputs.\n* Set 'jdbc/ConnDB' as your datasource name to setup database connection with the application server.\n\n== USAGE:\n\n * Choose image and cloud.\n * Fill required input fields.\n\n== KNOWN LIMITATIONS\n\n* none\n\n= LICENSE\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to the\nRightScale Terms of Service available at http://www.rightscale.com/terms.php and,\nif applicable, other agreements such as a RightScale Master Subscription Agreement.\n",
+  "description": "Installs the tomcat application server.",
+  "conflicting": {
   },
   "platforms": {
   },
-  "maintainer": "RightScale, Inc.",
-  "long_description": "= RightScale App Tomcat Cookbook\n\n== DESCRIPTION:\n\n* Cookbook provides tomcat implementation of app LWRP.\n* Installs and configures, tomcat application server.\n\n== REQUIREMENTS:\n\n* Requires a VM launched from a RightScale managed RightImage\n* Tested on CentOS 5.6 RightImage\n* Tested on Ubuntu RightImage\n\n== SETUP:\n\n* Place tomcat::default recipe into your runlist to setup the application server.\n* When using a RightScale ServerTemplate, this will also automatically add the\n  common attributes to your ServerTemplate inputs.\n* Set 'jdbc/ConnDB' as your datasource name to setup database connection with the application server.\n\n== USAGE:\n\n * Choose image and cloud.\n * Fill required input fields.\n\n== KNOWN LIMITATIONS\n\n* none\n\n= LICENSE\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to the\nRightScale Terms of Service available at http://www.rightscale.com/terms.php and,\nif applicable, other agreements such as a RightScale Master Subscription Agreement.\n",
-  "version": "0.2.1",
-  "recommendations": {
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "providing": {
   },
   "recipes": {
     "app_tomcat::default": "Installs the tomcat application server."
   },
-  "groupings": {
-  },
-  "conflicting": {
+  "attributes": {
+    "tomcat/java/MaxPermSize": {
+      "default": "256m",
+      "display_name": "Tomcat Java MaxPermSize",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "description": "The java MaxPermSize argument (i.e. 256m)",
+      "type": "string",
+      "recipes": [
+
+      ],
+      "required": "optional"
+    },
+    "tomcat/java/xmx": {
+      "default": "512m",
+      "display_name": "Tomcat Java XMX",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "description": "The java Xmx argument (i.e. 512m)",
+      "type": "string",
+      "recipes": [
+
+      ],
+      "required": "optional"
+    },
+    "tomcat/java/xms": {
+      "default": "512m",
+      "display_name": "Tomcat Java XMS",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "description": "The java Xms argument (i.e. 512m)",
+      "type": "string",
+      "recipes": [
+
+      ],
+      "required": "optional"
+    },
+    "tomcat/java/MaxNewSize": {
+      "default": "256m",
+      "display_name": "Tomcat Java MaxNewSize",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "description": "The java MaxNewSize argument (i.e. 256m)",
+      "type": "string",
+      "recipes": [
+
+      ],
+      "required": "optional"
+    },
+    "tomcat/db_name": {
+      "display_name": "Database Name",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "description": "Enter the name of the MySQL database to use. Ex: mydatabase",
+      "type": "string",
+      "recipes": [
+
+      ],
+      "required": "required"
+    },
+    "tomcat/java/PermSize": {
+      "default": "256m",
+      "display_name": "Tomcat Java PermSize",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "description": "The java PermSize argument (i.e. 256m)",
+      "type": "string",
+      "recipes": [
+
+      ],
+      "required": "optional"
+    },
+    "tomcat/code/root_war": {
+      "default": "",
+      "display_name": "War file for ROOT",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "description": "The path to the war file relative to project repo root directory. Will be renamed to ROOT.war. Ex: /dist/app_test.war",
+      "type": "string",
+      "recipes": [
+
+      ],
+      "required": "recommended"
+    },
+    "app_tomcat/db_adapter": {
+      "default": "mysql",
+      "display_name": "Database adapter for application ",
+      "choice": [
+        "mysql",
+        "postgresql"
+      ],
+      "calculated": false,
+      "description": "Enter database adapter which will be used to connect to the database. example: mysql",
+      "type": "string",
+      "recipes": [
+        "app_tomcat::default"
+      ],
+      "required": "optional"
+    },
+    "tomcat/java/NewSize": {
+      "default": "256m",
+      "display_name": "Tomcat Java NewSize",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "description": "The java NewSize argument (i.e. 256m)",
+      "type": "string",
+      "recipes": [
+
+      ],
+      "required": "optional"
+    }
   },
   "replacing": {
   },
-  "description": "Installs the tomcat application server.",
-  "providing": {
+  "dependencies": {
+    "db_mysql": [
+
+    ],
+    "rightscale": [
+
+    ],
+    "app": [
+
+    ],
+    "repo": [
+
+    ],
+    "db_postgres": [
+
+    ]
+  },
+  "name": "app_tomcat",
+  "groupings": {
+  },
+  "version": "0.2.1",
+  "recommendations": {
   }
 }
