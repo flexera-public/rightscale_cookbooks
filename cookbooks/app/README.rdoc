@@ -114,7 +114,7 @@ Return the IP address of the interface that this application server listens on.
 
 <b>Raise</b>
 
-<tt>RuntimeError::</tt> If nether a valid private nor public ip can be found
+<tt>RuntimeError::</tt> If niether a valid private nor public ip can be found
 
 
 ===== RightScale::App::Helper.bind_port()
