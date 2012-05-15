@@ -1,29 +1,25 @@
 = RightScale Cookbooks
 
-= DESCRIPTION
 
-== Synopsis
+== DESCRIPTION
 
-RightScale now supports server configuration using the open source integration 
-framework called Chef[1].
+The RightScale platform supports server configuration and automation using Chef[1] cookbooks.
 
-Please contact support@rightscale.com to report any issues.
+This repository contains a set of cookbooks used by RightScale ServerTermplate. that make up RightScale's VM configuration and automation scripts that configure RightScale managed.
 
-== Supported Configuration
+==== Supported Configuration
 
-These cookbooks have been tested on multiple clouds and multiple OSes using ServerTemplates
+These cookbooks have been tested on multiple clouds and multiple operating systems using ServerTemplates
 on the RightScale Cloud Management Platform.
 
-== Work in Progress
 
-RightScale cookbooks are a work in progress, expect more documentation and examples in the near
-future. 
+== ADDITIONAL RESOURCES
 
-= ADDITIONAL RESOURCES
+* [1] http://wiki.opscode.com/display/chef/About
+* [2] RightScale's Chef support docs http://support.rightscale.com/09-Clouds/Multi_Cloud/Chef
 
-* [1] Chef is http://wiki.opscode.com/display/chef/Home
 
-= LICENSE
+== LICENSE
 
 <b>RightScale Cookbooks</b>
 
