@@ -144,7 +144,7 @@ action :code_update do
   log "  Starting source code download sequence..."
   repo "default" do
     destination deploy_dir
-    action node[:repo][:default][:perform_action]
+    action node[:repo][:default][:perform_action].to_sym
     app_user node[:app_php][:app_user]
     persist false
   end

@@ -400,26 +400,14 @@ end
 #Download/Update application repository
 action :code_update do
 
+  deploy_dir = new_resource.destination
   log "  Starting code update sequence"
-  # Check that we have the required attributes set
-  raise "You must provide a destination for your application code." if ("#{node[:app_tomcat][:docroot]}" == "")
-
-  # Reading app name from tmp file (for execution in "operational" phase))
-  # Waiting for "run_lists"
-  deploy_dir = node[:app_tomcat][:docroot]
-  if deploy_dir =~ /^\/srv\/tomcat6\/webapps\/?$/
-    app_name = IO.read('/tmp/appname')
-    deploy_dir = "/srv/tomcat6/webapps/#{app_name.to_s.chomp}"
-  end
-
-  directory "/srv/tomcat6/webapps/" do
-    recursive true
-  end
+  log "  Current tomcat docroot is set to #{deploy_dir}"
 
   log "  Downloading project repo"
   repo "default" do
     destination deploy_dir
-    action node[:repo][:default][:perform_action]
+    action   node[:repo][:default][:perform_action].to_sym
     app_user node[:app_tomcat][:app_user]
     persist false
   end
@@ -428,11 +416,11 @@ action :code_update do
   bash "set_root_war_and_chown_home" do
     flags "-ex"
     code <<-EOH
-      cd #{node[:app_tomcat][:docroot]}
-      if [ ! -z "#{node[:app_tomcat][:code][:root_war]}" -a -e "#{node[:app_tomcat][:docroot]}/#{node[:app_tomcat][:code][:root_war]}" ] ; then
-        mv #{node[:app_tomcat][:docroot]}/#{node[:app_tomcat][:code][:root_war]} #{node[:app_tomcat][:docroot]}/ROOT.war
+      cd #{deploy_dir}
+      if [ ! -z "#{node[:app_tomcat][:code][:root_war]}" -a -e "#{deploy_dir}/#{node[:app_tomcat][:code][:root_war]}" ] ; then
+        mv #{deploy_dir}/#{node[:app_tomcat][:code][:root_war]} #{deploy_dir}/ROOT.war
       fi
-      chown -R #{node[:app_tomcat][:app_user]}:#{node[:app_tomcat][:app_user]} #{node[:app_tomcat][:docroot]}
+      chown -R #{node[:app_tomcat][:app_user]}:#{node[:app_tomcat][:app_user]} #{deploy_dir}
       sleep 5
     EOH
     only_if do node[:app_tomcat][:code][:root_war] != "ROOT.war" end

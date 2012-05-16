@@ -227,7 +227,7 @@ action :code_update do
   log "  Starting source code download sequence..."
   repo "default" do
     destination deploy_dir
-    action node[:repo][:default][:perform_action]
+    action node[:repo][:default][:perform_action].to_sym
     app_user node[:app_passenger][:apache][:user]
     environment "RAILS_ENV" => "#{node[:app_passenger][:project][:environment]}"
     persist false
