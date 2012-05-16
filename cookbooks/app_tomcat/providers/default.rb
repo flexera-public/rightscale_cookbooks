@@ -147,7 +147,7 @@ action :setup_vhost do
     variables(
       :app_user => node[:app_tomcat][:app_user],
       :java_xms => node[:app_tomcat][:java][:xms],
-      :java_xmx => node[:app_tomcat][:java][:xms],
+      :java_xmx => node[:app_tomcat][:java][:xmx],
       :java_permsize => node[:app_tomcat][:java][:permsize],
       :java_maxpermsize => node[:app_tomcat][:java][:maxpermsize],
       :java_newsize => node[:app_tomcat][:java][:newsize],
@@ -389,8 +389,7 @@ action :setup_monitoring do
     flags "-ex"
     code <<-EOH
       cat <<'EOF'>>/etc/tomcat6/tomcat6.conf
-      CATALINA_OPTS="\$CATALINA_OPTS -Djcd.host=#{node[:rightscale][:instance_uuid]} -Djcd.instance=tomcat6 -Djcd.dest=udp://#{node[:rightscale][:servers][:sketchy][:hostname]}:3011 -Djcd.tmpl=javalang,tomcat -javaagent:/usr/share/tomcat6/lib/collectd.jar"
-      EOF
+CATALINA_OPTS="\$CATALINA_OPTS -Djcd.host=#{node[:rightscale][:instance_uuid]} -Djcd.instance=tomcat6 -Djcd.dest=udp://#{node[:rightscale][:servers][:sketchy][:hostname]}:3011 -Djcd.tmpl=javalang,tomcat -javaagent:/usr/share/tomcat6/lib/collectd.jar"
     EOH
   end
 

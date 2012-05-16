@@ -13,6 +13,8 @@ set_unless[:app_tomcat][:java][:permsize] = "256m"
 set_unless[:app_tomcat][:java][:maxpermsize] = "256m"
 set_unless[:app_tomcat][:java][:newsize] = "256m"
 set_unless[:app_tomcat][:java][:maxnewsize] = "256m"
+set_unless[:app_tomcat][:java][:xmx] = "512m"
+set_unless[:app_tomcat][:java][:xms] = "512m"
 set_unless[:app_tomcat][:db_adapter] = "mysql"
 
 set[:app_tomcat][:module_dependencies] = [ "proxy", "proxy_http", "deflate", "rewrite"]
