@@ -314,9 +314,9 @@ action :setup_db_connection do
 
   db_name = new_resource.database_name
   db_adapter = node[:app_tomcat][:db_adapter]
-  
+
   log "  Creating context.xml"
-  if db_adapter == "mysql"  
+  if db_adapter == "mysql"
     db_mysql_connect_app "/etc/tomcat6/context.xml"  do
       template      "context_xml.erb"
       owner         "#{node[:app_tomcat][:app_user]}"
@@ -325,7 +325,7 @@ action :setup_db_connection do
       database      db_name
       cookbook      'app_tomcat'
     end
-  elsif db_adapter == "postgresql"  
+  elsif db_adapter == "postgresql"
     db_postgres_connect_app "/etc/tomcat6/context.xml"  do
       template      "context_xml.erb"
       owner         "#{node[:app_tomcat][:app_user]}"
@@ -407,10 +407,9 @@ action :code_update do
   # Reading app name from tmp file (for execution in "operational" phase))
   # Waiting for "run_lists"
   deploy_dir = node[:app_tomcat][:docroot]
-  if(deploy_dir == "/srv/tomcat6/webapps/")
+  if deploy_dir == "/srv/tomcat6/webapps/"
     app_name = IO.read('/tmp/appname')
     deploy_dir = "/srv/tomcat6/webapps/#{app_name.to_s.chomp}"
-
   end
 
   directory "/srv/tomcat6/webapps/" do
@@ -420,7 +419,7 @@ action :code_update do
   log "  Downloading project repo"
   repo "default" do
     destination deploy_dir
-    action :capistrano_pull
+    action node[:repo][:default][:perform_action]
     app_user node[:app_tomcat][:app_user]
     persist false
   end
