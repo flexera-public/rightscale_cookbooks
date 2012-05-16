@@ -49,15 +49,6 @@ action :install do
   node[:app_php][:module_dependencies].each do |mod|
     apache_module mod
   end
-  # Saving project name variables for use in operational mode
-  node[:app][:destination]="#{node[:web_apache][:docroot]}"
-  ENV['APP_NAME'] = "#{node[:web_apache][:docroot]}}"
-  bash "save global vars" do
-    flags "-ex"
-    code <<-EOH
-      echo $APP_NAME >> /tmp/appname
-    EOH
-  end
 
 end
 
@@ -128,9 +119,9 @@ action :code_update do
 
   deploy_dir = new_resource.destination
 
+  log "  Starting code update sequence"
+  log "  Current project doc root is set to #{deploy_dir}"
 
-
-  log "  Starting source code download sequence..."
   repo "default" do
     destination deploy_dir
     action node[:repo][:default][:perform_action].to_sym

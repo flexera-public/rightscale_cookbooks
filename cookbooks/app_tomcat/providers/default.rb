@@ -83,7 +83,7 @@ action :install do
     raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting "
   end
 
-  # "Linking RightImage JAVA_HOME to what Tomcat6 expects to be..."
+  # Linking RightImage JAVA_HOME to what Tomcat6 expects to be...
   link "/usr/lib/jvm/java" do
     to "/usr/java/default"
   end
