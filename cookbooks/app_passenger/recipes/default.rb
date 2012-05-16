@@ -24,4 +24,23 @@ case node[:platform]
     raise "Unrecognized distro #{node[:platform]}, exiting "
 end
 
+
+log " Preparing tomcat document root variable"
+if node[:repo][:default][:destination].empty?
+  log "Your repo/default/destination input is no set. Setting project root to default: /srv/tomcat6/webapps/ "
+  node[:app_passenger][:project_home]= "/home/rails/"
+else
+  node[:app_passenger][:project_home]= node[:repo][:default][:destination]
+end
+
+#Creating new project root directory
+directory "#{node[:app_passenger][:project_home]}" do
+  recursive true
+end
+#Cooking doc root variable
+node[:app_passenger][:deploy_dir] = "#{node[:app_passenger][:project_home]}/#{node[:web_apache][:application_name]}"
+
+# setting app LWRP attribute
+node[:app][:destination]="#{node[:app_passenger][:deploy_dir]}"
+
 rightscale_marker :end
