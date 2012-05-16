@@ -123,14 +123,6 @@ action :install do
     EOH
   end
 
-  ENV['APP_NAME'] = node[:web_apache][:application_name]
-  bash "save global vars" do
-    flags "-ex"
-    code <<-EOH
-      echo $APP_NAME >> /tmp/appname
-    EOH
-  end
-
 end
 
 # Setup apache virtual host and corresponding tomcat configs
