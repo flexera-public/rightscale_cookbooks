@@ -9,7 +9,7 @@
 # Make sure our current_master values are set
 # Fail if we think we are a slave, but node state thinks we are a master
 # == Params
-# name(String):: Assert the type of server we thing we are. Can be :slave, :master, :either
+# name(Symbol):: Assert the type of server we thing we are. Can be :slave, :master, :either
 # == Exceptions
 # raises Excaption if we are not the server type (:slave or :master) that we expect
 #
