@@ -25,8 +25,9 @@ if node[:platform] =~ /redhat|centos/
 
   TMP_FILE = "/tmp/collectd-apache.rpm"
 
-  remote_file TMP_FILE do
+  cookbook_file TMP_FILE do
     source "collectd-apache-4.10.0-4.el5.#{node[:kernel][:machine]}.rpm"
+    cookbook 'web_apache'
   end
 
   package TMP_FILE do
@@ -61,15 +62,28 @@ directory ::File.join(node[:rightscale][:collectd_lib], "plugins") do
 end
 
 # install the apache_ps collectd script into the collectd library plugins directory
-remote_file(::File.join(node[:rightscale][:collectd_lib], "plugins", 'apache_ps')) do
+cookbook_file(::File.join(node[:rightscale][:collectd_lib], "plugins", 'apache_ps')) do
   source "apache_ps"
   mode "0755"
+  backup false
+  cookbook 'web_apache'
+end
+
+#checking node[:apache][:listen_ports]
+#  it can be a string if single port is defined
+#  or array if multiple ports are defined
+
+if node[:apache][:listen_ports].kind_of?(Array)
+  port = node[:apache][:listen_ports][0]
+else
+  port = node[:apache][:listen_ports]
 end
 
 # add a collectd config file for the Apache collectd plugin and restart collectd if necessary
 template File.join(node[:rightscale][:collectd_plugin_dir], 'apache.conf') do
   backup false
   source "apache_collectd_plugin.conf.erb"
+  variables :apache_listen_ports => port
   notifies :restart, resources(:service => "collectd")
 end
 
