@@ -15,13 +15,13 @@ module RightScale
         @logger = logger || Logger.new(STDOUT)
       end
 
-      def action_set(id, user, password, address)
+      def action_set(id, user, password, address, region)
         raise 'Not implemented!'
       end
     end
 
     class AWS < DNS
-      def action_set(id, user, password, address)
+      def action_set(id, user, password, address, region)
         zone_id, hostname = id.split(':')
 
         current_ip= `dig +short #{hostname}`.chomp
@@ -105,7 +105,7 @@ EOF
     end
 
     class DME < DNS
-      def action_set(id, user, password, address)
+      def action_set(id, user, password, address, region)
         query="username=#{CGI::escape(user)}&password=#{CGI::escape(password)}&id=#{id}&ip=#{CGI::escape(address)}"
         result = `curl -S -s -o - -f -g 'https://cp.dnsmadeeasy.com/servlet/updateip?#{query}'`
 
@@ -120,7 +120,7 @@ EOF
     end
 
     class DynDNS < DNS
-      def action_set(id, user, password, address)
+      def action_set(id, user, password, address, region)
         query="hostname=#{CGI::escape(id)}&myip=#{CGI::escape(address)}"
         result = `curl -u #{user}:#{password} -S -s -o - -f -g 'https://members.dyndns.org/nic/update?#{query}'`
 
@@ -137,9 +137,6 @@ EOF
     class CloudDNS < DNS
       def action_set(id, user, password, address, region)
 
-        # id = id of the dns entry                 # but we will have to use this for domain_name
-        # address = IP to change DNS entry to
-
         case region
           when "Chicago", "Dallas"
             auth_url = "https://auth.api.rackspacecloud.com/v1.0"
@@ -150,39 +147,34 @@ EOF
           else
             raise "Unsupported region '#{region}'."
         end
-        @logger.info("region: #{region}")
 
         output = `curl -D - -H "X-Auth-Key: #{password}" -H "X-Auth-User: #{user}" #{auth_url}`
-        x_auth_token = "" # or else it will be local
+        x_auth_token = ""
         output.each do |line|
-          if line =~ /X-Auth-Token:/                        # finds the line with "X-Auth-Token:" in output
-            x_auth_token = line.gsub!(/X-Auth-Token: /, '') # cuts out the "X-Auth-Token: " part and saves the x_auth_token
+          if line =~ /X-Auth-Token:/
+            x_auth_token = line.gsub(/X-Auth-Token: /, '').chomp
           end
-          if line =~ /X-Server-Management-Url:/ # finds the line with "X-Server-Management-Url:" in output
-            service_endpoint += line[/\d+$/]    # adds the account id (last several digits in url) to service_endpoint for further use
-            @logger.info("service_endpoint: #{service_endpoint}")
+          if line =~ /X-Server-Management-Url:/
+            service_endpoint += line.chomp[/\d+$/]
           end
         end
 
         output = `curl -k -H "X-Auth-Token: #{x_auth_token}" #{service_endpoint}/domains?name=#{id.sub(/^.+?\./, '')}`
+        dns_domain_id = ""
         if output =~ /"totalEntries":0/
-          raise "no domain entries found"
+          raise "No domain entries found for entered FQDN."
         else
-           dns_domain_id = output[/"id":(\d+)/]
-           @logger.info("dns_domain_id: #{dns_domain_id}")
+          dns_domain_id = output[/"id":(\d+)/][$1]
         end
 
         output = `curl -k -H "X-Auth-Token: #{x_auth_token}" #{service_endpoint}/domains/#{dns_domain_id}/records`
         dns_record_id = output[/"name":"#{id}","id":"(A.\d+)/][$1]
-        @logger.info("dns_record_id: #{dns_record_id}")
 
-        new_ip_json = "{ \"name\":\"'#{id}'\", \"data\":\"'#{address}'\", \"comment\":\"updated by RightScale recipe\" }"
-        @logger.info("new_ip_json: #{new_ip_json}")
-        result = `curl -k -X PUT -H Content-Type:\\ application/json --data "#{new_ip_json}" -H "X-Auth-Token: #{x_auth_token}" #{service_endpoint}/domains/#{dns_domain_id}/records/#{dns_record_id}`
-        @logger.info("result: #{result}")
+        new_ip_json = "{\"name\":\"#{id}\",\"data\":\"#{address}\"}"
+        result = `curl -k -X PUT -H "Content-Type: application/json" --data '#{new_ip_json}' -H "X-Auth-Token: #{x_auth_token}" #{service_endpoint}/domains/#{dns_domain_id}/records/#{dns_record_id}`
 
         if result =~ /#{id}/
-          @logger.info("DNSID #{id} set to this instance IP: #{address}")
+          @logger.info("DNS record for FQDN #{id} set to this instance IP: #{address}")
         else
           raise "Error setting the DNS, curl exited with code: #{$?}, output: #{result}"
         end
