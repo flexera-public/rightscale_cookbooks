@@ -83,7 +83,7 @@ end
 node[:app_tomcat][:docroot] = "#{node[:app_tomcat][:project_home]}/#{node[:app_tomcat][:application_name]}"
 
 # setting app LWRP attribute
-node[:app][:destination]="#{set[:app_tomcat][:docroot]}"
+node[:app][:destination]="#{node[:app_tomcat][:docroot]}"
 
 
 rightscale_marker :end

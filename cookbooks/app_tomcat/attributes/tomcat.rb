@@ -18,7 +18,7 @@ set_unless[:app_tomcat][:db_adapter] = "mysql"
 set[:app_tomcat][:module_dependencies] = [ "proxy", "proxy_http", "deflate", "rewrite"]
 
 # This docroot is currently symlinked from /usr/share/tomcat6/webapps
-set[:app_tomcat][:docroot] = "/srv/tomcat6/webapps/#{node[:app_tomcat][:application_name]}"
+#set[:app_tomcat][:docroot] = "/srv/tomcat6/webapps/#{node[:app_tomcat][:application_name]}"
 
 # Calculated attributes
 case node[:platform]
