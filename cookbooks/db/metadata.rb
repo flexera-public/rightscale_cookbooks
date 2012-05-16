@@ -183,27 +183,27 @@ attribute "db/backup/lineage_override",
   :description => "If defined, this will override the input defined for 'Backup Lineage' (db/backup/lineage) so that you can restore the database from another backup that has as different lineage name. The most recently completed snapshots will be used unless a specific timestamp value is specified for 'Restore Timestamp Override' (db/backup/timestamp_override). Although this input allows you to restore from a different set of snapshots, subsequent backups will use 'Backup Lineage' to name the snapshots. Be sure to remove the 'Backup Lineage Override' input after the new master is operational.",
   :required => "optional",
   :recipes => [
-                "db::do_init_slave_at_boot",
-                "db::do_primary_restore_and_become_master",
-                "db::do_primary_restore",
-                "db::do_primary_init_slave",
-                "db::do_secondary_restore_and_become_master",
-                "db::do_secondary_restore",
-                "db::do_secondary_init_slave"
-              ]
+    "db::do_init_slave_at_boot",
+    "db::do_primary_restore_and_become_master",
+    "db::do_primary_restore",
+    "db::do_primary_init_slave",
+    "db::do_secondary_restore_and_become_master",
+    "db::do_secondary_restore",
+    "db::do_secondary_init_slave"
+  ]
   
 attribute "db/backup/timestamp_override",
   :display_name => "Database Restore Timestamp Override",
   :description => "An optional variable to restore a database backup with a specific timestamp rather than the most recent backup in the lineage. You must specify a string that matches the timestamp tag on the volume snapshot. You will need to specify the timestamp that is defined by the snapshot's tag (not the name). For example, if the snapshot's tag is 'rs_backup:timestamp=1303613371' you would specify '1303613371' for this input.",
   :required => "optional",
   :recipes => [
-                "db::do_primary_restore_and_become_master",
-                "db::do_primary_restore",
-                "db::do_primary_init_slave",
-                "db::do_secondary_restore_and_become_master",
-                "db::do_secondary_restore",
-                "db::do_secondary_init_slave"
-              ]
+    "db::do_primary_restore_and_become_master",
+    "db::do_primary_restore",
+    "db::do_primary_init_slave",
+    "db::do_secondary_restore_and_become_master",
+    "db::do_secondary_restore",
+    "db::do_secondary_init_slave"
+  ]
   
 attribute "db/backup/restore_version_check",
   :display_name => "Backup restore version check", 
@@ -212,14 +212,14 @@ attribute "db/backup/restore_version_check",
   :choice => [ "true", "false" ],
   :default => "true",
   :recipes => [ 
-                "db::do_primary_restore",
-                "db::do_secondary_restore",
-                "db::do_primary_init_slave",
-                "db::do_secondary_init_slave",
-                "db::do_init_slave_at_boot",
-                "do_primary_restore_and_become_master",
-                "do_secondary_restore_and_become_master"
-              ]
+    "db::do_primary_restore",
+    "db::do_secondary_restore",
+    "db::do_primary_init_slave",
+    "db::do_secondary_init_slave",
+    "db::do_init_slave_at_boot",
+    "do_primary_restore_and_become_master",
+    "do_secondary_restore_and_become_master"
+  ]
   
 attribute "db/backup/primary/master/cron/hour",
   :display_name => "Master Backup Cron Hour",
