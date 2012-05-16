@@ -75,7 +75,7 @@ action :setup_vhost do
 
   # Adds php port to list of ports for webserver to listen on
   app_add_listen_port php_port
-  
+
   # Configure apache vhost for PHP
   web_app node[:web_apache][:application_name] do
     template "app_server.erb"
@@ -130,7 +130,7 @@ action :code_update do
 
   # Reading app name from tmp file (for execution in "operational" phase))
   # Waiting for "run_lists"
-  if(deploy_dir == "")
+  if deploy_dir == ""
     app_name = IO.read('/tmp/appname')
     deploy_dir = "#{app_name.to_s.chomp}"
   end
@@ -141,13 +141,10 @@ action :code_update do
     not_if do ::File.exists?("/home/webapp/")  end
   end
 
-  # Check that we have the required attributes set
-  log "  You must provide a destination for your application code." if ("#{deploy_dir}" == "")
-
   log "  Starting source code download sequence..."
   repo "default" do
     destination deploy_dir
-    action :capistrano_pull
+    action node[:repo][:default][:perform_action]
     app_user node[:app_php][:app_user]
     persist false
   end
