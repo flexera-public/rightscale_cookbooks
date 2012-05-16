@@ -128,18 +128,7 @@ action :code_update do
 
   deploy_dir = new_resource.destination
 
-  # Reading app name from tmp file (for execution in "operational" phase))
-  # Waiting for "run_lists"
-  if deploy_dir == ""
-    app_name = IO.read('/tmp/appname')
-    deploy_dir = "#{app_name.to_s.chomp}"
-  end
 
-  log "  Creating directory for project deployment - <#{deploy_dir}>"
-  directory "/home/webapp/" do
-    recursive true
-    not_if do ::File.exists?("/home/webapp/")  end
-  end
 
   log "  Starting source code download sequence..."
   repo "default" do
