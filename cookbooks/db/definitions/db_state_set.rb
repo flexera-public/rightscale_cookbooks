@@ -13,6 +13,10 @@
 # @param [Boolean] immediate run the resource actions immediately
 #
 define :db_state_set, :master_uuid => nil, :master_ip => nil, :is_master => false, :immediate => false do
+  class Chef::Recipe
+    include RightScale::Database::Helper
+  end
+
   name = params[:name]
   master_uuid = params[:master_uuid]
   master_ip = params[:master_ip]
@@ -34,7 +38,7 @@ define :db_state_set, :master_uuid => nil, :master_ip => nil, :is_master => fals
   end
   r.run_action(:create) if immediate
 
-  r = file "/var/lib/rightscale_db_master_slave_state.json" do
+  r = file DB_MASTER_SLAVE_STATE do
     backup false
     content JSON.dump({
       "master_uuid" => master_uuid,
