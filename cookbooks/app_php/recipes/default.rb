@@ -10,7 +10,6 @@ rightscale_marker :begin
 log "  Setting provider specific settings for php application server."
 
 node[:app][:provider] = "app_php"
-node[:app][:destination]="#{node[:web_apache][:docroot]}"
 
 case node[:platform]
 when "ubuntu", "debian"
