@@ -219,8 +219,8 @@ action :code_update do
   end
 
   # Preparing project dir, required for apache+passenger
-  log "  Creating directory for project deployment - <#{deploy_dir}>"
-  directory deploy_dir do
+  log "  Creating /home/rails directory for project deployment"
+  directory "/home/rails/" do
     recursive true
   end
 
