@@ -49,15 +49,6 @@ action :install do
   node[:app_php][:module_dependencies].each do |mod|
     apache_module mod
   end
-  # Saving project name variables for use in operational mode
-  node[:app][:destination]="#{node[:web_apache][:docroot]}"
-  ENV['APP_NAME'] = "#{node[:web_apache][:docroot]}}"
-  bash "save global vars" do
-    flags "-ex"
-    code <<-EOH
-      echo $APP_NAME >> /tmp/appname
-    EOH
-  end
 
 end
 
@@ -128,23 +119,12 @@ action :code_update do
 
   deploy_dir = new_resource.destination
 
-  # Reading app name from tmp file (for execution in "operational" phase))
-  # Waiting for "run_lists"
-  if deploy_dir == ""
-    app_name = IO.read('/tmp/appname')
-    deploy_dir = "#{app_name.to_s.chomp}"
-  end
+  log "  Starting code update sequence"
+  log "  Current project doc root is set to #{deploy_dir}"
 
-  log "  Creating directory for project deployment - <#{deploy_dir}>"
-  directory "/home/webapp/" do
-    recursive true
-    not_if do ::File.exists?("/home/webapp/")  end
-  end
-
-  log "  Starting source code download sequence..."
   repo "default" do
     destination deploy_dir
-    action node[:repo][:default][:perform_action]
+    action node[:repo][:default][:perform_action].to_sym
     app_user node[:app_php][:app_user]
     persist false
   end

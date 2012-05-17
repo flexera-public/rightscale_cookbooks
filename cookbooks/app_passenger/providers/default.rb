@@ -110,16 +110,16 @@ action :setup_vhost do
     only_if do ::File.exists?("/etc/httpd/conf.d/ssl.conf")  end
   end
 
-    # Enabling required apache modules
-    node[:app_passenger][:module_dependencies].each do |mod|
-      apache_module mod
-    end
+  # Enabling required apache modules
+  node[:app_passenger][:module_dependencies].each do |mod|
+    apache_module mod
+  end
 
-    # Apache fix on RHEL
-    file "/etc/httpd/conf.d/README" do
-      action :delete
-      only_if do node[:platform] == "redhat" end
-    end
+  # Apache fix on RHEL
+  file "/etc/httpd/conf.d/README" do
+    action :delete
+    only_if do node[:platform] == "redhat" end
+  end
 
   # Generation of new apache ports.conf
   log "  Generating new apache ports.conf"
@@ -210,28 +210,18 @@ end
 action :code_update do
   deploy_dir = new_resource.destination
 
+  log "  Starting code update sequence"
+  log "  Current project doc root is set to #{deploy_dir}"
 
-  # Reading app name from tmp file (for recipe execution in "operational" phase))
-  # Waiting for "run_lists"
-  if(deploy_dir == "/home/rails/")
-    app_name = IO.read('/tmp/appname')
-    deploy_dir = "/home/rails/#{app_name.to_s.chomp}"
-  end
-
-  # Preparing project dir, required for apache+passenger
-  log "  Creating directory for project deployment - <#{deploy_dir}>"
-  directory "/home/rails/" do
-    recursive true
-  end
-  
   log "  Starting source code download sequence..."
   repo "default" do
     destination deploy_dir
-    action node[:repo][:default][:perform_action]
+    action node[:repo][:default][:perform_action].to_sym
     app_user node[:app_passenger][:apache][:user]
     environment "RAILS_ENV" => "#{node[:app_passenger][:project][:environment]}"
     persist false
   end
+
 
   log"  Generating new logrotatate config for rails application"
   rightscale_logrotate_app "rails" do
