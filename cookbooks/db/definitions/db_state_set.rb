@@ -24,7 +24,7 @@ define :db_state_set, :master_uuid => nil, :master_ip => nil, :is_master => fals
   immediate = params[:immediate]
 
   r = log "#{name}: master UUID: #{master_uuid} IP: #{master_ip} this is #{is_master ? "master" : "slave"}" do
-    action immediate ? :nothing : :write
+    action :nothing if immediate
   end
   r.run_action(:write) if immediate
 
@@ -34,7 +34,7 @@ define :db_state_set, :master_uuid => nil, :master_ip => nil, :is_master => fals
       node[:db][:current_master_ip] = master_ip
       node[:db][:this_is_master] = is_master
     end
-    action immediate ? :nothing : :create
+    action :nothing if immediate
   end
   r.run_action(:create) if immediate
 
@@ -45,7 +45,7 @@ define :db_state_set, :master_uuid => nil, :master_ip => nil, :is_master => fals
       "master_ip" => master_ip,
       "is_master" => is_master
     })
-    action immediate ? :nothing : :create
+    action :nothing if immediate
   end
   r.run_action(:create) if immediate
 end
