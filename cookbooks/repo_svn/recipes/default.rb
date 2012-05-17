@@ -7,9 +7,6 @@
 
 rightscale_marker :begin
 
-PROVIDER_NAME = "repo_svn"
-
-unless node[:platform] == "mac_os_x" then
   # install subversion client
   package "subversion" do
     action :install
@@ -24,13 +21,12 @@ unless node[:platform] == "mac_os_x" then
       end
     when "centos","redhat","fedora"
       %w{subversion-devel subversion-perl}
-    end
+  end
 
   extra_packages.each do |pkg|
     package pkg do
       action :install
     end
   end
-end
 
 rightscale_marker :end
