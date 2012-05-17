@@ -14,6 +14,11 @@ node[:app][:database_name] = node[:app_passenger][:project][:db][:schema_name]
 node[:app][:root] = "#{node[:app][:destination]}/public"
 node[:app][:port] = 8000
 
+app "default" do
+  provider node[:app][:provider]
+  persist true
+  action :nothing
+end
 
 case node[:platform]
   when "ubuntu","debian"
