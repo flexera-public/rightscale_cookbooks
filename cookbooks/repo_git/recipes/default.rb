@@ -7,16 +7,16 @@
 
 rightscale_marker :begin
 
-  # Install git client
-  case node[:platform]
-  when "debian", "ubuntu"
-    package "git-core"
-  else 
-    package "git"
-  end
+# Install git client
+case node[:platform]
+when "debian", "ubuntu"
+  package "git-core"
+else
+  package "git"
+end
 
-  package "gitk"
-  package "git-svn"
-  package "git-email"
+package "gitk"
+package "git-svn"
+package "git-email"
 
 rightscale_marker :end
