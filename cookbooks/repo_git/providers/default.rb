@@ -47,7 +47,7 @@ action :pull do
     end
   end
 
-  # delete SSH key & clear GIT_SSH
+  # Delete SSH key & clear GIT_SSH
   ruby_block "After pull" do
     block do
       RightScale::Repo::Ssh_key.new.delete
@@ -59,6 +59,7 @@ end
 
 action :capistrano_pull do
 
+  # Add ssh key and exec script
   ruby_block "Before deploy" do
     block do
        RightScale::Repo::Ssh_key.new.create(new_resource.git_ssh_key)
@@ -78,6 +79,7 @@ action :capistrano_pull do
   log "  Deploying branch: #{revision} of the #{repository} to #{destination}. New owner #{app_user}"
   log "  Deploy provider #{scm_provider}"
 
+  # Applying capistrano style deployment
   capistranize_repo "Source repo" do
     repository                 repository
     revision                   revision
@@ -90,6 +92,7 @@ action :capistrano_pull do
     environment                environment
   end
 
+  # Delete SSH key & clear GIT_SSH
   ruby_block "Before deploy" do
     block do
       RightScale::Repo::Ssh_key.new.delete
