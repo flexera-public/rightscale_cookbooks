@@ -15,6 +15,7 @@ action :pull do
   raise "  Storage account provider ID not provided" unless new_resource.storage_account_id
   raise "  Storage account secret not provided" unless new_resource.storage_account_secret
 
+  # Creating temp directory to new repo download
   directory "#{new_resource.destination}/ros" do
     recursive true
   end
