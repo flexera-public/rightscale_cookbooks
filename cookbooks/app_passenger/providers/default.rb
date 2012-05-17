@@ -110,7 +110,7 @@ action :setup_vhost do
     only_if do ::File.exists?("/etc/httpd/conf.d/ssl.conf")  end
   end
 
-    # Enabling required apache modules
+  # Enabling required apache modules
   node[:app_passenger][:module_dependencies].each do |mod|
     apache_module mod
   end
