@@ -14,7 +14,12 @@
 # raises Excaption if we are not the server type (:slave or :master) that we expect
 #
 define :db_state_assert do
-  
+  class Chef::Recipe
+    include RightScale::Database::Helper
+  end
+
+  db_state_get node
+
   ruby_block "check database node state" do
     block do
       type = params[:name]
