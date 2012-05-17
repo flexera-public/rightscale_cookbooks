@@ -100,4 +100,10 @@ define :db_find_master do
 
   raise "No master DB found" unless node[:db][:current_master_ip] && node[:db][:current_master_uuid]
 
+  db_state_set "Set master/slave state" do
+    master_uuid node[:db][:current_master_uuid]
+    master_ip node[:db][:current_master_ip]
+    is_master node[:db][:this_is_master]
+    immediate true
+  end
 end

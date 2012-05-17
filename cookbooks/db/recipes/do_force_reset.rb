@@ -46,13 +46,7 @@ tags_to_remove.each do |each_tag|
   end
 end
 
-ruby_block "Reset db node state" do
-  block do
-    node[:db][:this_is_master] = false
-    node[:db][:current_master_uuid] = nil
-    node[:db][:current_master_ip] = nil
-  end
-end
+db_state_set "Reset master/slave state"
 
 log "  Resetting database, then starting database..."
 db DATA_DIR do
