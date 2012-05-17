@@ -11,11 +11,11 @@ action :pull do
   capistrano_dir="/home/capistrano_repo"
   ruby_block "Before pull" do
     block do
-      Chef::Log.info("check previous repo in case of action change")
+      Chef::Log.info "check previous repo in case of action change"
       if (::File.exists?("#{new_resource.destination}") == true && ::File.symlink?("#{new_resource.destination}") == true && ::File.exists?("#{capistrano_dir}") == true)
         ::File.rename("#{new_resource.destination}", "#{capistrano_dir}/releases/capistrano_old_"+::Time.now.strftime("%Y%m%d%H%M"))
       end
-      # add ssh key and exec script
+      # Add ssh key and exec script
       RightScale::Repo::Ssh_key.new.create(new_resource.git_ssh_key)
     end
   end
@@ -27,22 +27,22 @@ action :pull do
       branch = new_resource.revision
 
       Dir.chdir new_resource.destination
-      puts "Updating existing git repo at #{new_resource.destination}"
-      puts `git pull`
+      Chef::Log.info "  Updating existing git repo at #{new_resource.destination}"
+      Chef::Log.info `git pull`
     end
   end
 
-  # clone repo (if not exist)
+  # Clone repo (if not exist)
   ruby_block "Clone new git repository at #{new_resource.destination}" do
     not_if do ::File.directory?(new_resource.destination) end
     block do
-      puts "Creating new git repo at #{new_resource.destination}"
-      puts `git clone #{new_resource.repository} -- #{new_resource.destination}`
+      Chef::Log.info "  Creating new git repo at #{new_resource.destination}"
+      Chef::Log.info `git clone #{new_resource.repository} -- #{new_resource.destination}`
       branch = new_resource.revision
       if "#{branch}" != "master"
         dir = "#{new_resource.destination}"
         Dir.chdir(dir) 
-        puts `git checkout --track -b #{branch} origin/#{branch}`
+        Chef::Log.info `git checkout --track -b #{branch} origin/#{branch}`
       end
     end
   end
@@ -65,7 +65,7 @@ action :capistrano_pull do
     end
   end
 
-  log("  Preparing to capistrano deploy action. Setting parameters for the process...")
+  log "  Preparing to capistrano deploy action. Setting parameters for the process..."
   destination = new_resource.destination
   repository = new_resource.repository
   revision = new_resource.revision
@@ -75,7 +75,7 @@ action :capistrano_pull do
   symlinks = new_resource.symlinks
   scm_provider = new_resource.provider
   environment = new_resource.environment
-  log("  Deploying branch: #{revision} of the #{repository} to #{destination}. New owner #{app_user}")
+  log "  Deploying branch: #{revision} of the #{repository} to #{destination}. New owner #{app_user}"
   log "  Deploy provider #{scm_provider}"
 
   capistranize_repo "Source repo" do
