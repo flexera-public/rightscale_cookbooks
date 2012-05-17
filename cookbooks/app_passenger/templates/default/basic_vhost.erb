@@ -5,8 +5,6 @@
 # DO NOT EDIT BY HAND
 #
 
-
-
 <VirtualHost *:<%=@params[:vhost_port]%>>
 
  ServerName <%=@params[:server_name] %>
@@ -41,6 +39,8 @@ RailsEnv <%= @params[:rails_env] %>
 
 PassengerAppRoot <%="#{@params[:destination].chomp}"%>
 
+PassengerUser <%=@params[:passenger_user]%>
+PassengerGroup <%=@params[:passenger_group]%>
 
 # Enable status page for monitoring purposes
 RewriteCond %{REMOTE_ADDR} ^(127.0.0.1)

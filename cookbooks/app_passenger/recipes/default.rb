@@ -14,7 +14,6 @@ node[:app][:database_name] = node[:app_passenger][:project][:db][:schema_name]
 node[:app][:root] = "#{node[:app][:destination]}/public"
 node[:app][:port] = 8000
 
-
 case node[:platform]
   when "ubuntu","debian"
     node[:app][:packages] = ["libopenssl-ruby", "libcurl4-openssl-dev", "apache2-mpm-prefork", "apache2-prefork-dev", "libapr1-dev", "libcurl4-openssl-dev"]
