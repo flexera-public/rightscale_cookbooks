@@ -5,6 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+include RightScale::Database::Helper
 include RightScale::Database::PostgreSQL::Helper
 
 action :stop do
@@ -63,6 +64,7 @@ action :firewall_update do
 end
 
 action :write_backup_info do
+  db_state_get node
   File_position = `#{node[:db_postgres][:bindir]}/pg_controldata #{node[:db_postgres][:datadir]} | grep "Latest checkpoint location:" | awk '{print $NF}'`
   masterstatus = Hash.new
   masterstatus['Master_IP'] = node[:db][:current_master_ip]
@@ -300,6 +302,7 @@ action :grant_replication_slave do
 end
 
 action :enable_replication do
+  db_state_get node
 
   newmaster_host = node[:db][:current_master_ip]
   rep_user = node[:db][:replication][:user]
@@ -358,6 +361,7 @@ end
 
 
 action :promote do
+  db_state_get node
 
   previous_master = node[:db][:current_master_ip]
   raise "FATAL: could not determine master host from slave status" if previous_master.nil?
@@ -379,6 +383,8 @@ action :promote do
 end
 
 action :setup_monitoring do
+  db_state_get node
+
   service "collectd" do
     action :nothing
   end
@@ -437,6 +443,7 @@ action :setup_monitoring do
 end
 
 action :setup_slave_monitoring do
+  db_state_get node
 
   service "collectd" do
     action :nothing

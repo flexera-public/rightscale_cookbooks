@@ -5,6 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+include RightScale::Database::Helper
 include RightScale::Database::MySQL::Helper
 
 action :stop do
@@ -72,6 +73,7 @@ end
 
 
 action :write_backup_info do
+  db_state_get node
   masterstatus = Hash.new
   masterstatus = RightScale::Database::MySQL::Helper.do_query(node, 'SHOW MASTER STATUS')
   masterstatus['Master_IP'] = node[:db][:current_master_ip]
@@ -356,6 +358,7 @@ action :install_server do
 end
 
 action :setup_monitoring do
+  db_state_get node
 
   ruby_block "evaluate db type" do
     block do
@@ -411,6 +414,7 @@ action :grant_replication_slave do
 end
 
 action :promote do
+  db_state_get node
   
   x = node[:db_mysql][:log_bin]
   logbin_dir = x.gsub(/#{::File.basename(x)}$/, "")
@@ -520,6 +524,7 @@ end
 
 
 action :enable_replication do
+  db_state_get node
 
   # Check the volume before performing any actions.  If invalid raise error and exit.
   ruby_block "validate_master" do
