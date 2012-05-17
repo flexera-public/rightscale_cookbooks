@@ -34,7 +34,7 @@ define :db_state_set, :master_uuid => nil, :master_ip => nil, :is_master => fals
   end
   r.run_action(:create) if immediate
 
-  r = file "/var/lib/rightscale_db_master_slave_state" do
+  r = file "/var/lib/rightscale_db_master_slave_state.json" do
     backup false
     content JSON.dump({
       "master_uuid" => master_uuid,
