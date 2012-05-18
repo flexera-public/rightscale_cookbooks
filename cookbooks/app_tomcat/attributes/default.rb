@@ -13,12 +13,12 @@ set_unless[:app_tomcat][:java][:permsize] = "256m"
 set_unless[:app_tomcat][:java][:maxpermsize] = "256m"
 set_unless[:app_tomcat][:java][:newsize] = "256m"
 set_unless[:app_tomcat][:java][:maxnewsize] = "256m"
+set_unless[:app_tomcat][:java][:xmx] = "512m"
+set_unless[:app_tomcat][:java][:xms] = "512m"
 set_unless[:app_tomcat][:db_adapter] = "mysql"
 
 set[:app_tomcat][:module_dependencies] = [ "proxy", "proxy_http", "deflate", "rewrite"]
 
-# This docroot is currently symlinked from /usr/share/tomcat6/webapps
-set[:app_tomcat][:docroot] = "/srv/tomcat6/webapps/#{node[:app_tomcat][:application_name]}"
 
 # Calculated attributes
 case node[:platform]
