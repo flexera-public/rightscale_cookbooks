@@ -8,21 +8,18 @@
 rightscale_marker :begin
 
 # Run only on master server
-if node[:rightscale][:instance_uuid] == "#{node[:db][:current_master_uuid]}"
+db_state_assert :master
+
 #
 # Set sync mode on master server
 #
-  log "Initializing slave to connect to master in sync state..."
-  # updates postgresql.conf for replication
-  Chef::Log.info "updates postgresql.conf for replication"
-  RightScale::Database::PostgreSQL::Helper.configure_postgres_conf(node)
+log "Initializing slave to connect to master in sync state..."
+# updates postgresql.conf for replication
+Chef::Log.info "updates postgresql.conf for replication"
+RightScale::Database::PostgreSQL::Helper.configure_postgres_conf(node)
 
-  # Reload postgresql to read new updated postgresql.conf
-  Chef::Log.info "Reload postgresql to read new updated postgresql.conf"
-  RightScale::Database::PostgreSQL::Helper.do_query('select pg_reload_conf()')
-
-else
-  raise "This is not master server! This script only runs on master: #{node[:db][:current_master_uuid]}"
-end
+# Reload postgresql to read new updated postgresql.conf
+Chef::Log.info "Reload postgresql to read new updated postgresql.conf"
+RightScale::Database::PostgreSQL::Helper.do_query('select pg_reload_conf()')
 
 rightscale_marker :end
