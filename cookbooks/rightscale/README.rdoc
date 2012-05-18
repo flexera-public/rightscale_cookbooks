@@ -44,9 +44,7 @@ volumes, and remote object storage providers.
 
 Syntax:
 
-```
-rightscale_enable_collectd_plugin "curl_json"
-```
+  rightscale_enable_collectd_plugin "curl_json"
 
 ==== rightscale_monitor_process
 
@@ -62,9 +60,7 @@ rightscale_enable_collectd_plugin "curl_json"
 
 Syntax:
 
-```
-rightscale_monitor_process "nginx"
-```
+  rightscale_monitor_process "nginx"
 
 ==== rightscale_marker
 
@@ -77,11 +73,9 @@ rightscale_monitor_process "nginx"
 
 Syntax:
 
-```
-rightscale_marker :start
+  rightscale_marker :start
 
-rightscale_marker :end
-```
+  rightscale_marker :end
 
 = LICENSE:
 
