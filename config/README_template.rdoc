@@ -35,7 +35,7 @@ Replace this text with a description of cookbook requirements:
 * Requires a virtual machine launched from a RightScale-managed RightImage.
 -------------
 
-== COOKBOOKS DEPENDENCIES
+== COOKBOOKS DEPENDENCIES:
 
 Please see metadata.rb file for the latest dependencies.
 
