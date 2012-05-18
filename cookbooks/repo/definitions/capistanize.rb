@@ -5,7 +5,10 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+# This is adaptation of  Opscode "deploy" resource to use it with RightScale repo LWRP
+
 capistrano_dir="/home/capistrano_repo"
+# More detailed parameters descriptions you can find in repo/resources/default.rb
 define :capistranize_repo,
        :destination => "",
        :repository => "",
@@ -21,6 +24,7 @@ define :capistranize_repo,
 
   Log "  Capistrano deployment creation - in progress..."
 
+  # Looking for old deployments and backup them if found any
   ruby_block "Before deploy" do
     block do
      Chef::Log.info("check previous repo in case of action change")
@@ -32,32 +36,33 @@ define :capistranize_repo,
     end
   end
 
-
+  # Creating /shred folder which is required by Opscode "deploy" resource
   directory "#{capistrano_dir}/shared/" do
     recursive true
   end
 
+  # Deleting /cached-copy dir which can contain previous version of project repo
+  #  Can cause definition fail in case of provider type change.
   directory "#{capistrano_dir}/shared/cached-copy" do
     recursive true
     action :delete
   end
 
-
+  # Preparing "deploy" provider and its attributes
   if params[:scm_provider] == Chef::Provider::RepoSvn
     scm_prov = Chef::Provider::Subversion
     svn_args = "--no-auth-cache --non-interactive"
     enable_submodules = false
-
   else
     scm_prov = Chef::Provider::Git
     svn_args = nil
     params[:svn_username] = nil
     params[:svn_password] = nil
     enable_submodules = true
-
   end
-  Log "  Capistrano deployment will use #{scm_prov} for initialization"
 
+  Log "  Capistrano deployment will use #{scm_prov} for initialization"
+  # Creating capistrano deployment
   deploy "#{capistrano_dir}" do
     scm_provider               scm_prov
     repo                       "#{params[:repository].chomp}"
@@ -78,26 +83,27 @@ define :capistranize_repo,
   end
 
   Log "  Capistrano deployment created.  Performing secondary operations"
+  # Removing old symlinks from project folder
   link params[:destination] do
     action :delete
     only_if "test -L #{params[:destination].chomp}"
   end
 
-
+  # Recreating symlinks and perform backup of old project dirs
+  #  To avoid problems from using different provider types
   ruby_block "After deploy" do
     block do
       Chef::Log.info("  Perform backup of old deployment directory to #{capistrano_dir}/releases/ ")
       system("data=`/bin/date +%Y%m%d%H%M%S` && mv #{params[:destination]}_old #{capistrano_dir}/releases/${data}_initial")
 
       repo_dest = params[:destination]
-      #checking last symbol of "destination" for correct work of "cp -d"
+      # Checking last symbol of "destination" for correct work of "cp -d"
       if (params[:destination].end_with?("/"))
         repo_dest = params[:destination].chop
       end
 
-
       Chef::Log.info("  linking #{capistrano_dir}/current/ directory to project root -  #{repo_dest}")
-     system("cp -d #{capistrano_dir}/current #{repo_dest}")
+      system("cp -d #{capistrano_dir}/current #{repo_dest}")
     end
 
   end
