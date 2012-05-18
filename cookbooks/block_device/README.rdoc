@@ -22,9 +22,7 @@ Please see metadata.rb file for the latest dependencies.
   256MG is not supported. (w-3947)
 * Multiple block devices are not supported on Rackspace.
 
-== SETUP:
-
-== USAGE:
+== SETUP/USAGE:
 
 === Getting started and taking the first backup:
 
@@ -68,6 +66,13 @@ Please see metadata.rb file for the latest dependencies.
 Mix and match recipes to get the right combination for your deployments.
 
 == DETAILS:
+
+Multiple block device support is controlled by the
+<tt>block_device/devices_to_use</tt> input. It can be a comma-separated list of
+device names or '*' to indicate all devices. By default there are two available
+block devices. Currently, in order to add more devices you need to override the
+cookbook. Instructions can be found at:
+http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Increase_the_Number_of_Block_Devices
 
 = LICENSE
 
