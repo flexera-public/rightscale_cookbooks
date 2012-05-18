@@ -13,6 +13,12 @@ rightscale_marker :begin
 #
 # Raise exception if this server thinks it is a master.
 
+class Chef::Recipe
+  include RightScale::Database::Helper
+end
+
+db_state_get node
+
 raise "ERROR: Server is a master" if node[:db][:this_is_master]
 log 'WARN: Slave database is not initialized!' do
   only_if { node[:db][:init_status] == :uninitialized }
