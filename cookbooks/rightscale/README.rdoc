@@ -44,7 +44,7 @@ volumes, and remote object storage providers.
 
 Syntax:
 
-```ruby
+```
 rightscale_enable_collectd_plugin "curl_json"
 ```
 
@@ -62,7 +62,7 @@ rightscale_enable_collectd_plugin "curl_json"
 
 Syntax:
 
-```ruby
+```
 rightscale_monitor_process "nginx"
 ```
 
@@ -73,11 +73,11 @@ rightscale_monitor_process "nginx"
 * Used to log the start and end of a recipe using the 'log' chef resource.
   Should be added at the beginning and end of a recipe.
 * Log marker:
-  ========================= recipe::name : START/END =========================
+  ```========================= recipe::name : START/END =========================```
 
 Syntax:
 
-```ruby
+```
 rightscale_marker :start
 
 rightscale_marker :end
