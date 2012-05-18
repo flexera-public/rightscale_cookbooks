@@ -7,6 +7,7 @@ EXAMPLE and MARKUP sections.
 = RightScale *** cookbook
 
 == DESCRIPTION:
+
 Replace this text with a high-level overview of what this cookbook configures
 or manages. Don't go into too much detail here, save that for the 'details'
 section below.
