@@ -77,6 +77,24 @@ Syntax:
 
   rightscale_marker :end
 
+=== Resources:
+
+==== rightscale_server_collection
+
+The server collection resource finds a set of servers in a deployment with a set
+of tags. The <tt>tags</tt> attribute specifies the tag or tags to search for (if
+multiple tags are specified servers with any of the tags will match) and the
+optional <tt>secondary_tags</tt> attribute specifies tags that need to also
+appear on the servers, it will wait one minute for the <tt>secondary_tags</tt>
+to appear (this can be overridden with the <tt>timeout</tt> attribute).
+
+Syntax:
+
+  rightscale_server_collection "rightscale_servers" do
+    tags "rs_login:state=active"
+    secondary_tags "server:uuid=*"
+  end
+
 = LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to
