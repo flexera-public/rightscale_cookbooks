@@ -1,6 +1,6 @@
 = RightScale Cookbooks
 
-Welcome to the RightScale Chef cookbooks -- your infrastructure, codified!
+Welcome to the RightScale cookbooks -- your infrastructure, codified!
 
 == OVERVIEW
 
