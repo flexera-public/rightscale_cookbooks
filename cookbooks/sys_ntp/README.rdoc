@@ -1,11 +1,47 @@
-DESCRIPTION
-===========
+= RightScale System NTP Cookbook
 
-Installs and configures ntp client.
+== DESCRIPTION:
 
-REQUIREMENTS
-============
+This cookbook provides a recipe for setting up time synchronization using NTP.
 
-Should work on any Red Hat-family or Debian-family Linux distribution.
+== REQUIREMENTS:
 
+Requires a virtual machine launched from a RightScale-managed RightImage.
 
+== COOKBOOKS DEPENDENCIES:
+
+Please see metadata.rb file for the latest dependencies.
+
+== KNOWN LIMITATIONS:
+
+There are no known limitations.
+
+== SETUP/USAGE:
+
+Place the <tt>sys_ntp::default</tt> recipe into the boot recipes.
+
+== DETAILS:
+
+=== Attributes:
+
+These are settings used in recipes and templates. Default values are noted.
+
+Note: Only "internal" cookbook attributes are described here. Descriptions of
+attributes which have inputs you can find in the <tt>metadata.rb</tt> cookbook
+file.
+
+* <tt>node[:sys_ntp][:service]</tt> - Name of the service that NTP runs as.
+  Default is <tt>ntp</tt> on Ubuntu and <tt>ntpd</tt> on CentOS and RedHat.
+
+=== Templates:
+
+<b>ntp.conf.erb</b>
+
+Configuration for the NTP daemon used in the <tt>sys_ntp::default</tt> recipe.
+
+= LICENSE:
+
+Copyright RightScale, Inc. All rights reserved.  All access and use subject to
+the RightScale Terms of Service available at http://www.rightscale.com/terms.php
+and, if applicable, other agreements such as a RightScale Master Subscription
+Agreement.

@@ -57,7 +57,7 @@ from this cookbook.
 
 ==== Example:
 
-Place <tt>app_tomcat::default</tt> recipe into your runlist to setup the
+Place the <tt>app_tomcat::default</tt> recipe into your runlist to setup the
 application server. When using a RightScale ServerTemplate, this will also
 automatically add the common attributes to your ServerTemplate inputs. Set
 'jdbc/ConnDB' as your datasource name to set up database connection with the
@@ -89,20 +89,23 @@ You can create subsections to split attributes by their specs Ex:
 <tt>General</tt> <tt>Apache common</tt>, <tt>Apache worker</tt> etc.
 
 ==== Example:
+
 These are settings used in recipes and templates. Default values are noted.
 
 Note: Only "internal" cookbook attributes are described here. Descriptions of
-attributes which have inputs you can find in metadata.rb cookbook file.
+attributes which have inputs you can find in the <tt>metadata.rb</tt> cookbook
+file.
 
-* <tt>node[apache][dir]</tt> - Location for the Apache configuration
-* <tt>node[apache][log_dir]</tt> - Location for Apache logs
-* <tt>node[apache][prefork][startservers]</tt> - initial number of server
+* <tt>node[:apache][:dir]</tt> - Location for the Apache configuration
+* <tt>node[:apache][:log_dir]</tt> - Location for Apache logs
+* <tt>node[:apache][:prefork][:startservers]</tt> - initial number of server
   processes to start. Default is 16.
-* <tt>node[apache][prefork][minspareservers]</tt> - minimum number of spare
+* <tt>node[:apache][:prefork][:minspareservers]</tt> - minimum number of spare
   server processes. Default 16.
 -------------
 
 === Templates:
+
 Describe cookbook templates here.
 
 Format is:
