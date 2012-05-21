@@ -5,7 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-rs_utils_marker :begin
+rightscale_marker :begin
 
 class Chef::Recipe
   include RightScale::App::Helper
@@ -17,9 +17,9 @@ vhosts(node[:lb][:vhost_names]).each do | vhost_name |
 
   log "  Sending remote attach request..."
   lb vhost_name do
-    backend_ip             node[:cloud][:private_ips][0]
     backend_id             node[:rightscale][:instance_uuid]
-    backend_port           8000
+    backend_ip             node[:app][:ip]
+    backend_port           node[:app][:port].to_i
     service_region         node[:lb][:service][:region]
     service_lb_name        node[:lb][:service][:lb_name]
     service_account_id     node[:lb][:service][:account_id]
@@ -28,4 +28,4 @@ vhosts(node[:lb][:vhost_names]).each do | vhost_name |
   end
 end
 
-rs_utils_marker :end
+rightscale_marker :end

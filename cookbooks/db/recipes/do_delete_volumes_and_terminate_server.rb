@@ -25,7 +25,7 @@
 # This recipe ensures that the volume is deleted prior to the instance
 # being terminated
 #
-rs_utils_marker :begin
+rightscale_marker :begin
 
 raise "Server terminate safety not off.  Override db/terminate_safety to run this recipe" unless node[:db][:terminate_safety] == "off"
 
@@ -52,4 +52,4 @@ rs_shutdown "Terminate the server now" do
   action :terminate
 end
 
-rs_utils_marker :end
+rightscale_marker :end

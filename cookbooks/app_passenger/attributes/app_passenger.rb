@@ -14,17 +14,15 @@ set[:app_passenger][:module_dependencies] = ["proxy", "proxy_ajp"]
 case node[:platform]
   when "ubuntu","debian"
     set[:app_passenger][:apache][:user]="www-data"
+    set[:app_passenger][:apache][:group]="www-data"
     set[:app_passenger][:apache][:log_dir]="/var/log/apache2"
-
   when "centos","redhat","redhatenterpriseserver","fedora","suse"
     set[:app_passenger][:apache][:user]="apache"
-       set[:app_passenger][:apache][:log_dir]="/var/log/httpd"
-
+    set[:app_passenger][:apache][:group]="apache"
+    set[:app_passenger][:apache][:log_dir]="/var/log/httpd"
   else
     raise "Unrecognized distro #{node[:platform]}, exiting "
 end
-
-set[:app_passenger][:deploy_dir]="/home/rails/#{node[:web_apache][:application_name]}"
 
 set[:app_passenger][:ruby_gem_base_dir]="/opt/ruby-enterprise/lib/ruby/gems/1.8"
 set[:app_passenger][:gem_bin]="/opt/ruby-enterprise/bin/gem"

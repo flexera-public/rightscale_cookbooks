@@ -5,7 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-rs_utils_marker :begin
+rightscale_marker :begin
 
 log "  Checking if state of db is 'uninitialized'..."
 db_init_status :check
@@ -19,4 +19,4 @@ end
 log "  Setting database state to 'initialized'..."
 db_init_status :set
 
-rs_utils_marker :end
+rightscale_marker :end

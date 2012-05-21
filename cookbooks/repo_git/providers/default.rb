@@ -16,32 +16,31 @@ action :pull do
         ::File.rename("#{new_resource.destination}", "#{capistrano_dir}/releases/capistrano_old_"+::Time.now.strftime("%Y%m%d%H%M"))
       end
       # add ssh key and exec script
-      RightScale::Repo::Ssh_key.new.create(new_resource.ssh_key)
+      RightScale::Repo::Ssh_key.new.create(new_resource.git_ssh_key)
     end
   end
 
-  # pull repo (if exist)
+  # pull repo (if destination dir is not empty, assuming under git control)
   ruby_block "Pull existing git repository at #{new_resource.destination}" do
-    only_if do ::File.directory?(new_resource.destination) end
+    not_if do Dir["#{new_resource.destination}/*"].empty? end
     block do
       branch = new_resource.revision
-
       Dir.chdir new_resource.destination
       puts "Updating existing git repo at #{new_resource.destination}"
       puts `git pull`
     end
   end
 
-  # clone repo (if not exist)
+  # clone repo (if destination dir is empty)
   ruby_block "Clone new git repository at #{new_resource.destination}" do
-    not_if do ::File.directory?(new_resource.destination) end
+    only_if do Dir["#{new_resource.destination}/*"].empty? end
     block do
       puts "Creating new git repo at #{new_resource.destination}"
       puts `git clone #{new_resource.repository} -- #{new_resource.destination}`
       branch = new_resource.revision
       if "#{branch}" != "master"
         dir = "#{new_resource.destination}"
-        Dir.chdir(dir) 
+        Dir.chdir(dir)
         puts `git checkout --track -b #{branch} origin/#{branch}`
       end
     end
@@ -61,7 +60,7 @@ action :capistrano_pull do
 
   ruby_block "Before deploy" do
     block do
-       RightScale::Repo::Ssh_key.new.create(new_resource.ssh_key)
+       RightScale::Repo::Ssh_key.new.create(new_resource.git_ssh_key)
     end
   end
 

@@ -7,10 +7,10 @@
 
 # == remove cron task for export
 #
-rs_utils_marker :begin
+rightscale_marker :begin
 
 cron "db_dump_export" do
   action :delete
 end
 
-rs_utils_marker :end
+rightscale_marker :end

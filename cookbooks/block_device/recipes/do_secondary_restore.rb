@@ -5,7 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-rs_utils_marker :begin
+rightscale_marker :begin
 
 class Chef::Recipe
   include RightScale::BlockDeviceHelper
@@ -16,23 +16,18 @@ class Chef::Resource::BlockDevice
 end
 
 do_for_block_devices node[:block_device] do |device|
-  if get_device_or_default(node, device, :backup, :lineage_override).empty?
-    backup_lineage = get_device_or_default(node, device, :backup, :lineage)
-  else
-    log "** USING LINEAGE OVERRIDE **"
-    backup_lineage = get_device_or_default(node, device, :backup, :lineage_override)
-  end
-
-  log "======== LINEAGE ========="
-  log backup_lineage
-  log "======== LINEAGE ========="
-
   # Do the restore.
   log "  Creating block device and restoring data from secondary backup for device #{device}..."
+  lineage = get_device_or_default(node, device, :backup, :lineage)
+  lineage_override = get_device_or_default(node, device, :backup, :lineage_override)
+  restore_lineage = lineage_override == nil || lineage_override.empty? ? lineage : lineage_override
+  log "  Input lineage #{restore_lineage}"
+  log "  Input lineage_override #{lineage_override}"
+  log "  Using lineage #{restore_lineage}"
+
   block_device get_device_or_default(node, device, :nickname) do
     # Backup/Restore arguments
-    lineage backup_lineage
-    lineage_override get_device_or_default(node, device, :backup, :lineage_override)
+    lineage restore_lineage
     timestamp_override get_device_or_default(node, device, :backup, :timestamp_override)
 
     secondary_cloud get_device_or_default(node, device, :backup, :secondary, :cloud)
@@ -45,4 +40,4 @@ do_for_block_devices node[:block_device] do |device|
   end
 end
 
-rs_utils_marker :end
+rightscale_marker :end

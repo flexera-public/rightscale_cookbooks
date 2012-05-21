@@ -5,7 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-rs_utils_marker :begin
+rightscale_marker :begin
 
 # == Clear master tag
 #
@@ -17,15 +17,9 @@ end
 
 # == Set master node variables
 #
-master_ip = node[:remote_recipe][:new_master_ip]
-master_uuid = node[:remote_recipe][:new_master_uuid]
-log "  Setting up new master uuid:#{master_uuid} ip:#{master_ip}"
-ruby_block "set slave state" do 
-  block do 
-    node[:db][:current_master_uuid] = master_uuid
-    node[:db][:current_master_ip] = master_ip
-    node[:db][:this_is_master] = false
-  end
+db_state_set "Set slave state" do
+  master_uuid node[:remote_recipe][:new_master_uuid]
+  master_ip node[:remote_recipe][:new_master_ip]
 end
 
-rs_utils_marker :end
+rightscale_marker :end

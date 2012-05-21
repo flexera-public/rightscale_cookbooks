@@ -5,7 +5,7 @@ description      "Installs/Configures Apache Passenger Rails application server"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "0.1.1"
 
-depends "rs_utils"
+depends "rightscale"
 depends "web_apache"
 depends "repo"
 depends "logrotate"
@@ -16,7 +16,6 @@ recipe "app_passenger::default", "default cookbook recipe which.set provider spe
 recipe "app_passenger::install_custom_gems", "Custom gems install."
 recipe "app_passenger::install_required_app_gems", "Bundler gems Install. Gemfile must be present in app directory."
 recipe "app_passenger::run_custom_rails_commands", "Run specific user defined commands Commands will be executed in the app directory. Command path ../rails/bin/"
-
 
 
 attribute "app_passenger/spawn_method",
@@ -33,7 +32,6 @@ attribute "app_passenger/project/environment",
   :required => "optional",
   :default => "development"
 
-
 attribute "app_passenger/apache/maintenance_page",
   :display_name => "Apache maintenance page",
   :description => "Maintenance URI to show if the page exists (based on document root). Default: [document root]/system/maintenance.html.  If this file exists, your site will show a &quot;Under Maintenance&quot; page and your site will not be available.",
@@ -45,8 +43,6 @@ attribute "app_passenger/apache/serve_local_files",
   :description => "This option tells Apache whether it should serve the (static) content itself. Currently, it will omit PHP and TomCat dynamic content, such as *.php, *.action, *.jsp, and *.do    Ex:  true",
   :required => "optional",
   :default => "true"
-
-
 
 attribute "app_passenger/project/gem_list",
   :display_name => "Custom gems list",
@@ -61,7 +57,6 @@ attribute "app_passenger/project/custom_cmd",
   :required => "optional",
   :default => "",
   :recipes => ["app_passenger::run_custom_rails_commands"]
-
 
 attribute "app_passenger/project/db/schema_name",
   :display_name => "Database schema name",

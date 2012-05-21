@@ -188,6 +188,7 @@ action :attach_request do
     attributes :remote_recipe => {
                   :backend_ip  => new_resource.backend_ip,
                   :backend_id  => new_resource.backend_id,
+                  :backend_port => new_resource.backend_port,
                   :vhost_names => vhost_name
                 }
     recipients_tags "loadbalancer:#{vhost_name}=lb"
@@ -244,14 +245,14 @@ action :setup_monitoring do
   log "  Setup monitoring for haproxy"
 
   # install the haproxy collectd script into the collectd library plugins directory
-  remote_file(::File.join(node[:rs_utils][:collectd_lib], "plugins", 'haproxy')) do
+  remote_file(::File.join(node[:rightscale][:collectd_lib], "plugins", 'haproxy')) do
     source "haproxy1.4.rb"
     cookbook 'lb_haproxy'
     mode "0755"
   end
   
   # add a collectd config file for the haproxy collectd script with the exec plugin and restart collectd if necessary
-  template ::File.join(node[:rs_utils][:collectd_plugin_dir], 'haproxy.conf') do
+  template ::File.join(node[:rightscale][:collectd_plugin_dir], 'haproxy.conf') do
     backup false
     source "haproxy_collectd_exec.erb"
     notifies :restart, resources(:service => "collectd")
@@ -260,7 +261,7 @@ action :setup_monitoring do
   
   ruby_block "add_collectd_gauges" do
     block do
-      types_file = ::File.join(node[:rs_utils][:collectd_share], 'types.db')
+      types_file = ::File.join(node[:rightscale][:collectd_share], 'types.db')
       typesdb = IO.read(types_file)
       unless typesdb.include?('gague-age') && typesdb.include?('haproxy_sessions')
         typesdb += "\nhaproxy_sessions        current_queued:GAUGE:0:65535, current_session:GAUGE:0:65535\nhaproxy_traffic         cumulative_requests:COUNTER:0:200000000, response_errors:COUNTER:0:200000000, health_check_errors:COUNTER:0:200000000\nhaproxy_status          status:GAUGE:-255:255\n"

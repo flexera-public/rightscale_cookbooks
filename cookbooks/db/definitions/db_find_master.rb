@@ -17,7 +17,7 @@
 
 define :db_find_master do
 
-  r = rs_utils_server_collection "master_servers" do
+  r = rightscale_server_collection "master_servers" do
     tags 'rs_dbrepl:master_instance_uuid'
     secondary_tags ['rs_dbrepl:master_active', 'server:private_ip_0']
     action :nothing
@@ -100,4 +100,10 @@ define :db_find_master do
 
   raise "No master DB found" unless node[:db][:current_master_ip] && node[:db][:current_master_uuid]
 
+  db_state_set "Set master/slave state" do
+    master_uuid node[:db][:current_master_uuid]
+    master_ip node[:db][:current_master_ip]
+    is_master node[:db][:this_is_master]
+    immediate true
+  end
 end

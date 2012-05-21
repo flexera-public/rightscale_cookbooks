@@ -6,7 +6,7 @@ long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 
 version          "0.0.1"
 
-depends "rs_utils"
+depends "rightscale"
 depends "repo_svn"
 depends "repo_git"
 depends "repo_ros"
@@ -35,7 +35,7 @@ attribute "repo/default/revision",
   :default => "master",
   :recipes => ["repo::default"]
 
-#SVN
+# SVN
 attribute "repo/default/svn_username",
   :display_name => "SVN username",
   :description => "Username for SVN repository.",
@@ -50,59 +50,56 @@ attribute "repo/default/svn_password",
   :default => "",
   :recipes => ["repo::default"]
 
-#GIT
-attribute "repo/default/ssh_key",
-  :display_name => "SSH Key",
+# GIT
+attribute "repo/default/git_ssh_key",
+  :display_name => "Git SSH Key",
   :description => "The private SSH key of the git repository.",
   :default => "",
   :required => "recommended",
   :recipes => ["repo::default"]
 
-#ROS
+# ROS
 attribute "repo/default/storage_account_provider",
   :display_name => "ROS Storage Account Provider",
-  :description => "Location where the source file is saved. Used by recipes to upload to Amazon S3 or Rackspace Cloud Files.",
+  :description => "Location where the source file is saved. Used to pull source from Remote Object Stores.",
   :required => "optional",
   :choice => [ "S3", "CloudFiles" ],
   :recipes => ["repo::default"]
 
 attribute "repo/default/storage_account_id",
   :display_name => "ROS Storage Account ID",
-  :description => "In order to write the repository to the specified cloud storage location, you need to provide cloud authentication credentials. For Amazon S3, use your Amazon access key ID (e.g., cred:AWS_ACCESS_KEY_ID). For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME).",
+  :description => "Cloud storage account ID required to access specified cloud storage location. For Amazon S3, use your Amazon access key ID (e.g., cred:AWS_ACCESS_KEY_ID). For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME).",
   :required => "optional",
   :recipes => ["repo::default"]
 
 attribute "repo/default/storage_account_secret",
   :display_name => "ROS Storage Account Secret",
-  :description => "In order to write the dump file to the specified cloud storage location, you will need to provide cloud authentication credentials. For Amazon S3, use your AWS secret access key (e.g., cred:AWS_SECRET_ACCESS_KEY). For Rackspace Cloud Files, use your Rackspace account API key (e.g., cred:RACKSPACE_AUTH_KEY).",
+  :description => "Cloud storage account secret required to access specified cloud storage location. For Amazon S3, use your AWS secret access key (e.g., cred:AWS_SECRET_ACCESS_KEY). For Rackspace Cloud Files, use your Rackspace account API key (e.g., cred:RACKSPACE_AUTH_KEY).",
   :required => "optional",
   :recipes => ["repo::default"]
 
 attribute "repo/default/container",
   :display_name => "ROS Container",
-  :description => "The cloud storage location where the dump file will be saved to or restored from. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name.",
+  :description => "The cloud storage location where source project repo is located. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name.",
   :required => "optional",
   :recipes => ["repo::default"]
 
 attribute "repo/default/prefix",
   :display_name => "ROS Prefix",
-  :description => "The prefix that will be used to name/locate the backup of a particular source repository. Defines the prefix of the source repo file name that will be used to name the downloaded repository file.",
+  :description => "Filename of required source repository archive. Ex: source.tar.gz",
   :required => "optional",
   :recipes => ["repo::default"]
-
-#capistrano attributes used in repo::do_pull
 
 attribute "repo/default/perform_action",
   :display_name => "Action",
   :description => "Choose the pull action which will be performed, 'pull'- standard repo pull, 'capistrano_pull' standard pull and then capistrano deployment style will be applied.",
   :choice => [ "pull", "capistrano_pull" ],
-  :required => "recommended",
-  :recipes => ["repo::do_pull"]
-
+  :default => "pull",
+  :required => "optional",
+  :recipes => ["repo::default"]
 
 attribute "repo/default/destination",
   :display_name => "Project App root",
-  :description => "Path to where project repo will be pulled",
-  :required => "recommended",
-  :recipes => ["repo::do_pull"]
-
+  :description => "Destination location path for project repo",
+  :required => "optional",
+  :recipes => ["repo::default"]

@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "rs_utils": ">= 0.0.0"
+    "rightscale": ">= 0.0.0"
   },
   "name": "sys",
   "maintainer_email": "support@rightscale.com",
