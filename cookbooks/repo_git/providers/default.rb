@@ -11,7 +11,7 @@ action :pull do
   capistrano_dir="/home/capistrano_repo"
   ruby_block "Before pull" do
     block do
-      Chef::Log.info "check previous repo in case of action change"
+      Chef::Log.info "  Check for previous capistrano repository in case of action change"
       if (::File.exists?("#{new_resource.destination}") == true && ::File.symlink?("#{new_resource.destination}") == true && ::File.exists?("#{capistrano_dir}") == true)
         ::File.rename("#{new_resource.destination}", "#{capistrano_dir}/releases/capistrano_old_"+::Time.now.strftime("%Y%m%d%H%M"))
       end
@@ -20,31 +20,31 @@ action :pull do
     end
   end
 
-  # pull repo (if exist)
-  ruby_block "Pull existing git repository at #{new_resource.destination}" do
-    only_if do ::File.directory?(new_resource.destination) end
-    block do
-      branch = new_resource.revision
+  destination = new_resource.destination
+  repository_url = new_resource.repository
+  revision = new_resource.revision
+  app_user = new_resource.app_user
 
-      Dir.chdir new_resource.destination
-      Chef::Log.info "  Updating existing git repo at #{new_resource.destination}"
-      Chef::Log.info `git pull`
-    end
-  end
-
-  # Clone repo (if not exist)
-  ruby_block "Clone new git repository at #{new_resource.destination}" do
-    not_if do ::File.directory?(new_resource.destination) end
-    block do
-      Chef::Log.info "  Creating new git repo at #{new_resource.destination}"
-      Chef::Log.info `git clone #{new_resource.repository} -- #{new_resource.destination}`
-      branch = new_resource.revision
-      if "#{branch}" != "master"
-        dir = "#{new_resource.destination}"
-        Dir.chdir(dir) 
-        Chef::Log.info `git checkout --track -b #{branch} origin/#{branch}`
+  # If repository already exists, just update it
+  if ::File.directory?("#{destination}/.git")
+    log "  Git project repository already exists, updating to latest revision"
+    git_action = :checkout
+  else
+    ruby_block "Backup of existing project directory" do
+      only_if do ::File.directory?(destination) end
+      block do
+        ::File.rename("#{destination}", "#{destination}"+::Time.now.strftime("%Y%m%d%H%M"))
       end
     end
+    log "  Downloading new Git project repository"
+    git_action = :sync
+  end
+
+  git "#{destination}" do
+    repository repository_url
+    reference revision
+    user app_user
+    action git_action
   end
 
   # Delete SSH key & clear GIT_SSH
@@ -54,7 +54,7 @@ action :pull do
     end
   end
 
-  Log "  GIT repo pull action - finished successfully!"
+  log "  GIT repository update/download action - finished successfully!"
 end
 
 action :capistrano_pull do
