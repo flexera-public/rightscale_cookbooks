@@ -15,7 +15,7 @@ Please see metadata.rb file for the latest dependencies.
 
 == KNOWN LIMITATIONS:
 
-There are no know limitations.
+There are no known limitations.
 
 == SETUP/USAGE:
 
