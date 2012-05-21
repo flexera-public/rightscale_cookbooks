@@ -31,11 +31,13 @@ end
 # Setting app LWRP attribute
 # Destination directory for the application
 node[:app][:destination]= "#{project_home}/#{node[:web_apache][:application_name]}"
-# Creating new project root directory
-directory "#{node[:app][:destination]}" do
-  recursive true
-end
 
 node[:app][:root] = node[:app][:destination] + "/public"
+
+# Creating new project root directory
+# Create the directory so apache can start before the application is installed
+directory "#{node[:app][:root]}" do
+  recursive true
+end
 
 rightscale_marker :end
