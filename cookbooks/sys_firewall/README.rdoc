@@ -2,30 +2,35 @@
 
 == DESCRIPTION:
 
-RightScale firewall cookbook  
-
-Built upon the opscode iptables cookbook, this coobook provides a LWRP
-for managing access to mutliple servers in a deployment using machine 
-tags.
-
-== DETAILS:
+Built upon the opscode iptables cookbook, this coobook provides a LWRP for
+managing access to mutliple servers in a deployment using machine tags.
 
 == REQUIREMENTS:
 
-Requires a VM launched from a RightScale managed RightImage 
+Requires a VM launched from a RightScale managed RightImage .
 
-== SETUP:
+== COOKBOOKS DEPENDENCIES:
 
-== USAGE:
+Please see metadata.rb file for the latest dependencies.
 
- * Use the default recipe in conjunction with the 'Firewall' input to 
-   enable or disable iptables.
+== KNOWN LIMITATIONS:
 
- * Use setup_rule recipe for enabling/disabling specific ports.
+There are no known limitations.
 
-=== Updating firewall rules using tags*
+== SETUP/USAGE:
+
+* Use the default recipe in conjunction with the 'Firewall' input to enable or
+  disable iptables.
+* Use setup_rule recipe for enabling/disabling specific ports.
+
+== DETAILS:
+
+=== Updating firewall rules using tags
+
+All tag based actions are scoped to the deployment.
 
 ==== Update Action
+
 To open a local port to all servers with a given tag use:
 
   sys_firewall "Open this database's ports to all appservers" do
@@ -35,10 +40,11 @@ To open a local port to all servers with a given tag use:
     action :update
   end
   
-This can be useful as a server is booting to open up access for multiple 
-systems at once.
+This can be useful as a server is booting to open up access for multiple systems
+at once.
 
 ==== Update Request Action
+
 To request all servers with a given tag close a port to a given IP address use:
 
   sys_firewall "Request all appservers close ports to this loadbalancer" do
@@ -52,13 +58,9 @@ To request all servers with a given tag close a port to a given IP address use:
 This can be useful when decommissioning a running server that had previously
 requested ports opened.
 
-  
-* all tag based actions are scoped to the deployment
+= LICENSE:
 
-== KNOWN LIMITATIONS
-
-= LICENSE
-
-Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-if applicable, other agreements such as a RightScale Master Subscription Agreement.
+Copyright RightScale, Inc. All rights reserved.  All access and use subject to
+the RightScale Terms of Service available at http://www.rightscale.com/terms.php
+and, if applicable, other agreements such as a RightScale Master Subscription
+Agreement.
