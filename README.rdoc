@@ -10,7 +10,7 @@ They can be used without modification by mixing-and-matching recipes or as a sta
 
 These are your cookbooks!  
 
-As a good starting point, the <b>COOKBOOK LIST</b> section below will give you a summary of what each cookbook does.  From there, each cookbook has it's own README file that goes into depth about what it does and how to use it -- this is the information you need if you want to create a runlist or ServerTemplate by mixing and matching recipes.  
+As a good starting point, the <b>COOKBOOK LIST</b> section below will give you a summary of what each cookbook does.  From there, each cookbook has its own README file that goes into depth about what it does and how to use it -- this is the information you need if you want to create a runlist or ServerTemplate by mixing and matching recipes.  
 
 For a deeper understanding of how to navigate and find things in these cookbooks, be sure to take a look at the <b>DESIGN CONVENTIONS</b> section.  This will give you an intro into some of the design patterns and conventions used throughout this collection.  NOTE: This section is not for the faint of heart as it deals with some advanced Chef topics.
 
@@ -24,7 +24,7 @@ on the RightScale Cloud Management Platform.
 
 == COOKBOOK LIST
 
-[rightscale] Base recipes used to setup services used by the RightScale Cloud Management Platform.
+[rightscale] Base recipes used to set up services used by the RightScale Cloud Management Platform.
 
 [block_device] This cookbook provides the building blocks for Multi-Cloud backup/restore support.
 
