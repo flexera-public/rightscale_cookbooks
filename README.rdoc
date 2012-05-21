@@ -24,9 +24,9 @@ on the RightScale Cloud Management Platform.
 
 == COOKBOOK LIST
 
-rightscale   : Base recipes used to setup services used by the RightScale Cloud Management Platform
+[rightscale] Base recipes used to setup services used by the RightScale Cloud Management Platform.
 
-block_device : This cookbook provides the building blocks for Multi-Cloud backup/restore support.
+[block_device] This cookbook provides the building blocks for Multi-Cloud backup/restore support.
 
 ...
 
@@ -59,9 +59,9 @@ TODO
 
 == ADDITIONAL RESOURCES
 
-* [1] http://wiki.opscode.com/display/chef/About
-* [2] http://support.rightscale.com/12-Guides/Dashboard_Users_Guide/Design/ServerTemplates/Concepts/About_ServerTemplates
-* [3] http://support.rightscale.com/03-Tutorials/02-AWS/E2E_Examples/3_Tier_Deployment_(11H1)#Introduction
+ [1] http://wiki.opscode.com/display/chef/About
+ [2] http://support.rightscale.com/12-Guides/Dashboard_Users_Guide/Design/ServerTemplates/Concepts/About_ServerTemplates
+ [3] http://support.rightscale.com/03-Tutorials/02-AWS/E2E_Examples/3_Tier_Deployment_(11H1)#Introduction
 
 
 == LICENSE
