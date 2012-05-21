@@ -5,7 +5,8 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-# This is adaptation of  Opscode "deploy" resource to use it with RightScale repo LWRP
+# This is adaptation of Opscode "deploy" resource to use it with RightScale repository LWRPs (cookbooks/repo, cookbooks/repo_git,
+#  cookbooks/repo_ros, cookbooks/repo_svn,)
 
 capistrano_dir="/home/capistrano_repo"
 # More detailed parameters descriptions you can find in repo/resources/default.rb
@@ -22,12 +23,12 @@ define :capistranize_repo,
        :symlinks => ({}),
        :scm_provider=> "" do
 
-  Log "  Capistrano deployment creation - in progress..."
+  log "  Capistrano deployment creation - in progress..."
 
   # Looking for old deployments and backup them if found any
   ruby_block "Before deploy" do
     block do
-     Chef::Log.info("check previous repo in case of action change")
+     Chef::Log.info("  Checking for previous project repository in case of action change")
       if (::File.exists?("#{params[:destination]}") == true && ::File.symlink?("#{params[:destination]}") == false)
         ::File.rename("#{params[:destination]}", "#{params[:destination]}_old")
       elsif (::File.exists?("#{params[:destination]}") == true && ::File.symlink?("#{params[:destination]}") == true && ::File.exists?("#{capistrano_dir}") == false)
@@ -41,7 +42,7 @@ define :capistranize_repo,
     recursive true
   end
 
-  # Deleting /cached-copy dir which can contain previous version of project repo
+  # Deleting /cached-copy dir which can contain previous version of project repository
   #  Can cause definition fail in case of provider type change.
   directory "#{capistrano_dir}/shared/cached-copy" do
     recursive true
@@ -61,7 +62,7 @@ define :capistranize_repo,
     enable_submodules = true
   end
 
-  Log "  Capistrano deployment will use #{scm_prov} for initialization"
+  log "  Capistrano deployment will use #{scm_prov} for initialization"
   # Creating capistrano deployment
   deploy "#{capistrano_dir}" do
     scm_provider               scm_prov
@@ -82,14 +83,14 @@ define :capistranize_repo,
     environment                params[:environment]
   end
 
-  Log "  Capistrano deployment created.  Performing secondary operations"
+  log "  Capistrano deployment created.  Performing secondary operations"
   # Removing old symlinks from project folder
   link params[:destination] do
     action :delete
     only_if "test -L #{params[:destination].chomp}"
   end
 
-  # Recreating symlinks and perform backup of old project dirs
+  # Recreating symlinks and perform backup of old project directories
   #  To avoid problems from using different provider types
   ruby_block "After deploy" do
     block do
