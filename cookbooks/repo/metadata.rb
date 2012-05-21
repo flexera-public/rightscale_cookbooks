@@ -63,7 +63,13 @@ attribute "repo/default/storage_account_provider",
   :display_name => "ROS Storage Account Provider",
   :description => "Location where the source file is saved. Used to pull source from Remote Object Stores.",
   :required => "optional",
-  :choice => [  "s3", "cloudfiles", "cloudfilesuk", "SoftLayer_Dallas", "SoftLayer_Singapore", "SoftLayer_Amsterdam" ],
+  :choice => [
+    "s3",
+    "cloudfiles",
+    "cloudfilesuk",
+    "SoftLayer_Dallas",
+    "SoftLayer_Singapore",
+    "SoftLayer_Amsterdam" ],
   :recipes => ["repo::default"]
 
 attribute "repo/default/storage_account_id",
