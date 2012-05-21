@@ -8,34 +8,41 @@
 
 action :pull do
 
-  # setup parameters 
-  password = new_resource.svn_password
-  branch = new_resource.revision
+  destination = new_resource.destination
+  repository_url = new_resource.repository
+  revision = new_resource.revision
+  app_user = new_resource.app_user
+  svn_password = new_resource.svn_password
+  svn_user = new_resource.svn_username
   params = "--no-auth-cache --non-interactive"
-  params << " --username #{new_resource.svn_username} --password #{password}" if "#{password}" != ""
-  params << " --revision #{branch}" if "#{branch}" != ""
 
-  # pull repo (if exist)
-  ruby_block "Pull existing Subversion repository at #{new_resource.destination}" do
-    only_if do ::File.directory?(new_resource.destination) end
-    block do
-      Dir.chdir new_resource.destination
-      Chef::Log.info "  Updating existing svn repo at #{new_resource.destination}"
-      Chef::Log.info `svn update #{params} #{new_resource.repository} #{new_resource.destination}`
+  # If repository already exists, just update it
+  if ::File.directory?("#{destination}/.svn")
+    log "  Svn project repository already exists, updating to latest revision"
+    svn_action = :checkout
+  else
+    ruby_block "Backup of existing project directory" do
+      only_if do ::File.directory?(destination) end
+      block do
+        ::File.rename("#{destination}", "#{destination}"+::Time.now.strftime("%Y%m%d%H%M"))
+      end
     end
+    log "  Downloading new Svn project repository"
+    svn_action = :sync
   end
 
-  # clone repo (if not exist)
-  ruby_block "Checkout new Subversion repository to #{new_resource.destination}" do
-    not_if do ::File.directory?(new_resource.destination) end
-    block do
-      Chef::Log.info "  Block executed"
-      Chef::Log.info "  Creating new svn repo at #{new_resource.destination} #{params} #{new_resource.repository}"
-      Chef::Log.info `svn checkout #{params} #{new_resource.repository} #{new_resource.destination}`
-    end
+  subversion "#{destination}" do
+    repository repository_url
+    reference revision
+    user app_user
+    svn_arguments params
+    svn_username svn_user
+    svn_password svn_password
+    action svn_action
   end
 
-  Log "  SVN repo pull action - finished successfully!"
+  log "  SVN repository update/download action - finished successfully!"
+
 end
 
 action :capistrano_pull do
@@ -70,5 +77,5 @@ action :capistrano_pull do
     scm_provider scm_provider
   end
 
-  Log "  Capistrano SVN deployment action - finished successfully!"
+ log "  Capistrano SVN deployment action - finished successfully!"
 end
