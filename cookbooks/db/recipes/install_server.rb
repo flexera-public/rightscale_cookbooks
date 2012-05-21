@@ -10,12 +10,13 @@ rightscale_marker :begin
 # Master DNS TTL Check - HA Only
 #
 # Checks the TTL of the Master DNS entry and exits with an error if the 
-# TTL is greater than 120 seconds. The purpose of this script is to prevent 
+# TTL is greater than 60 seconds. The purpose of this script is to prevent
 # future DNS related problems pertaining to your database. For example, if you
 # accidentally configure a DNS TTL of 3600 seconds on your Master DB DNS A 
 # Record, it might work fine at first, but you will experience issues when you 
 # attempt to promote a Slave-DB to Master-DB. As a best practice you should 
-# use a low TTL for your database that's less than or equal to 120 seconds. 
+# use a low TTL for your database that's less than or equal to 60 seconds.
+# Update: for CloudDNS the TTL should be <= 300s.
 #
 
 
@@ -39,7 +40,7 @@ ruby_block "Master DNS TTL Check" do
     if dnsttl.to_i > OPT_DNS_TTL_LIMIT.to_i
        raise "Master DB DNS TTL set to high.  Must be set <= #{OPT_DNS_TTL_LIMIT}. Found #{dnsttl} for #{MASTER_DB_DNSNAME}"
     end
-    Chef::Log.info("Pass: Master DB DNS TTL: #{dnsttl} < TTL Limit (#{OPT_DNS_TTL_LIMIT}) for #{MASTER_DB_DNSNAME}")
+    Chef::Log.info("Pass: Master DB DNS TTL: #{dnsttl} <= TTL Limit (#{OPT_DNS_TTL_LIMIT}) for #{MASTER_DB_DNSNAME}")
   end
 end
 
