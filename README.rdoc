@@ -6,7 +6,7 @@ Welcome to the RightScale cookbooks -- your infrastructure, codified!
 
 These cookbooks are a set of interchangeable parts for your infrastructure written using the open-source systems integration framework called "Chef"[1] 
 
-They can be used without modification by mixing-and-matching recipes or as a starting point for your own creations. These cookbooks are built for use within RightScale's ServerTemplates[2] to create 3-tier deployment architectures for High Availability in the cloud[3].  While these deployments fit the requirements for many auto-scaling HA deployments, no single infrastructure need is exactly the same -- here is the source code that gives you the choice of how much (or how little) customization you want.
+They can be used without modification by mixing-and-matching recipes or as a starting point for your own creations. These cookbooks are built for use within RightScale's ServerTemplates[2] to create 3-tier deployment architectures for High Availability in the cloud[3].  While these deployments fit the requirements for many auto-scaling HA deployments, however no single infrastructure need is exactly the same -- the source code is provided here to give you the control over how much (or how little) customization you want.
 
 These are your cookbooks!  
 
