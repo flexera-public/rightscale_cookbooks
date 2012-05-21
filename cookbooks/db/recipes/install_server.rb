@@ -55,4 +55,9 @@ db node[:db][:data_dir] do
   action :install_server
 end
 
+# if server already a master, reset node attributes and tags. ie restart from stop/start
+db_register_master do
+  only_if { node[:db][:this_is_master] && node[:db][:init_status] == :initialized }
+end
+
 rightscale_marker :end
