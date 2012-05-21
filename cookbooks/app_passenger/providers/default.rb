@@ -110,16 +110,16 @@ action :setup_vhost do
     only_if do ::File.exists?("/etc/httpd/conf.d/ssl.conf")  end
   end
 
-    # Enabling required apache modules
-    node[:app_passenger][:module_dependencies].each do |mod|
-      apache_module mod
-    end
+  # Enabling required apache modules
+  node[:app_passenger][:module_dependencies].each do |mod|
+    apache_module mod
+  end
 
-    # Apache fix on RHEL
-    file "/etc/httpd/conf.d/README" do
-      action :delete
-      only_if do node[:platform] == "redhat" end
-    end
+  # Apache fix on RHEL
+  file "/etc/httpd/conf.d/README" do
+    action :delete
+    only_if do node[:platform] == "redhat" end
+  end
 
   # Generation of new apache ports.conf
   log "  Generating new apache ports.conf"
@@ -153,7 +153,8 @@ action :setup_vhost do
     destination                node[:app][:destination]
     apache_maintenance_page    node[:app_passenger][:apache][:maintenance_page]
     apache_serve_local_files   node[:app_passenger][:apache][:serve_local_files]
-
+    passenger_user             node[:app_passenger][:apache][:user]
+    passenger_group            node[:app_passenger][:apache][:group]
   end
 
 
@@ -166,29 +167,29 @@ action :setup_db_connection do
   deploy_dir = new_resource.destination
   db_name = new_resource.database_name
   db_adapter = node[:app_passenger][:project][:db][:adapter]
-  
-  log "  Generating database.yml"  
+
+  log "  Generating database.yml"
   # Tell MySQL to fill in our connection template
-  if db_adapter == "mysql"  
-    db_mysql_connect_app "#{deploy_dir.chomp}/config/database.yml"  do
+  if db_adapter == "mysql"
+    db_mysql_connect_app "#{deploy_dir.chomp}/config/database.yml" do
       template      "database.yml.erb"
       cookbook      "app_passenger"
       owner         node[:app_passenger][:apache][:user]
-      group         node[:app_passenger][:apache][:user]
+      group         node[:app_passenger][:apache][:group]
       database      db_name
     end
-  # Tell PostgreSQL to fill in our connection template    
-  elsif db_adapter == "postgresql"  
-    db_postgres_connect_app "#{deploy_dir.chomp}/config/database.yml"  do
+  # Tell PostgreSQL to fill in our connection template
+  elsif db_adapter == "postgresql"
+    db_postgres_connect_app "#{deploy_dir.chomp}/config/database.yml" do
       template      "database.yml.erb"
       cookbook      "app_passenger"
       owner         node[:app_passenger][:apache][:user]
-      group         node[:app_passenger][:apache][:user]
+      group         node[:app_passenger][:apache][:group]
       database      db_name
     end
   else
     raise "Unrecognized database adapter #{node[:app_passenger][:project][:db][:adapter]}, exiting "
-  end 
+  end
 
   # Defining $RAILS_ENV
   ENV['RAILS_ENV'] = node[:app_passenger][:project][:environment]
@@ -210,28 +211,18 @@ end
 action :code_update do
   deploy_dir = new_resource.destination
 
+  log "  Starting code update sequence"
+  log "  Current project doc root is set to #{deploy_dir}"
 
-  # Reading app name from tmp file (for recipe execution in "operational" phase))
-  # Waiting for "run_lists"
-  if(deploy_dir == "/home/rails/")
-    app_name = IO.read('/tmp/appname')
-    deploy_dir = "/home/rails/#{app_name.to_s.chomp}"
-  end
-
-  # Preparing project dir, required for apache+passenger
-  log "  Creating directory for project deployment - <#{deploy_dir}>"
-  directory "/home/rails/" do
-    recursive true
-  end
-  
   log "  Starting source code download sequence..."
   repo "default" do
     destination deploy_dir
-    action :capistrano_pull
+    action node[:repo][:default][:perform_action].to_sym
     app_user node[:app_passenger][:apache][:user]
     environment "RAILS_ENV" => "#{node[:app_passenger][:project][:environment]}"
     persist false
   end
+
 
   log"  Generating new logrotatate config for rails application"
   rightscale_logrotate_app "rails" do
@@ -240,7 +231,7 @@ action :code_update do
     path ["#{deploy_dir}/log/*.log" ]
     frequency "daily"
     rotate 7
-    create "660 #{node[:app_passenger][:apache][:user]} #{node[:app_passenger][:apache][:user]}"
+    create "660 #{node[:app_passenger][:apache][:user]} #{node[:app_passenger][:apache][:group]}"
   end
 
 end

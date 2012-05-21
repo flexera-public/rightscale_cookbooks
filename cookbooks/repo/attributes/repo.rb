@@ -5,7 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-set_unless[:repo][:default][:destination] = "/tmp/repo"
+set_unless[:repo][:default][:destination] = ""
 set_unless[:repo][:default][:repository] = ""
 set_unless[:repo][:default][:revision] = "HEAD"
 set_unless[:repo][:default][:provider] = "repo_git"

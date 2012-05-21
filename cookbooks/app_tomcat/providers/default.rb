@@ -83,7 +83,7 @@ action :install do
     raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting "
   end
 
-  # "Linking RightImage JAVA_HOME to what Tomcat6 expects to be..."
+  # Linking RightImage JAVA_HOME to what Tomcat6 expects to be...
   link "/usr/lib/jvm/java" do
     to "/usr/java/default"
   end
@@ -123,14 +123,6 @@ action :install do
     EOH
   end
 
-  ENV['APP_NAME'] = node[:web_apache][:application_name]
-  bash "save global vars" do
-    flags "-ex"
-    code <<-EOH
-      echo $APP_NAME >> /tmp/appname
-    EOH
-  end
-
 end
 
 # Setup apache virtual host and corresponding tomcat configs
@@ -147,7 +139,7 @@ action :setup_vhost do
     variables(
       :app_user => node[:app_tomcat][:app_user],
       :java_xms => node[:app_tomcat][:java][:xms],
-      :java_xmx => node[:app_tomcat][:java][:xms],
+      :java_xmx => node[:app_tomcat][:java][:xmx],
       :java_permsize => node[:app_tomcat][:java][:permsize],
       :java_maxpermsize => node[:app_tomcat][:java][:maxpermsize],
       :java_newsize => node[:app_tomcat][:java][:newsize],
@@ -164,7 +156,8 @@ action :setup_vhost do
     mode "0644"
     cookbook 'app_tomcat'
     variables(
-            :doc_root => node[:app_tomcat][:docroot]
+            :doc_root => node[:app_tomcat][:docroot],
+            :app_port => node[:app][:port]
           )
   end
 
@@ -314,24 +307,27 @@ action :setup_db_connection do
 
   db_name = new_resource.database_name
   db_adapter = node[:app_tomcat][:db_adapter]
-  
-  log "  Creating context.xml"
-  if db_adapter == "mysql"  
+  datasource = node[:app_tomcat][:datasource_name]
+
+  log "  Creating context.xml for DB: #{db_name} using adapter #{db_adapter} and datasource #{datasource}"
+  if db_adapter == "mysql"
     db_mysql_connect_app "/etc/tomcat6/context.xml"  do
       template      "context_xml.erb"
       owner         "#{node[:app_tomcat][:app_user]}"
       group         "root"
       mode          "0644"
       database      db_name
+      datasource    datasource
       cookbook      'app_tomcat'
     end
-  elsif db_adapter == "postgresql"  
+  elsif db_adapter == "postgresql"
     db_postgres_connect_app "/etc/tomcat6/context.xml"  do
       template      "context_xml.erb"
       owner         "#{node[:app_tomcat][:app_user]}"
       group         "root"
       mode          "0644"
       database      db_name
+      datasource    datasource
       cookbook      'app_tomcat'
     end
   else
@@ -389,8 +385,7 @@ action :setup_monitoring do
     flags "-ex"
     code <<-EOH
       cat <<'EOF'>>/etc/tomcat6/tomcat6.conf
-      CATALINA_OPTS="\$CATALINA_OPTS -Djcd.host=#{node[:rightscale][:instance_uuid]} -Djcd.instance=tomcat6 -Djcd.dest=udp://#{node[:rightscale][:servers][:sketchy][:hostname]}:3011 -Djcd.tmpl=javalang,tomcat -javaagent:/usr/share/tomcat6/lib/collectd.jar"
-      EOF
+CATALINA_OPTS="\$CATALINA_OPTS -Djcd.host=#{node[:rightscale][:instance_uuid]} -Djcd.instance=tomcat6 -Djcd.dest=udp://#{node[:rightscale][:servers][:sketchy][:hostname]}:3011 -Djcd.tmpl=javalang,tomcat -javaagent:/usr/share/tomcat6/lib/collectd.jar"
     EOH
   end
 
@@ -400,27 +395,14 @@ end
 #Download/Update application repository
 action :code_update do
 
+  deploy_dir = new_resource.destination
   log "  Starting code update sequence"
-  # Check that we have the required attributes set
-  raise "You must provide a destination for your application code." if ("#{node[:app_tomcat][:docroot]}" == "")
-
-  # Reading app name from tmp file (for execution in "operational" phase))
-  # Waiting for "run_lists"
-  deploy_dir = node[:app_tomcat][:docroot]
-  if(deploy_dir == "/srv/tomcat6/webapps/")
-    app_name = IO.read('/tmp/appname')
-    deploy_dir = "/srv/tomcat6/webapps/#{app_name.to_s.chomp}"
-
-  end
-
-  directory "/srv/tomcat6/webapps/" do
-    recursive true
-  end
+  log "  Current tomcat docroot is set to #{deploy_dir}"
 
   log "  Downloading project repo"
   repo "default" do
     destination deploy_dir
-    action :capistrano_pull
+    action   node[:repo][:default][:perform_action].to_sym
     app_user node[:app_tomcat][:app_user]
     persist false
   end
@@ -429,11 +411,11 @@ action :code_update do
   bash "set_root_war_and_chown_home" do
     flags "-ex"
     code <<-EOH
-      cd #{node[:app_tomcat][:docroot]}
-      if [ ! -z "#{node[:app_tomcat][:code][:root_war]}" -a -e "#{node[:app_tomcat][:docroot]}/#{node[:app_tomcat][:code][:root_war]}" ] ; then
-        mv #{node[:app_tomcat][:docroot]}/#{node[:app_tomcat][:code][:root_war]} #{node[:app_tomcat][:docroot]}/ROOT.war
+      cd #{deploy_dir}
+      if [ ! -z "#{node[:app_tomcat][:code][:root_war]}" -a -e "#{deploy_dir}/#{node[:app_tomcat][:code][:root_war]}" ] ; then
+        mv #{deploy_dir}/#{node[:app_tomcat][:code][:root_war]} #{deploy_dir}/ROOT.war
       fi
-      chown -R #{node[:app_tomcat][:app_user]}:#{node[:app_tomcat][:app_user]} #{node[:app_tomcat][:docroot]}
+      chown -R #{node[:app_tomcat][:app_user]}:#{node[:app_tomcat][:app_user]} #{deploy_dir}
       sleep 5
     EOH
     only_if do node[:app_tomcat][:code][:root_war] != "ROOT.war" end
