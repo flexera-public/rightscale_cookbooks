@@ -7,7 +7,7 @@
 
 # Stop apache
 action :stop do
-  log "  Running start sequence"
+  log "  Running stop sequence"
   service "apache2" do
     action :start
     persist false
@@ -17,7 +17,7 @@ end
 
 # Start apache
 action :start do
-    log "  Running start sequence"
+  log "  Running start sequence"
   service "apache2" do
     action :start
     persist false
@@ -36,27 +36,18 @@ end
 action :install do
   # Install user-specified Packages and Modules
   packages = new_resource.packages
-  log "Packages which will be installed #{packages}"
+  log "  Packages which will be installed #{packages}"
 
   packages.each do |p|
     package p
   end
 
-  node[:php][:modules_list].each do |p|
+  node[:app_php][:modules_list].each do |p|
     package p
   end
 
-  node[:php][:module_dependencies].each do |mod|
+  node[:app_php][:module_dependencies].each do |mod|
     apache_module mod
-  end
-  # Saving project name variables for use in operational mode
-  node[:app][:destination]="#{node[:web_apache][:docroot]}"
-  ENV['APP_NAME'] = "#{node[:web_apache][:docroot]}}"
-  bash "save global vars" do
-    flags "-ex"
-    code <<-EOH
-      echo $APP_NAME >> /tmp/appname
-    EOH
   end
 
 end
@@ -75,7 +66,7 @@ action :setup_vhost do
 
   # Adds php port to list of ports for webserver to listen on
   app_add_listen_port php_port
-  
+
   # Configure apache vhost for PHP
   web_app node[:web_apache][:application_name] do
     template "app_server.erb"
@@ -94,32 +85,32 @@ action :setup_db_connection do
   # Make sure config dir exists
   directory ::File.join(project_root, "config") do
     recursive true
-    owner node[:php][:app_user]
-    group node[:php][:app_user]
+    owner node[:app_php][:app_user]
+    group node[:app_php][:app_user]
   end
 
-  db_adapter = node[:php][:db_adapter]
+  db_adapter = node[:app_php][:db_adapter]
   # runs only on db_adapter selection
   if db_adapter == "mysql"
     # Tell MySQL to fill in our connection template
     db_mysql_connect_app ::File.join(project_root, "config", "db.php") do
       template "db.php.erb"
       cookbook "app_php"
-      database node[:php][:db_schema_name]
-      owner node[:php][:app_user]
-      group node[:php][:app_user]
+      database node[:app_php][:db_schema_name]
+      owner node[:app_php][:app_user]
+      group node[:app_php][:app_user]
     end
   elsif db_adapter == "postgresql"
     # Tell PostgreSQL to fill in our connection template
     db_postgres_connect_app ::File.join(project_root, "config", "db.php") do
       template "db.php.erb"
       cookbook "app_php"
-      database node[:php][:db_schema_name]
-      owner node[:php][:app_user]
-      group node[:php][:app_user]
+      database node[:app_php][:db_schema_name]
+      owner node[:app_php][:app_user]
+      group node[:app_php][:app_user]
     end
   else
-    raise "Unrecognized database adapter #{node[:php][:db_adapter]}, exiting "
+    raise "Unrecognized database adapter #{node[:app_php][:db_adapter]}, exiting "
   end
 end
 
@@ -128,27 +119,13 @@ action :code_update do
 
   deploy_dir = new_resource.destination
 
-  # Reading app name from tmp file (for execution in "operational" phase))
-  # Waiting for "run_lists"
-  if(deploy_dir == "")
-    app_name = IO.read('/tmp/appname')
-    deploy_dir = "#{app_name.to_s.chomp}"
-  end
+  log "  Starting code update sequence"
+  log "  Current project doc root is set to #{deploy_dir}"
 
-  log "  Creating directory for project deployment - <#{deploy_dir}>"
-  directory "/home/webapp/" do
-    recursive true
-    not_if do ::File.exists?("/home/webapp/")  end
-  end
-
-  # Check that we have the required attributes set
-  log "You must provide a destination for your application code." if ("#{deploy_dir}" == "")
-
-  log "  Starting source code download sequence..."
   repo "default" do
     destination deploy_dir
-    action :capistrano_pull
-    app_user node[:php][:app_user]
+    action node[:repo][:default][:perform_action].to_sym
+    app_user node[:app_php][:app_user]
     persist false
   end
 

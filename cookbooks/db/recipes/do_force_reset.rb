@@ -9,7 +9,7 @@
 # This is for development and test purpose and should not be used on
 # production servers.
 
-rs_utils_marker :begin
+rightscale_marker :begin
 
 raise "Force reset safety not off.  Override db/force_safety to run this recipe" unless node[:db][:force_safety] == "off"
 
@@ -46,13 +46,7 @@ tags_to_remove.each do |each_tag|
   end
 end
 
-ruby_block "Reset db node state" do
-  block do
-    node[:db][:this_is_master] = false
-    node[:db][:current_master_uuid] = nil
-    node[:db][:current_master_ip] = nil
-  end
-end
+db_state_set "Reset master/slave state"
 
 log "  Resetting database, then starting database..."
 db DATA_DIR do
@@ -73,4 +67,4 @@ db DATA_DIR do
   action :setup_monitoring
 end
 
-rs_utils_marker :end
+rightscale_marker :end

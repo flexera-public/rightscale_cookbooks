@@ -8,7 +8,7 @@ version          "0.0.2"
 depends "db"
 depends "block_device"
 depends "sys_dns"
-depends "rs_utils"
+depends "rightscale"
 
 recipe  "db_mysql::default", "Set DB MySQL provider, set version and node variables specific to the chosen MySQL version"
 recipe  "db_mysql::default_5_1", "Set DB MySQL provider, set version 5.1 and node variables specific to MySQL 5.1"

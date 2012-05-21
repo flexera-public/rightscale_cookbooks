@@ -5,7 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-rs_utils_marker :begin
+rightscale_marker :begin
 
 class Chef::Recipe
   include RightScale::App::Helper
@@ -14,11 +14,11 @@ end
 vhosts(node[:lb][:vhost_names]).each do | vhost_name |
   sys_firewall "Request all appservers open ports to this loadbalancer" do
     machine_tag "loadbalancer:#{vhost_name}=app"
-    port node[:app][:port]
+    port node[:app][:port].to_i
     enable true
     ip_addr node[:cloud][:private_ips][0]
     action :update_request
   end
 end
 
-rs_utils_marker :end
+rightscale_marker :end

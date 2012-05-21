@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "rs_utils": ">= 0.0.0"
+    "rightscale": ">= 0.0.0"
   },
   "name": "block_device",
   "maintainer_email": "support@rightscale.com",
@@ -65,6 +65,21 @@
       ],
       "display_name": "Keep Yearly Backups (1)",
       "description": "The number of yearly primary backups to keep (i.e., rotation size)."
+    },
+    "block_device/devices/device1/backup/lineage_override": {
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+
+      ],
+      "default": "",
+      "type": "string",
+      "recipes": [
+        "block_device::do_primary_restore",
+        "block_device::do_secondary_restore"
+      ],
+      "display_name": "Backup Lineage Override",
+      "description": "If defined, this will override the input defined for 'Backup Lineage' (block_device/devices/device1/backup/lineage) so that you can restore the volume from another backup that has as different lineage name. The most recently completed snapshots will be used unless a specific timestamp value is specified for 'Restore Timestamp Override' (block_device/devices/device1/backup/timestamp_override). "
     },
     "block_device/devices/default/backup/secondary/cred/user": {
       "required": "recommended",
@@ -222,6 +237,21 @@
       "display_name": "Backup Cron Hour (2)",
       "description": "Defines the hour when the backup will be taken. Use a value of 1-24, or set to 'Ignore' to create a backup every hour."
     },
+    "block_device/devices/device2/backup/lineage_override": {
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+
+      ],
+      "default": "",
+      "type": "string",
+      "recipes": [
+        "block_device::do_primary_restore",
+        "block_device::do_secondary_restore"
+      ],
+      "display_name": "Backup Lineage Override",
+      "description": "If defined, this will override the input defined for 'Backup Lineage' (block_device/devices/device2/backup/lineage) so that you can restore the volume from another backup that has as different lineage name. The most recently completed snapshots will be used unless a specific timestamp value is specified for 'Restore Timestamp Override' (block_device/devices/device2/backup/timestamp_override). "
+    },
     "block_device/devices/device1/backup/primary/keep/max_snapshots": {
       "required": "optional",
       "calculated": false,
@@ -322,9 +352,11 @@
         "50",
         "60",
         "70",
+        "80",
+        "90",
         "100"
       ],
-      "default": "60",
+      "default": "90",
       "type": "string",
       "recipes": [
         "block_device::setup_block_device",
@@ -383,9 +415,11 @@
         "50",
         "60",
         "70",
+        "80",
+        "90",
         "100"
       ],
-      "default": "60",
+      "default": "90",
       "type": "string",
       "recipes": [
         "block_device::setup_block_device",
@@ -690,11 +724,17 @@
   "recipes": {
     "block_device::setup_block_device": "Creates, formats, and mounts a brand new block device on the instance.",
     "block_device::do_primary_backup_schedule_disable": "Disables continuous primary backups by updating the crontab file.",
-    "block_device::do_primary_backup": "Creates a primary backup in the local cloud where the server is currently running.",
+    "block_device::do_primary_backup": {
+      "thread": "block_backup",
+      "description": "Creates a primary backup in the local cloud where the server is currently running."
+    },
     "block_device::do_delete_volumes_and_terminate_server": "Deletes any currently attached volumes from the instance and then terminates the machine. WARNING: Execution of this script will delete any data on your block device!",
     "block_device::do_primary_backup_schedule_enable": "Enables continuous primary backups by updating the crontab file.",
     "block_device::do_secondary_restore": "Restores a secondary backup from the remote cloud specified by block_device/secondary provider",
-    "block_device::do_secondary_backup": "Creates a secondary backup to the remote cloud specified by block_device/secondary provider",
+    "block_device::do_secondary_backup": {
+      "thread": "block_backup",
+      "description": "Creates a secondary backup to the remote cloud specified by block_device/secondary provider"
+    },
     "block_device::do_primary_restore": "Restores a primary backup from the local cloud where the server is currently running.",
     "block_device::default": "Installs RubyGem for rightscale_tools. Sets up input dependancies for use by other cookbooks.",
     "block_device::do_force_reset": "Unmount and delete the attached block device(s) for this lineage. For test and development purposes. WARNING: Execution of this script will delete any data on your block device!",

@@ -5,7 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-rs_utils_marker :begin
+rightscale_marker :begin
 
 require 'fileutils'
 
@@ -43,14 +43,20 @@ current_mnt_device = current_mnt_device ? current_mnt_device.split[0] : nil
 
 mnt_device = current_mnt_device ||
              case root_device
-             when /sda/ then "/dev/sdb"
-             when /sde/ then "/dev/sdf"
-             when /xvda/ then "/dev/xvdb"
-             when /xvde/ then (node[:platform] == "redhat") ? "/dev/xvdj" : "/dev/xvdf"
+             when /sda/
+               "/dev/sdb"
+             when /sde/
+               "/dev/sdf"
+             when /vda/
+               "/dev/vdb"
+             when /xvda/
+               "/dev/xvdb"
+             when /xvde/
+               (node[:platform] == "redhat") ? "/dev/xvdj" : "/dev/xvdf"
              end
 
-# Only EC2 is currently supported
-if cloud == 'ec2'
+# Only EC2 and openstack is currently supported
+if cloud == 'ec2' || cloud == 'openstack'
 
   # Generate fstab entry here
   fstab_entry = "/dev/vg-data/#{lvm_device}\t#{mount_point}\t#{filesystem_type}\t#{options}\t0 0"
@@ -105,7 +111,7 @@ if cloud == 'ec2'
       block do
         require 'rightscale_tools'
 
-        @api = RightScale::Tools::API.factory('1.0')
+        @api = RightScale::Tools::API.factory('1.0') if cloud == 'ec2'
 
         def run_command(command, ignore_failure = false)
           Chef::Log.info "Running: #{command}"
@@ -119,11 +125,11 @@ if cloud == 'ec2'
         my_devices = []
         dev_index = 0
         loop do
-          if node[:ec2][:block_device_mapping]["ephemeral#{dev_index}".to_sym]
-            device = node[:ec2][:block_device_mapping]["ephemeral#{dev_index}".to_sym]
+          if node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
+            device = node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
             device = '/dev/' + device if device !~ /^\/dev\//
-            device = @api.unmap_device_for_ec2(device)
-            # verify that device is actually on the instance and is a blockSpecial
+            device = @api.unmap_device_for_ec2(device) if cloud == 'ec2'
+            # verify that device is actually on the instance and is a blockSpecial 
             if ( File.exists?(device) && File.ftype(device) == "blockSpecial" )
               my_devices << device
             else
@@ -142,7 +148,7 @@ if cloud == 'ec2'
         end
 
         run_command("vgcreate vg-data #{my_devices.join(' ')}")
-        run_command("lvcreate vg-data -n #{lvm_device} -i #{my_devices.size} -I 256 -l 60%VG")
+        run_command("lvcreate vg-data -n #{lvm_device} -i #{my_devices.size} -I 256 -l 100%VG")
         run_command("mkfs.#{filesystem_type} /dev/vg-data/#{lvm_device}")
 
         # Add the mount to fstab
@@ -161,7 +167,7 @@ if cloud == 'ec2'
     end
   end
 else
-  log "Skipping LVM on ephemeral drives setup for non-EC2 cloud #{cloud}"
+  log "Skipping LVM on ephemeral drives setup for non-ephemeral cloud #{cloud}"
 end
 
-rs_utils_marker :end
+rightscale_marker :end

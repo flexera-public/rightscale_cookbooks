@@ -5,7 +5,7 @@ description      "Installs and configures ntp as a client or server"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "1.0.0"
 
-depends "rs_utils"
+depends "rightscale"
 
 recipe "sys_ntp", "Installs and configures ntp client"
 

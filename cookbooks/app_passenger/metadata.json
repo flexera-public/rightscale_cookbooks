@@ -4,8 +4,8 @@
     "repo": ">= 0.0.0",
     "app": ">= 0.0.0",
     "web_apache": ">= 0.0.0",
-    "db": ">= 0.0.0",
-    "rs_utils": ">= 0.0.0"
+    "rightscale": ">= 0.0.0",
+    "db": ">= 0.0.0"
   },
   "name": "app_passenger",
   "maintainer_email": "support@rightscale.com",

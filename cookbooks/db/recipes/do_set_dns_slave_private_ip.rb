@@ -5,13 +5,19 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-rs_utils_marker :begin
+rightscale_marker :begin
 
 # == Set Slave DNS Record
 #
 # Sets the Slave DNS record to the private ip of the server.
 #
 # Raise exception if this server thinks it is a master.
+
+class Chef::Recipe
+  include RightScale::Database::Helper
+end
+
+db_state_get node
 
 raise "ERROR: Server is a master" if node[:db][:this_is_master]
 log 'WARN: Slave database is not initialized!' do
@@ -27,4 +33,4 @@ sys_dns "default" do
   action :set_private
 end
 
-rs_utils_marker :end
+rightscale_marker :end

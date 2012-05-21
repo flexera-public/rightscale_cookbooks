@@ -4,26 +4,12 @@
     "db_mysql": ">= 0.0.0",
     "app": ">= 0.0.0",
     "db_postgres": ">= 0.0.0",
-    "rs_utils": ">= 0.0.0"
+    "rightscale": ">= 0.0.0"
   },
   "name": "app_tomcat",
   "maintainer_email": "support@rightscale.com",
   "attributes": {
-    "tomcat/java/MaxNewSize": {
-      "required": "optional",
-      "calculated": false,
-      "choice": [
-
-      ],
-      "default": "256m",
-      "type": "string",
-      "recipes": [
-
-      ],
-      "display_name": "Tomcat Java MaxNewSize",
-      "description": "The java MaxNewSize argument (i.e. 256m)"
-    },
-    "tomcat/db_name": {
+    "app_tomcat/db_name": {
       "required": "required",
       "calculated": false,
       "choice": [
@@ -36,64 +22,7 @@
       "display_name": "Database Name",
       "description": "Enter the name of the MySQL database to use. Ex: mydatabase"
     },
-    "tomcat/code/root_war": {
-      "required": "recommended",
-      "calculated": false,
-      "choice": [
-
-      ],
-      "default": "",
-      "type": "string",
-      "recipes": [
-
-      ],
-      "display_name": "War file for ROOT",
-      "description": "The path to the war file relative to project repo root directory. Will be renamed to ROOT.war. Ex: /dist/app_test.war"
-    },
-    "tomcat/java/xmx": {
-      "required": "optional",
-      "calculated": false,
-      "choice": [
-
-      ],
-      "default": "512m",
-      "type": "string",
-      "recipes": [
-
-      ],
-      "display_name": "Tomcat Java XMX",
-      "description": "The java Xmx argument (i.e. 512m)"
-    },
-    "tomcat/db_adapter": {
-      "required": "optional",
-      "calculated": false,
-      "choice": [
-        "mysql",
-        "postgresql"
-      ],
-      "default": "mysql",
-      "type": "string",
-      "recipes": [
-        "app_tomcat::default"
-      ],
-      "display_name": "Database adapter for application ",
-      "description": "Enter database adpter wich will be used to connect to the database Default: postgresql"
-    },
-    "tomcat/java/NewSize": {
-      "required": "optional",
-      "calculated": false,
-      "choice": [
-
-      ],
-      "default": "256m",
-      "type": "string",
-      "recipes": [
-
-      ],
-      "display_name": "Tomcat Java NewSize",
-      "description": "The java NewSize argument (i.e. 256m)"
-    },
-    "tomcat/java/MaxPermSize": {
+    "app_tomcat/java/MaxPermSize": {
       "required": "optional",
       "calculated": false,
       "choice": [
@@ -107,7 +36,63 @@
       "display_name": "Tomcat Java MaxPermSize",
       "description": "The java MaxPermSize argument (i.e. 256m)"
     },
-    "tomcat/java/PermSize": {
+    "app_tomcat/code/root_war": {
+      "required": "recommended",
+      "calculated": false,
+      "choice": [
+
+      ],
+      "default": "",
+      "type": "string",
+      "recipes": [
+
+      ],
+      "display_name": "War file for ROOT",
+      "description": "The path to the war file relative to project repo root directory. Will be renamed to ROOT.war. Ex: /dist/app_test.war"
+    },
+    "app_tomcat/java/NewSize": {
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+
+      ],
+      "default": "256m",
+      "type": "string",
+      "recipes": [
+
+      ],
+      "display_name": "Tomcat Java NewSize",
+      "description": "The java NewSize argument (i.e. 256m)"
+    },
+    "app_tomcat/datasource_name": {
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+
+      ],
+      "default": "jdbc/ConnDB",
+      "type": "string",
+      "recipes": [
+        "app_tomcat::default"
+      ],
+      "display_name": "Container datasource  name",
+      "description": "This name is used to setup the database connection with the application server.  You should set the attribute if your application is compiled to use a different datasource name.  example: jdbc/MyConnDB"
+    },
+    "app_tomcat/java/xmx": {
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+
+      ],
+      "default": "512m",
+      "type": "string",
+      "recipes": [
+
+      ],
+      "display_name": "Tomcat Java XMX",
+      "description": "The java Xmx argument (i.e. 512m)"
+    },
+    "app_tomcat/java/PermSize": {
       "required": "optional",
       "calculated": false,
       "choice": [
@@ -121,7 +106,36 @@
       "display_name": "Tomcat Java PermSize",
       "description": "The java PermSize argument (i.e. 256m)"
     },
-    "tomcat/java/xms": {
+    "app_tomcat/db_adapter": {
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+        "mysql",
+        "postgresql"
+      ],
+      "default": "mysql",
+      "type": "string",
+      "recipes": [
+        "app_tomcat::default"
+      ],
+      "display_name": "Database adapter for application ",
+      "description": "Enter database adapter which will be used to connect to the database. example: mysql"
+    },
+    "app_tomcat/java/MaxNewSize": {
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+
+      ],
+      "default": "256m",
+      "type": "string",
+      "recipes": [
+
+      ],
+      "display_name": "Tomcat Java MaxNewSize",
+      "description": "The java MaxNewSize argument (i.e. 256m)"
+    },
+    "app_tomcat/java/xms": {
       "required": "optional",
       "calculated": false,
       "choice": [

@@ -5,15 +5,15 @@ description      "Installs/Configures block device storage."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "0.1"
 
-depends "rs_utils"
+depends "rightscale"
 recipe "block_device::default", "Installs RubyGem for rightscale_tools. Sets up input dependancies for use by other cookbooks."
 recipe "block_device::setup_block_device", "Creates, formats, and mounts a brand new block device on the instance."
 recipe "block_device::setup_ephemeral", "Creates, formats, and mounts a brand new block device on the instances ephemeral drives. Does nothing on clouds without ephemeral drives."
 
-recipe "block_device::do_primary_backup","Creates a primary backup in the local cloud where the server is currently running."
+recipe "block_device::do_primary_backup", :description => "Creates a primary backup in the local cloud where the server is currently running.", :thread => 'block_backup'
 recipe "block_device::do_primary_restore","Restores a primary backup from the local cloud where the server is currently running."
 
-recipe "block_device::do_secondary_backup","Creates a secondary backup to the remote cloud specified by block_device/secondary provider"
+recipe "block_device::do_secondary_backup", :description => "Creates a secondary backup to the remote cloud specified by block_device/secondary provider", :thread => 'block_backup'
 recipe "block_device::do_secondary_restore","Restores a secondary backup from the remote cloud specified by block_device/secondary provider"
 
 recipe "block_device::do_primary_backup_schedule_enable", "Enables continuous primary backups by updating the crontab file."
@@ -175,6 +175,13 @@ end.each do |device, number|
     :default => "data_storage#{number}",
     :recipes => [ "block_device::default" ]
 
+  attribute "block_device/devices/#{device}/backup/lineage_override",
+    :display_name => "Backup Lineage Override",
+    :description => "If defined, this will override the input defined for 'Backup Lineage' (block_device/devices/#{device}/backup/lineage) so that you can restore the volume from another backup that has as different lineage name. The most recently completed snapshots will be used unless a specific timestamp value is specified for 'Restore Timestamp Override' (block_device/devices/#{device}/backup/timestamp_override). ",
+    :required => "optional",
+    :default => "",
+    :recipes => restore_recipes
+
   attribute "block_device/devices/#{device}/backup/timestamp_override",
     :display_name => "Backup Restore Timestamp Override (#{number})",
     :description => "Another optional variable to restore from a specific timestamp. Specify a string matching the timestamp tags on the volume snapshot set. You will need to specify the timestamp that's defined by the snapshot's tag (not name). For example, if the snapshot's tag is 'rs_backup:timestamp=1303613371' you would specify '1303613371' for this input.",
@@ -251,8 +258,8 @@ end.each do |device, number|
     :description => "The percentage of the total Volume Group extents (LVM) that is used for data. (e.g. 50 percent - 1/2 used for data and remainder used for overhead and snapshots, 100 percent - all space is allocated for data (therefore snapshots can not be taken) WARNING: if the space used for data is to large LVM snapshots can not be performed.  Using a non-default value it not reccommended.  Make sure you understand what you are doing before changing this value.",
     :type => "string",
     :required => 'optional',
-    :choice => ["50","60","70","100"],
-    :default => "60",
+    :choice => ["50", "60", "70", "80", "90", "100"],
+    :default => "90",
     :recipes => [ "block_device::setup_block_device", "block_device::default" ]
 end
 
