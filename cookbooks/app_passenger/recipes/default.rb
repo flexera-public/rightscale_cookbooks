@@ -10,7 +10,6 @@ rightscale_marker :begin
 log "  Setting provider specific settings for rails-passenger."
 node[:app][:provider] = "app_passenger"
 node[:app][:database_name] = node[:app_passenger][:project][:db][:schema_name]
-node[:app][:root] = "#{node[:app][:destination]}/public"
 
 case node[:platform]
   when "ubuntu","debian"
@@ -21,23 +20,22 @@ case node[:platform]
     raise "Unrecognized distro #{node[:platform]}, exiting "
 end
 
-
-log " Preparing tomcat document root variable"
+log " Preparing rails document root variable"
 if node[:repo][:default][:destination].empty?
-  log "  Your repo/default/destination input is no set. Setting project root to default: /srv/tomcat6/webapps/ "
-  node[:app_passenger][:project_home]= "/home/rails/"
+  log "  Your repo/default/destination input is not set. Setting project root to default: /home/rails"
+  project_home = "/home/rails"
 else
-  node[:app_passenger][:project_home]= node[:repo][:default][:destination]
+  project_home = node[:repo][:default][:destination]
 end
-
-# Creating new project root directory
-directory "#{node[:app_passenger][:project_home]}" do
-  recursive true
-end
-# Cooking doc root variable
-node[:app_passenger][:deploy_dir] = "#{node[:app_passenger][:project_home]}/#{node[:web_apache][:application_name]}"
 
 # Setting app LWRP attribute
-node[:app][:destination]="#{node[:app_passenger][:deploy_dir]}"
+# Destination directory for the application
+node[:app][:destination]= "#{project_home}/#{node[:web_apache][:application_name]}"
+# Creating new project root directory
+directory "#{node[:app][:destination]}" do
+  recursive true
+end
+
+node[:app][:root] = node[:app][:destination] + "/public"
 
 rightscale_marker :end
