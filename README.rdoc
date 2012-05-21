@@ -1,24 +1,72 @@
 = RightScale Cookbooks
 
+Welcome to the RightScale Chef cookbooks -- your infrastructure, codified!
 
-== DESCRIPTION
+== OVERVIEW
 
-The RightScale platform supports server configuration and automation using Chef[1] cookbooks.
+These cookbooks are a set of interchangeable parts for your infrastructure written using the open-source systems integration framework called "Chef"[1] 
 
-This repository contains a set of cookbooks used by RightScale ServerTermplate. that make up RightScale's VM configuration and automation scripts that configure RightScale managed.
+They can be used without modification by mixing-and-matching recipes or as a starting point for your own creations. These cookbooks are also used in RightScale's ServerTemplates[2] to create 3-tier deployment architectures for High Availability in the cloud[3].  While these deployments fit the requirements for many auto-scaling HA deployments, no single infrastructure need is exactly the same -- here is the source code that gives you the choice of how much (or how little) customization you want.
 
-==== Supported Configuration
+These are your cookbooks!  
+
+As a good starting point, the COOKBOOK LIST section below will give you a summary of what each cookbook does.  From there, each cookbook has it's own README that goes into depth about what it does and how to use it -- this is the information you need if you want to create a runlist or ServerTemplate by mixing and matching recipes.  
+
+For a deeper understanding of how to navigate and find things in these cookbooks, be sure to take a look at the DESIGN CONVENTIONS section.  This will give you an intro into some of the design patterns and conventions used throughout this collection.  NOTE: This section is not for the faint of heart as it deals with some advanced Chef topics.
+
+Whether you are looking to write your own cookbooks or to just make some minor tweaks to these, please see the CUSTOMIZATION section for some best practices regarding overriding vs. forking.  We are happy if you modify and make these cookbooks your own, however, if you ever implement a change that you think will be useful to others or would like to see the change folded in to next release, then please feel free to contribute it back.  For more information about how to do this see the guidelines under the CONTRIBUTING section.
+
+Some of these cookbooks leverage Chef resources that are specific to the RightScale Platform -- these resources are used for such things as managing machine tags associated with the node, running recipes in parallel and the ability to trigger a "remote recipe" to run on one node to from another.  For more information, please see the RIGHTSCALE RESOURCES section below.
 
 These cookbooks have been tested on multiple clouds and multiple operating systems using ServerTemplates
 on the RightScale Cloud Management Platform.
+
+-------------
+
+== COOKBOOK LIST
+
+rightscale   : Base recipes used to setup services used by the RightScale Cloud Management Platform
+block_device : This cookbook provides the building blocks for Multi-Cloud backup/restore support.
+...
+TODO
+
+-------------
+
+== DESIGN DETAILS:
+
+Many of the cookbooks use the save overarching design and conventions.  
+
+=== Dependency Resolution
+TODO
+=== Default Recipe Pattern
+TODO
+=== Abstract Cookbooks and LWRPs
+TODO
+=== Definitions
+TODO
+=== rs_marker
+TODO
+
+-------------
+
+== CUSTOMIZATION
+TODO
+
+-------------
+
+== CONTRIBUTING
+TODO
+
+-------------
 
 
 == ADDITIONAL RESOURCES
 
 * [1] http://wiki.opscode.com/display/chef/About
-* [2] RightScale's Chef support docs http://support.rightscale.com/09-Clouds/Multi_Cloud/Chef
+* [2] http://support.rightscale.com/12-Guides/Dashboard_Users_Guide/Design/ServerTemplates/Concepts/About_ServerTemplates
+* [3] http://support.rightscale.com/03-Tutorials/02-AWS/E2E_Examples/3_Tier_Deployment_(11H1)#Introduction
 
-
+-------------
 == LICENSE
 
 <b>RightScale Cookbooks</b>
