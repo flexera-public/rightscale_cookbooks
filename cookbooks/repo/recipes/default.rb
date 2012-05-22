@@ -43,6 +43,7 @@ node[:repo].each do |resource_name, entry|
 
   end
 
+  # Checking for ros_util presence it is required for repo_ros correct operations
   ruby_block "Checking for ros_util presence" do
     block do
       raise "  Error: ROS gem missing, please add rs_utils::install_tools or rs_tools::default recipes to runlist." unless File.exists?("/opt/rightscale/sandbox/bin/ros_util")
@@ -50,6 +51,7 @@ node[:repo].each do |resource_name, entry|
     only_if do (entry[:provider]=="repo_ros") end
   end
 
+  # Initial setup of "repository" LWRP.
   log "  Registering #{resource_name} prov: #{entry[:provider]}"
   repo resource_name do
     provider entry[:provider]

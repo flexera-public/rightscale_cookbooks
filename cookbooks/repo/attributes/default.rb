@@ -5,6 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+# Detailed descriptions of all attributes and its values you can find in /repo/resources/default.rb
 set_unless[:repo][:default][:destination] = ""
 set_unless[:repo][:default][:repository] = ""
 set_unless[:repo][:default][:revision] = "HEAD"
