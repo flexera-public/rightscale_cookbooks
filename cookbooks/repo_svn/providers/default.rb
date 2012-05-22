@@ -11,21 +11,21 @@ action :pull do
   # Setting parameters
   destination_path = new_resource.destination
   repository_url = new_resource.repository
-  revision = new_resource.revision
+  branch_tag = new_resource.revision
   app_user = new_resource.app_user
   svn_password = new_resource.svn_password
   svn_user = new_resource.svn_username
   params = "--no-auth-cache --non-interactive"
 
   # If repository already exists, just update it
-  if ::File.directory?("#{destination}/.svn")
+  if ::File.directory?("#{destination_path}/.svn")
     log "  Svn project repository already exists, updating to latest revision"
     svn_action = :checkout
   else
     ruby_block "Backup of existing project directory" do
-      only_if do ::File.directory?(destination) end
+      only_if do ::File.directory?(destination_path) end
       block do
-        ::File.rename("#{destination}", "#{destination}"+::Time.now.strftime("%Y%m%d%H%M"))
+        ::File.rename("#{destination_path}", "#{destination_path}"+::Time.now.strftime("%Y%m%d%H%M"))
       end
     end
     log "  Downloading new Svn project repository"
@@ -36,7 +36,7 @@ action :pull do
   subversion "SVN_repo" do
     destination destination_path
     repository repository_url
-    reference revision
+    revision branch_tag
     user app_user
     svn_arguments params
     svn_username svn_user
