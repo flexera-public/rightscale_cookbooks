@@ -61,14 +61,13 @@ else
   project_home = node[:repo][:default][:destination]
 end
 
-# Cooking doc root variable
+# Setting app LWRP attribute
 node[:app][:root] = "#{project_home}/#{node[:web_apache][:application_name]}"
+# PHP shares the same doc root with the application destination
+node[:app][:destination]="#{node[:app][:root]}"
 
 directory "#{node[:app][:destination]}" do
   recursive true
 end
-
-# Setting app LWRP attribute
-node[:app][:destination]="#{node[:app_php][:doc_root]}"
 
 rightscale_marker :end
