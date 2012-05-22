@@ -19,9 +19,12 @@ There are no known limitations.
 
 == SETUP/USAGE:
 
-* Use the default recipe in conjunction with the 'Firewall' input to enable or
-  disable iptables.
-* Use setup_rule recipe for enabling/disabling specific ports.
+* Use the <tt>sys_firewall::default</tt> recipe in conjunction with the
+  'Firewall' input to enable or disable iptables.
+* Use the <tt>sys_firewall::setup_rule</tt> recipe for enabling/disabling
+  specific ports.
+* Use the <tt>sys_firewall::do_list_rules</tt> recipe to list the existing
+  firewall rules set up on the server.
 
 == DETAILS:
 
