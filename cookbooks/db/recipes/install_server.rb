@@ -9,13 +9,13 @@ rightscale_marker :begin
 
 # Master DNS TTL Check - HA Only
 #
-# Checks the TTL of the Master DNS entry and exits with an error if the 
-# TTL is greater than 120 seconds. The purpose of this script is to prevent 
+# Checks the TTL of the Master DNS entry and exits with an error if the
+# TTL is greater than 120 seconds. The purpose of this script is to prevent
 # future DNS related problems pertaining to your database. For example, if you
-# accidentally configure a DNS TTL of 3600 seconds on your Master DB DNS A 
-# Record, it might work fine at first, but you will experience issues when you 
-# attempt to promote a Slave-DB to Master-DB. As a best practice you should 
-# use a low TTL for your database that's less than or equal to 120 seconds. 
+# accidentally configure a DNS TTL of 3600 seconds on your Master DB DNS A
+# Record, it might work fine at first, but you will experience issues when you
+# attempt to promote a Slave-DB to Master-DB. As a best practice you should
+# use a low TTL for your database that's less than or equal to 120 seconds.
 #
 
 
@@ -31,7 +31,7 @@ log "Skipping master database TTL check for FQDN 'localhost'." do
 end
 
 ruby_block "Master DNS TTL Check" do
-  not_if { IS_FQDN_LOCALHOST } 
+  not_if { IS_FQDN_LOCALHOST }
   block do
     OPT_DNS_TTL_LIMIT = "#{node[:db][:dns][:ttl]}"
 
@@ -56,6 +56,9 @@ db node[:db][:data_dir] do
 end
 
 # if server already a master, reset node attributes and tags. ie restart from stop/start
-db_register_master if node[:db][:this_is_master] && node[:db][:init_status] == :initialized
+if node[:db][:this_is_master] && node[:db][:init_status].to_sym == :initialized
+  log "restart from stop - updating node"
+  db_register_master
+end
 
 rightscale_marker :end
