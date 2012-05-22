@@ -7,6 +7,7 @@
 
 set_unless[:block_device][:devices][:default][:backup][:lineage] = ""
 set_unless[:block_device][:devices][:default][:backup][:lineage_override] = ""
+set_unless[:block_device][:devices][:default][:backup][:timestamp_override] = ""
 
 set_unless[:block_device][:devices][:default][:backup][:primary][:keep][:max_snapshots] = "60"
 
