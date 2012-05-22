@@ -51,10 +51,4 @@ node[:app][:destination]= "#{project_home}/#{node[:web_apache][:application_name
 
 node[:app][:root] = node[:app][:destination] + "/public"
 
-# Creating new project root directory
-# Create the directory so apache can start before the application is installed
-#directory "#{node[:app][:root]}" do
-#  recursive true
-#end
-
 rightscale_marker :end
