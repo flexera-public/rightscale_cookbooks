@@ -32,20 +32,20 @@ action :restart do
   action_start
 end
 
-
+# Install Packages and Modules required for PHP application server.
 action :install do
-  # Install user-specified Packages and Modules
+  # Installing required packages
   packages = new_resource.packages
   log "  Packages which will be installed #{packages}"
 
   packages.each do |p|
     package p
   end
-
+  # Installing user-specified additional php modules
   node[:app_php][:modules_list].each do |p|
     package p
   end
-
+  # Installing php modules dependencies
   node[:app_php][:module_dependencies].each do |mod|
     apache_module mod
   end
@@ -122,6 +122,8 @@ action :code_update do
   log "  Starting code update sequence"
   log "  Current project doc root is set to #{deploy_dir}"
 
+  log "  Downloading project repo"
+  # Calling "repo" LWRP to download remote project repository
   repo "default" do
     destination deploy_dir
     action node[:repo][:default][:perform_action].to_sym

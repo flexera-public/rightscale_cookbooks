@@ -6,11 +6,15 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 # Optional attributes
+# Application database name
 set_unless[:app_php][:db_schema_name] = ""
+# List of additional php modules
 set_unless[:app_php][:modules_list] = []
+# Be default php will use MySQL as primary database adapter
 set_unless[:app_php][:db_adapter] = "mysql"
 
 # Calculated attributes
+# Defining apache user, module dependencies and database adapter parameters depending on platform.
 case platform
 when "ubuntu", "debian"
   set[:app_php][:module_dependencies] = [ "proxy_http", "php5"]
