@@ -1,5 +1,8 @@
 = RightScale LAMP Cookbook 
 
+Basic all-in-one LAMP (Linux, Apache, MySQL, PHP) cookbook designed to work in a hybrid 
+cloud setting.
+
 == DESCRIPTION:
 
 == DETAILS:
