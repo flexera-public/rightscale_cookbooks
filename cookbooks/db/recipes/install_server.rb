@@ -19,8 +19,8 @@ rightscale_marker :begin
 #
 
 
-MASTER_DB_DNSNAME = "#{node[:db][:dns][:master][:fqdn]}"
-IS_FQDN_LOCALHOST = (MASTER_DB_DNSNAME == "localhost" )
+MASTER_DB_DNSNAME = node[:db][:dns][:master][:fqdn]
+IS_FQDN_LOCALHOST = ( MASTER_DB_DNSNAME == "localhost" )
 
 log "Checking master database TTL settings..." do
   not_if { IS_FQDN_LOCALHOST }
@@ -56,8 +56,6 @@ db node[:db][:data_dir] do
 end
 
 # if server already a master, reset node attributes and tags. ie restart from stop/start
-db_register_master do
-  only_if { node[:db][:this_is_master] && node[:db][:init_status] == :initialized }
-end
+db_register_master if node[:db][:this_is_master] && node[:db][:init_status] == :initialized
 
 rightscale_marker :end
