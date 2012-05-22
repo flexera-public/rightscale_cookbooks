@@ -119,11 +119,11 @@ Common attributes
 
 To update A record with servers' private ip:
 
-sys_dns "default" do
-  id node[:db][:dns][:slave][:id]
-  address private_ip
-  action :set_private
-end
+  sys_dns "default" do
+    id node[:db][:dns][:slave][:id]
+    address private_ip
+    action :set_private
+  end
 
 -------------
 
