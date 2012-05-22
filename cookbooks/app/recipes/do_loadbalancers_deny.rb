@@ -11,6 +11,7 @@ class Chef::Recipe
   include RightScale::App::Helper
 end
 
+# Adding iptables rule to disable loadbalncers <-> application servers connections
 vhosts(node[:lb][:vhost_names]).each do | vhost_name |
   sys_firewall "Close this appserver's ports to all loadbalancers" do
     machine_tag "loadbalancer:#{vhost_name}=lb"
