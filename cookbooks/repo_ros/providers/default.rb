@@ -28,11 +28,9 @@ action :pull do
   end
   log("  Downloaded file will be available in #{tmp_repo_path}")
 
-  cloud = ( new_resource.storage_account_provider == "CloudFiles" ) ? "rackspace" : "ec2"
-
   # Obtain the source from ROS
   execute "Download #{new_resource.container} from Remote Object Store" do
-    command "/opt/rightscale/sandbox/bin/ros_util get --cloud #{cloud} --container #{new_resource.container} --dest #{tmp_repo_path} --source #{new_resource.prefix} --latest"
+    command "/opt/rightscale/sandbox/bin/ros_util get --cloud #{new_resource.storage_account_provider} --container #{new_resource.container} --dest #{tmp_repo_path} --source #{new_resource.prefix} --latest"
     environment ({
         'STORAGE_ACCOUNT_ID' => new_resource.storage_account_id,
         'STORAGE_ACCOUNT_SECRET' => new_resource.storage_account_secret
