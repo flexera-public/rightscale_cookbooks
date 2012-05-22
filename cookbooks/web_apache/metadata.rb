@@ -50,6 +50,7 @@ attribute "web_apache/ssl_enable",
   :description => "Enables SSL ('https')",
   :recipes => [
                 "web_apache::install_apache",
+                "web_apache::setup_frontend_ssl_vhost",
                 "web_apache::setup_frontend"
               ],
   :required => "optional",
