@@ -13,9 +13,26 @@ node[:app][:database_name] = node[:app_passenger][:project][:db][:schema_name]
 
 case node[:platform]
   when "ubuntu","debian"
-    node[:app][:packages] = ["libopenssl-ruby", "libcurl4-openssl-dev", "apache2-mpm-prefork", "apache2-prefork-dev", "libapr1-dev", "libcurl4-openssl-dev"]
+    node[:app][:packages] = [
+      "libopenssl-ruby",
+      "libcurl4-openssl-dev",
+      "apache2-mpm-prefork",
+      "apache2-prefork-dev",
+      "libapr1-dev",
+      "libcurl4-openssl-dev"
+     ]
   when "centos","redhat","redhatenterpriseserver","fedora","suse"
-    node[:app][:packages] = ["zlib-devel", "openssl-devel", "readline-devel", "curl-devel", "openssl-devel", "httpd-devel", "apr-devel", "apr-util-devel", "readline-devel"]
+    node[:app][:packages] = [
+      "zlib-devel",
+      "openssl-devel",
+      "readline-devel",
+      "curl-devel",
+      "openssl-devel",
+      "httpd-devel",
+      "apr-devel",
+      "apr-util-devel",
+      "readline-devel"
+     ]
   else
     raise "Unrecognized distro #{node[:platform]}, exiting "
 end
