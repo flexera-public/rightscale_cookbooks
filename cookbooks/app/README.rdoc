@@ -13,11 +13,25 @@ More detailed info you can find in app::* recipes description.
 
 == REQUIREMENTS:
 
-Requires a VM launched from a RightScale managed RightImage
- Corresponding app providers
+* Requires a VM launched from a RightScale managed RightImage
 
-== SETUP:
+* Corresponding app providers cookbooks
 
+== COOKBOOKS DEPENDENCIES
+Please see <tt>metadata.rb</tt> file for the latest dependencies.
+
+* <tt>sys_firewall</tt>
+* <tt>rightscale</tt>
+* <tt>repo</tt>
+* <tt>app_php</tt>
+* <tt>app_passenger</tt>
+* <tt>app_tomcat</tt>
+
+
+== KNOWN LIMITATIONS:
+none
+
+== SETUP
 In order to use App resource, you must create corresponding providers in your app server cookbook.
 See for example app_passenger, app_php or app_tomcat cookbooks.
 
@@ -42,14 +56,158 @@ More detailed description of these attribute variables is located in resource fi
 3. Develop corresponding providers in your application server cookbook.
 4. Define required and recommended attributes in your application server cookbook attributes file.
 
- == DETAILS:
+
+== DETAILS:
+=== General
+This cookbook is intended to be used in conjunction with cookbooks that contain
+Lightweight Providers which implement the 'app' interface. See the RightScale
+app_php cookbook for an example.
 
 Note: app[default] resource uses "persist true" flag, which allow to save created resource and its attributes in memory for future use.
 
-== KNOWN LIMITATIONS:
+This cookbook contains recipes, required to connect your instance to Rightscel Loadbalancer ServerTemplate
+* do_loadbalancers_allow
+* do_loadbalancers_deny
+* request_loadbalancer_allow
+* request_loadbalancer_deny
 
-1. node[:app][:provider] must be defined
-2. app::default recipe must be present in ServerTemplate boot section.
+for more info please see: http://support.rightscale.com/03-Tutorials/02-AWS/02-Website_Edition/2.5_Load_Balancer_Setups
+
+
+=== Attributes
+
+* <tt>node[:app][:provider]</tt> - Set a default provider.
+* <tt>node[:app][:port]</tt> - Set a default port to listen on. Default: 8000
+* <tt>node[:app][:ip]</tt> - Ip to listen on. Default: First private IP
+
+=== Templates:
+none
+
+=== Definitions:
+
+<b>app_add_listen_port</b>
+Adds a port to the apache listen ports.conf file and node attribute
+
+Create node[:apache][:listen_ports] - array of strings for the webserver to listen on.
+
+This definition created specifically for the apache2 cookbook at this time.
+
+===== Example:
+
+ app_add_listen_port php_port
+
+
+=== Libraries-helpers:
+
+===== RightScale::App::Helper.bind_ip(private_ips = [ ], public_ips = [ ])
+
+Return the IP address of the interface that this application server listens on.
+
+<b>Parameters</b>
+
+* <tt>private_ips(Array)::</tt> List of private ips assigned to the application server
+* <tt>public_ips(Array)::</tt> List of public ips assigned to the application server
+
+<b>Returns</b>
+
+<tt>String::</tt> IP Address
+
+<b>Raise</b>
+
+<tt>RuntimeError::</tt> If niether a valid private nor public ip can be found
+
+
+===== RightScale::App::Helper.bind_port()
+
+Return the port that this application server listens on
+
+<b>Returns</b>
+
+<tt>node[:app][:port](integer)</tt> Port number
+
+
+===== RightScale::App::Helper.vhosts(vhost_list)
+
+created to convert vhost names into array from a comma separated list
+
+<b>Parameters</b>
+
+<tt>vhost_list(Sting)::</tt> Comma separated list of virtual hosts
+
+<b>Returns</b>
+
+<tt>Array::</tt> Array of vhosts
+
+
+=== LWRPs:
+
+This cookbook provides abstract <tt>app</tt> resource. Which will act as "interface" for corresponding LightWeight app_* providers
+
+For now we have app_php, app_tomcat and app_passenger cookbooks. Each of them contain implementation of corresponding app__* LightWeight Provider
+which can be called using this resource.
+
+Provider persisted in this cookbook will act as a cap if there will be no another app_ LightWeight Provider implementation. To aviod unexpected fails.
+
+For more information about Lightweight Resources and Providers (LWRPs), please see:
+http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)
+
+
+===== App resource actions
+All actions declared in this resource intended to act as a templates to typical application server setup operations.
+
+* <tt>:install</tt> - Install packages required for application server setup
+
+* <tt>:setup_vhost</tt> - Action designed to setup APP LWRP with common parameters required for apache vhost file
+
+* <tt>:start</tt> - Action designed to setup user defined start sequence for application server.
+
+* <tt>:stop</tt> - Action designed to setup user defined stop sequence for application server.
+
+* <tt>:restart</tt> - Action designed to setup user defined restart sequence for application server.
+
+* <tt>:code_update</tt> - Action designed to perform project source code update/download
+
+* <tt>:setup_db_connection</tt> -  Action designed to perform database configuration file creation
+
+* <tt>:setup_monitoring</tt> - Action designed to install and setup of required monitoring software.
+
+
+===== App resource attributes
+
+* <tt>packages</tt> - Set of installed packages
+* <tt>root</tt> - Application root
+* <tt>port</tt> - Application port
+* <tt>destination</tt> - Path to where project repo will be pulled
+* <tt>database_name</tt> - Name of the required database
+* <tt>database_user</tt> - Database user
+* <tt>database_password</tt> - Database password
+* <tt>database_sever_fqdn</tt> - Database server fqdn
+
+
+===== Usage Examples:
+Only basic examples here. More detailed examples of this resource use you can find in cookbook recipes do_* and setup_*
+
+ app "default" do
+   persist true
+   provider node[:app][:provider]
+   packages node[:app][:packages]
+   action :install
+ end
+
+ app "default" do
+   database_name        node[:app][:database_name]
+   database_user        node[:app][:database_user]
+   database_password    node[:app][:database_password]
+   database_sever_fqdn  node[:app][:database_sever_fqdn]
+   action :setup_db_connection
+ end
+
+ app "default" do
+   root node[:app][:root]
+   port node[:app][:port].to_i
+   action :setup_vhost
+ end
+
 
 = LICENSE
 
