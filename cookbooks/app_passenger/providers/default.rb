@@ -207,6 +207,7 @@ action :code_update do
   log "  Current project doc root is set to #{deploy_dir}"
 
   log "  Starting source code download sequence..."
+  # Calling "repo" LWRP to download remote project repository
   repo "default" do
     destination deploy_dir
     action node[:repo][:default][:perform_action].to_sym
