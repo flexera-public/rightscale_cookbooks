@@ -20,9 +20,9 @@ ruby_block "Install custom gems" do
 
     gem_list = node[:app_passenger][:project][:gem_list]
 
-    #split gem_list into an array
+    # Split gem_list into an array
     gem_list = gem_list.split
-
+    # Installing gems
     gem_list.each do |gem_name|
       begin
         if gem_name =~ /(.+):([\d\.]{2,})/

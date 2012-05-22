@@ -18,7 +18,7 @@ end
 # the required gems using "bundle install" command.
 #
 log "  Bundler will install gems from Gemfile"
-
+# Installing gems from /Gemfile if it exists
 bash "Bundle gem install" do
   flags "-ex"
   code <<-EOH

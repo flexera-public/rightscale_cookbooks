@@ -42,17 +42,8 @@ action :install do
     package p
   end
 
-  # Saving project name variables for use in operational mode
-  ENV['RAILS_APP'] = node[:web_apache][:application_name]
-
-  bash "save global vars" do
-    flags "-ex"
-    code <<-EOH
-      echo $RAILS_APP >> /tmp/appname
-    EOH
-  end
-
   log "  Installing Ruby Enterprise Edition..."
+ # Moving rubyEE sources to /tmp folder preparing to install
   cookbook_file "/tmp/ruby-enterprise-installed.tar.gz" do
     source "ruby-enterprise_x86_64.tar.gz"
     mode "0644"
@@ -66,7 +57,7 @@ action :install do
     only_if do node[:kernel][:machine].include? "i686" end
     cookbook 'app_passenger'
   end
-
+  # Unpack sources. RubyEE ready to action.
   bash "install_ruby_EE" do
     flags "-ex"
     code <<-EOH
@@ -77,7 +68,7 @@ action :install do
 
 
   # Installing passenger module
-  log"  Installing passenger"
+  log "  Installing passenger"
   bash "Install apache passenger gem" do
     flags "-ex"
     code <<-EOH
@@ -87,7 +78,7 @@ action :install do
   end
 
 
-  bash "Install_apache_passenger_module" do
+  bash "Install apache passenger module" do
     flags "-ex"
     code <<-EOH
       /opt/ruby-enterprise/bin/passenger-install-apache2-module --auto
@@ -120,10 +111,11 @@ action :setup_vhost do
     only_if do node[:platform] == "redhat" end
   end
 
-  # Generation of new apache ports.conf
+
   log "  Generating new apache ports.conf"
   node[:apache][:listen_ports] = port.to_s
 
+  # Generation of new apache ports.conf
   template "#{node[:apache][:dir]}/ports.conf" do
     cookbook "apache2"
     source "ports.conf.erb"
@@ -136,7 +128,7 @@ action :setup_vhost do
   end
 
   # Generation of new vhost config, based on user prefs
-  log"  Generating new apache vhost"
+  log "  Generating new apache vhost"
   project_root = new_resource.root
   web_app "http-#{port}-#{node[:web_apache][:server_name]}.vhost" do
     template                   "basic_vhost.erb"
