@@ -29,3 +29,5 @@ RightScale::BlockDeviceHelper.do_for_all_block_devices block_device do |device, 
   set_unless[:block_device][:devices][device][:vg_data_percentage] = "90"
   set_unless[:block_device][:devices][device][:nickname] = "data_storage#{number}"
 end
+
+set_unless[:block_device][:ephemeral][:vg_data_percentage] = "100%"
