@@ -79,4 +79,8 @@ node[:app][:root] = "#{project_home}/#{node[:web_apache][:application_name]}"
 # tomcat shares the same doc root with the application destination
 node[:app][:destination]="#{node[:app][:root]}"
 
+directory "#{node[:app][:destination]}" do
+  recursive true
+end
+
 rightscale_marker :end

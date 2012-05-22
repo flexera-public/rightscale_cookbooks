@@ -50,6 +50,10 @@ end
 # Destination directory for the application
 node[:app][:destination]= "#{project_home}/#{node[:web_apache][:application_name]}"
 
+directory "#{node[:app][:destination]}" do
+  recursive true
+end
+
 node[:app][:root] = node[:app][:destination] + "/public"
 
 rightscale_marker :end
