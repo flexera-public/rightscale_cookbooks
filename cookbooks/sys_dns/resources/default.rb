@@ -10,6 +10,6 @@ actions :set_private
 attribute :id, :kind_of => String
 attribute :user, :kind_of => String
 attribute :password, :kind_of => String
-attribute :address, :kind_of => String  # TODO: , :regex =>
+attribute :address, :kind_of => String, :regex => /^(\d{1,3}).(\d{1,3}).(\d{1,3}).(\d{1,3})=.+/
 attribute :region, :kind_of => String   # this is used by CloudDNS
 attribute :choice, :equal_to => [ "DNSMadeEasy", "DynDNS", "Route53", "CloudDNS" ]

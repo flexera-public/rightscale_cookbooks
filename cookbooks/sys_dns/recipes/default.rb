@@ -8,14 +8,14 @@
 rightscale_marker :begin
 
 package value_for_platform(
-    [ "ubuntu", "debian" ] => { "default" => "libdigest-sha1-perl" },
-    [ "centos", "redhat", "suse" ] => { "default" => "perl-Digest-SHA1" }
-  )
+  [ "ubuntu", "debian" ] => { "default" => "libdigest-sha1-perl" },
+  [ "centos", "redhat", "suse" ] => { "default" => "perl-Digest-SHA1" }
+)
 
 package value_for_platform(
-    [ "ubuntu", "debian" ] => { "default" => "libdigest-hmac-perl" },
-    [ "centos", "redhat", "suse" ] => { "default" => "perl-Digest-HMAC" }
-  )
+  [ "ubuntu", "debian" ] => { "default" => "libdigest-hmac-perl" },
+  [ "centos", "redhat", "suse" ] => { "default" => "perl-Digest-HMAC" }
+)
 
 directory "/opt/rightscale/dns" do
   owner "root"
@@ -24,7 +24,7 @@ directory "/opt/rightscale/dns" do
   recursive true
 end
 
-remote_file "/opt/rightscale/dns/dnscurl.pl" do
+cookbook_file "/opt/rightscale/dns/dnscurl.pl" do
   source "dnscurl.pl"
   owner "root"
   group "root"
