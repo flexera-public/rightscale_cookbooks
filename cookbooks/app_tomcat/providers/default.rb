@@ -156,7 +156,7 @@ action :setup_vhost do
     mode "0644"
     cookbook 'app_tomcat'
     variables(
-            :doc_root => node[:app_tomcat][:docroot],
+            :doc_root => node[:app][:root],
             :app_port => node[:app][:port]
           )
   end
@@ -268,11 +268,11 @@ action :setup_vhost do
 
      # Configuring document root for apache
     if ("#{node[:app_tomcat][:code][:root_war]}" == "")
-      log "  root_war not defined, setting apache docroot to #{node[:app_tomcat][:docroot]}"
-      docroot4apache = "#{node[:app_tomcat][:docroot]}"
+      log "  root_war not defined, setting apache docroot to #{node[:app][:root]}"
+      docroot4apache = "#{node[:app][:root]}"
     else
-      log "  root_war defined, setting apache docroot to #{node[:app_tomcat][:docroot]}/ROOT"
-      docroot4apache = "#{node[:app_tomcat][:docroot]}/ROOT"
+      log "  root_war defined, setting apache docroot to #{node[:app][:root]}/ROOT"
+      docroot4apache = "#{node[:app][:root]}/ROOT"
     end
 
     port = new_resource.port
