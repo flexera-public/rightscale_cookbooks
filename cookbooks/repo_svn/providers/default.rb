@@ -8,7 +8,8 @@
 
 action :pull do
 
-  destination = new_resource.destination
+  # Setting parameters
+  destination_path = new_resource.destination
   repository_url = new_resource.repository
   revision = new_resource.revision
   app_user = new_resource.app_user
@@ -31,7 +32,9 @@ action :pull do
     svn_action = :sync
   end
 
-  subversion "#{destination}" do
+  # Downloading SVN repository
+  subversion "SVN_repo" do
+    destination destination_path
     repository repository_url
     reference revision
     user app_user
