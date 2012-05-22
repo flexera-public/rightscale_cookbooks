@@ -86,8 +86,7 @@ db_mysql cookbook for an example.
 
 For more about Lightweight Resources and Providers (LWRPs), please see the Chef
 wiki at:
-
-  http://wiki.opscode.com/display/chef/Lightweight+Resources+and+Providers+%28LWRP%29
+http://wiki.opscode.com/display/chef/Lightweight+Resources+and+Providers+%28LWRP%29
 
 === Backup/Restore
 
@@ -116,9 +115,7 @@ When writing your own database Lightweight Provider:
 * Any database specific attributes that you wish to make user configurable
   should be added to the cookbook metadata with the default recipe included in
   the attribute's 'recipes' array.  For more about Chef metadata, please see the
-  Chef wiki at:
-
-    http://wiki.opscode.com/display/chef/Metadata
+  Chef wiki at: http://wiki.opscode.com/display/chef/Metadata
 
 * Your provider cookbook metadata should depend on this cookbook by added a
   'depends' line to your metadata. For example:
