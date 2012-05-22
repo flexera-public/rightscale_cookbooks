@@ -20,6 +20,23 @@ module RightScale
       end
     end
 
+
+    # Return the result of A record update process.
+    #
+    # Parameters:
+    # * id:: The unique identifier that is associated with the DNS A record of the server.
+    # * user:: The user name that is used to access and modify your DNS A records.
+    # * password:: The password that is used to access and modify your DNS A records.
+    # * address:: Private IP of instance running the recipe.
+    # * region:: CloudDNS specific: region where the A records should be modified.
+    #
+    # Returns:
+    #
+    # <tt>Chef::Log::</tt> A record successful update message.
+    #
+    # Raise:
+    # <tt>Chef::Log::</tt> Error message that may have accured during the update process.
+
     class AWS < DNS
       def action_set(id, user, password, address)
         zone_id, hostname = id.split(':')
