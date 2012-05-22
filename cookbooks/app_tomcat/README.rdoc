@@ -14,7 +14,7 @@
 * Tested on RedHat 5.8 RightImage
 
 == COOKBOOKS DEPENDENCIES
-Please see metadata.rb file for the latest dependencies.
+Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 * <tt>app</tt>
 * <tt>db_mysql</tt>

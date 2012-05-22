@@ -11,7 +11,7 @@ This cookbook provides abstract 'repo' resource for managing code download from 
 
 
 == COOKBOOKS DEPENDENCIES
-Please see metadata.rb file for the latest dependencies.
+Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 * <tt>rightscale</tt>
 * <tt>repo_svn</tt>

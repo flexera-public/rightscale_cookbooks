@@ -37,7 +37,7 @@ Replace this text with a description of cookbook requirements:
 
 == COOKBOOKS DEPENDENCIES:
 
-Please see metadata.rb file for the latest dependencies.
+Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 == KNOWN LIMITATIONS:
 
