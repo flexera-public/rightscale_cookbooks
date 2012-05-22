@@ -16,7 +16,7 @@ rightscale_marker :begin
 # Record, it might work fine at first, but you will experience issues when you 
 # attempt to promote a Slave-DB to Master-DB. As a best practice you should 
 # use a low TTL for your database that's less than or equal to 60 seconds.
-# Update: for CloudDNS the TTL should be <= 300s.
+# Update: for CloudDNS the TTL should be = 300s.
 #
 
 
