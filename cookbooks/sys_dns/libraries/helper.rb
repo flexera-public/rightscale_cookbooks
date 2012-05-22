@@ -182,7 +182,7 @@ EOF
         else
           dns_domain_id = output[/"id":(\d+)/][$1]
         end
-
+        @logger.info("dns_domain_id: #{dns_domain_id}")
         output = `curl -k -H "X-Auth-Token: #{x_auth_token}" #{service_endpoint}/domains/#{dns_domain_id}/records`
         dns_record_id = output[/"name":"#{id}","id":"(A.\d+)/][$1]
 

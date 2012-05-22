@@ -12,6 +12,7 @@ package value_for_platform(
   [ "ubuntu", "debian" ] => { "default" => "libdigest-sha1-perl" },
   [ "centos", "redhat", "suse" ] => { "default" => "perl-Digest-SHA1" }
 )
+
 package value_for_platform(
   [ "ubuntu", "debian" ] => { "default" => "libdigest-hmac-perl" },
   [ "centos", "redhat", "suse" ] => { "default" => "perl-Digest-HMAC" }
