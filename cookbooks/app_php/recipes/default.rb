@@ -62,7 +62,7 @@ else
 end
 
 # Cooking doc root variable
-node[:app][:root] = "#{project_home]}/#{node[:web_apache][:application_name]}"
+node[:app][:root] = "#{project_home}/#{node[:web_apache][:application_name]}"
 
 directory "#{node[:app][:destination]}" do
   recursive true
