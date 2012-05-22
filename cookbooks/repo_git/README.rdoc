@@ -11,7 +11,7 @@ manage source code download from GIT repositories.
 * Requires a virtual machine launched from a RightScale-managed RightImage.
 
 == COOKBOOKS DEPENDENCIES
-Please see metadata.rb file for the latest dependencies.
+Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 * <tt>rightscale</tt>
 * <tt>repo</tt>

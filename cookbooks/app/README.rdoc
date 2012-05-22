@@ -18,7 +18,7 @@ More detailed info you can find in app::* recipes description.
 * Corresponding app providers cookbooks
 
 == COOKBOOKS DEPENDENCIES
-Please see metadata.rb file for the latest dependencies.
+Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 * <tt>sys_firewall</tt>
 * <tt>rightscale</tt>

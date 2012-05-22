@@ -16,7 +16,7 @@ ServerTemplates.
 
 == COOKBOOKS DEPENDENCIES:
 
-Please see metadata.rb file for the latest dependencies.
+Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 -------------
 
