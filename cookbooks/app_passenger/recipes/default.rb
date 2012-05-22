@@ -38,9 +38,10 @@ case node[:platform]
 end
 
 log " Preparing rails document root variable"
+dest_dir = "/home/rails"
 if node[:repo][:default][:destination].empty?
-  log "  Your repo/default/destination input is not set. Setting project root to default: /home/rails"
-  project_home = "/home/rails"
+  log "  Your repo/default/destination input is not set. Setting project root to default: #{dest_dir}"
+  project_home = dest_dir
 else
   project_home = node[:repo][:default][:destination]
 end
