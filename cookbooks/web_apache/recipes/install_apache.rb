@@ -20,28 +20,46 @@ if node[:web_apache][:ssl_enable]
   include_recipe "apache2::mod_ssl"
 end
 
-## Move Apache
-content_dir = '/mnt/www'
-ruby 'move_apache' do
+# Checking /var/www symlink (broken after start/stop)
+default_web_dir = '/var/www'
+bash "Checking #{default_web_dir} symlink" do
+   flags "-ex"
+   code <<-EOH
+   if [[ ! -e #{default_web_dir} &&  -L #{default_web_dir} ]]; then
+     echo "#{default_web_dir} symlink is broken! Removing..."
+     rm -f #{default_web_dir}
+   fi
+   EOH
+   only_if do File.symlink?(default_web_dir) end
+ end
+
+# Move Apache /var/www to /mnt/ephemeral/www
+content_dir = '/mnt/ephemeral/www'
+bash "Move apache #{default_web_dir} to #{content_dir}" do
+  flags "-ex"
   not_if do File.directory?(content_dir) end
   code <<-EOH
-    `mkdir -p #{content_dir}`
-    `cp -rf /var/www/. #{content_dir}`
-    `rm -rf /var/www`
-    `ln -nsf #{content_dir} /var/www`
+    mkdir -p #{content_dir}
+    if [ -d #{default_web_dir}]; then
+      cp -rf #{default_web_dir}/. #{content_dir}
+    fi
+    rm -rf #{default_web_dir}
+    ln -nsf #{content_dir} #{default_web_dir}
   EOH
 end
+
 
 ## Move Apache Logs
 apache_name = node[:apache][:dir].split("/").last
 log "apache_name was #{apache_name}"
 log "apache log dir was #{node[:apache][:log_dir]}"
-ruby 'move_apache_logs' do
+bash "move_apache_logs" do
+  flags "-ex"
   not_if do File.symlink?(node[:apache][:log_dir]) end
   code <<-EOH
-    `rm -rf #{node[:apache][:log_dir]}`
-    `mkdir -p /mnt/log/#{apache_name}`
-    `ln -s /mnt/log/#{apache_name} #{node[:apache][:log_dir]}`
+    rm -rf #{node[:apache][:log_dir]}
+    mkdir -p /mnt/ephemeral/log/#{apache_name}
+    ln -s /mnt/ephemeral/log/#{apache_name} #{node[:apache][:log_dir]}
   EOH
 end
 
