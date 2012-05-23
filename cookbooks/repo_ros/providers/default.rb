@@ -86,13 +86,13 @@ action :capistrano_pull do
   log "  Pulling source from ROS"
   action_pull
 
-  #The embedded chef capistrano resource can work only with git or svn repositories
-  #  After code download from ROS storage, we transform this code repo to git
-  #  Then we apply capistrano chef provider
-  #  After that we remove all git information from new repo (.git folders)
+  # The embedded chef capistrano resource can work only with git or svn repositories
+  # After code download from ROS storage, we transform this code repo to git
+  # Then we apply capistrano chef provider
+  # After that we remove all git information from new repo (.git folders)
 
   # Moving dir with downloaded and unpacked ROS source to temp folder
-  #   to prepare source for capistrano actions
+  # to prepare source for capistrano actions
   bash "Moving #{new_resource.destination} to #{repo_dir}/ros_repo/" do
     cwd "#{repo_dir}"
     code <<-EOH
