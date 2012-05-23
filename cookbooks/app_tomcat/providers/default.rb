@@ -264,14 +264,14 @@ action :setup_vhost do
 
     log "  Generating new apache ports.conf"
     node[:apache][:listen_ports] = "80"
-     # Generation of new apache ports.conf
+    # Generation of new apache ports.conf
     template "#{node[:apache][:dir]}/ports.conf" do
       cookbook "apache2"
       source "ports.conf.erb"
       variables :apache_listen_ports => node[:apache][:listen_ports]
     end
 
-     # Configuring document root for apache
+    # Configuring document root for apache
     if ("#{node[:app_tomcat][:code][:root_war]}" == "")
       log "  root_war not defined, setting apache docroot to #{node[:app][:root]}"
       docroot4apache = "#{node[:app][:root]}"
@@ -372,20 +372,20 @@ action :setup_monitoring do
   log "  Setup of collectd monitoring for tomcat"
   rightscale_enable_collectd_plugin 'exec'
 
-  #installing and configuring collectd for tomcat
+  # Installing and configuring collectd for tomcat
   cookbook_file "/usr/share/java/collectd.jar" do
     source "collectd.jar"
     mode "0644"
     cookbook 'app_tomcat'
   end
 
-  #Linking collectd
+  # Linking collectd
   link "/usr/share/tomcat6/lib/collectd.jar" do
     to "/usr/share/java/collectd.jar"
     not_if do !::File.exists?("/usr/share/java/collectd.jar") end
   end
 
-  #Add collectd support to tomcat.conf
+  # Add collectd support to tomcat.conf
   bash "Add collectd to tomcat.conf" do
     flags "-ex"
     code <<-EOH
@@ -397,7 +397,7 @@ CATALINA_OPTS="\$CATALINA_OPTS -Djcd.host=#{node[:rightscale][:instance_uuid]} -
 
 end
 
-#Download/Update application repository
+# Download/Update application repository
 action :code_update do
 
   deploy_dir = new_resource.destination
@@ -415,7 +415,7 @@ action :code_update do
 
   log "  Set ROOT war and code ownership"
   # Preparing user defined war file for tomcat auto deploy.
-  #  Moving file to application root and renaming it to ROOT.war.
+  # Moving file to application root and renaming it to ROOT.war.
   bash "set_root_war_and_chown_home" do
     flags "-ex"
     code <<-EOH
@@ -429,7 +429,7 @@ action :code_update do
     only_if do node[:app_tomcat][:code][:root_war] != "ROOT.war" end
   end
   # Restarting tomcat service.
-  #  This will automatically deploy ROOT.war it it will be available in application root  directory
+  # This will automatically deploy ROOT.war it it will be available in application root  directory
   action_restart
 
 end

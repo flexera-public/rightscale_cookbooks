@@ -43,7 +43,7 @@ action :install do
   end
 
   log "  Installing Ruby Enterprise Edition..."
- # Moving rubyEE sources to /tmp folder preparing to install
+  # Moving rubyEE sources to /tmp folder preparing to install
   cookbook_file "/tmp/ruby-enterprise-installed.tar.gz" do
     source "ruby-enterprise_x86_64.tar.gz"
     mode "0644"
@@ -217,7 +217,7 @@ action :code_update do
   end
 
 
-  log"  Generating new logrotatate config for rails application"
+  log "  Generating new logrotatate config for rails application"
   rightscale_logrotate_app "rails" do
     cookbook "app_passenger"
     template "logrotate_rails.erb"
