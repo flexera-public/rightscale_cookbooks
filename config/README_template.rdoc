@@ -4,7 +4,7 @@ README.rdoc template
 For Rdoc markup syntax and options please see: http://rdoc.sourceforge.net/doc/
 EXAMPLE and MARKUP sections.
 
-= RightScale *** cookbook
+= RightScale *** Cookbook
 
 == DESCRIPTION:
 
