@@ -5,18 +5,18 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-
-
 module RightScale
   module Repo
     class Ssh_key
      KEYFILE = "/tmp/gitkey"
 
      # Create bash script, which will set user defined ssh key required to access to private git source code repositories.
-     # Parameters:
-     #   ssh_key(String):: Git private ssh key
-     # Raise:
-     #   RuntimeError:: if ssh key string is empty
+     #
+     # == Parameters
+     # git_ssh_key (string):: Git private ssh key
+     #
+     # == Raise
+     # RuntimeError:: if ssh key string is empty
      def create(git_ssh_key)
        Chef::Log.info("  Creating ssh key")
        keyfile = nil
@@ -37,7 +37,8 @@ module RightScale
      end
 
      # Delete SSH key created by "create" method, after successful pull operation. And clear GIT_SSH.
-     # Parameters:
+     #
+     # == Parameters
      #   none
      def delete
        Chef::Log.warn "Deleting ssh key "

@@ -36,7 +36,7 @@ set[:app_passenger][:gem_bin]="/opt/ruby-enterprise/bin/gem"
 set[:app_passenger][:ruby_bin]="/opt/ruby-enterprise/bin/ruby"
 # Path to passenger module for apache
 set[:app_passenger][:apache_psr_install_module]="/opt/ruby-enterprise/bin/passenger-install-apache2-module"
-# By default rails application environment variable will is set to "development"
+# By default rails application environment variable is set to "development"
 set_unless[:app_passenger][:project][:environment]="development"
 # List of additional gems, required for rails application
 set_unless[:app_passenger][:project][:gem_list]=""
