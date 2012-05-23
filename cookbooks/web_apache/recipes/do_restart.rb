@@ -7,7 +7,7 @@
 
 rightscale_marker :begin
 
-log "Restarting apache"
+log "  Restarting apache"
 service "apache2" do
   action :restart
 end

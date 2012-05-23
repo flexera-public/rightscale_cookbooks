@@ -7,7 +7,7 @@
 
 rightscale_marker :begin
 
-# include the public recipe for basic installation
+# Include the public recipe for basic installation
 include_recipe "apache2"
 
 # Persist apache2 resource to node for use in other run lists
@@ -16,6 +16,7 @@ service "apache2" do
   persist true  
 end
 
+#installing ssl support from "apache2" cookbook if enabled
 if node[:web_apache][:ssl_enable]
   include_recipe "apache2::mod_ssl"
 end
@@ -48,12 +49,12 @@ bash "Move apache #{default_web_dir} to #{content_dir}" do
   EOH
 end
 
-
-## Move Apache Logs
+# Move Apache Logs
 apache_name = node[:apache][:dir].split("/").last
-log "apache_name was #{apache_name}"
-log "apache log dir was #{node[:apache][:log_dir]}"
-bash "move_apache_logs" do
+log " Apache_name was #{apache_name}"
+log " Apache log dir was #{node[:apache][:log_dir]}"
+
+bash 'move_apache_logs' do
   flags "-ex"
   not_if do File.symlink?(node[:apache][:log_dir]) end
   code <<-EOH
@@ -66,12 +67,13 @@ end
 # Configuring Apache Multi-Processing Module
 case node[:platform]
   when "centos","redhat","fedora","suse"
+    # RedHat based systems has mpm support already included so we just have to configure it properly
 
+    # Configuring "HTTPD" option to insert it to /etc/sysconfig/httpd file
     binary_to_use = node[:apache][:binary]
-    if node[:web_apache][:mpm] != 'prefork'
-      binary_to_use << ".worker"
-    end
+    binary_to_use << ".#{node[:web_apache][:mpm]}"
 
+    # Updating /etc/sysconfig/httpd  to use required worker
     template "/etc/sysconfig/httpd" do
       source "sysconfig_httpd.erb"
       mode "0644"
@@ -84,7 +86,7 @@ case node[:platform]
     package "apache2-mpm-#{node[:web_apache][:mpm]}"
 end
 
-# Log resource submitted to opscode. http://tickets.opscode.com/browse/CHEF-923
-log "Started the apache server."
+
+log "  Started the apache server."
 
 rightscale_marker :end

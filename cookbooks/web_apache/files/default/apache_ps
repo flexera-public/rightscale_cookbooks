@@ -8,7 +8,7 @@
 # 
 
 # Arguments: hostname to use to report the stats (Instance ID or UUID)
-#            
+
 
 require 'getoptlong'
 
