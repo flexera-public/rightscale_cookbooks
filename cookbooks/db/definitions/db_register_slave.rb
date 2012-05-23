@@ -11,11 +11,18 @@
 # restore the database from a backup created by the master.  Master DBs can contain it's lineage
 # in it's "rs_dbrepl:master_active" tag. This definition uses this logic to detemine what
 # database should be master for the slave running it.
-# == Params
+#
+#  @param [Symbol] action restore process to do before becoming a slave.
+#   * The +:primary_restore+ action will do a restore from primary backup location then become a slave.
+#   * The +:secondary_restore+ action will do a restore from secondary backup location then become a slave.
+#   * The +:no_restore+ action will not do a restore of any type then will become a slave.  Used for stop/start where data already exists.
+#
 # == Exceptions
 
 
-define :db_find_master do
+define :db_register_slave, :action => :primary_restore do
+
+  DATA_DIR = node[:db][:data_dir]
 
   r = rightscale_server_collection "master_servers" do
     tags 'rs_dbrepl:master_instance_uuid'
@@ -106,4 +113,40 @@ define :db_find_master do
     is_master node[:db][:this_is_master]
     immediate true
   end
+
+  include_recipe "db::request_master_allow"
+
+  case params[:action]
+    when :primary_restore
+      include_recipe "db::do_primary_restore"
+    when :secondary_restore
+      include_recipe "db::do_secondary_restore"
+    when :no_restore
+      Chef::Log.info "no restore"
+    else
+      raise "invalid parameter"
+  end
+
+  # Not needed for stop/start since replication has already been enabled.
+  db DATA_DIR do
+    not_if { params[:action] == :no_restore }
+    action :enable_replication
+  end
+
+  db DATA_DIR do
+    action :setup_monitoring
+  end
+
+  # Force a new backup if this is the initial setup of a slave
+  case params[:action]
+    when :primary_restore, :secondary_restore
+      db_request_backup "do force backup" do
+        force true
+      end
+    else
+      Chef::Log.info "No force backup initiated"
+  end
+
+  include_recipe "db::do_primary_backup_schedule_enable"
+
 end
