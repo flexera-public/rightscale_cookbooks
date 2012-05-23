@@ -53,7 +53,7 @@ action :reset do
 end
 
 action :firewall_update_request do
-  sys_firewall "Request database open port 3306 (MySQL) to this server" do
+  sys_firewall "Sending request to open port 3306 (MySQL) allowing this server to connect" do
     machine_tag new_resource.machine_tag
     port 3306 
     enable new_resource.enable
@@ -63,7 +63,7 @@ action :firewall_update_request do
 end
 
 action :firewall_update do
-  sys_firewall "Request database open port 3306 (MySQL) to this server" do
+  sys_firewall "Opening port 3306 (MySQL) for tagged '#{new_resource.machine_tag}' to connect" do
     machine_tag new_resource.machine_tag
     port 3306 
     enable new_resource.enable
@@ -275,14 +275,15 @@ action :install_server do
   end
 
   # Setup my.cnf
-  template_source = "my.cnf.erb"
+
   template value_for_platform([ "centos", "redhat", "suse" ] => {"default" => "/etc/my.cnf"}, "default" => "/etc/mysql/my.cnf") do
-    source template_source
+    source "my.cnf.erb"
     owner "root"
     group "root"
     mode "0644"
     variables(
-      :server_id => mycnf_uuid
+      :server_id => mycnf_uuid,
+      :relay_log => mycnf_relay_log
     )
     cookbook 'db_mysql'
   end
@@ -292,9 +293,9 @@ action :install_server do
   mysql_file_ulimit = node[:db_mysql][:file_ulimit]
   template "/etc/security/limits.d/mysql.limits.conf" do
     source "mysql.limits.conf.erb"
-    variables({
+    variables(
       :ulimit => mysql_file_ulimit
-    })
+    )
     cookbook 'db_mysql'
   end
 
@@ -532,7 +533,6 @@ action :enable_replication do
       master_info = RightScale::Database::MySQL::Helper.load_replication_info(node)
       # Check that the snapshot is from the current master or a slave associated with the current master
 
-      # 11H2 backup
       if master_info['Master_instance_uuid']
         if master_info['Master_instance_uuid'] != node[:db][:current_master_uuid]
           raise "FATAL: snapshot was taken from a different master! snap_master was:#{master_info['Master_instance_uuid']} != current master: #{node[:db][:current_master_uuid]}"
@@ -571,15 +571,15 @@ action :enable_replication do
 
   # we refactored setup_my_cnf into db::install_server, we might want to break that out again?
   # Setup my.cnf
-  template_source = "my.cnf.erb"
 
   template value_for_platform([ "centos", "redhat", "suse" ] => {"default" => "/etc/my.cnf"}, "default" => "/etc/mysql/my.cnf") do
-    source template_source
+    source "my.cnf.erb"
     owner "root"
     group "root"
     mode "0644"
     variables(
-      :server_id => mycnf_uuid
+      :server_id => mycnf_uuid,
+      :relay_log => mycnf_relay_log
     )
     cookbook 'db_mysql'
   end
@@ -619,16 +619,7 @@ action :enable_replication do
   end
 
   node[:db_mysql][:tunable][:read_only] = 1
-  template value_for_platform([ "centos", "redhat", "suse" ] => {"default" => "/etc/my.cnf"}, "default" => "/etc/mysql/my.cnf") do
-    source template_source
-    owner "root"
-    group "root"
-    mode "0644"
-    variables(
-      :server_id => mycnf_uuid
-    )
-    cookbook 'db_mysql'
-  end
+
 end
 
 action :generate_dump_file do

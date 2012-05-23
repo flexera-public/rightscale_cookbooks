@@ -9,7 +9,7 @@ module RightScale
   module Database
     module MySQL
       module Helper
-        
+
       	require 'timeout'
       	require 'yaml'
       	require 'ipaddr'
@@ -19,24 +19,31 @@ module RightScale
 
         # == Create numeric UUID
         # MySQL server_id must be a unique number  - use the ip address integer representation
-        # 
+        #
         # Duplicate IP's and server_id's may occur with cross cloud replication.
         def mycnf_uuid
-          # Always set to support stop/start
           node[:db_mysql][:mycnf_uuid] = IPAddr.new(node[:cloud][:private_ips][0]).to_i
+        end
+
+        # == Generate unique filename for relay_log used in slave db.
+        # Should only generate once.  Used to create unique relay_log files used for slave
+        # Always set to support stop/start
+        def mycnf_relay_log
+          node[:db_mysql][:mycnf_relay_log] = Time.now.to_i.to_s + rand(9999).to_s.rjust(4,'0') if !node[:db_mysql][:mycnf_relay_log]
+          return node[:db_mysql][:mycnf_relay_log]
         end
 
         def init(new_resource)
           begin
             require 'rightscale_tools'
           rescue LoadError
-            Chef::Log.warn "This database cookbook requires our premium 'rightscale_tools' gem." 
-            Chef::Log.warn "Please contact Rightscale to upgrade your account." 
+            Chef::Log.warn "This database cookbook requires our 'rightscale_tools' gem."
+            Chef::Log.warn "Please contact Rightscale to upgrade your account."
           end
           mount_point = new_resource.name
           version = node[:db_mysql][:version].to_f > 5.1 ? :mysql55 : :mysql
           Chef::Log.info "Using version: #{version} : #{node[:db_mysql][:version]}"
-      
+
           RightScale::Tools::Database.factory(version, new_resource.user, new_resource.password, mount_point, Chef::Log)
         end
 
