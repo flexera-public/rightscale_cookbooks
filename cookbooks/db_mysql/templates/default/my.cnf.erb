@@ -113,9 +113,8 @@ innodb_flush_method=O_DIRECT
 innodb_fast_shutdown = 1
 
 log-bin=<%=node[:db_mysql][:log_bin] %>
-
-relay-log-index=<%= node[:db][:data_dir] %>/<%= node[:hostname] %>-relay-log.index
-relay-log=<%= node[:db][:data_dir] %>/<%= node[:hostname] %>-relay-bin
+relay-log-index=<%= node[:db][:data_dir] %>/<%= @relay_log %>-relay-log.index
+relay-log=<%= node[:db][:data_dir] %>/<%= @relay_log %>-relay-bin
 
 [mysqldump]
 quick
