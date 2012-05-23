@@ -114,8 +114,12 @@
       "description": "Location where the source file is saved. Used to pull source from Remote Object Stores.",
       "required": "optional",
       "choice": [
-        "S3",
-        "CloudFiles"
+        "s3",
+        "cloudfiles",
+        "cloudfilesuk",
+        "SoftLayer_Dallas",
+        "SoftLayer_Singapore",
+        "SoftLayer_Amsterdam"
       ],
       "recipes": [
         "repo::default"

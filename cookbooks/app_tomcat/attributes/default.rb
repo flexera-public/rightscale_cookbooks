@@ -6,8 +6,6 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 # Recommended attributes
-set_unless[:app_tomcat][:server_name] = node[:web_apache][:server_name]
-set_unless[:app_tomcat][:application_name] = node[:web_apache][:application_name]
 set_unless[:app_tomcat][:code][:root_war] = ""
 set_unless[:app_tomcat][:java][:permsize] = "256m"
 set_unless[:app_tomcat][:java][:maxpermsize] = "256m"

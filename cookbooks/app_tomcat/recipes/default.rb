@@ -8,7 +8,6 @@
 rightscale_marker :begin
 
 log "  Setting provider specific settings for tomcat"
-
 node[:app][:provider] = "app_tomcat"
 node[:app][:database_name] = node[:app_tomcat][:db_name]
 
@@ -67,22 +66,21 @@ end
 
 
 log " Preparing tomcat document root variable"
+dest_dir = "/srv/tomcat6/webapps/"
 if node[:repo][:default][:destination].empty?
-  log "  Your repo/default/destination input is no set. Setting project root to default: /srv/tomcat6/webapps/ "
-  node[:app_tomcat][:project_home]= "/srv/tomcat6/webapps/"
+  log "  Your repo/default/destination input is no set. Setting project root to default: #{dest_dir}"
+  project_home = dest_dir
 else
-  node[:app_tomcat][:project_home]= node[:repo][:default][:destination]
+  project_home = node[:repo][:default][:destination]
 end
-
-# Creating new project root directory
-directory "#{node[:app_tomcat][:project_home]}" do
-  recursive true
-end
-# Cooking doc root variable
-node[:app_tomcat][:docroot] = "#{node[:app_tomcat][:project_home]}/#{node[:app_tomcat][:application_name]}"
 
 # Setting app LWRP attribute
-node[:app][:destination]="#{node[:app_tomcat][:docroot]}"
+node[:app][:root] = "#{project_home}/#{node[:web_apache][:application_name]}"
+# tomcat shares the same doc root with the application destination
+node[:app][:destination]="#{node[:app][:root]}"
 
+directory "#{node[:app][:destination]}" do
+  recursive true
+end
 
 rightscale_marker :end
