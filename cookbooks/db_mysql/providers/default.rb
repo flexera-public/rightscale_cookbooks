@@ -533,7 +533,6 @@ action :enable_replication do
       master_info = RightScale::Database::MySQL::Helper.load_replication_info(node)
       # Check that the snapshot is from the current master or a slave associated with the current master
 
-      # 11H2 backup
       if master_info['Master_instance_uuid']
         if master_info['Master_instance_uuid'] != node[:db][:current_master_uuid]
           raise "FATAL: snapshot was taken from a different master! snap_master was:#{master_info['Master_instance_uuid']} != current master: #{node[:db][:current_master_uuid]}"
