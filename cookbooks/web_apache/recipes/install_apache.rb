@@ -51,7 +51,7 @@ end
 
 # Move Apache Logs
 apache_name = node[:apache][:dir].split("/").last
-log " Apache_name was #{apache_name}"
+log " Apache name was #{apache_name}"
 log " Apache log dir was #{node[:apache][:log_dir]}"
 
 bash 'move_apache_logs' do
@@ -67,7 +67,7 @@ end
 # Configuring Apache Multi-Processing Module
 case node[:platform]
   when "centos","redhat","fedora","suse"
-    # RedHat based systems has mpm support already included so we just have to configure it properly
+    # RedHat based systems has no mpm change scripts included so we have to configure it manually
 
     # Configuring "HTTPD" option to insert it to /etc/sysconfig/httpd file
     binary_to_use = node[:apache][:binary]
