@@ -11,10 +11,12 @@
 # restore the database from a backup created by the master.  Master DBs can contain it's lineage
 # in it's "rs_dbrepl:master_active" tag. This definition uses this logic to detemine what
 # database should be master for the slave running it.
-# == Params
-#   :action => :primary_restore - does a primary restore
-#              :secondary_restore - does a secondary restore
-#              :no_restore - will not restore - used for stop/start
+#
+#  @param [Symbol] action restore process to do before becoming a slave.
+#   * The +:primary_restore+ action will do a restore from primary backup location then become a slave.
+#   * The +:secondary_restore+ action will do a restore from secondary backup location then become a slave.
+#   * The +:no_restore+ action will not do a restore of any type then will become a slave.  Used for stop/start where data already exists.
+#
 # == Exceptions
 
 
