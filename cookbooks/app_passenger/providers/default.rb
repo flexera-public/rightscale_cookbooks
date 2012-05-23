@@ -57,7 +57,8 @@ action :install do
     only_if do node[:kernel][:machine].include? "i686" end
     cookbook 'app_passenger'
   end
-  # Unpack sources. RubyEE ready to action.
+
+  # Unpack sources. RubyEE is installed to /opt/ruby-enterprise/.
   bash "install_ruby_EE" do
     flags "-ex"
     code <<-EOH

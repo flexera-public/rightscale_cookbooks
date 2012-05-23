@@ -63,7 +63,7 @@ action :install do
   # Installing database adapter for tomcat
   db_adapter = node[:app_tomcat][:db_adapter]
   if db_adapter == "mysql"
-    #Removing existing links to database connector
+    # Removing existing links to database connector
     file "/usr/share/tomcat6/lib/mysql-connector-java.jar" do
       action :delete
     end
@@ -174,8 +174,8 @@ action :setup_vhost do
     cookbook 'app_tomcat'
   end
 
-    # Starting tomcat service
-    action_start
+  # Starting tomcat service
+  action_start
 
   log "  Setup mod_jk vhost"
   # Setup mod_jk vhost start
@@ -347,6 +347,7 @@ action :setup_db_connection do
     mode "0644"
     cookbook 'app_tomcat'
   end
+
   # Installing JavaServer Pages Standard Tag Library API
   cookbook_file "/usr/share/tomcat6/lib/jstl-api-1.2.jar" do
     source "jstl-api-1.2.jar"
