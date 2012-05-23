@@ -8,7 +8,6 @@
 rightscale_marker :begin
 
 log "  Setting provider specific settings for php application server."
-
 node[:app][:provider] = "app_php"
 
 # Preparing list of database adapter packages depending on platform and database adapter
@@ -55,22 +54,21 @@ end
 
 
 log " Preparing php document root variable"
+dest_dir="/home/php/webapps"
 if node[:repo][:default][:destination].empty?
-  log "  Your repo/default/destination input is no set. Setting project root to default: /home/php/webapps/ "
-  node[:app_php][:project_home]= "/home/php/webapps/"
+  log "  Your repo/default/destination input is no set. Setting project root to default: #{dest_dir}"
+  project_home = dest_dir
 else
-  node[:app_php][:project_home]= node[:repo][:default][:destination]
+  project_home = node[:repo][:default][:destination]
 end
 
-# Creating new project root directory
-directory "#{node[:app_php][:project_home]}" do
+# Setting app LWRP attribute
+node[:app][:root] = "#{project_home}/#{node[:web_apache][:application_name]}"
+# PHP shares the same doc root with the application destination
+node[:app][:destination]="#{node[:app][:root]}"
+
+directory "#{node[:app][:destination]}" do
   recursive true
 end
-# Cooking doc root variable
-node[:app_php][:doc_root] = "#{node[:app_php][:project_home]}/#{node[:web_apache][:application_name]}"
-
-# Setting app LWRP destination attribute
-node[:app][:destination]="#{node[:app_php][:doc_root]}"
-
 
 rightscale_marker :end
