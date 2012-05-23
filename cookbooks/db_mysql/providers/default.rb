@@ -275,15 +275,15 @@ action :install_server do
   end
 
   # Setup my.cnf
-  template_source = "my.cnf.erb"
 
   template value_for_platform([ "centos", "redhat", "suse" ] => {"default" => "/etc/my.cnf"}, "default" => "/etc/mysql/my.cnf") do
-    source template_source
+    source "my.cnf.erb"
     owner "root"
     group "root"
     mode "0644"
     variables(
-      :server_id => mycnf_uuid
+      :server_id => mycnf_uuid,
+      :relay_log => mycnf_relay_log
     )
     cookbook 'db_mysql'
   end
@@ -293,9 +293,9 @@ action :install_server do
   mysql_file_ulimit = node[:db_mysql][:file_ulimit]
   template "/etc/security/limits.d/mysql.limits.conf" do
     source "mysql.limits.conf.erb"
-    variables({
+    variables(
       :ulimit => mysql_file_ulimit
-    })
+    )
     cookbook 'db_mysql'
   end
 
@@ -572,15 +572,15 @@ action :enable_replication do
 
   # we refactored setup_my_cnf into db::install_server, we might want to break that out again?
   # Setup my.cnf
-  template_source = "my.cnf.erb"
 
   template value_for_platform([ "centos", "redhat", "suse" ] => {"default" => "/etc/my.cnf"}, "default" => "/etc/mysql/my.cnf") do
-    source template_source
+    source "my.cnf.erb"
     owner "root"
     group "root"
     mode "0644"
     variables(
-      :server_id => mycnf_uuid
+      :server_id => mycnf_uuid,
+      :relay_log => mycnf_relay_log
     )
     cookbook 'db_mysql'
   end
