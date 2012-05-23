@@ -152,7 +152,7 @@ attribute "db/init_slave_at_boot",
 attribute "db/dns/ttl",
   :display_name => "Database DNS TTL Limit",
   :description => "The upper limit for the TTL of the master DB DNS record in seconds. This value should be kept low in the event of Master DB failure so that the DNS record updates in a timely manner. When installing the DB server, this value is checked in the DNS records. Input should be set for 300 when using CloudDNS.",
-  :required => "required",
+  :required => "optional",
   :default => "60",
   :choice => [ "60", "300" ],
   :recipes => [ "db::install_server" ]
