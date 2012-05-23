@@ -17,7 +17,7 @@ More detailed info you can find in app::* recipes description.
 
 * Corresponding app providers cookbooks
 
-== COOKBOOKS DEPENDENCIES
+== COOKBOOKS DEPENDENCIES:
 Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 * <tt>sys_firewall</tt>
@@ -27,11 +27,12 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 * <tt>app_passenger</tt>
 * <tt>app_tomcat</tt>
 
-
 == KNOWN LIMITATIONS:
-none
 
-== SETUP
+There are no known limitations.
+
+== SETUP:
+
 In order to use App resource, you must create corresponding providers in your app server cookbook.
 See for example app_passenger, app_php or app_tomcat cookbooks.
 
@@ -56,8 +57,8 @@ More detailed description of these attribute variables is located in resource fi
 3. Develop corresponding providers in your application server cookbook.
 4. Define required and recommended attributes in your application server cookbook attributes file.
 
-
 == DETAILS:
+
 === General
 This cookbook is intended to be used in conjunction with cookbooks that contain
 Lightweight Providers which implement the 'app' interface. See the RightScale
@@ -73,8 +74,7 @@ This cookbook contains recipes, required to connect your instance to Rightscel L
 
 for more info please see: http://support.rightscale.com/03-Tutorials/02-AWS/02-Website_Edition/2.5_Load_Balancer_Setups
 
-
-=== Attributes
+=== Attributes:
 
 * <tt>node[:app][:provider]</tt> - Set a default provider.
 * <tt>node[:app][:port]</tt> - Set a default port to listen on. Default: 8000
@@ -209,7 +209,7 @@ Only basic examples here. More detailed examples of this resource use you can fi
  end
 
 
-= LICENSE
+= LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
