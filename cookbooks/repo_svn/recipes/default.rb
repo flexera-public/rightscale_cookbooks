@@ -7,10 +7,11 @@
 
 rightscale_marker :begin
 
-# install subversion client
+# Install subversion client
 package "subversion" do
   action :install
 end
+
 
 extra_packages = case node[:platform]
   when "ubuntu","debian"
@@ -23,6 +24,7 @@ extra_packages = case node[:platform]
     %w{subversion-devel subversion-perl}
 end
 
+# Install additional svn packages
 extra_packages.each do |pkg|
   package pkg do
     action :install

@@ -15,10 +15,6 @@ action :pull do
   raise "  Storage account provider ID not provided" unless new_resource.storage_account_id
   raise "  Storage account secret not provided" unless new_resource.storage_account_secret
 
-  # Creating temp directory to new repo download
-  directory "#{new_resource.destination}/ros" do
-    recursive true
-  end
 
   # "true" we just put downloaded file into "destination" folder
   # "false" we put downloaded file into /tmp and unpack it into "destination" folder
@@ -47,7 +43,7 @@ action :pull do
     only_if do (new_resource.unpack_source == true) end
   end
 
-  Log "  ROS repo pull action - finished successfully!"
+  log "  ROS repo pull action - finished successfully!"
 end
 
 
@@ -75,10 +71,6 @@ action :capistrano_pull do
         ::File.rename("#{new_resource.destination}", "#{capistrano_dir}/releases/_initial_#{now}")
       end
     end
-  end
-
-  directory "#{new_resource.destination}/ros" do
-    recursive true
   end
 
   log "  Pulling source from ROS"
@@ -125,6 +117,8 @@ action :capistrano_pull do
 
   log "  Deploying new local git project repo from #{repo_dir}/ros_repo/  to #{destination}. New owner #{app_user}"
   log "  Deploy provider #{scm_provider}"
+
+  # Applying capistrano style deployment
   capistranize_repo "Source repo" do
     repository "#{repo_dir}/ros_repo/"
     destination destination
@@ -136,18 +130,17 @@ action :capistrano_pull do
     environment  environment
   end
 
-
   log "  Cleaning transformation temp files"
   directory "#{repo_dir}/ros_repo/" do
     recursive true
     action :delete
   end
 
-  #cleaning tmp files
+  # Cleaning tmp files
   directory "#{repo_dir}/capistrano_repo/current/.git/" do
     recursive true
     action :delete
-   end
+  end
 
-  Log "  Capistrano ROS deployment action - finished successfully!"
+  log "  Capistrano ROS deployment action - finished successfully!"
 end

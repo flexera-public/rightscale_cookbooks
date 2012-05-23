@@ -14,9 +14,12 @@ when "debian", "ubuntu"
 else
   package "git"
 end
-
+# Install additional git packages
+# Generalized Interface Toolkit
 package "gitk"
+# svn compatibility package
 package "git-svn"
+# email add-on
 package "git-email"
 
 rightscale_marker :end
