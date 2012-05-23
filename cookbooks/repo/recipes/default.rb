@@ -45,7 +45,7 @@ node[:repo].each do |resource_name, entry|
 
   ruby_block "Checking for ros_util presence" do
     block do
-      raise "  Error: ROS gem missing, please add rs_utils::install_tools or rs_tools::default recipes to runlist." unless File.exists?("/opt/rightscale/sandbox/bin/ros_util")
+      raise "  Error: ROS gem missing, please add rightscale::install_tool recipe to runlist." unless File.exists?("/opt/rightscale/sandbox/bin/ros_util")
     end
     only_if do (entry[:provider]=="repo_ros") end
   end
