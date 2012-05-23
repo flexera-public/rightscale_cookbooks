@@ -53,7 +53,7 @@ action :reset do
 end
 
 action :firewall_update_request do
-  sys_firewall "Request database open port 3306 (MySQL) to this server" do
+  sys_firewall "Sending request to open port 3306 (MySQL) allowing this server to connect" do
     machine_tag new_resource.machine_tag
     port 3306 
     enable new_resource.enable
@@ -63,7 +63,7 @@ action :firewall_update_request do
 end
 
 action :firewall_update do
-  sys_firewall "Request database open port 3306 (MySQL) to this server" do
+  sys_firewall "Opening port 3306 (MySQL) for tagged '#{new_resource.machine_tag}' to connect" do
     machine_tag new_resource.machine_tag
     port 3306 
     enable new_resource.enable
@@ -276,6 +276,7 @@ action :install_server do
 
   # Setup my.cnf
   template_source = "my.cnf.erb"
+
   template value_for_platform([ "centos", "redhat", "suse" ] => {"default" => "/etc/my.cnf"}, "default" => "/etc/mysql/my.cnf") do
     source template_source
     owner "root"
@@ -619,16 +620,7 @@ action :enable_replication do
   end
 
   node[:db_mysql][:tunable][:read_only] = 1
-  template value_for_platform([ "centos", "redhat", "suse" ] => {"default" => "/etc/my.cnf"}, "default" => "/etc/mysql/my.cnf") do
-    source template_source
-    owner "root"
-    group "root"
-    mode "0644"
-    variables(
-      :server_id => mycnf_uuid
-    )
-    cookbook 'db_mysql'
-  end
+
 end
 
 action :generate_dump_file do

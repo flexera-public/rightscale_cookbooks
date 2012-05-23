@@ -12,10 +12,15 @@
 # in it's "rs_dbrepl:master_active" tag. This definition uses this logic to detemine what
 # database should be master for the slave running it.
 # == Params
+#   :action => :primary_restore - does a primary restore
+#              :secondary_restore - does a secondary restore
+#              :no_restore - will not restore - used for stop/start
 # == Exceptions
 
 
-define :db_find_master do
+define :db_register_slave, :action => :primary_restore do
+
+  DATA_DIR = node[:db][:data_dir]
 
   r = rightscale_server_collection "master_servers" do
     tags 'rs_dbrepl:master_instance_uuid'
@@ -106,4 +111,39 @@ define :db_find_master do
     is_master node[:db][:this_is_master]
     immediate true
   end
+
+  include_recipe "db::request_master_allow"
+
+  case params[:action]
+    when :primary_restore
+      include_recipe "db::do_primary_restore"
+    when :secondary_restore
+      include_recipe "db::do_secondary_restore"
+    when :no_restore
+      Chef::Log.info "no restore"
+    else
+      raise "invalid parameter"
+  end
+
+  db DATA_DIR do
+    not_if { params[:action] == :no_restore }
+    action :enable_replication
+  end
+
+  db DATA_DIR do
+    action :setup_monitoring
+  end
+
+  # Force a new backup
+  case params[:action]
+    when :primary_restore, :secondary_restore
+      db_request_backup "do force backup" do
+        force true
+      end
+    else
+      Chef::Log.info "No force backup initiated"
+  end
+
+  include_recipe "db::do_primary_backup_schedule_enable"
+
 end
