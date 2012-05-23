@@ -1,6 +1,7 @@
 = RightScale "repo_git" Provider
 
 == DESCRIPTION:
+
 Provides the GIT implementation of the 'repo' resource to
 manage source code download from GIT repositories.
 
@@ -10,17 +11,16 @@ manage source code download from GIT repositories.
 
 * Requires a virtual machine launched from a RightScale-managed RightImage.
 
-== COOKBOOKS DEPENDENCIES
+== COOKBOOKS DEPENDENCIES:
+
 Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 * <tt>rightscale</tt>
 * <tt>repo</tt>
 
-
 == KNOWN LIMITATIONS:
 
-none
-
+There are no known limitations.
 
 == SETUP/USAGE:
 
@@ -36,6 +36,7 @@ none
 * To access to private git repositories repo/ssh_key input must contain string with private ssh key or 'key'-type variable from RightScale dashboard.
 
 == DETAILS:
+
 === General
 
 The 'repo_git' implementation can be called with help of Lightweight Resource, which can be
@@ -94,7 +95,7 @@ Perform standard pull and then capistrano deployment style will be applied.
 
 For usage examples please see corresponding section in <tt>repo</tt> cookbook readme.
 
-= LICENSE
+= LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
