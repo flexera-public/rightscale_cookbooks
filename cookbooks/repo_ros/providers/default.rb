@@ -77,9 +77,9 @@ action :capistrano_pull do
   action_pull
 
   # The embedded chef capistrano resource can work only with git or svn repositories
-  # After code download from ROS storage, we transform this code repo to git
-  # Then we apply capistrano chef provider
-  # After that we remove all git information from new repo (.git folders)
+  # After code download from ROS storage, we will transform this code repository to git type
+  # Then we will apply capistrano chef provider
+  # After that we will remove all git information from new repo (.git folders)
 
   # Moving dir with downloaded and unpacked ROS source to temp folder
   # to prepare source for capistrano actions
@@ -115,7 +115,7 @@ action :capistrano_pull do
       EOH
   end
 
-  log "  Deploying new local git project repo from #{repo_dir}/ros_repo/  to #{destination}. New owner #{app_user}"
+  log "  Deploying new local git project repo from #{repo_dir}/ros_repo/ to #{destination}. New owner #{app_user}"
   log "  Deploy provider #{scm_provider}"
 
   # Applying capistrano style deployment
