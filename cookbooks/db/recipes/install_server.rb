@@ -55,16 +55,20 @@ db node[:db][:data_dir] do
   action :install_server
 end
 
-# if server already a master, reset node attributes and tags. ie restart from stop/start
+# Determine if server is currently a master or a slave on boot.
+# This determines that the instance returned from a Stop/Start
+#
+
+# If server already a master, reset node attributes and tags.
 if node[:db][:this_is_master] && node[:db][:init_status].to_sym == :initialized
   log "Already set as master and initialized - updating node"
   db_register_master
+# If server is already a slave, update node and config files
 elsif node[:db][:this_is_master] == false && node[:db][:init_status].to_sym == :initialized
   log "Already set as slave and initialized - updating node"
   db_register_slave "Updating slave" do
     action :no_restore
   end
-
 end
 
 rightscale_marker :end

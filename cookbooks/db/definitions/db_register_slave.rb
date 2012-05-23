@@ -125,6 +125,7 @@ define :db_register_slave, :action => :primary_restore do
       raise "invalid parameter"
   end
 
+  # Not needed for stop/start since replication has already been enabled.
   db DATA_DIR do
     not_if { params[:action] == :no_restore }
     action :enable_replication
@@ -134,7 +135,7 @@ define :db_register_slave, :action => :primary_restore do
     action :setup_monitoring
   end
 
-  # Force a new backup
+  # Force a new backup if this is the initial setup of a slave
   case params[:action]
     when :primary_restore, :secondary_restore
       db_request_backup "do force backup" do
