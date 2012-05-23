@@ -7,22 +7,16 @@
 
 rightscale_marker :begin
 
-service "apache2" do
-  action :nothing
-end
-
+# Installing only for RHEL based systems
 package "mod_ssl" do
-  case node[:platform]
-  when 'ubuntu'
-    action :nothing
-  end
+  not_if do node[:platform].include? "ubuntu" end
 end
 
-# == Setup Apache vhost on following ports
+# Setup Apache vhost on following ports
 https_port = "443"
 http_port  = "80"
 
-# disable default vhost
+# Disable default vhost
 apache_site "000-default" do
   enable false
 end
@@ -36,6 +30,7 @@ end
 
 ssl_dir =  "/etc/#{node[:apache][:config_subdir]}/rightscale.d/key"
 
+# Creating directory where certificate files will be stored
 directory ssl_dir do
   mode "0700"
   recursive true
@@ -44,28 +39,30 @@ end
 ssl_certificate_file = ::File.join(ssl_dir, "#{node[:web_apache][:server_name]}.crt")
 ssl_key_file = ::File.join(ssl_dir, "#{node[:web_apache][:server_name]}.key")
 
+# Updating crt file config
 template ssl_certificate_file do
   mode "0400"
   source "ssl_certificate.erb"
 end
 
+# Updating key file config
 template ssl_key_file do
   mode "0400"
   source "ssl_key.erb"
 end
 
-if node[:web_apache][:ssl_passphrase]
-  Chef::Log.info "Using passphrase"
-  bash "decrypt openssl keyfile" do
-    flags "-ex"
-    environment({ :OPT_SSL_PASSPHRASE => node[:web_apache][:ssl_passphrase] })
-    code "openssl rsa -passin env:OPT_SSL_PASSPHRASE -in #{ssl_key_file} -passout env:OPT_SSL_PASSPHRASE -out #{ssl_key_file}"
-  end
+log "  Using passphrase to decrypt certificate"
+bash "decrypt openssl keyfile" do
+  flags "-ex"
+  environment({ :OPT_SSL_PASSPHRASE => node[:web_apache][:ssl_passphrase] })
+  code "openssl rsa -passin env:OPT_SSL_PASSPHRASE -in #{ssl_key_file} -passout env:OPT_SSL_PASSPHRASE -out #{ssl_key_file}"
+  only_if do (node[:web_apache][:ssl_passphrase]!=nil) end
 end
+
 
 # Optional certificate chain
 if node[:web_apache][:ssl_certificate_chain]
-  Chef::Log.info "Using SSL certificate chain"
+  log "  Using SSL certificate chain"
   ssl_certificate_chain_file = ::File.join(ssl_dir, "#{node[:web_apache][:server_name]}.sf_crt")
   template "#{ssl_certificate_chain_file}" do
     mode "0400"
@@ -76,18 +73,21 @@ else
 end
 
 node[:apache][:listen_ports].push(http_port) unless node[:apache][:listen_ports].include?(http_port)
+node[:apache][:listen_ports].push(https_port) unless node[:apache][:listen_ports].include?(https_port)
 
+log "  Stopping apache. Preparing to update vhosts and ports.conf"
+service "apache2" do
+  action :stop
+end
 
+# Updating apache listen ports configuration
 template "#{node[:apache][:dir]}/ports.conf" do
   cookbook "apache2"
   source "ports.conf.erb"
   variables :apache_listen_ports => node[:apache][:listen_ports]
-  notifies :restart, resources(:service => "apache2")
-#  notifies :restart, resources(:service => "apache2"), :immediately
 end
 
-# == Configure apache ssl vhost for PHP
-#
+# Configure apache ssl vhost for PHP
 web_app "#{node[:web_apache][:application_name]}.frontend.https" do
   template "apache_ssl_vhost.erb"
   docroot node[:web_apache][:docroot]
@@ -97,18 +97,20 @@ web_app "#{node[:web_apache][:application_name]}.frontend.https" do
   ssl_passphrase node[:web_apache][:ssl_passphrase]
   ssl_certificate_file ssl_certificate_file
   ssl_key_file ssl_key_file
-  notifies :restart, resources(:service => "apache2")
-#  notifies :restart, resources(:service => "apache2"), :immediately
 end
 
-# == Configure apache non-ssl vhost for PHP
-#
+# Configure apache non-ssl vhost for PHP
 web_app "#{node[:web_apache][:application_name]}.frontend.http" do
   template "apache.conf.erb"
   docroot node[:web_apache][:docroot]
   vhost_port http_port
   server_name node[:web_apache][:server_name]
-  notifies :restart, resources(:service => "apache2"), :immediately
 end
+
+# Starting apache
+service "apache2" do
+  action :start
+end
+
 
 rightscale_marker :end

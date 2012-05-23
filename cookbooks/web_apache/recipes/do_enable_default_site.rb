@@ -7,13 +7,8 @@
 
 rightscale_marker :begin
 
-# Defining apache service
-service "apache2" do
-  action :nothing
-end
-
 # Disable default vhost
-log "  Enabling deafult vhost"
+log "  Enabling default vhost"
 apache_site "default" do
   enable true
   notifies :reload, resources(:service => "apache2")
