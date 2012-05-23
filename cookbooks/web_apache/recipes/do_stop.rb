@@ -7,7 +7,7 @@
 
 rightscale_marker :begin
 
-log "Stoping apache"
+log "  Stoping apache"
 service "apache2" do
   action :stop
 end

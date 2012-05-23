@@ -7,7 +7,7 @@
 
 rightscale_marker :begin
 
-# include the public recipe for basic installation
+# Include the public recipe for basic installation
 include_recipe "apache2"
 
 # Persist apache2 resource to node for use in other run lists
@@ -16,44 +16,49 @@ service "apache2" do
   persist true  
 end
 
+#installing ssl support from "apache2" cookbook if enabled
 if node[:web_apache][:ssl_enable]
   include_recipe "apache2::mod_ssl"
 end
 
-## Move Apache
+# Move Apache
 content_dir = '/mnt/www'
-ruby 'move_apache' do
+bash 'move_apache' do
+  flags "-ex"
   not_if do File.directory?(content_dir) end
   code <<-EOH
-    `mkdir -p #{content_dir}`
-    `cp -rf /var/www/. #{content_dir}`
-    `rm -rf /var/www`
-    `ln -nsf #{content_dir} /var/www`
+    mkdir -p #{content_dir}
+    cp -rf /var/www/. #{content_dir}
+    rm -rf /var/www
+    ln -nsf #{content_dir} /var/www
   EOH
 end
 
-## Move Apache Logs
+# Move Apache Logs
 apache_name = node[:apache][:dir].split("/").last
-log "apache_name was #{apache_name}"
-log "apache log dir was #{node[:apache][:log_dir]}"
-ruby 'move_apache_logs' do
+log " Apache_name was #{apache_name}"
+log " Apache log dir was #{node[:apache][:log_dir]}"
+
+bash 'move_apache_logs' do
+  flags "-ex"
   not_if do File.symlink?(node[:apache][:log_dir]) end
   code <<-EOH
-    `rm -rf #{node[:apache][:log_dir]}`
-    `mkdir -p /mnt/log/#{apache_name}`
-    `ln -s /mnt/log/#{apache_name} #{node[:apache][:log_dir]}`
+    rm -rf #{node[:apache][:log_dir]}
+    mkdir -p /mnt/log/#{apache_name}
+    ln -s /mnt/log/#{apache_name} #{node[:apache][:log_dir]}
   EOH
 end
 
 # Configuring Apache Multi-Processing Module
 case node[:platform]
   when "centos","redhat","fedora","suse"
+    # RedHat based systems has mpm support already included so we just have to configure it properly
 
+    # Configuring "HTTPD" option to insert it to /etc/sysconfig/httpd file
     binary_to_use = node[:apache][:binary]
-    if node[:web_apache][:mpm] != 'prefork'
-      binary_to_use << ".worker"
-    end
+    binary_to_use << ".#{node[:web_apache][:mpm]}"
 
+    # Updating /etc/sysconfig/httpd  to use required worker
     template "/etc/sysconfig/httpd" do
       source "sysconfig_httpd.erb"
       mode "0644"
@@ -66,7 +71,7 @@ case node[:platform]
     package "apache2-mpm-#{node[:web_apache][:mpm]}"
 end
 
-# Log resource submitted to opscode. http://tickets.opscode.com/browse/CHEF-923
-log "Started the apache server."
+
+log "  Started the apache server."
 
 rightscale_marker :end
