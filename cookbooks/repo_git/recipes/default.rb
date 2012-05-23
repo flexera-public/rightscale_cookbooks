@@ -1,6 +1,5 @@
 #
 # Cookbook Name:: repo_git
-# Recipe:: default
 #
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
@@ -16,7 +15,7 @@ unless node[:platform] == "mac_os_x" then
   else 
     package "git"
   end
-
+  # Installing additional packages
   package "gitk"
   package "git-svn"
   package "git-email"
