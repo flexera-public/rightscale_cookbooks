@@ -7,18 +7,16 @@
 
 rightscale_marker :begin
 
-unless node[:platform] == "mac_os_x" then
-  # Install git client
-  case node[:platform]
-  when "debian", "ubuntu"
-    package "git-core"
-  else 
-    package "git"
-  end
-  # Installing additional packages
-  package "gitk"
-  package "git-svn"
-  package "git-email"
+# Install git client
+case node[:platform]
+when "debian", "ubuntu"
+  package "git-core"
+else
+  package "git"
 end
+
+package "gitk"
+package "git-svn"
+package "git-email"
 
 rightscale_marker :end

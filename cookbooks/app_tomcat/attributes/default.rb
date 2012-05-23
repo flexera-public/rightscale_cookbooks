@@ -6,9 +6,6 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 # Recommended attributes
-#Folder name where application sourcefiles will be stored
-set_unless[:tomcat][:application_name] = node[:web_apache][:application_name]
-# Path to application war file
 set_unless[:app_tomcat][:code][:root_war] = ""
 # Java heap tuning attributes for more info see http://www.tomcatexpert.com/blog/2011/11/22/performance-tuning-jvm-running-tomcat
 # Defines the initial value of the permanent generation space size
