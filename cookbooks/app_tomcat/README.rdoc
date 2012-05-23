@@ -13,7 +13,7 @@
 * Tested on Ubuntu 10.04 RightImage
 * Tested on RedHat 5.8 RightImage
 
-== COOKBOOKS DEPENDENCIES
+== COOKBOOKS DEPENDENCIES:
 Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 * <tt>app</tt>
@@ -23,7 +23,8 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 * <tt>rightscale</tt>
 
 == KNOWN LIMITATIONS:
-none
+
+There are no known limitations.
 
 == SETUP/USAGE:
 
@@ -161,9 +162,8 @@ For normal operations it requires "app" resource which will act as interface to 
 
 For usage examples please see corresponding section in <tt>app</tt> cookbook readme.
 
-= LICENSE
+= LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 if applicable, other agreements such as a RightScale Master Subscription Agreement.
-
