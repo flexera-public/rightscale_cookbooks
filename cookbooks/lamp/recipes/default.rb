@@ -9,8 +9,10 @@
 # server default recipe to ensure that it does not over write these values.
 rightscale_marker :begin
 
-  node[:db_mysql][:bind_address] = "localhost"
-  node[:app][:port] = "80"
-  log "  LAMP set to listen on #{node[:db_mysql][:bind_address]}:#{node[:app][:port]}"
+node[:db_mysql][:bind_address] = "localhost"
+log "  LAMP set MySQL to listen on #{node[:db_mysql][:bind_address]}"
+
+node[:app][:port] = "80"
+log "  LAMP set Apache to listen on port #{node[:app][:port]}"
 
 rightscale_marker :end
