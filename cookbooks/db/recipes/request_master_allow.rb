@@ -11,7 +11,7 @@ rightscale_marker :begin
 # Check the node state to verify that we have correctly initialized this server.
 db_state_assert :slave
 
-# == Request firewall closed
+# == Request firewall opened
 #
 db node[:db][:data_dir] do
   machine_tag "rs_dbrepl:master_instance_uuid=#{node[:db][:current_master_uuid]}"

@@ -8,9 +8,16 @@
 rightscale_marker :begin
 
 if node[:db][:init_slave_at_boot] == "true"
-  log "  Initializing slave at boot..."
-  include_recipe "db::do_primary_init_slave"
+
+  if node[:db][:init_status].to_sym == :initialized
+    log "  Already initialized perhaps from stop/start"
+  else
+    log "  Initializing slave at boot..."
+    include_recipe "db::do_primary_init_slave"
+  end
+
 else
   log "  Initialize slave at boot [skipped]"
 end
+
 rightscale_marker :end

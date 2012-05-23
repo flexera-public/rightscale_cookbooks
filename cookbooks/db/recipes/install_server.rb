@@ -57,8 +57,14 @@ end
 
 # if server already a master, reset node attributes and tags. ie restart from stop/start
 if node[:db][:this_is_master] && node[:db][:init_status].to_sym == :initialized
-  log "restart from stop - updating node"
+  log "Already set as master and initialized - updating node"
   db_register_master
+elsif node[:db][:this_is_master] == false && node[:db][:init_status].to_sym == :initialized
+  log "Already set as slave and initialized - updating node"
+  db_register_slave "Updating slave" do
+    action :no_restore
+  end
+
 end
 
 rightscale_marker :end
