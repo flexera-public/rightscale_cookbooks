@@ -9,8 +9,8 @@ This cookbook provides abstract 'repo' resource for managing code download from 
 * Requires a virtual machine launched from a RightScale-managed RightImage.
 * Ros implementation requires the 'rightscale::install_tools' recipe
 
+== COOKBOOKS DEPENDENCIES:
 
-== COOKBOOKS DEPENDENCIES
 Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 * <tt>rightscale</tt>
@@ -20,11 +20,12 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 cookbooks must be present in ServerTemplate repository
 
-
 == KNOWN LIMITATIONS:
- none
+
+There are no known limitations.
 
 == SETUP/USAGE:
+
 * Place repo::default recipe into your runlist to setup the repo resource.
   When using a RightScale ServerTemplate, this will also automatically add the required attributes to your ServerTemplate inputs.
 
@@ -43,17 +44,21 @@ cookbooks must be present in ServerTemplate repository
   For code implementation examples look at <b>LWRP's</b> section of this readme
 
 == DETAILS:
+
 === General
+
 This cookbook is intended to be used in conjunction with cookbooks that contain
 Lightweight Providers which implement the 'repo' interface. See the RightScale
 repo_git cookbook for an example.
 
 === Attributes
+
 All attributes in this cookbook are generally used to assign values for corresponding <tt>repo</tt> LWRP attribute.
 
 All attributes in this cookbook has inputs except <b>Additional capistrano attributes</b> which are used internally in recipes.
 
 ===== Common attributes
+
 * <tt>node[:repo][:default][:destination]</tt> - Path to where project repo will be pulled. Default is: "/tmp/repo"
 * <tt>node[:repo][:default][:repository]</tt> - The URL of your svn or git repository where your application code will be checked out.
 * <tt>node[:repo][:default][:revision]</tt> -  Remote repo Branch, Tag or revision. Default is:"HEAD"
@@ -61,13 +66,16 @@ All attributes in this cookbook has inputs except <b>Additional capistrano attri
 * <tt>node[:repo][:default][:perform_action]</tt> - The type pull action which will be performed, 'pull'- standard repo pull, 'capistrano_pull' standard pull and then capistrano deployment style will be applied. Default is: "pull"
 
 ===== SVN attributes
+
 * <tt>node[:repo][:default][:svn_username]</tt> - Username for SVN repository.
 * <tt>node[:repo][:default][:svn_password]</tt> - Password for SVN repository.
 
 ===== GIT attributes
+
 * <tt>node[:repo][:default][:ssh_key]</tt> - The private SSH key of the git repository.
 
 ===== ROS attributes
+
 * <tt>node[:repo][:default][:storage_account_provider]</tt> - Location where the source file is saved. Used by recipes to upload to Amazon S3 or Rackspace Cloud Files. Default is:"S3"
 * <tt>node[:repo][:default][:storage_account_id]</tt> -  Cloud storage account ID required to access specified cloud storage location.
 * <tt>node[:repo][:default][:storage_account_secret]</tt> - Cloud storage account secret required to access specified cloud storage location.
@@ -75,11 +83,11 @@ All attributes in this cookbook has inputs except <b>Additional capistrano attri
 * <tt>node[:repo][:default][:prefix]</tt> - Filename of required source repository archive. Ex: source.tar.gz
 
 ===== Additional capistrano attributes
+
 * <tt>node[:repo][:default][:environment]</tt> - A hash of the form {"ENV_VARIABLE"=>"VALUE"} ({})
 * <tt>node[:repo][:default][:symlinks]</tt> - An array of paths, relative to app root, to be removed from a checkout before symlinking. Default is:({})
 * <tt>node[:repo][:default][:purge_before_symlink]</tt> - An array of paths, relative to app root, to be removed from a checkout before symlinking. Default is: %w{}
 * <tt>node[:repo][:default][:create_dirs_before_symlink]</tt> - Directories to create before symlinking. Runs after purge_before_symlink. Default is: %w{}
-
 
 === Templates:
  none
@@ -200,7 +208,7 @@ For Amazon S3, use your AWS secret access key (e.g., cred:AWS_SECRET_ACCESS_KEY)
     environment                 ({}) #A hash of the form {'ENV_VARIABLE'=>'VALUE'}
   end
 
-= LICENSE
+= LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
