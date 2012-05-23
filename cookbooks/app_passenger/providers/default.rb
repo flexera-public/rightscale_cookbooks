@@ -164,11 +164,7 @@ action :setup_db_connection do
   log "  Generating database.yml"
   # Tell MySQL to fill in our connection template
   if db_adapter == "mysql"
-<<<<<<< HEAD
-    db_mysql_connect_app "#{deploy_dir.chomp}/config/database.yml" do
-=======
     db_mysql_connect_app "#{deploy_dir.chomp}/config/database.yml"  do
->>>>>>> sprint12_04_a44096_binary_mirrors
       template      "database.yml.erb"
       cookbook      "app_passenger"
       owner         node[:app_passenger][:apache][:user]
@@ -177,11 +173,7 @@ action :setup_db_connection do
     end
   # Tell PostgreSQL to fill in our connection template
   elsif db_adapter == "postgresql"
-<<<<<<< HEAD
-    db_postgres_connect_app "#{deploy_dir.chomp}/config/database.yml" do
-=======
     db_postgres_connect_app "#{deploy_dir.chomp}/config/database.yml"  do
->>>>>>> sprint12_04_a44096_binary_mirrors
       template      "database.yml.erb"
       cookbook      "app_passenger"
       owner         node[:app_passenger][:apache][:user]
