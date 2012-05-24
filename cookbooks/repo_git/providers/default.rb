@@ -33,7 +33,7 @@ action :pull do
     ruby_block "Backup of existing project directory" do
       only_if do ::File.directory?(destination) end
       block do
-        ::File.rename("#{destination}", "#{destination}"+::Time.now.strftime("%Y%m%d%H%M"))
+        ::File.rename(destination.chomp('/'), destination.chomp('/') + ::Time.now.strftime("%Y%m%d%H%M"))
       end
     end
     log "  Downloading new Git project repository"
