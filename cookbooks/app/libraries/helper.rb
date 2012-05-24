@@ -13,14 +13,14 @@ module RightScale
       # listens on.
       #
       # == Parameters 
-      # private_ips(Array):: List of private ips assigned to the application server
-      # public_ips(Array):: List of public ips assigned to the application server
+      # @param private_ips [Array] List of private ips assigned to the application server
+      # @param public_ips [Array] List of public ips assigned to the application server
       #
       # == Returns
-      # String:: IP Address 
+      # @return [String] IP Address
       #
       # == Raise
-      # RuntimeError:: If nether a valid private nor public ip can be found
+      # @raises [RuntimeError] If nether a valid private nor public ip can be found
       def self.bind_ip(private_ips = [ ], public_ips = [ ])
         ip = nil
         if private_ips && private_ips.size > 0
@@ -34,11 +34,17 @@ module RightScale
       end
       
       # Return the port that this application server listens on
+      #
+      # == Returns
+      # @return [integer] Application port
       def self.bind_port()
         node[:app][:port].to_i
       end
 
       # Returns array from a comma seperated list
+      #
+      # == Returns
+      # @return [Array<String>] Array of vhosts
       def vhosts(vhost_list)
         return vhost_list.gsub(/\s+/, "").split(",").uniq.each
       end
