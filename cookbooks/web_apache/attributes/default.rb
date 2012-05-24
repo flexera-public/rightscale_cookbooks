@@ -7,6 +7,8 @@
 
 
 # Recommended attributes
+
+# Admin email
 set_unless[:apache][:contact] = "root@localhost"
 
 # Optional attributes

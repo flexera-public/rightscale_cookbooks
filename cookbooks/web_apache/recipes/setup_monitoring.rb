@@ -54,7 +54,7 @@ cookbook_file(::File.join(node[:rightscale][:collectd_lib], "plugins", 'apache_p
   cookbook 'web_apache'
 end
 
-# checking node[:apache][:listen_ports]
+# Checking node[:apache][:listen_ports]
 # it can be a string if single port is defined
 # or array if multiple ports are defined
 

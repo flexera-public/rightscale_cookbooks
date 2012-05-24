@@ -98,5 +98,4 @@ web_app "#{node[:web_apache][:application_name]}.frontend.http" do
   notifies :restart, resources(:service => "apache2"), :immediately
 end
 
-
 rightscale_marker :end
