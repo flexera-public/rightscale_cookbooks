@@ -10,8 +10,10 @@
 rightscale_marker :begin
 
 node[:db_mysql][:bind_address] = "localhost"
+log "  LAMP set MySQL to listen on #{node[:db_mysql][:bind_address]}"
+
 node[:app][:port] = "80"
-log "LAMP set to listen on #{node[:db_mysql][:bind_address]}:#{node[:app][:port]}"
+log "  LAMP set Apache to listen on port #{node[:app][:port]}"
 
 # Setup default values for application resource and install required packages
 app "default" do

@@ -1,46 +1,135 @@
-= RightScale System DNS Cookbook
+= RightScale System DNS cookbook
 
 == DESCRIPTION:
 
-This cookbook provides a set of dynamic DNS recipes used by RightScale ServerTemplates
-including Database Manager ServerTemplates.
+This cookbook provides a set of dynamic DNS recipes used by RightScale ServerTemplates including Database Manager
+ServerTemplates.
 
-Cookbook currently supports DNSMadeEasy, DynDns, and Amazon Route53 DNS service providers.
-A new chef provider can be created to add support for additional dynamic DNS service providers.
+-------------
+
+== REQUIREMENTS:
+
+* An account with the desired DNS service provider
+* DNS A record’s created external to this cookbook.
+
+-------------
+
+== COOKBOOKS DEPENDENCIES:
+
+Please see <tt>metadata.rb</tt> file for the latest dependencies.
+
+-------------
+
+== KNOWN LIMITATIONS:
+
+Currently only the first private IP address can be set.
+
+-------------
+
+== SETUP/USAGE:
+
+Place <tt>sys_dns::default</tt> recipe into your runlist to setup the dynamic DNS provider resource. 
+This will install the support tools and chef providers for the dynamic DNS provider selected by the
+“DNS Service Provider” input. When using a RightScale ServerTemplate, this will automatically add the common DNS service
+provider attributes to your ServerTemplate inputs. Place <tt>sys_dns::do_set_private</tt> recipe in your runlist.
+This will set the DNS record identified by the “DNS Record ID” ServerTemplate input to the first private IP address
+of the instance.
+-------------
 
 == DETAILS:
 
 === General
-The cookbook provides a common interface for updating DNS records for the different DNS 
-service providers.
+
+Cookbook currently supports CloudDNS, DNSMadeEasy, DynDns, and Amazon Route53 DNS service providers.
+A new chef provider can be created to add support for additional dynamic DNS service providers.
 
 For additional information:
   http://support.rightscale.com/03-Tutorials/02-AWS/02-Website_Edition/2._Deployment_Setup/4._Domain_Setup
 
-== REQUIREMENTS:
-* An account with the desired DNS service provider
-* DNS A record's created external to this cookbook.
+-------------
 
-== SETUP/USAGE:
+=== Attributes:
 
-* Place sys_dns::default recipe into your runlist to setup the dynamic DNS provider resource.
+These are settings used in recipes and templates. Default values are noted.
 
-  This will install the support tools and chef providers for the dynamic DNS provider selected
-  by the "DNS Service Provider" input.
+* <tt>node[sys_dns][choice]</tt> - The name of your DNS provider.
+* <tt>node[sys_dns][id]</tt> - The unique identifier that is associated with the DNS A record of the server.
+* <tt>node[sys_dns][user]</tt> - The user name that is used to access and modify your DNS A records.
+* <tt>node[sys_dns][password]</tt> - The password that is used to access and modify your DNS A records.
+* <tt>node[sys_dns][region]</tt> - CloudDNS specific: region where the A records should be modified.
 
-  When using a RightScale ServerTemplate, this will automatically add the common DNS sewrvice
-  provider attributes to your ServerTemplate inputs.
+-------------
 
-* Place sys_dns::do_set_private recipe in your runlist.  This will set the DNS record identified
-  by the "DNS Record ID" ServerTemplate input to the first private IP address of the instance.
+=== Libraries-helpers:
 
-== KNOWN LIMITATIONS:
+Use this section only if your cookbook contains any libraries. 
+Give complete description of library purpose and functionality. 
+Provide examples of how it is used in recipes.
 
-* Currently only the first private IP address can be set.
+==== Example:
 
+<b>RightScale::DnsTools::CloudDNS.new(Chef::Log).action_set(id, user, password, address, region)</b>
+<b>RightScale::DnsTools::DME.new(Chef::Log).action_set(id, user, password, address)</b>
+<b>RightScale::DnsTools::DynDNS.new(Chef::Log).action_set(id, user, password, address)</b>
+<b>RightScale::DnsTools::AWS.new(Chef::Log).action_set(id, user, password, address)</b>
 
-= LICENSE
+Return the result of A record update process.
 
-Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-if applicable, other agreements such as a RightScale Master Subscription Agreement.
+Parameters:
+
+* <tt>id::</tt> The unique identifier that is associated with the DNS A record of the server.
+* <tt>user::</tt> The user name that is used to access and modify your DNS A records.
+* <tt>password::</tt> The password that is used to access and modify your DNS A records.
+* <tt>address::</tt> Private IP of instance running the recipe.
+* <tt>region::</tt> CloudDNS specific: region where the A records should be modified.
+
+Returns:
+
+<tt>Chef::Log::</tt> A record successful update message.
+
+Raise:
+
+<tt>Chef::Log::</tt> Error message that may have occurred during the update process.
+
+-------------
+
+=== LWRPs:
+
+The 'set_private' interface is defined by a Lightweight Resource, which can be found in the resources/default.rb file.
+
+Used to pass data to the helper file and call the corresponding dns provider. 
+
+For more information about Lightweight Resources and Providers (LWRPs), please see:
+http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)
+
+==== Example:
+
+Common attributes
+
+* <tt>:id</tt> - The unique identifier that is associated with the DNS A record of the server.
+* <tt>:user</tt> - The user name that is used to access and modify your DNS A records.
+* <tt>:password</tt> - The password that is used to access and modify your DNS A records.
+* <tt>:address</tt> - Private IP of instance running the recipe.
+* <tt>:region</tt> - CloudDNS specific: region where the A records should be modified.
+* <tt>:choice</tt> - One of the supported DNS providers: "DNSMadeEasy" / "DynDNS" / "Route53" / "CloudDNS"
+
+==== Example:
+
+<b>Update Action</b>
+
+To update A record with servers' private ip:
+
+  sys_dns "default" do
+    id node[:db][:dns][:slave][:id]
+    address private_ip
+    action :set_private
+  end
+
+-------------
+
+= LICENSE:
+
+Copyright RightScale, Inc. All rights reserved.  All access and use subject to
+the RightScale Terms of Service available at http://www.rightscale.com/terms.php
+and, if applicable, other agreements such as a RightScale Master Subscription
+Agreement.

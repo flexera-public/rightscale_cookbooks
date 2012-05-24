@@ -2,33 +2,135 @@
 
 == DESCRIPTION:
 
-* Cookbook provides PHP  implementation of the app LWRP.
-* Installs and configures, PHP application server.
+* Cookbook provides Apache + PHP implementation of the app LWRP.
+* Installs and configures, Apache + PHP application server.
 
 == REQUIREMENTS:
-
+* Requires "app" LightWeight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
+  or your own implementation of "app" resource. See "app" cookbook readme for details.
 * Requires a VM launched from a RightScale managed RightImage
 * Tested on CentOS 5.6 RightImage
 * Tested on Ubuntu 10.04 RightImage
+* Tested on RedHat 5.8 RightImage
 
-== SETUP:
+== COOKBOOKS DEPENDENCIES:
+Please see <tt>metadata.rb</tt> file for the latest dependencies.
+
+* <tt>rightscale</tt>
+* <tt>web_apache</tt>
+* <tt>repo</tt>
+* <tt>db_mysql</tt>
+* <tt>db_postgres</tt>
+* <tt>app</tt>
+* <tt>db</tt>
+
+== KNOWN LIMITATIONS:
+ Currently apache uses a static configuration and makes no tuning changes for resources available on larger instances.
+ However, configuration can be overwritten using cookbook override techniques. See cookbooks_override project at: https://github.com/ekargard/cookbooks_override/tree/master/cookbooks
+
+== SETUP/USAGE:
 
 * Place app_php::default recipe into your runlist to setup the application
   server. Since this sets up the app provider, it must be run before the
-  app::default recipe (which expects a provider to already be set)
+  app::default recipe (which expects a provider to already be set).
 * When using a RightScale ServerTemplate, this will also automatically add the
   common attributes to your ServerTemplate inputs.
 
-== USAGE:
+For more info see: http://support.rightscale.com/03-Tutorials/PHP_Application_Server_Setup
 
-* Choose image and cloud.
-* Fill required input fields.
 
-== KNOWN LIMITATIONS:
+== DETAILS:
+=== General
+<tt>app_php</tt> cookbook will help you to install and setup Apache + Zend Engine PHP application server, which can be able to connect, to MySQL or Postgres database server.
 
-* none
+<b>Apache</b>
+Server version: Apache/2.2.3
 
-= LICENSE
+Server built: Mar 27 2010 13:52:45
+
+<b>PHP</b>
+PHP 5.3.6 (cli) (built: Apr 25 2011 10:45:29)
+
+Copyright (c) 1997-2011 The PHP Group
+
+Zend Engine v2.3.0, Copyright (c) 1998-2011 Zend Technologies
+
+
+NOTE: php/modules_list contains an array of package names of PHP modules to install.
+We are using packages from the IUS repository, so the package names must be prepended with php53u.
+The input type should be set to Array only.
+
+
+=== Attributes:
+These are settings used in recipes and templates. Default values are noted.
+
+Note: Only "internal" cookbook attributes are described here. Descriptions of attributes which have inputs you can find in metadata.rb cookbook file.
+
+====== Platform dependent
+* <tt>node[:php][:module_dependencies]</tt> - additional packeges required for php server install
+* <tt>node[:php][:app_user]</tt> - Apache user, required for changing owner of created project dirs
+* <tt>node[:php][:db_adapter]</tt> - Type of databse adapter. MySQL or Postgres.
+
+=== Templates:
+
+* <tt>db.php.erb</tt> - Configuration for project database connection config file used in the <tt>app::setup_db_connection</tt> recipe
+  and defined in <tt>:setup_db_connection</tt> action of the <tt>app_php</tt> LWRP
+
+=== Definitions:
+none
+
+=== Libraries-helpers:
+none
+
+=== LWRPs:
+
+<tt>app_php</tt> LightWeight provider is defined in providers/default.rb file, it contains source for
+
+* <tt>:install</tt>
+
+* <tt>:setup_vhost</tt>
+
+* <tt>:start</tt>
+
+* <tt>:stop</tt>
+
+* <tt>:restart</tt>
+
+* <tt>:code_update</tt>
+
+* <tt>:setup_db_connection</tt>
+
+* <tt>:setup_monitoring</tt>
+
+actions.
+
+For more info about these actions please see <tt>app</tt> cookbook readme.
+
+For normal operations it requires "app" resource which will act as interface to all <tt>app_php</tt> provider logic.
+
+===== Actions
+
+* <tt>:install</tt> - Install packages required for application server setup
+
+* <tt>:setup_vhost</tt> - Will setup apache vhost file, with mod_php support included.
+
+* <tt>:start</tt> - Start sequence for PHP application server.
+
+* <tt>:stop</tt> - Stop sequence for PHP application server.
+
+* <tt>:restart</tt> - Restart sequence for PHP application server.
+
+* <tt>:code_update</tt> - Perform project source code update/download using user selected "repo" LWRP.
+
+* <tt>:setup_db_connection</tt> - Perform project config/db.php database connection configuration
+
+* <tt>:setup_monitoring</tt> - Empty action. Monitoring for php is not implemeted yet.
+
+===== Usage Example:
+
+For usage examples please see corresponding section in <tt>app</tt> cookbook readme.
+
+= LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
