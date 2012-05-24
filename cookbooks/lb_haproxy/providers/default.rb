@@ -60,15 +60,8 @@ action :install do
     owner "haproxy"
     group "haproxy"
     mode "0400"
-    stats_uri = "stats uri #{node[:lb][:stats_uri]}" unless "#{node[:lb][:stats_uri]}".empty?
-    stats_auth = "stats auth #{node[:lb][:stats_user]}:#{node[:lb][:stats_password]}" unless \
-               "#{node[:lb][:stats_user]}".empty? || "#{node[:lb][:stats_password]}".empty?
     stats_file="stats socket /home/lb/status user haproxy group haproxy"
-    health_uri = "option httpchk GET #{node[:lb][:health_check_uri]}" unless "#{node[:lb][:health_check_uri]}".empty?
     variables(
-      :stats_uri_line => stats_uri,
-      :stats_auth_line => stats_auth,
-      :health_uri_line => health_uri,
       :stats_file_line => stats_file
     )
   end
@@ -114,11 +107,13 @@ action :add_vhost do
     stats_auth = "stats auth #{node[:lb][:stats_user]}:#{node[:lb][:stats_password]}" unless \
                "#{node[:lb][:stats_user]}".empty? || "#{node[:lb][:stats_password]}".empty?
     health_uri = "option httpchk GET #{node[:lb][:health_check_uri]}" unless "#{node[:lb][:health_check_uri]}".empty?
+    health_chk = "http-check disable-on-404" unless "#{node[:lb][:health_check_uri]}".empty?
     variables(
       :backend_name_line => backend_name,
       :stats_uri_line    => stats_uri,
       :stats_auth_line   => stats_auth,
-      :health_uri_line   => health_uri
+      :health_uri_line   => health_uri,
+      :health_check_line   => health_chk
     )
   end
 
