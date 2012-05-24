@@ -2,60 +2,102 @@
 
 == DESCRIPTION:
 
-Base recipes used to setup services used by the RightScale Cloud Management Platform
-
-== DETAILS:
+This cookbook provides base recipes used to setup services used by the
+RightScale Cloud Management Platform.
 
 == REQUIREMENTS:
 
-Requires a VM launched from a RightScale managed RightImage
+Requires a VM launched from a RightScale managed RightImage.
 
-== SETUP:
+== COOKBOOKS DEPENDENCIES:
 
-== USAGE:
-
-Run the rightscale::default recipe to perform common server configuration steps
-such as enabling monitoring and logging on the RightScale Dashboard.
+Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 == KNOWN LIMITATIONS:
 
-== DEFINITIONS
+There are no known limitations.
 
-rightscale_enable_collectd_plugin
----------------------------------------------
-* Accepts only one parameter "name" which is the name of the collectd plugin to enable
-* The plugin name is added to node[:rightscale][:plugin_list_ary] which is used to create the list of plugins in the /etc/collectd/collectd.conf file
-* The node[:rightscale][:plugin_list_ary] will have any plugins listed in node[:rightscale][:plugin_list] merged into it.  This is to support any legacy recipes as well as allow the input to be manipulated in the RS dashboard.
+== SETUP/USAGE:
 
-Syntax:
+The <tt>rightscale::default</tt> recipe performs common server configuration
+steps such as enabling monitoring and logging on the RightScale Dashboard.
 
-```rightscale_enable_collectd_plugin "curl_json"```
+The <tt>rightscale::install_tools</tt> recipe installs the
+<tt>rightscale_tools</tt> gem which provides tools for dealing with databases,
+volumes, and remote object storage providers.
 
+== DETAILS:
 
-rightscale_monitor_process
-------------------------------------
-* Accepts only one parameter, "name" which is the name of the process to monitor
-* The process name is added to node[:rightscale][:process_list_ary] which is used to create the list of processes in the /etc/collectd/conf/processes.conf file
-* The node[:rightscale][:process_list_ary] will have any processes listed in node[:rightscale][:process_list] merged into it.  This is to support any legacy recipes as well as allow the input to be manipulated in the RS dashboard.
+=== Definitions:
 
-Syntax:
+==== rightscale_enable_collectd_plugin
 
-```rightscale_monitor_process "nginx"```
-
-
-rightscale_marker
-------------------------------------
-* Accepts only one parameter, "location" which can be :start or :end.  Can also be :begin, :stop, and the string versions.
-* Used to log the start and end of a recipe using the 'log' chef resource.  Should be added at the beginning and end of a recipe.
-* Log marker: ========================= recipe::name : START/END =========================
+* Accepts only one parameter "name" which is the name of the collectd plugin to
+  enable.
+* The plugin name is added to node[:rightscale][:plugin_list_ary] which is used
+  to create the list of plugins in the <tt>/etc/collectd/collectd.conf</tt>
+  file.
+* The <tt>node[:rightscale][:plugin_list_ary]</tt> will have any plugins listed
+  in <tt>node[:rightscale][:plugin_list]</tt> merged into it. This is to
+  support any legacy recipes as well as allow the input to be manipulated in
+  the RS dashboard.
 
 Syntax:
 
-```rightscale_marker :start```
-```rightscale_marker :end```
+  rightscale_enable_collectd_plugin "curl_json"
 
-= LICENSE
+==== rightscale_monitor_process
 
-Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-if applicable, other agreements such as a RightScale Master Subscription Agreement.
+* Accepts only one parameter, "name" which is the name of the process to
+  monitor.
+* The process name is added to <tt>node[:rightscale][:process_list_ary]</tt>
+  which is used to create the list of processes in the
+  <tt>/etc/collectd/conf/processes.conf</tt> file.
+* The <tt>node[:rightscale][:process_list_ary]</tt> will have any processes
+  listed in node[:rightscale][:process_list] merged into it.  This is to support
+  any legacy recipes as well as allow the input to be manipulated in the RS
+  dashboard.
+
+Syntax:
+
+  rightscale_monitor_process "nginx"
+
+==== rightscale_marker
+
+* Accepts only one parameter, "location" which can be :start or :end. Can also
+  be :begin, :stop, and the string versions.
+* Used to log the start and end of a recipe using the 'log' chef resource.
+  Should be added at the beginning and end of a recipe.
+* Log marker:
+  ```========================= recipe::name : START/END =========================```
+
+Syntax:
+
+  rightscale_marker :start
+
+  rightscale_marker :end
+
+=== Resources:
+
+==== rightscale_server_collection
+
+The server collection resource finds a set of servers in a deployment with a set
+of tags. The <tt>tags</tt> attribute specifies the tag or tags to search for (if
+multiple tags are specified servers with any of the tags will match) and the
+optional <tt>secondary_tags</tt> attribute specifies tags that need to also
+appear on the servers, it will wait one minute for the <tt>secondary_tags</tt>
+to appear (this can be overridden with the <tt>timeout</tt> attribute).
+
+Syntax:
+
+  rightscale_server_collection "rightscale_servers" do
+    tags "rs_login:state=active"
+    secondary_tags "server:uuid=*"
+  end
+
+= LICENSE:
+
+Copyright RightScale, Inc. All rights reserved.  All access and use subject to
+the RightScale Terms of Service available at http://www.rightscale.com/terms.php
+and, if applicable, other agreements such as a RightScale Master Subscription
+Agreement.
