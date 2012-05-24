@@ -21,7 +21,7 @@ action :update do
 
   # We only support ip_addr or tags, however, ip_addr defaults to 'any' so reconcile here
   ip_addr.downcase!
-  ip_addr = nil if (ip_addr == "any") && machine_tag  # tags win, so clear 'any'
+  ip_addr = nil if (ip_addr == "any") && machine_tag # tags win, so clear 'any'
   raise "ERROR: ip_addr param cannot be used with machine_tag param." if machine_tag && ip_addr
 
   # Tell user what is going on
@@ -70,22 +70,22 @@ action :update do
           Chef::Log.info "Updating iptables rule for IP Address: #{ip}"
 
           rule = "port_#{port}"
-          rule << "_#{ip.gsub('/','_')}_#{protocol}"
+          rule << "_#{ip.gsub('/', '_')}_#{protocol}"
 
           # Programatically execute template resource
           RightScale::System::Helper.run_template(
-                "/etc/iptables.d/#{rule}",    # target_file
-                "iptables_port.erb",          # source
-                "sys_firewall",               # cookbook
-                {                             # variables
-                  :port => port,
-                  :protocol => protocol,
-                  :ip_addr => (ip == "any") ? nil : ip
-                },
-                to_enable,                    # enable
-                "/usr/sbin/rebuild-iptables", # command to run
-                node,
-                @run_context)
+            "/etc/iptables.d/#{rule}", # target_file
+            "iptables_port.erb", # source
+            "sys_firewall", # cookbook
+            {# variables
+             :port => port,
+             :protocol => protocol,
+             :ip_addr => (ip == "any") ? nil : ip
+            },
+            to_enable, # enable
+            "/usr/sbin/rebuild-iptables", # command to run
+            node,
+            @run_context)
         end # each
 
 
