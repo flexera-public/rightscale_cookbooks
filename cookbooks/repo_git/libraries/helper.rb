@@ -13,10 +13,10 @@ module RightScale
      # Create bash script, which will set user defined ssh key required to access to private git source code repositories.
      #
      # == Parameters
-     # git_ssh_key (string):: Git private ssh key
+     # @param git_ssh_key [string] Git private ssh key
      #
      # == Raise
-     # RuntimeError:: if ssh key string is empty
+     # @raises [RuntimeError] if ssh key string is empty
      def create(git_ssh_key)
        Chef::Log.info("  Creating ssh key")
        keyfile = nil
