@@ -38,9 +38,10 @@ case node[:platform]
 end
 
 log " Preparing rails document root variable"
+dest_dir = "/home/rails"
 if node[:repo][:default][:destination].empty?
-  log "  Your repo/default/destination input is not set. Setting project root to default: /home/rails"
-  project_home = "/home/rails"
+  log "  Your repo/default/destination input is not set. Setting project root to default: #{dest_dir}"
+  project_home = dest_dir
 else
   project_home = node[:repo][:default][:destination]
 end
@@ -48,6 +49,10 @@ end
 # Setting app LWRP attribute
 # Destination directory for the application
 node[:app][:destination]= "#{project_home}/#{node[:web_apache][:application_name]}"
+
+directory "#{node[:app][:destination]}" do
+  recursive true
+end
 
 node[:app][:root] = node[:app][:destination] + "/public"
 

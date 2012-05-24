@@ -22,7 +22,7 @@ action :update do
   # We only support ip_addr or tags, however, ip_addr defaults to 'any' so reconcile here
   ip_addr.downcase!
   ip_addr = nil if (ip_addr == "any") && machine_tag  # tags win, so clear 'any'
-  raise "ERROR: ip_addr param cannot be used with machine_tag param." if machine_tag && ip_addr
+  raise "ERROR: ip_addr param - #{ip_addr} - cannot be used with machine_tag param - #{machine_tag}." if machine_tag && ip_addr
 
   # Tell user what is going on
   msg = "#{to_enable ? "Enabling" : "Disabling"} firewall rule for port #{port}"

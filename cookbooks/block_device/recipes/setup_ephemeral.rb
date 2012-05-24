@@ -1,4 +1,4 @@
-# 
+#
 # Cookbook Name:: block_device
 #
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
@@ -41,7 +41,7 @@ root_device = `mount`.find {|dev| dev.include? " on / "}.split[0]
 current_mnt_device = `mount`.find {|dev| dev.include? " on /mnt "}
 current_mnt_device = current_mnt_device ? current_mnt_device.split[0] : nil
 
-mnt_device = current_mnt_device || 
+mnt_device = current_mnt_device ||
              case root_device
              when /sda/
                "/dev/sdb"
@@ -55,39 +55,17 @@ mnt_device = current_mnt_device ||
                (node[:platform] == "redhat") ? "/dev/xvdj" : "/dev/xvdf"
              end
 
-# Generate fstab entry here to check if it already exists
-fstab_entry = "/dev/vg-data/#{lvm_device}\t#{mount_point}\t#{filesystem_type}\t#{options}\t0 0"
-
-mtab_ent_present = false
-fstab_ent_present = false
-
-#Looking for Ephemeral entries in mtab and fstab
-if File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$")
-  fstab_ent_present = true
-end
-
-if File.open('/etc/mtab', 'r') { |f| f.read }.include? "/dev/mapper/vg--data-#{lvm_device} #{mount_point} #{filesystem_type}"
-  mtab_ent_present = true
-end
-
-
-# Only EC2 is currently supported
+# Only EC2 and openstack is currently supported
 if cloud == 'ec2' || cloud == 'openstack'
 
-  # if fstab and mtab entry exists, assume a reboot and skip to end
-  if mtab_ent_present && fstab_ent_present
+  # Generate fstab entry here
+  fstab_entry = "/dev/vg-data/#{lvm_device}\t#{mount_point}\t#{filesystem_type}\t#{options}\t0 0"
+
+  # if fstab & mtab entry exists, assume a reboot and skip to end
+  if ( File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$") ) &&
+     ( File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " ) )
     log "Ephemeral entry already exists in fstab"
   else
-
-    #Removing incorrect entry from fstab after start/stop operations
-    bash "Removing incorrect entry from fstab - #{lvm_device}" do
-      flags "-ex"
-      code <<-EOH
-        sed -i '/#{lvm_device}/d' /etc/fstab
-      EOH
-      only_if do (!mtab_ent_present && fstab_ent_present) end
-    end
-
     # Create init script to activate LVM on start for Ubuntu
     remote_file "/etc/init.d/lvm_activate" do
       only_if { node[:platform] == "ubuntu" }
@@ -146,7 +124,7 @@ if cloud == 'ec2' || cloud == 'openstack'
         # Make sure to skip EBS volumes attached on boot
         my_devices = []
         dev_index = 0
-        while (1)
+        loop do
           if node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
             device = node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
             device = '/dev/' + device if device !~ /^\/dev\//
@@ -170,14 +148,14 @@ if cloud == 'ec2' || cloud == 'openstack'
         end
 
         run_command("vgcreate vg-data #{my_devices.join(' ')}")
-        run_command("lvcreate vg-data -n #{lvm_device} -i #{my_devices.size} -I 256 -l #{node[:block_device][:ephemeral][:vg_data_percentage]}VG")
+        run_command("lvcreate vg-data -n #{lvm_device} -i #{my_devices.size} -I 256 -l 100%VG")
         run_command("mkfs.#{filesystem_type} /dev/vg-data/#{lvm_device}")
 
         # Add the mount to fstab
         fstab = File.readlines("/etc/fstab")
         File.open("/etc/fstab", "w") do |f|
           fstab.each do |line|
-            f.puts(line)  
+            f.puts(line)
           end
           Chef::Log.info "ADDING DEVICE /etc/fstab: #{fstab_entry}"
           f.puts(fstab_entry)

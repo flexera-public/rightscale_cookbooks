@@ -27,7 +27,6 @@ set_unless[:db_mysql][:datadir_relocate] = "/mnt/storage"
 # Always set to support stop/start
 set[:db_mysql][:bind_address] = cloud[:private_ips][0]
 
-set_unless[:db_mysql][:dump][:schema_name] = ""
 set_unless[:db_mysql][:dump][:storage_account_provider] = ""
 set_unless[:db_mysql][:dump][:storage_account_id] = ""
 set_unless[:db_mysql][:dump][:storage_account_secret] = ""

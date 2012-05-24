@@ -66,18 +66,21 @@ end
 
 
 log " Preparing tomcat document root variable"
+dest_dir = "/srv/tomcat6/webapps/"
 if node[:repo][:default][:destination].empty?
-  log "  Your repo/default/destination input is no set. Setting project root to default: /srv/tomcat6/webapps/ "
-  project_home = "/srv/tomcat6/webapps/"
+  log "  Your repo/default/destination input is no set. Setting project root to default: #{dest_dir}"
+  project_home = dest_dir
 else
   project_home = node[:repo][:default][:destination]
 end
 
 # Setting app LWRP attribute
-node[:app][:root] = "#{project_home}/#{node[:app_tomcat][:application_name]}"
+node[:app][:root] = "#{project_home}/#{node[:web_apache][:application_name]}"
 # tomcat shares the same doc root with the application destination
 node[:app][:destination]="#{node[:app][:root]}"
 
-
+directory "#{node[:app][:destination]}" do
+  recursive true
+end
 
 rightscale_marker :end

@@ -18,6 +18,9 @@ end
 raise "Server force saftey not off.  Override block_device/force_safety to run this recipe" unless node[:block_device][:force_safety] == "off"
 
 do_for_block_devices node[:block_device] do |device|
+  # Clear the overrides so they are not set after a reset is done
+  node[:block_device][:devices][device][:backup][:lineage_override] = ""
+  node[:block_device][:devices][device][:backup][:timestamp_override] = ""
   block_device get_device_or_default(node, device, :nickname) do
     action :reset
   end
