@@ -51,6 +51,7 @@
       "type": "string",
       "recipes": [
         "web_apache::install_apache",
+        "web_apache::setup_frontend_ssl_vhost",
         "web_apache::setup_frontend"
       ],
       "display_name": "SSL Enable",
@@ -93,8 +94,6 @@
       "default": "myapp",
       "type": "string",
       "recipes": [
-        "web_apache::default",
-        "web_apache::install_apache",
         "web_apache::setup_frontend_ssl_vhost",
         "web_apache::setup_frontend_http_vhost",
         "web_apache::setup_frontend"
