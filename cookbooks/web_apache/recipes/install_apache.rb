@@ -23,14 +23,14 @@ end
 # Checking /var/www symlink (broken after start/stop)
 default_web_dir = '/var/www'
 bash "Checking #{default_web_dir} symlink" do
-   flags "-ex"
-   code <<-EOH
-   if [[ ! -e #{default_web_dir} &&  -L #{default_web_dir} ]]; then
-     echo "#{default_web_dir} symlink is broken! Removing..."
-     rm -f #{default_web_dir}
-   fi
-   EOH
-   only_if do File.symlink?(default_web_dir) end
+  flags "-ex"
+  code <<-EOH
+    if [[ ! -e #{default_web_dir} &&  -L #{default_web_dir} ]]; then
+      echo "#{default_web_dir} symlink is broken! Removing..."
+      rm -f #{default_web_dir}
+    fi
+  EOH
+  only_if do File.symlink?(default_web_dir) end
  end
 
 # Move Apache /var/www to /mnt/ephemeral/www
