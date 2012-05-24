@@ -42,6 +42,7 @@ module RightScale
 
         current_ip= `dig +short #{hostname}`.chomp
 
+        # Generating Route53 secrets file
         aws_cred=<<EOF
 %awsSecretAccessKeys = (
     "my-aws-account" => {
@@ -54,6 +55,7 @@ EOF
         File.open(secrets_filename, "w") { |f| f.write aws_cred }
         File.chmod(0600, secrets_filename)
 
+        # Generating record update xml
         endpoint = "https://route53.amazonaws.com/2010-10-01/"
         xml_doc = "https://route53.amazonaws.com/doc/2010-10-01/"
         ttl = 60
@@ -103,6 +105,7 @@ EOF
 
         File.open(cmd_filename, "w") { |f| f.write modify_cmd }
 
+        # Sending the xml to Route53
         result = ""
         # Simple retry loop, sometimes the DNS call will flake out..
         5.times do |attempt|
@@ -112,7 +115,8 @@ EOF
           sleep 5
         end
 
-        if(result =~ /ChangeResourceRecordSetsResponse/ ) then
+        # Checking the result
+        if result =~ /ChangeResourceRecordSetsResponse/
           @logger.info("DNSID #{id} set to this instance IP: #{address}")
         else
           raise "Error setting the DNS, curl exited with code: #{$?}, output: #{result}"
@@ -122,10 +126,12 @@ EOF
 
     class DME < DNS
       def action_set(id, user, password, address)
+        # Generating A Record update query and sending the update request
         query="username=#{CGI::escape(user)}&password=#{CGI::escape(password)}&id=#{id}&ip=#{CGI::escape(address)}"
         result = `curl -S -s -o - -f -g 'https://cp.dnsmadeeasy.com/servlet/updateip?#{query}'`
 
-        if( result =~ /success/ || result =~ /error-record-ip-same/   ) then
+        # Checking the result
+        if result =~ /success/ || result =~ /error-record-ip-same/
           @logger.info("DNSID #{id} set to this instance IP: #{address}")
         else
           raise "Error setting the DNS, curl exited with code: #{$?}, id=#{id}, address:#{address}, output:#{result}"
@@ -137,10 +143,12 @@ EOF
 
     class DynDNS < DNS
       def action_set(id, user, password, address)
+        # Generating A Record update query and sending the update request
         query="hostname=#{CGI::escape(id)}&myip=#{CGI::escape(address)}"
         result = `curl -u #{user}:#{password} -S -s -o - -f -g 'https://members.dyndns.org/nic/update?#{query}'`
 
-        if(result =~ /nochg #{address}/ || result =~ /good #{address}/) then
+        # Checking the result
+        if result =~ /nochg #{address}/ || result =~ /good #{address}/
           @logger.info("DNSID #{id} set to this instance IP: #{address}")
         else
           raise "Error setting the DNS, curl exited with code: #{$?}, output: #{result}"
@@ -153,7 +161,12 @@ EOF
     class CloudDNS < DNS
       def action_set(id, user, password, address, region)
 
-        @logger.info("id: #{id}, user: #{user}, password: #{password}, address: #{address}, region: #{region}")  #
+        @logger.info("Inputs are: id:#{id}, user:#{user}, password:#{password}, address:#{address}, region:#{region}")
+        # Getting dns_domain_id && dns_record_id from DNS Record ID input
+        dns_domain_id, dns_record_id= id.split(':')
+        @logger.info("dns_domain_id:#{dns_domain_id} dns_record_id:#{dns_record_id}")
+
+        # Setting the right URLs for selected region
         case region
           when "Chicago", "Dallas"
             auth_url = "https://auth.api.rackspacecloud.com/v1.0"
@@ -164,12 +177,13 @@ EOF
           else
             raise "Unsupported region '#{region}'."
         end
-        @logger.info("auth_url: #{auth_url}  service_endpoint: #{service_endpoint} ")                           #
+        @logger.info("auth_url:#{auth_url} service_endpoint:#{service_endpoint} ")
 
+        # Getting the Authentication Token and new Service Endpoint
         output = `curl -D - -H "X-Auth-Key: #{password}" -H "X-Auth-User: #{user}" #{auth_url}`
         x_auth_token = ""
         output.each do |line|
-          @logger.info("#{line.chomp}")                                                                         #
+          @logger.info("#{line.chomp}")
           if line =~ /X-Auth-Token:/
             x_auth_token = line.gsub(/X-Auth-Token: /, '').chomp
           end
@@ -177,31 +191,34 @@ EOF
             service_endpoint += line.chomp[/\d+$/]
           end
         end
-        @logger.info("x_auth_token: #{x_auth_token}  new service_endpoint: #{service_endpoint}")                #
+        @logger.info("x_auth_token:#{x_auth_token} new service_endpoint:#{service_endpoint}")
 
-        output = `curl -k -H "X-Auth-Token: #{x_auth_token}" #{service_endpoint}/domains?name=#{id.sub(/^.+?\./, '')}`
-        @logger.info("doing lookup for #{id.sub(/^.+?\./, '')}")                                                #
-        @logger.info("\noutput for #{service_endpoint}/domains?name=#{id.sub(/^.+?\./, '')}: \n\n #{output} \n")#
-        dns_domain_id = ""
+        # Verifying Domain ID
+        output = `curl -k -H "X-Auth-Token: #{x_auth_token}" #{service_endpoint}/domains`
+        @logger.info("\noutput for #{service_endpoint}/domains: \n\n #{output} \n")
         if output =~ /"totalEntries":0/
-          raise "No domain entries found for entered FQDN."
+          raise "No entries found for entered domain ID #{dns_domain_id}."
+        end
+        @logger.info("Found following domains for account: #{output}")
+
+        # Fetching FQDN by Record ID
+        output = `curl -k -H "X-Auth-Token: #{x_auth_token}" #{service_endpoint}/domains/#{dns_domain_id}/records/#{dns_record_id}`
+        if output =~ /is not a valid A record name/
+          raise "Record ID #{dns_record_id} is not a valid A record name."
         else
-          dns_domain_id = output[/"id":(\d+)/][$1]
-        end                                                                                                     #
-        @logger.info("dns_domain_id: #{dns_domain_id}")
+          fqdn = output[/"name":"(.+)","id":/][$1]
+        end
+        @logger.info("Got FQDN: #{fqdn}")
 
-        output = `curl -k -H "X-Auth-Token: #{x_auth_token}" #{service_endpoint}/domains/#{dns_domain_id}/records`
-        @logger.info("\n output for #{service_endpoint}/domains/#{dns_domain_id}/records: \n\n #{output} \n")   #
-        dns_record_id = output[/"name":"#{id}","id":"(A.\d+)/][$1]
-        @logger.info("dns_record_id: #{dns_record_id}")                                                         #
-
-        new_ip_json = "{\"name\":\"#{id}\",\"data\":\"#{address}\"}"
-        @logger.info("new_ip_json: #{new_ip_json}")                                                             #
+        # Generating new json and sending it over to CloudDNS
+        new_ip_json = "{\"name\":\"#{fqdn}\",\"data\":\"#{address}\"}"
+        @logger.info("new_ip_json: #{new_ip_json}")
         result = `curl -k -X PUT -H "Content-Type: application/json" --data '#{new_ip_json}' -H "X-Auth-Token: #{x_auth_token}" #{service_endpoint}/domains/#{dns_domain_id}/records/#{dns_record_id}`
-        @logger.info("result: #{result}")                                                                       #
+        @logger.info("result: #{result}")
 
-        if result =~ /#{id}/
-          @logger.info("DNS record for FQDN #{id} set to this instance IP: #{address}")
+        # Checking the result
+        if result =~ /#{fqdn}/
+          @logger.info("DNS record for FQDN #{fqdn} set to this instance IP: #{address}")
         else
           raise "Error setting the DNS, curl exited with code: #{$?}, output: #{result}"
         end
