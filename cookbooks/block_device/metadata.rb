@@ -6,7 +6,8 @@ long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "0.1"
 
 depends "rightscale"
-recipe "block_device::default", "Installs RubyGem for rightscale_tools. Sets up input dependancies for use by other cookbooks."
+
+recipe "block_device::default", "Sets up input dependencies for use by other cookbooks."
 recipe "block_device::setup_block_device", "Creates, formats, and mounts a brand new block device on the instance."
 recipe "block_device::setup_ephemeral", "Creates, formats, and mounts a brand new block device on the instances ephemeral drives. Does nothing on clouds without ephemeral drives."
 
@@ -135,15 +136,6 @@ attribute "block_device/devices/default/backup/rackspace_snet",
   :choice => ["true", "false"],
   :default => "true",
   :recipes => [ "block_device::default" ] + backup_recipes + restore_recipes
-
-attribute "block_device/ephemeral/vg_data_percentage",
-   :display_name => "Size of ephemeral volume",
-   :description => "The percentage of the total Volume Group extents (LVM) that is used for data. (e.g. 50 percent - 1/2 used for data and remainder used for overhead and snapshots, 100 percent - all space is allocated for data (therefore snapshots can not be taken) WARNING: if the space used for data is to large LVM snapshots can not be performed. Using a non-default value it not recommended. Make sure you understand what you are doing before changing this value.",
-   :required => "optional",
-   :choice => [ "50%", "60%", "70%", "100%" ],
-   :default => "100%",
-   :recipes => [ "block_device::setup_ephemeral"]
-
 
 # Multiple Block Devices
 device_count = 2

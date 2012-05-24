@@ -15,25 +15,26 @@ action :pull do
   raise "  Storage account provider ID not provided" unless new_resource.storage_account_id
   raise "  Storage account secret not provided" unless new_resource.storage_account_secret
 
+  # Creating temp directory to new repo download
   directory "#{new_resource.destination}/ros" do
     recursive true
   end
 
-  #"true" we just put downloaded file into "destination" folder
-  #"false" we put downloaded file into /tmp and unpack it into "destination" folder
+  # "true" we just put downloaded file into "destination" folder
+  # "false" we put downloaded file into /tmp and unpack it into "destination" folder
   if (new_resource.unpack_source == true) then
     tmp_repo_path = "/tmp/downloaded_ros_archive.tar.gz"
   else
     tmp_repo_path = "#{new_resource.destination}/downloaded_ros_archive.tar.gz"
   end
-  log("  Downloaded file will be available in #{tmp_repo_path}")
+  log "  Downloaded file will be available in #{tmp_repo_path}"
 
   # Obtain the source from ROS
   execute "Download #{new_resource.container} from Remote Object Store" do
     command "/opt/rightscale/sandbox/bin/ros_util get --cloud #{new_resource.storage_account_provider} --container #{new_resource.container} --dest #{tmp_repo_path} --source #{new_resource.prefix} --latest"
     environment ({
-        'STORAGE_ACCOUNT_ID' => new_resource.storage_account_id,
-        'STORAGE_ACCOUNT_SECRET' => new_resource.storage_account_secret
+      'STORAGE_ACCOUNT_ID' => new_resource.storage_account_id,
+      'STORAGE_ACCOUNT_SECRET' => new_resource.storage_account_secret
     })
   end
 
@@ -41,7 +42,7 @@ action :pull do
   bash "Unpack #{tmp_repo_path} to #{new_resource.destination}" do
     cwd "/tmp"
     code <<-EOH
-       tar xzf #{tmp_repo_path} -C #{new_resource.destination}
+      tar xzf #{tmp_repo_path} -C #{new_resource.destination}
     EOH
     only_if do (new_resource.unpack_source == true) end
   end
@@ -54,8 +55,8 @@ action :capistrano_pull do
 
   repo_dir="/home"
 
-  log("  Recreating project directory for :pull action")
-  #in case if it is capistrano symlink
+  log "  Recreating project directory for :pull action"
+  # In case if it is capistrano symlink
   directory "#{new_resource.destination}" do
     recursive true
     action :delete
@@ -65,34 +66,39 @@ action :capistrano_pull do
   capistrano_dir="/home/capistrano_repo"
   ruby_block "Backup old repo" do
     block do
-     t=Time.now.gmtime
-     now=t.strftime("%Y%m%d%H%M%S")
-     Chef::Log.info("  Check previous repo in case of action change")
-     if (::File.exists?("#{new_resource.destination}") == true && ::File.symlink?("#{new_resource.destination}") == false)
-       ::File.rename("#{new_resource.destination}", "#{new_resource.destination}_old_#{now}")
-     elsif (::File.exists?("#{new_resource.destination}") == true && ::File.symlink?("#{new_resource.destination}") == false && ::File.exists?("#{capistrano_dir}") == true)
-       ::File.rename("#{new_resource.destination}", "#{capistrano_dir}/releases/_initial_#{now}")
-     end
+      t=Time.now.gmtime
+      now=t.strftime("%Y%m%d%H%M%S")
+      Chef::Log.info("  Check previous repo in case of action change")
+      if (::File.exists?("#{new_resource.destination}") == true && ::File.symlink?("#{new_resource.destination}") == false)
+        ::File.rename("#{new_resource.destination}", "#{new_resource.destination}_old_#{now}")
+      elsif (::File.exists?("#{new_resource.destination}") == true && ::File.symlink?("#{new_resource.destination}") == false && ::File.exists?("#{capistrano_dir}") == true)
+        ::File.rename("#{new_resource.destination}", "#{capistrano_dir}/releases/_initial_#{now}")
+      end
     end
-   end
-
-  directory "#{new_resource.destination}/ros" do
-      recursive true
   end
 
-  log("  Pulling source from ROS")
+  directory "#{new_resource.destination}/ros" do
+    recursive true
+  end
+
+  log "  Pulling source from ROS"
   action_pull
 
-   #moving dir with downloaded and unpacked ROS source to temp folder
-   #to prepare source for capistrano actions
-   bash "Moving #{new_resource.destination} to #{repo_dir}/ros_repo/" do
+  # The embedded chef capistrano resource can work only with git or svn repositories
+  # After code download from ROS storage, we transform this code repo to git
+  # Then we apply capistrano chef provider
+  # After that we remove all git information from new repo (.git folders)
+
+  # Moving dir with downloaded and unpacked ROS source to temp folder
+  # to prepare source for capistrano actions
+  bash "Moving #{new_resource.destination} to #{repo_dir}/ros_repo/" do
     cwd "#{repo_dir}"
     code <<-EOH
        mv #{new_resource.destination} #{repo_dir}/ros_repo/
     EOH
   end
 
-  log("  Preparing to capistrano deploy action. Setting parameters for the process...")
+  log "  Preparing to capistrano deploy action. Setting parameters for the process..."
   destination = new_resource.destination
   app_user = new_resource.app_user
   purge_before_symlink = new_resource.purge_before_symlink
@@ -101,7 +107,7 @@ action :capistrano_pull do
   environment = new_resource.environment
   scm_provider = new_resource.provider
 
-  log("  Preparing git transformation")
+  log "  Preparing git transformation"
   directory "#{repo_dir}/ros_repo/.git" do
     recursive true
     action :delete
@@ -117,7 +123,7 @@ action :capistrano_pull do
       EOH
   end
 
-  log("  Deploying new local git project repo from #{repo_dir}/ros_repo/  to #{destination}. New owner #{app_user}")
+  log "  Deploying new local git project repo from #{repo_dir}/ros_repo/  to #{destination}. New owner #{app_user}"
   log "  Deploy provider #{scm_provider}"
   capistranize_repo "Source repo" do
     repository "#{repo_dir}/ros_repo/"
@@ -131,7 +137,7 @@ action :capistrano_pull do
   end
 
 
-  log("  Cleaning transformation temp files")
+  log "  Cleaning transformation temp files"
   directory "#{repo_dir}/ros_repo/" do
     recursive true
     action :delete
