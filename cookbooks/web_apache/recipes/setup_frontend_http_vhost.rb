@@ -7,7 +7,7 @@
 
 rightscale_marker :begin
 
-# Setup Apache vhost on port 80
+# This recipe will setup Apache vhost on port 80
 
 http_port = "80"
 
