@@ -11,6 +11,7 @@ backend <%= @backend_name_line %>
 
         # When internal servers support a status page
         <%= @health_uri_line %>
+        <%= @health_check_line %>
 
         # Special server line that allow HAProxy to start with cookies enabled and no valid servers.
         server disabled-server 127.0.0.1:1 disabled
