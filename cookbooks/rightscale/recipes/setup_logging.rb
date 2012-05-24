@@ -42,16 +42,13 @@ end
 #
 Dir.glob("/var/log/*").each do |f|
 
-  # At first we will check if this entry is a symlink and then is it broken or not
-  bash "Checking symlinks" do
-    flags "-ex"
-    code <<-EOH
-    if [[ ! -e #{f} &&  -L #{f} ]]; then
-      echo "#{f} symlink is broken! Removing..."
-      rm -f #{f}
-    fi
-    EOH
-    only_if do File.symlink?(f) end
+  # After stop-start operations ephemeral volume is recreated
+  # all symlinks in /var/log/ to /mnt became broken because of missing target.
+  # At first we will check if this entry is a symlink and is it broken or not
+  # and delete only broken ones
+  link "#{f}" do
+    action :delete
+    only_if "test ! -e #{f} && test -L #{f}"
   end
 
   # ignore `ntpstats' directory because ntp user needs to write there
@@ -61,17 +58,14 @@ Dir.glob("/var/log/*").each do |f|
   directory f do
     owner "root"
     only_if do File.directory?(f) end
+    notifies :restart, resources(:service => "syslog-ng")
   end
 
   # Changing owner for files
   file f do
     owner "root"
     only_if do File.file?(f) end
-  end
-
-  #Restarting syslog-ng to accept new changes
-  service "syslog-ng" do
-     action :restart
+    notifies :restart, resources(:service => "syslog-ng")
   end
 
 end
