@@ -23,4 +23,3 @@ include_recipe "rightscale::setup_mail"
 include_recipe "rightscale::setup_monitoring"
 
 rightscale_marker :end
-

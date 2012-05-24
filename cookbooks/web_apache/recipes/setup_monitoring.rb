@@ -23,15 +23,8 @@ end
 
 if node[:platform] =~ /redhat|centos/
 
-  TMP_FILE = "/tmp/collectd-apache.rpm"
-
-  cookbook_file TMP_FILE do
-    source "collectd-apache-4.10.0-4.el5.#{node[:kernel][:machine]}.rpm"
-    cookbook 'web_apache'
-  end
-
-  package TMP_FILE do
-    source TMP_FILE
+  package "collectd-apache" do
+    version node[:rightscale][:collectd_packages_version]
   end
 
   if node[:web_apache][:mpm] == "prefork"
@@ -39,7 +32,7 @@ if node[:platform] =~ /redhat|centos/
   else
     rightscale_monitor_process "httpd.worker"
   end
- 
+
 elsif node[:platform] == 'ubuntu'
 
   rightscale_monitor_process 'apache2'

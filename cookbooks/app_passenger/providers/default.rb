@@ -60,13 +60,6 @@ action :install do
     cookbook 'app_passenger'
   end
 
-  cookbook_file "/tmp/ruby-enterprise-installed.tar.gz" do
-    source "ruby-enterprise_i686.tar.gz"
-    mode "0644"
-    only_if do node[:kernel][:machine].include? "i686" end
-    cookbook 'app_passenger'
-  end
-
   bash "install_ruby_EE" do
     flags "-ex"
     code <<-EOH
@@ -171,7 +164,7 @@ action :setup_db_connection do
   log "  Generating database.yml"
   # Tell MySQL to fill in our connection template
   if db_adapter == "mysql"
-    db_mysql_connect_app "#{deploy_dir.chomp}/config/database.yml" do
+    db_mysql_connect_app "#{deploy_dir.chomp}/config/database.yml"  do
       template      "database.yml.erb"
       cookbook      "app_passenger"
       owner         node[:app_passenger][:apache][:user]
@@ -180,7 +173,7 @@ action :setup_db_connection do
     end
   # Tell PostgreSQL to fill in our connection template
   elsif db_adapter == "postgresql"
-    db_postgres_connect_app "#{deploy_dir.chomp}/config/database.yml" do
+    db_postgres_connect_app "#{deploy_dir.chomp}/config/database.yml"  do
       template      "database.yml.erb"
       cookbook      "app_passenger"
       owner         node[:app_passenger][:apache][:user]
@@ -213,6 +206,19 @@ action :code_update do
 
   log "  Starting code update sequence"
   log "  Current project doc root is set to #{deploy_dir}"
+
+  # Reading app name from tmp file (for recipe execution in "operational" phase))
+  # Waiting for "run_lists"
+  if(deploy_dir == "/home/rails/")
+    app_name = IO.read('/tmp/appname')
+    deploy_dir = "/home/rails/#{app_name.to_s.chomp}"
+  end
+
+  # Preparing project dir, required for apache+passenger
+  log "  Creating directory for project deployment - <#{deploy_dir}>"
+  directory "/home/rails/" do
+    recursive true
+  end
 
   log "  Starting source code download sequence..."
   repo "default" do

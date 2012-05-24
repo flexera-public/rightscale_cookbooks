@@ -16,12 +16,8 @@ node[:rightscale][:process_list_ary] = node[:rightscale][:process_list].split | 
 # Installs collectd packages that are matched to the RightScale monitoring
 # system.  These packages are locked/pinned to avoid accidental update.
 #
-# TODO: move these packages into RightScale specific mirror to improve
-#       cookbook download time.
-#
 package "librrd4" if node[:platform] == 'ubuntu'
 
-type = (node[:platform] == 'ubuntu') ? "deb" : "rpm"
 installed_ver = (node[:platform] =~ /redhat|centos/) ? `rpm -q --queryformat %{VERSION} collectd`.strip : `dpkg-query --showformat='${Version}' -W collectd`.strip
 installed = (installed_ver == "") ? false : true
 log 'Collectd package not installed' unless installed
@@ -33,23 +29,16 @@ log "Checking installed collectd version: installed #{installed_ver}" if install
 # This will break if centos releases a newer version of collectd and repos are not frozen to the CR date.
 # Upgrade for rpm does not seem to work so using two step - removal and install.
 package "collectd" do
-  only_if { type == "rpm" && installed && ! installed_ver =~ /4\.10\.0.*$/ }
+  only_if { installed && ! installed_ver =~ /4\.10\.0.*$/ && node[:rightscale][:collectd_remove_existing] }
   action :remove
 end
 
-# Find and install local packages
-packages = ::File.join(::File.dirname(__FILE__), "..", "files", "packages", "*64.#{type}")
-Dir.glob(packages).each do |p|
+# Install collectd packages
+log "Installing collectd package(s) version #{node[:rightscale][:collectd_packages_version]}"
+packages = node[:rightscale][:collectd_packages]
+packages.each do |p|
   package p do
-    not_if { type == "deb" }
-    source p
-    action :install
-  end
-  # Using dpkg because apt resource does not handle local deb files correctly.
-  dpkg_package p do
-    only_if { type == "deb" }
-    source p
-    options "--ignore-depends=libcollectdclient0 --ignore-depends=collectd-core"
+    version "#{node[:rightscale][:collectd_packages_version]}"
     action :install
   end
 end
