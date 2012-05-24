@@ -18,9 +18,9 @@ module RightScale
       def action_set(id, user, password, address)
         raise 'Not implemented!'
       end
-    end
+    end # class DNS
 
-    # Return the result of A record update process.
+    # Applicable to the below classes
     #
     # Parameters:
     # * id:: The unique identifier that is associated with the DNS A record of the server.
@@ -29,8 +29,7 @@ module RightScale
     # * address:: Private IP of instance running the recipe.
     # * region:: CloudDNS specific: region where the A records should be modified.
     #
-    # Returns:
-    #
+    # Return:
     # Chef::Log:: A record successful update message.
     #
     # Raise:
@@ -107,7 +106,7 @@ EOF
 
         # Sending the xml to Route53
         result = ""
-        # Simple retry loop, sometimes the DNS call will flake out..
+        #  Simple retry loop, sometimes the DNS call will flake out..
         5.times do |attempt|
           result = `/opt/rightscale/dns/dnscurl.pl --keyfile #{secrets_filename} --keyname my-aws-account -- -X POST -H "Content-Type: text/xml; charset=UTF-8" --upload-file #{cmd_filename} #{endpoint}hostedzone/#{zone_id}/rrset`
           break if result =~ /ChangeResourceRecordSetsResponse/
@@ -122,7 +121,7 @@ EOF
           raise "Error setting the DNS, curl exited with code: #{$?}, output: #{result}"
         end
       end
-    end
+    end # class AWS < DNS
 
     class DME < DNS
       def action_set(id, user, password, address)
@@ -139,7 +138,7 @@ EOF
 
         result
       end
-    end
+    end # class DME < DNS
 
     class DynDNS < DNS
       def action_set(id, user, password, address)
@@ -156,15 +155,12 @@ EOF
 
         result
       end
-    end
+    end # class DynDNS < DNS
 
     class CloudDNS < DNS
       def action_set(id, user, password, address, region)
-
-        @logger.info("Inputs are: id:#{id}, user:#{user}, password:#{password}, address:#{address}, region:#{region}")
         # Getting dns_domain_id && dns_record_id from DNS Record ID input
         dns_domain_id, dns_record_id= id.split(':')
-        @logger.info("dns_domain_id:#{dns_domain_id} dns_record_id:#{dns_record_id}")
 
         # Setting the right URLs for selected region
         case region
@@ -177,13 +173,11 @@ EOF
           else
             raise "Unsupported region '#{region}'."
         end
-        @logger.info("auth_url:#{auth_url} service_endpoint:#{service_endpoint} ")
 
         # Getting the Authentication Token and new Service Endpoint
         output = `curl -D - -H "X-Auth-Key: #{password}" -H "X-Auth-User: #{user}" #{auth_url}`
         x_auth_token = ""
         output.each do |line|
-          @logger.info("#{line.chomp}")
           if line =~ /X-Auth-Token:/
             x_auth_token = line.gsub(/X-Auth-Token: /, '').chomp
           end
@@ -191,15 +185,12 @@ EOF
             service_endpoint += line.chomp[/\d+$/]
           end
         end
-        @logger.info("x_auth_token:#{x_auth_token} new service_endpoint:#{service_endpoint}")
 
         # Verifying Domain ID
         output = `curl -k -H "X-Auth-Token: #{x_auth_token}" #{service_endpoint}/domains`
-        @logger.info("\noutput for #{service_endpoint}/domains: \n\n #{output} \n")
         if output =~ /"totalEntries":0/
           raise "No entries found for entered domain ID #{dns_domain_id}."
         end
-        @logger.info("Found following domains for account: #{output}")
 
         # Fetching FQDN by Record ID
         output = `curl -k -H "X-Auth-Token: #{x_auth_token}" #{service_endpoint}/domains/#{dns_domain_id}/records/#{dns_record_id}`
@@ -208,13 +199,10 @@ EOF
         else
           fqdn = output[/"name":"(.+)","id":/][$1]
         end
-        @logger.info("Got FQDN: #{fqdn}")
 
         # Generating new json and sending it over to CloudDNS
         new_ip_json = "{\"name\":\"#{fqdn}\",\"data\":\"#{address}\"}"
-        @logger.info("new_ip_json: #{new_ip_json}")
         result = `curl -k -X PUT -H "Content-Type: application/json" --data '#{new_ip_json}' -H "X-Auth-Token: #{x_auth_token}" #{service_endpoint}/domains/#{dns_domain_id}/records/#{dns_record_id}`
-        @logger.info("result: #{result}")
 
         # Checking the result
         if result =~ /#{fqdn}/
@@ -225,7 +213,7 @@ EOF
 
         result
       end
-    end
+    end #class CloudDNS < DNS
 
   end
 end
