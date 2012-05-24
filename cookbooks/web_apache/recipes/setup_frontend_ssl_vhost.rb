@@ -21,13 +21,6 @@ apache_site "000-default" do
   enable false
 end
 
-
-# TODO:
-# headers and rewrite possible module load
-#apache_module "ssl"
-# TODO:
-# ubuntu module install
-
 ssl_dir =  "/etc/#{node[:apache][:config_subdir]}/rightscale.d/key"
 
 # Creating directory where certificate files will be stored

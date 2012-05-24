@@ -7,19 +7,11 @@
 
 rightscale_marker :begin
 
-# add the collectd exec plugin to the set of collectd plugins if it isn't already there
+# Add the collectd exec plugin to the set of collectd plugins if it isn't already there
 rightscale_enable_collectd_plugin 'exec'
 
-# rebuild the collectd configuration file if necessary
+# Rebuild the collectd configuration file if necessary
 include_recipe "rightscale::setup_monitoring"
-
-service "httpd" do
-  case node[:platform]
-  when 'ubuntu'
-    service_name 'apache2'
-  end
-  action :nothing
-end
 
 if node[:platform] =~ /redhat|centos/
 
@@ -38,7 +30,7 @@ elsif node[:platform] == 'ubuntu'
   rightscale_monitor_process 'apache2'
 
 else
-  Chef::Log.info "WARNING: attempting to install collectd-apache on unsupported platform #{node[:platform]}, continuing.."
+  log "  WARNING: attempting to install collectd-apache on unsupported platform #{node[:platform]}, continuing.."
 end
 
 # add Apache configuration for the status URL and restart Apache if necessary
@@ -62,9 +54,9 @@ cookbook_file(::File.join(node[:rightscale][:collectd_lib], "plugins", 'apache_p
   cookbook 'web_apache'
 end
 
-#checking node[:apache][:listen_ports]
-#  it can be a string if single port is defined
-#  or array if multiple ports are defined
+# checking node[:apache][:listen_ports]
+# it can be a string if single port is defined
+# or array if multiple ports are defined
 
 if node[:apache][:listen_ports].kind_of?(Array)
   port = node[:apache][:listen_ports][0]

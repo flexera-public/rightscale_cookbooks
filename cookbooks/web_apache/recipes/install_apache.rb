@@ -49,7 +49,7 @@ bash "Move apache #{default_web_dir} to #{content_dir}" do
   EOH
 end
 
-# Move Apache Logs
+# Move Apache logs
 apache_name = node[:apache][:dir].split("/").last
 log " Apache name was #{apache_name}"
 log " Apache log dir was #{node[:apache][:log_dir]}"
@@ -67,11 +67,10 @@ end
 # Configuring Apache Multi-Processing Module
 case node[:platform]
   when "centos","redhat","fedora","suse"
-    # RedHat based systems has no mpm change scripts included so we have to configure it manually
-
+    # RedHat based systems has no mpm change scripts included so we have to configure mpm here.
     # Configuring "HTTPD" option to insert it to /etc/sysconfig/httpd file
     binary_to_use = node[:apache][:binary]
-    binary_to_use << ".#{node[:web_apache][:mpm]}"
+    binary_to_use << ".#{node[:web_apache][:mpm]}" unless node[:web_apache][:mpm] == 'prefork'
 
     # Updating /etc/sysconfig/httpd  to use required worker
     template "/etc/sysconfig/httpd" do
