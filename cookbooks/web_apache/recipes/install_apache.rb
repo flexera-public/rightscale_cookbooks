@@ -16,7 +16,7 @@ service "apache2" do
   persist true  
 end
 
-#installing ssl support from "apache2" cookbook if enabled
+# Installing ssl support from "apache2" cookbook if enabled
 if node[:web_apache][:ssl_enable]
   include_recipe "apache2::mod_ssl"
 end
@@ -64,7 +64,7 @@ bash 'move_apache_logs' do
   EOH
 end
 
-# Configuring Apache Multi-Processing Module
+# Apache Multi-Processing Module configuration
 case node[:platform]
   when "centos","redhat","fedora","suse"
     # RedHat based systems has no mpm change scripts included so we have to configure mpm here.

@@ -68,19 +68,15 @@ end
 node[:apache][:listen_ports].push(http_port) unless node[:apache][:listen_ports].include?(http_port)
 node[:apache][:listen_ports].push(https_port) unless node[:apache][:listen_ports].include?(https_port)
 
-log "  Stopping apache. Preparing to update vhosts and ports.conf"
-service "apache2" do
-  action :stop
-end
-
 # Updating apache listen ports configuration
 template "#{node[:apache][:dir]}/ports.conf" do
   cookbook "apache2"
   source "ports.conf.erb"
   variables :apache_listen_ports => node[:apache][:listen_ports]
+  notifies :restart, resources(:service => "apache2")
 end
 
-# Configure apache ssl vhost for PHP
+# Configure apache ssl vhost
 web_app "#{node[:web_apache][:application_name]}.frontend.https" do
   template "apache_ssl_vhost.erb"
   docroot node[:web_apache][:docroot]
@@ -90,19 +86,16 @@ web_app "#{node[:web_apache][:application_name]}.frontend.https" do
   ssl_passphrase node[:web_apache][:ssl_passphrase]
   ssl_certificate_file ssl_certificate_file
   ssl_key_file ssl_key_file
+  notifies :restart, resources(:service => "apache2")
 end
 
-# Configure apache non-ssl vhost for PHP
+# Configure apache non-ssl vhost
 web_app "#{node[:web_apache][:application_name]}.frontend.http" do
   template "apache.conf.erb"
   docroot node[:web_apache][:docroot]
   vhost_port http_port
   server_name node[:web_apache][:server_name]
-end
-
-# Starting apache
-service "apache2" do
-  action :start
+  notifies :restart, resources(:service => "apache2"), :immediately
 end
 
 
