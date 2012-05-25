@@ -77,10 +77,10 @@ action :update do
             "/etc/iptables.d/#{rule}", # target_file
             "iptables_port.erb", # source
             "sys_firewall", # cookbook
-            {# variables
-             :port => port,
-             :protocol => protocol,
-             :ip_addr => (ip == "any") ? nil : ip
+            { # variables
+              :port => port,
+              :protocol => protocol,
+              :ip_addr => (ip == "any") ? nil : ip
             },
             to_enable, # enable
             "/usr/sbin/rebuild-iptables", # command to run
@@ -97,7 +97,6 @@ action :update do
 end # action
 
 action :update_request do
-
 
   # Deal with attributes
   port = new_resource.port ? new_resource.port : new_resource.name
