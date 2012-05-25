@@ -66,6 +66,7 @@ action :capistrano_pull do
   log "  Deploying branch: #{revision} of the #{repository} to #{destination}. New owner #{app_user}"
   log "  Deploy provider #{scm_provider}"
 
+  # Applying capistrano style deployment
   capistranize_repo "Source repo" do
     repository repository
     destination destination

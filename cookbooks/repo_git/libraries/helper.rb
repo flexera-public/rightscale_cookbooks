@@ -10,28 +10,36 @@ module RightScale
     class Ssh_key
      KEYFILE = "/tmp/gitkey"
 
-     # Add ssh key and exec script
+     # Create bash script, which will set user defined ssh key required to access to private git source code repositories.
+     #
+     # @param git_ssh_key [string] Git private ssh key
+     #
+     # @raises [RuntimeError] if ssh key string is empty
      def create(git_ssh_key)
-       Chef::Log.info("Creating ssh key")
-
+       Chef::Log.info("  Creating ssh key")
        keyfile = nil
        keyname = git_ssh_key
+
        if "#{keyname}" != ""
          keyfile = KEYFILE
+         # Writing key to file
          system("echo -n '#{keyname}' > #{keyfile}")
+         # Setting permissions
          system("chmod 700 #{keyfile}")
+         # Adding additional parameters
          system("echo 'exec ssh -oStrictHostKeyChecking=no -i #{keyfile} \"$@\"' > #{keyfile}.sh")
          system("chmod +x #{keyfile}.sh")
        end
-
+       # GIT_SSH environment variable.
        ENV["GIT_SSH"] = "#{keyfile}.sh" unless ("#{keyfile}" == "")
      end
 
-     # Delete SSH key & clear GIT_SSH
+     # Delete SSH key created by "create" method, after successful pull operation. And clear GIT_SSH.
      def delete
        Chef::Log.warn "Deleting ssh key "
         keyfile = KEYFILE
        if keyfile != nil
+         # Removing previously created files.
          system("rm -f #{keyfile}")
          system("rm -f #{keyfile}.sh")
        end

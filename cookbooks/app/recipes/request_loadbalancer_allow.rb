@@ -11,6 +11,7 @@ class Chef::Recipe
   include RightScale::App::Helper
 end
 
+# Sending request to application servers, to add iptables rule, which will allow connection with loadbalancer
 vhosts(node[:lb][:vhost_names]).each do | vhost_name |
   sys_firewall "Request all appservers open ports to this loadbalancer" do
     machine_tag "loadbalancer:#{vhost_name}=app"
