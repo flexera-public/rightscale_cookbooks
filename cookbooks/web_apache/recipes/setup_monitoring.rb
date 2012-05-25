@@ -13,13 +13,9 @@ rightscale_enable_collectd_plugin 'exec'
 # Rebuild the collectd configuration file if necessary
 include_recipe "rightscale::setup_monitoring"
 
-
-service "httpd" do
-  case node[:platform]
-  when 'ubuntu'
-    service_name 'apache2'
-  end
-action :nothing
+# Additional "httpd/apache2" service definition required for "rightscale_monitor_process"
+service "#{node[:apache][:config_subdir]}" do
+  action :nothing
 end
 
 if node[:platform] =~ /redhat|centos/
