@@ -69,16 +69,23 @@ on the RightScale Cloud Management Platform.
 
 Many of the cookbooks use the save overarching design and conventions.  
 
+=== Navigating the source
+TODO: From a recipe, is it a resource, LWRP or a definition?  How can I tell?  Where do I find the code for RightScale::Tools?
+
 === Dependency Resolution
-TODO
+TODO: why setting up metadata.rb depends it important?  For all cookbooks that your cookbook depends on that you should include the default recipes for each cookbook in your ServerTemplate/Role.
+
 === Default Recipe Pattern
-TODO
+TODO: Paraphase this pattern from the support site, then reference site
+
 === Abstract Cookbooks and LWRPs
-TODO
+TODO: how do we use these (i.e. db, lb and app)
+
 === Definitions
-TODO
+TODO: typically used to reduce repeated recipe code -- which is preferable to include_recipe. Also use cookbook-to-cookbook method calls (e.g. rightscale_logrotate_app).  Definitions are global, explain our naming conventions to help you find them. 
+
 === rs_marker
-TODO
+TODO: convention used for better readability and debugging of the chef logs.
 
 
 == CUSTOMIZATION
