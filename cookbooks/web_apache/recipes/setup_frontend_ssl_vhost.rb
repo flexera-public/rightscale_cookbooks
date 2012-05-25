@@ -9,7 +9,7 @@ rightscale_marker :begin
 
 # Installing only for RHEL based systems
 package "mod_ssl" do
-  not_if do node[:platform].include? "ubuntu" end
+  not_if { node[:platform].include? "ubuntu" }
 end
 
 # Setup Apache vhost on following ports
@@ -49,7 +49,7 @@ bash "decrypt openssl keyfile" do
   flags "-ex"
   environment({ :OPT_SSL_PASSPHRASE => node[:web_apache][:ssl_passphrase] })
   code "openssl rsa -passin env:OPT_SSL_PASSPHRASE -in #{ssl_key_file} -passout env:OPT_SSL_PASSPHRASE -out #{ssl_key_file}"
-  only_if do (node[:web_apache][:ssl_passphrase]!=nil) end
+  only_if {node[:web_apache][:ssl_passphrase]!=nil}
 end
 
 
