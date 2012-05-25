@@ -28,9 +28,41 @@ on the RightScale Cloud Management Platform.
 
 [block_device] This cookbook provides the building blocks for Multi-Cloud backup/restore support.
 
-...
+[app] RightScale application server management cookbook. This cookbook contains recipes that generally applicable to all application
 
-TODO
+[app_passenger] Cookbook provides apache+passenger implementation of the app LWRP. Installs and configures, apache+passenger application server.
+
+[app_php] Cookbook provides Apache + PHP implementation of the app LWRP. Installs and configures, Apache + PHP application server.
+
+[app_tomcat] Cookbook provides Tomcat application server implementation of the app LWRP.  Installs and configures, Tomcat application server.
+
+[db] This cookbook provides a set of database recipes used by the RightScale Database Manager ServerTemplates. This cookbook does not contain a specific database implementation, but generic recipes that use the LWRP interface.
+
+[db_mysql] Provides the MySQL implementation of the 'db' resource to install and manage MySQL database stand-alone servers and clients.
+
+[db_postgres] Provides the PostgreSQL implementation of the 'db' resource to install and manage PostgreSQL database stand-alone servers and clients.
+
+[lb] This cookbook provides a set of load balancer recipes used by the RightScale Load Balancer ServerTemplates. This cookbook does not contain a specific load balancer implementation, but generic recipes that use the LWRP interface.
+
+[lb_clb] RightScale load balancer cookbook for RackSpace Cloud Load Balancing (CLB). This cookbook provides recipes for attaching and detaching application servers to and from an existing Rackspace Cloud Load Balancer (CLB).
+
+[lb_elb] RightScale load balancer cookbook for AWS Elastic Load Balancer (ELB). This cookbook provides recipes for attaching and detaching application servers to and from an existing AWS Elastic Load Balancer (ELB).
+
+[lb_haproxy] RightScale loadbalancer cookbook for Apache/HAProxy. This cookbook provides recipes for setting up and running an Apache/HAProxy load balancer server as well as recipes for attaching and detaching application servers.
+
+[repo] This cookbook provides abstract 'repo' resource for managing code download from GIT, SVN or ROS code repositories.
+
+[repo_git] Provides the GIT implementation of the 'repo' resource to manage source code download from GIT repositories.
+
+[repo_ros] Provides the Remote Object Store implementation of the 'repo' resource to manage source code download from Remote Object Store repositories.
+
+[repo_svn] Provides the SVN implementation of the 'repo' resource to manage source code download from SVN repositories.
+
+[sys] RightScale system utilities
+
+[sys_dns] This cookbook provides a set of dynamic DNS recipes used by RightScale ServerTemplates including Database Manager ServerTemplates.  Cookbook currently supports DNSMadeEasy, DynDns, and Amazon Route53 DNS service providers.
+
+[sys_firewall] RightScale firewall cookbook. This coobook provides a LWRP for managing access to mutliple servers in a deployment using machine 
 
 
 == DESIGN DETAILS:
