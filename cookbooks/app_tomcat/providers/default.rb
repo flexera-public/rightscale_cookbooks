@@ -94,26 +94,29 @@ action :install do
 
 
   # Moving tomcat logs to mnt
-  if ! ::File.directory?("/mnt/log/tomcat6")
-    directory "/mnt/log/tomcat6" do
-      owner node[:app_tomcat][:app_user]
-      group node[:app_tomcat][:app_user]
-      mode "0755"
-      action :create
-      recursive true
-    end
-
-    # Removing existing tomcat log directory. Preparing to symlink
-    directory "/var/log/tomcat6" do
-      action :delete
-      recursive true
-    end
-
-    # Symlinking log directory to new location
-    link "/var/log/tomcat6" do
-      to "/mnt/log/tomcat6"
-    end
+  # Creating new directory for tomcat logs on ephemeral volume
+  directory "/mnt/ephemeral/log/tomcat6" do
+    owner node[:app_tomcat][:app_user]
+    group node[:app_tomcat][:app_user]
+    mode "0755"
+    action :create
+    recursive true
+    not_if do ::File.directory?("/mnt/ephemeral/log/tomcat6") end
   end
+
+  # Deleting old tomcat log directory
+  directory "/var/log/tomcat6" do
+    action :delete
+    recursive true
+    not_if do ::File.directory?("/mnt/ephemeral/log/tomcat6") end
+  end
+
+  # Symlinking new directory to /var/log/tomcat6
+  link "/var/log/tomcat6" do
+    to "/mnt/ephemeral/log/tomcat6"
+    not_if do ::File.directory?("/mnt/ephemeral/log/tomcat6") end
+  end
+  
   # Symlinking to new jvm-exports
   bash "Create /usr/lib/jvm-exports/java if possible" do
     flags "-ex"
