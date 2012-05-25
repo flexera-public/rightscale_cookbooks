@@ -51,14 +51,6 @@ action :install do
     cookbook 'app_passenger'
   end
 
-  cookbook_file "/tmp/ruby-enterprise-installed.tar.gz" do
-    source "ruby-enterprise_i686.tar.gz"
-    mode "0644"
-    only_if do node[:kernel][:machine].include? "i686" end
-    cookbook 'app_passenger'
-  end
-
-  # Unpack sources. RubyEE is installed to /opt/ruby-enterprise/.
   bash "install_ruby_EE" do
     flags "-ex"
     code <<-EOH

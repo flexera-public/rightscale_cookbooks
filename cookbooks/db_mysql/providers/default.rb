@@ -377,15 +377,10 @@ action :setup_monitoring do
 
   platform = node[:platform]
   # Centos specific items
-  TMP_FILE = "/tmp/collectd.rpm"
-  remote_file TMP_FILE do
+  package "collectd-mysql" do
+    action :install
+    version "4.10.0-4.el5"
     only_if { platform =~ /redhat|centos/ }
-    source "collectd-mysql-4.10.0-4.el5.#{node[:kernel][:machine]}.rpm"
-    cookbook 'db_mysql'
-  end
-  package TMP_FILE do
-    only_if { platform =~ /redhat|centos/ }
-    source TMP_FILE
   end
 
   template ::File.join(node[:rightscale][:collectd_plugin_dir], 'mysql.conf') do
