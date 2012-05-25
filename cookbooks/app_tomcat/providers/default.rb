@@ -433,7 +433,7 @@ action :code_update do
     only_if do node[:app_tomcat][:code][:root_war] != "ROOT.war" end
   end
   # Restarting tomcat service.
-  # This will automatically deploy ROOT.war it it will be available in application root  directory
+  # This will automatically deploy ROOT.war if it is available in application root directory
   action_restart
 
 end
