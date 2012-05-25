@@ -5,6 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+# Stop tomcat service
 action :stop do
   log "  Running stop sequence"
   service "tomcat6" do
@@ -13,6 +14,7 @@ action :stop do
   end
 end
 
+# Start tomcat service
 action :start do
   log "  Running start sequence"
   service "tomcat6" do
@@ -22,6 +24,7 @@ action :start do
 
 end
 
+# Restart tomcat service
 action :restart do
   log "  Running restart sequence"
   action_stop
@@ -51,19 +54,20 @@ action :install do
 
     end
   end
-
+  # Executing java alternatives command, this will set installed java as choose as default
   execute "alternatives" do
     command "#{node[:app_tomcat][:alternatives_cmd]}"
     action :run
   end
 
+  # Installing database adapter for tomcat
   db_adapter = node[:app_tomcat][:db_adapter]
   if db_adapter == "mysql"
-    # Link mysql-connector plugin to Tomcat6 lib
+    # Removing existing links to database connector
     file "/usr/share/tomcat6/lib/mysql-connector-java.jar" do
       action :delete
     end
-
+    # Link mysql-connector plugin to Tomcat6 lib
     link "/usr/share/tomcat6/lib/mysql-connector-java.jar" do
       to "/usr/share/java/mysql-connector-java.jar"
     end
@@ -75,7 +79,7 @@ action :install do
       group "root"
       cookbook 'app_tomcat'
     end
-    ## Link postgresql-connector plugin to Tomcat6 lib
+    # Link postgresql-connector plugin to Tomcat6 lib
     link "/usr/share/tomcat6/lib/postgresql-9.1-901.jdbc4.jar" do
       to "/usr/share/java/postgresql-9.1-901.jdbc4.jar"
     end
@@ -99,16 +103,18 @@ action :install do
       recursive true
     end
 
+    # Removing existing tomcat log directory. Preparing to symlink
     directory "/var/log/tomcat6" do
       action :delete
       recursive true
     end
 
+    # Symlinking log directory to new location
     link "/var/log/tomcat6" do
       to "/mnt/log/tomcat6"
     end
   end
-
+  # Symlinking to new jvm-exports
   bash "Create /usr/lib/jvm-exports/java if possible" do
     flags "-ex"
     code <<-EOH
@@ -168,8 +174,8 @@ action :setup_vhost do
     cookbook 'app_tomcat'
   end
 
-
-    action_start
+  # Starting tomcat service
+  action_start
 
   log "  Setup mod_jk vhost"
   # Setup mod_jk vhost start
@@ -178,9 +184,9 @@ action :setup_vhost do
   # Check if mod_jk is installed
   if !::File.exists?("#{etc_apache}/conf.d/mod_jk.conf")
 
-    arch = node[:kernel][:machine]
     connectors_source = "tomcat-connectors-1.2.32-src.tar.gz"
 
+    # Installing required packages depending on platform
     case node[:platform]
       when "ubuntu", "debian"
         ubuntu_p = ["apache2-mpm-prefork", "apache2-threaded-dev", "libapr1-dev", "libapache2-mod-jk"]
@@ -189,25 +195,24 @@ action :setup_vhost do
         end
 
       when "centos","fedora","suse","redhat"
-        if arch == "x86_64"
-          bash "install_remove" do
-            flags "-ex"
-            code <<-EOH
-              yum install apr-devel.x86_64 -y
-            EOH
-          end
+
+        package "apr-devel.x86_64" do
+          options "-y"
+          only_if do node[:kernel][:machine] == "x86_64" end
         end
 
         package "httpd-devel" do
           options "-y"
         end
 
+      # Preparing to install tomcat connectors
       cookbook_file "/tmp/#{connectors_source}" do
         source "#{connectors_source}"
         cookbook 'app_tomcat'
       end
 
-      bash "install_tomcat_connectors" do
+      # Unpacking and building
+      bash "install tomcat connectors" do
       flags "-ex"
         code <<-EOH
           cd /tmp
@@ -259,14 +264,14 @@ action :setup_vhost do
 
     log "  Generating new apache ports.conf"
     node[:apache][:listen_ports] = "80"
-
+    # Generation of new apache ports.conf
     template "#{node[:apache][:dir]}/ports.conf" do
       cookbook "apache2"
       source "ports.conf.erb"
       variables :apache_listen_ports => node[:apache][:listen_ports]
     end
 
-     # Configuring document root for apache
+    # Configuring document root for apache
     if ("#{node[:app_tomcat][:code][:root_war]}" == "")
       log "  root_war not defined, setting apache docroot to #{node[:app][:root]}"
       docroot4apache = "#{node[:app][:root]}"
@@ -276,7 +281,6 @@ action :setup_vhost do
     end
 
     port = new_resource.port
-
 
     log "  Configuring apache vhost for tomcat"
     template "#{etc_apache}/sites-enabled/#{node[:web_apache][:application_name]}.conf" do
@@ -291,7 +295,8 @@ action :setup_vhost do
       cookbook 'app_tomcat'
     end
 
-    service "#{node[:apache][:config_subdir]}" do
+    # Apache server restart
+    service "apache2" do
       action :restart
       persist false
     end
@@ -334,7 +339,7 @@ action :setup_db_connection do
     raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting "
   end
 
-  log "  Creating context.xml"
+  log "  Creating web.xml"
   template "/etc/tomcat6/web.xml" do
     source "web_xml.erb"
     owner "#{node[:app_tomcat][:app_user]}"
@@ -343,6 +348,7 @@ action :setup_db_connection do
     cookbook 'app_tomcat'
   end
 
+  # Installing JavaServer Pages Standard Tag Library API
   cookbook_file "/usr/share/tomcat6/lib/jstl-api-1.2.jar" do
     source "jstl-api-1.2.jar"
     owner "#{node[:app_tomcat][:app_user]}"
@@ -351,7 +357,7 @@ action :setup_db_connection do
     cookbook 'app_tomcat'
   end
 
-
+  # Installing JavaServer Pages Standard Tag Library specifications library
   cookbook_file "/usr/share/tomcat6/lib/jstl-impl-1.2.jar" do
     source "jstl-impl-1.2.jar"
     owner "#{node[:app_tomcat][:app_user]}"
@@ -367,20 +373,20 @@ action :setup_monitoring do
   log "  Setup of collectd monitoring for tomcat"
   rightscale_enable_collectd_plugin 'exec'
 
-  #installing and configuring collectd for tomcat
+  # Installing and configuring collectd for tomcat
   cookbook_file "/usr/share/java/collectd.jar" do
     source "collectd.jar"
     mode "0644"
     cookbook 'app_tomcat'
   end
 
-  #Linking collectd
+  # Linking collectd
   link "/usr/share/tomcat6/lib/collectd.jar" do
     to "/usr/share/java/collectd.jar"
     not_if do !::File.exists?("/usr/share/java/collectd.jar") end
   end
 
-  #Add collectd support to tomcat.conf
+  # Add collectd support to tomcat.conf
   bash "Add collectd to tomcat.conf" do
     flags "-ex"
     code <<-EOH
@@ -392,7 +398,7 @@ CATALINA_OPTS="\$CATALINA_OPTS -Djcd.host=#{node[:rightscale][:instance_uuid]} -
 
 end
 
-#Download/Update application repository
+# Download/Update application repository
 action :code_update do
 
   deploy_dir = new_resource.destination
@@ -400,6 +406,7 @@ action :code_update do
   log "  Current tomcat docroot is set to #{deploy_dir}"
 
   log "  Downloading project repo"
+  # Calling "repo" LWRP to download remote project repository
   repo "default" do
     destination deploy_dir
     action   node[:repo][:default][:perform_action].to_sym
@@ -408,6 +415,8 @@ action :code_update do
   end
 
   log "  Set ROOT war and code ownership"
+  # Preparing user defined war file for tomcat auto deploy.
+  # Moving file to application root and renaming it to ROOT.war.
   bash "set_root_war_and_chown_home" do
     flags "-ex"
     code <<-EOH
@@ -420,9 +429,8 @@ action :code_update do
     EOH
     only_if do node[:app_tomcat][:code][:root_war] != "ROOT.war" end
   end
-
+  # Restarting tomcat service.
+  # This will automatically deploy ROOT.war it it will be available in application root  directory
   action_restart
-
-  node[:delete_docroot_executed] = true
 
 end
