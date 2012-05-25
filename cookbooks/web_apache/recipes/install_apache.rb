@@ -52,7 +52,7 @@ end
 # Apache Multi-Processing Module configuration
 case node[:platform]
   when "centos","redhat","fedora","suse"
-    # RedHat based systems has no mpm change scripts included so we have to configure mpm here.
+    # RedHat based systems have no mpm change scripts included so we have to configure mpm here.
     # Configuring "HTTPD" option to insert it to /etc/sysconfig/httpd file
     binary_to_use = node[:apache][:binary]
     binary_to_use << ".#{node[:web_apache][:mpm]}" unless node[:web_apache][:mpm] == 'prefork'

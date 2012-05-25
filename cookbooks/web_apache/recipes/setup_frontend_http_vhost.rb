@@ -21,7 +21,6 @@ template "#{node[:apache][:dir]}/ports.conf" do
   cookbook "apache2"
   source "ports.conf.erb"
   variables :apache_listen_ports => http_port
-  notifies :restart, resources(:service => "apache2")
 end
 
 # Configure apache vhost
@@ -30,6 +29,7 @@ web_app "#{node[:web_apache][:application_name]}.frontend" do
   docroot node[:web_apache][:docroot]
   vhost_port http_port
   server_name node[:web_apache][:server_name]
+  notifies :restart, resources(:service => "apache2")
 end
 
 rightscale_marker :end
