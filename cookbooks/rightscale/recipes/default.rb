@@ -16,17 +16,6 @@ raise "rightscale/servers/sketchy/hostname must be set" unless node[:rightscale]
 log "rightscale/instance_uuid is  #{node[:rightscale][:instance_uuid]}"
 log "rightscale/servers/sketchy/hostname is #{node[:rightscale][:servers][:sketchy][:hostname]}"
 
-case node[:platform]
-  when "ubuntu", "debian"
-    node[:rightscale][:collectd_packages] = ["collectd", "collectd-core", "collectd-utils", "libcollectdclient0"]
-    node[:rightscale][:collectd_packages_version] = "4.10.1-2"
-  when "centos", "redhat"
-    node[:rightscale][:collectd_packages] = ["collectd"]
-    node[:rightscale][:collectd_packages_version] = "4.10.0-4.el5"
-  else
-    raise "Unrecognized distro #{node[:platform]}, exiting "
-end
-
 include_recipe "rightscale::setup_server_tags"
 include_recipe "rightscale::setup_timezone"
 include_recipe "rightscale::setup_logging"

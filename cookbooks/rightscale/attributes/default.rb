@@ -45,10 +45,14 @@ when "redhat","centos","fedora","suse"
   rightscale[:logrotate_config] = "/etc/logrotate.d/syslog"
   rightscale[:collectd_config] = "/etc/collectd.conf"
   rightscale[:collectd_plugin_dir] = "/etc/collectd.d"
+  rightscale[:collectd_packages] = ["collectd"]
+  rightscale[:collectd_packages_version] = "4.10.0-4.el5"
 when "debian","ubuntu"
   rightscale[:logrotate_config] = "/etc/logrotate.d/syslog-ng"
   rightscale[:collectd_config] = "/etc/collectd/collectd.conf"
   rightscale[:collectd_plugin_dir] = "/etc/collectd/conf"
+  rightscale[:collectd_packages] = ["collectd", "collectd-core", "collectd-utils", "libcollectdclient0"]
+  rightscale[:collectd_packages_version] = "4.10.1-2"
 end
 
 rightscale[:collectd_lib] = "/usr/lib64/collectd"
