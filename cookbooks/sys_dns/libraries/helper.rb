@@ -15,28 +15,25 @@ module RightScale
         @logger = logger || Logger.new(STDOUT)
       end
 
-      def action_set(id, user, password, address)
-        raise 'Not implemented!'
+      # Applicable to the below classes
+      #
+      # @param [String] unique identifier that is associated with the DNS A record of the server.
+      # @param [String] user name that is used to access and modify your DNS A records.
+      # @param [String] password that is used to access and modify your DNS A records.
+      # @param [String] Private IP of instance running the recipe.
+      # @param [Hash{Symbol => String}] optional parameters to pass
+      # * the +:region+ option is CloudDNS specific: region where the A records should be modified.
+      #
+      # @return [String] A record successful update message.
+      #
+      # @raise [String] Error message that may have occurred during the update process.
+      def action_set(id, user, password, address, options = {})
+        raise "Not implemented!"
       end
     end # class DNS
 
-    # Applicable to the below classes
-    #
-    # Parameters:
-    # * id:: The unique identifier that is associated with the DNS A record of the server.
-    # * user:: The user name that is used to access and modify your DNS A records.
-    # * password:: The password that is used to access and modify your DNS A records.
-    # * address:: Private IP of instance running the recipe.
-    # * region:: CloudDNS specific: region where the A records should be modified.
-    #
-    # Return:
-    # Chef::Log:: A record successful update message.
-    #
-    # Raise:
-    # Chef::Log:: Error message that may have occurred during the update process.
-
     class AWS < DNS
-      def action_set(id, user, password, address)
+      def action_set(id, user, password, address, options = {})
         zone_id, hostname = id.split(':')
 
         current_ip= `dig +short #{hostname}`.chomp
@@ -106,7 +103,7 @@ EOF
 
         # Sending the xml to Route53
         result = ""
-        #  Simple retry loop, sometimes the DNS call will flake out..
+        # Simple retry loop, sometimes the DNS call will flake out..
         5.times do |attempt|
           result = `/opt/rightscale/dns/dnscurl.pl --keyfile #{secrets_filename} --keyname my-aws-account -- -X POST -H "Content-Type: text/xml; charset=UTF-8" --upload-file #{cmd_filename} #{endpoint}hostedzone/#{zone_id}/rrset`
           break if result =~ /ChangeResourceRecordSetsResponse/
@@ -124,7 +121,7 @@ EOF
     end # class AWS < DNS
 
     class DME < DNS
-      def action_set(id, user, password, address)
+      def action_set(id, user, password, address, options = {})
         # Generating A Record update query and sending the update request
         query="username=#{CGI::escape(user)}&password=#{CGI::escape(password)}&id=#{id}&ip=#{CGI::escape(address)}"
         result = `curl -S -s -o - -f -g 'https://cp.dnsmadeeasy.com/servlet/updateip?#{query}'`
@@ -141,7 +138,7 @@ EOF
     end # class DME < DNS
 
     class DynDNS < DNS
-      def action_set(id, user, password, address)
+      def action_set(id, user, password, address, options = {})
         # Generating A Record update query and sending the update request
         query="hostname=#{CGI::escape(id)}&myip=#{CGI::escape(address)}"
         result = `curl -u #{user}:#{password} -S -s -o - -f -g 'https://members.dyndns.org/nic/update?#{query}'`
@@ -158,25 +155,26 @@ EOF
     end # class DynDNS < DNS
 
     class CloudDNS < DNS
-      def action_set(id, user, password, address, region)
+      def action_set(id, user, password, address, options = {})
         # Getting dns_domain_id && dns_record_id from DNS Record ID input
         dns_domain_id, dns_record_id= id.split(':')
+        region = options[:region]
 
         # Setting the right URLs for selected region
         case region
-          when "Chicago", "Dallas"
-            auth_url = "https://auth.api.rackspacecloud.com/v1.0"
-            service_endpoint = "https://dns.api.rackspacecloud.com/v1.0/"
-          when "London"
-            auth_url = "https://lon.auth.api.rackspacecloud.com/v1.0"
-            service_endpoint = "https://lon.dns.api.rackspacecloud.com/v1.0/"
-          else
-            raise "Unsupported region '#{region}'."
+        when "Chicago", "Dallas"
+          auth_url = "https://auth.api.rackspacecloud.com/v1.0"
+          service_endpoint = "https://dns.api.rackspacecloud.com/v1.0/"
+        when "London"
+          auth_url = "https://lon.auth.api.rackspacecloud.com/v1.0"
+          service_endpoint = "https://lon.dns.api.rackspacecloud.com/v1.0/"
+        else
+          raise "Unsupported region '#{region}'."
         end
 
         # Getting the Authentication Token and new Service Endpoint
         output = `curl -D - -H "X-Auth-Key: #{password}" -H "X-Auth-User: #{user}" #{auth_url}`
-        x_auth_token = ""
+        x_auth_token = "empty"
         output.each do |line|
           if line =~ /X-Auth-Token:/
             x_auth_token = line.gsub(/X-Auth-Token: /, '').chomp
@@ -185,6 +183,7 @@ EOF
             service_endpoint += line.chomp[/\d+$/]
           end
         end
+        if x_auth_token == "empty" then raise "An error occurred during authentication: verify user and password." end
 
         # Verifying Domain ID
         output = `curl -k -H "X-Auth-Token: #{x_auth_token}" #{service_endpoint}/domains`
