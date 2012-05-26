@@ -116,7 +116,7 @@ action :install do
     to "/mnt/ephemeral/log/tomcat6"
     not_if do ::File.directory?("/mnt/ephemeral/log/tomcat6") end
   end
-  
+
   # Symlinking to new jvm-exports
   bash "Create /usr/lib/jvm-exports/java if possible" do
     flags "-ex"
@@ -191,22 +191,22 @@ action :setup_vhost do
 
     # Installing required packages depending on platform
     case node[:platform]
-      when "ubuntu", "debian"
-        ubuntu_p = ["apache2-mpm-prefork", "apache2-threaded-dev", "libapr1-dev", "libapache2-mod-jk"]
-        ubuntu_p.each do |p|
-          package p
-        end
+    when "ubuntu", "debian"
+      ubuntu_p = ["apache2-mpm-prefork", "apache2-threaded-dev", "libapr1-dev", "libapache2-mod-jk"]
+      ubuntu_p.each do |p|
+        package p
+      end
 
-      when "centos","fedora","suse","redhat"
+    when "centos","fedora","suse","redhat"
 
-        package "apr-devel.x86_64" do
-          options "-y"
-          only_if do node[:kernel][:machine] == "x86_64" end
-        end
+      package "apr-devel" do
+        options "-y"
+        only_if { node[:kernel][:machine] == "x86_64" }
+      end
 
-        package "httpd-devel" do
-          options "-y"
-        end
+      package "httpd-devel" do
+        options "-y"
+      end
 
       # Preparing to install tomcat connectors
       cookbook_file "/tmp/#{connectors_source}" do
@@ -216,7 +216,7 @@ action :setup_vhost do
 
       # Unpacking and building
       bash "install tomcat connectors" do
-      flags "-ex"
+        flags "-ex"
         code <<-EOH
           cd /tmp
           mkdir -p /tmp/tc-unpack
@@ -236,9 +236,9 @@ action :setup_vhost do
     template "/etc/tomcat6/workers.properties" do
       action :create
       source "tomcat_workers.properties.erb"
-      variables(
-      :tomcat_name => "tomcat6",
-      :config_subdir => node[:apache][:config_subdir]
+      variables (
+        :tomcat_name => "tomcat6",
+        :config_subdir => node[:apache][:config_subdir]
       )
       cookbook 'app_tomcat'
     end
