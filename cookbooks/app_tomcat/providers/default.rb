@@ -236,7 +236,7 @@ action :setup_vhost do
     template "/etc/tomcat6/workers.properties" do
       action :create
       source "tomcat_workers.properties.erb"
-      variables (
+      variables(
         :tomcat_name => "tomcat6",
         :config_subdir => node[:apache][:config_subdir]
       )
