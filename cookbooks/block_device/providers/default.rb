@@ -55,7 +55,7 @@ end
 action :primary_restore do
   device = init(new_resource)
   restore_args = {
-    :timestamp => new_resource.timestamp_override,
+    :timestamp => new_resource.timestamp_override == "" ? nil : new_resource.timestamp_override,
     :force => new_resource.force,
     :from_master => new_resource.is_master,
     :new_size_gb => new_resource.volume_size,
@@ -81,7 +81,7 @@ action :secondary_restore do
   secondary_checks(new_resource)
   device = init(new_resource)
   restore_args = {
-    :timestamp => new_resource.timestamp_override,
+    :timestamp => new_resource.timestamp_override == "" ? nil : new_resource.timestamp_override,
     :force => new_resource.force,
     :volume_size => new_resource.volume_size,
     :new_size_gb => new_resource.volume_size,
