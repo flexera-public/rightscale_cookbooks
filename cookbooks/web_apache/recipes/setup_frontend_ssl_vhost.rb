@@ -49,7 +49,7 @@ bash "decrypt openssl keyfile" do
   flags "-ex"
   environment({ :OPT_SSL_PASSPHRASE => node[:web_apache][:ssl_passphrase] })
   code "openssl rsa -passin env:OPT_SSL_PASSPHRASE -in #{ssl_key_file} -passout env:OPT_SSL_PASSPHRASE -out #{ssl_key_file}"
-  only_if {node[:web_apache][:ssl_passphrase]!=nil}
+  only_if { node[:web_apache][:ssl_passphrase]!=nil }
 end
 
 
