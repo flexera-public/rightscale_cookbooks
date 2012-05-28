@@ -17,11 +17,11 @@ module RightScale
 
       # Applicable to the below classes
       #
-      # @param [String] unique identifier that is associated with the DNS A record of the server.
-      # @param [String] user name that is used to access and modify your DNS A records.
-      # @param [String] password that is used to access and modify your DNS A records.
-      # @param [String] Private IP of instance running the recipe.
-      # @param [Hash{Symbol => String}] optional parameters to pass
+      # @param [String] id unique identifier that is associated with the DNS A record of the server.
+      # @param [String] user user name that is used to access and modify your DNS A records.
+      # @param [String] password password that is used to access and modify your DNS A records.
+      # @param [String] address Private IP of instance running the recipe.
+      # @param [Hash{Symbol => String}] options optional parameters to pass:
       # * the +:region+ option is CloudDNS specific: region where the A records should be modified.
       #
       # @return [String] A record successful update message.
@@ -183,7 +183,9 @@ EOF
             service_endpoint += line.chomp[/\d+$/]
           end
         end
-        if x_auth_token == "empty" then raise "An error occurred during authentication: verify user and password." end
+        if x_auth_token == "empty"
+          raise "An error occurred during authentication: verify user and password."
+        end
 
         # Verifying Domain ID
         output = `curl -k -H "X-Auth-Token: #{x_auth_token}" #{service_endpoint}/domains`
