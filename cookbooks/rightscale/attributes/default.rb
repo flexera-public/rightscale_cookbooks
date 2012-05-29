@@ -64,10 +64,4 @@ default[:rightscale][:search_suffix]         = ""
 #
 # Cloud specific attributes
 #
-rightscale[:enable_remote_logging] = false
-if cloud
-  case cloud[:provider]
-  when "ec2"
-    rightscale[:enable_remote_logging] = true
-  end
-end
+
