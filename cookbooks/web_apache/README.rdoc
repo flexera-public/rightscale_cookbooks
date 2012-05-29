@@ -16,7 +16,7 @@ There are no known limitations.
 * Place <tt>web_apache::install_server</tt> recipe into your runlist to setup the apache web server.
 * Use <tt>web_apache::setup_monitoring</tt> recipe to add apache monitoring options to your dasboard "monitoring" tab.
 
-== DETIALS:
+== DETAILS:
 === General
 The recipes in this cookbook are designed to perform basic operations with apache web server.
 
