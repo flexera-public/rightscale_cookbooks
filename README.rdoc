@@ -75,8 +75,11 @@ TODO: From a recipe, is it a resource, LWRP or a definition?  How can I tell?  W
 === Dependency Resolution
 TODO: why setting up metadata.rb depends it important?  For all cookbooks that your cookbook depends on that you should include the default recipes for each cookbook in your ServerTemplate/Role.
 
-=== Default Recipe Pattern
-TODO: Paraphase this pattern from the support site, then reference site
+=== The Default Recipe
+Every one of our cookbooks contains a default.rb recipe. In this recipe we install packages, setup configurations and initialize Chef resources that other cookbooks may depend on.  We also setup any prerequisites and attributes that might be needed for the other recipes in the cookbook.  Be sure to add the default recipe to your ServerTemplate boot scripts or your Role's runlist before running any other of the recipes in the cookbook.  You should also add the default recipe of the cookbooks that your cookbook depends on.
+
+For more information, please see http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-RightScale_Support_of_Chef/RightScale_Cookbook_Design_Conventions#What_is_RightScale's_Default_Pattern.3f for more info
+
 
 === Abstract Cookbooks and LWRPs
 TODO: how do we use these (i.e. db, lb and app)
