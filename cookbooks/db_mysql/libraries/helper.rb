@@ -96,12 +96,13 @@ module RightScale
           Chef::Log.info "Configuring with #{newmaster_host} logfile #{newmaster_logfile} position #{newmaster_position}"
 
           # The slave stop can fail once (only throws warning if slave is already stopped)
-          RightScale::Database::MySQL::Helper.do_query(node, "STOP SLAVE", hostname)
-          RightScale::Database::MySQL::Helper.do_query(node, "STOP SLAVE", hostname)
+          2.times do
+            RightScale::Database::MySQL::Helper.do_query(node, "STOP SLAVE", hostname)
+          end
 
           cmd = "CHANGE MASTER TO MASTER_HOST='#{newmaster_host}'"
-          cmd = cmd +          ", MASTER_LOG_FILE='#{newmaster_logfile}'"
-          cmd = cmd +          ", MASTER_LOG_POS=#{newmaster_position}"
+          cmd = cmd +          ", MASTER_LOG_FILE='#{newmaster_logfile}'" if newmaster_logfile
+          cmd = cmd +          ", MASTER_LOG_POS=#{newmaster_position}" if newmaster_position
           Chef::Log.info "Reconfiguring replication on localhost: \n#{cmd}"
           # don't log replication user and password
           cmd = cmd +          ", MASTER_USER='#{node[:db][:replication][:user]}'"
