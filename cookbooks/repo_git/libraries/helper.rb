@@ -14,7 +14,7 @@ module RightScale
      #
      # @param git_ssh_key [string] Git private ssh key
      #
-     # @raises [RuntimeError] if ssh key string is empty
+     # @raise [RuntimeError] if ssh key string is empty
      def create(git_ssh_key)
        Chef::Log.info("  Creating ssh key")
        keyfile = nil

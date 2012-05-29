@@ -17,7 +17,7 @@ module RightScale
       #
       # @return [String] IP Address
       #
-      # @raises [RuntimeError] If nether a valid private nor public ip can be found
+      # @raise [RuntimeError] If nether a valid private nor public ip can be found
       def self.bind_ip(private_ips = [ ], public_ips = [ ])
         ip = nil
         if private_ips && private_ips.size > 0
