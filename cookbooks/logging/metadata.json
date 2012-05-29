@@ -1,0 +1,58 @@
+{
+  "dependencies": {
+    "logging_rsyslog": ">= 0.0.0",
+    "logging_syslog_ng": ">= 0.0.0"
+  },
+  "name": "logging",
+  "maintainer_email": "support@rightscale.com",
+  "attributes": {
+    "logging/remote_server": {
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+
+      ],
+      "type": "string",
+      "recipes": [
+        "logging::default"
+      ],
+      "display_name": "Remote Server",
+      "description": "The FQDN or IP address of a remote server to configure the instance to forward log data do. Example: syslog.example.com or 192.168.0.1"
+    },
+    "logging": {
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+
+      ],
+      "type": "hash",
+      "recipes": [
+
+      ],
+      "display_name": "Log Service Settings"
+    }
+  },
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "suggestions": {
+  },
+  "platforms": {
+  },
+  "maintainer": "RightScale, Inc.",
+  "long_description": "Description\n===========\n\nRequirements\n============\n\nAttributes\n==========\n\nUsage\n=====\n\n",
+  "version": "0.0.1",
+  "recommendations": {
+  },
+  "recipes": {
+    "logging::default": "Installs and configures chosen logging provider",
+    "logging::install_server": "Installs and configures chosen logging provider"
+  },
+  "groupings": {
+  },
+  "conflicting": {
+  },
+  "replacing": {
+  },
+  "description": "Enable instance Monitoring in the RightScale dashboard.",
+  "providing": {
+  }
+}
