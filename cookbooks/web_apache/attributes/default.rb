@@ -42,7 +42,7 @@ set_unless[:web_apache][:ssl_certificate_chain] = nil
 set_unless[:web_apache][:ssl_key] = nil
 set_unless[:web_apache][:ssl_passphrase] = nil
 
-# Used to be called php/code/destination
+# Apache document root
 set[:web_apache][:docroot] = "/home/webapp/#{web_apache[:application_name]}"
 
 # Default servername for web_apache vhost file
