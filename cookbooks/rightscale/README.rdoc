@@ -20,7 +20,7 @@ There are no known limitations.
 == SETUP/USAGE:
 
 The <tt>rightscale::default</tt> recipe performs common server configuration
-steps such as enabling monitoring and logging on the RightScale Dashboard.
+steps such as enabling monitoring on the RightScale Dashboard.
 
 The <tt>rightscale::install_tools</tt> recipe installs the
 <tt>rightscale_tools</tt> gem which provides tools for dealing with databases,

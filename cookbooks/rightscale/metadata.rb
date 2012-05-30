@@ -6,7 +6,6 @@ long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "0.1"
 
 recipe "rightscale::default", "Installs the utilities that are required for RightScale support."
-recipe "rightscale::setup_logging", "Installs and configures RightScale's dashboard logging features."
 recipe "rightscale::setup_monitoring", "Installs and configures RightScale dashboard monitoring features."
 recipe "rightscale::setup_mail", "Set up basic mail support."
 recipe "rightscale::setup_ssh", "Installs the private ssh key."
