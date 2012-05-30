@@ -26,6 +26,7 @@ do_for_block_devices node[:block_device] do |device|
   log "  Input lineage_override #{lineage_override.inspect}"
   log "  Using lineage #{restore_lineage.inspect}"
   log "  Input timestamp_override #{restore_timestamp_override.inspect}"
+  restore_timestamp_override ||= ""
 
   block_device get_device_or_default(node, device, :nickname) do
     # Backup/Restore arguments
