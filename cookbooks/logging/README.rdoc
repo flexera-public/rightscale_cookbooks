@@ -11,7 +11,7 @@ remote server.  If not the the default configuration is used (local files)
 
 == REQUIREMENTS:
 
-* Must be use with a 'logging' provide in the cookbook path
+* Must be used with a 'logging' provider in the cookbook path
 * Requires a virtual machine launched from a RightScale-managed RightImage.
 
 == COOKBOOOKS DEPENDENCIES:
