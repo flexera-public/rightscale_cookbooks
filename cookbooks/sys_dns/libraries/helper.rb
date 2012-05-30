@@ -174,6 +174,7 @@ EOF
 
         # Getting the Authentication Token and new Service Endpoint
         output = `curl -D - -H "X-Auth-Key: #{password}" -H "X-Auth-User: #{user}" #{auth_url}`
+        raise "curl returned with an error: #{$?.exitstatus}" unless $?.exitstatus == 0
         x_auth_token = "empty"
         output.each do |line|
           if line =~ /X-Auth-Token:/
@@ -189,12 +190,14 @@ EOF
 
         # Verifying Domain ID
         output = `curl -k -H "X-Auth-Token: #{x_auth_token}" #{service_endpoint}/domains`
+        raise "curl returned with an error: #{$?.exitstatus}" unless $?.exitstatus == 0
         if output =~ /"totalEntries":0/
           raise "No entries found for entered domain ID #{dns_domain_id}."
         end
 
         # Fetching FQDN by Record ID
         output = `curl -k -H "X-Auth-Token: #{x_auth_token}" #{service_endpoint}/domains/#{dns_domain_id}/records/#{dns_record_id}`
+        raise "curl returned with an error: #{$?.exitstatus}" unless $?.exitstatus == 0
         if output =~ /is not a valid A record name/
           raise "Record ID #{dns_record_id} is not a valid A record name."
         else
@@ -204,6 +207,7 @@ EOF
         # Generating new json and sending it over to CloudDNS
         new_ip_json = "{\"name\":\"#{fqdn}\",\"data\":\"#{address}\"}"
         result = `curl -k -X PUT -H "Content-Type: application/json" --data '#{new_ip_json}' -H "X-Auth-Token: #{x_auth_token}" #{service_endpoint}/domains/#{dns_domain_id}/records/#{dns_record_id}`
+        raise "curl returned with an error: #{$?.exitstatus}" unless $?.exitstatus == 0
 
         # Checking the result
         if result =~ /#{fqdn}/
