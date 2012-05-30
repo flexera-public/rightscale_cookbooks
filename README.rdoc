@@ -154,8 +154,8 @@ default recipe to your ServerTemplate boot scripts or your Role's runlist before
 running any other of the recipes in the cookbook. You should also add the
 default recipe of the cookbooks that your cookbook depends on.
 
-For more information, please see http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-RightScale_Support_of_Chef/RightScale_Cookbook_Design_Conventions#What_is_RightScale's_Default_Pattern.3f
-for more info.
+For more information, please see:
+http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-RightScale_Support_of_Chef/RightScale_Cookbook_Design_Conventions#What_is_RightScale's_Default_Pattern.3f
 
 
 === Abstract Cookbooks and LWRPs
