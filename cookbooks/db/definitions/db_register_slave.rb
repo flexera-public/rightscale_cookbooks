@@ -129,7 +129,7 @@ define :db_register_slave, :action => :primary_restore do
 
   # Not needed for stop/start since replication has already been enabled.
   db DATA_DIR do
-    not_if { params[:action] == :no_restore }
+    restore_process params[:action]
     action :enable_replication
   end
 
