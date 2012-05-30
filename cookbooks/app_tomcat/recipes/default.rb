@@ -65,15 +65,7 @@ else
   raise "Unrecognized distro #{node[:platform]}, exiting "
 end
 
-
-log " Preparing tomcat document root variable"
-dest_dir = "/srv/tomcat6/webapps/"
-if node[:repo][:default][:destination].empty?
-  log "  Your repo/default/destination input is no set. Setting project root to default: #{dest_dir}"
-  project_home = dest_dir
-else
-  project_home = node[:repo][:default][:destination]
-end
+project_home = node[:repo][:default][:destination]
 
 # Setting app LWRP attribute
 node[:app][:root] = "#{project_home}/#{node[:web_apache][:application_name]}"

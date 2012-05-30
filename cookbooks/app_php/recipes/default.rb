@@ -53,19 +53,10 @@ else
 end
 
 
-log " Preparing php document root variable"
-dest_dir="/home/php/webapps"
-if node[:repo][:default][:destination].empty?
-  log "  Your repo/default/destination input is no set. Setting project root to default: #{dest_dir}"
-  project_home = dest_dir
-else
-  project_home = node[:repo][:default][:destination]
-end
-
 # Setting app LWRP attribute
-node[:app][:root] = "#{project_home}/#{node[:web_apache][:application_name]}"
+node[:app][:root] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
 # PHP shares the same doc root with the application destination
-node[:app][:destination]="#{node[:app][:root]}"
+node[:app][:destination] = "#{node[:app][:root]}"
 
 directory "#{node[:app][:destination]}" do
   recursive true

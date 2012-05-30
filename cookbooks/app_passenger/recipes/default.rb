@@ -37,18 +37,10 @@ case node[:platform]
     raise "Unrecognized distro #{node[:platform]}, exiting "
 end
 
-log " Preparing rails document root variable"
-dest_dir = "/home/rails"
-if node[:repo][:default][:destination].empty?
-  log "  Your repo/default/destination input is not set. Setting project root to default: #{dest_dir}"
-  project_home = dest_dir
-else
-  project_home = node[:repo][:default][:destination]
-end
+project_home = node[:repo][:default][:destination]
 
-# Setting app LWRP attribute
 # Destination directory for the application
-node[:app][:destination]= "#{project_home}/#{node[:web_apache][:application_name]}"
+node[:app][:destination] = "#{project_home}/#{node[:web_apache][:application_name]}"
 
 directory "#{node[:app][:destination]}" do
   recursive true
