@@ -21,16 +21,16 @@ do_for_block_devices node[:block_device] do |device|
   lineage = get_device_or_default(node, device, :backup, :lineage)
   lineage_override = get_device_or_default(node, device, :backup, :lineage_override)
   restore_lineage = lineage_override == nil || lineage_override.empty? ? lineage : lineage_override
-  timestamp_override = get_device_or_default(node, device, :backup, :timestamp_override)
+  restore_timestamp_override = get_device_or_default(node, device, :backup, :timestamp_override)
   log "  Input lineage #{restore_lineage}"
   log "  Input lineage_override #{lineage_override}"
   log "  Using lineage #{restore_lineage}"
-  log "  Input timestamp_override #{timestamp_override}"
+  log "  Input timestamp_override #{restore_timestamp_override}"
 
   block_device get_device_or_default(node, device, :nickname) do
     # Backup/Restore arguments
     lineage restore_lineage
-    timestamp_override timestamp_override
+    timestamp_override restore_timestamp_override
 
     action :primary_restore
   end
