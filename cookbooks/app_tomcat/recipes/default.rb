@@ -65,10 +65,8 @@ else
   raise "Unrecognized distro #{node[:platform]}, exiting "
 end
 
-project_home = node[:repo][:default][:destination]
-
 # Setting app LWRP attribute
-node[:app][:root] = "#{project_home}/#{node[:web_apache][:application_name]}"
+node[:app][:root] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
 # tomcat shares the same doc root with the application destination
 node[:app][:destination]="#{node[:app][:root]}"
 

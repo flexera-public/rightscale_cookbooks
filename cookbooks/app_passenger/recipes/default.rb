@@ -37,10 +37,8 @@ case node[:platform]
     raise "Unrecognized distro #{node[:platform]}, exiting "
 end
 
-project_home = node[:repo][:default][:destination]
-
 # Destination directory for the application
-node[:app][:destination] = "#{project_home}/#{node[:web_apache][:application_name]}"
+node[:app][:destination] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
 
 directory "#{node[:app][:destination]}" do
   recursive true
