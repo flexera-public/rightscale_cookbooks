@@ -58,7 +58,7 @@ action :configure do
       # using /etc/rsyslog.d.  Instead of maintaining CentOS specific configuration
       # we can just append the remote log line to the end of the existing file.
       # Note this will work with the configuration files that support /etc/rsyslog.d
-      # (i.e. centos 6) without removing it.  However once all supportted OS use
+      # (i.e. centos 6) without removing it.  However once all supportted OS's use
       # /etc/rsyslog.d this should be removed.
       log "  Configuring Redhat/CentOS."
       bash "add remote log server to centos config file" do
