@@ -1,0 +1,31 @@
+{
+  "dependencies": {
+    "logging": ">= 0.0.0"
+  },
+  "name": "loggging_rsyslog_ng",
+  "maintainer_email": "support@rightscale.com",
+  "attributes": {
+  },
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "suggestions": {
+  },
+  "platforms": {
+  },
+  "maintainer": "RightScale, Inc.",
+  "long_description": "Description\n===========\n\nRequirements\n============\n\nAttributes\n==========\n\nUsage\n=====\n\n",
+  "version": "0.0.1",
+  "recommendations": {
+  },
+  "recipes": {
+    "logging_syslog_ng::default": "Set syslog_ng logging provider"
+  },
+  "groupings": {
+  },
+  "conflicting": {
+  },
+  "replacing": {
+  },
+  "description": "Enable instance Monitoring in the RightScale dashboard.",
+  "providing": {
+  }
+}
