@@ -521,9 +521,11 @@ end
 
 action :enable_replication do
   db_state_get node
+  current_restore_process = new_resource.restore_process
 
   # Check the volume before performing any actions.  If invalid raise error and exit.
   ruby_block "validate_master" do
+    not_if { current_restore_process == :no_restore }
     block do
       master_info = RightScale::Database::MySQL::Helper.load_replication_info(node)
       # Check that the snapshot is from the current master or a slave associated with the current master
@@ -546,6 +548,7 @@ action :enable_replication do
   end
 
   ruby_block "wipe_existing_runtime_config" do
+    not_if { current_restore_process == :no_restore }
     block do
       Chef::Log.info "Wiping existing runtime config files"
       data_dir = ::File.join(node[:db][:data_dir], 'mysql')
@@ -568,6 +571,7 @@ action :enable_replication do
   # Setup my.cnf
 
   template value_for_platform([ "centos", "redhat", "suse" ] => {"default" => "/etc/my.cnf"}, "default" => "/etc/mysql/my.cnf") do
+    not_if { current_restore_process == :no_restore }
     source "my.cnf.erb"
     owner "root"
     group "root"
@@ -581,6 +585,7 @@ action :enable_replication do
 
   # empty out the binary log dir
   directory ::File.dirname(node[:db_mysql][:log_bin]) do
+    not_if { current_restore_process == :no_restore }
     action [:delete, :create]
     recursive true
     owner 'mysql'
@@ -597,7 +602,8 @@ action :enable_replication do
     end
   end
 
-  ruby_block "reconfigure_replication" do
+  ruby_block "configure_replication" do
+    not_if { current_restore_process == :no_restore }
     block do
       master_info = RightScale::Database::MySQL::Helper.load_replication_info(node)
       newmaster_host = master_info['Master_IP']
@@ -607,7 +613,17 @@ action :enable_replication do
     end
   end
 
+  # following done after a stop/start
+  ruby_block "reconfigure_replication" do
+    only_if { current_restore_process == :no_restore }
+    block do
+      newmaster_host = node[:db][:current_master_ip]
+      RightScale::Database::MySQL::Helper.reconfigure_replication(node, 'localhost', newmaster_host)
+    end
+  end
+
   ruby_block "do_query" do
+    not_if { current_restore_process == :no_restore }
     block do
       RightScale::Database::MySQL::Helper.do_query(node, "SET GLOBAL READ_ONLY=1")
     end
