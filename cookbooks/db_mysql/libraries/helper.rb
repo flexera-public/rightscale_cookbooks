@@ -101,12 +101,12 @@ module RightScale
           end
 
           cmd = "CHANGE MASTER TO MASTER_HOST='#{newmaster_host}'"
-          cmd = cmd +          ", MASTER_LOG_FILE='#{newmaster_logfile}'" if newmaster_logfile
-          cmd = cmd +          ", MASTER_LOG_POS=#{newmaster_position}" if newmaster_position
+          cmd +=   ", MASTER_LOG_FILE='#{newmaster_logfile}'" if newmaster_logfile
+          cmd +=   ", MASTER_LOG_POS=#{newmaster_position}" if newmaster_position
           Chef::Log.info "Reconfiguring replication on localhost: \n#{cmd}"
           # don't log replication user and password
-          cmd = cmd +          ", MASTER_USER='#{node[:db][:replication][:user]}'"
-          cmd = cmd +          ", MASTER_PASSWORD='#{node[:db][:replication][:password]}'"
+          cmd +=   ", MASTER_USER='#{node[:db][:replication][:user]}'"
+          cmd +=   ", MASTER_PASSWORD='#{node[:db][:replication][:password]}'"
           RightScale::Database::MySQL::Helper.do_query(node, cmd, hostname)
 
           RightScale::Database::MySQL::Helper.do_query(node, "START SLAVE", hostname)
