@@ -9,7 +9,15 @@ rightscale_marker :begin
 
 # XXX REMOVE BEFORE PUBLISH XXX
 
-`wget https://s3.amazonaws.com/rightscale_key_pub/rightscale_key.pub -P /tmp ; apt-key add /tmp/rightscale_key.pub ; apt-get update` if node[:platform] == "ubuntu"
+bash "TMP FIX : Install signed key for ubuntu" do
+  flags "-ex"
+  only_if { node[:platform] == "ubuntu" }
+  code <<-EOH
+    wget https://s3.amazonaws.com/rightscale_key_pub/rightscale_key.pub -P /tmp
+    apt-key add /tmp/rightscale_key.pub
+    apt-get update
+  EOH
+end
 
 if node[:sys_firewall][:enabled] == "enabled"
   include_recipe "iptables"
