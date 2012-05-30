@@ -1,12 +1,72 @@
-Description
-===========
+= RightScale Loggind
 
-Requirements
-============
+== DESCRIPTION:
 
-Attributes
-==========
+This cookbook provides a set of recipes used by the RightScale
+ServerTemplates to configure the logging service provider.
 
-Usage
-=====
+This cookbook configures the default logging provider installed on the image.
+If a remote server is defined it will configure sending log messages to the
+remote server.  If not the the default configuration is used (local files)
 
+== REQUIREMENTS:
+
+* Must be use with a 'logging' provide in the cookbook path
+* Requires a virtual machine launched from a RightScale-managed RightImage.
+
+== COOKBOOOKS DEPENDENCIES:
+
+Please see <tt>metadata.rb</tt> file for the latest dependencies.
+
+== KNOWN LIMITATIONS:
+
+* Currently only supports the logging provider installed on the image. (rsyslog/syslog-ng)
+* Currently only supports client configuration for a single remote server using
+  UDP without encryption or authentication.
+* Requires customer maintained remote server for remote logging.
+
+== SETUP:
+
+* Place logging::default recipe into your runlist to setup the logging resource. When
+  using a RightScale ServerTemplate, this will also automatically configure
+  logging service provider (rsyslog/syslog-ng)
+
+* The default recipe will determine the logging provider installed (rsyslog/syslog-ng)
+  and configure it for remote logging.
+
+== USAGE:
+
+1. Local logging only.  Set the input logging/remote_server to ignore.  The default
+   configuration installed will be used.
+
+2. Remote logging.  Set the input logging/remote_server to the FQDN or IP of your
+   logging server.  The default configuration will be used with the remote logging
+   configuration appeneded.
+
+== DETAILS:
+
+=== General
+
+The 'logging' interface is defined by a Lightweight Resource, which can be found in
+the resources/default.rb file.
+
+This cookbook is intended as a framework for logging providers.  In its current
+implementation it supports the minimum configuration for rsyslog and syslog-ng.
+
+This cookbook does not modify the installed logging provider.
+
+=== Providers:
+
+The current implementation does not support providers other than rsyslog and syslog-ng
+
+=== Custom Configuration
+
+By using a override cookbook the default configuration can be customized by replacing
+the providers default configuration file template.
+
+= LICENSE:
+
+Copyright RightScale, Inc. All rights reserved.  All access and use subject to
+the RightScale Terms of Service available at http://www.rightscale.com/terms.php
+and, if applicable, other agreements such as a RightScale Master Subscription
+Agreement.

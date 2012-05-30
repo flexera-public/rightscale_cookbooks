@@ -5,12 +5,11 @@ description      "Enable instance Monitoring in the RightScale dashboard."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "0.0.1"
 
+depends "rightscale"
 depends "logging_rsyslog"
 depends "logging_syslog_ng"
 
-recipe "logging::default", "Installs and configures chosen logging provider"
-recipe "logging::install_server", "Installs and configures chosen logging provider"
-
+recipe "logging::default", "Configures native logging provider"
 
 attribute "logging",
   :display_name => "Log Service Settings",
