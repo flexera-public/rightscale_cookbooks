@@ -107,5 +107,6 @@ attribute "repo/default/perform_action",
 attribute "repo/default/destination",
   :display_name => "Project App root",
   :description => "Destination location path for project repo",
+  :default => "/home/webapps",
   :required => "optional",
   :recipes => ["repo::default"]
