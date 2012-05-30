@@ -59,7 +59,7 @@ All attributes in this cookbook has inputs except <b>Additional capistrano attri
 
 ===== Common attributes
 
-* <tt>node[:repo][:default][:destination]</tt> - Path to where project repo will be pulled. Default is: "/tmp/repo"
+* <tt>node[:repo][:default][:destination]</tt> - Path to where project repo will be pulled. Example: "/tmp/repo"
 * <tt>node[:repo][:default][:repository]</tt> - The URL of your svn or git repository where your application code will be checked out.
 * <tt>node[:repo][:default][:revision]</tt> -  Remote repo Branch, Tag or revision. Default is:"HEAD"
 * <tt>node[:repo][:default][:provider]</tt> - A repository provider: repo_git for Git, repo_svn for SVN or repo_ros for Remote Ojbect Store. Default is:"repo_git"
