@@ -36,12 +36,12 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 == USAGE:
 
-   For ocal logging only.  Set the input logging/remote_server to ignore.  The default
-   configuration installed will be used.
+* For local logging only.  Set the input logging/remote_server to ignore.  The default
+  configuration installed will be used.
 
-   For remote logging.  Set the input logging/remote_server to the FQDN or IP of your
-   logging server.  The default configuration will be used with the remote logging
-   configuration appeneded.
+* For remote logging.  Set the input logging/remote_server to the FQDN or IP of your
+  logging server.  The default configuration will be used with the remote logging
+  configuration appeneded.
 
 == DETAILS:
 
