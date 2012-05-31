@@ -5,27 +5,26 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-#
 # Required attributes that determine which provider to use.
 set_unless[:lb][:service][:provider] = "lb_haproxy"
 
-#  Logical name for the application (balancing group) to use.
+# Logical name for the application (balancing group) to use.
 set_unless[:lb][:vhost_names] = nil
 set_unless[:lb][:host]= nil
 set_unless[:server_collection]['app_servers'] = Hash.new
 
-#  The address that load balancer should bind to.
+# The address that load balancer should bind to.
 set_unless[:lb][:bind_address] = "127.0.0.1"
-#  Port that load balancer should bind to.
+# Port that load balancer should bind to.
 set_unless[:lb][:bind_port] = 85
 
-#  URI for the load balancer to use to check the health of a server (only used when using http templates).
+# URI for the load balancer to use to check the health of a server (only used when using http templates).
 set_unless[:lb][:health_check_uri] = "/"
-#  URI that the load balancer uses to publish its status.
+# URI that the load balancer uses to publish its status.
 set_unless[:lb][:stats_uri] = ""
-#  Username required to access to the haproxy stats page.
+# Username required to access to the haproxy stats page.
 set_unless[:lb][:stats_user] = ""
-#  Password required to access to the haproxy stats page.
+# Password required to access to the haproxy stats page.
 set_unless[:lb][:stats_password] = ""
 set_unless[:lb][:vhost_port] = ""
 set_unless[:lb][:session_stickiness] = ""
@@ -35,16 +34,15 @@ set_unless[:lb][:cron_reconverge_hour] = "*"
 set_unless[:lb][:cron_reconverge_minute] = "#{5+rand(50)}"
 
 # Stores the list of appplication servers being loadbalanced.
-set_unless[:lb][:appserver_list] = { }
+set_unless[:lb][:appserver_list] = {}
 
 # Config file used by load balancer.
 set_unless[:lb][:cfg_file] = "/home/lb/rightscale_lb.cfg"
 
 # Web service name based on OS.
 case platform
-when "redhat","centos","fedora","suse"
+when "redhat", "centos", "fedora", "suse"
   set_unless[:lb][:apache_name] = "httpd"
 else
   set_unless[:lb][:apache_name] = "apache2"
 end
-
