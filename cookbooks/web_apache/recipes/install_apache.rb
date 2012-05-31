@@ -54,15 +54,24 @@ apache_name = node[:apache][:dir].split("/").last
 log " Apache name was #{apache_name}"
 log " Apache log dir was #{node[:apache][:log_dir]}"
 
-bash 'move_apache_logs' do
-  flags "-ex"
-  not_if do File.symlink?(node[:apache][:log_dir]) end
-  code <<-EOH
-    rm -rf #{node[:apache][:log_dir]}
-    mkdir -p /mnt/ephemeral/log/#{apache_name}
-    ln -s /mnt/ephemeral/log/#{apache_name} #{node[:apache][:log_dir]}
-  EOH
+
+# Delete log dir created on apache install - will be symlinked later
+directory node[:apache][:log_dir] do
+  recursive true
+  action :delete
 end
+
+# Create physical directory holding the logs
+directory "/mnt/ephemeral/log/#{apache_name}" do
+  action :create
+  recursive true
+end
+
+# Create symlink from where apache logs to physical directory
+link node[:apache][:log_dir] do
+  to "/mnt/ephemeral/log/#{apache_name}"
+end
+
 
 # Apache Multi-Processing Module configuration
 case node[:platform]

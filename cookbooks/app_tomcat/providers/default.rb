@@ -93,7 +93,14 @@ action :install do
   end
 
 
-  # Moving tomcat logs to mnt
+  # Moving tomcat logs to ephemeral
+
+  # Deleting old tomcat log directory
+  directory "/var/log/tomcat6" do
+    recursive true
+    action :delete
+  end
+
   # Creating new directory for tomcat logs on ephemeral volume
   directory "/mnt/ephemeral/log/tomcat6" do
     owner node[:app_tomcat][:app_user]
@@ -101,20 +108,11 @@ action :install do
     mode "0755"
     action :create
     recursive true
-    not_if do ::File.directory?("/mnt/ephemeral/log/tomcat6") end
   end
 
-  # Deleting old tomcat log directory
-  directory "/var/log/tomcat6" do
-    action :delete
-    recursive true
-    not_if do ::File.directory?("/mnt/ephemeral/log/tomcat6") end
-  end
-
-  # Symlinking new directory to /var/log/tomcat6
+  # Create symlink from /var/log/tomcat6 to ephemeral volume
   link "/var/log/tomcat6" do
     to "/mnt/ephemeral/log/tomcat6"
-    not_if do ::File.directory?("/mnt/ephemeral/log/tomcat6") end
   end
 
   # Symlinking to new jvm-exports
