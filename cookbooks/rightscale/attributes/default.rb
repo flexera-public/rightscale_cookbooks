@@ -5,12 +5,12 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-#
-# RightScale Enviroment Attributes.
-# These are needed by all RightScale Cookbooks.  rightscale should be included in all server templates
-# so these attributes are declared here.
 
-#
+# RightScale Environment Attributes.
+# These are needed by all RightScale Cookbooks.
+# rightscale should be included in all server templates so these attributes are declared here.
+
+
 # Optional attributes
 #
 set_unless[:rightscale][:timezone] = "UTC"
@@ -27,8 +27,8 @@ default[:rightscale][:plugin_list_ary] = ["cpu", "df", "disk", "load", "memory",
 default[:rightscale][:process_list] = ""
 default[:rightscale][:process_list_ary] = []
 
-#
-# Setup Distro dependent variables
+
+# Distribution dependent variables
 #
 case platform
 when "redhat", "centos", "fedora", "suse"
@@ -51,6 +51,6 @@ default[:rightscale][:short_hostname] = nil
 default[:rightscale][:domain_name] = ""
 default[:rightscale][:search_suffix] = ""
 
-#
+
 # Cloud specific attributes
 #
