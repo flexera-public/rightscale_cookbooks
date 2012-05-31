@@ -40,7 +40,7 @@ end
 template File.join(node[:apache][:dir], 'conf.d', 'status.conf') do
   backup false
   source "apache_status.conf.erb"
-  notifies :restart, resources(:service => "httpd")
+  notifies :restart, resources(:service => "apache2")
 end
 
 # Create the collectd library plugins directory if necessary
