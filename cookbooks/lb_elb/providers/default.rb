@@ -7,7 +7,7 @@
 
 action :install do
   log "  Install does not apply to ELB"
-end
+end # action :install do
 
 action :attach do
 
@@ -44,7 +44,7 @@ action :attach do
   log ".. registering with ELB"
   elb.register_instances_with_load_balancer(new_resource.service_lb_name, node[:ec2][:instance_id])
 
-end
+end # action :attach do
 
 action :attach_request do
 
@@ -59,7 +59,7 @@ action :attach_request do
     action :attach
   end
 
-end
+end # action :attach_request do
 
 action :detach do
 
@@ -85,7 +85,7 @@ action :detach do
     action :update
   end
 
-end
+end # action :detach do
 
 action :detach_request do
 
@@ -100,12 +100,12 @@ action :detach_request do
     action :detach
   end
 
-end
+end # action :detach_request do
 
 action :setup_monitoring do
   log "  Setup monitoring does not apply to ELB"
-end
+end # action :setup_monitoring do
 
 action :restart do
   log "  Restart does not apply to ELB"
-end
+end # action :restart do
