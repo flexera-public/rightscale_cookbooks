@@ -18,7 +18,7 @@ if "#{node[:rightscale][:private_ssh_key]}" != ""
     source "id_rsa.erb"
     mode 0600
   end
-  
+
   rightscale_marker :end
-  
+
 end

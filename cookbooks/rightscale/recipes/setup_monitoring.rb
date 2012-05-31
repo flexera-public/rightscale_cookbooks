@@ -30,7 +30,7 @@ log "Checking installed collectd version: installed #{installed_ver}" if install
 # This will break if centos releases a newer version of collectd and repos are not frozen to the CR date.
 # Upgrade for rpm does not seem to work so using two step - removal and install.
 package "collectd" do
-  only_if { type == "rpm" && installed && ! installed_ver =~ /4\.10\.0.*$/ }
+  only_if { type == "rpm" && installed && !installed_ver =~ /4\.10\.0.*$/ }
   action :remove
 end
 
@@ -92,7 +92,7 @@ end
 cron "collectd" do
   command "service collectd restart > /dev/null"
   minute "00"
-  hour   "4"
+  hour "4"
 end
 
 # == Monitor Processes from Script Input

@@ -14,11 +14,10 @@ if node[:rightscale][:timezone]
     to "/usr/share/zoneinfo/#{node[:rightscale][:timezone]}"
   end
   log "  Timezone set to #{node[:rightscale][:timezone]}"
-else 
+else
 
   # If this attribute is not set leave unchanged and use localtime
   log "  rightscale/timezone set to localtime.  Not changing /etc/localtime..."
 end
 
 rightscale_marker :end
-

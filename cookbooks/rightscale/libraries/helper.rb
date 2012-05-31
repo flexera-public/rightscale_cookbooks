@@ -8,7 +8,7 @@
 module RightScale
   module Utils
     module Helper
-      NAMESPACE_REGEX   = '[a-z](?:[a-z0-9_]*)'
+      NAMESPACE_REGEX = '[a-z](?:[a-z0-9_]*)'
       PREDICATE_REGEX = '[a-zA-Z0-9%_\+\.-](?:[a-zA-Z0-9%_\+\.-]*)'
 
       # Determines if a tag matches a given wildcard expression or prefix.
@@ -43,7 +43,7 @@ module RightScale
           reject = false
 
           tags.each do |tag|
-            break reject = true if values.select {|value| File.fnmatch?(tag, value)}.empty?
+            break reject = true if values.select { |value| File.fnmatch?(tag, value) }.empty?
           end
 
           reject
@@ -73,7 +73,7 @@ module RightScale
       # === Return
       # kind(String):: The value portion of a tag if found, nil if not found or value is invalid
       def self.get_tag_value(prefix, tags, capture = '.*')
-        if tags.detect {|tag| tag =~ /^#{Regexp.escape(prefix)}=(#{capture})$/}
+        if tags.detect { |tag| tag =~ /^#{Regexp.escape(prefix)}=(#{capture})$/ }
           $1
         end
       end

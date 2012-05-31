@@ -16,7 +16,7 @@ include_recipe "rightscale::setup_monitoring"
 log "Installing MySQL collectd plugin"
 
 package "collectd-mysql" do
-  only_if {  node[:platform] =~ /redhat|centos/ }
+  only_if { node[:platform] =~ /redhat|centos/ }
 end
 
 remote_file "#{node[:rightscale][:collectd_plugin_dir]}/mysql.conf" do

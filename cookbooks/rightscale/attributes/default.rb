@@ -22,17 +22,7 @@ set_unless[:rightscale][:collectd_share] = "/usr/share/collectd"
 set_unless[:rightscale][:db_backup_file] = "/var/run/db-backup"
 
 default[:rightscale][:plugin_list] = ""
-default[:rightscale][:plugin_list_ary] = [
-  "cpu",
-  "df",
-  "disk",
-  "load",
-  "memory",
-  "processes",
-  "swap",
-  "users",
-  "ping"
-]
+default[:rightscale][:plugin_list_ary] = ["cpu", "df", "disk", "load", "memory", "processes", "swap", "users", "ping"]
 
 default[:rightscale][:process_list] = ""
 default[:rightscale][:process_list_ary] = []
@@ -41,13 +31,13 @@ default[:rightscale][:process_list_ary] = []
 # Setup Distro dependent variables
 #
 case platform
-when "redhat","centos","fedora","suse"
+when "redhat", "centos", "fedora", "suse"
   rightscale[:logrotate_config] = "/etc/logrotate.d/syslog"
   rightscale[:collectd_config] = "/etc/collectd.conf"
   rightscale[:collectd_plugin_dir] = "/etc/collectd.d"
   rightscale[:collectd_packages] = ["collectd"]
   rightscale[:collectd_packages_version] = "4.10.0-4.el5"
-when "debian","ubuntu"
+when "debian", "ubuntu"
   rightscale[:logrotate_config] = "/etc/logrotate.d/syslog-ng"
   rightscale[:collectd_config] = "/etc/collectd/collectd.conf"
   rightscale[:collectd_plugin_dir] = "/etc/collectd/conf"
@@ -57,9 +47,9 @@ end
 
 rightscale[:collectd_lib] = "/usr/lib64/collectd"
 
-default[:rightscale][:short_hostname]        = nil
-default[:rightscale][:domain_name]           = ""
-default[:rightscale][:search_suffix]         = ""
+default[:rightscale][:short_hostname] = nil
+default[:rightscale][:domain_name] = ""
+default[:rightscale][:search_suffix] = ""
 
 #
 # Cloud specific attributes

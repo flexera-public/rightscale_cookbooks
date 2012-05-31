@@ -36,11 +36,12 @@ end
 
 # On CentOS 5.4 postfix is not started and chef tries to 'stop' it.  This throws an error.
 # So we'll just start the service here for CentOS.
-if node[:platform] =~  /centos|redhat/
+if node[:platform] =~ /centos|redhat/
   service "postfix" do
     action :start
   end
-else node[:platform] == "ubuntu"
+else
+  node[:platform] == "ubuntu"
   service "postfix" do
     action :restart
   end

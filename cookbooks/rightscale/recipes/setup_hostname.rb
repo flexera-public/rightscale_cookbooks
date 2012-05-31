@@ -10,13 +10,13 @@ rightscale_marker :begin
 require 'socket'
 
 def local_ip
-  orig, Socket.do_not_reverse_lookup = Socket.do_not_reverse_lookup, true  # turn off reverse DNS resolution temporarily
+  orig, Socket.do_not_reverse_lookup = Socket.do_not_reverse_lookup, true # turn off reverse DNS resolution temporarily
   UDPSocket.open do |s|
     s.connect '64.233.187.99', 1
     s.addr.last
   end
-  ensure
-    Socket.do_not_reverse_lookup = orig
+ensure
+  Socket.do_not_reverse_lookup = orig
 end
 
 def show_host_info
@@ -39,7 +39,7 @@ else
 end
 
 # show current host info
-log  "Setting hostname for '#{hostname}'."
+log "Setting hostname for '#{hostname}'."
 log "== Current host/node information =="
 show_host_info
 
@@ -57,7 +57,7 @@ template "/etc/hosts" do
   variables(
     :node_ip => node_ip,
     :hosts_list => hosts_list
-    )
+  )
 end
 
 # Update /etc/hostname
@@ -91,7 +91,7 @@ template "/etc/resolv.conf" do
     :nameserver => nameserver,
     :domain => domain,
     :search => search
-    )
+  )
 end
 
 # Call hostname command

@@ -6,7 +6,7 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 define :rightscale_enable_collectd_plugin do
-  if(params[:name])
+  if (params[:name])
     node[:rightscale][:plugin_list_ary] << params[:name] unless node[:rightscale][:plugin_list_ary].include?(params[:name])
   end
 end
