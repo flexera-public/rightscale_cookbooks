@@ -29,7 +29,7 @@ set_unless[:lb][:stats_password] = ""
 set_unless[:lb][:vhost_port] = ""
 set_unless[:lb][:session_stickiness] = ""
 set_unless[:lb][:max_conn_per_server] = "500"
-# Reconverge cron times.  Set the minute to a random number so reconverges are spread out.
+# Reconverge cron times. Set the minute to a random number so reconverges are spread out.
 set_unless[:lb][:cron_reconverge_hour] = "*"
 set_unless[:lb][:cron_reconverge_minute] = "#{5+rand(50)}"
 

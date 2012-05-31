@@ -7,8 +7,8 @@
 
 rightscale_marker :begin
 
+# Install required apache modules
 apache_modules = ["proxy_http", "proxy", "proxy_balancer", "proxy_connect"]
-
 apache_modules.each do |m|
   apache_module m
 end

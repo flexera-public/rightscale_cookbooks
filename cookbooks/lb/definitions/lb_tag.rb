@@ -5,6 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+# Installs loadbalancer tags.
 define :lb_tag, :action => :publish do
 
   vhost_name = params[:name] == "" ? "localhost" : params[:name]
