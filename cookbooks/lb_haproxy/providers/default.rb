@@ -82,7 +82,7 @@ action :install do
     )
   end
 
-end
+end # action :install do
 
 action :add_vhost do
 
@@ -131,7 +131,7 @@ action :add_vhost do
   # Tag this server as a load balancer for vhost it will answer for so app servers can send requests to it.
   right_link_tag "loadbalancer:#{vhost_name}=lb"
 
-end
+end # action :add_vhost do
 
 action :attach do
 
@@ -173,7 +173,7 @@ action :attach do
     notifies :run, resources(:execute => "/home/lb/haproxy-cat.sh")
   end
 
-end
+end # action :attach do
 
 action :attach_request do
 
@@ -193,7 +193,7 @@ action :attach_request do
     recipients_tags "loadbalancer:#{vhost_name}=lb"
   end
 
-end
+end # action :attach_request do
 
 action :detach do
 
@@ -222,7 +222,8 @@ action :detach do
     backup false
     notifies :run, resources(:execute => "/home/lb/haproxy-cat.sh")
   end
-end
+
+end # action :detach do
 
 action :detach_request do
 
@@ -239,7 +240,8 @@ action :detach_request do
     }
     recipients_tags "loadbalancer:#{vhost_name}=lb"
   end
-end
+
+end # action :detach_request do
 
 action :setup_monitoring do
 
@@ -271,7 +273,7 @@ action :setup_monitoring do
     end
   end
 
-end
+end # action :setup_monitoring do
 
 action :restart do
 
@@ -297,4 +299,4 @@ action :restart do
     end
   end
 
-end
+end # action :restart do

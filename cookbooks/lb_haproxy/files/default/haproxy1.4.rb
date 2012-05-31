@@ -34,7 +34,7 @@ HAPROXY_COMMAND="show stat\n"
 }
 
 
-def usage(code=0)
+def usage(code = 0)
   out = "\n" + $0.split(' ')[0] + " usage:\n"
   out << "\e[1mDESCRIPTION\e[0m\n"
   out << "\tThis collectd exec plugin is intended to collect the statistic\n"
@@ -85,7 +85,6 @@ def parsestats
 
     # Convert text description of server status into numeric value for graphs.
     # Only change nocheck, up x/y, down x/y - convert the rest to uppercase.
-
     stat[:status] = case stat[:status].to_s.downcase
                     when /no check/
                       "NOCHECK"
