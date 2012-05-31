@@ -29,7 +29,7 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 === General:
 
-<tt>logging_rsyslog<tt> cookbook does the minimal configuration for remote logging setup.
+<tt>logging_rsyslog</tt> cookbook does the minimal configuration for remote logging setup.
 Additional features are TBD.
 
 = LICENSE:
