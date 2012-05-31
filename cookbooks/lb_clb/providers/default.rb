@@ -7,7 +7,7 @@
 
 action :install do
   log "  Install does not apply to CLB"
-end
+end # action :install do
 
 action :attach do
 
@@ -16,6 +16,7 @@ action :attach do
   script_directory = "/home/lb"
   attach_script = script_directory + "/clb_attach.sh"
 
+  # Create directory for script
   directory script_directory do
     owner "root"
     group "root"
@@ -63,7 +64,7 @@ action :attach do
     backup false
   end
 
-end
+end # action :attach do
 
 action :attach_request do
 
@@ -80,7 +81,7 @@ action :attach_request do
     action :attach
   end
 
-end
+end # action :attach_request do
 
 action :detach do
 
@@ -89,6 +90,7 @@ action :detach do
   script_directory = "/home/lb"
   detach_script = script_directory + "/clb_detach.sh"
 
+  # Create directory for script
   directory script_directory do
     owner "root"
     group "root"
@@ -135,7 +137,7 @@ action :detach do
     action :update
   end
 
-end
+end # action :detach do
 
 action :detach_request do
 
@@ -151,12 +153,12 @@ action :detach_request do
     action :detach
   end
 
-end
+end # action :detach_request do
 
 action :setup_monitoring do
   log "  Setup monitoring does not apply to CLB"
-end
+end # action :setup_monitoring do
 
 action :restart do
   log "  Restart does not apply to CLB"
-end
+end # action :restart do
