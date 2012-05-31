@@ -48,7 +48,7 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 === General
 
 The 'logging' interface is defined by a Lightweight Resource, which can be found in
-the resources/default.rb file.
+the <tt>resources/default.rb</tt> file.
 
 This cookbook is intended as a framework for logging providers.  In its current
 implementation it supports the minimum configuration for rsyslog and syslog-ng.
@@ -57,12 +57,12 @@ This cookbook does not modify the installed logging provider.
 
 === Providers:
 
-The current implementation does not support providers other than rsyslog and syslog-ng
+The current implementation does not support providers other than rsyslog and syslog-ng.
 
-=== Custom Configuration
+=== Custom Configuration:
 
-By using a override cookbook the default configuration can be customized by replacing
-the providers default configuration file template.
+By using an override cookbook the default configuration can be customized by replacing
+the default configuration file template for the provider.
 
 = LICENSE:
 
