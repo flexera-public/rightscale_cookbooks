@@ -1,9 +1,9 @@
-maintainer "RightScale, Inc."
+maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
-license "Copyright RightScale, Inc. All rights reserved."
-description "RighScale LB Manager"
+license          "Copyright RightScale, Inc. All rights reserved."
+description      "RighScale LB Manager"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version "1.0.0"
+version          "1.0.0"
 
 depends "lb_haproxy"
 depends "lb_clb"
