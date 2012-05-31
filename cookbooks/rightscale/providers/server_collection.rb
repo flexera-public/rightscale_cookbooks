@@ -7,6 +7,7 @@
 
 require 'timeout'
 
+# Provider collects and processes server tags used by the server_collection resource
 action :load do
   collection_resource = server_collection new_resource.name do
     tags new_resource.tags
