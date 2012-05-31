@@ -9,6 +9,8 @@
 
 rightscale_marker :begin
 
+raise "  Error: repo URL input is unset. Please fill 'Repository Url' input" unless url node[:repo][:repository].empty?
+
 # Downloading project repository
 repo "default" do
   destination node[:repo][:default][:destination]
