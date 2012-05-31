@@ -15,23 +15,23 @@ action :attach do
 
   require "right_aws"
 
-  # Create interface handle
+  # Create interface handle.
   elb = RightAws::ElbInterface.new(new_resource.service_account_id,
                                    new_resource.service_account_secret,
-                                   { :endpoint_url => "https://elasticloadbalancing." + node[:ec2][:placement][:availability_zone].gsub(/[a-z]+$/,'' )+ ".amazonaws.com"})
+                                   {:endpoint_url => "https://elasticloadbalancing." + node[:ec2][:placement][:availability_zone].gsub(/[a-z]+$/, '') + ".amazonaws.com"})
 
-  # Verify that the ELB exists
+  # Verify that the ELB exists.
   balancers = elb.describe_load_balancers
-  created = balancers.detect {|b| b[:load_balancer_name] == new_resource.service_lb_name}
+  created = balancers.detect { |b| b[:load_balancer_name] == new_resource.service_lb_name }
   raise "ERROR: ELB named #{new_resource.service_lb_name} does not exist" if created.nil?
 
-  # Check if this instance's zone is part of the lb, if not add it
+  # Check if this instance's zone is part of the lb, if not add it.
   unless created[:availability_zones].include?(node[:ec2][:placement][:availability_zone])
     log ".. activating zone #{node[:ec2][:placement][:availability_zone]}"
     elb.enable_availability_zones_for_load_balancer(new_resource.service_lb_name, node[:ec2][:placement][:availability_zone])
   end
 
-  # Open backend_port
+  # Open backend_port.
   sys_firewall "Open backend_port to allow ELB to connect" do
     port new_resource.backend_port
     enable true
@@ -39,9 +39,10 @@ action :attach do
     action :update
   end
 
-  # Connect server to ELB
+  # Connect server to ELB.
   log ".. registering with ELB"
   elb.register_instances_with_load_balancer(new_resource.service_lb_name, node[:ec2][:instance_id])
+
 end
 
 action :attach_request do
@@ -49,10 +50,10 @@ action :attach_request do
   log "  Attach request for #{node[:ec2][:instance_id]}"
 
   lb "Attaching to ELB" do
-    provider               "lb_elb"
-    backend_port           new_resource.backend_port
-    service_lb_name        new_resource.service_lb_name
-    service_account_id     new_resource.service_account_id
+    provider "lb_elb"
+    backend_port new_resource.backend_port
+    service_lb_name new_resource.service_lb_name
+    service_account_id new_resource.service_account_id
     service_account_secret new_resource.service_account_secret
     action :attach
   end
@@ -65,16 +66,16 @@ action :detach do
 
   require "right_aws"
 
-  # Create interface handle
+  # Create interface handle.
   elb = RightAws::ElbInterface.new(new_resource.service_account_id,
                                    new_resource.service_account_secret,
-                                   { :endpoint_url => "https://elasticloadbalancing." + node[:ec2][:placement][:availability_zone].gsub(/[a-z]+$/,'' )+ ".amazonaws.com"})
+                                   {:endpoint_url => "https://elasticloadbalancing." + node[:ec2][:placement][:availability_zone].gsub(/[a-z]+$/, '')+ ".amazonaws.com"})
 
-  # Disconnecting server from ELB
+  # Disconnecting server from ELB.
   log ".. detaching from ELB"
   elb.deregister_instances_with_load_balancer(new_resource.service_lb_name, node[:ec2][:instance_id])
 
-  # Close backend_port
+  # Close backend_port.
   sys_firewall "Close backend_port allowing ELB to connect" do
     port new_resource.backend_port
     enable false
@@ -89,16 +90,15 @@ action :detach_request do
   log "  Detach request for #{node[:ec2][:instance_id]}"
 
   lb "Detaching from ELB" do
-    provider               "lb_elb"
-    backend_port           new_resource.backend_port
-    service_lb_name        new_resource.service_lb_name
-    service_account_id     new_resource.service_account_id
+    provider "lb_elb"
+    backend_port new_resource.backend_port
+    service_lb_name new_resource.service_lb_name
+    service_account_id new_resource.service_account_id
     service_account_secret new_resource.service_account_secret
     action :detach
   end
 
 end
-
 
 action :setup_monitoring do
   log "  Setup monitoring does not apply to ELB"
