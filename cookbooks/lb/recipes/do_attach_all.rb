@@ -26,16 +26,11 @@ vhosts(node[:lb][:vhost_names]).each do |vhost_name|
   deployment_servers = query_appservers(vhost_name)
 
   # Send warning if no application servers are found.
-  log "  No application servers found" do
-    only_if { deployment_servers.empty? }
-    level :warn
-  end
+  log "  No application servers found" unless deployment_servers
 
   # Add any servers in deployment not in config.
   servers_to_attach = Set.new(deployment_servers.keys) - inconfig_servers
-  log "  No servers to attach" do
-    only_if { servers_to_attach.empty? }
-  end
+  log "  No servers to attach" unless servers_to_attach
   servers_to_attach.each do |uuid|
     lb vhost_name do
       backend_id uuid
@@ -81,9 +76,7 @@ vhosts(node[:lb][:vhost_names]).each do |vhost_name|
     end
   end
 
-  log "  No servers to detach" do
-    only_if { app_servers_detached == 0 }
-  end
+  log "  No servers to detach" if app_servers_detached == 0
 
 end
 

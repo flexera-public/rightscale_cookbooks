@@ -24,8 +24,7 @@ end
 
 gem_package "right_aws" do
   gem_binary "/opt/rightscale/sandbox/bin/gem"
-  action :nothing
-end.run_action(:install)
+end
 
 # Reload newly install gem.
 Gem.clear_paths
