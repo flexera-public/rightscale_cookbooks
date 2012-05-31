@@ -57,6 +57,7 @@ module RightScale
           loadfile = ::File.join(node[:db][:data_dir], "master.info")
           Chef::Log.info "Loading master.info file from #{loadfile}"
           file_contents = File.readlines(loadfile)
+          file_contents.each {|f| f.rstrip!}
           master_info = Hash.new
           master_info["File"] = file_contents[1]
           master_info["Position"] = file_contents[2]
@@ -77,7 +78,7 @@ module RightScale
         def self.do_query(node, query, hostname = 'localhost', timeout = nil, tries = 1)
           require 'mysql'
 
-          while(1) do
+          loop do
             begin
               info_msg = "Doing SQL Query: HOST=#{hostname}, QUERY=#{query}"
               info_msg << ", TIMEOUT=#{timeout}" if timeout

@@ -613,7 +613,7 @@ action :enable_replication do
     end
   end
 
-  # following done after a stop/start and reboot
+  # following done after a stop/start and reboot on a slave
   ruby_block "reconfigure_replication" do
     only_if { current_restore_process == :no_restore }
     block do
