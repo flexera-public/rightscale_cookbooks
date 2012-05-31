@@ -18,15 +18,15 @@ HAPROXY_SOCKET="/home/lb/status"
 HAPROXY_COMMAND="show stat\n"
 
 @status = {
-  :UP => 2, # Server is actively up
-  :DOWN => -2, # Server is actively down
-  :GOINGDOWN => -1, # Server up but going down. Haproxy returns UP x/y
-  :GOINGUP => 1, # Server down but going up. Haproxy returns DOWN x/y
-  :NOCHECK => 0, # not checked. Haproxy returns "no check"
-  :NOLB => 0 # Up with load balancing disabled. Haproxy returns "NOLB"
+  :UP => 2, # Server is actively up.
+  :DOWN => -2, # Server is actively down.
+  :GOINGDOWN => -1, # Server up but going down. Haproxy returns UP x/y.
+  :GOINGUP => 1, # Server down but going up. Haproxy returns DOWN x/y.
+  :NOCHECK => 0, # not checked. Haproxy returns "no check".
+  :NOLB => 0 # Up with load balancing disabled. Haproxy returns "NOLB".
 }
 
-# defaults if arguments passed
+# Defaults if arguments passed.
 @options = {
   :socket => "/home/lb/status",
   :instanceid => ENV['EC2_INSTANCE_ID'],
@@ -66,8 +66,7 @@ end
 
 # Parse CSV results & build hash of data based on server name.
 def parsestats
-  column, value, ar = []
-  stats = []
+  column, stats = []
 
   readstats.each do |line|
     stat = {}
