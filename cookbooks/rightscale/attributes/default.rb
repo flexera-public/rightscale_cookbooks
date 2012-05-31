@@ -64,4 +64,3 @@ default[:rightscale][:search_suffix]         = ""
 #
 # Cloud specific attributes
 #
-
