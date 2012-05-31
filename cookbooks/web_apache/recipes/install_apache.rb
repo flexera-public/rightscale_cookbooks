@@ -13,7 +13,7 @@ include_recipe "apache2"
 # Persist apache2 resource to node for use in other run lists
 service "apache2" do
   action :nothing
-  persist true  
+  persist true
 end
 
 # Installing ssl support from "apache2" cookbook if enabled
