@@ -9,20 +9,22 @@ action :install do
 
   log "  Installing haproxy"
 
+  # Install haproxy package.
   package "haproxy" do
     action :install
   end
 
+  # Create haproxy service.
   service "haproxy" do
     supports :restart => true, :status => true, :start => true, :stop => true
-    action [:enable]
+    action :enable
   end
 
   # Install haproxy file depending on OS/platform.
   template "/etc/init.d/haproxy" do
     only_if { node[:platform] == "centos" || node[:platform] == "redhat" || node[:platform] == "fedora" }
     source "haproxy.init.erb"
-    cookbook 'lb_haproxy'
+    cookbook "lb_haproxy"
     mode 0755
     notifies :restart, resources(:service => "haproxy")
   end
@@ -30,12 +32,12 @@ action :install do
   template "/etc/default/haproxy" do
     only_if { node[:platform] == "debian" || node[:platform] == "ubuntu" }
     source "default_haproxy.erb"
-    cookbook 'lb_haproxy'
+    cookbook "lb_haproxy"
     owner "root"
     notifies :restart, resources(:service => "haproxy")
   end
 
-  # Create /home/lb dir
+  # Create /home/lb directory.
   directory "/home/lb/#{node[:lb][:service][:provider]}.d" do
     owner "haproxy"
     group "haproxy"
@@ -45,18 +47,18 @@ action :install do
   end
 
   # Install script that concatenates individual server files after the haproxy config head into the haproxy config.
-  cookbook_file '/home/lb/haproxy-cat.sh' do
-    owner 'haproxy'
-    group 'haproxy'
+  cookbook_file "/home/lb/haproxy-cat.sh" do
+    owner "haproxy"
+    group "haproxy"
     mode 0755
-    source 'haproxy-cat.sh'
-    cookbook 'lb_haproxy'
+    source "haproxy-cat.sh"
+    cookbook "lb_haproxy"
   end
 
   # Install the haproxy config head which is the part of the haproxy config that doesn't change.
   template "/home/lb/rightscale_lb.cfg.head" do
     source "haproxy_http.erb"
-    cookbook 'lb_haproxy'
+    cookbook "lb_haproxy"
     owner "haproxy"
     group "haproxy"
     mode "0400"
@@ -69,12 +71,12 @@ action :install do
   # Install the haproxy config head which is the part of the haproxy config that doesn't change.
   template "/home/lb/rightscale_lb.cfg.default_backend" do
     source "haproxy_default_backend.erb"
-    cookbook 'lb_haproxy'
+    cookbook "lb_haproxy"
     owner "haproxy"
     group "haproxy"
     mode "0400"
 
-    default_backend = node[:lb][:vhost_names].gsub(/\s+/, "").split(",").first.gsub(/\./,"_") + "_backend" 
+    default_backend = node[:lb][:vhost_names].gsub(/\s+/, "").split(",").first.gsub(/\./, "_") + "_backend"
     variables(
       :default_backend_line => default_backend
     )
@@ -95,32 +97,32 @@ action :add_vhost do
     action :create
   end
 
-  # create backend haproxy files for vhost it will answer for
+  # Create backend haproxy files for vhost it will answer for.
   template ::File.join("/home/lb/#{node[:lb][:service][:provider]}.d", "#{vhost_name}.cfg") do
     source "haproxy_backend.erb"
     cookbook 'lb_haproxy'
     owner "haproxy"
     group "haproxy"
     mode "0400"
-    backend_name = vhost_name.gsub(".","_") + "_backend"
-    stats_uri = "stats uri #{node[:lb][:stats_uri]}" unless "#{node[:lb][:stats_uri]}".empty?
-    stats_auth = "stats auth #{node[:lb][:stats_user]}:#{node[:lb][:stats_password]}" unless \
-               "#{node[:lb][:stats_user]}".empty? || "#{node[:lb][:stats_password]}".empty?
-    health_uri = "option httpchk GET #{node[:lb][:health_check_uri]}" unless "#{node[:lb][:health_check_uri]}".empty?
-    health_chk = "http-check disable-on-404" unless "#{node[:lb][:health_check_uri]}".empty?
+    backend_name = vhost_name.gsub(".", "_") + "_backend"
+    stats_uri = "stats uri #{node[:lb][:stats_uri]}" if "#{node[:lb][:stats_uri]}"
+    stats_auth = "stats auth #{node[:lb][:stats_user]}:#{node[:lb][:stats_password]}" if \
+                 "#{node[:lb][:stats_user]}" || "#{node[:lb][:stats_password]}"
+    health_uri = "option httpchk GET #{node[:lb][:health_check_uri]}" if "#{node[:lb][:health_check_uri]}"
+    health_chk = "http-check disable-on-404" if "#{node[:lb][:health_check_uri]}"
     variables(
       :backend_name_line => backend_name,
-      :stats_uri_line    => stats_uri,
-      :stats_auth_line   => stats_auth,
-      :health_uri_line   => health_uri,
-      :health_check_line   => health_chk
+      :stats_uri_line => stats_uri,
+      :stats_auth_line => stats_auth,
+      :health_uri_line => health_uri,
+      :health_check_line => health_chk
     )
   end
 
-  # (Re)generate the haproxy config file
-  execute '/home/lb/haproxy-cat.sh' do
-    user 'haproxy'
-    group 'haproxy'
+  # (Re)generate the haproxy config file.
+  execute "/home/lb/haproxy-cat.sh" do
+    user "haproxy"
+    group "haproxy"
     umask 0077
     action :run
     notifies :restart, resources(:service => "haproxy")
@@ -137,24 +139,26 @@ action :attach do
 
   log "  Attaching #{new_resource.backend_id} / #{new_resource.backend_ip} / #{vhost_name}"
 
+  # Create haproxy service.
   service "haproxy" do
     supports :restart => true, :status => true, :start => true, :stop => true
     action :nothing
   end
 
-  execute '/home/lb/haproxy-cat.sh' do
-    user 'haproxy'
-    group 'haproxy'
+  # (Re)generate the haproxy config file.
+  execute "/home/lb/haproxy-cat.sh" do
+    user "haproxy"
+    group "haproxy"
     umask 0077
     action :nothing
     notifies :restart, resources(:service => "haproxy")
   end
 
-  # create an individual server file for each vhost and notify the concatenation script if necessary
+  # Create an individual server file for each vhost and notify the concatenation script if necessary.
   template ::File.join("/home/lb/#{node[:lb][:service][:provider]}.d", vhost_name, new_resource.backend_id) do
-    source 'haproxy_server.erb'
-    owner 'haproxy'
-    group 'haproxy'
+    source "haproxy_server.erb"
+    owner "haproxy"
+    group "haproxy"
     mode 0600
     backup false
     cookbook "lb_haproxy"
@@ -166,7 +170,7 @@ action :attach do
       :session_sticky => node[:lb][:session_stickiness],
       :health_check_uri => node[:lb][:health_check_uri]
     )
-    notifies :run, resources(:execute => '/home/lb/haproxy-cat.sh')
+    notifies :run, resources(:execute => "/home/lb/haproxy-cat.sh")
   end
 
 end
@@ -181,11 +185,11 @@ action :attach_request do
   remote_recipe "Attach me to load balancer" do
     recipe "lb::handle_attach"
     attributes :remote_recipe => {
-                  :backend_ip  => new_resource.backend_ip,
-                  :backend_id  => new_resource.backend_id,
-                  :backend_port => new_resource.backend_port,
-                  :vhost_names => vhost_name
-                }
+      :backend_ip => new_resource.backend_ip,
+      :backend_id => new_resource.backend_id,
+      :backend_port => new_resource.backend_port,
+      :vhost_names => vhost_name
+    }
     recipients_tags "loadbalancer:#{vhost_name}=lb"
   end
 
@@ -197,25 +201,27 @@ action :detach do
 
   log "  Detaching #{new_resource.backend_id} from #{vhost_name}"
 
+  # Create haproxy service.
   service "haproxy" do
     supports :restart => true, :status => true, :start => true, :stop => true
     action :nothing
   end
 
-  execute '/home/lb/haproxy-cat.sh' do
-    user 'haproxy'
-    group 'haproxy'
+  # (Re)generate the haproxy config file.
+  execute "/home/lb/haproxy-cat.sh" do
+    user "haproxy"
+    group "haproxy"
     umask 0077
     action :nothing
     notifies :restart, resources(:service => "haproxy")
   end
-  
-    # delete the individual server file and notify the concatenation script if necessary
-    file ::File.join("/home/lb/#{node[:lb][:service][:provider]}.d", vhost_name, new_resource.backend_id) do
-      action :delete
-      backup false
-      notifies :run, resources(:execute => '/home/lb/haproxy-cat.sh')
-    end
+
+  # Delete the individual server file and notify the concatenation script if necessary.
+  file ::File.join("/home/lb/#{node[:lb][:service][:provider]}.d", vhost_name, new_resource.backend_id) do
+    action :delete
+    backup false
+    notifies :run, resources(:execute => "/home/lb/haproxy-cat.sh")
+  end
 end
 
 action :detach_request do
@@ -228,9 +234,9 @@ action :detach_request do
   remote_recipe "Detach me from load balancer" do
     recipe "lb::handle_detach"
     attributes :remote_recipe => {
-                  :backend_id  => new_resource.backend_id,
-                  :vhost_names => vhost_name
-                }
+      :backend_id => new_resource.backend_id,
+      :vhost_names => vhost_name
+    }
     recipients_tags "loadbalancer:#{vhost_name}=lb"
   end
 end
@@ -239,26 +245,26 @@ action :setup_monitoring do
 
   log "  Setup monitoring for haproxy"
 
-  # install the haproxy collectd script into the collectd library plugins directory
-  remote_file(::File.join(node[:rightscale][:collectd_lib], "plugins", 'haproxy')) do
+  # Install the haproxy collectd script into the collectd library plugins directory.
+  remote_file(::File.join(node[:rightscale][:collectd_lib], "plugins", "haproxy")) do
     source "haproxy1.4.rb"
-    cookbook 'lb_haproxy'
+    cookbook "lb_haproxy"
     mode "0755"
   end
-  
-  # add a collectd config file for the haproxy collectd script with the exec plugin and restart collectd if necessary
-  template ::File.join(node[:rightscale][:collectd_plugin_dir], 'haproxy.conf') do
+
+  # Add a collectd config file for the haproxy collectd script with the exec plugin and restart collectd if necessary.
+  template ::File.join(node[:rightscale][:collectd_plugin_dir], "haproxy.conf") do
     backup false
     source "haproxy_collectd_exec.erb"
     notifies :restart, resources(:service => "collectd")
-    cookbook 'lb_haproxy'
+    cookbook "lb_haproxy"
   end
-  
+
   ruby_block "add_collectd_gauges" do
     block do
-      types_file = ::File.join(node[:rightscale][:collectd_share], 'types.db')
+      types_file = ::File.join(node[:rightscale][:collectd_share], "types.db")
       typesdb = IO.read(types_file)
-      unless typesdb.include?('gague-age') && typesdb.include?('haproxy_sessions')
+      unless typesdb.include?("gague-age") && typesdb.include?("haproxy_sessions")
         typesdb += "\nhaproxy_sessions        current_queued:GAUGE:0:65535, current_session:GAUGE:0:65535\nhaproxy_traffic         cumulative_requests:COUNTER:0:200000000, response_errors:COUNTER:0:200000000, health_check_errors:COUNTER:0:200000000\nhaproxy_status          status:GAUGE:-255:255\n"
         ::File.open(types_file, "w") { |f| f.write(typesdb) }
       end
