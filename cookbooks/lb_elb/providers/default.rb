@@ -16,9 +16,10 @@ action :attach do
   require "right_aws"
 
   # Create interface handle.
-  elb = RightAws::ElbInterface.new(new_resource.service_account_id,
-                                   new_resource.service_account_secret,
-                                   {:endpoint_url => "https://elasticloadbalancing." + node[:ec2][:placement][:availability_zone].gsub(/[a-z]+$/, '') + ".amazonaws.com"})
+  elb = RightAws::ElbInterface.new(
+    new_resource.service_account_id, new_resource.service_account_secret,
+    {:endpoint_url => "https://elasticloadbalancing." + node[:ec2][:placement][:availability_zone].gsub(/[a-z]+$/, '') + ".amazonaws.com"}
+  )
 
   # Verify that the ELB exists.
   balancers = elb.describe_load_balancers
@@ -67,9 +68,10 @@ action :detach do
   require "right_aws"
 
   # Create interface handle.
-  elb = RightAws::ElbInterface.new(new_resource.service_account_id,
-                                   new_resource.service_account_secret,
-                                   {:endpoint_url => "https://elasticloadbalancing." + node[:ec2][:placement][:availability_zone].gsub(/[a-z]+$/, '')+ ".amazonaws.com"})
+  elb = RightAws::ElbInterface.new(
+    new_resource.service_account_id, new_resource.service_account_secret,
+    {:endpoint_url => "https://elasticloadbalancing." + node[:ec2][:placement][:availability_zone].gsub(/[a-z]+$/, '') + ".amazonaws.com"}
+  )
 
   # Disconnecting server from ELB.
   log ".. detaching from ELB"
