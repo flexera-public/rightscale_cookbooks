@@ -8,7 +8,7 @@
 rightscale_marker :begin
 
 # These are not conditional assignments, but array joins..  Maybe a different syntax would be a good idea to avoid confusion?
-node[:rightscale][:plugin_list_ary] = node[:rightscale][:plugin_list].split | node[:rightscale][:plugin_list_ary]
+node[:rightscale][:plugin_list_array] = node[:rightscale][:plugin_list].split | node[:rightscale][:plugin_list_array]
 node[:rightscale][:process_list_ary] = node[:rightscale][:process_list].split | node[:rightscale][:process_list_ary]
 
 # == Install Attached Packages
@@ -18,7 +18,6 @@ node[:rightscale][:process_list_ary] = node[:rightscale][:process_list].split | 
 #
 package "librrd4" if node[:platform] == 'ubuntu'
 
-type = (node[:platform] == 'ubuntu') ? "deb" : "rpm"
 installed_ver = (node[:platform] =~ /redhat|centos/) ? `rpm -q --queryformat %{VERSION} collectd`.strip : `dpkg-query --showformat='${Version}' -W collectd`.strip
 installed = (installed_ver == "") ? false : true
 log 'Collectd package not installed' unless installed
@@ -30,13 +29,13 @@ log "Checking installed collectd version: installed #{installed_ver}" if install
 # This will break if centos releases a newer version of collectd and repos are not frozen to the CR date.
 # Upgrade for rpm does not seem to work so using two step - removal and install.
 package "collectd" do
-  only_if { type == "rpm" && installed && ! installed_ver =~ /4\.10\.0.*$/ }
+  only_if { installed && ! installed_ver =~ /4\.10\.0.*$/ && node[:rightscale][:collectd_remove_existing] }
   action :remove
 end
 
 # Install collectd packages
+log "Installing collectd package(s) version #{node[:rightscale][:collectd_packages_version]}"
 packages = node[:rightscale][:collectd_packages]
-
 packages.each do |p|
   package p do
     version "#{node[:rightscale][:collectd_packages_version]}"

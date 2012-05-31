@@ -21,7 +21,7 @@ end
 if node[:platform] =~ /redhat|centos/
 
   package "collectd-apache" do
-    version "4.10.0-4.el5"
+    version node[:rightscale][:collectd_packages_version]
   end
 
   if node[:web_apache][:mpm] == "prefork"
