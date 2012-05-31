@@ -496,7 +496,7 @@ action :promote do
 
   Chef::Log.info "Stopping slave and misconfiguring master"
   RightScale::Database::MySQL::Helper.do_query(node, "STOP SLAVE")
-  RightScale::Database::MySQL::Helper.do_query(node, "CHANGE MASTER TO MASTER_HOST='MASTER misconfigured on purpose during slave promotion'")
+  RightScale::Database::MySQL::Helper.do_query(node, "RESET SLAVE")
   action_grant_replication_slave
   RightScale::Database::MySQL::Helper.do_query(node, 'SET GLOBAL READ_ONLY=0')
 
@@ -613,12 +613,15 @@ action :enable_replication do
     end
   end
 
-  # following done after a stop/start
+  # following done after a stop/start and reboot
   ruby_block "reconfigure_replication" do
     only_if { current_restore_process == :no_restore }
     block do
+      master_info = RightScale::Database::MySQL::Helper.load_master_info_file(node)
       newmaster_host = node[:db][:current_master_ip]
-      RightScale::Database::MySQL::Helper.reconfigure_replication(node, 'localhost', newmaster_host)
+      newmaster_logfile = master_info['File']
+      newmaster_position = master_info['Position'] 
+      RightScale::Database::MySQL::Helper.reconfigure_replication(node, 'localhost', newmaster_host, newmaster_logfile, newmaster_position)
     end
   end
 

@@ -10,12 +10,12 @@ module RightScale
     module MySQL
       module Helper
 
-      	require 'timeout'
-      	require 'yaml'
-      	require 'ipaddr'
+        require 'timeout'
+        require 'yaml'
+        require 'ipaddr'
 
-      	SNAPSHOT_POSITION_FILENAME = 'rs_snapshot_position.yaml'
-      	DEFAULT_CRITICAL_TIMEOUT = 7
+        SNAPSHOT_POSITION_FILENAME = 'rs_snapshot_position.yaml'
+        DEFAULT_CRITICAL_TIMEOUT = 7
 
         # == Create numeric UUID
         # MySQL server_id must be a unique number  - use the ip address integer representation
@@ -47,50 +47,61 @@ module RightScale
           RightScale::Tools::Database.factory(version, new_resource.user, new_resource.password, mount_point, Chef::Log)
         end
 
-      	def self.load_replication_info(node)
-      	  loadfile = ::File.join(node[:db][:data_dir], SNAPSHOT_POSITION_FILENAME)
-      	  Chef::Log.info "Loading replication information from #{loadfile}"
-      	  YAML::load_file(loadfile)
-      	end
+        def self.load_replication_info(node)
+          loadfile = ::File.join(node[:db][:data_dir], SNAPSHOT_POSITION_FILENAME)
+          Chef::Log.info "Loading replication information from #{loadfile}"
+          YAML::load_file(loadfile)
+        end
 
-      	def self.get_mysql_handle(node, hostname = 'localhost')
-      	  info_msg = "MySQL connection to #{hostname}"
-      	  info_msg << ": opening NEW MySQL connection."
-      	  con = Mysql.new(hostname, node[:db][:admin][:user], node[:db][:admin][:password])
-      	  Chef::Log.info info_msg
-      	  # this raises if the connection has gone away
-      	  con.ping
-      	  return con
-      	end
+        def self.load_master_info_file(node)
+          loadfile = ::File.join(node[:db][:data_dir], "master.info")
+          Chef::Log.info "Loading master.info file from #{loadfile}"
+          file_contents = File.readlines(loadfile)
+          master_info = Hash.new
+          master_info["File"] = file_contents[1]
+          master_info["Position"] = file_contents[2]
+          master_info["Master_IP"] = file_contents[3]
+          return master_info
+        end
 
-      	def self.do_query(node, query, hostname = 'localhost', timeout = nil, tries = 1)
-      	  require 'mysql'
+        def self.get_mysql_handle(node, hostname = 'localhost')
+          info_msg = "MySQL connection to #{hostname}"
+          info_msg << ": opening NEW MySQL connection."
+          con = Mysql.new(hostname, node[:db][:admin][:user], node[:db][:admin][:password])
+          Chef::Log.info info_msg
+          # this raises if the connection has gone away
+          con.ping
+          return con
+        end
 
-      	  while(1) do
-      	    begin
-      	      info_msg = "Doing SQL Query: HOST=#{hostname}, QUERY=#{query}"
-      	      info_msg << ", TIMEOUT=#{timeout}" if timeout
-      	      info_msg << ", NUM_TRIES=#{tries}" if tries > 1
-      	      Chef::Log.info info_msg
-      	      result = nil
-      	      if timeout
-      		      SystemTimer.timeout_after(timeout) do
-            		  con = get_mysql_handle(node, hostname)
-            		  result = con.query(query)
-            		end
-      	      else
-            		con = get_mysql_handle(node, hostname)
-            		result = con.query(query)
-      	      end
-      	      return result.fetch_hash if result
-      	      return result
-      	    rescue Timeout::Error => e
-      	      Chef::Log.info("Timeout occured during mysql query:#{e}")
-      	      tries -= 1
-      	      raise "FATAL: retry count reached" if tries == 0
-      	    end
-      	  end
-      	end
+        def self.do_query(node, query, hostname = 'localhost', timeout = nil, tries = 1)
+          require 'mysql'
+
+          while(1) do
+            begin
+              info_msg = "Doing SQL Query: HOST=#{hostname}, QUERY=#{query}"
+              info_msg << ", TIMEOUT=#{timeout}" if timeout
+              info_msg << ", NUM_TRIES=#{tries}" if tries > 1
+              Chef::Log.info info_msg
+              result = nil
+              if timeout
+                SystemTimer.timeout_after(timeout) do
+                  con = get_mysql_handle(node, hostname)
+                  result = con.query(query)
+                end
+              else
+                con = get_mysql_handle(node, hostname)
+                result = con.query(query)
+              end
+              return result.fetch_hash if result
+              return result
+            rescue Timeout::Error => e
+              Chef::Log.info("Timeout occured during mysql query:#{e}")
+              tries -= 1
+              raise "FATAL: retry count reached" if tries == 0
+            end
+          end
+        end
 
         def self.reconfigure_replication(node, hostname = 'localhost', newmaster_host = nil, newmaster_logfile=nil, newmaster_position=nil)
           Chef::Log.info "Configuring with #{newmaster_host} logfile #{newmaster_logfile} position #{newmaster_position}"
