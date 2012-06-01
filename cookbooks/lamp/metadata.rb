@@ -8,6 +8,4 @@ version          "0.1"
 depends "db_mysql"
 depends "app_php"
 
-
-recipe "lamp::default", "Install LAMP specific packages.  Setup LAMP specific default attributes"
-
+recipe "lamp::default", "Install LAMP specific packages. Setup LAMP specific default attributes"
