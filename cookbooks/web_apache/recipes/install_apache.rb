@@ -7,10 +7,12 @@
 
 rightscale_marker :begin
 
+apache_log_dir = node[:apache][:log_dir]
+
 # Symlink Apache log location
 apache_name = node[:apache][:dir].split("/").last
 log " Apache name was #{apache_name}"
-log " Apache log dir was #{node[:apache][:log_dir]}"
+log " Apache log dir was #{apache_log_dir}"
 
 # Create physical directory holding the logs
 directory "/mnt/ephemeral/log/#{apache_name}" do
@@ -18,8 +20,17 @@ directory "/mnt/ephemeral/log/#{apache_name}" do
   recursive true
 end
 
+# If directory exists for any reason, delete it.
+# This should error out if there is content in the dir,
+# explicitly setting recursive to false to show behavior.
+directory apache_log_dir do
+  not_if { File.symlink?(apache_log_dir) }
+  recursive false
+  action :delete
+end
+
 # Create symlink from where apache logs to physical directory
-link node[:apache][:log_dir] do
+link apache_log_dir do
   to "/mnt/ephemeral/log/#{apache_name}"
 end
 
