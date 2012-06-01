@@ -164,9 +164,26 @@ TODO: how do we use these (i.e. db, lb and app)
 === Definitions
 TODO: typically used to reduce repeated recipe code -- which is preferable to include_recipe. Also use cookbook-to-cookbook method calls (e.g. rightscale_logrotate_app).  Definitions are global, explain our naming conventions to help you find them.
 
-=== rs_marker
-TODO: convention used for better readability and debugging of the chef logs.
+==== rightscale_marker
 
+All of the recipes in the RightScale cookbooks begin and end with a call to the
+<tt>rightscale_marker</tt> definition which is defined in the
+<tt>rightscale</tt> cookbook. It is used for better readability and debugging of
+the logs of Chef recipe runs. The definition prints log messages with the
+cookbook and recipe name showing the beginning and end of the recipe run.
+
+  12:12:42: ======== rightscale::default : START ========
+  ...
+  16:13:03: ======== rightscale::default : END ========
+
+If you include the <tt>rightscale</tt> cookbook as dependency of your own
+cookbook, you can use the <tt>rightscale_marker</tt> definition as well:
+
+  rightscale_marker :begin
+
+  ...
+
+  rightscale_marker :end
 
 == CUSTOMIZATION
 what is the best way to make changes?
