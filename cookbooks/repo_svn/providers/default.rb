@@ -16,6 +16,7 @@ action :pull do
   svn_password = new_resource.svn_password
   svn_user = new_resource.svn_username
   params = "--no-auth-cache --non-interactive"
+  raise "  ERROR: repo URL input is unset. Please fill 'Repository Url' input" unless repository_url.empty?
 
   # If repository already exists, just update it
   if ::File.directory?("#{destination_path}/.svn")
@@ -62,6 +63,7 @@ action :capistrano_pull do
   symlinks = new_resource.symlinks
   scm_provider = new_resource.provider
   environment = new_resource.environment
+  raise "  ERROR: repo URL input is unset. Please fill 'Repository Url' input" unless repository.empty?
 
   log "  Deploying branch: #{revision} of the #{repository} to #{destination}. New owner #{app_user}"
   log "  Deploy provider #{scm_provider}"
