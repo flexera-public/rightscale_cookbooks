@@ -18,47 +18,47 @@ prog="collectd"
 CONFIG=/etc/collectd.conf
 
 if [ -r /etc/default/$prog ]; then
-  . /etc/default/$prog
+	. /etc/default/$prog
 fi
 
 start () {
-  echo -n $"Starting $prog: "
-  if [ -r "$CONFIG" ]
-  then
-    daemon collectdmon -c /usr/sbin/collectd -P /var/run/collectdmon.pid -- -C "$CONFIG"
-    RETVAL=$?
-    echo
-    [ $RETVAL -eq 0 ] && touch /var/lock/subsys/$prog
-  fi
+	echo -n $"Starting $prog: "
+	if [ -r "$CONFIG" ]
+	then
+              daemon collectdmon -c /usr/sbin/collectd -P /var/run/collectdmon.pid -- -C "$CONFIG"
+		RETVAL=$?
+		echo
+		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/$prog
+	fi
 }
 stop () {
-  echo -n $"Stopping $prog: "
-  killproc collectdmon
-  RETVAL=$?
-  echo
-  [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/$prog
+	echo -n $"Stopping $prog: "
+      killproc collectdmon
+	RETVAL=$?
+	echo
+	[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/$prog
 }
 # See how we were called.
 case "$1" in
   start)
-  start
-  ;;
+	start
+	;;
   stop)
-  stop
-  ;;
+	stop
+	;;
   status)
-  status $prog
-  ;;
+	status $prog
+	;;
   restart|reload)
-  stop
-  start
-  ;;
+	stop
+	start
+	;;
   condrestart)
-  [ -f /var/lock/subsys/$prog ] && restart || :
-  ;;
+	[ -f /var/lock/subsys/$prog ] && restart || :
+	;;
   *)
-  echo $"Usage: $0 {start|stop|status|restart|reload|condrestart}"
-  exit 1
+	echo $"Usage: $0 {start|stop|status|restart|reload|condrestart}"
+	exit 1
 esac
 
 exit $?
