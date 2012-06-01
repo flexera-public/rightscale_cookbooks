@@ -15,6 +15,11 @@ end
 module RightScale
   module BlockDeviceHelper
 
+    # Create new BlockDevice object
+    #
+    # @param new_resource [Object] Resource which will be initialized
+    #
+    # @return [Object] BlockDevice object
     def init(new_resource)
       # Setup options
       options = {
@@ -45,6 +50,12 @@ module RightScale
           options)
     end
 
+    # Perform checks to prevent empty values of attributes which are required to get
+    # backup files from cloud storage
+    #
+    # @param new_resource [Object] Resource which will be initialized
+    #
+    # @raises [RuntimeError] if any of required parameters has no value
     def secondary_checks(new_resource)
       [:secondary_user, :secondary_secret, :secondary_cloud, :secondary_container].each do |input|
         value = new_resource.method(input).call
@@ -52,14 +63,29 @@ module RightScale
       end
     end
 
+    # Wrapper for do_for_all_block_devices
+    # will call RightScale::BlockDeviceHelper.do_for_all_block_devices with given parameters
+    #
+    # @param block_device [Object] Block device
+    # @param block [Object] Hash of block devices to which block_device belongs to
     def do_for_all_block_devices(block_device, &block)
       RightScale::BlockDeviceHelper.do_for_all_block_devices(block_device, &block)
     end
 
+    # Wrapper for do_for_block_devices
+    # will call RightScale::BlockDeviceHelper.do_for_block_devices with given parameters
+    #
+    # @param block_device [Object] Block device
+    # @param block [Object] Hash of block devices to which block_device belongs to
     def do_for_block_devices(block_device, &block)
       RightScale::BlockDeviceHelper.do_for_block_devices(block_device, &block)
     end
 
+
+    # Helper to perform perform actions to a set of all available block devices
+    #
+    # @param block_device [Object] Block device
+    # @param block [Object] Hash of block devices to which block_device belongs to
     def self.do_for_all_block_devices(block_device, &block)
       block_device[:devices].keys.reject do |key|
         key == 'default'
@@ -70,6 +96,12 @@ module RightScale
       end
     end
 
+    # Helper to perform perform actions to a set of block devices
+    #
+    # @param block_device [Object] Block device
+    # @param block [Object] Hash of block devices to which block_device belongs to
+    #
+    # @raises [RuntimeError] if block device has no number
     def self.do_for_block_devices(block_device, &block)
       devices_to_use = block_device[:devices_to_use]
 
@@ -89,7 +121,11 @@ module RightScale
       end
     end
 
-    # XXX: this should probably go into rs_util
+    # Extends chef attribute definition adding set_unless_deep_merge
+    #
+    # @param node [Object] Node name
+    # @param src [Object] Source attribute
+    # @param dst [Object] Destination attribute
     def self.set_unless_deep_merge(node, src, dst)
       src.reduce(node) {|values, key| values[key]}.each_pair do |attribute, value|
         case value
@@ -101,10 +137,21 @@ module RightScale
       end
     end
 
+    # Wrapper for get_device_or_default
+    # will call RightScale::BlockDeviceHelper.get_device_or_default with given parameters
+    #
+    # @param node [Object] Node name
+    # @param device [Object] Device
+    # @param keys [Array] Array of keys
     def get_device_or_default(node, device, *keys)
       RightScale::BlockDeviceHelper.get_device_or_default(node, device, *keys)
     end
 
+    #Return current device
+    #
+    # @param node [Object] Node name
+    # @param device [Object] Device
+    # @param keys [Array] Array of keys
     def self.get_device_or_default(node, device, *keys)
       value = keys.reduce(node[:block_device][:devices][device]) do |values, key|
         break nil if values == nil
