@@ -38,7 +38,7 @@ bash "Moving #{default_web_dir} to #{content_web_dir}" do
   not_if { File.symlink?(default_web_dir) }
   flags "-ex"
   code <<-EOH
-    mv #{default_web_dir}/* content_web_dir
+    mv #{default_web_dir}/* #{content_web_dir}
     rmdir #{default_web_dir}
   EOH
 end
