@@ -21,33 +21,33 @@ if node[:web_apache][:ssl_enable]
   include_recipe "apache2::mod_ssl"
 end
 
-# Checking /var/www symlink (broken after start/stop)
-default_web_dir = '/var/www'
-bash "Checking #{default_web_dir} symlink" do
-  flags "-ex"
-  code <<-EOH
-    if [[ ! -e #{default_web_dir} &&  -L #{default_web_dir} ]]; then
-      echo "#{default_web_dir} symlink is broken! Removing..."
-      rm -f #{default_web_dir}
-    fi
-  EOH
-  only_if do File.symlink?(default_web_dir) end
- end
+# Move default apache content files to ephemeral storage and make symlink.
+default_web_dir = "/var/www"
+content_web_dir = "/mnt/ephemeral/www"
 
-# Move Apache /var/www to /mnt/ephemeral/www
-content_dir = '/mnt/ephemeral/www'
-bash "Move apache #{default_web_dir} to #{content_dir}" do
+# Creates content_web_dir if it does not exists.
+# Gone after stop/start.
+directory content_web_dir do
+  action :create
+  recursive true
+end
+
+# If default_web_dir is not a link, move it's files to content_web_dir.
+# default_web_dir will later become a symlink to content_web_dir.
+bash "Moving #{default_web_dir} to #{content_web_dir}" do
+  not_if { File.symlink?(default_web_dir) }
   flags "-ex"
-  not_if do File.directory?(content_dir) end
   code <<-EOH
-    mkdir -p #{content_dir}
-    if [ -d #{default_web_dir}]; then
-      cp -rf #{default_web_dir}/. #{content_dir}
-    fi
-    rm -rf #{default_web_dir}
-    ln -nsf #{content_dir} #{default_web_dir}
+    mv #{default_web_dir}/* content_web_dir
+    rmdir #{default_web_dir}
   EOH
 end
+
+# Create symlink from default_web_dir to content_web_dir.
+link default_web_dir do
+  to content_web_dir
+end
+
 
 # Move Apache logs
 apache_name = node[:apache][:dir].split("/").last
