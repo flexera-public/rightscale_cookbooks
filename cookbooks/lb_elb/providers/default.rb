@@ -24,7 +24,7 @@ action :attach do
   # Verify that the ELB exists.
   balancers = elb.describe_load_balancers
   created = balancers.detect { |b| b[:load_balancer_name] == new_resource.service_lb_name }
-  raise "ERROR: ELB named #{new_resource.service_lb_name} does not exist" unless created
+  raise "ERROR: ELB named #{new_resource.service_lb_name} does not exist" if created.nil?
 
   # Check if this instance's zone is part of the lb, if not add it.
   unless created[:availability_zones].include?(node[:ec2][:placement][:availability_zone])
