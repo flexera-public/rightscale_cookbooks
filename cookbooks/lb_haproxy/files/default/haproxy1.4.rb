@@ -66,7 +66,8 @@ end
 
 # Parse CSV results & build hash of data based on server name.
 def parsestats
-  column, stats = []
+  column = []
+  stats = []
 
   readstats.each do |line|
     stat = {}
