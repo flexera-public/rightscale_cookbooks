@@ -7,11 +7,11 @@
 
 rightscale_marker :begin
 
-# These are not conditional assignments, but array joins..  Maybe a different syntax would be a good idea to avoid confusion?
-node[:rightscale][:plugin_list_array] = node[:rightscale][:plugin_list].split | node[:rightscale][:plugin_list_array]
+# These are not conditional assignments, but array joins.
+node[:rightscale][:plugin_list_ary] = node[:rightscale][:plugin_list].split | node[:rightscale][:plugin_list_ary]
 node[:rightscale][:process_list_ary] = node[:rightscale][:process_list].split | node[:rightscale][:process_list_ary]
 
-# == Install Attached Packages
+# Install Attached Packages
 #
 # Installs collectd packages that are matched to the RightScale monitoring
 # system.  These packages are locked/pinned to avoid accidental update.
@@ -50,7 +50,7 @@ remote_file "/etc/apt/preferences.d/00rightscale" do
   source "apt.preferences.rightscale"
 end
 
-# If YUM, lock this collectd package so it can't be updated
+# If YUM, lock this collectd package so it can't be updated.
 if node[:platform] =~ /redhat|centos/
   lockfile = "/etc/yum.repos.d/Epel.repo"
   bash "Lock package - YUM" do
@@ -68,34 +68,34 @@ service "collectd" do
 end
 
 
-# == Generate config file
+# Generate config file
 #
-# This should be updated to use the default config file installed
-# with the package.  The default configs should be template-ized as needed.
+# This should be updated to use the default config file installed with the package.
+# The default configs should be template-ized as needed.
 template node[:rightscale][:collectd_config] do
   backup 5
   source "collectd.config.erb"
   notifies :restart, resources(:service => "collectd")
 end
 
-# == Create plugin conf dir
-#
+# Create plugin conf dir
 directory "#{node[:rightscale][:collectd_plugin_dir]}" do
   owner "root"
   group "root"
   recursive true
   action :create
 end
-# == Install a Nightly Crontask to Restart Collectd
+
+# Install a Nightly Crontask to Restart Collectd
 #
 # Add the task to /etc/crontab, at 04:00 localtime.
 cron "collectd" do
   command "service collectd restart > /dev/null"
   minute "00"
-  hour   "4"
+  hour "4"
 end
 
-# == Monitor Processes from Script Input
+# Monitor Processes from Script Input
 #
 # Write the process file into the include directory from template.
 template File.join(node[:rightscale][:collectd_plugin_dir], 'processes.conf') do
@@ -114,16 +114,16 @@ if node[:platform] =~ /redhat|centos/
   end
 end
 
-# == Tag required to enable monitoring
+# Tag required to enable monitoring
 #
 right_link_tag "rs_monitoring:state=active"
 
-# == Start monitoring
+# Start monitoring
 #
 service "collectd" do
   action :start
 end
 
-log "RightScale monitoring setup complete."
+log "  RightScale monitoring setup complete."
 
 rightscale_marker :end

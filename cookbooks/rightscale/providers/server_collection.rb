@@ -7,6 +7,7 @@
 
 require 'timeout'
 
+# Provider collects and processes server tags used by the server_collection resource
 action :load do
   collection_resource = server_collection new_resource.name do
     tags new_resource.tags
@@ -26,7 +27,7 @@ action :load do
         break if new_resource.empty_ok && collection.empty?
         break if !collection.empty? && collection.all? do |id, tags|
           all_tags.all? do |prefix|
-            tags.detect {|tag| RightScale::Utils::Helper.matches_tag_wildcard?(prefix, tag)}
+            tags.detect { |tag| RightScale::Utils::Helper.matches_tag_wildcard?(prefix, tag) }
           end
         end
 
@@ -40,4 +41,3 @@ action :load do
   end
 
 end
-

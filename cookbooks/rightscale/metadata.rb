@@ -20,118 +20,139 @@ attribute "rightscale/timezone",
   :display_name => "Timezone",
   :description => "Sets the system time to the timezone of the specified input, which must be a valid zoneinfo/tz database entry.  If the input is 'unset' the timezone will use the 'localtime' that's defined in your RightScale account under Settings -> User Settings -> Preferences tab.  You can find a list of valid examples from the timezone pulldown bar in the Preferences tab.  Ex: US/Pacific, US/Eastern",
   :required => "optional",
-  :choice => [ "Africa/Casablanca", \
-               "America/Bogota", \
-               "America/Buenos_Aires", \
-               "America/Caracas", \
-               "America/La_Paz", \
-               "America/Lima", \
-               "America/Mexico_City", \
-               "Asia/Almaty", \
-               "Asia/Baghdad", \
-               "Asia/Baku", \
-               "Asia/Bangkok", \
-               "Asia/Calcutta", \
-               "Asia/Colombo", \
-               "Asia/Dhaka", \
-               "Asia/Hong_Kong", \
-               "Asia/Jakarta", \
-               "Asia/Kabul", \
-               "Asia/Kamchatka", \
-               "Asia/Karachi", \
-               "Asia/Kathmandu", \
-               "Asia/Magadan", \
-               "Asia/Muscat", \
-               "Asia/Riyadh", \
-               "Asia/Seoul", \
-               "Asia/Singapore", \
-               "Asia/Tashkent", \
-               "Asia/Tbilisi", \
-               "Asia/Tehran", \
-               "Asia/Tokyo", \
-               "Asia/Vladivostok", \
-               "Asia/Yakutsk", \
-               "Asia/Yekaterinburg", \
-               "Atlantic/Azores", \
-               "Atlantic/Cape_Verde", \
-               "Australia/Adelaide", \
-               "Australia/Darwin", \
-               "Australia/Perth", \
-               "Brazil/Acre", \
-               "Brazil/DeNoronha", \
-               "Brazil/East", \
-               "Brazil/West", \
-               "Canada/Atlantic", \
-               "Canada/Newfoundland", \
-               "Europe/Brussels", \
-               "Europe/Copenhagen", \
-               "Europe/Kaliningrad", \
-               "Europe/Lisbon", \
-               "Europe/London", \
-               "Europe/Helsinki", \
-               "Europe/Madrid", \
-               "Europe/Moscow", \
-               "Europe/Paris", \
-               "Pacific/Auckland", \
-               "Pacific/Fiji", \
-               "Pacific/Guam", \
-               "Pacific/Kwajalein", \
-               "Pacific/Midway", \
-               "US/Alaska", \
-               "US/Central", \
-               "US/Eastern", \
-               "US/Hawaii", \
-               "US/Mountain", \
-               "US/Pacific", \
-               "US/Samoa", \
-               "GMT", \
-               "UTC", \
-               "localtime"],
+  :choice => [
+    "Africa/Casablanca",
+    "America/Bogota",
+    "America/Buenos_Aires",
+    "America/Caracas",
+    "America/La_Paz",
+    "America/Lima",
+    "America/Mexico_City",
+    "Asia/Almaty",
+    "Asia/Baghdad",
+    "Asia/Baku",
+    "Asia/Bangkok",
+    "Asia/Calcutta",
+    "Asia/Colombo",
+    "Asia/Dhaka",
+    "Asia/Hong_Kong",
+    "Asia/Jakarta",
+    "Asia/Kabul",
+    "Asia/Kamchatka",
+    "Asia/Karachi",
+    "Asia/Kathmandu",
+    "Asia/Magadan",
+    "Asia/Muscat",
+    "Asia/Riyadh",
+    "Asia/Seoul",
+    "Asia/Singapore",
+    "Asia/Tashkent",
+    "Asia/Tbilisi",
+    "Asia/Tehran",
+    "Asia/Tokyo",
+    "Asia/Vladivostok",
+    "Asia/Yakutsk",
+    "Asia/Yekaterinburg",
+    "Atlantic/Azores",
+    "Atlantic/Cape_Verde",
+    "Australia/Adelaide",
+    "Australia/Darwin",
+    "Australia/Perth",
+    "Brazil/Acre",
+    "Brazil/DeNoronha",
+    "Brazil/East",
+    "Brazil/West",
+    "Canada/Atlantic",
+    "Canada/Newfoundland",
+    "Europe/Brussels",
+    "Europe/Copenhagen",
+    "Europe/Kaliningrad",
+    "Europe/Lisbon",
+    "Europe/London",
+    "Europe/Helsinki",
+    "Europe/Madrid",
+    "Europe/Moscow",
+    "Europe/Paris",
+    "Pacific/Auckland",
+    "Pacific/Fiji",
+    "Pacific/Guam",
+    "Pacific/Kwajalein",
+    "Pacific/Midway",
+    "US/Alaska",
+    "US/Central",
+    "US/Eastern",
+    "US/Hawaii",
+    "US/Mountain",
+    "US/Pacific",
+    "US/Samoa",
+    "GMT",
+    "UTC",
+    "localtime"
+  ],
   :default => "UTC",
-  :recipes => [ "rightscale::setup_timezone", "rightscale::default" ]
+  :recipes => [
+    "rightscale::setup_timezone",
+    "rightscale::default"
+  ]
 
 attribute "rightscale/process_list",
   :display_name => "Process List",
   :description => "A space-separated list of additional processes to monitor in the RightScale Dashboard.  Ex: sshd crond",
   :required => "optional",
   :default => "",
-  :recipes => [ "rightscale::install_mysql_collectd_plugin", "rightscale::setup_monitoring", "rightscale::default" ]
+  :recipes => [
+    "rightscale::install_mysql_collectd_plugin",
+    "rightscale::setup_monitoring",
+    "rightscale::default"
+  ]
 
 attribute "rightscale/process_match_list",
   :display_name => "Process Match List",
   :description => "A space-separated list of pairs used to match the name(s) of additional processes to monitor in the RightScale Dashboard.  Paired arguments are passed in using the following syntax 'name/regex'. Ex: ssh/ssh* cron/cron*",
   :required => "optional",
   :default => "",
-  :recipes => [ "rightscale::install_mysql_collectd_plugin", "rightscale::setup_monitoring", "rightscale::default" ]
+  :recipes => [
+    "rightscale::install_mysql_collectd_plugin",
+    "rightscale::setup_monitoring",
+    "rightscale::default"
+  ]
 
 attribute "rightscale/private_ssh_key",
  :display_name => "Private SSH Key",
  :description => "The private SSH key of another instance that gets installed on this instance.  Select input type 'key' from the dropdown and then select an SSH key that is installed on the other instance.  Ex: key:my_key",
  :required => "required",
- :recipes => [ "rightscale::setup_ssh" ]
+ :recipes => [
+   "rightscale::setup_ssh"
+ ]
 
 attribute "rightscale/short_hostname",
   :display_name => "Short Hostname",
   :description => "The short hostname that you would like this node to have. Ex: kryten",
   :required => "required",
   :default => nil,
-  :recipes => [ "rightscale::setup_hostname" ]
+  :recipes => [
+    "rightscale::setup_hostname"
+  ]
 
 attribute "rightscale/domain_name",
   :display_name => "Domain Name",
   :description => "The domain name that you would like this node to have. Ex: domain.suf",
   :required => "optional",
   :default => "" ,
-  :recipes => [ "rightscale::setup_hostname" ]
+  :recipes => [
+    "rightscale::setup_hostname"
+  ]
 
 attribute "rightscale/search_suffix",
   :display_name => "Domain Search Suffix",
   :description => "The domain search suffix you would like this node to have. Ex: domain.suf.",
   :required => "optional",
   :default => "",
-  :recipes => [ "rightscale::setup_hostname" ]
+  :recipes => [
+    "rightscale::setup_hostname"
+  ]
 
-# == RightScale ENV attributes.
+# RightScale ENV attributes.
 #
 # Maps each env:RS_* input  a node[:rightscale][] equivalent.
 # DO NOT CHANGE THESE inputs unless you know what you are doing.
