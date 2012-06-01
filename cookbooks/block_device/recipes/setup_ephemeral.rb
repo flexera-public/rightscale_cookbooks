@@ -20,16 +20,15 @@ cloud = node[:cloud][:provider]
 # Generate fstab entry and check if entry already in fstab - assuming a reboot
 mount_point = "/mnt/ephemeral"
 lvm_device = "lvol0"
+
 # Ubuntu systems using upstart require the 'bootwait' option, otherwise
 # upstart will try to boot without waiting for the LVM volume to be mounted.
-#
 options = "defaults,noatime"
 if node[:platform] == "ubuntu"
   options += ",bootwait"
 end
 
 # RedHat does not support xfs, so set specific item accordingly
-
 if node[:platform] == "redhat"
   filesystem_type = "ext3"
 else
@@ -64,7 +63,7 @@ if cloud == 'ec2' || cloud == 'openstack'
   # if fstab & mtab entry exists, assume a reboot and skip to end
   if ( File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$") ) &&
      ( File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " ) )
-    log "Ephemeral entry already exists in fstab"
+    log "  Ephemeral entry already exists in fstab"
   else
     # Create init script to activate LVM on start for Ubuntu
     remote_file "/etc/init.d/lvm_activate" do
@@ -114,7 +113,7 @@ if cloud == 'ec2' || cloud == 'openstack'
         @api = RightScale::Tools::API.factory('1.0') if cloud == 'ec2'
 
         def run_command(command, ignore_failure = false)
-          Chef::Log.info "Running: #{command}"
+          Chef::Log.info "  Running: #{command}"
           Chef::Log.info `#{command}`
           STDOUT.flush
           raise "command exited non-zero! #{command}" unless ignore_failure || $?.success?
@@ -141,7 +140,7 @@ if cloud == 'ec2' || cloud == 'openstack'
           dev_index += 1
         end
 
-        Chef::Log.info "Found ephemeral devices: #{my_devices}"
+        Chef::Log.info "  Found ephemeral devices: #{my_devices}"
 
         my_devices.each do |device|
           run_command("pvcreate -ff -y #{device}")
@@ -157,7 +156,7 @@ if cloud == 'ec2' || cloud == 'openstack'
           fstab.each do |line|
             f.puts(line)
           end
-          Chef::Log.info "ADDING DEVICE /etc/fstab: #{fstab_entry}"
+          Chef::Log.info "  ADDING DEVICE /etc/fstab: #{fstab_entry}"
           f.puts(fstab_entry)
         end
 
@@ -167,7 +166,7 @@ if cloud == 'ec2' || cloud == 'openstack'
     end
   end
 else
-  log "Skipping LVM on ephemeral drives setup for non-ephemeral cloud #{cloud}"
+  log "  Skipping LVM on ephemeral drives setup for non-ephemeral cloud #{cloud}"
 end
 
 rightscale_marker :end
