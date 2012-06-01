@@ -13,9 +13,8 @@ end
 
 # Try and return the instance to a launch/pristine state
 # For development and testing.  Not intended for use on production servers.
-#
 
-raise "Server force saftey not off.  Override block_device/force_safety to run this recipe" unless node[:block_device][:force_safety] == "off"
+raise "Server force safety not off.  Override block_device/force_safety to run this recipe" unless node[:block_device][:force_safety] == "off"
 
 do_for_block_devices node[:block_device] do |device|
   # Clear the overrides so they are not set after a reset is done

@@ -7,6 +7,7 @@
 
 include RightScale::BlockDeviceHelper
 
+# Will setup new block device
 action :create do
   device = init(new_resource)
   create_options = {
@@ -18,21 +19,25 @@ action :create do
   device.create(create_options)
 end
 
+# Create snapshot of given device
 action :snapshot do
   device = init(new_resource)
   device.snapshot
 end
 
+# Acquire the backup lock
 action :backup_lock_take do
   device = init(new_resource)
   device.backup_lock_take(new_resource.force)
 end
 
+# Create the backup lock
 action :backup_lock_give do
   device = init(new_resource)
   device.backup_lock_give
 end
 
+# Prepare device for primary backup
 action :primary_backup do
   device = init(new_resource)
   backup_options = {
@@ -52,6 +57,7 @@ action :primary_backup do
   device.primary_backup(new_resource.lineage, backup_options)
 end
 
+# Prepare device for primary restore
 action :primary_restore do
   device = init(new_resource)
   restore_args = {
@@ -71,12 +77,14 @@ action :primary_restore do
   device.primary_restore(new_resource.lineage, restore_args)
 end
 
+# Prepare device for secondary backup
 action :secondary_backup do
   secondary_checks(new_resource)
   device = init(new_resource)
   device.secondary_backup(new_resource.lineage)
 end
 
+# Prepare device for secondary restore
 action :secondary_restore do
   secondary_checks(new_resource)
   device = init(new_resource)
@@ -92,11 +100,13 @@ action :secondary_restore do
   device.secondary_restore(new_resource.lineage, restore_args)
 end
 
+# Unmount and delete the attached block device(s)
 action :reset do
   device = init(new_resource)
   device.reset()
 end
 
+# Enable cron backups
 action :backup_schedule_enable do
 
     # Verify parameters
@@ -126,6 +136,7 @@ action :backup_schedule_enable do
 
 end
 
+# Disable cron backups
 action :backup_schedule_disable do
   # Select recipe to disable
   recipe = new_resource.cron_backup_recipe
