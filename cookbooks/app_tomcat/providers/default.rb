@@ -246,7 +246,7 @@ action :setup_vhost do
       action :create
       backup false
       source "mod_jk.conf.erb"
-      variables (
+      variables(
         :tomcat_name => "tomcat6",
         :apache_log_dir => node[:apache][:log_dir]
       )
