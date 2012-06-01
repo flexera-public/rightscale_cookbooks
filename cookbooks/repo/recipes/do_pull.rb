@@ -9,7 +9,7 @@
 
 rightscale_marker :begin
 
-raise "  Error: repo URL input is unset. Please fill 'Repository Url' input" unless url node[:repo][:repository].empty?
+raise "  Error: repo URL input is unset. Please fill 'Repository Url' input" if node[:repo][:default][:repository].empty?
 
 # Downloading project repository
 repo "default" do

@@ -410,8 +410,9 @@ action :code_update do
   # Calling "repo" LWRP to download remote project repository
   repo "default" do
     destination deploy_dir
-    action   node[:repo][:default][:perform_action].to_sym
+    action node[:repo][:default][:perform_action].to_sym
     app_user node[:app_tomcat][:app_user]
+    repository node[:repo][:default][:repository]
     persist false
   end
 

@@ -123,11 +123,13 @@ action :code_update do
   log "  Current project doc root is set to #{deploy_dir}"
 
   log "  Downloading project repo"
+
   # Calling "repo" LWRP to download remote project repository
   repo "default" do
     destination deploy_dir
     action node[:repo][:default][:perform_action].to_sym
     app_user node[:app_php][:app_user]
+    repository node[:repo][:default][:repository]
     persist false
   end
 

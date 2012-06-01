@@ -206,6 +206,7 @@ action :code_update do
     action node[:repo][:default][:perform_action].to_sym
     app_user node[:app_passenger][:apache][:user]
     environment "RAILS_ENV" => "#{node[:app_passenger][:project][:environment]}"
+    repository node[:repo][:default][:repository]
     persist false
   end
 
