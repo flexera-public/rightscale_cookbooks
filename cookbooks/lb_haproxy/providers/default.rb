@@ -105,11 +105,11 @@ action :add_vhost do
     group "haproxy"
     mode "0400"
     backend_name = vhost_name.gsub(".", "_") + "_backend"
-    stats_uri = "stats uri #{node[:lb][:stats_uri]}" if "#{node[:lb][:stats_uri]}"
-    stats_auth = "stats auth #{node[:lb][:stats_user]}:#{node[:lb][:stats_password]}" if \
-                 "#{node[:lb][:stats_user]}" || "#{node[:lb][:stats_password]}"
-    health_uri = "option httpchk GET #{node[:lb][:health_check_uri]}" if "#{node[:lb][:health_check_uri]}"
-    health_chk = "http-check disable-on-404" if "#{node[:lb][:health_check_uri]}"
+    stats_uri = "stats uri #{node[:lb][:stats_uri]}" unless "#{node[:lb][:stats_uri]}".empty?
+    stats_auth = "stats auth #{node[:lb][:stats_user]}:#{node[:lb][:stats_password]}" unless \
+                "#{node[:lb][:stats_user]}".empty? || "#{node[:lb][:stats_password]}".empty?
+    health_uri = "option httpchk GET #{node[:lb][:health_check_uri]}" unless "#{node[:lb][:health_check_uri]}".empty?
+    health_chk = "http-check disable-on-404" unless "#{node[:lb][:health_check_uri]}".empty?
     variables(
       :backend_name_line => backend_name,
       :stats_uri_line => stats_uri,
