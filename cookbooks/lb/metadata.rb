@@ -26,28 +26,42 @@ attribute "lb/vhost_names",
   :description => "Comma-separated list of host names for which the load balancer will answer website requests. First entry will be the default backend and will answer for all host names not listed here. A single entry of any name, e.g. 'default' or 'applistener', will mimic basic behavior of one load balancer with one pool of application servers. This will be used for naming server pool backends. Application servers must only provide 1 host name and will join server pool backends using this name (e.g., www.mysite.com, api.mysite.com, default.mysite.com).",
   :required => "recommended",
   :default => "default",
-  :recipes => ["lb::default", "lb::do_attach_request", "lb::handle_attach", "lb::do_detach_request", "lb::handle_detach", "lb::setup_load_balancer", "lb::do_attach_all"]
+  :recipes => [
+    "lb::default",
+    "lb::do_attach_request",
+    "lb::handle_attach",
+    "lb::do_detach_request",
+    "lb::handle_detach",
+    "lb::setup_load_balancer",
+    "lb::do_attach_all"
+  ]
 
 attribute "lb/stats_uri",
   :display_name => "Status URI",
   :description => "The URI for the load balancer statistics report page (e.g., /haproxy-status). This page lists the current session, queued session, response error, health check error, server status, etc. for each load balancer group.",
   :required => "optional",
   :default => "/haproxy-status",
-  :recipes => ["lb::setup_load_balancer"]
+  :recipes => [
+    "lb::setup_load_balancer"
+  ]
 
 attribute "lb/stats_user",
   :display_name => "Status Page Username",
   :description => "The username that is required to access the load balancer statistics report page.",
   :required => "optional",
   :default => "",
-  :recipes => ["lb::setup_load_balancer"]
+  :recipes => [
+    "lb::setup_load_balancer"
+  ]
 
 attribute "lb/stats_password",
   :display_name => "Status Page Password",
   :description => "The password that is required to access the load balancer statistics report page.",
   :required => "optional",
   :default => "",
-  :recipes => ["lb::setup_load_balancer"]
+  :recipes => [
+    "lb::setup_load_balancer"
+  ]
 
 attribute "lb/session_stickiness",
   :display_name => "Use Session Stickiness",
@@ -55,14 +69,19 @@ attribute "lb/session_stickiness",
   :required => "optional",
   :choice => ["true", "false"],
   :default => "true",
-  :recipes => ["lb::handle_attach"]
+  :recipes => [
+    "lb::handle_attach"
+  ]
 
 attribute "lb/health_check_uri",
   :display_name => "Health Check URI",
   :description => "The URI that the load balancer will use to check the health of a server. It is only used for HTTP (not HTTPS) requests.",
   :required => "optional",
   :default => "/",
-  :recipes => ["lb::setup_load_balancer", "lb::handle_attach"]
+  :recipes => [
+    "lb::setup_load_balancer",
+    "lb::handle_attach"
+  ]
 
 attribute "lb/service/provider",
   :display_name => "Load Balance Provider",
@@ -70,7 +89,11 @@ attribute "lb/service/provider",
   :required => "recommended",
   :default => "lb_haproxy",
   :choice => ["lb_haproxy", "lb_clb", "lb_elb"],
-  :recipes => ["lb::default", "lb::do_attach_request", "lb::do_detach_request"]
+  :recipes => [
+    "lb::default",
+    "lb::do_attach_request",
+    "lb::do_detach_request"
+  ]
 
 attribute "lb/service/region",
   :display_name => "Load Balance Service Region",
@@ -78,24 +101,38 @@ attribute "lb/service/region",
   :required => "optional",
   :default => "ORD (Chicago)",
   :choice => ["ORD (Chicago)", "DFW (Dallas/Ft. Worth)", "LON (London)"],
-  :recipes => ["lb::default", "lb::do_attach_request", "lb::do_detach_request"]
+  :recipes => [
+    "lb::default",
+    "lb::do_attach_request",
+    "lb::do_detach_request"
+  ]
 
 attribute "lb/service/lb_name",
   :display_name => "Load Balance Service Name",
   :description => "Name of the Cloud Load Balancer or Elastic Load Balancer device.",
   :required => "optional",
-  :recipes => ["lb::default", "lb::do_attach_request", "lb::do_detach_request"]
+  :recipes => [
+    "lb::default",
+    "lb::do_attach_request",
+    "lb::do_detach_request"
+  ]
 
 attribute "lb/service/account_id",
   :display_name => "Load Balance Service ID",
   :description => "If using Rackspace Cloud Load Balancing, specify the Rackspace username to use for authentication (e.g., cred:RACKSPACE_USERNAME).",
-  :recipes => ["lb::default", "lb::do_attach_request", "lb::do_detach_request"],
-  :required => "optional"
+  :required => "optional",
+  :recipes => [
+    "lb::default",
+    "lb::do_attach_request",
+    "lb::do_detach_request"
+  ]
 
 attribute "lb/service/account_secret",
   :display_name => "Load Balance Service Secret",
   :description => "If using Rackspace Cloud Load Balancing, specify the Rackspace API key to use for authentication (e.g. cred:RACKSPACE_AUTH_KEY).",
-  :recipes => ["lb::default", "lb::do_attach_request", "lb::do_detach_request"],
-  :required => "optional"
-  
-
+  :required => "optional",
+  :recipes => [
+    "lb::default",
+    "lb::do_attach_request",
+    "lb::do_detach_request"
+  ]

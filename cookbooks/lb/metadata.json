@@ -171,12 +171,12 @@
     "lb/service/account_id": {
       "display_name": "Load Balance Service ID",
       "description": "If using Rackspace Cloud Load Balancing, specify the Rackspace username to use for authentication (e.g., cred:RACKSPACE_USERNAME).",
+      "required": "optional",
       "recipes": [
         "lb::default",
         "lb::do_attach_request",
         "lb::do_detach_request"
       ],
-      "required": "optional",
       "choice": [
 
       ],
@@ -186,12 +186,12 @@
     "lb/service/account_secret": {
       "display_name": "Load Balance Service Secret",
       "description": "If using Rackspace Cloud Load Balancing, specify the Rackspace API key to use for authentication (e.g. cred:RACKSPACE_AUTH_KEY).",
+      "required": "optional",
       "recipes": [
         "lb::default",
         "lb::do_attach_request",
         "lb::do_detach_request"
       ],
-      "required": "optional",
       "choice": [
 
       ],
