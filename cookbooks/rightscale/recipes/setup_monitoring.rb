@@ -34,11 +34,12 @@ package "collectd" do
 end
 
 # Install collectd packages
-log "Installing collectd package(s) version #{node[:rightscale][:collectd_packages_version]}"
+collectd_version = node[:rightscale][:collectd_packages_version]
+log "Installing collectd package(s) version #{collectd_version}"
 packages = node[:rightscale][:collectd_packages]
 packages.each do |p|
   package p do
-    version "#{node[:rightscale][:collectd_packages_version]}"
+    version "#{collectd_version}" unless collectd_version == "latest"
     action :install
   end
 end

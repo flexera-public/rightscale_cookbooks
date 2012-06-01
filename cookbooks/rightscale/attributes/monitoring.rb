@@ -23,7 +23,7 @@ when "centos", "redhat"
     set_unless[:rightscale][:collectd_packages_version] = "4.10.0-4.el5"
     set_unless[:rightscale][:collectd_remove_existing] = true
   when /^6\..+/
-    set_unless[:rightscale][:collectd_packages_version] = "4.10.7-1.el6"
+    set_unless[:rightscale][:collectd_packages_version] = "latest"
   end
 else
   raise "Unrecognized distro #{node[:platform]} for monitoring attributes , exiting "
