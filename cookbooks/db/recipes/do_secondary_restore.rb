@@ -33,9 +33,6 @@ db DATA_DIR do
   action :stop
 end
 
-# TODO: this code is duplicated between db and block device AND primary and secondary
-#.  Need to do something
-# about that...... Getting it working first
 lineage = node[:db][:backup][:lineage]
 lineage_override = node[:db][:backup][:lineage_override]
 restore_lineage = lineage_override == nil || lineage_override.empty? ? lineage : lineage_override

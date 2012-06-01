@@ -26,7 +26,7 @@ set_unless[:db][:replication][:password] = nil
 set_unless[:db][:backup][:lineage] = ""
 set_unless[:db][:backup][:lineage_override] = ""
 
-# Time to live value for DNS
+# TTL limit to verify Master DB DNS TTL
 set_unless[:db][:dns][:ttl] = "60"
 
 

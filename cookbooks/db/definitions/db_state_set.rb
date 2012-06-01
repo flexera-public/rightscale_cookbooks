@@ -11,7 +11,6 @@
 # @param [String, nil] master_ip the IP address of the master server to set
 # @param [Boolean] is_master set whether this server is the master
 # @param [Boolean] immediate run the resource actions immediately
-#
 define :db_state_set, :master_uuid => nil, :master_ip => nil, :is_master => false, :immediate => false do
   name = params[:name]
   master_uuid = params[:master_uuid]
