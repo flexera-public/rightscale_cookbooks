@@ -8,7 +8,7 @@
 #
 # File created by RightScale
 # DO NOT EDIT
-# 
+#
 
 # IP of the server to attach/detach
 CLB_NODE_IP="<%= @backend_ip %>"
@@ -34,7 +34,6 @@ if [ -z ${RACKSPACE_API_TOKEN} ] || [ -z ${RACKSPACE_USERNAME} ]; then
   exit 1
 fi
 
-
 case "$CLB_NODE_IP" in
   "Public"   ) CLB_NODE_IP=$RS_PUBLIC_IP;;
   "Private"  ) CLB_NODE_IP=$RS_PRIVATE_IP;;
@@ -45,7 +44,7 @@ case "$CLB_REGION" in
   ORD*   ) auth_url="https://auth.api.rackspacecloud.com/v1.0" && service_endpoint="https://ord.loadbalancers.api.rackspacecloud.com/v1.0/";;
   DFW*   ) auth_url="https://auth.api.rackspacecloud.com/v1.0" && service_endpoint="https://dfw.loadbalancers.api.rackspacecloud.com/v1.0/";;
   LON*   ) auth_url="https://lon.auth.api.rackspacecloud.com/v1.0" && service_endpoint="https://lon.loadbalancers.api.rackspacecloud.com/v1.0/";;
-  *       ) echo "Unsupported region" && exit 1;;
+  *      ) echo "Unsupported region" && exit 1;;
 esac
 
 #auth and setup variables
