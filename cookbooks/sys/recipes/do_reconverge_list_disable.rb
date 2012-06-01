@@ -9,7 +9,7 @@ rightscale_marker :begin
 
 node[:sys][:reconverge_list].split(" ").each do |recipe|
 
-  log "Removing re-converge task for #{recipe}"
+  log "  Removing re-converge task for #{recipe}"
 
   sys_reconverge "Disable recipe re-converge" do
     recipe_name recipe
