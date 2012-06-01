@@ -7,6 +7,22 @@
 
 rightscale_marker :begin
 
+# Symlink Apache log location
+apache_name = node[:apache][:dir].split("/").last
+log " Apache name was #{apache_name}"
+log " Apache log dir was #{node[:apache][:log_dir]}"
+
+# Create physical directory holding the logs
+directory "/mnt/ephemeral/log/#{apache_name}" do
+  action :create
+  recursive true
+end
+
+# Create symlink from where apache logs to physical directory
+link node[:apache][:log_dir] do
+  to "/mnt/ephemeral/log/#{apache_name}"
+end
+
 # Include the public recipe for basic installation
 include_recipe "apache2"
 
@@ -47,31 +63,6 @@ end
 link default_web_dir do
   to content_web_dir
 end
-
-
-# Move Apache logs
-apache_name = node[:apache][:dir].split("/").last
-log " Apache name was #{apache_name}"
-log " Apache log dir was #{node[:apache][:log_dir]}"
-
-
-# Delete log dir created on apache install - will be symlinked later
-directory node[:apache][:log_dir] do
-  recursive true
-  action :delete
-end
-
-# Create physical directory holding the logs
-directory "/mnt/ephemeral/log/#{apache_name}" do
-  action :create
-  recursive true
-end
-
-# Create symlink from where apache logs to physical directory
-link node[:apache][:log_dir] do
-  to "/mnt/ephemeral/log/#{apache_name}"
-end
-
 
 # Apache Multi-Processing Module configuration
 case node[:platform]
