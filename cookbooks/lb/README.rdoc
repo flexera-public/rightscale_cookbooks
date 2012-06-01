@@ -65,7 +65,6 @@ other recipes. This recipe is set to run in a periodic reconverge, which, by def
 
 == KNOWN LIMITATIONS:
 
-
 = LICENSE
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
