@@ -86,7 +86,8 @@ file and HAProxy is restarted.
 ==== do_attach_all recipe
 
 This recipe is used by the load balancer to automatically detect if application
-servers have disappeared or reappeared without detaching or retaching using the other recipes. This recipe is set to run in the periodic reconverge which
+servers have disappeared or reappeared without detaching or retaching using the
+other recipes. This recipe is set to run in the periodic reconverge which
 defaults to a period of 15 minutes between runs. It uses the
 "loadbalancer:app=APPLISTENER_NAME", "server:uuid=UUID", and
 "loadbalancer:backend_ip=IP_ADDRESS" tags to get a list of all of the
