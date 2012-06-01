@@ -12,7 +12,7 @@ class Chef::Recipe
 end
 
 do_for_block_devices node[:block_device] do |device|
-  log "Enabling continuous backups for device #{device} via cron job:#{get_device_or_default(node, device, :backup, :primary, :cron, :minute)} #{get_device_or_default(node, device, :backup, :primary, :cron, :hour)}"
+  log "  Enabling continuous backups for device #{device} via cron job:#{get_device_or_default(node, device, :backup, :primary, :cron, :minute)} #{get_device_or_default(node, device, :backup, :primary, :cron, :hour)}"
 
   block_device_json = "/var/lib/rightscale_block_device_#{device}.json"
 
