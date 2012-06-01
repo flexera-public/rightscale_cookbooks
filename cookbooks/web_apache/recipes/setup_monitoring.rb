@@ -20,8 +20,9 @@ end
 
 if node[:platform] =~ /redhat|centos/
 
+  collectd_version = node[:rightscale][:collectd_packages_version]
   package "collectd-apache" do
-    version node[:rightscale][:collectd_packages_version]
+    version "#{collectd_version}" unless collectd_version == "latest"
   end
 
   if node[:web_apache][:mpm] == "prefork"
