@@ -7,7 +7,7 @@
 
 rightscale_marker :begin
 
-# == Install and setup postfix 
+# Install and setup postfix
 package "postfix"
 
 service "postfix" do
@@ -15,10 +15,9 @@ service "postfix" do
   supports :status => true
 end
 
-# == Update main.cf (if needed)
+# Update main.cf (if needed)
 #
-# We make the changes needed for centos, but using the default main.cf 
-# config everywhere else
+# We make the changes needed for centos, but using the default main.cf config everywhere else
 #
 cookbook_file "/etc/postfix/main.cf" do
   only_if { node[:platform] =~ /centos|redhat/ }
@@ -34,7 +33,7 @@ execute "set_postfix_default_mta" do
   command "alternatives --set mta /usr/sbin/sendmail.postfix"
 end
 
-# On CentOS 5.4 postfix is not started and chef tries to 'stop' it.  This throws an error.
+# On CentOS 5.4 postfix is not started and chef tries to 'stop' it. This throws an error.
 # So we'll just start the service here for CentOS.
 if node[:platform] =~ /centos|redhat/
   service "postfix" do
@@ -47,7 +46,7 @@ else
   end
 end
 
-# == Add mail to logrotate
+# Add mail to logrotate
 #
 directory "/var/spool/oldmail" do
   recursive true

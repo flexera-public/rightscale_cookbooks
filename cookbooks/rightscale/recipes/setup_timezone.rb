@@ -7,7 +7,7 @@
 
 rightscale_marker :begin
 
-# == Set the Timezone
+# Set the Timezone
 #
 if node[:rightscale][:timezone]
   link "/etc/localtime" do
@@ -16,7 +16,7 @@ if node[:rightscale][:timezone]
   log "  Timezone set to #{node[:rightscale][:timezone]}"
 else
 
-  # If this attribute is not set leave unchanged and use localtime
+  # If this attribute is not set leave unchanged and use localtime.
   log "  rightscale/timezone set to localtime.  Not changing /etc/localtime..."
 end
 
