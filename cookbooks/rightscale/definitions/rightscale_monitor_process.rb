@@ -10,6 +10,6 @@
 
 define :rightscale_monitor_process do
   if params[:name]
-    node[:rightscale][:process_list_ary] << params[:name] unless node[:rightscale][:process_list_ary].include?(params[:name])
+    node[:rightscale][:process_list_array] << params[:name] unless node[:rightscale][:process_list_array].include?(params[:name])
   end
 end

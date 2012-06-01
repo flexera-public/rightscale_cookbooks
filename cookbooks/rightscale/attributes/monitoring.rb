@@ -43,4 +43,4 @@ default[:rightscale][:plugin_list_array] = [
 ]
 
 default[:rightscale][:process_list] = ""
-default[:rightscale][:process_list_ary] = []
+default[:rightscale][:process_list_array] = []

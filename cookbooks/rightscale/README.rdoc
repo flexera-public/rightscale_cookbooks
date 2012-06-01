@@ -50,10 +50,10 @@ Syntax:
 
 * Accepts only one parameter, "name" which is the name of the process to
   monitor.
-* The process name is added to <tt>node[:rightscale][:process_list_ary]</tt>
+* The process name is added to <tt>node[:rightscale][:process_list_array]</tt>
   which is used to create the list of processes in the
   <tt>/etc/collectd/conf/processes.conf</tt> file.
-* The <tt>node[:rightscale][:process_list_ary]</tt> will have any processes
+* The <tt>node[:rightscale][:process_list_array]</tt> will have any processes
   listed in node[:rightscale][:process_list] merged into it.  This is to support
   any legacy recipes as well as allow the input to be manipulated in the RS
   dashboard.

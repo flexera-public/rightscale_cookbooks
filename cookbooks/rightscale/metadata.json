@@ -1,29 +1,32 @@
 {
-  "name": "rightscale",
-  "description": "RightScale Cookbooks",
-  "long_description": "= RightScale Cookbook\n\n== DESCRIPTION:\n\nThis cookbook provides base recipes used to setup services used by the\nRightScale Cloud Management Platform.\n\n== REQUIREMENTS:\n\nRequires a VM launched from a RightScale managed RightImage.\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n== KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n== SETUP/USAGE:\n\nThe <tt>rightscale::default</tt> recipe performs common server configuration\nsteps such as enabling monitoring on the RightScale Dashboard.\n\nThe <tt>rightscale::install_tools</tt> recipe installs the\n<tt>rightscale_tools</tt> gem which provides tools for dealing with databases,\nvolumes, and remote object storage providers.\n\n== DETAILS:\n\n=== Definitions:\n\n==== rightscale_enable_collectd_plugin\n\n* Accepts only one parameter \"name\" which is the name of the collectd plugin to\n  enable.\n* The plugin name is added to node[:rightscale][:plugin_list_ary] which is used\n  to create the list of plugins in the <tt>/etc/collectd/collectd.conf</tt>\n  file.\n* The <tt>node[:rightscale][:plugin_list_ary]</tt> will have any plugins listed\n  in <tt>node[:rightscale][:plugin_list]</tt> merged into it. This is to\n  support any legacy recipes as well as allow the input to be manipulated in\n  the RS dashboard.\n\nSyntax:\n\n  rightscale_enable_collectd_plugin \"curl_json\"\n\n==== rightscale_monitor_process\n\n* Accepts only one parameter, \"name\" which is the name of the process to\n  monitor.\n* The process name is added to <tt>node[:rightscale][:process_list_ary]</tt>\n  which is used to create the list of processes in the\n  <tt>/etc/collectd/conf/processes.conf</tt> file.\n* The <tt>node[:rightscale][:process_list_ary]</tt> will have any processes\n  listed in node[:rightscale][:process_list] merged into it.  This is to support\n  any legacy recipes as well as allow the input to be manipulated in the RS\n  dashboard.\n\nSyntax:\n\n  rightscale_monitor_process \"nginx\"\n\n==== rightscale_marker\n\n* Accepts only one parameter, \"location\" which can be :start or :end. Can also\n  be :begin, :stop, and the string versions.\n* Used to log the start and end of a recipe using the 'log' chef resource.\n  Should be added at the beginning and end of a recipe.\n* Log marker:\n  ```========================= recipe::name : START/END =========================```\n\nSyntax:\n\n  rightscale_marker :start\n\n  rightscale_marker :end\n\n=== Resources:\n\n==== rightscale_server_collection\n\nThe server collection resource finds a set of servers in a deployment with a set\nof tags. The <tt>tags</tt> attribute specifies the tag or tags to search for (if\nmultiple tags are specified servers with any of the tags will match) and the\noptional <tt>secondary_tags</tt> attribute specifies tags that need to also\nappear on the servers, it will wait one minute for the <tt>secondary_tags</tt>\nto appear (this can be overridden with the <tt>timeout</tt> attribute).\n\nSyntax:\n\n  rightscale_server_collection \"rightscale_servers\" do\n    tags \"rs_login:state=active\"\n    secondary_tags \"server:uuid=*\"\n  end\n\n= LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to\nthe RightScale Terms of Service available at http://www.rightscale.com/terms.php\nand, if applicable, other agreements such as a RightScale Master Subscription\nAgreement.\n",
   "maintainer": "RightScale, Inc.",
-  "maintainer_email": "support@rightscale.com",
-  "license": "Copyright RightScale, Inc. All rights reserved.",
-  "platforms": {
-  },
-  "dependencies": {
-  },
-  "recommendations": {
-  },
   "suggestions": {
   },
+  "maintainer_email": "support@rightscale.com",
+  "long_description": "= RightScale Cookbook\n\n== DESCRIPTION:\n\nThis cookbook provides base recipes used to setup services used by the\nRightScale Cloud Management Platform.\n\n== REQUIREMENTS:\n\nRequires a VM launched from a RightScale managed RightImage.\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n== KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n== SETUP/USAGE:\n\nThe <tt>rightscale::default</tt> recipe performs common server configuration\nsteps such as enabling monitoring on the RightScale Dashboard.\n\nThe <tt>rightscale::install_tools</tt> recipe installs the\n<tt>rightscale_tools</tt> gem which provides tools for dealing with databases,\nvolumes, and remote object storage providers.\n\n== DETAILS:\n\n=== Definitions:\n\n==== rightscale_enable_collectd_plugin\n\n* Accepts only one parameter \"name\" which is the name of the collectd plugin to\n  enable.\n* The plugin name is added to node[:rightscale][:plugin_list_array] which is used\n  to create the list of plugins in the <tt>/etc/collectd/collectd.conf</tt>\n  file.\n* The <tt>node[:rightscale][:plugin_list_array]</tt> will have any plugins listed\n  in <tt>node[:rightscale][:plugin_list]</tt> merged into it. This is to\n  support any legacy recipes as well as allow the input to be manipulated in\n  the RS dashboard.\n\nSyntax:\n\n  rightscale_enable_collectd_plugin \"curl_json\"\n\n==== rightscale_monitor_process\n\n* Accepts only one parameter, \"name\" which is the name of the process to\n  monitor.\n* The process name is added to <tt>node[:rightscale][:process_list_array]</tt>\n  which is used to create the list of processes in the\n  <tt>/etc/collectd/conf/processes.conf</tt> file.\n* The <tt>node[:rightscale][:process_list_array]</tt> will have any processes\n  listed in node[:rightscale][:process_list] merged into it.  This is to support\n  any legacy recipes as well as allow the input to be manipulated in the RS\n  dashboard.\n\nSyntax:\n\n  rightscale_monitor_process \"nginx\"\n\n==== rightscale_marker\n\n* Accepts only one parameter, \"location\" which can be :start or :end. Can also\n  be :begin, :stop, and the string versions.\n* Used to log the start and end of a recipe using the 'log' chef resource.\n  Should be added at the beginning and end of a recipe.\n* Log marker:\n  ```========================= recipe::name : START/END =========================```\n\nSyntax:\n\n  rightscale_marker :start\n\n  rightscale_marker :end\n\n=== Resources:\n\n==== rightscale_server_collection\n\nThe server collection resource finds a set of servers in a deployment with a set\nof tags. The <tt>tags</tt> attribute specifies the tag or tags to search for (if\nmultiple tags are specified servers with any of the tags will match) and the\noptional <tt>secondary_tags</tt> attribute specifies tags that need to also\nappear on the servers, it will wait one minute for the <tt>secondary_tags</tt>\nto appear (this can be overridden with the <tt>timeout</tt> attribute).\n\nSyntax:\n\n  rightscale_server_collection \"rightscale_servers\" do\n    tags \"rs_login:state=active\"\n    secondary_tags \"server:uuid=*\"\n  end\n\n= LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to\nthe RightScale Terms of Service available at http://www.rightscale.com/terms.php\nand, if applicable, other agreements such as a RightScale Master Subscription\nAgreement.\n",
+  "description": "RightScale Cookbooks",
   "conflicting": {
   },
+  "platforms": {
+  },
+  "license": "Copyright RightScale, Inc. All rights reserved.",
   "providing": {
   },
-  "replacing": {
+  "recipes": {
+    "rightscale::setup_server_tags": "Sets machine tags that are common to all RightScale managed servers.",
+    "rightscale::setup_timezone": "Sets the system timezone.",
+    "rightscale::setup_ssh": "Installs the private ssh key.",
+    "rightscale::default": "Installs the utilities that are required for RightScale support.",
+    "rightscale::setup_monitoring": "Installs and configures RightScale dashboard monitoring features.",
+    "rightscale::install_mysql_collectd_plugin": "Installs the mysql collectd plugin for monitoring support.",
+    "rightscale::setup_mail": "Set up basic mail support.",
+    "rightscale::install_tools": "Installs RightScale's instance tools.",
+    "rightscale::install_file_stats_collectd_plugin": "Installs the file-stats.rb collectd plugin for monitoring support.  It is also used for mysql binary backup alerting.",
+    "rightscale::setup_hostname": "Sets the system hostname."
   },
   "attributes": {
     "rightscale/timezone": {
-      "display_name": "Timezone",
       "description": "Sets the system time to the timezone of the specified input, which must be a valid zoneinfo/tz database entry.  If the input is 'unset' the timezone will use the 'localtime' that's defined in your RightScale account under Settings -> User Settings -> Preferences tab.  You can find a list of valid examples from the timezone pulldown bar in the Preferences tab.  Ex: US/Pacific, US/Eastern",
-      "required": "optional",
       "choice": [
         "Africa/Casablanca",
         "America/Bogota",
@@ -93,127 +96,124 @@
         "UTC",
         "localtime"
       ],
-      "default": "UTC",
       "recipes": [
         "rightscale::setup_timezone",
         "rightscale::default"
       ],
       "calculated": false,
-      "type": "string"
+      "type": "string",
+      "default": "UTC",
+      "display_name": "Timezone",
+      "required": "optional"
     },
-    "rightscale/process_list": {
-      "display_name": "Process List",
-      "description": "A space-separated list of additional processes to monitor in the RightScale Dashboard.  Ex: sshd crond",
-      "required": "optional",
-      "default": "",
-      "recipes": [
-        "rightscale::install_mysql_collectd_plugin",
-        "rightscale::setup_monitoring",
-        "rightscale::default"
-      ],
+    "rightscale/search_suffix": {
+      "description": "The domain search suffix you would like this node to have. Ex: domain.suf.",
       "choice": [
 
       ],
+      "recipes": [
+        "rightscale::setup_hostname"
+      ],
       "calculated": false,
-      "type": "string"
+      "type": "string",
+      "default": "",
+      "display_name": "Domain Search Suffix",
+      "required": "optional"
+    },
+    "rightscale/short_hostname": {
+      "description": "The short hostname that you would like this node to have. Ex: kryten",
+      "choice": [
+
+      ],
+      "recipes": [
+        "rightscale::setup_hostname"
+      ],
+      "calculated": false,
+      "type": "string",
+      "default": null,
+      "display_name": "Short Hostname",
+      "required": "required"
+    },
+    "rightscale/domain_name": {
+      "description": "The domain name that you would like this node to have. Ex: domain.suf",
+      "choice": [
+
+      ],
+      "recipes": [
+        "rightscale::setup_hostname"
+      ],
+      "calculated": false,
+      "type": "string",
+      "default": "",
+      "display_name": "Domain Name",
+      "required": "optional"
+    },
+    "rightscale": {
+      "choice": [
+
+      ],
+      "recipes": [
+
+      ],
+      "calculated": false,
+      "type": "hash",
+      "display_name": "RightScale Attributes",
+      "required": "optional"
     },
     "rightscale/process_match_list": {
-      "display_name": "Process Match List",
       "description": "A space-separated list of pairs used to match the name(s) of additional processes to monitor in the RightScale Dashboard.  Paired arguments are passed in using the following syntax 'name/regex'. Ex: ssh/ssh* cron/cron*",
-      "required": "optional",
-      "default": "",
+      "choice": [
+
+      ],
       "recipes": [
         "rightscale::install_mysql_collectd_plugin",
         "rightscale::setup_monitoring",
         "rightscale::default"
       ],
+      "calculated": false,
+      "type": "string",
+      "default": "",
+      "display_name": "Process Match List",
+      "required": "optional"
+    },
+    "rightscale/process_list": {
+      "description": "A space-separated list of additional processes to monitor in the RightScale Dashboard.  Ex: sshd crond",
       "choice": [
 
       ],
+      "recipes": [
+        "rightscale::install_mysql_collectd_plugin",
+        "rightscale::setup_monitoring",
+        "rightscale::default"
+      ],
       "calculated": false,
-      "type": "string"
+      "type": "string",
+      "default": "",
+      "display_name": "Process List",
+      "required": "optional"
     },
     "rightscale/private_ssh_key": {
-      "display_name": "Private SSH Key",
       "description": "The private SSH key of another instance that gets installed on this instance.  Select input type 'key' from the dropdown and then select an SSH key that is installed on the other instance.  Ex: key:my_key",
-      "required": "required",
+      "choice": [
+
+      ],
       "recipes": [
         "rightscale::setup_ssh"
       ],
-      "choice": [
-
-      ],
       "calculated": false,
-      "type": "string"
-    },
-    "rightscale/short_hostname": {
-      "display_name": "Short Hostname",
-      "description": "The short hostname that you would like this node to have. Ex: kryten",
-      "required": "required",
-      "default": null,
-      "recipes": [
-        "rightscale::setup_hostname"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "rightscale/domain_name": {
-      "display_name": "Domain Name",
-      "description": "The domain name that you would like this node to have. Ex: domain.suf",
-      "required": "optional",
-      "default": "",
-      "recipes": [
-        "rightscale::setup_hostname"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "rightscale/search_suffix": {
-      "display_name": "Domain Search Suffix",
-      "description": "The domain search suffix you would like this node to have. Ex: domain.suf.",
-      "required": "optional",
-      "default": "",
-      "recipes": [
-        "rightscale::setup_hostname"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "rightscale": {
-      "display_name": "RightScale Attributes",
-      "type": "hash",
-      "choice": [
-
-      ],
-      "calculated": false,
-      "required": "optional",
-      "recipes": [
-
-      ]
+      "type": "string",
+      "display_name": "Private SSH Key",
+      "required": "required"
     }
   },
+  "replacing": {
+  },
+  "dependencies": {
+  },
+  "name": "rightscale",
   "groupings": {
   },
-  "recipes": {
-    "rightscale::default": "Installs the utilities that are required for RightScale support.",
-    "rightscale::setup_monitoring": "Installs and configures RightScale dashboard monitoring features.",
-    "rightscale::setup_mail": "Set up basic mail support.",
-    "rightscale::setup_ssh": "Installs the private ssh key.",
-    "rightscale::setup_hostname": "Sets the system hostname.",
-    "rightscale::setup_timezone": "Sets the system timezone.",
-    "rightscale::setup_server_tags": "Sets machine tags that are common to all RightScale managed servers.",
-    "rightscale::install_tools": "Installs RightScale's instance tools.",
-    "rightscale::install_mysql_collectd_plugin": "Installs the mysql collectd plugin for monitoring support.",
-    "rightscale::install_file_stats_collectd_plugin": "Installs the file-stats.rb collectd plugin for monitoring support.  It is also used for mysql binary backup alerting."
-  },
-  "version": "0.1.0"
+  "version": "0.1.0",
+  "recommendations": {
+  }
 }

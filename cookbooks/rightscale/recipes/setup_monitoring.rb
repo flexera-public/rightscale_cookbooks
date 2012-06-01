@@ -8,8 +8,8 @@
 rightscale_marker :begin
 
 # These are not conditional assignments, but array joins.
-node[:rightscale][:plugin_list_ary] = node[:rightscale][:plugin_list].split | node[:rightscale][:plugin_list_ary]
-node[:rightscale][:process_list_ary] = node[:rightscale][:process_list].split | node[:rightscale][:process_list_ary]
+node[:rightscale][:plugin_list_array] = node[:rightscale][:plugin_list].split | node[:rightscale][:plugin_list_array]
+node[:rightscale][:process_list_array] = node[:rightscale][:process_list].split | node[:rightscale][:process_list_array]
 
 # Install Attached Packages
 #
