@@ -9,14 +9,13 @@ module RightScale
   module System
     module Helper
 
-      # Calculates every 15 minute shedule for cron minute setting 
-      # Uses a random start offset -- to avoid all systems from
-      # reconverging at the same time.
+      # Calculates every 15 minute schedule for cron minute setting
+      # Uses a random start offset to avoid all systems from reconverging at the same time.
       #
-      # Returns: String
+      # @return [String] randomized schedule time
       def self.randomize_reconverge_minutes
         shed_string = ""
-        s = rand(15) # calc random start minute
+        s = rand(15) # Get random start minute
         4.times do |q|
           shed_string << "," unless q == 0
           shed_string << "#{s + (q*15)}"
@@ -25,7 +24,6 @@ module RightScale
       end
 
       # Use the server_collection resource programatically
-      # FIXME: This is highly dependent on Chef version      
       def self.requery_server_collection(tag, collection_name, node, run_context)
         resrc = Chef::Resource::ServerCollection.new(collection_name)
         resrc.tags tag
@@ -35,7 +33,6 @@ module RightScale
       end
 
       # Use the template resource programatically
-      # FIXME: This is highly dependent on Chef version      
       def self.run_template(target_file, source, cookbook, variables, enable, command, node, run_context)
         resrc = Chef::Resource::Template.new(target_file)
         resrc.source source
