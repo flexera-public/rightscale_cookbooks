@@ -19,7 +19,7 @@ module RightScale
     #
     # @param new_resource [Object] Resource which will be initialized
     #
-    # @return [Object] BlockDevice object
+    # @return [BlockDevice] BlockDevice object
     def init(new_resource)
       # Setup options
       options = {
@@ -63,19 +63,19 @@ module RightScale
       end
     end
 
-    # Wrapper for do_for_all_block_devices
+    # Instance method for do_for_all_block_devices
     # will call RightScale::BlockDeviceHelper.do_for_all_block_devices with given parameters
     #
-    # @param block_device [Object] Block device
+    # @param block_device [Hash] Block device
     # @param block [Object] Hash of block devices to which block_device belongs to
     def do_for_all_block_devices(block_device, &block)
       RightScale::BlockDeviceHelper.do_for_all_block_devices(block_device, &block)
     end
 
-    # Wrapper for do_for_block_devices
+    # Instance method for do_for_block_devices
     # will call RightScale::BlockDeviceHelper.do_for_block_devices with given parameters
     #
-    # @param block_device [Object] Block device
+    # @param block_device [Hash] Block device
     # @param block [Object] Hash of block devices to which block_device belongs to
     def do_for_block_devices(block_device, &block)
       RightScale::BlockDeviceHelper.do_for_block_devices(block_device, &block)
@@ -84,8 +84,8 @@ module RightScale
 
     # Helper to perform perform actions to a set of all available block devices
     #
-    # @param block_device [Object] Block device
-    # @param block [Object] Hash of block devices to which block_device belongs to
+    # @param block_device [Hash] Block device
+    # @param block [Proc] Block which will be used for setup of all available block device resources.
     def self.do_for_all_block_devices(block_device, &block)
       block_device[:devices].keys.reject do |key|
         key == 'default'
@@ -98,8 +98,8 @@ module RightScale
 
     # Helper to perform perform actions to a set of block devices
     #
-    # @param block_device [Object] Block device
-    # @param block [Object] Hash of block devices to which block_device belongs to
+    # @param block_device [Hash] Block device
+    # @param block [Proc] Block which will be used for setup of block device resource
     #
     # @raises [RuntimeError] if block device has no number
     def self.do_for_block_devices(block_device, &block)
@@ -123,9 +123,9 @@ module RightScale
 
     # Extends chef attribute definition adding set_unless_deep_merge
     #
-    # @param node [Object] Node name
-    # @param src [Object] Source attribute
-    # @param dst [Object] Destination attribute
+    # @param node [Hash] Node name
+    # @param src [Hash] Source attribute
+    # @param dst [Hash] Destination attribute
     def self.set_unless_deep_merge(node, src, dst)
       src.reduce(node) {|values, key| values[key]}.each_pair do |attribute, value|
         case value
@@ -137,11 +137,11 @@ module RightScale
       end
     end
 
-    # Wrapper for get_device_or_default
+    # Instance method for get_device_or_default
     # will call RightScale::BlockDeviceHelper.get_device_or_default with given parameters
     #
-    # @param node [Object] Node name
-    # @param device [Object] Device
+    # @param node [Hash] Node name
+    # @param device [Symbol] Device
     # @param keys [Array] Array of keys
     def get_device_or_default(node, device, *keys)
       RightScale::BlockDeviceHelper.get_device_or_default(node, device, *keys)
@@ -149,8 +149,8 @@ module RightScale
 
     #Return current device
     #
-    # @param node [Object] Node name
-    # @param device [Object] Device
+    # @param node [Hash] Node name
+    # @param device [Symbol] Device
     # @param keys [Array] Array of keys
     def self.get_device_or_default(node, device, *keys)
       value = keys.reduce(node[:block_device][:devices][device]) do |values, key|
@@ -160,5 +160,6 @@ module RightScale
       value = keys.reduce(node[:block_device][:devices][:default]) {|values, key| values[key]} if !value || value.empty?
       value
     end
+
   end
 end
