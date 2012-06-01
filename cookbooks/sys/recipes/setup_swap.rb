@@ -29,7 +29,7 @@ def clean_swap(swap_file)
 
   # Delete swap_file if it exists
   file "#{swap_file}" do
-    only_if {File.exists?(swap_file)}
+    only_if { File.exists?(swap_file) }
     backup false
     action :delete
   end
@@ -61,7 +61,7 @@ def create_swap(swap_file, swap_size)
 end
 
 # Sanitize user data 'swap_size'
-if ( swap_size !~ /^\d*[.]?\d+$/ )
+if (swap_size !~ /^\d*[.]?\d+$/)
   raise "ERROR: invalid swap size."
 else
   # Convert swap_size from GB to MB
@@ -69,27 +69,27 @@ else
 end
 
 # Sanitize user data 'swap_file'
-if (swap_file !~ /^\/{1}(((\/{1}\.{1})?[a-zA-Z0-9 ]+\/?)+(\.{1}[a-zA-Z0-9]{2,4})?)$/ )
+if (swap_file !~ /^\/{1}(((\/{1}\.{1})?[a-zA-Z0-9 ]+\/?)+(\.{1}[a-zA-Z0-9]{2,4})?)$/)
   raise "ERROR: invalid swap file name"
 end
 
 # Skip creating swap or disable swap
 if (swap_size == 0)
-  if ( File.exists?(swap_file) && File.open('/proc/swaps').grep(/^#{swap_file}\b/).any? )
+  if (File.exists?(swap_file) && File.open('/proc/swaps').grep(/^#{swap_file}\b/).any?)
     clean_swap(swap_file)
   end
   log "swap creation disabled"
 else
 
   # For idempotency, check if selected swapfle is in place, it's correct size, and it's on
-  if ( File.exists?(swap_file) && \
+  if (File.exists?(swap_file) && \
        File.stat(swap_file).size/1048576 == swap_size && \
-       File.open('/proc/swaps').grep(/^#{swap_file}\b/).any? )
+       File.open('/proc/swaps').grep(/^#{swap_file}\b/).any?)
     log "valid current swap config"
   else
 
     # Check for remnents of swap
-    if ( File.exists?(swap_file) || File.open('/proc/swaps').grep(/^#{swap_file}\b/).any? )
+    if (File.exists?(swap_file) || File.open('/proc/swaps').grep(/^#{swap_file}\b/).any?)
       log "swap remnents detected - cleaning"
       clean_swap(swap_file)
     end
@@ -104,15 +104,15 @@ else
         # Determine if swapfile is too big for fs that holds it
         swap_dir=File.dirname(swap_file)
         FileUtils.mkdir_p(swap_dir) unless swap_dir == "/"
-        (fs_total,fs_used) = `df --block-size=1M -P #{swap_dir} |tail -1| awk '{print $2":"$3}'`.chomp.split(":")
-        if ( (((fs_used.to_f + swap_size).to_f/fs_total.to_f)*100).to_i > fs_size_threshold_percent )
+        (fs_total, fs_used) = `df --block-size=1M -P #{swap_dir} |tail -1| awk '{print $2":"$3}'`.chomp.split(":")
+        if ((((fs_used.to_f + swap_size).to_f/fs_total.to_f)*100).to_i > fs_size_threshold_percent)
           raise "ERROR: swap file size too big - would exceed #{fs_size_threshold_percent} percent of filesystem - currently using #{fs_used} out of #{fs_total} wanting to add #{swap_size} in swap"
         end
       end
     end
 
     # Should now setup swap file
-    create_swap(swap_file,swap_size)
+    create_swap(swap_file, swap_size)
   end
 end
 

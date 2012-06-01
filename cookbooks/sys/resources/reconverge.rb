@@ -13,5 +13,5 @@ attribute :recipe_name, :kind_of => String, :regex => /[A-Za-z0-9_-]+::[A-Za-z0-
 # Defines a default action
 def initialize(*args)
   super
-  @action = :enable  
+  @action = :enable
 end

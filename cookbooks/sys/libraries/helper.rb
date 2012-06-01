@@ -17,9 +17,9 @@ module RightScale
       def self.randomize_reconverge_minutes
         shed_string = ""
         s = rand(15) # calc random start minute
-        4.times do |q| 
+        4.times do |q|
           shed_string << "," unless q == 0
-          shed_string << "#{s + (q*15)}" 
+          shed_string << "#{s + (q*15)}"
         end
         shed_string.strip
       end
@@ -29,11 +29,11 @@ module RightScale
       def self.requery_server_collection(tag, collection_name, node, run_context)
         resrc = Chef::Resource::ServerCollection.new(collection_name)
         resrc.tags tag
-        provider = nil      
+        provider = nil
         provider = Chef::Provider::ServerCollection.new(resrc, run_context)
         provider.send("action_load")
       end
-            
+
       # Use the template resource programatically
       # FIXME: This is highly dependent on Chef version      
       def self.run_template(target_file, source, cookbook, variables, enable, command, node, run_context)
@@ -43,21 +43,21 @@ module RightScale
         resrc.variables variables
         resrc.backup false
         #resrc.notifies notify_action, notify_resources
-        
+
         provider = Chef::Provider::Template.new(resrc, run_context)
         provider.load_current_resource
-               
+
         if enable
           provider.send("action_create")
         else
           provider.send("action_delete")
         end
-        
+
         Chef::Log.info `/usr/sbin/rebuild-iptables` if resrc.updated
       end
-      
+
       def self.calculate_exponential_backoff(value)
-        ((value == 1) ? 2 : (value*value)) 
+        ((value == 1) ? 2 : (value*value))
       end
 
     end

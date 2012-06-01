@@ -7,15 +7,15 @@
 
 rightscale_marker :begin
 
-node[:sys][:reconverge_list].split(" ").each do |recipe| 
-    
+node[:sys][:reconverge_list].split(" ").each do |recipe|
+
   log "Adding re-converge task for #{recipe}"
 
   sys_reconverge "Enable recipe re-converge" do
     recipe_name recipe
     action :enable
   end
-    
+
 end if node[:sys]
 
 rightscale_marker :end
