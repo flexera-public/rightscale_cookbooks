@@ -22,9 +22,11 @@ vhosts(node[:lb][:vhost_names]).each do | vhost_name |
   end
 end
 
-gem_package "right_aws" do
+r = gem_package "right_aws" do
   gem_binary "/opt/rightscale/sandbox/bin/gem"
+  action :nothing
 end
+r.run_action(:install)
 
 # Reload newly install gem.
 Gem.clear_paths
