@@ -101,7 +101,7 @@ module RightScale
         # @param timeout [Integer] Timeout value
         # @param tries [Integer] Connection attempts number
         #
-        # @return [Mysql] MySQL connection
+        # @return [Mysql::Result] MySQL query result
         #
         # @raises [TimeoutError] if timeout exceeded
         # @raises [RuntimeError] if connection try attempts limit reached
@@ -110,7 +110,7 @@ module RightScale
 
           loop do
             begin
-              info_msg = "Doing SQL Query: HOST=#{hostname}, QUERY=#{query}"
+              info_msg = "  Doing SQL Query: HOST=#{hostname}, QUERY=#{query}"
               info_msg << ", TIMEOUT=#{timeout}" if timeout
               info_msg << ", NUM_TRIES=#{tries}" if tries > 1
               Chef::Log.info info_msg
