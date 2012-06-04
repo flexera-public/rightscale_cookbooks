@@ -33,6 +33,7 @@ set_unless[:db][:dns][:ttl] = "60"
 # Server state variables
 #
 # Default value for DB status
+# valid values are :initialized or :uninitialized
 set_unless[:db][:init_status] = :uninitialized
 
 # Default value for DB master/slave check
