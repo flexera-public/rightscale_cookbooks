@@ -5,6 +5,13 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+# Perform backup request, will execute db::do_primary/secondary_backup recipe depending of backup_type given
+#
+# @param force(Boolean):: If false, if a backup is currently running, will error out stating so.
+#   If true, if a backup is currently running, will kill that process and take over the lock.
+# @param backup_type(String):: If 'primary' will do a primary backup using node attributes specific
+#   to the main backup.  If 'secondary' will do a secondary backup using node attributes for
+#   secondary.  Secondary uses 'ROS'.
 define :db_request_backup, :force => false, :backup_type => 'primary' do
   do_force        = params[:force]
   do_backup_type  = params[:backup_type] == "primary" ? "primary" : "secondary"
@@ -16,20 +23,20 @@ define :db_request_backup, :force => false, :backup_type => 'primary' do
   end
 end
 
-# == Does a snapshot backup of the filesystem containing the database
+# Does a snapshot backup of the filesystem containing the database
 # Note that the upload becomes a background job in order to allow other recipes to
 # not wait if the upload takes a long time.
 # Since this backup is a snapshot of a filesystem, it will check if the database has
 # been 'initialized', else it will fail.
-# == Params
-# force(Boolean):: If false, if a backup is currently running, will error out stating so.
+#
+# @param force(Boolean):: If false, if a backup is currently running, will error out stating so.
 #   If true, if a backup is currently running, will kill that process and take over the lock.
-# backup_type(String):: If 'primary' will do a primary backup using node attributes specific
+# @param backup_type(String):: If 'primary' will do a primary backup using node attributes specific
 #   to the main backup.  If 'secondary' will do a secondary backup using node attributes for
 #   secondary.  Secondary uses 'ROS'.
-# == Exceptions
-# If force is false and a backup is currently running, will raise an exception.
-# If database is not 'initialized', will raise.
+#
+# @raises [RuntimeError] If force is false and a backup is currently running, will raise an exception.
+# @raises [RuntimeError] If database is not 'initialized'
 define :db_do_backup, :force => false, :backup_type => "primary" do
 
   class Chef::Recipe
@@ -46,7 +53,7 @@ define :db_do_backup, :force => false, :backup_type => "primary" do
   do_force        = params[:force]
   do_backup_type  = params[:backup_type] == "primary" ? "primary" : "secondary"
 
-  # == Check if database is able to be backed up (initialized)
+  # Check if database is able to be backed up (initialized)
   # must be done in ruby block to expand node during converge not compile
   log "  Checking db_init_status making sure db ready for backup"
   db_init_status :check do
@@ -54,7 +61,7 @@ define :db_do_backup, :force => false, :backup_type => "primary" do
     error_message "Database not initialized."
   end
 
-  # == Verify initalized database
+  # Verify initalized database
   # Check the node state to verify that we have correctly initialized this server.
   db_state_assert :either
 
@@ -63,12 +70,11 @@ define :db_do_backup, :force => false, :backup_type => "primary" do
     action :pre_backup_check
   end
 
-  # == Aquire the backup lock or die
+  # Acquire the backup lock or die
   #
   # This lock is released in the 'backup' script for now.
   # See below for more information about 'backup'
   # if 'force' is true, kills pid and removes locks
-  #
   block_device NICKNAME do
     action :backup_lock_take
     force do_force

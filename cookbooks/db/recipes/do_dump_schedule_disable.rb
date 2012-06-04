@@ -5,8 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-# == remove cron task for export
-#
+# Remove cron task for export
 rightscale_marker :begin
 
 cron "db_dump_export" do

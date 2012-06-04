@@ -8,7 +8,6 @@
 rightscale_marker :begin
 
 # Setup default values for database resource
-#
 db node[:db][:data_dir] do
   persist true
   provider node[:db][:provider]
