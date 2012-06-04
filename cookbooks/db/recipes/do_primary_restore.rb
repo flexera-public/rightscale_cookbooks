@@ -47,9 +47,6 @@ end
 log "  Performing Restore..."
 # Requires block_device node[:db][:block_device] to be instantiated
 # previously. Make sure block_device::default recipe has been run.
-
-# TODO: this code is duplicated between db and block device.  Need to do something
-# about that...... Getting it working first
 lineage = node[:db][:backup][:lineage]
 lineage_override = node[:db][:backup][:lineage_override]
 restore_lineage = lineage_override == nil || lineage_override.empty? ? lineage : lineage_override

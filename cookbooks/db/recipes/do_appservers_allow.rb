@@ -7,7 +7,7 @@
 
 rightscale_marker :begin
 
-log "Opening database port(s) to all application servers"
+log "  Opening database port(s) to all application servers"
 db node[:db][:data_dir] do
   machine_tag "appserver:active=true"
   enable true
