@@ -201,7 +201,7 @@ action :install_server do
 
   # Uninstall other packages we don't
   packages = node[:db_mysql][:packages_uninstall]
-  log "Packages to uninstall: #{packages.join(",")}" unless packages == ""
+  log "  Packages to uninstall: #{packages.join(",")}" unless packages == ""
   packages.each do |p|
      package p do
        action :remove
