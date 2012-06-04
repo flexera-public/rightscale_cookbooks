@@ -6,18 +6,18 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 # Required attributes
-#
+
 set_unless[:db_mysql][:version] = '5.5'
 
 
 # Recommended attributes
-#
+
 set_unless[:db_mysql][:collectd_master_slave_mode] = ""
 set_unless[:db_mysql][:previous_master] = nil
 
 
 # Optional attributes
-#
+
 set_unless[:db_mysql][:port] = "3306"
 set_unless[:db_mysql][:log_bin_enabled] = true
 set_unless[:db_mysql][:log_bin] = "/mnt/ephemeral/mysql-binlogs/mysql-bin"
@@ -34,7 +34,7 @@ set_unless[:db_mysql][:dump][:container] = ""
 set_unless[:db_mysql][:dump][:prefix] = ""
 
 # Platform specific attributes
-#
+
 set_unless[:db_mysql][:kill_bug_mysqld_safe] = true
 
 case platform
@@ -55,3 +55,5 @@ end
 # 1/3 of the overall system file max should be large enough.  The percentage can be
 # adjusted if necessary.
 set_unless[:db_mysql][:file_ulimit] = `sysctl -n fs.file-max`.to_i/33
+
+set_unless[:db_mysql][:backup][:slave][:max_allowed_lag] = 60
