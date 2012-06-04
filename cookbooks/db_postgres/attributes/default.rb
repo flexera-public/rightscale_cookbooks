@@ -6,13 +6,11 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 # Recommended attributes
-#
 set_unless[:db_postgres][:server_usage] = "dedicated"  # or "shared"
 set_unless[:db_postgres][:previous_master] = nil
 
 
 # Optional attributes
-#
 set_unless[:db_postgres][:port] = "5432"
 set_unless[:db_postgres][:version] = "9.1"
 
@@ -23,7 +21,6 @@ set_unless[:db_postgres][:datadir_relocate] = "/mnt/storage"
 set_unless[:db_postgres][:bind_address] = cloud[:private_ips][0]
 
 # Platform specific attributes
-
 case platform
 when "centos"
   set[:db_postgres][:socket] = "/var/run/postgresql"
