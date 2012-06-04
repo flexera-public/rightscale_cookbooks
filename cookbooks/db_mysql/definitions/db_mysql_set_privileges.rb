@@ -20,7 +20,7 @@ define :db_mysql_set_privileges, :preset => "administrator", :username => nil, :
 
       con = Mysql.new("", "root",nil,nil,nil,"#{node[:db_mysql][:socket]}")
 
-      # Now that we have a Mysql object, let's santize our inputs
+      # Now that we have a Mysql object, let's sanitize our inputs
       username = con.escape_string(username)
       password = con.escape_string(password)
 
