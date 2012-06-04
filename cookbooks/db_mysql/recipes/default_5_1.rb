@@ -20,11 +20,19 @@ node[:db_mysql][:service_name] = "mysql"
 platform = node[:platform]
 case platform
 when "redhat","centos","fedora","suse"
-  node[:db_mysql][:packages_uninstall] = ""
-  node[:db_mysql][:client_packages_install] = ["MySQL-shared-compat",
-                                               "MySQL-devel-community",
-                                               "MySQL-client-community" ]
-  node[:db_mysql][:server_packages_install] = ["MySQL-server-community"]
+  case node[:platform_version]
+  when /^5.*/
+    node[:db_mysql][:packages_uninstall] = ""
+    node[:db_mysql][:client_packages_install] = ["MySQL-shared-compat",
+                                                 "MySQL-devel-community",
+                                                 "MySQL-client-community" ]
+    node[:db_mysql][:server_packages_install] = ["MySQL-server-community"]
+  when /^6.*/
+    node[:db_mysql][:service_name] = "mysqld"
+    node[:db_mysql][:packages_uninstall] = ""
+    node[:db_mysql][:client_packages_install] = ["mysql-devel", "mysql"]
+    node[:db_mysql][:server_packages_install] = ["mysql-server"]    
+  end
 when "debian","ubuntu"
   node[:db_mysql][:packages_uninstall] = ""
   node[:db_mysql][:client_packages_install] = ["libmysqlclient-dev", "mysql-client-5.1"]
