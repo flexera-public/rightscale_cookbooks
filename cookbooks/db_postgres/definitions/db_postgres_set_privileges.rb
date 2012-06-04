@@ -27,11 +27,11 @@ define :db_postgres_set_privileges, :preset => "administrator", :username => nil
       password = conn.escape_string(password)
 
       case priv_preset
-      when 'administrator'
+
       # Create group roles, don't error out if already created.  Users don't inherit "special" attribs
-      # from group role, see: http://www.postgresql.org/docs/9.1/static/role-membership.html 
-      # cmd ==> createuser -h /var/run/postgresql -U postgres #{admin_role} -sdril 
-      
+      # from group role, see: http://www.postgresql.org/docs/9.1/static/role-membership.html
+      # cmd ==> createuser -h /var/run/postgresql -U postgres #{admin_role} -sdril
+      when 'administrator'
         # Enable admin/replication user
         result = conn.exec("SELECT COUNT(*) FROM pg_user WHERE usename='#{username}'")
         userstat = result.getvalue(0,0)
@@ -43,11 +43,10 @@ define :db_postgres_set_privileges, :preset => "administrator", :username => nil
           conn.exec("CREATE USER #{username} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password}'")
         end
 
-      when 'user'
       # Create group roles, don't error out if already created.  Users don't inherit "special" attribs
       # from group role, see: http://www.postgresql.org/docs/9.1/static/role-membership.html
-      # cmd ==> createuser -h /var/run/postgresql -U postgres #{user_role} -SdRil 
-      
+      # cmd ==> createuser -h /var/run/postgresql -U postgres #{user_role} -SdRil
+      when 'user'
         # Enable application user
         result = conn.exec("SELECT COUNT(*) FROM pg_user WHERE usename='#{username}'")
         userstat = result.getvalue(0,0)
