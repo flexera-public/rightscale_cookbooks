@@ -35,7 +35,7 @@ module RightScale
 
         # Create new MySQL object
         #
-        # @param new_resource [Object] Resource which will be initialized
+        # @param [Object] new_resource Resource which will be initialized
         #
         # @return [Mysql] MySQL object
         def init(new_resource)
@@ -55,7 +55,7 @@ module RightScale
         # Helper to load replication information
         # from "rs_snapshot_position.yaml"
         #
-        # @param node [Hash] Node name
+        # @param [Hash] node  Node name
         def self.load_replication_info(node)
           loadfile = ::File.join(node[:db][:data_dir], SNAPSHOT_POSITION_FILENAME)
           Chef::Log.info "  Loading replication information from #{loadfile}"
@@ -65,7 +65,7 @@ module RightScale
         # Loading information about replication master status.
         # If that file exists, the MySQL server has already previously been configured for replication,
         #
-        # @param node [Hash] Node name
+        # @param [Hash] node  Node name
         def self.load_master_info_file(node)
           loadfile = ::File.join(node[:db][:data_dir], "master.info")
           Chef::Log.info "  Loading master.info file from #{loadfile}"
@@ -80,8 +80,8 @@ module RightScale
 
         # Create new Mysql connection
         #
-        # @param node [Hash] Node name
-        # @param hostname [String] Hostname FQDN, default is 'localhost'
+        # @param [Hash] node Node name
+        # @param [String] hostname Hostname FQDN, default is 'localhost'
         #
         # @return [Mysql] MySQL connection
         def self.get_mysql_handle(node, hostname = 'localhost')
@@ -96,10 +96,10 @@ module RightScale
 
         # Perform sql query to MySql server
         #
-        # @param node [Hash] Node name
-        # @param hostname [String] Hostname FQDN, default is 'localhost'
-        # @param timeout [Integer] Timeout value
-        # @param tries [Integer] Connection attempts number
+        # @param [Hash] node Node name
+        # @param [String] hostname Hostname FQDN, default is 'localhost'
+        # @param [Integer] timeout Timeout value
+        # @param [Integer] tries Connection attempts number
         #
         # @return [Mysql::Result] MySQL query result
         #
@@ -136,11 +136,11 @@ module RightScale
 
         # Replication process reconfiguration
         #
-        # @param node [Hash] Node name
-        # @param hostname [String] Hostname FQDN, default is 'localhost'
-        # @param newmaster_host [String] FQDN or ip of new replication master
-        # @param newmaster_logfile [String] Replication log filename
-        # @param newmaster_position [Integer] Last record position in replication log
+        # @param [Hash] node Node name
+        # @param [String] hostname Hostname FQDN, default is 'localhost'
+        # @param [String] newmaster_host FQDN or ip of new replication master
+        # @param [String] newmaster_logfile Replication log filename
+        # @param [Integer] newmaster_position Last record position in replication log
         def self.reconfigure_replication(node, hostname = 'localhost', newmaster_host = nil, newmaster_logfile=nil, newmaster_position=nil)
           Chef::Log.info "  Configuring with #{newmaster_host} logfile #{newmaster_logfile} position #{newmaster_position}"
 
