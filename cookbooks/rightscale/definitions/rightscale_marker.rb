@@ -15,8 +15,8 @@ define :rightscale_marker do
   location = location.to_s
 
   # detect if used 'begin' instead of 'start' or 'stop' instead of 'end'
-  if ( location =~ /^begin$/ ) then location = "start" end
-  if ( location =~ /^stop$/ ) then location = "end" end
+  location = "start" if location =~ /^begin$/
+  location = "end" if location =~ /^stop$/
 
   if location =~ /^start|end$/
     log "======== #{recipe_name} : #{location.upcase} ========"
@@ -25,4 +25,3 @@ define :rightscale_marker do
   end
 
 end
-

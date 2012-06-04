@@ -10,7 +10,7 @@ rightscale_marker :begin
 DATA_DIR = node[:db][:data_dir]
 
 user = node[:db][:admin][:user]
-log "Adding #{user} with administrator privileges for all databases."
+log "  Adding #{user} with administrator privileges for all databases."
 
 db DATA_DIR do
   privilege "administrator"

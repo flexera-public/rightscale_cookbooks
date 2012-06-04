@@ -13,7 +13,7 @@ end
 
 NICKNAME = get_device_or_default(node, :device1, :nickname)
 
-# == Verify initalized database
+# Verify initialized database
 # Check the node state to verify that we have correctly initialized this server.
 db_state_assert :either
 

@@ -5,11 +5,11 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+rightscale_marker :begin
+
 if "#{node[:rightscale][:private_ssh_key]}" != ""
 
-  rightscale_marker :begin
-
-  log "Install private key"
+  log "  Install private key"
 
   directory "/root/.ssh" do
     recursive true
@@ -18,7 +18,11 @@ if "#{node[:rightscale][:private_ssh_key]}" != ""
     source "id_rsa.erb"
     mode 0600
   end
-  
-  rightscale_marker :end
-  
+
+else
+
+  raise "  Private SSH key is empty!"
+
 end
+
+rightscale_marker :end

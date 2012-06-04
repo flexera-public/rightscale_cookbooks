@@ -15,7 +15,7 @@ skip, reason = true, "Storage Account password not provided" if node[:db][:dump]
 skip, reason = true, "Container not provided"                if node[:db][:dump][:container] == ""
 
 if skip
-  log "Skipping import: #{reason}"
+  log "  Skipping import: #{reason}"
 else
   cron "db_dump_export" do
     hour "0"

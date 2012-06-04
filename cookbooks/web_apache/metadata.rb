@@ -106,4 +106,5 @@ attribute "web_apache/application_name",
     "web_apache::setup_frontend_ssl_vhost",
     "web_apache::setup_frontend_http_vhost",
     "web_apache::setup_frontend",
+    "web_apache::default"
   ]

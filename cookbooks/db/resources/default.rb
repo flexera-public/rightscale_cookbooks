@@ -28,6 +28,7 @@ attribute :lineage, :kind_of => String
 attribute :force, :kind_of => String, :default => "false"
 attribute :timestamp_override, :kind_of => String, :default => nil
 attribute :from_master, :kind_of => String, :default => nil
+attribute :restore_process, :kind_of => Symbol, :default => :primary_restore
 
 # == Privilege options
 attribute :privilege, :equal_to => [ "administrator", "user" ], :default => "administrator"
@@ -75,7 +76,7 @@ add_action :status
 # == Lock
 # Lock the database so writes will be blocked.
 #
-# This must insure a conistent state while taking a snapshot.
+# This must insure a consistent state while taking a snapshot.
 #
 add_action :lock
 
@@ -83,7 +84,7 @@ add_action :lock
 # Unlock the database so writes can occur.
 #
 # This must be called as soon as possible after calling the :lock action
-# since no clients will be blocked from writting.
+# since no clients will be blocked from writing.
 #
 add_action :unlock
 
@@ -150,7 +151,7 @@ add_action :post_backup_cleanup
 # Write backup information needed during restore.
 #
 # This action is called before a backup is done.  
-# It contains information about the current DB setup (dbprovider, version, replication
+# It contains information about the current DB setup (db provider, version, replication
 # details, etc.) that is used during restore to verify the backup and initialize
 # the DB. The file is written to the DB data block device and is part of the backup.
 add_action :write_backup_info
@@ -187,8 +188,8 @@ add_action :post_restore_cleanup
 # == Set Privileges
 # Set database user privileges.
 #
-# Use the privilage attributes of this resource to setup 'administrator' or
-# 'user' privilages to the given username with the given password.
+# Use the privilege attributes of this resource to setup 'administrator' or
+# 'user' privilege to the given username with the given password.
 #
 add_action :set_privileges
 
@@ -207,9 +208,9 @@ add_action :install_client
 add_action :install_server
 
 # == Setup Monitoring
-# Install and configure collectd plgins for the server.
+# Install and configure collectd plugins for the server.
 #
-# This is used by the RightScale platorm to display metrics about the database
+# This is used by the RightScale platform to display metrics about the database
 # on the RightScale dashboard.  Also enables alerts and escalations for the
 # database.
 #
@@ -227,7 +228,7 @@ add_action :enable_replication
 add_action :promote
 
 # == Grant Replication Slave
-# Set database replication priviliges for a slave.
+# Set database replication privileges for a slave.
 #
 # This is called when a slave is initialized.
 add_action :grant_replication_slave

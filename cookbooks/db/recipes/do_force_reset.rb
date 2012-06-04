@@ -41,7 +41,7 @@ tags_to_remove.each do |each_tag|
   bash "remove tags" do
     flags "-ex"
     code <<-EOH
-    rs_tag -r '#{each_tag}'
+      rs_tag -r '#{each_tag}'
     EOH
   end
 end
@@ -62,7 +62,7 @@ block_device NICKNAME do
   action :backup_schedule_disable
 end
 
-log "  resetting collectd config..."
+log "  Resetting collectd config..."
 db DATA_DIR do
   action :setup_monitoring
 end

@@ -10,27 +10,27 @@ rightscale_marker :begin
 require 'socket'
 
 def local_ip
-  orig, Socket.do_not_reverse_lookup = Socket.do_not_reverse_lookup, true  # turn off reverse DNS resolution temporarily
+  orig, Socket.do_not_reverse_lookup = Socket.do_not_reverse_lookup, true # Turn off reverse DNS resolution temporarily.
   UDPSocket.open do |s|
     s.connect '64.233.187.99', 1
     s.addr.last
   end
-  ensure
-    Socket.do_not_reverse_lookup = orig
-end
+ensure
+  Socket.do_not_reverse_lookup = orig
+end # def local_ip
 
 def show_host_info
-  # Display current hostname values in log
-  log "Hostname: #{`hostname` == '' ? '<none>' : `hostname`}"
-  log "Network node hostname: #{`uname -n` == '' ? '<none>' : `uname -n`}"
-  log "Alias names of host: #{`hostname -a` == '' ? '<none>' : `hostname -a`}"
-  log "Short host name (cut from first dot of hostname): #{`hostname -s` == '' ? '<none>' : `hostname -s`}"
-  log "Domain of hostname: #{`domainname` == '' ? '<none>' : `domainname`}"
-  log "FQDN of host: #{`hostname -f` == '' ? '<none>' : `hostname -f`}"
-end
+  # Display current hostname values in log.
+  log "  Hostname: #{`hostname` == '' ? '<none>' : `hostname`}"
+  log "  Network node hostname: #{`uname -n` == '' ? '<none>' : `uname -n`}"
+  log "  Alias names of host: #{`hostname -a` == '' ? '<none>' : `hostname -a`}"
+  log "  Short host name (cut from first dot of hostname): #{`hostname -s` == '' ? '<none>' : `hostname -s`}"
+  log "  Domain of hostname: #{`domainname` == '' ? '<none>' : `domainname`}"
+  log "  FQDN of host: #{`hostname -f` == '' ? '<none>' : `hostname -f`}"
+end # def show_host_info
 
-# set hostname from short or long (when domain_name set)
-if "#{node.rightscale.domain_name}" != "" then
+# Set hostname from short or long (when domain_name set).
+if "#{node.rightscale.domain_name}" != ""
   hostname = "#{node.rightscale.short_hostname}.#{node.rightscale.domain_name}"
   hosts_list = "#{node.rightscale.short_hostname}.#{node.rightscale.domain_name} #{node.rightscale.short_hostname}"
 else
@@ -38,17 +38,17 @@ else
   hosts_list = "#{node.rightscale.short_hostname}"
 end
 
-# show current host info
-log  "Setting hostname for '#{hostname}'."
-log "== Current host/node information =="
+# Show current host info.
+log "  Setting hostname for '#{hostname}'."
+log "  == Current host/node information =="
 show_host_info
 
-# get node IP
+# Get node IP.
 node_ip = "#{local_ip}"
-log "Node IP: #{node_ip}"
+log "  Node IP: #{node_ip}"
 
 # Update /etc/hosts
-log 'Configure /etc/hosts'
+log "  Configure /etc/hosts"
 template "/etc/hosts" do
   source "hosts.erb"
   owner "root"
@@ -57,11 +57,11 @@ template "/etc/hosts" do
   variables(
     :node_ip => node_ip,
     :hosts_list => hosts_list
-    )
+  )
 end
 
 # Update /etc/hostname
-log 'Configure /etc/hostname'
+log "  Configure /etc/hostname"
 file "/etc/hostname" do
   owner "root"
   group "root"
@@ -71,15 +71,15 @@ file "/etc/hostname" do
 end
 
 # Update /etc/resolv.conf
-log 'Configure /etc/resolv.conf'
+log "  Configure /etc/resolv.conf"
 nameserver=`cat /etc/resolv.conf  | grep -v '^#' | grep nameserver | awk '{print $2}'`
-if nameserver != "" then
+if nameserver != ""
   nameserver="nameserver #{nameserver}"
 end
-if "#{node.rightscale.domain_name}" != "" then
+if "#{node.rightscale.domain_name}" != ""
   domain = "domain #{node.rightscale.domain_name}"
 end
-if "#{node.rightscale.search_suffix}" != "" then
+if "#{node.rightscale.search_suffix}" != ""
   search = "search #{node.rightscale.search_suffix}"
 end
 template "/etc/resolv.conf" do
@@ -91,11 +91,11 @@ template "/etc/resolv.conf" do
     :nameserver => nameserver,
     :domain => domain,
     :search => search
-    )
+  )
 end
 
-# Call hostname command
-log 'Setting hostname.'
+# Call hostname command.
+log "  Setting hostname."
 if platform?('centos', 'redhat')
   bash "set_hostname" do
     flags "-ex"
@@ -113,9 +113,9 @@ else
   end
 end
 
-# Call domainname command
+# Call domainname command.
 if "#{node.rightscale.domain_name}" != ""
-  log 'Running domainname'
+  log "  Running domainname"
   bash "set_domainname" do
     flags "-ex"
     code <<-EOH
@@ -124,9 +124,9 @@ if "#{node.rightscale.domain_name}" != ""
   end
 end
 
-# restart  hostname services on appropriate platforms
+# Restart hostname services on appropriate platforms.
 if platform?('ubuntu')
-  log 'Starting hostname service.'
+  log "  Starting hostname service."
   service "hostname" do
     service_name "hostname"
     supports :restart => true, :status => true, :reload => true
@@ -134,7 +134,7 @@ if platform?('ubuntu')
   end
 end
 if platform?('debian')
-  log 'Starting hostname.sh service.'
+  log "  Starting hostname.sh service."
   service "hostname.sh" do
     service_name "hostname.sh"
     supports :restart => false, :status => true, :reload => false
@@ -143,7 +143,7 @@ if platform?('debian')
 end
 
 # rightlink commandline tools set tag with rs_tag
-log 'Setting hostname tag.'
+log "  Setting hostname tag."
 bash "set_node_hostname_tag" do
   flags "-ex"
   code <<-EOH
@@ -151,17 +151,17 @@ bash "set_node_hostname_tag" do
   EOH
 end
 
-# Show the new host/node information
+# Show the new host/node information.
 ruby_block "show_new_host_info" do
   block do
-    # show new host values from system
-    Chef::Log.info("== New host/node information ==")
-    Chef::Log.info("Hostname: #{`hostname` == '' ? '<none>' : `hostname`}")
-    Chef::Log.info("Network node hostname: #{`uname -n` == '' ? '<none>' : `uname -n`}")
-    Chef::Log.info("Alias names of host: #{`hostname -a` == '' ? '<none>' : `hostname -a`}")
-    Chef::Log.info("Short host name (cut from first dot of hostname): #{`hostname -s` == '' ? '<none>' : `hostname -s`}")
-    Chef::Log.info("Domain of hostname: #{`domainname` == '' ? '<none>' : `domainname`}")
-    Chef::Log.info("FQDN of host: #{`hostname -f` == '' ? '<none>' : `hostname -f`}")
+    # Show new host values from system.
+    Chef::Log.info("  == New host/node information ==")
+    Chef::Log.info("  Hostname: #{`hostname` == '' ? '<none>' : `hostname`}")
+    Chef::Log.info("  Network node hostname: #{`uname -n` == '' ? '<none>' : `uname -n`}")
+    Chef::Log.info("  Alias names of host: #{`hostname -a` == '' ? '<none>' : `hostname -a`}")
+    Chef::Log.info("  Short host name (cut from first dot of hostname): #{`hostname -s` == '' ? '<none>' : `hostname -s`}")
+    Chef::Log.info("  Domain of hostname: #{`domainname` == '' ? '<none>' : `domainname`}")
+    Chef::Log.info("  FQDN of host: #{`hostname -f` == '' ? '<none>' : `hostname -f`}")
   end
 end
 

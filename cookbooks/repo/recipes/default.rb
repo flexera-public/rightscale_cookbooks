@@ -21,27 +21,25 @@ node[:repo].each do |resource_name, entry|
   storage_account_secret = entry[:storage_account_secret] || ""
   container = entry[:container] || ""
   prefix = entry[:prefix] || ""
-
   #Checking required user attributes
   case entry[:provider]
     when "repo_git"
-      raise "  Error: repo URL input is unset. Please fill 'Repository Url' input" unless url != ""
       if entry[:revision]== ""
         log "  Warning: branch/tag input is empty, switching to 'master' branch"
         branch = "master"
-       else
+      else
         branch = entry[:revision]
       end
     when "repo_svn"
-      raise "  Error: repo URL input is unset. Please fill 'Repository Url' input" unless url != ""
       if entry[:revision]== ""
         log "  Warning: branch/tag input is empty, switching to 'HEAD' version"
         branch = "HEAD"
-       else
+      else
         branch = entry[:revision]
       end
-
   end
+
+
 
   # Checking for ros_util presence it is required for repo_ros correct operations
   ruby_block "Checking for ros_util presence" do

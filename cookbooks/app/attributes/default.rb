@@ -11,4 +11,5 @@ set_unless[:app][:provider] = "app"
 # By default listen on port 8000
 set_unless[:app][:port] = "8000"
 # By default listen on the first private IP
-set_unless[:app][:ip] = node[:cloud][:private_ips][0]
+# This is a set instead of set_unless to support start/stop when the IP changes.
+set[:app][:ip] = node[:cloud][:private_ips][0]
