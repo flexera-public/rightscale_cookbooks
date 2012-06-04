@@ -194,7 +194,7 @@ end
 
 action :install_server do
 
-  #Installing MySQL server
+  # Installing MySQL server
   platform = node[:platform]
   # MySQL server depends on MySQL client
   action_install_client
