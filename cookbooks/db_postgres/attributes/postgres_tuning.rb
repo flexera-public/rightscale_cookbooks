@@ -21,9 +21,8 @@ def value_with_units(value, units, usage_factor)
   (value * factor).to_i.to_s + units
 end
 
-#
+
 # Set tuning parameters.
-#
 
 set_unless[:db_postgres][:tunable][:ulimit] = `sysctl -n fs.file-max`.to_i/33
 
@@ -34,7 +33,6 @@ usage = 0.5 if db_postgres[:server_usage] == :shared
 
 # Ohai returns total in KB.  Set GB so X*GB can be used in conditional
 # GB=1024*1024
-
 mem = memory[:total].to_i/1024
 Chef::Log.info("Auto-tuning PostgreSQL parameters.  Total memory: #{mem}M")
 one_percent_mem = (mem*0.01).to_i
@@ -43,12 +41,9 @@ eighty_percent_mem = (mem*0.80).to_i
 eighty_percent_str=value_with_units(eighty_percent_mem,"M",usage)
 
 
-if !attribute?("ec2")
-  #set_unless[:db_postgres][:tunable][:shared_buffers] = "64M"
-else
+if attribute?("ec2")
   # tune the database for dedicated vs. shared and instance type
   case ec2[:instance_type]
-  # TODO: The settings for t1.micro may be excessively conservative, but we're going to be okay with it for now
   when "t1.micro"
     if(db_postgres[:server_usage] == :dedicated)
       set_unless[:db_postgres][:tunable][:shared_buffers] = "48M"
