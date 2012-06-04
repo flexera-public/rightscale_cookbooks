@@ -518,8 +518,8 @@ action :enable_replication do
     not_if { current_restore_process == :no_restore }
     block do
       master_info = RightScale::Database::MySQL::Helper.load_replication_info(node)
-      # Check that the snapshot is from the current master or a slave associated with the current master
 
+      # Check that the snapshot is from the current master or a slave associated with the current master
       if master_info['Master_instance_uuid']
         if master_info['Master_instance_uuid'] != node[:db][:current_master_uuid]
           raise "FATAL: snapshot was taken from a different master! snap_master was:#{master_info['Master_instance_uuid']} != current master: #{node[:db][:current_master_uuid]}"
@@ -540,7 +540,7 @@ action :enable_replication do
   ruby_block "wipe_existing_runtime_config" do
     not_if { current_restore_process == :no_restore }
     block do
-      Chef::Log.info "Wiping existing runtime config files"
+      Chef::Log.info "  Wiping existing runtime config files"
       data_dir = ::File.join(node[:db][:data_dir], 'mysql')
       files_to_delete = [ "master.info","relay-log.info","mysql-bin.*","*relay-bin.*"]
       files_to_delete.each do |file|
