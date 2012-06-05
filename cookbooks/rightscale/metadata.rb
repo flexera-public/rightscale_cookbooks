@@ -3,7 +3,7 @@ maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "RightScale Cookbooks"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "0.1"
+version          "12.1.0"
 
 recipe "rightscale::default", "Installs the utilities that are required for RightScale support."
 recipe "rightscale::setup_monitoring", "Installs and configures RightScale dashboard monitoring features."

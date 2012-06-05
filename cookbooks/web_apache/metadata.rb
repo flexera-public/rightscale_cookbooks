@@ -2,7 +2,7 @@ maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "Installs/configures the apache2 webserver"
-version          "0.0.1"
+version          "12.1.0"
 
 recipe "web_apache::default", "Runs web_apache::install_apache."
 recipe "web_apache::do_start", "Runs service apache start"

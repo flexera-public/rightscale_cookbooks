@@ -3,8 +3,7 @@ maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "Abstract cookbook for managing source code repositories."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-
-version          "0.0.1"
+version          "12.1.0"
 
 depends "rightscale"
 depends "repo_svn"

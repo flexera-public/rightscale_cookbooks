@@ -1,79 +1,81 @@
 {
-  "name": "sys",
-  "description": "Installs/Configures RightScale system utilities.",
-  "long_description": "= RightScale System Cookbook \n\n== DESCRIPTION:\n\nThis cookbook provides recipes for setting up a server for RightScale. This\nincludes setting up the running of periodic recipes and setting up swap.\n\n== REQUIREMENTS:\n\n* Requires a VM launched from a RightScale managed RightImage.\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n== KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n== SETUP/USAGE:\n\n* Place the <tt>sys::default</tt> recipe into the boot recipes to have your\n  server set up with any periodic recipes from the inputs.\n* Place the <tt>sys::setup_swap</tt> recipe into the boot recipes to set up\n  swap on your server. You may wish to use ephemeral storage for swap, in that\n  case you should include the <tt>block_device::setup_ephemeral</tt> recipe\n  before it.\n* You can disable and enable the periodic recipes running by running the\n  <tt>sys::do_reconverge_list_disable</tt> and\n  <tt>sys::do_reconverge_list_enable</tt> recipes.\n\n== DETAILS:\n\n=== Sysem Consistency (re-convergence)\n\n  To enforce a consistent system state, one can use this LWRP to schedule\n  a cron job to periodically run a recipe.  Currently the period is hard-coded\n  to every 15 minutes -- with a random starting offset (to distribute runs\n  being performed by multiple systems).\n\n  To start a periodic reconverge:\n\n      sys_reconverge \"mycookbook::myrecipe\"\n\n  To stop a periodic reconverge:\n\n      sys_reconverge \"mycookbook::myrecipe\" do\n        action :disable\n      end\n\n= LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to\nthe RightScale Terms of Service available at http://www.rightscale.com/terms.php\nand, if applicable, other agreements such as a RightScale Master Subscription\nAgreement.\n",
   "maintainer": "RightScale, Inc.",
-  "maintainer_email": "support@rightscale.com",
-  "license": "Copyright RightScale, Inc. All rights reserved.",
-  "platforms": {
-  },
-  "dependencies": {
-    "rightscale": ">= 0.0.0"
-  },
-  "recommendations": {
-  },
   "suggestions": {
   },
+  "maintainer_email": "support@rightscale.com",
+  "long_description": "= RightScale System Cookbook \n\n== DESCRIPTION:\n\nThis cookbook provides recipes for setting up a server for RightScale. This\nincludes setting up the running of periodic recipes and setting up swap.\n\n== REQUIREMENTS:\n\n* Requires a VM launched from a RightScale managed RightImage.\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n== KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n== SETUP/USAGE:\n\n* Place the <tt>sys::default</tt> recipe into the boot recipes to have your\n  server set up with any periodic recipes from the inputs.\n* Place the <tt>sys::setup_swap</tt> recipe into the boot recipes to set up\n  swap on your server. You may wish to use ephemeral storage for swap, in that\n  case you should include the <tt>block_device::setup_ephemeral</tt> recipe\n  before it.\n* You can disable and enable the periodic recipes running by running the\n  <tt>sys::do_reconverge_list_disable</tt> and\n  <tt>sys::do_reconverge_list_enable</tt> recipes.\n\n== DETAILS:\n\n=== Sysem Consistency (re-convergence)\n\n  To enforce a consistent system state, one can use this LWRP to schedule\n  a cron job to periodically run a recipe.  Currently the period is hard-coded\n  to every 15 minutes -- with a random starting offset (to distribute runs\n  being performed by multiple systems).\n\n  To start a periodic reconverge:\n\n      sys_reconverge \"mycookbook::myrecipe\"\n\n  To stop a periodic reconverge:\n\n      sys_reconverge \"mycookbook::myrecipe\" do\n        action :disable\n      end\n\n= LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to\nthe RightScale Terms of Service available at http://www.rightscale.com/terms.php\nand, if applicable, other agreements such as a RightScale Master Subscription\nAgreement.\n",
+  "description": "Installs/Configures RightScale system utilities.",
   "conflicting": {
   },
+  "platforms": {
+  },
+  "license": "Copyright RightScale, Inc. All rights reserved.",
   "providing": {
   },
-  "replacing": {
+  "recipes": {
+    "sys::do_reconverge_list_disable": "Disable recipe reconverge list.",
+    "sys::setup_swap": "Installs swap space.",
+    "sys::do_reconverge_list_enable": "Enable list of recipes to run every 15 minutes."
   },
   "attributes": {
-    "sys/reconverge_list": {
-      "display_name": "Reconverge List",
-      "description": "A space-separated list of recipes to run every 15 minutes, which is designed to enforce system consistency.  Ex: app::do_firewall_request_open lb_haproxy::do_attach_all",
-      "required": "optional",
-      "default": "",
+    "sys/swap_size": {
       "recipes": [
-        "sys::default",
-        "sys::do_reconverge_list_enable",
-        "sys::do_reconverge_list_disable"
-      ],
-      "choice": [
-
+        "sys::setup_swap"
       ],
       "calculated": false,
-      "type": "string"
-    },
-    "sys/swap_size": {
-      "display_name": "Swap size in GB",
-      "description": "Creates and activates a swap file based on the selected size (in GB).  Note: The swap added by this file will be in addition to any swap defined in the image.",
-      "type": "string",
       "choice": [
         "0.5",
         "1.0",
         "2.0"
       ],
+      "type": "string",
       "default": "0.5",
-      "recipes": [
-        "sys::setup_swap"
-      ],
-      "calculated": false,
+      "display_name": "Swap size in GB",
+      "description": "Creates and activates a swap file based on the selected size (in GB).  Note: The swap added by this file will be in addition to any swap defined in the image.",
       "required": "optional"
     },
-    "sys/swap_file": {
-      "display_name": "Swapfile location",
-      "description": "The location of the swap file.  Defaults to '/mnt/ephemeral/swapfile'.",
-      "type": "string",
-      "default": "/mnt/ephemeral/swapfile",
+    "sys/reconverge_list": {
       "recipes": [
-        "sys::setup_swap"
+        "sys::default",
+        "sys::do_reconverge_list_enable",
+        "sys::do_reconverge_list_disable"
       ],
+      "calculated": false,
       "choice": [
 
       ],
+      "type": "string",
+      "default": "",
+      "display_name": "Reconverge List",
+      "description": "A space-separated list of recipes to run every 15 minutes, which is designed to enforce system consistency.  Ex: app::do_firewall_request_open lb_haproxy::do_attach_all",
+      "required": "optional"
+    },
+    "sys/swap_file": {
+      "recipes": [
+        "sys::setup_swap"
+      ],
       "calculated": false,
+      "choice": [
+
+      ],
+      "type": "string",
+      "default": "/mnt/ephemeral/swapfile",
+      "display_name": "Swapfile location",
+      "description": "The location of the swap file.  Defaults to '/mnt/ephemeral/swapfile'.",
       "required": "optional"
     }
   },
+  "replacing": {
+  },
+  "dependencies": {
+    "rightscale": [
+
+    ]
+  },
+  "name": "sys",
   "groupings": {
   },
-  "recipes": {
-    "sys::do_reconverge_list_enable": "Enable list of recipes to run every 15 minutes.",
-    "sys::do_reconverge_list_disable": "Disable recipe reconverge list.",
-    "sys::setup_swap": "Installs swap space."
-  },
-  "version": "0.1.0"
+  "version": "12.1.0",
+  "recommendations": {
+  }
 }
