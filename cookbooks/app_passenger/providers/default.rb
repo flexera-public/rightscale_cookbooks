@@ -213,11 +213,11 @@ action :code_update do
 
   log "  Generating new logrotatate config for rails application"
   rightscale_logrotate_app "rails" do
-    cookbook "app_passenger"
-    template "logrotate_rails.erb"
+    cookbook "rightscale"
+    template "logrotate.erb"
     path ["#{deploy_dir}/log/*.log" ]
-    frequency "daily"
-    rotate 7
+    frequency "size 10M"
+    rotate 4
     create "660 #{node[:app_passenger][:apache][:user]} #{node[:app_passenger][:apache][:group]}"
   end
 
