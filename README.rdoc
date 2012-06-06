@@ -2,18 +2,21 @@
 
 Welcome to the RightScale cookbooks -- your infrastructure, codified!
 
-== OVERVIEW
+== OVERVIEW:
 
 These cookbooks are a set of interchangeable parts for your infrastructure
-written using the open-source systems integration framework called "Chef"[1].
+written using the open-source systems integration framework called
+{Chef}[http://wiki.opscode.com/display/chef/About].
 
 They can be used without modification by mixing-and-matching recipes or as a
 starting point for your own creations. These cookbooks are built for use within
-RightScale's ServerTemplates[2] to create 3-tier deployment architectures for
-High Availability in the cloud[3]. While these deployments fit the requirements
-for many auto-scaling HA deployments, however no single infrastructure need is
-exactly the same -- the source code is provided here to give you the control
-over how much (or how little) customization you want.
+RightScale's {ServerTemplates}[http://support.rightscale.com/12-Guides/Dashboard_Users_Guide/Design/ServerTemplates/Concepts/About_ServerTemplates]
+to create {3-tier deployment architectures for High Availability in the
+cloud}[http://support.rightscale.com/03-Tutorials/02-AWS/E2E_Examples/3_Tier_Deployment_(11H1)#Introduction].
+While these deployments fit the requirements for many auto-scaling HA
+deployments, however no single infrastructure need is exactly the same -- the
+source code is provided here to give you the control over how much (or how
+little) customization you want.
 
 These are your cookbooks!
 
@@ -47,7 +50,7 @@ These cookbooks have been tested on multiple clouds and multiple operating
 systems using ServerTemplates on the RightScale Cloud Management Platform.
 
 
-== COOKBOOK LIST
+== COOKBOOK LIST:
 
 [rightscale]
  Base recipes used to set up services used by the RightScale Cloud Management
@@ -185,22 +188,14 @@ cookbook, you can use the <tt>rightscale_marker</tt> definition as well:
 
   rightscale_marker :end
 
-== CUSTOMIZATION
+== CUSTOMIZATION:
 what is the best way to make changes?
 
 
-== CONTRIBUTING
+== CONTRIBUTING:
 how do I contribute changes back?  Is there an agreement I have to sign?
 
-
-== ADDITIONAL RESOURCES
-
-[1] http://wiki.opscode.com/display/chef/About
-[2] http://support.rightscale.com/12-Guides/Dashboard_Users_Guide/Design/ServerTemplates/Concepts/About_ServerTemplates
-[3] http://support.rightscale.com/03-Tutorials/02-AWS/E2E_Examples/3_Tier_Deployment_(11H1)#Introduction
-
-
-== LICENSE
+== LICENSE:
 
 <b>RightScale Cookbooks</b>
 
