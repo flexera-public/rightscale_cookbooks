@@ -12,7 +12,6 @@ action :stop do
     action :stop
     persist false
   end
-
 end
 
 # Start apache/passenger

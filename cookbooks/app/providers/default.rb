@@ -29,7 +29,7 @@ end
 action :install do
   # Install user-specified Packages and Modules
   packages = new_resource.packages
-  log "Packages which will be installed #{packages}"
+  log "  Packages which will be installed #{packages}"
 
   packages.each do |p|
     package p

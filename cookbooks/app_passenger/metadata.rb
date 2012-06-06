@@ -12,10 +12,10 @@ depends "logrotate"
 depends "app"
 depends "db"
 
-recipe "app_passenger::default", "default cookbook recipe which.set provider specific attributes for rails-passenger"
-recipe "app_passenger::install_custom_gems", "Custom gems install."
-recipe "app_passenger::install_required_app_gems", "Bundler gems Install. Gemfile must be present in app directory."
-recipe "app_passenger::run_custom_rails_commands", "Run specific user defined commands Commands will be executed in the app directory. Command path ../rails/bin/"
+recipe "app_passenger::default", "Default cookbook recipe which sets provider specific attributes for rails-passenger."
+recipe "app_passenger::install_custom_gems", "Custom gems to install."
+recipe "app_passenger::install_required_app_gems", "Bundler gems install. Gemfile must be present in app directory."
+recipe "app_passenger::run_custom_rails_commands", "Run specific user defined commands.  Commands will be executed in the app directory. Command path ../rails/bin/"
 
 
 attribute "app_passenger/spawn_method",
@@ -27,7 +27,7 @@ attribute "app_passenger/spawn_method",
 
 attribute "app_passenger/project/environment",
   :display_name => "Rails Environment",
-  :description => "Creates a Rails RAILS ENV environment variable. ",
+  :description => "Creates a Rails RAILS ENV environment variable.",
   :choice => ["development", "production"],
   :required => "optional",
   :default => "development"
@@ -41,12 +41,13 @@ attribute "app_passenger/apache/maintenance_page",
 attribute "app_passenger/apache/serve_local_files",
   :display_name => "Apache serve local Files",
   :description => "This option tells Apache whether it should serve the (static) content itself. Currently, it will omit PHP and TomCat dynamic content, such as *.php, *.action, *.jsp, and *.do    Ex:  true",
+  :choice => ["true", "false"],
   :required => "optional",
   :default => "true"
 
 attribute "app_passenger/project/gem_list",
   :display_name => "Custom gems list",
-  :description => "A space-separated list of optional gem(s). Format:  ruby-Gem1:version  ruby-Gem2:version ruby-Gem3 ",
+  :description => "A space-separated list of optional gem(s). Format:  ruby-Gem1:version  ruby-Gem2:version ruby-Gem3. Ex: mygem:1.0, yourgem:2.0",
   :required => "optional",
   :default => "",
   :recipes => ["app_passenger::install_custom_gems"]
@@ -65,7 +66,7 @@ attribute "app_passenger/project/db/schema_name",
 
 attribute "app_passenger/project/db/adapter",
   :display_name => "Database adapter for database.yml ",
-  :description => "Enter database adpter wich will be used to connect to the database Default: mysql",
+  :description => "Enter database adpter wich will be used to connect to the database Ex: mysql",
   :choice => [ "mysql", "postgresql" ],
   :default => "mysql"
 

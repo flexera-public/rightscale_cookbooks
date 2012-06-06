@@ -9,7 +9,7 @@
 
 # Install packages required for application server setup
 actions :install
-  # Set of installed packages
+  # Set of packages to be installed in addition to the base application packages.
   attribute :packages, :kind_of => Array
 
 # Set up the application vhost on specified port
@@ -42,7 +42,7 @@ actions :code_update
 actions :setup_db_connection
   # Name of the required database
   attribute :database_name, :kind_of => String
-  # Database user
+  # Database username
   attribute :database_user, :kind_of => String
   # Database password
   attribute :database_password, :kind_of => String
