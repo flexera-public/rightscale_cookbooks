@@ -7,7 +7,6 @@ version          "12.1.0"
 
 recipe "rightscale::default", "Installs the utilities that are required for RightScale support."
 recipe "rightscale::setup_monitoring", "Installs and configures RightScale dashboard monitoring features."
-recipe "rightscale::setup_mail", "Set up basic mail support."
 recipe "rightscale::setup_ssh", "Installs the private ssh key."
 recipe "rightscale::setup_hostname", "Sets the system hostname."
 recipe "rightscale::setup_timezone", "Sets the system timezone."
