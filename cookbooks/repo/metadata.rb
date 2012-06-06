@@ -11,7 +11,6 @@ depends "repo_git"
 depends "repo_ros"
 
 recipe  "repo::default", "Default recipe for setup resources provided"
-recipe  "repo::do_pull", "Recipe for pulling project repos from svn, git or ros."
 
 attribute "repo/default/provider",
   :display_name => "Repository Provider",
