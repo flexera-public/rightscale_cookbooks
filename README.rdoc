@@ -59,7 +59,7 @@ systems using ServerTemplates on the RightScale Cloud Management Platform.
 
 [app]
  RightScale application server management cookbook. This cookbook contains
- recipes that generally applicable to all application
+ recipes that generally applicable to all application.
 
 [app_passenger]
  Cookbook provides apache+passenger implementation of the app LWRP. Installs and
@@ -92,7 +92,7 @@ systems using ServerTemplates on the RightScale Cloud Management Platform.
  balancer implementation, but generic recipes that use the LWRP interface.
 
 [lb_clb]
- RightScale load balancer cookbook for RackSpace Cloud Load Balancing (CLB).
+ RightScale load balancer cookbook for Rackspace Cloud Load Balancing (CLB).
  This cookbook provides recipes for attaching and detaching application servers
  to and from an existing Rackspace Cloud Load Balancer (CLB).
 
@@ -102,7 +102,7 @@ systems using ServerTemplates on the RightScale Cloud Management Platform.
  and from an existing AWS Elastic Load Balancer (ELB).
 
 [lb_haproxy]
- RightScale loadbalancer cookbook for Apache/HAProxy. This cookbook provides
+ RightScale load balancer cookbook for Apache/HAProxy. This cookbook provides
  recipes for setting up and running an Apache/HAProxy load balancer server as
  well as recipes for attaching and detaching application servers.
 
@@ -132,7 +132,7 @@ systems using ServerTemplates on the RightScale Cloud Management Platform.
 
 [sys_firewall]
  RightScale firewall cookbook. This coobook provides a LWRP for managing access
- to mutliple servers in a deployment using machine
+ to multiple servers in a deployment using machine.
 
 
 == DESIGN DETAILS:
