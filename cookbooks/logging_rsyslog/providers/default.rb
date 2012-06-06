@@ -60,13 +60,20 @@ action :configure do
       # Note this will work with the configuration files that support /etc/rsyslog.d
       # (i.e. centos 6) without removing it.  However once all supportted OS's use
       # /etc/rsyslog.d this should be removed.
-      log "  Configuring Redhat/CentOS."
-      bash "add remote log server to centos config file" do
-        flags "-ex"
-        code <<-EOH
-          echo "\n\*.info @#{remote_server}:514\n\n" >> /etc/rsyslog.conf
-        EOH
+
+      # Checking if entry already exists in /etc/rsyslog.conf
+      if ::File.open('/etc/rsyslog.conf', 'r') { |f| f.read }.include? "#{remote_server}"
+        log "  #{remote_server} entry already exists. Skipping"
+      else
+        log "  Configuring Redhat/CentOS."
+        bash "add remote log server to centos config file" do
+          flags "-ex"
+          code <<-EOH
+            echo "\n\*.info @#{remote_server}:514\n\n" >> /etc/rsyslog.conf
+          EOH
+        end
       end
+
     else
       log "  Configuring ubuntu."
       template "/etc/rsyslog.d/remote.conf" do
