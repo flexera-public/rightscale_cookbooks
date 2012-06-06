@@ -115,7 +115,8 @@
       "calculated": false,
       "choice": [
         "development",
-        "production"
+        "production",
+        "test"
       ],
       "default": "development",
       "type": "string",
