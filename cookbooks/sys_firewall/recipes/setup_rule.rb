@@ -15,6 +15,13 @@ rule_ip = (rule_ip == "" || rule_ip.downcase =~ /any/) ? nil : rule_ip
 rule_protocol = node[:sys_firewall][:rule][:protocol]
 to_enable = (node[:sys_firewall][:rule][:enable] == "enable") ? true : false
 
+# iptables cannot create rule using "--protocol any" and "--dport"
+# "any" statement equals to TCP, UDP, and ICMP, see: http://goo.gl/16b6C
+# ICMP protocol do not use port numbers
+# so we will warn user to avoid iptables errors and blind configuration
+raise "Cannot create rule for protocol= #{rule_protocol} and port = #{rule_port} please create separate rules for each protocol " if (rule_protocol.include? "all") and (rule_port != nil)
+
+
 if node[:sys_firewall][:enabled] == "enabled"
 
   sys_firewall rule_port do
