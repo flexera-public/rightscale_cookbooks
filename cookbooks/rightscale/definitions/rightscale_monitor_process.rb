@@ -9,7 +9,7 @@
 # Author: Ryan J. Geyer (<me@ryangeyer.com>)
 
 define :rightscale_monitor_process do
-  if(params[:name])
-    node[:rightscale][:process_list_ary] << params[:name] unless node[:rightscale][:process_list_ary].include?(params[:name])
+  if params[:name]
+    node[:rightscale][:process_list_array] << params[:name] unless node[:rightscale][:process_list_array].include?(params[:name])
   end
 end

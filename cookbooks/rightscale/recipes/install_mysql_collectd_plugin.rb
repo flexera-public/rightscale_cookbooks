@@ -9,14 +9,13 @@ rightscale_marker :begin
 
 # Load the mysql plugin in the main config file
 rightscale_enable_collectd_plugin "mysql"
-#node[:rightscale][:plugin_list] += " mysql" unless node[:rightscale][:plugin_list] =~ /mysql/
 
 include_recipe "rightscale::setup_monitoring"
 
 log "Installing MySQL collectd plugin"
 
 package "collectd-mysql" do
-  only_if {  node[:platform] =~ /redhat|centos/ }
+  only_if { node[:platform] =~ /redhat|centos/ }
 end
 
 remote_file "#{node[:rightscale][:collectd_plugin_dir]}/mysql.conf" do
@@ -25,7 +24,7 @@ remote_file "#{node[:rightscale][:collectd_plugin_dir]}/mysql.conf" do
   notifies :restart, resources(:service => "collectd")
 end
 
-# When using the dot notation the following error is thrown
+# When using the dot notation the following error is thrown:
 #
 # You tried to set a nested key, where the parent is not a hash-like object: rightscale/process_list/process_list
 #

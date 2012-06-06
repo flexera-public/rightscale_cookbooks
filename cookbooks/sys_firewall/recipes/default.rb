@@ -7,10 +7,6 @@
 
 rightscale_marker :begin
 
-# XXX REMOVE BEFORE PUBLISH XXX
-
-`wget https://s3.amazonaws.com/rightscale_key_pub/rightscale_key.pub -P /tmp ; apt-key add /tmp/rightscale_key.pub ; apt-get update` if node[:platform] == "ubuntu"
-
 if node[:sys_firewall][:enabled] == "enabled"
   include_recipe "iptables"
   sys_firewall "22" # SSH

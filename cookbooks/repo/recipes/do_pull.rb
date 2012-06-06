@@ -9,11 +9,7 @@
 
 rightscale_marker :begin
 
-# Checking destination. required for "repo" LWRP correct operations
-if node[:repo][:default][:destination].empty?
-  node[:repo][:default][:destination]= "/tmp/repo"
-  log "  You did not enter destination, so repo will be pulled to /tmp/repo"
-end
+raise "  Error: repo URL input is unset. Please fill 'Repository Url' input" if node[:repo][:default][:repository].empty?
 
 # Downloading project repository
 repo "default" do

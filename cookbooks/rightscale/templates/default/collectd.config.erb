@@ -31,7 +31,7 @@ LoadPlugin interface
   Interface "eth0"
 </Plugin>
 
-<% node[:rightscale][:plugin_list_ary].each do |plugin| -%>
+<% node[:rightscale][:plugin_list_array].each do |plugin| -%>
 LoadPlugin <%= plugin %>
 <% end %>
 

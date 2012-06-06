@@ -6,13 +6,13 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 # Setup default values for database resource
-#
+
 rightscale_marker :begin
 
 node[:db][:provider] = "db_postgres"
 version="#{node[:db_postgres][:version]}"
 
-log "Setting DB provider to #{node[:db][:provider]} and PostgreSQL version to #{version}"
+log "  Setting DB provider to #{node[:db][:provider]} and PostgreSQL version to #{version}"
 
 db node[:db][:data_dir] do
   persist true

@@ -6,5 +6,5 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 # Most attributes are set in the default recipe since LAMP needs to over ride the default
-# application and database setttings.
+# application and database settings.
 # This is for LAMP specific attributes, which at this time do not exist.

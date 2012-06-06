@@ -11,13 +11,13 @@ class Chef::Recipe
   include RightScale::App::Helper
 end
 
-# add the collectd exec plugin to the set of collectd plugins if it isn't already there
+# Add the collectd exec plugin to the set of collectd plugins if it isn't already there.
 rightscale_enable_collectd_plugin 'exec'
 
-# rebuild the collectd configuration file if necessary
+# Rebuild the collectd configuration file if necessary.
 include_recipe "rightscale::setup_monitoring"
 
-# create the collectd library plugins directory if necessary
+# Create the collectd library plugins directory if necessary.
 directory File.join(node[:rightscale][:collectd_lib], "plugins") do
   action :create
   recursive true
@@ -29,4 +29,3 @@ lb vhosts(node[:lb][:vhost_names]).first do
 end
 
 rightscale_marker :end
-

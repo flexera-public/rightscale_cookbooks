@@ -18,7 +18,7 @@ skip, reason = true, "Storage account provider not provided" if node[:db][:dump]
 skip, reason = true, "Container not provided"                if node[:db][:dump][:container] == ""
 
 if skip
-  log "Skipping import: #{reason}"
+  log "  Skipping import: #{reason}"
 else
 
   db_name      = node[:db][:dump][:database_name]

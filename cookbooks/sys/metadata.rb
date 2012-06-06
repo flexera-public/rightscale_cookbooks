@@ -16,7 +16,11 @@ attribute "sys/reconverge_list",
   :description => "A space-separated list of recipes to run every 15 minutes, which is designed to enforce system consistency.  Ex: app::do_firewall_request_open lb_haproxy::do_attach_all",
   :required => "optional",
   :default => "",
-  :recipes => [ "sys::default", "sys::do_reconverge_list_enable", "sys::do_reconverge_list_disable" ]
+  :recipes => [
+    "sys::default",
+    "sys::do_reconverge_list_enable",
+    "sys::do_reconverge_list_disable"
+  ]
 
 attribute "sys/swap_size",
   :display_name => "Swap size in GB",
@@ -24,11 +28,15 @@ attribute "sys/swap_size",
   :type => "string",
   :choice => ["0.5", "1.0", "2.0"],
   :default => "0.5",
-  :recipes => [ "sys::setup_swap"]
+  :recipes => [
+    "sys::setup_swap"
+  ]
 
 attribute "sys/swap_file",
   :display_name => "Swapfile location",
   :description => "The location of the swap file.  Defaults to '/mnt/ephemeral/swapfile'.",
   :type => "string",
   :default => "/mnt/ephemeral/swapfile",
-  :recipes => [ "sys::setup_swap"]
+  :recipes => [
+    "sys::setup_swap"
+  ]

@@ -9,7 +9,7 @@ rightscale_marker :begin
 version="5.5"
 node[:db][:provider] = "db_mysql"
 
-log "Setting DB MySQL version to #{version}"
+log "  Setting DB MySQL version to #{version}"
 node[:db_mysql][:version] = version
 
 # Set MySQL 5.5 specific node variables in this recipe.

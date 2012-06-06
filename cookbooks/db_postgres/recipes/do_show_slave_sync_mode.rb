@@ -10,9 +10,8 @@ rightscale_marker :begin
 # Run only on master server
 db_state_assert :master
 
-#
+
 # Show sync mode status
-#
 bash "show sync mode status" do
   user "postgres"
   code <<-EOH

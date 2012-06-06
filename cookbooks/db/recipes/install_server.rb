@@ -23,15 +23,15 @@ rightscale_marker :begin
 MASTER_DB_DNSNAME = node[:db][:dns][:master][:fqdn]
 IS_FQDN_LOCALHOST = ( MASTER_DB_DNSNAME == "localhost" )
 
-log "Checking master database TTL settings..." do
+log "  Checking master database TTL settings..." do
   not_if { IS_FQDN_LOCALHOST }
 end
 
-log "Skipping master database TTL check for FQDN 'localhost'." do
+log "  Skipping master database TTL check for FQDN 'localhost'." do
   only_if { IS_FQDN_LOCALHOST }
 end
 
-ruby_block "Master DNS TTL Check" do
+ruby_block "  Master DNS TTL Check" do
   not_if { IS_FQDN_LOCALHOST }
   block do
     OPT_DNS_TTL_LIMIT = "#{node[:db][:dns][:ttl]}"
@@ -45,9 +45,7 @@ ruby_block "Master DNS TTL Check" do
 end
 
 # Add database tag
-#
 # Let others know we are an active DB
-#
 right_link_tag "database:active=true"
 
 db node[:db][:data_dir] do
@@ -59,7 +57,6 @@ end
 # Determine if server is currently a master or a slave on boot.
 # This determines that the instance returned from a Stop/Start
 #
-
 # If server already a master, reset node attributes and tags.
 if node[:db][:this_is_master] && node[:db][:init_status].to_sym == :initialized
   log "Already set as master and initialized - updating node"

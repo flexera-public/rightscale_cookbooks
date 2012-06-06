@@ -11,7 +11,7 @@
 
 <Plugin processes>
   process "collectd"
-<% node[:rightscale][:process_list_ary].each do |process| %>
+<% node[:rightscale][:process_list_array].each do |process| %>
   process "<%= process %>"
 <% end %>
 
