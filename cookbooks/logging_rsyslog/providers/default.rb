@@ -61,19 +61,15 @@ action :configure do
       # (i.e. centos 6) without removing it.  However once all supportted OS's use
       # /etc/rsyslog.d this should be removed.
 
-      # Checking if entry already exists in /etc/rsyslog.conf
-      if ::File.open('/etc/rsyslog.conf', 'r') { |f| f.read }.include? "#{remote_server}"
-        log "  #{remote_server} entry already exists. Skipping"
-      else
-        log "  Configuring Redhat/CentOS."
-        bash "add remote log server to centos config file" do
-          flags "-ex"
-          code <<-EOH
-            echo "\n\*.info @#{remote_server}:514\n\n" >> /etc/rsyslog.conf
-          EOH
-        end
+      # Skipping if entry already exists in /etc/rsyslog.conf
+      log "  Configuring Redhat/CentOS."
+      bash "add remote log server to centos config file" do
+        flags "-ex"
+        code <<-EOH
+          echo "\n\*.info @#{remote_server}:514\n\n" >> /etc/rsyslog.conf
+        EOH
+        not_if do ::File.open('/etc/rsyslog.conf', 'r') { |f| f.read }.include? "#{remote_server}" end
       end
-
     else
       log "  Configuring ubuntu."
       template "/etc/rsyslog.d/remote.conf" do
