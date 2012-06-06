@@ -134,7 +134,7 @@ systems using ServerTemplates on the RightScale Cloud Management Platform.
  supports DNSMadeEasy, DynDns, and Amazon Route53 DNS service providers.
 
 [sys_firewall]
- RightScale firewall cookbook. This coobook provides a LWRP for managing access
+ RightScale firewall cookbook. This cookbook provides a LWRP for managing access
  to multiple servers in a deployment using machine.
 
 
