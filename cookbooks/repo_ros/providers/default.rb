@@ -15,6 +15,16 @@ action :pull do
   raise "  Storage account provider ID not provided" unless new_resource.storage_account_id
   raise "  Storage account secret not provided" unless new_resource.storage_account_secret
 
+  # Backup project directory if it is not empty
+  ruby_block "Backup of existing project directory" do
+     block do
+       ::File.rename("#{new_resource.destination}", "#{new_resource.destination}_" + ::Time.now.gmtime.strftime("%Y%m%d%H%M"))
+     end
+     not_if { ::Dir["#{new_resource.destination}/*"].empty? }
+  end
+
+  # Ensure that destination directory exists after all backups.
+  directory "#{new_resource.destination}"
 
   # "true" we just put downloaded file into "destination" folder
   # "false" we put downloaded file into /tmp and unpack it into "destination" folder
@@ -49,29 +59,39 @@ end
 
 action :capistrano_pull do
 
-  repo_dir="/home"
-
   log "  Recreating project directory for :pull action"
-  # In case if it is capistrano symlink
-  directory "#{new_resource.destination}" do
-    recursive true
+
+  repo_dir="/home"
+  capistrano_dir="/home/capistrano_repo"
+
+  # Delete if destination is a symlink
+  link "#{new_resource.destination}" do
     action :delete
-    only_if do (::File.symlink?("#{new_resource.destination}") == true) end
+    only_if { ::File.symlink?("#{new_resource.destination}") }
   end
 
-  capistrano_dir="/home/capistrano_repo"
+  # If destination directory is not empty AND capistrano folder exists,
+  # this mean that this folder is a result of previous user interaction, an error or multiple action changes.
+  # We will backup destination directory to capistrano folder and warn user if this is the case.
   ruby_block "Backup old repo" do
+
     block do
-      t=Time.now.gmtime
-      now=t.strftime("%Y%m%d%H%M%S")
       Chef::Log.info("  Check previous repo in case of action change")
-      if (::File.exists?("#{new_resource.destination}") == true && ::File.symlink?("#{new_resource.destination}") == false)
-        ::File.rename("#{new_resource.destination}", "#{new_resource.destination}_old_#{now}")
-      elsif (::File.exists?("#{new_resource.destination}") == true && ::File.symlink?("#{new_resource.destination}") == false && ::File.exists?("#{capistrano_dir}") == true)
-        ::File.rename("#{new_resource.destination}", "#{capistrano_dir}/releases/_initial_#{now}")
+      timestamp  = ::Time.now.gmtime.strftime("%Y%m%d%H%M")
+      if ::File.exists?("#{capistrano_dir}")
+        ::File.rename("#{new_resource.destination}", "#{capistrano_dir}/releases/_initial_#{timestamp}")
+        Chef::Log.info("  Destination directory is not empty. Backup to #{capistrano_dir}/releases/_initial_#{timestamp}")
+      else
+        ::File.rename("#{new_resource.destination}", "#{new_resource.destination}_#{timestamp}")
+        Chef::Log.info("  Destination directory is not empty. Backup to #{new_resource.destination}_#{timestamp}")
       end
     end
+    only_if { ::File.exists?("#{new_resource.destination}") and ::Dir["#{new_resource.destination}/*"].empty? == false }
+
   end
+
+  # Ensure that destination directory exists after all backups and cleanups
+  directory "#{new_resource.destination}"
 
   log "  Pulling source from ROS"
   action_pull
