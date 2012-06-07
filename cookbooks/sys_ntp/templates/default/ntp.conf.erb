@@ -13,7 +13,7 @@ tinker panic 0 dispersion 1.000
 
 driftfile /var/lib/ntp/ntp.drift
 statsdir /var/log/ntpstats/
-logconfig =syncall
+logconfig =syncstatus -syncall
 
 statistics loopstats peerstats clockstats
 filegen loopstats file loopstats type day enable
