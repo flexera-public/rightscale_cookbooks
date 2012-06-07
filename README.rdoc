@@ -167,10 +167,10 @@ the <tt>definitions/</tt> directory in the cookbook (for example
 
 The different cookbooks depend on other cookbooks for resources, providers, and
 definitions. If a dependency is not specified in the <tt>metadata.rb</tt> for a
-cookbook, its recipes may load without the dependant cookbooks and will fail to
+cookbook, its recipes may load without the dependent cookbooks and will fail to
 execute. In addition, there are also resources that are set up in default
 recipes from other cookbooks; when setting up a ServerTemplate with these kinds
-of dependencies, the default recipes for those dependant cookbooks need to
+of dependencies, the default recipes for those dependent cookbooks need to
 appear earlier in the boot scripts. This is part of the Default Recipe pattern
 explained below.
 
