@@ -164,7 +164,15 @@ the <tt>definitions/</tt> directory in the cookbook (for example
 <tt>cookbooks/rightscale/definitions/rightscale_marker.rb</tt>).
 
 === Dependency Resolution
-TODO: why setting up metadata.rb depends it important?  For all cookbooks that your cookbook depends on that you should include the default recipes for each cookbook in your ServerTemplate/Role.
+
+The different cookbooks depend on other cookbooks for resources, providers, and
+definitions. If a dependency is not specified in the <tt>metadata.rb</tt> for a
+cookbook, its recipes may load without the dependant cookbooks and will fail to
+execute. In addition, there are also resources that are set up in default
+recipes from other cookbooks; when setting up a ServerTemplate with these kinds
+of dependencies, the default recipes for those dependant cookbooks need to
+appear earlier in the boot scripts. This is part of the Default Recipe pattern
+explained below.
 
 === The Default Recipe
 Every one of our cookbooks contains a <tt>default.rb</tt> recipe. In this recipe
