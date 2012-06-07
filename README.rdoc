@@ -143,7 +143,25 @@ systems using ServerTemplates on the RightScale Cloud Management Platform.
 Many of the cookbooks use the same overarching design and conventions.
 
 === Navigating the source
-TODO: From a recipe, is it a resource, LWRP or a definition?  How can I tell?  Where do I find the code for RightScale::Tools?
+
+In the cookbooks, resource calls in recipes can be calls to built-in resources,
+light weight resources, or definitions. Built-in resources are part of Chef and
+are documented in {Chef Resources}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources].
+Light weight resources are often named the same as one of the cookbooks, but
+several are just prefixed with the cookbook name such as
+<tt>rightscale_server_collection</tt>; they are defined in the
+<tt>resources/</tt> directory (for example the <tt>sys_firewall</tt> resource
+is defined in <tt>cookbooks/sys_firewall/resources/default.rb</tt> and the
+<tt>rightscale_server_collection</tt> resource is defined in
+<tt>cookbooks/rightscale/resources/server_collection.rb</tt>. Light weight
+resources have accompanying providers; these are located in the
+<tt>providers/</tt> subdirectories of cookbooks and will either be in the same
+cookbook as the resource or, in the case of the Default Recipe pattern, in the
+each of the implementation cookbooks. In the RightScale cookbooks, definitions
+are prefixed with the cookbook name; they are located in the
+<tt>definitions/</tt> directory in the cookbook (for example
+<tt>rightscale_marker</tt> is defined in
+<tt>cookbooks/rightscale/definitions/rightscale_marker.rb</tt>).
 
 === Dependency Resolution
 TODO: why setting up metadata.rb depends it important?  For all cookbooks that your cookbook depends on that you should include the default recipes for each cookbook in your ServerTemplate/Role.
