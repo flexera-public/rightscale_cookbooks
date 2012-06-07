@@ -188,7 +188,15 @@ Pattern}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/
 
 
 === Abstract Cookbooks and LWRPs
-TODO: how do we use these (i.e. db, lb and app)
+
+Another pattern used in the RightScale cookbooks is the Abstract Cookbooks and
+Light Weight Resources and Providers pattern. In this pattern the abstract
+cookbook contains a resource that defines a set of general actions (for example
+initializing, backing up, and restoring a database) and a set of recipes that
+use these actions. Then, the "concrete" cookbooks contain providers that
+implement the actions for a specific variety of the abstract cookbook (for
+example a MySQL or PostgreSQL database) and a default recipe that sets up any
+dependencies for the provider.
 
 === Definitions
 TODO: typically used to reduce repeated recipe code -- which is preferable to include_recipe. Also use cookbook-to-cookbook method calls (e.g. rightscale_logrotate_app).  Definitions are global, explain our naming conventions to help you find them.
