@@ -207,11 +207,11 @@ cookbook, you can use the <tt>rightscale_marker</tt> definition as well:
   rightscale_marker :end
 
 == CUSTOMIZATION:
-what is the best way to make changes?
+TODO what is the best way to make changes?
 
 
 == CONTRIBUTING:
-how do I contribute changes back?  Is there an agreement I have to sign?
+TODO how do I contribute changes back?  Is there an agreement I have to sign?
 
 == LICENSE:
 
