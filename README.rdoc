@@ -156,10 +156,10 @@ is defined in <tt>cookbooks/sys_firewall/resources/default.rb</tt> and the
 <tt>cookbooks/rightscale/resources/server_collection.rb</tt>. Light weight
 resources have accompanying providers; these are located in the
 <tt>providers/</tt> subdirectories of cookbooks and will either be in the same
-cookbook as the resource or, in the case of the Default Recipe pattern, in the
-each of the implementation cookbooks. In the RightScale cookbooks, definitions
-are prefixed with the cookbook name; they are located in the
-<tt>definitions/</tt> directory in the cookbook (for example
+cookbook as the resource or, in the case of the Abstract Cookbooks (see below)
+pattern, in the each of the implementation cookbooks. In the RightScale
+cookbooks, definitions are prefixed with the cookbook name; they are located in
+the <tt>definitions/</tt> directory in the cookbook (for example
 <tt>rightscale_marker</tt> is defined in
 <tt>cookbooks/rightscale/definitions/rightscale_marker.rb</tt>).
 
