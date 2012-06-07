@@ -20,53 +20,53 @@ recipe "app_passenger::run_custom_rails_commands", "Run specific user defined co
 
 attribute "app_passenger/spawn_method",
   :display_name => "Rails spawn method",
-  :description => "The  spawn method that Phusion Passenger will use.  The choices are: smart, smart-lv2, and conservative.  Ex: conservative",
+  :description => "The  spawn method that Phusion Passenger will use.  The choices are: smart, smart-lv2, and conservative.  Example: conservative",
   :choice => ["conservative", "smart-lv2", "smart"],
   :required => "recommended",
   :default => "conservative"
 
 attribute "app_passenger/project/environment",
   :display_name => "Rails Environment",
-  :description => "Creates a Rails RAILS ENV environment variable.",
-  :choice => ["development", "production"],
+  :description => "Creates a Rails RAILS ENV environment variable. Example: development",
+  :choice => ["test", "development", "production"],
   :required => "optional",
   :default => "development"
 
 attribute "app_passenger/apache/maintenance_page",
   :display_name => "Apache maintenance page",
-  :description => "Maintenance URI to show if the page exists (based on document root). Default: [document root]/system/maintenance.html.  If this file exists, your site will show a &quot;Under Maintenance&quot; page and your site will not be available.",
+  :description => "Maintenance URI to show if the page exists (based on document root).  If this file exists, your site will show a \"Under Maintenance\" page and your site will not be available. Example: /system/maintenance.html",
   :required => "optional",
   :default => ""
 
 attribute "app_passenger/apache/serve_local_files",
   :display_name => "Apache serve local Files",
-  :description => "This option tells Apache whether it should serve the (static) content itself. Currently, it will omit PHP and TomCat dynamic content, such as *.php, *.action, *.jsp, and *.do    Ex:  true",
+  :description => "This option tells Apache whether it should serve the (static) content itself. Currently, it will omit PHP and TomCat dynamic content, such as *.php, *.action, *.jsp, and *.do    Example:  true",
   :choice => ["true", "false"],
   :required => "optional",
   :default => "true"
 
 attribute "app_passenger/project/gem_list",
   :display_name => "Custom gems list",
-  :description => "A space-separated list of optional gem(s). Format:  ruby-Gem1:version  ruby-Gem2:version ruby-Gem3. Ex: mygem:1.0, yourgem:2.0",
+  :description => "A space-separated list of optional gem(s). Format:  ruby-Gem1:version  ruby-Gem2:version ruby-Gem3. Example: mygem:1.0, yourgem:2.0",
   :required => "optional",
   :default => "",
   :recipes => ["app_passenger::install_custom_gems"]
 
 attribute "app_passenger/project/custom_cmd",
   :display_name => "Custom rails/bin/ command",
-  :description => "A comma separated list of optional commands which will be executed in app directory. Ex: rake gems:install, rake db:create, rake get_common",
+  :description => "A comma separated list of optional commands which will be executed in app directory. Example: rake gems:install, rake db:create, rake get_common",
   :required => "optional",
   :default => "",
   :recipes => ["app_passenger::run_custom_rails_commands"]
 
 attribute "app_passenger/project/db/schema_name",
   :display_name => "Database schema name",
-  :description => "Enter the name of the MySQL database schema to which applications will connect.  The database schema was created when the initial database was first set up. This input will be used to set the application server's database config file so that applications can connect to the correct schema within the database.  This input is also used for MySQL dump backups in order to determine which schema is getting backed up.  Ex: mydbschema",
+  :description => "Enter the name of the MySQL database schema to which applications will connect.  The database schema was created when the initial database was first set up. This input will be used to set the application server's database config file so that applications can connect to the correct schema within the database.  This input is also used for MySQL dump backups in order to determine which schema is getting backed up.  Example: mydbschema",
   :required => "required"
 
 attribute "app_passenger/project/db/adapter",
-  :display_name => "Database adapter for database.yml ",
-  :description => "Enter database adpter wich will be used to connect to the database Ex: mysql",
+  :display_name => "Database adapter for database.yml",
+  :description => "Enter database adapter which will be used to connect to the database. Example: mysql",
   :choice => [ "mysql", "postgresql" ],
   :default => "mysql"
 

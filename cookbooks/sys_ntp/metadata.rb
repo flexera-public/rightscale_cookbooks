@@ -15,6 +15,6 @@ end
 
 attribute "sys_ntp/servers",
   :display_name => "NTP Servers",
-  :description => "A comma-separated list of fully qualified domain names for the array of servers we should talk to.",
+  :description => "A comma-separated list of fully qualified domain names for the array of servers we should talk to. Example: time1.example.com, time2.example.com, time3.example.com",
   :type => "string",
   :default => "time.rightscale.com, ec2-us-east.time.rightscale.com, ec2-us-west.time.rightscale.com"

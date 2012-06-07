@@ -39,7 +39,7 @@ attribute "web_apache",
 
 attribute "web_apache/mpm",
   :display_name => "Multi-Processing Module",
-  :description => "Defines the multi-processing module setting in httpd.conf.  Use 'worker' for Rails/Tomcat/Standalone frontends and 'prefork' for PHP.",
+  :description => "Defines the multi-processing module setting in httpd.conf.  Use 'worker' for Rails/Tomcat/Standalone frontends and 'prefork' for PHP. Example: prefork",
   :required => "optional",
   :recipes => all_recipes,
   :choice => [ "prefork", "worker" ],
@@ -47,7 +47,7 @@ attribute "web_apache/mpm",
 
 attribute "web_apache/ssl_enable",
   :display_name => "SSL Enable",
-  :description => "Enables SSL ('https')",
+  :description => "Enables SSL ('https'). Example: true",
   :recipes => [
     "web_apache::install_apache",
     "web_apache::setup_frontend_ssl_vhost",
@@ -59,7 +59,7 @@ attribute "web_apache/ssl_enable",
 
 attribute "web_apache/ssl_certificate",
   :display_name => "SSL Certificate",
-  :description => "The name of your SSL Certificate.",
+  :description => "The name of your SSL Certificate. Example: cred:SSL_CERT",
   :required => "optional",
   :default =>  "",
   :recipes => [
@@ -69,7 +69,7 @@ attribute "web_apache/ssl_certificate",
 
 attribute "web_apache/ssl_certificate_chain",
   :display_name => "SSL Certificate Chain",
-  :description => "Your SSL Certificate Chain.",
+  :description => "Your SSL Certificate Chain. Example: cred:SSL_CERT_CHAIN",
   :required => "optional",
   :default =>  "",
   :recipes => [
@@ -79,7 +79,7 @@ attribute "web_apache/ssl_certificate_chain",
 
 attribute "web_apache/ssl_key",
   :display_name => "SSL Certificate Key",
-  :description => "Your SSL Certificate Key.",
+  :description => "Your SSL Certificate Key. Example: cred:SSL_KEY",
   :required => "optional",
   :default =>  "",
   :recipes => [
@@ -89,7 +89,7 @@ attribute "web_apache/ssl_key",
 
 attribute "web_apache/ssl_passphrase",
   :display_name => "SSL passphrase",
-  :description => "Your SSL passphrase.",
+  :description => "Your SSL passphrase. Example: cred:SSL_PASSPHRASE",
   :required => "optional",
   :default =>  "",
   :recipes => [
@@ -99,7 +99,7 @@ attribute "web_apache/ssl_passphrase",
 
 attribute "web_apache/application_name",
   :display_name => "Application Name",
-  :description => "Sets the directory for your application's web files (/home/webapps/Application Name/current/).  If you have multiple applications, you can run the code checkout script multiple times, each with a different value for APPLICATION, so each application will be stored in a unique directory.  This must be a valid directory name.  Do not use symbols in the name.",
+  :description => "Sets the directory for your application's web files (/home/webapps/Application Name/current/).  If you have multiple applications, you can run the code checkout script multiple times, each with a different value for APPLICATION, so each application will be stored in a unique directory.  This must be a valid directory name.  Do not use symbols in the name. Example: myapp",
   :required => "optional",
   :default => "myapp",
   :recipes => [
