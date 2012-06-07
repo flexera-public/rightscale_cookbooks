@@ -24,7 +24,9 @@ package "xfsprogs" do
   not_if { node[:platform] == "redhat" }
 end
 
-log "Inputs volume_size and stripe_count are not used in Rackspace cloud provider" only_if {node[:cloud][:provider] == 'rackspace'}
+log "Inputs volume_size and stripe_count are not used in Rackspace cloud provider" do
+  only_if {node[:cloud][:provider] == 'rackspace'}
+end
 
 bash "Load kernel modules" do
   flags '-ex'
