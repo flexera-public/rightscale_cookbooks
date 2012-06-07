@@ -18,7 +18,7 @@ action :pull do
   # Backup project directory if it is not empty
   ruby_block "Backup of existing project directory" do
      block do
-       ::File.rename("#{new_resource.destination}", "#{new_resource.destination}_" + ::Time.now.strftime("%Y%m%d%H%M"))
+       ::File.rename("#{new_resource.destination}", "#{new_resource.destination}_" + ::Time.now.gmtime.strftime("%Y%m%d%H%M"))
      end
      not_if { ::Dir["#{new_resource.destination}/*"].empty? }
   end
@@ -67,7 +67,7 @@ action :capistrano_pull do
   # Delete if destination is a symlink
   link "#{new_resource.destination}" do
     action :delete
-    only_if "test -L #{new_resource.destination}"
+    only_if { ::File.symlink?("#{new_resource.destination}") }
   end
 
   # If destination directory is not empty AND capistrano folder exists,
@@ -77,13 +77,13 @@ action :capistrano_pull do
 
     block do
       Chef::Log.info("  Check previous repo in case of action change")
-      timestamp  = ::Time.now.strftime("%Y%m%d%H%M")
+      timestamp  = ::Time.now.gmtime.strftime("%Y%m%d%H%M")
       if ::File.exists?("#{capistrano_dir}")
         ::File.rename("#{new_resource.destination}", "#{capistrano_dir}/releases/_initial_#{timestamp}")
         Chef::Log.info("  Destination directory is not empty. Backup to #{capistrano_dir}/releases/_initial_#{timestamp}")
       else
-        ::File.rename("#{new_resource.destination}", "#{new_resource.destination}_old_#{timestamp}")
-        Chef::Log.info("  Destination directory is not empty. Backup to #{new_resource.destination}_old_#{timestamp}")
+        ::File.rename("#{new_resource.destination}", "#{new_resource.destination}_#{timestamp}")
+        Chef::Log.info("  Destination directory is not empty. Backup to #{new_resource.destination}_#{timestamp}")
       end
     end
     only_if { ::File.exists?("#{new_resource.destination}") and ::Dir["#{new_resource.destination}/*"].empty? == false }
