@@ -314,14 +314,14 @@ action :install_server do
   # - set config file localhost access w/ root and no password
   # - disable the 'check_for_crashed_tables'.
   #
-  remote_file "/etc/mysql/debian.cnf" do
+  cookbook_file "/etc/mysql/debian.cnf" do
     only_if { platform == "ubuntu" }
     mode "0600"
     source "debian.cnf"
     cookbook 'db_mysql'
   end
 
-  remote_file "/etc/mysql/debian-start" do
+  cookbook_file "/etc/mysql/debian-start" do
     only_if { platform == "ubuntu" }
     mode "0755"
     source "debian-start"

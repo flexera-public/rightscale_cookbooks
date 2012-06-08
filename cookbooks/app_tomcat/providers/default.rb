@@ -73,7 +73,7 @@ action :install do
     end
   elsif db_adapter == "postgresql"
     # Copy to /usr/share/java/postgresql-9.1-901.jdbc4.jar
-    remote_file "/usr/share/java/postgresql-9.1-901.jdbc4.jar" do
+    cookbook_file "/usr/share/java/postgresql-9.1-901.jdbc4.jar" do
       source "postgresql-9.1-901.jdbc4.jar"
       owner "root"
       group "root"

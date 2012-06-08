@@ -45,7 +45,7 @@ packages.each do |p|
 end
 
 # If APT, pin this package version so it can't be updated.
-remote_file "/etc/apt/preferences.d/00rightscale" do
+cookbook_file "/etc/apt/preferences.d/00rightscale" do
   only_if { node[:platform] == "ubuntu" }
   source "apt.preferences.rightscale"
 end
@@ -107,7 +107,7 @@ end
 # Patch collectd init script, so it uses collectdmon.
 # Only needed for CentOS, Ubuntu already does this out of the box.
 if node[:platform] =~ /redhat|centos/
-  remote_file "/etc/init.d/collectd" do
+  cookbook_file "/etc/init.d/collectd" do
     source "collectd-init-centos-with-monitor"
     mode 0755
     notifies :restart, resources(:service => "collectd")

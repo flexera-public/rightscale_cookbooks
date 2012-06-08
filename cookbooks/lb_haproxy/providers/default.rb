@@ -248,7 +248,7 @@ action :setup_monitoring do
   log "  Setup monitoring for haproxy"
 
   # Install the haproxy collectd script into the collectd library plugins directory.
-  remote_file(::File.join(node[:rightscale][:collectd_lib], "plugins", "haproxy")) do
+  cookbook_file(::File.join(node[:rightscale][:collectd_lib], "plugins", "haproxy")) do
     source "haproxy1.4.rb"
     cookbook "lb_haproxy"
     mode "0755"
