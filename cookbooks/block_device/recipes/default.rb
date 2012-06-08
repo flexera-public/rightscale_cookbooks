@@ -24,6 +24,10 @@ package "xfsprogs" do
   not_if { node[:platform] == "redhat" }
 end
 
+log "Inputs volume_size and stripe_count are not used in Rackspace cloud provider. For further information, please visit http://support.rightscale.com/09-Clouds/Rackspace_Hosting#Unsupported_Features" do
+  only_if {node[:cloud][:provider] == 'rackspace'}
+end
+
 bash "Load kernel modules" do
   flags '-ex'
   code <<-EOS
