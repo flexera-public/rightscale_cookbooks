@@ -66,7 +66,7 @@ if cloud == 'ec2' || cloud == 'openstack'
     log "  Ephemeral entry already exists in fstab"
   else
     # Create init script to activate LVM on start for Ubuntu
-    remote_file "/etc/init.d/lvm_activate" do
+    cookbook_file "/etc/init.d/lvm_activate" do
       only_if { node[:platform] == "ubuntu" }
       source "lvm_activate"
       mode 0744

@@ -18,7 +18,7 @@ package "collectd-mysql" do
   only_if { node[:platform] =~ /redhat|centos/ }
 end
 
-remote_file "#{node[:rightscale][:collectd_plugin_dir]}/mysql.conf" do
+cookbook_file "#{node[:rightscale][:collectd_plugin_dir]}/mysql.conf" do
   backup false
   source "collectd.mysql.conf"
   notifies :restart, resources(:service => "collectd")
