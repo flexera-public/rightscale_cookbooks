@@ -14,7 +14,7 @@ rule_ip = node[:sys_firewall][:rule][:ip_address]
 rule_ip = (rule_ip == "" || rule_ip.downcase =~ /any/) ? nil : rule_ip
 to_enable = (node[:sys_firewall][:rule][:enable] == "enable") ? true : false
 
-# Creating array of protocol here to handle with "both input"
+# Create protocol array here to handle with "both" input
 if node[:sys_firewall][:rule][:protocol] == "both"
 rule_protocol = ["tcp","udp"]
 else
@@ -34,7 +34,7 @@ if node[:sys_firewall][:enabled] == "enabled"
   end
 
 else
-  log "Firewall not enabled. Not adding rule for #{rule_port}."
+  log "  Firewall not enabled. Not adding rule for #{rule_port}."
 end
 
 rightscale_marker :end
