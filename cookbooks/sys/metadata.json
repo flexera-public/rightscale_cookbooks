@@ -13,56 +13,56 @@
   "providing": {
   },
   "recipes": {
-    "sys::do_reconverge_list_disable": "Disable recipe reconverge list.",
     "sys::setup_swap": "Installs swap space.",
-    "sys::do_reconverge_list_enable": "Enable list of recipes to run every 15 minutes."
+    "sys::do_reconverge_list_enable": "Enable list of recipes to run every 15 minutes.",
+    "sys::do_reconverge_list_disable": "Disable recipe reconverge list."
   },
   "attributes": {
     "sys/swap_size": {
-      "recipes": [
-        "sys::setup_swap"
-      ],
-      "calculated": false,
       "choice": [
         "0.5",
         "1.0",
         "2.0"
       ],
+      "description": "Creates and activates a swap file based on the selected size (in GB).  Note: The swap added by this file will be in addition to any swap defined in the image. Example: 1.0",
+      "display_name": "Swap size in GB",
+      "required": "optional",
+      "calculated": false,
       "type": "string",
       "default": "0.5",
-      "display_name": "Swap size in GB",
-      "description": "Creates and activates a swap file based on the selected size (in GB).  Note: The swap added by this file will be in addition to any swap defined in the image.",
-      "required": "optional"
+      "recipes": [
+        "sys::setup_swap"
+      ]
+    },
+    "sys/swap_file": {
+      "choice": [
+
+      ],
+      "description": "The location of the swap file.  Example: /mnt/ephemeral/swapfile",
+      "display_name": "Swapfile location",
+      "required": "optional",
+      "calculated": false,
+      "type": "string",
+      "default": "/mnt/ephemeral/swapfile",
+      "recipes": [
+        "sys::setup_swap"
+      ]
     },
     "sys/reconverge_list": {
+      "choice": [
+
+      ],
+      "description": "A space-separated list of recipes to run every 15 minutes, which is designed to enforce system consistency.  Example: app::do_firewall_request_open lb_haproxy::do_attach_all",
+      "display_name": "Reconverge List",
+      "required": "optional",
+      "calculated": false,
+      "type": "string",
+      "default": "",
       "recipes": [
         "sys::default",
         "sys::do_reconverge_list_enable",
         "sys::do_reconverge_list_disable"
-      ],
-      "calculated": false,
-      "choice": [
-
-      ],
-      "type": "string",
-      "default": "",
-      "display_name": "Reconverge List",
-      "description": "A space-separated list of recipes to run every 15 minutes, which is designed to enforce system consistency.  Ex: app::do_firewall_request_open lb_haproxy::do_attach_all",
-      "required": "optional"
-    },
-    "sys/swap_file": {
-      "recipes": [
-        "sys::setup_swap"
-      ],
-      "calculated": false,
-      "choice": [
-
-      ],
-      "type": "string",
-      "default": "/mnt/ephemeral/swapfile",
-      "display_name": "Swapfile location",
-      "description": "The location of the swap file.  Defaults to '/mnt/ephemeral/swapfile'.",
-      "required": "optional"
+      ]
     }
   },
   "replacing": {

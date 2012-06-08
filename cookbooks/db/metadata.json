@@ -14,52 +14,352 @@
   },
   "recipes": {
     "db::handle_demote_master": "Remote recipe executed by do_promote_to_master. DO NOT RUN.",
-    "db::do_delete_volumes_and_terminate_server": "Deletes any currently attached volumes from the instance and then terminates the machine.",
-    "db::request_appserver_deny": "Sends a request to deny connections from the caller's private IP address to all database servers in the deployment that are tagged with the database:active=true tag. This should be run on an application server upon decommissioning.",
-    "db::install_client": "Installs the database client onto the virtual machine so that it can connect to a running server. This should be run on all database servers and servers intended to connect to the servers.",
-    "db::do_init_slave_at_boot": "Initializes the slave server at boot.",
-    "db::do_primary_init_slave": "Initializes the slave server from the primary backup location.",
-    "db::request_master_deny": "Sends a request to the master database server tagged with rs_dbrepl:master_instance_uuid=<master_instance_uuid> to deny connections from the server's private IP address. This script should be run on a slave when it stops replicating.",
-    "db::do_secondary_backup": {
-      "thread": "db_backup",
-      "description": "Creates a backup of the database and uploads it to a secondary cloud storage location, which can be used to migrate your database to a different cloud. For example, you can save a secondary backup to an Amazon S3 bucket or a Rackspace Cloud Files container."
-    },
-    "db::setup_privileges_admin": "Adds the username and password for 'superuser' privileges.",
-    "db::do_primary_backup_schedule_enable": "Enables db::do_primary_backup to be run periodically.",
-    "db::do_primary_restore": "Restores the database from the most recently completed primary backup available in persistent storage of the current cloud.",
-    "db::default": "Adds the database:active=true tag to your server, identifying it as an database server. The tag is used by application servers to identify active databases. It also loads the required 'db' resources.",
-    "db::do_secondary_init_slave": "Initializes the slave server from the secondary backup location.",
-    "db::setup_privileges_application": "Adds the username and password for application privileges.",
-    "db::request_master_allow": "Sends a request to the master database server tagged with rs_dbrepl:master_instance_uuid=<master_instance_uuid> to allow connections from the server's private IP address. This script should be run on a slave before it sets up replication.",
-    "db::do_set_dns_slave_private_ip": "Sets the slave DNS record to the private IP.",
-    "db::do_dump_export": "Creates a dump file and uploads it to remote object storage (e.g., Amazon S3 or Rackspace Cloud Files).",
-    "db::do_primary_backup": {
-      "thread": "db_backup",
-      "description": "Creates a primary backup of the database using persistent storage in the current cloud. On Rackspace, LVM backups are uploaded to the specified Cloud Files container. For all other clouds, volume snapshots (e.g., Amazon EBS or CloudStack volumes) are used."
-    },
-    "db::do_secondary_restore_and_become_master": "Restores the database from a secondary backup location and tags it as the master. Sets DNS. Starts a fresh backup from this master.",
     "db::do_primary_restore_and_become_master": "Restores the database and tags it as the master. Sets DNS. Starts a fresh backup from this master.",
     "db::request_appserver_allow": "Sends a request to allow connections from the caller's private IP address to all database servers in the deployment that are tagged with the database:active=true tag. This should be run on an application server before attempting a database connection.",
+    "db::do_dump_schedule_enable": "Schedules the daily run of do_dump_export.",
+    "db::setup_privileges_admin": "Adds the username and password for 'superuser' privileges.",
+    "db::setup_monitoring": "Installs the collectd plugin for database monitoring support, which is required to enable monitoring and alerting functionality for your servers.",
+    "db::install_server": "Installs and sets up the packages that are required for database servers.",
+    "db::do_primary_backup_schedule_disable": "Disables db::do_primary_backup from being run periodically.",
+    "db::do_primary_restore": "Restores the database from the most recently completed primary backup available in persistent storage of the current cloud.",
+    "db::install_client": "Installs the database client onto the virtual machine so that it can connect to a running server. This should be run on all database servers and servers intended to connect to the servers.",
+    "db::request_appserver_deny": "Sends a request to deny connections from the caller's private IP address to all database servers in the deployment that are tagged with the database:active=true tag. This should be run on an application server upon decommissioning.",
+    "db::do_promote_to_master": "Promotes a replicating slave to master.",
+    "db::do_set_dns_slave_private_ip": "Sets the slave DNS record to the private IP.",
+    "db::do_init_and_become_master": "Initializes database server and tags it as the master. Sets DNS. Starts a fresh backup from this master.",
     "db::do_appservers_deny": "Denies connections from all application servers in the deployment that are tagged with appserver:active=true tag. This script can be run on a database server to deny connections from all application servers in the deployment.",
+    "db::do_dump_export": "Creates a dump file and uploads it to remote object storage (e.g., Amazon S3 or Rackspace Cloud Files).",
+    "db::do_primary_backup": {
+      "description": "Creates a primary backup of the database using persistent storage in the current cloud. On Rackspace, LVM backups are uploaded to the specified Cloud Files container. For all other clouds, volume snapshots (e.g., Amazon EBS or CloudStack volumes) are used.",
+      "thread": "db_backup"
+    },
+    "db::do_appservers_allow": "Allows connections from all application servers in the deployment that are tagged with appserver:active=true tag. This script should be run on a database server so that it will accept connections from application servers.",
+    "db::request_master_allow": "Sends a request to the master database server tagged with rs_dbrepl:master_instance_uuid=<master_instance_uuid> to allow connections from the server's private IP address. This script should be run on a slave before it sets up replication.",
+    "db::do_secondary_init_slave": "Initializes the slave server from the secondary backup location.",
+    "db::do_secondary_backup": {
+      "description": "Creates a backup of the database and uploads it to a secondary cloud storage location, which can be used to migrate your database to a different cloud. For example, you can save a secondary backup to an Amazon S3 bucket or a Rackspace Cloud Files container.",
+      "thread": "db_backup"
+    },
+    "db::do_primary_backup_schedule_enable": "Enables db::do_primary_backup to be run periodically.",
+    "db::do_delete_volumes_and_terminate_server": "Deletes any currently attached volumes from the instance and then terminates the machine.",
+    "db::do_primary_init_slave": "Initializes the slave server from the primary backup location.",
     "db::do_dump_schedule_disable": "Disables the daily run of do_dump_export.",
     "db::do_dump_import": "Retrieves a dump file from remote object storage (e.g., Amazon S3 or Rackspace Cloud Files) and imports it to the database server.",
     "db::do_force_reset": "Resets the database back to a pristine state. WARNING: Execution of this script will delete any data in your database!",
     "db::do_secondary_restore": "Restores the database from the most recently completed backup available in a secondary location.",
-    "db::do_promote_to_master": "Promotes a replicating slave to master.",
-    "db::do_init_and_become_master": "Initializes database server and tags it as the master. Sets DNS. Starts a fresh backup from this master.",
-    "db::do_appservers_allow": "Allows connections from all application servers in the deployment that are tagged with appserver:active=true tag. This script should be run on a database server so that it will accept connections from application servers.",
-    "db::do_dump_schedule_enable": "Schedules the daily run of do_dump_export.",
-    "db::do_primary_backup_schedule_disable": "Disables db::do_primary_backup from being run periodically.",
-    "db::setup_monitoring": "Installs the collectd plugin for database monitoring support, which is required to enable monitoring and alerting functionality for your servers.",
-    "db::install_server": "Installs and sets up the packages that are required for database servers.",
-    "db::setup_replication_privileges": "Sets up privileges for replication slave servers."
+    "db::do_init_slave_at_boot": "Initializes the slave server at boot.",
+    "db::request_master_deny": "Sends a request to the master database server tagged with rs_dbrepl:master_instance_uuid=<master_instance_uuid> to deny connections from the server's private IP address. This script should be run on a slave when it stops replicating.",
+    "db::setup_replication_privileges": "Sets up privileges for replication slave servers.",
+    "db::do_secondary_restore_and_become_master": "Restores the database from a secondary backup location and tags it as the master. Sets DNS. Starts a fresh backup from this master.",
+    "db::setup_privileges_application": "Adds the username and password for application privileges.",
+    "db::default": "Adds the database:active=true tag to your server, identifying it as an database server. The tag is used by application servers to identify active databases. It also loads the required 'db' resources."
   },
   "attributes": {
-    "db/backup/lineage": {
+    "db/dump/storage_account_secret": {
+      "recipes": [
+        "db::do_dump_import",
+        "db::do_dump_export",
+        "db::do_dump_schedule_enable"
+      ],
+      "description": "In order to write the dump file to the specified cloud storage location, you will need to provide cloud authentication credentials. For Amazon S3, use your AWS secret access key (e.g., cred:AWS_SECRET_ACCESS_KEY). For Rackspace Cloud Files, use your Rackspace account API key (e.g., cred:RACKSPACE_AUTH_KEY).",
+      "choice": [
+
+      ],
       "calculated": false,
-      "required": "required",
-      "description": "The prefix that will be used to name/locate the backup of a particular database. Note: For servers running on Rackspace, this value also indicates the Cloud Files container to use for storing primary backups. If a Cloud Files container with this name does not already exist, the setup process creates one.",
       "type": "string",
+      "display_name": "Dump Storage Account Secret",
+      "required": "required"
+    },
+    "db/dump": {
+      "recipes": [
+
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "hash",
+      "display_name": "Import/export settings for database dump file management.",
+      "required": "optional"
+    },
+    "db/backup/primary/slave/cron/hour": {
+      "recipes": [
+        "db::do_primary_backup_schedule_enable"
+      ],
+      "description": "By default, primary backups of the slave database are taken hourly. However, if you specify a value in this input (e.g., 23 for 11:00 PM), then backups will occur once per day at the specified hour, rather than hourly.",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string",
+      "display_name": "Slave Backup Cron Hour",
+      "required": "optional"
+    },
+    "db/dns/slave/fqdn": {
+      "recipes": [
+        "db::do_set_dns_slave_private_ip"
+      ],
+      "description": "The fully qualified domain name for a slave database server. Example: db-slave.example.com",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string",
+      "display_name": "Database Slave FQDN",
+      "required": "optional"
+    },
+    "db/dns/master/id": {
+      "recipes": [
+        "db::do_primary_restore_and_become_master",
+        "db::do_secondary_restore_and_become_master",
+        "db::do_init_and_become_master",
+        "db::do_promote_to_master"
+      ],
+      "description": "The unique identifier that is associated with the DNS A record of the master server.  The unique identifier is assigned by the DNS provider when you create a dynamic DNS A record. This ID is used to update the associated A record with the private IP address of the master server when this recipe is run.  If you are using DNS Made Easy as your DNS provider, a 7-digit number is used (e.g., 4403234).",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string",
+      "display_name": "Database Master DNS Record ID",
+      "required": "required"
+    },
+    "db/force_safety": {
+      "recipes": [
+        "db::do_force_reset"
+      ],
+      "default": "Override the dropdown and set to \"off\" to really run this recipe",
+      "description": "Prevents the accidental running of the db::do_force_reset recipe. This recipe will only run if the input variable is overridden and set to \"off\".",
+      "choice": [
+        "Override the dropdown and set to \"off\" to really run this recipe"
+      ],
+      "calculated": false,
+      "type": "string",
+      "display_name": "Force Reset Safety",
+      "required": "optional"
+    },
+    "db/dump/storage_account_provider": {
+      "recipes": [
+        "db::do_dump_import",
+        "db::do_dump_export",
+        "db::do_dump_schedule_enable"
+      ],
+      "description": "Location where the dump file will be saved. Used by dump recipes to back up to Amazon S3 or Rackspace Cloud Files.",
+      "choice": [
+        "s3",
+        "cloudfiles",
+        "cloudfilesuk",
+        "SoftLayer_Dallas",
+        "SoftLayer_Singapore",
+        "SoftLayer_Amsterdam"
+      ],
+      "calculated": false,
+      "type": "string",
+      "display_name": "Dump Storage Account Provider",
+      "required": "required"
+    },
+    "db/backup/restore_version_check": {
+      "recipes": [
+        "db::do_primary_restore",
+        "db::do_secondary_restore",
+        "db::do_primary_init_slave",
+        "db::do_secondary_init_slave",
+        "db::do_init_slave_at_boot",
+        "do_primary_restore_and_become_master",
+        "do_secondary_restore_and_become_master"
+      ],
+      "default": "true",
+      "description": "A variable to allow to restore from a backup performed on a different version of the DB software. Make sure you fully understand the implications of cross-version restoration.  Set to false to skip version checking.",
+      "choice": [
+        "true",
+        "false"
+      ],
+      "calculated": false,
+      "type": "string",
+      "display_name": "Backup restore version check",
+      "required": "optional"
+    },
+    "db/admin/user": {
+      "recipes": [
+        "db::install_server",
+        "db::setup_privileges_admin"
+      ],
+      "description": "The username of the database user with 'admin' privileges (e.g., cred:DBADMIN_USER).",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string",
+      "display_name": "Database Admin Username",
+      "required": "required"
+    },
+    "db/dns/master/fqdn": {
+      "recipes": [
+        "db::default"
+      ],
+      "description": "The fully qualified domain name for the master database server.  Example: db-master.example.com",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string",
+      "display_name": "Database Master FQDN",
+      "required": "required"
+    },
+    "db": {
+      "recipes": [
+
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "hash",
+      "display_name": "General Database Options",
+      "required": "optional"
+    },
+    "db/application/password": {
+      "recipes": [
+        "db::default",
+        "db::setup_privileges_application"
+      ],
+      "description": "The password of the database user that has 'user' privileges (e.g., cred:DBAPPLICATION_PASSWORD).",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string",
+      "display_name": "Database Application Password",
+      "required": "required"
+    },
+    "db/application/user": {
+      "recipes": [
+        "db::default",
+        "db::setup_privileges_application"
+      ],
+      "description": "The username of the database user that has 'user' privileges (e.g., cred:DBAPPLICATION_USER).",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string",
+      "display_name": "Database Application Username",
+      "required": "required"
+    },
+    "db/replication/password": {
+      "recipes": [
+        "db::setup_replication_privileges",
+        "db::do_primary_restore_and_become_master",
+        "db::do_secondary_restore_and_become_master",
+        "db::do_init_and_become_master",
+        "db::do_promote_to_master",
+        "db::do_primary_init_slave",
+        "db::do_secondary_init_slave",
+        "db::do_init_slave_at_boot"
+      ],
+      "description": "The password of the database user that has 'replication' privileges (e.g., cred:DBREPLICATION_PASSWORD).",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string",
+      "display_name": "Database Replication Password",
+      "required": "required"
+    },
+    "db/dump/prefix": {
+      "recipes": [
+        "db::do_dump_import",
+        "db::do_dump_export",
+        "db::do_dump_schedule_enable"
+      ],
+      "description": "The prefix that will be used to name/locate the backup of a particular database dump. Defines the prefix of the dump file name that will be used to name the backup database dump file, along with a timestamp.",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string",
+      "display_name": "Dump Prefix",
+      "required": "required"
+    },
+    "db/backup/primary/slave/cron/minute": {
+      "recipes": [
+        "db::do_primary_backup_schedule_enable"
+      ],
+      "description": "Defines the minute of the hour when the backup EBS snapshot will be taken of the Slave database. Backups of the Slave are taken hourly. By default, a minute will be randomly chosen at launch time. Uses standard crontab format (e.g., 30 for minute 30 of the hour).",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string",
+      "display_name": "Slave Backup Cron Minute",
+      "required": "optional"
+    },
+    "db/backup/primary/master/cron/minute": {
+      "recipes": [
+        "db::do_primary_backup_schedule_enable"
+      ],
+      "description": "Defines the minute of the hour when the backup will be taken of the master database. Backups of the master are taken daily. By default, a minute will be randomly chosen at launch time. Otherwise, the time of the backup is defined by 'Master Backup Cron Hour' and 'Master Backup Cron Minute'. Uses standard crontab format (e.g., 30 for minute 30 of the hour).",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string",
+      "display_name": "Master Backup Cron Minute",
+      "required": "optional"
+    },
+    "db/backup/timestamp_override": {
+      "recipes": [
+        "db::do_primary_restore_and_become_master",
+        "db::do_primary_restore",
+        "db::do_primary_init_slave",
+        "db::do_secondary_restore_and_become_master",
+        "db::do_secondary_restore",
+        "db::do_secondary_init_slave"
+      ],
+      "description": "An optional variable to restore a database backup with a specific timestamp rather than the most recent backup in the lineage. You must specify a string that matches the timestamp tag on the volume snapshot. You will need to specify the timestamp that is defined by the snapshot's tag (not the name). For example, if the snapshot's tag is 'rs_backup:timestamp=1303613371' you would specify '1303613371' for this input.",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string",
+      "display_name": "Database Restore Timestamp Override",
+      "required": "optional"
+    },
+    "db/dump/storage_account_id": {
+      "recipes": [
+        "db::do_dump_import",
+        "db::do_dump_export",
+        "db::do_dump_schedule_enable"
+      ],
+      "description": "In order to write the dump file to the specified cloud storage location, you need to provide cloud authentication credentials. For Amazon S3, use your Amazon access key ID (e.g., cred:AWS_ACCESS_KEY_ID). For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME).",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string",
+      "display_name": "Dump Storage Account ID",
+      "required": "required"
+    },
+    "db/backup/lineage_override": {
+      "recipes": [
+        "db::do_init_slave_at_boot",
+        "db::do_primary_restore_and_become_master",
+        "db::do_primary_restore",
+        "db::do_primary_init_slave",
+        "db::do_secondary_restore_and_become_master",
+        "db::do_secondary_restore",
+        "db::do_secondary_init_slave"
+      ],
+      "description": "If defined, this will override the input defined for 'Backup Lineage' (db/backup/lineage) so that you can restore the database from another backup that has as different lineage name. The most recently completed snapshots will be used unless a specific timestamp value is specified for 'Restore Timestamp Override' (db/backup/timestamp_override). Although this input allows you to restore from a different set of snapshots, subsequent backups will use 'Backup Lineage' to name the snapshots. Be sure to remove the 'Backup Lineage Override' input after the new master is operational.",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string",
+      "display_name": "Database Restore Lineage Override",
+      "required": "optional"
+    },
+    "db/backup/lineage": {
       "recipes": [
         "db::do_primary_init_slave",
         "db::do_secondary_init_slave",
@@ -76,466 +376,166 @@
         "db::do_secondary_backup",
         "db::do_secondary_restore"
       ],
+      "description": "The prefix that will be used to name/locate the backup of a particular database. Note: For servers running on Rackspace, this value also indicates the Cloud Files container to use for storing primary backups. If a Cloud Files container with this name does not already exist, the setup process creates one.",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string",
       "display_name": "Database Backup Lineage",
-      "choice": [
-
-      ]
-    },
-    "db/dump": {
-      "calculated": false,
-      "required": "optional",
-      "type": "hash",
-      "recipes": [
-
-      ],
-      "display_name": "Import/export settings for database dump file management.",
-      "choice": [
-
-      ]
-    },
-    "db/dns/slave/fqdn": {
-      "calculated": false,
-      "required": "optional",
-      "description": "The fully qualified domain name for a slave database server (e.g., text:db-slave.example.com).",
-      "type": "string",
-      "recipes": [
-        "db::do_set_dns_slave_private_ip"
-      ],
-      "display_name": "Database Slave FQDN",
-      "choice": [
-
-      ]
-    },
-    "db/dump/storage_account_id": {
-      "calculated": false,
-      "required": "required",
-      "description": "In order to write the dump file to the specified cloud storage location, you need to provide cloud authentication credentials. For Amazon S3, use your Amazon access key ID (e.g., cred:AWS_ACCESS_KEY_ID). For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME).",
-      "type": "string",
-      "recipes": [
-        "db::do_dump_import",
-        "db::do_dump_export",
-        "db::do_dump_schedule_enable"
-      ],
-      "display_name": "Dump Storage Account ID",
-      "choice": [
-
-      ]
+      "required": "required"
     },
     "db/terminate_safety": {
-      "calculated": false,
-      "required": "optional",
-      "description": "Prevents the accidental running of the db::do_teminate_server recipe. This recipe will only run if this input variable is overridden and set to \"off\".",
-      "type": "string",
       "recipes": [
         "db::do_delete_volumes_and_terminate_server"
       ],
       "default": "Override the dropdown and set to \"off\" to really run this recipe",
-      "display_name": "Terminate Safety",
+      "description": "Prevents the accidental running of the db::do_teminate_server recipe. This recipe will only run if this input variable is overridden and set to \"off\".",
       "choice": [
         "Override the dropdown and set to \"off\" to really run this recipe"
-      ]
-    },
-    "db/backup/primary/master/cron/minute": {
+      ],
       "calculated": false,
-      "required": "optional",
-      "description": "Defines the minute of the hour when the backup will be taken of the master database. Backups of the master are taken daily. By default, a minute will be randomly chosen at launch time. Otherwise, the time of the backup is defined by 'Master Backup Cron Hour' and 'Master Backup Cron Minute'. Uses standard crontab format (e.g., 30 for minute 30 of the hour).",
       "type": "string",
-      "recipes": [
-        "db::do_primary_backup_schedule_enable"
-      ],
-      "display_name": "Master Backup Cron Minute",
-      "choice": [
-
-      ]
-    },
-    "db/admin/user": {
-      "calculated": false,
-      "required": "required",
-      "description": "The username of the database user with 'admin' privileges (e.g., cred:DBADMIN_USER).",
-      "type": "string",
-      "recipes": [
-        "db::install_server",
-        "db::setup_privileges_admin"
-      ],
-      "display_name": "Database Admin Username",
-      "choice": [
-
-      ]
-    },
-    "db/dns/master/id": {
-      "calculated": false,
-      "required": "required",
-      "description": "The unique identifier that is associated with the DNS A record of the master server.  The unique identifier is assigned by the DNS provider when you create a dynamic DNS A record. This ID is used to update the associated A record with the private IP address of the master server when this recipe is run.  If you are using DNS Made Easy as your DNS provider, a 7-digit number is used (e.g., 4403234).",
-      "type": "string",
-      "recipes": [
-        "db::do_primary_restore_and_become_master",
-        "db::do_secondary_restore_and_become_master",
-        "db::do_init_and_become_master",
-        "db::do_promote_to_master"
-      ],
-      "display_name": "Database Master DNS Record ID",
-      "choice": [
-
-      ]
-    },
-    "db": {
-      "calculated": false,
-      "required": "optional",
-      "type": "hash",
-      "recipes": [
-
-      ],
-      "display_name": "General Database Options",
-      "choice": [
-
-      ]
+      "display_name": "Terminate Safety",
+      "required": "optional"
     },
     "db/dump/container": {
-      "calculated": false,
-      "required": "required",
-      "description": "The cloud storage location where the dump file will be saved to or restored from. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name.",
-      "type": "string",
       "recipes": [
         "db::do_dump_import",
         "db::do_dump_export",
         "db::do_dump_schedule_enable"
       ],
-      "display_name": "Dump Container",
+      "description": "The cloud storage location where the dump file will be saved to or restored from. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name.",
       "choice": [
 
-      ]
+      ],
+      "calculated": false,
+      "type": "string",
+      "display_name": "Dump Container",
+      "required": "required"
     },
     "db/dns/ttl": {
-      "calculated": false,
-      "required": "optional",
-      "description": "The upper limit for the TTL of the master DB DNS record in seconds. This value should be kept low in the event of Master DB failure so that the DNS record updates in a timely manner. When installing the DB server, this value is checked in the DNS records. Input should be set for 300 when using CloudDNS.",
-      "type": "string",
       "recipes": [
         "db::install_server"
       ],
       "default": "60",
-      "display_name": "Database DNS TTL Limit",
+      "description": "The upper limit for the TTL of the master DB DNS record in seconds. This value should be kept low in the event of Master DB failure so that the DNS record updates in a timely manner. When installing the DB server, this value is checked in the DNS records. Input should be set for 300 when using CloudDNS.",
       "choice": [
         "60",
         "300"
-      ]
-    },
-    "db/init_slave_at_boot": {
-      "calculated": false,
-      "required": "optional",
-      "description": "Set to 'True' to have the instance initialize the database server as a slave on boot. Set to 'False' if there is no master database server running.",
-      "type": "string",
-      "recipes": [
-        "db::do_init_slave_at_boot"
       ],
-      "default": "false",
-      "display_name": "Init Slave at Boot",
-      "choice": [
-        "true",
-        "false"
-      ]
-    },
-    "db/dns/master/fqdn": {
       "calculated": false,
-      "required": "required",
-      "description": "The fully qualified domain name for the master database server (e.g., text:db-master.example.com).",
       "type": "string",
-      "recipes": [
-        "db::default"
-      ],
-      "display_name": "Database Master FQDN",
-      "choice": [
-
-      ]
+      "display_name": "Database DNS TTL Limit",
+      "required": "optional"
     },
     "db/backup/primary/master/cron/hour": {
-      "calculated": false,
-      "required": "optional",
+      "recipes": [
+        "db::do_primary_backup_schedule_enable"
+      ],
       "description": "Defines the hour of the day when the primary backup will be taken of the master database. Backups of the master are taken daily. By default, an hour will be randomly chosen at launch time. Otherwise, the time of the backup is defined by 'Master Backup Cron Hour' and 'Master Backup Cron Minute'. Uses standard crontab format (e.g., 23 for 11:00 PM).",
-      "type": "string",
-      "recipes": [
-        "db::do_primary_backup_schedule_enable"
+      "choice": [
+
       ],
+      "calculated": false,
+      "type": "string",
       "display_name": "Master Backup Cron Hour",
-      "choice": [
-
-      ]
-    },
-    "db/backup/timestamp_override": {
-      "calculated": false,
-      "required": "optional",
-      "description": "An optional variable to restore a database backup with a specific timestamp rather than the most recent backup in the lineage. You must specify a string that matches the timestamp tag on the volume snapshot. You will need to specify the timestamp that is defined by the snapshot's tag (not the name). For example, if the snapshot's tag is 'rs_backup:timestamp=1303613371' you would specify '1303613371' for this input.",
-      "type": "string",
-      "recipes": [
-        "db::do_primary_restore_and_become_master",
-        "db::do_primary_restore",
-        "db::do_primary_init_slave",
-        "db::do_secondary_restore_and_become_master",
-        "db::do_secondary_restore",
-        "db::do_secondary_init_slave"
-      ],
-      "display_name": "Database Restore Timestamp Override",
-      "choice": [
-
-      ]
-    },
-    "db/force_safety": {
-      "calculated": false,
-      "required": "optional",
-      "description": "Prevents the accidental running of the db::do_force_reset recipe. This recipe will only run if the input variable is overridden and set to \"off\".",
-      "type": "string",
-      "recipes": [
-        "db::do_force_reset"
-      ],
-      "default": "Override the dropdown and set to \"off\" to really run this recipe",
-      "display_name": "Force Reset Safety",
-      "choice": [
-        "Override the dropdown and set to \"off\" to really run this recipe"
-      ]
-    },
-    "db/dump/database_name": {
-      "calculated": false,
-      "required": "required",
-      "description": "Enter the name of the database name/schema to create/restore a dump from/for. Ex: mydbschema",
-      "type": "string",
-      "recipes": [
-        "db::do_dump_import",
-        "db::do_dump_export",
-        "db::do_dump_schedule_enable"
-      ],
-      "display_name": "Dump Schema/Database Name",
-      "choice": [
-
-      ]
-    },
-    "db/dump/storage_account_provider": {
-      "calculated": false,
-      "required": "required",
-      "description": "Location where the dump file will be saved. Used by dump recipes to back up to Amazon S3 or Rackspace Cloud Files.",
-      "type": "string",
-      "recipes": [
-        "db::do_dump_import",
-        "db::do_dump_export",
-        "db::do_dump_schedule_enable"
-      ],
-      "display_name": "Dump Storage Account Provider",
-      "choice": [
-        "s3",
-        "cloudfiles",
-        "cloudfilesuk",
-        "SoftLayer_Dallas",
-        "SoftLayer_Singapore",
-        "SoftLayer_Amsterdam"
-      ]
-    },
-    "db/dns/slave/id": {
-      "calculated": false,
-      "required": "required",
-      "description": "The unique identifier that is associated with the DNS A record of a slave server.  The unique identifier is assigned by the DNS provider when you create a dynamic DNS A record. This ID is used to update the associated A record with the private IP address of a slave server when this recipe is run.  If you are using DNS Made Easy as your DNS provider, a 7-digit number is used (e.g., 4403234).",
-      "type": "string",
-      "recipes": [
-        "db::do_set_dns_slave_private_ip"
-      ],
-      "display_name": "Database Slave DNS Record ID",
-      "choice": [
-
-      ]
-    },
-    "db/dump/prefix": {
-      "calculated": false,
-      "required": "required",
-      "description": "The prefix that will be used to name/locate the backup of a particular database dump. Defines the prefix of the dump file name that will be used to name the backup database dump file, along with a timestamp.",
-      "type": "string",
-      "recipes": [
-        "db::do_dump_import",
-        "db::do_dump_export",
-        "db::do_dump_schedule_enable"
-      ],
-      "display_name": "Dump Prefix",
-      "choice": [
-
-      ]
-    },
-    "db/backup/primary/slave/cron/minute": {
-      "calculated": false,
-      "required": "optional",
-      "description": "Defines the minute of the hour when the backup EBS snapshot will be taken of the Slave database. Backups of the Slave are taken hourly. By default, a minute will be randomly chosen at launch time. Uses standard crontab format (e.g., 30 for minute 30 of the hour).",
-      "type": "string",
-      "recipes": [
-        "db::do_primary_backup_schedule_enable"
-      ],
-      "display_name": "Slave Backup Cron Minute",
-      "choice": [
-
-      ]
-    },
-    "db/backup/restore_version_check": {
-      "calculated": false,
-      "required": "optional",
-      "description": "A variable to allow to restore from a backup performed on a different version of the DB software. Make sure you fully understand the implications of cross-version restoration.  Set to false to skip version checking.",
-      "type": "string",
-      "recipes": [
-        "db::do_primary_restore",
-        "db::do_secondary_restore",
-        "db::do_primary_init_slave",
-        "db::do_secondary_init_slave",
-        "db::do_init_slave_at_boot",
-        "do_primary_restore_and_become_master",
-        "do_secondary_restore_and_become_master"
-      ],
-      "default": "true",
-      "display_name": "Backup restore version check",
-      "choice": [
-        "true",
-        "false"
-      ]
+      "required": "optional"
     },
     "db/replication/user": {
-      "calculated": false,
-      "required": "required",
+      "recipes": [
+        "db::setup_replication_privileges",
+        "db::do_primary_restore_and_become_master",
+        "db::do_secondary_restore_and_become_master",
+        "db::do_init_and_become_master",
+        "db::do_promote_to_master",
+        "db::do_primary_init_slave",
+        "db::do_secondary_init_slave",
+        "db::do_init_slave_at_boot"
+      ],
       "description": "The username of the database user that has 'replication' privileges (e.g., cred:DBREPLICATION_USER).",
-      "type": "string",
-      "recipes": [
-        "db::setup_replication_privileges",
-        "db::do_primary_restore_and_become_master",
-        "db::do_secondary_restore_and_become_master",
-        "db::do_init_and_become_master",
-        "db::do_promote_to_master",
-        "db::do_primary_init_slave",
-        "db::do_secondary_init_slave",
-        "db::do_init_slave_at_boot"
+      "choice": [
+
       ],
+      "calculated": false,
+      "type": "string",
       "display_name": "Database Replication Username",
-      "choice": [
-
-      ]
-    },
-    "db/dump/storage_account_secret": {
-      "calculated": false,
-      "required": "required",
-      "description": "In order to write the dump file to the specified cloud storage location, you will need to provide cloud authentication credentials. For Amazon S3, use your AWS secret access key (e.g., cred:AWS_SECRET_ACCESS_KEY). For Rackspace Cloud Files, use your Rackspace account API key (e.g., cred:RACKSPACE_AUTH_KEY).",
-      "type": "string",
-      "recipes": [
-        "db::do_dump_import",
-        "db::do_dump_export",
-        "db::do_dump_schedule_enable"
-      ],
-      "display_name": "Dump Storage Account Secret",
-      "choice": [
-
-      ]
-    },
-    "db/replication/password": {
-      "calculated": false,
-      "required": "required",
-      "description": "The password of the database user that has 'replication' privileges (e.g., cred:DBREPLICATION_PASSWORD).",
-      "type": "string",
-      "recipes": [
-        "db::setup_replication_privileges",
-        "db::do_primary_restore_and_become_master",
-        "db::do_secondary_restore_and_become_master",
-        "db::do_init_and_become_master",
-        "db::do_promote_to_master",
-        "db::do_primary_init_slave",
-        "db::do_secondary_init_slave",
-        "db::do_init_slave_at_boot"
-      ],
-      "display_name": "Database Replication Password",
-      "choice": [
-
-      ]
-    },
-    "db/backup/primary/slave/cron/hour": {
-      "calculated": false,
-      "required": "optional",
-      "description": "By default, primary backups of the slave database are taken hourly. However, if you specify a value in this input (e.g., 23 for 11:00 PM), then backups will occur once per day at the specified hour, rather than hourly.",
-      "type": "string",
-      "recipes": [
-        "db::do_primary_backup_schedule_enable"
-      ],
-      "display_name": "Slave Backup Cron Hour",
-      "choice": [
-
-      ]
-    },
-    "db/backup/lineage_override": {
-      "calculated": false,
-      "required": "optional",
-      "description": "If defined, this will override the input defined for 'Backup Lineage' (db/backup/lineage) so that you can restore the database from another backup that has as different lineage name. The most recently completed snapshots will be used unless a specific timestamp value is specified for 'Restore Timestamp Override' (db/backup/timestamp_override). Although this input allows you to restore from a different set of snapshots, subsequent backups will use 'Backup Lineage' to name the snapshots. Be sure to remove the 'Backup Lineage Override' input after the new master is operational.",
-      "type": "string",
-      "recipes": [
-        "db::do_init_slave_at_boot",
-        "db::do_primary_restore_and_become_master",
-        "db::do_primary_restore",
-        "db::do_primary_init_slave",
-        "db::do_secondary_restore_and_become_master",
-        "db::do_secondary_restore",
-        "db::do_secondary_init_slave"
-      ],
-      "display_name": "Database Restore Lineage Override",
-      "choice": [
-
-      ]
-    },
-    "db/application/password": {
-      "calculated": false,
-      "required": "required",
-      "description": "The password of the database user that has 'user' privileges (e.g., cred:DBAPPLICATION_PASSWORD).",
-      "type": "string",
-      "recipes": [
-        "db::default",
-        "db::setup_privileges_application"
-      ],
-      "display_name": "Database Application Password",
-      "choice": [
-
-      ]
-    },
-    "db/application/user": {
-      "calculated": false,
-      "required": "required",
-      "description": "The username of the database user that has 'user' privileges (e.g., cred:DBAPPLICATION_USER).",
-      "type": "string",
-      "recipes": [
-        "db::default",
-        "db::setup_privileges_application"
-      ],
-      "display_name": "Database Application Username",
-      "choice": [
-
-      ]
+      "required": "required"
     },
     "db/admin/password": {
-      "calculated": false,
-      "required": "required",
-      "description": "The password of the database user with 'admin' privileges (e.g., cred:DBADMIN_PASSWORD).",
-      "type": "string",
       "recipes": [
         "db::install_server",
         "db::setup_privileges_admin"
       ],
-      "display_name": "Database Admin Password",
+      "description": "The password of the database user with 'admin' privileges (e.g., cred:DBADMIN_PASSWORD).",
       "choice": [
 
-      ]
+      ],
+      "calculated": false,
+      "type": "string",
+      "display_name": "Database Admin Password",
+      "required": "required"
+    },
+    "db/dump/database_name": {
+      "recipes": [
+        "db::do_dump_import",
+        "db::do_dump_export",
+        "db::do_dump_schedule_enable"
+      ],
+      "description": "Enter the name of the database name/schema to create/restore a dump from/for. Ex: mydbschema",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string",
+      "display_name": "Dump Schema/Database Name",
+      "required": "required"
+    },
+    "db/init_slave_at_boot": {
+      "recipes": [
+        "db::do_init_slave_at_boot"
+      ],
+      "default": "false",
+      "description": "Set to 'True' to have the instance initialize the database server as a slave on boot. Set to 'False' if there is no master database server running.",
+      "choice": [
+        "true",
+        "false"
+      ],
+      "calculated": false,
+      "type": "string",
+      "display_name": "Init Slave at Boot",
+      "required": "optional"
+    },
+    "db/dns/slave/id": {
+      "recipes": [
+        "db::do_set_dns_slave_private_ip"
+      ],
+      "description": "The unique identifier that is associated with the DNS A record of a slave server.  The unique identifier is assigned by the DNS provider when you create a dynamic DNS A record. This ID is used to update the associated A record with the private IP address of a slave server when this recipe is run.  If you are using DNS Made Easy as your DNS provider, a 7-digit number is used (e.g., 4403234).",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string",
+      "display_name": "Database Slave DNS Record ID",
+      "required": "required"
     }
   },
   "replacing": {
   },
   "dependencies": {
-    "db_postgres": [
-
-    ],
-    "db_mysql": [
+    "block_device": [
 
     ],
     "sys_firewall": [
 
     ],
+    "db_postgres": [
+
+    ],
     "rightscale": [
 
     ],
-    "block_device": [
+    "db_mysql": [
 
     ]
   },

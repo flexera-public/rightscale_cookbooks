@@ -8,19 +8,19 @@
   "conflicting": {
   },
   "platforms": {
-    "centos": [
-
-    ],
-    "redhat": [
-
-    ],
     "fedora": [
+
+    ],
+    "ubuntu": [
+
+    ],
+    "centos": [
 
     ],
     "debian": [
 
     ],
-    "ubuntu": [
+    "redhat": [
 
     ]
   },
@@ -32,17 +32,17 @@
   },
   "attributes": {
     "sys_ntp/servers": {
+      "display_name": "NTP Servers",
+      "required": "optional",
+      "type": "string",
+      "description": "A comma-separated list of fully qualified domain names for the array of servers we should talk to. Example: time1.example.com, time2.example.com, time3.example.com",
+      "calculated": false,
       "recipes": [
 
       ],
-      "description": "A comma-separated list of fully qualified domain names for the array of servers we should talk to.",
-      "type": "string",
       "choice": [
 
       ],
-      "calculated": false,
-      "display_name": "NTP Servers",
-      "required": "optional",
       "default": "time.rightscale.com, ec2-us-east.time.rightscale.com, ec2-us-west.time.rightscale.com"
     }
   },
