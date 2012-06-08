@@ -34,7 +34,7 @@
     "app_php/modules_list": {
       "type": "array",
       "recipes": [
-
+        "app_php::default"
       ],
       "required": "optional",
       "display_name": "PHP module packages",
@@ -47,7 +47,7 @@
     "app_php/db_schema_name": {
       "type": "string",
       "recipes": [
-
+        "app_php::default"
       ],
       "required": "recommended",
       "display_name": "Database Schema Name",
