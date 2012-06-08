@@ -3,7 +3,7 @@ maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "Installs/Configures block device storage."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "0.1"
+version          "12.1.0"
 
 depends "rightscale"
 
@@ -60,7 +60,7 @@ ros_clouds = [
 
 attribute "block_device/devices_to_use",
   :display_name => "Block Device(s) to Operate On",
-  :description => "The block device(s) to operate on. Can be a comma-separated list of device names or '*' to indicate all devices.",
+  :description => "The block device(s) to operate on. Can be a comma-separated list of device names or '*' to indicate all devices. Example: device1",
   :required => "recommended",
   :default => "device1",
   :recipes => all_recipes

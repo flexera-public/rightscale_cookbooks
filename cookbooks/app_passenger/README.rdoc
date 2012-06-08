@@ -41,7 +41,7 @@ There are no known limitations.
 
 === General:
 
-<tt>app_passenger</tt> cookbook will help you to install and setup Apache + Phusion passenger application server, which can be able to connect, to MySQL or Postgres database server.
+<tt>app_passenger</tt> cookbook will install and setup Apache + Phusion passenger application server configured to connect with a MySQL or Postgres database server.
 
 <b>Apache</b>
 
@@ -139,7 +139,7 @@ none
 
 actions.
 
-For more info about these actions please see <tt>app</tt> cookbook readme.
+For more info about these actions please see <tt>app</tt> cookbook README.
 
 For normal operations it requires "app" resource which will act as interface to all <tt>app_passenger</tt> provider logic.
 

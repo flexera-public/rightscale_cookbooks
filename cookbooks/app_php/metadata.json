@@ -3,7 +3,7 @@
   "suggestions": {
   },
   "maintainer_email": "support@rightscale.com",
-  "long_description": "= RightScale App PHP Cookbook \n\n== DESCRIPTION:\n\n* Cookbook provides PHP  implementation of the app LWRP.\n* Installs and configures, PHP application server.\n\n== REQUIREMENTS:\n\n* Requires a VM launched from a RightScale managed RightImage\n* Tested on CentOS 5.6 RightImage\n* Tested on Ubuntu 10.04 RightImage\n\n== SETUP:\n\n* Place app_php::default recipe into your runlist to setup the application\n  server. Since this sets up the app provider, it must be run before the\n  app::default recipe (which expects a provider to already be set)\n* When using a RightScale ServerTemplate, this will also automatically add the\n  common attributes to your ServerTemplate inputs.\n\n== USAGE:\n\n* Choose image and cloud.\n* Fill required input fields.\n\n== KNOWN LIMITATIONS:\n\n* none\n\n= LICENSE\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to the\nRightScale Terms of Service available at http://www.rightscale.com/terms.php and,\nif applicable, other agreements such as a RightScale Master Subscription Agreement.\n",
+  "long_description": "= RightScale App PHP Cookbook \n\n== DESCRIPTION:\n\n* Cookbook provides Apache + PHP implementation of the app LWRP.\n* Installs and configures, Apache + PHP application server.\n\n== REQUIREMENTS:\n* Requires \"app\" LightWeight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app\n  or your own implementation of \"app\" resource. See \"app\" cookbook readme for details.\n* Requires a VM launched from a RightScale managed RightImage\n* Tested on CentOS 5.6 RightImage\n* Tested on Ubuntu 10.04 RightImage\n* Tested on RedHat 5.8 RightImage\n\n== COOKBOOKS DEPENDENCIES:\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n* <tt>rightscale</tt>\n* <tt>web_apache</tt>\n* <tt>repo</tt>\n* <tt>db_mysql</tt>\n* <tt>db_postgres</tt>\n* <tt>app</tt>\n* <tt>db</tt>\n\n== KNOWN LIMITATIONS:\n Currently apache uses a static configuration and makes no tuning changes for resources available on larger instances.\n However, configuration can be overwritten using cookbook override techniques. See cookbooks_override project at: https://github.com/ekargard/cookbooks_override/tree/master/cookbooks\n\n== SETUP/USAGE:\n\n* Place app_php::default recipe into your runlist to setup the application\n  server. Since this sets up the app provider, it must be run before the\n  app::default recipe (which expects a provider to already be set).\n* When using a RightScale ServerTemplate, this will also automatically add the\n  common attributes to your ServerTemplate inputs.\n\nFor more info see: http://support.rightscale.com/03-Tutorials/PHP_Application_Server_Setup\n\n\n== DETAILS:\n=== General\n<tt>app_php</tt> cookbook will help you to install and setup Apache + Zend Engine PHP application server, which can be able to connect, to MySQL or Postgres database server.\n\n<b>Apache</b>\nServer version: Apache/2.2.3\n\nServer built: Mar 27 2010 13:52:45\n\n<b>PHP</b>\nPHP 5.3.6 (cli) (built: Apr 25 2011 10:45:29)\n\nCopyright (c) 1997-2011 The PHP Group\n\nZend Engine v2.3.0, Copyright (c) 1998-2011 Zend Technologies\n\n\nNOTE: php/modules_list contains an array of package names of PHP modules to install.\nWe are using packages from the IUS repository, so the package names must be prepended with php53u.\nThe input type should be set to Array only.\n\n\n=== Attributes:\nThese are settings used in recipes and templates. Default values are noted.\n\nNote: Only \"internal\" cookbook attributes are described here. Descriptions of attributes which have inputs you can find in metadata.rb cookbook file.\n\n====== Platform dependent\n* <tt>node[:php][:module_dependencies]</tt> - additional packeges required for php server install\n* <tt>node[:php][:app_user]</tt> - Apache user, required for changing owner of created project dirs\n* <tt>node[:php][:db_adapter]</tt> - Type of databse adapter. MySQL or Postgres.\n\n=== Templates:\n\n* <tt>db.php.erb</tt> - Configuration for project database connection config file used in the <tt>app::setup_db_connection</tt> recipe\n  and defined in <tt>:setup_db_connection</tt> action of the <tt>app_php</tt> LWRP\n\n=== Definitions:\nnone\n\n=== Libraries-helpers:\nnone\n\n=== LWRPs:\n\n<tt>app_php</tt> LightWeight provider is defined in providers/default.rb file, it contains source for\n\n* <tt>:install</tt>\n\n* <tt>:setup_vhost</tt>\n\n* <tt>:start</tt>\n\n* <tt>:stop</tt>\n\n* <tt>:restart</tt>\n\n* <tt>:code_update</tt>\n\n* <tt>:setup_db_connection</tt>\n\n* <tt>:setup_monitoring</tt>\n\nactions.\n\nFor more info about these actions please see <tt>app</tt> cookbook readme.\n\nFor normal operations it requires \"app\" resource which will act as interface to all <tt>app_php</tt> provider logic.\n\n===== Actions\n\n* <tt>:install</tt> - Install packages required for application server setup\n\n* <tt>:setup_vhost</tt> - Will setup apache vhost file, with mod_php support included.\n\n* <tt>:start</tt> - Start sequence for PHP application server.\n\n* <tt>:stop</tt> - Stop sequence for PHP application server.\n\n* <tt>:restart</tt> - Restart sequence for PHP application server.\n\n* <tt>:code_update</tt> - Perform project source code update/download using user selected \"repo\" LWRP.\n\n* <tt>:setup_db_connection</tt> - Perform project config/db.php database connection configuration\n\n* <tt>:setup_monitoring</tt> - Empty action. Monitoring for php is not implemeted yet.\n\n===== Usage Example:\n\nFor usage examples please see corresponding section in <tt>app</tt> cookbook readme.\n\n= LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to the\nRightScale Terms of Service available at http://www.rightscale.com/terms.php and,\nif applicable, other agreements such as a RightScale Master Subscription Agreement.\n",
   "description": "Installs the php application server.",
   "conflicting": {
   },
@@ -16,86 +16,86 @@
     "app_php::default": "Installs the php application server."
   },
   "attributes": {
-    "app_php": {
-      "required": "optional",
-      "calculated": false,
-      "choice": [
-
-      ],
-      "recipes": [
-
-      ],
-      "display_name": "PHP Application Settings",
-      "type": "hash"
-    },
     "app_php/db_adapter": {
-      "default": "mysql",
+      "type": "string",
+      "recipes": [
+        "app_php::default"
+      ],
       "required": "optional",
-      "calculated": false,
+      "display_name": "Database adapter for application ",
       "choice": [
         "mysql",
         "postgresql"
       ],
-      "recipes": [
-        "app_php::default"
-      ],
       "description": "Enter database adpter wich will be used to connect to the database Default: postgresql",
-      "display_name": "Database adapter for application ",
-      "type": "string"
-    },
-    "app_php/db_schema_name": {
-      "required": "recommended",
       "calculated": false,
-      "choice": [
-
-      ],
-      "recipes": [
-
-      ],
-      "description": "Enter the name of the MySQL database schema to which applications will connect.  The database schema was created when the initial database was first set up.  This input will be used to set the application server's database config file so that applications can connect to the correct schema within the database.  This input is also used for MySQL dump backups in order to determine which schema will be backed up.  Ex: mydbschema",
-      "display_name": "Database Schema Name",
-      "type": "string"
+      "default": "mysql"
     },
     "app_php/modules_list": {
-      "required": "optional",
-      "calculated": false,
-      "choice": [
+      "type": "array",
+      "recipes": [
 
       ],
-      "recipes": [
+      "required": "optional",
+      "display_name": "PHP module packages",
+      "choice": [
 
       ],
       "description": "An optional list of php module packages to install.  Accepts an array of package names (IE: php53u-mysql,php53u-pecl-memcache).  When using CentOS, package names are prefixed with php53u instead of php.  To see a list of available php modules on CentOS, run 'yum search php53u' on the server.",
-      "display_name": "PHP module packages",
-      "type": "array"
+      "calculated": false
+    },
+    "app_php/db_schema_name": {
+      "type": "string",
+      "recipes": [
+
+      ],
+      "required": "recommended",
+      "display_name": "Database Schema Name",
+      "choice": [
+
+      ],
+      "description": "Enter the name of the MySQL database schema to which applications will connect.  The database schema was created when the initial database was first set up.  This input will be used to set the application server's database config file so that applications can connect to the correct schema within the database.  This input is also used for MySQL dump backups in order to determine which schema will be backed up.  Ex: mydbschema",
+      "calculated": false
+    },
+    "app_php": {
+      "type": "hash",
+      "recipes": [
+
+      ],
+      "required": "optional",
+      "display_name": "PHP Application Settings",
+      "choice": [
+
+      ],
+      "calculated": false
     }
   },
   "replacing": {
   },
   "dependencies": {
-    "repo": [
+    "app": [
 
     ],
-    "db_mysql": [
+    "repo": [
 
     ],
     "db_postgres": [
 
     ],
-    "web_apache": [
-
-    ],
-    "app": [
+    "db_mysql": [
 
     ],
     "rightscale": [
+
+    ],
+    "web_apache": [
 
     ]
   },
   "name": "app_php",
   "groupings": {
   },
-  "version": "0.0.1",
+  "version": "12.1.0",
   "recommendations": {
   }
 }

@@ -1,32 +1,36 @@
 {
-  "dependencies": {
-    "repo": ">= 0.0.0",
-    "git": ">= 0.0.0"
-  },
-  "name": "repo_git",
-  "maintainer_email": "support@rightscale.com",
-  "attributes": {
-  },
-  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "maintainer": "RightScale, Inc.",
   "suggestions": {
+  },
+  "maintainer_email": "support@rightscale.com",
+  "long_description": "= RightScale \"repo_git\" Provider\n\n== DESCRIPTION:\n\nProvides the GIT implementation of the 'repo' resource to\nmanage source code download from GIT repositories.\n\n== REQUIREMENTS:\n\n* Requires repo LightWeight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/repo or your own implementation of \"repo\" resource. See \"repo\" cookbook readme for details.\n\n* Requires a virtual machine launched from a RightScale-managed RightImage.\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n* <tt>rightscale</tt>\n* <tt>repo</tt>\n\n== KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n== SETUP/USAGE:\n\n* Provider will be automatically initialized when you add \"repo:default\" recipe to your ServerTemplate runlist\n\n* Once setup, use the recipes in the 'repo' cookbook to install and manage your code repo.\n  See the repo/README.rdoc for usage details.\n\n* Select 'repo_git' option in repo/default/provider input.\n\n* To perform correct operations  repo/url, and repo/branch inputs must be filled.\n\n* To access to private git repositories repo/ssh_key input must contain string with private ssh key or 'key'-type variable from RightScale dashboard.\n\n== DETAILS:\n\n=== General\n\nThe 'repo_git' implementation can be called with help of Lightweight Resource, which can be\nfound in the <tt>repo</tt> cookbook.\n\nFor more about Lightweight Resources and Providers (LWRPs), please see the Rigtscale\nGuide at:  http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)\n\n=== Attributes:\nnone\n\n=== Templates:\nnone\n\n=== Definitions:\nnone\n=== Libraries-helpers:\n\n<b>RightScale::Repo::Ssh_key.create(ssh_key)</b>\n\nCreate bash script, which will set user defined ssh key required to access to private git source code repositories.\n\nParameters\n\n<tt>ssh_key(String)::</tt> Git private ssh key\n\nRaise\n\n<tt>RuntimeError::</tt> if ssh key string is empty\n\n<b>RightScale::Repo::Ssh_key.delete</b>\n\nRemove bash script created by <tt>create</tt> method, after successful pull operation.\n\nParameters\n\nnone\n\n=== LWRPs:\n\n<tt>repo_git</tt> provider is defined in providers/default.rb file, it contains source for <tt>:pull</tt> and <tt>:capistrano_pull</tt> actions.\nFor more info about these actions please see <tt>repo</tt> cookbook readme.\n\n<tt>repo_git</tt> provider allows to get source code from GIT remote repositories. It supports repositories with public and private (ssh key protected) access.\n\nFor normal operations it requires \"repo\" resource which will act as interface to all <tt>repo_git</tt> provider logic.\n\n===== Actions:\n<tt>:pull</tt>\nStandard repo pull. Your source code repository will be pulled from remote url to specified destination.\n\n<tt>:capistrano_pull</tt>\nPerform standard pull and then capistrano deployment style will be applied.\n\n===== Usage Example:\n\nFor usage examples please see corresponding section in <tt>repo</tt> cookbook readme.\n\n= LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to the\nRightScale Terms of Service available at http://www.rightscale.com/terms.php and,\nif applicable, other agreements such as a RightScale Master Subscription Agreement.\n",
+  "description": "Manages the Git fast version control system",
+  "conflicting": {
   },
   "platforms": {
   },
-  "maintainer": "RightScale, Inc.",
-  "long_description": "= RightScale \"repo_git\" Provider\n\n== DESCRIPTION:\n\nProvides the GIT implementation of the 'repo' resource to\nmanage source code download from GIT repositories.\n\n\n== DETAILS:\n\n=== General\nThe 'repo' implementation is defined by a Lightweight Provider, which can be\nfound in the providers/default.rb file.\n\n\n== SETUP:\n\n* Provider will be automatically initialized when you add \"repo:default\" recipe to your ServerTemplate runlist\n\n== USAGE:\n\n=== Basic usage\nOnce setup, use the recipes in the 'repo' cookbook to install and manage your\ncode repo.  See the repo/README.rdoc for usage details.\n\n\n\n= LICENSE\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to the\nRightScale Terms of Service available at http://www.rightscale.com/terms.php and,\nif applicable, other agreements such as a RightScale Master Subscription Agreement.\n",
-  "version": "0.0.1",
-  "recommendations": {
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "providing": {
   },
   "recipes": {
     "repo_git::default": "Default pattern of loading packages"
   },
-  "groupings": {
-  },
-  "conflicting": {
+  "attributes": {
   },
   "replacing": {
   },
-  "description": "Manages the Git fast version control system",
-  "providing": {
+  "dependencies": {
+    "git": [
+
+    ],
+    "repo": [
+
+    ]
+  },
+  "name": "repo_git",
+  "groupings": {
+  },
+  "version": "12.1.0",
+  "recommendations": {
   }
 }

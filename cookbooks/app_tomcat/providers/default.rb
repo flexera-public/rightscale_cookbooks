@@ -73,7 +73,7 @@ action :install do
     end
   elsif db_adapter == "postgresql"
     # Copy to /usr/share/java/postgresql-9.1-901.jdbc4.jar
-    remote_file "/usr/share/java/postgresql-9.1-901.jdbc4.jar" do
+    cookbook_file "/usr/share/java/postgresql-9.1-901.jdbc4.jar" do
       source "postgresql-9.1-901.jdbc4.jar"
       owner "root"
       group "root"
@@ -169,10 +169,12 @@ action :setup_vhost do
   end
 
   log "  Setup logrotate for tomcat"
-  template "/etc/logrotate.d/tomcat6" do
-    source "tomcat6_logrotate.conf.erb"
-    variables :tomcat_name => "tomcat6"
-    cookbook 'app_tomcat'
+  rightscale_logrotate_app "rails" do
+    cookbook "rightscale"
+    template "logrotate.erb"
+    path ["/var/log/tomcat6/*log", "/var/log/tomcat6/*.out"]
+    frequency "size 10M"
+    rotate 4
   end
 
   # Starting tomcat service

@@ -269,16 +269,10 @@ action :install_server do
   end
 
   # Setup my.cnf
-  template value_for_platform([ "centos", "redhat", "suse" ] => {"default" => "/etc/my.cnf"}, "default" => "/etc/mysql/my.cnf") do
-    source "my.cnf.erb"
-    owner "root"
-    group "root"
-    mode "0644"
-    variables(
-      :server_id => mycnf_uuid,
-      :relay_log => mycnf_relay_log
-    )
-    cookbook 'db_mysql'
+  # Setup my.cnf
+  db_mysql_set_mycnf "setup_mycnf" do
+    server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
+    relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
   end
 
   # Setup MySQL user limits
@@ -314,14 +308,14 @@ action :install_server do
   # - set config file localhost access w/ root and no password
   # - disable the 'check_for_crashed_tables'.
   #
-  remote_file "/etc/mysql/debian.cnf" do
+  cookbook_file "/etc/mysql/debian.cnf" do
     only_if { platform == "ubuntu" }
     mode "0600"
     source "debian.cnf"
     cookbook 'db_mysql'
   end
 
-  remote_file "/etc/mysql/debian-start" do
+  cookbook_file "/etc/mysql/debian-start" do
     only_if { platform == "ubuntu" }
     mode "0755"
     source "debian-start"
@@ -401,7 +395,7 @@ end
 
 action :promote do
   db_state_get node
-  
+
   x = node[:db_mysql][:log_bin]
   logbin_dir = x.gsub(/#{::File.basename(x)}$/, "")
   directory logbin_dir do
@@ -416,15 +410,10 @@ action :promote do
   # Enable binary logging in my.cnf
   node[:db_mysql][:log_bin_enabled] = true
 
-  template value_for_platform([ "centos", "redhat", "suse" ] => {"default" => "/etc/my.cnf"}, "default" => "/etc/mysql/my.cnf") do
-    source "my.cnf.erb"
-    owner "root"
-    group "root"
-    mode "0644"
-    variables(
-      :server_id => mycnf_uuid
-    )
-    cookbook 'db_mysql'
+  # Setup my.cnf
+  db_mysql_set_mycnf "setup_mycnf" do
+    server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
+    relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
   end
   
   db node[:db][:data_dir] do
@@ -557,19 +546,13 @@ action :enable_replication do
   # Disable binary logging
   node[:db_mysql][:log_bin_enabled] = false
 
-  # we refactored setup_my_cnf into db::install_server, we might want to break that out again?
   # Setup my.cnf
-  template value_for_platform([ "centos", "redhat", "suse" ] => {"default" => "/etc/my.cnf"}, "default" => "/etc/mysql/my.cnf") do
-    not_if { current_restore_process == :no_restore }
-    source "my.cnf.erb"
-    owner "root"
-    group "root"
-    mode "0644"
-    variables(
-      :server_id => mycnf_uuid,
-      :relay_log => mycnf_relay_log
-    )
-    cookbook 'db_mysql'
+  unless current_restore_process == :no_restore
+    # Setup my.cnf
+    db_mysql_set_mycnf "setup_mycnf" do
+      server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
+      relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
+    end
   end
 
   # empty out the binary log dir

@@ -3,7 +3,7 @@ maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "RightScale Database Manager"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "0.2"
+version          "12.1.0"
 
 depends "rightscale"
 depends "block_device"
@@ -79,7 +79,7 @@ attribute "db",
   
 attribute "db/dns/master/fqdn",
   :display_name => "Database Master FQDN",
-  :description => "The fully qualified domain name for the master database server (e.g., text:db-master.example.com).",
+  :description => "The fully qualified domain name for the master database server.  Example: db-master.example.com",
   :required => "required",
   :recipes => [ "db::default" ]
 
@@ -96,7 +96,7 @@ attribute "db/dns/master/id",
 
 attribute "db/dns/slave/fqdn",
   :display_name => "Database Slave FQDN",
-  :description => "The fully qualified domain name for a slave database server (e.g., text:db-slave.example.com).",
+  :description => "The fully qualified domain name for a slave database server. Example: db-slave.example.com",
   :required => "optional",
   :recipes => [ "db::do_set_dns_slave_private_ip" ]
 

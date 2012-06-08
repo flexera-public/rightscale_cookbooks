@@ -28,7 +28,7 @@ directory ::File.join(node[:rightscale][:collectd_lib], "plugins") do
   recursive true
 end
 
-remote_file(::File.join(node[:rightscale][:collectd_lib], "plugins", 'file-stats.rb')) do
+cookbook_file(::File.join(node[:rightscale][:collectd_lib], "plugins", 'file-stats.rb')) do
   source "file-stats.rb"
   mode "0755"
   notifies :restart, resources(:service => "collectd")
