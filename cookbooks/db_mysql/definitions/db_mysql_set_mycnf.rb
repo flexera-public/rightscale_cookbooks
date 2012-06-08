@@ -7,6 +7,7 @@
 
 define :db_mysql_set_mycnf, :server_id => nil, :relay_log => nil do
 
+  log "  Installing my.cnf with server_id = #{params[:server_id]}, relay_log = #{params[:relay_log]}" 
   template value_for_platform([ "centos", "redhat", "suse" ] => {"default" => "/etc/my.cnf"}, "default" => "/etc/mysql/my.cnf") do
     source "my.cnf.erb"
     owner "root"
