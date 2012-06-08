@@ -238,7 +238,17 @@ TODO what is the best way to make changes?
 
 
 == CONTRIBUTING:
-TODO how do I contribute changes back?  Is there an agreement I have to sign?
+
+Contributors to the RightScale cookbooks need to agree to and sign the
+{RightScale Contributors Agreement}[https://rightscale.echosign.com/public/hostedForm?formid=3S3CC74X283IXC]
+before contributions will be accepted.
+
+To contribute changes back to the RightScale cookbooks:
+
+1. Fork the repository on GitHub.
+2. Make changes in your forked repository.
+3. Rebase from the master branch.
+4. Make a pull request.
 
 == LICENSE:
 
