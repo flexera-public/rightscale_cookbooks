@@ -17,7 +17,8 @@ recipe  "app_tomcat::default", "Installs the tomcat application server."
 attribute "app_tomcat/db_name",
   :display_name => "Database Name",
   :description => "Enter the name of the MySQL database to use. Example: mydatabase",
-  :required => "required"
+  :required => "required",
+  :recipes => ["app_tomcat::default"]
 
 
 #Code repo attributes
@@ -25,44 +26,51 @@ attribute "app_tomcat/code/root_war",
   :display_name => "War file for ROOT",
   :description => "The path to the war file relative to project repo root directory. Will be renamed to ROOT.war. Example: /dist/app_test.war",
   :required => "recommended",
-  :default => ""
+  :default => "",
+  :recipes => ["app_tomcat::default"]
 
 #Java tuning parameters
 attribute "app_tomcat/java/xms",
   :display_name => "Tomcat Java XMS",
   :description => "The java Xms argument. Example: 512m",
   :required => "optional",
-  :default => "512m"
+  :default => "512m",
+  :recipes => ["app_tomcat::default"]
 
 attribute "app_tomcat/java/xmx",
   :display_name => "Tomcat Java XMX",
   :description => "The java Xmx argument. Example: 512m",
   :required => "optional",
-  :default => "512m"
+  :default => "512m",
+  :recipes => ["app_tomcat::default"]
 
 attribute "app_tomcat/java/PermSize",
   :display_name => "Tomcat Java PermSize",
   :description => "The java PermSize argument. Example: 256m",
   :required => "optional",
-  :default => "256m"
+  :default => "256m",
+  :recipes => ["app_tomcat::default"]
 
 attribute "app_tomcat/java/MaxPermSize",
   :display_name => "Tomcat Java MaxPermSize",
   :description => "The java MaxPermSize argument. Example: 256m",
   :required => "optional",
-  :default => "256m"
+  :default => "256m",
+  :recipes => ["app_tomcat::default"]
 
 attribute "app_tomcat/java/NewSize",
   :display_name => "Tomcat Java NewSize",
   :description => "The java NewSize argument. Example: 256m",
   :required => "optional",
-  :default => "256m"
+  :default => "256m",
+  :recipes => ["app_tomcat::default"]
 
 attribute "app_tomcat/java/MaxNewSize",
   :display_name => "Tomcat Java MaxNewSize",
   :description => "The java MaxNewSize argument. Example: 256m",
   :required => "optional",
-  :default => "256m"
+  :default => "256m",
+  :recipes => ["app_tomcat::default"]
 
 attribute "app_tomcat/db_adapter",
   :display_name => "Database adapter for application ",

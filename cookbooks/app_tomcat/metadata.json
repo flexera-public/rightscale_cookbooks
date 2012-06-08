@@ -37,7 +37,7 @@
       "calculated": false,
       "type": "string",
       "recipes": [
-
+        "app_tomcat::default"
       ],
       "description": "The java Xmx argument (i.e. 512m)",
       "choice": [
@@ -51,7 +51,7 @@
       "calculated": false,
       "type": "string",
       "recipes": [
-
+        "app_tomcat::default"
       ],
       "description": "The java Xms argument (i.e. 512m)",
       "choice": [
@@ -79,7 +79,7 @@
       "calculated": false,
       "type": "string",
       "recipes": [
-
+        "app_tomcat::default"
       ],
       "description": "The java PermSize argument (i.e. 256m)",
       "choice": [
@@ -92,7 +92,7 @@
       "calculated": false,
       "type": "string",
       "recipes": [
-
+        "app_tomcat::default"
       ],
       "description": "Enter the name of the MySQL database to use. Ex: mydatabase",
       "choice": [
@@ -106,7 +106,7 @@
       "calculated": false,
       "type": "string",
       "recipes": [
-
+        "app_tomcat::default"
       ],
       "description": "The path to the war file relative to project repo root directory. Will be renamed to ROOT.war. Ex: /dist/app_test.war",
       "choice": [
@@ -120,7 +120,7 @@
       "calculated": false,
       "type": "string",
       "recipes": [
-
+        "app_tomcat::default"
       ],
       "description": "The java MaxNewSize argument (i.e. 256m)",
       "choice": [
@@ -134,7 +134,7 @@
       "calculated": false,
       "type": "string",
       "recipes": [
-
+        "app_tomcat::default"
       ],
       "description": "The java NewSize argument (i.e. 256m)",
       "choice": [
@@ -148,7 +148,7 @@
       "calculated": false,
       "type": "string",
       "recipes": [
-
+        "app_tomcat::default"
       ],
       "description": "The java MaxPermSize argument (i.e. 256m)",
       "choice": [
