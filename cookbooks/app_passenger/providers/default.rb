@@ -209,8 +209,29 @@ action :code_update do
     persist false
   end
 
+  # Moving rails application log directory to ephemeral
 
-  log "  Generating new logrotatate config for rails application"
+  # Removing log directory, preparing to symlink
+  directory "#{deploy_dir}/log" do
+    action :delete
+    recursive true
+  end
+
+  # Creating new rails application log  directory on ephemeral volume
+  # using basename, because node[:web_apache][:application_name] is not available in operational phase
+  directory "/mnt/ephemeral/log/#{::File.basename(deploy_dir)}" do
+    owner node[:app_passenger][:apache][:user]
+    mode "0755"
+    action :create
+    recursive true
+  end
+
+    # Symlinking application log directory to ephemeral volume
+    link "#{deploy_dir}/log" do
+      to "/mnt/ephemeral/log/#{::File.basename(deploy_dir)}"
+    end
+
+  log "  Generating new logrotate config for rails application"
   rightscale_logrotate_app "rails" do
     cookbook "rightscale"
     template "logrotate.erb"
