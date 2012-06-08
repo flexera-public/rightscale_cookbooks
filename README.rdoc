@@ -234,8 +234,11 @@ cookbook, you can use the <tt>rightscale_marker</tt> definition as well:
   rightscale_marker :end
 
 == CUSTOMIZATION:
-TODO what is the best way to make changes?
 
+If you need to change the behavior of the RightScale cookbooks in a way that
+cannot be achieved using the inputs or in your own cookbooks, you can use a
+cookbook override. For more information see {Override Chef
+Cookbooks}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Override_Chef_Cookbooks].
 
 == CONTRIBUTING:
 
