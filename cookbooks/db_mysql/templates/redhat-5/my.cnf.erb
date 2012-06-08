@@ -87,6 +87,12 @@ max_binlog_size         = 100M
 # * InnoDB
 #
 
+<% if node[:db_mysql][:version] == '5.1' %>
+  # On MySQL 5.1, load the innodb plugin
+  ignore-builtin-innodb
+  plugin-load=innodb=ha_innodb_plugin.so
+<% end %>
+
 innodb_data_home_dir = /var/lib/mysql/
 innodb_data_file_path = ibdata1:10M:autoextend
 innodb_log_group_home_dir = /var/lib/mysql
