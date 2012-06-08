@@ -46,7 +46,7 @@
       "choice": [
         "tcp",
         "udp",
-        "all"
+        "both"
       ]
     },
     "sys_firewall/enabled": {

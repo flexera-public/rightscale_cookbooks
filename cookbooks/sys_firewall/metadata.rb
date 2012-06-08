@@ -37,7 +37,7 @@ attribute "sys_firewall/rule/enable",
 attribute "sys_firewall/rule/protocol",
   :display_name => "Firewall Rule Protocol",
   :description => "Firewall protocol use. Defaults to 'tcp'.",
-  :choice => ["tcp", "udp", "all"],
+  :choice => ["tcp", "udp", "both"],
   :default => "tcp",
   :recipes => [ "sys_firewall::setup_rule" ]
 
