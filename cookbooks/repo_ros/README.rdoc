@@ -7,7 +7,7 @@ manage source code download from Remote Object Store repositories.
 
 == REQUIREMENTS:
 
-* Requires repo LightWeight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/repo or your own implementation of "repo" resource. See "repo" cookbook readme for details.
+* Requires repo Light Weight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/repo or your own implementation of "repo" resource. See "repo" cookbook README for details.
 * Requires a virtual machine launched from a RightScale-managed RightImage.
 
 == COOKBOOKS DEPENDENCIES:
@@ -45,7 +45,7 @@ More detailed inputs descriptions you can find in rightscale dashboard and in re
 The 'repo_ros' implementation can be called with help of Lightweight Resource, which can be
 found in the <tt>repo</tt> cookbook.
 
-For more about Lightweight Resources and Providers (LWRPs), please see the Rigtscale
+For more about Lightweight Resources and Providers (LWRPs), please see the RightScale
 Guide at:  http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)
 
 === Attributes:
@@ -63,9 +63,9 @@ none
 === LWRPs:
 
 <tt>repo_ros</tt> provider is defined in providers/default.rb file, it contains source for <tt>:pull</tt> and <tt>:capistrano_pull</tt> actions.
-For more info about these actions please see <tt>repo</tt> cookbook readme.
+For more info about these actions please see <tt>repo</tt> cookbook README.
 
-<tt>repo_ros</tt> provider allows to get source code from Amazon S3 and Rackspace Cloudfiles Remote Object Store remote repositories.
+<tt>repo_ros</tt> provider allows to get source code from Amazon S3 and Rackspace Cloud files Remote Object Store remote repositories.
 
 For normal operations it requires "repo" resource which will act as interface to all <tt>repo_ros</tt> provider logic.
 
@@ -76,15 +76,15 @@ Standard repo pull. Your source code repository will be pulled from remote repos
 
 <tt>:capistrano_pull</tt>
 Perform standard pull and then capistrano deployment style will be applied.
-* Standard Opscode chef capistrano adoptation doesn't support ROS,
-* Downloaded ROS reposoitory will be converted to git repository
+* Standard Opscode chef capistrano implementation doesn't support ROS,
+* Downloaded ROS repository will be converted to git repository
 * Then capistrano deployment will be applied using <tt>capistranize</tt> definition
-* Git attributes will be removed after successfil apply.
+* Git attributes will be removed after successful apply.
 
 
 ===== Usage Example:
 
-For usage examples please see corresponding section in <tt>repo</tt> cookbook readme.
+For usage examples please see corresponding section in <tt>repo</tt> cookbook README.
 
 = LICENSE:
 

@@ -14,7 +14,7 @@ it provides an interface for general database actions and parameters.
 * Depends on a <tt>block_device</tt> resource for backup and restore recipes.
 * Requires a virtual machine launched from a RightScale-managed RightImage.
 
-== COOKBOOOKS DEPENDENCIES:
+== COOKBOOKS DEPENDENCIES:
 
 Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
@@ -46,7 +46,7 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
    recipe. This will initialize your database onto a block device
    that supports backup and restore operations.
-2. Initialize your database from previous dumpfile or other source.
+2. Initialize your database from previous dump file or other source.
 3. Register your database with a Dynamic DNS provider using:
 
     "sys_dns::do_set_private"
