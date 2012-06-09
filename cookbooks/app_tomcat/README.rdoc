@@ -6,8 +6,8 @@
 * Installs and configures, Tomcat application server.
 
 == REQUIREMENTS:
-* Requires "app" LightWeight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
-  or your own implementation of "app" resource. See "app" cookbook readme for details.
+* Requires "app" Light Weight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
+  or your own implementation of "app" resource. See "app" cookbook README for details.
 * Requires a VM launched from a RightScale managed RightImage
 * Tested on CentOS 5.6 RightImage
 * Tested on Ubuntu 10.04 RightImage
@@ -35,7 +35,7 @@ There are no known limitations.
 
 == DETAILS:
 === General
-<tt>app_tocmat</tt> cookbook will help you to install and setup tocmat application server, which can be able to connect, to MySQL or Postgres database server.
+<tt>app_tomcat</tt> cookbook will help you to install and setup tomcat application server, which can be able to connect, to MySQL or Postgres database server.
 
 <b>Apache</b>
 
@@ -89,7 +89,7 @@ Note: Only "internal" cookbook attributes are described here. Descriptions of at
 ====== Platform dependent
 * <tt>node[:tomcat][:app_user]</tt> - Username, required for changing owner of created project dirs
 * <tt>node[:tomcat][:alternatives_cmd]</tt> - Java alternatives command list
-* <tt>node[:tomcat][:db_adapter]</tt> -  - Type of databse adapter. MySQL or Postgres.
+* <tt>node[:tomcat][:db_adapter]</tt> -  - Type of database adapter. MySQL or Postgres.
 
 === Templates:
 
@@ -116,7 +116,7 @@ none
 
 === LWRPs:
 
-<tt>app_tomcat</tt> LightWeight provider is defined in providers/default.rb file, it contains source for
+<tt>app_tomcat</tt> Light Weight provider is defined in providers/default.rb file, it contains source for
 
 * <tt>:install</tt>
 
@@ -136,7 +136,7 @@ none
 
 actions.
 
-For more info about these actions please see <tt>app</tt> cookbook readme.
+For more info about these actions please see <tt>app</tt> cookbook README.
 
 For normal operations it requires "app" resource which will act as interface to all <tt>app_tomcat</tt> provider logic.
 
@@ -144,7 +144,7 @@ For normal operations it requires "app" resource which will act as interface to 
 
 * <tt>:install</tt> - Install packages required for application server setup
 
-* <tt>:setup_vhost</tt> - Will setup apache vhost file, with tomcat module directives included Instaall and setup tomcat package dependecies. Tomcat configs setup.
+* <tt>:setup_vhost</tt> - Will setup apache vhost file, with tomcat module directives included Install and setup tomcat package dependencies. Tomcat configs setup.
 
 * <tt>:start</tt> - Start sequence for Tomcat application server.
 
@@ -160,7 +160,7 @@ For normal operations it requires "app" resource which will act as interface to 
 
 ===== Usage Example:
 
-For usage examples please see corresponding section in <tt>app</tt> cookbook readme.
+For usage examples please see corresponding section in <tt>app</tt> cookbook README.
 
 = LICENSE:
 

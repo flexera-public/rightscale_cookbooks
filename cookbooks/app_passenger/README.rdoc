@@ -7,8 +7,8 @@
 
 == REQUIREMENTS:
 
-* Requires "app" LightWeight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
-  or your own implementation of "app" resource. See "app" cookbook readme for details.
+* Requires "app" Light Weight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
+  or your own implementation of "app" resource. See "app" cookbook README for details.
 * Requires a VM launched from a RightScale managed RightImage
 * Tested on CentOS 5.6 RightImage
 * Tested on Ubuntu 10.04 RightImage
@@ -119,7 +119,7 @@ none
 
 === LWRPs:
 
-<tt>app_passenger</tt> LightWeight provider is defined in providers/default.rb file, it contains source for
+<tt>app_passenger</tt> Light Weight provider is defined in providers/default.rb file, it contains source for
 
 * <tt>:install</tt>
 
@@ -139,7 +139,7 @@ none
 
 actions.
 
-For more info about these actions please see <tt>app</tt> cookbook readme.
+For more info about these actions please see <tt>app</tt> cookbook README.
 
 For normal operations it requires "app" resource which will act as interface to all <tt>app_passenger</tt> provider logic.
 
@@ -163,7 +163,7 @@ For normal operations it requires "app" resource which will act as interface to 
 
 ===== Usage Example:
 
-For usage examples please see corresponding section in <tt>app</tt> cookbook readme.
+For usage examples please see corresponding section in <tt>app</tt> cookbook README.
 
 = LICENSE:
 
