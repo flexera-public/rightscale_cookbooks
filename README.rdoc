@@ -218,11 +218,19 @@ called with <tt>include_recipe</tt> (for example the
 <tt>db::do_primary_backup</tt> and <tt>db::do_secondary_backup</tt> recipes use
 the <tt>db_do_backup</tt> definition that uses a set of resources from the
 <tt>db</tt> and <tt>block_device</tt> cookbooks to perform a database backup).
+
+In addition to housing reusable recipe snippets used within the cookbook, we also 
+use definitions as external methods that other cookbooks can call.  For example,
+rightscale_logrotate_app which allows other cookbooks to add their logrotate configurations
+while deferring details of logroate to the rightscale cookbook.  
+
 In the RightScale cookbooks, definitions are named with the cookbook name as a
 prefix so you can easily find which cookbook a definition comes from (for
 example the <tt>rightscale_marker</tt> definition is defined in the
 <tt>rightscale</tt> cookbook and the <tt>db_do_backup</tt> definition is defined
 in the <tt>db</tt> cookbook).
+
+
 
 ==== rightscale_marker
 
