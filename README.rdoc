@@ -13,12 +13,12 @@ starting point for your own creations. These cookbooks are built for use within
 RightScale's {ServerTemplates}[http://support.rightscale.com/12-Guides/Dashboard_Users_Guide/Design/ServerTemplates/Concepts/About_ServerTemplates]
 to create {3-tier deployment architectures for High Availability in the
 cloud}[http://support.rightscale.com/03-Tutorials/02-AWS/E2E_Examples/3_Tier_Deployment_(11H1)#Introduction].
-While these deployments fit the requirements for many auto-scaling HA
+These deployments fit the requirements for many auto-scaling HA
 deployments, however no single infrastructure need is exactly the same -- the
 source code is provided here to give you the control over how much (or how
 little) customization you want.
 
-These are your cookbooks!
+These are _your_ cookbooks!
 
 As a good starting point, the <b>COOKBOOK LIST</b> section below will give you a
 summary of what each cookbook does. From there, each cookbook has its own README
@@ -165,9 +165,9 @@ the <tt>definitions/</tt> directory in the cookbook (for example
 
 === Dependency Resolution
 
-The different cookbooks depend on other cookbooks for resources, providers, and
+Typically cookbooks depend on other cookbooks for resources, providers, and
 definitions. If a dependency is not specified in the <tt>metadata.rb</tt> for a
-cookbook, its recipes may load without the dependent cookbooks and will fail to
+cookbook, its recipes may load without the cookbooks they depend on and will fail to
 execute. In addition, there are also resources that are set up in default
 recipes from other cookbooks; when setting up a ServerTemplate with these kinds
 of dependencies, the default recipes for those dependent cookbooks need to
@@ -189,14 +189,26 @@ Pattern}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/
 
 === Abstract Cookbooks and LWRPs
 
-Another pattern used in the RightScale cookbooks is the Abstract Cookbooks and
-Light Weight Resources and Providers pattern. In this pattern the abstract
-cookbook contains a resource that defines a set of general actions (for example
-initializing, backing up, and restoring a database) and a set of recipes that
-use these actions. Then, the "concrete" cookbooks contain providers that
+Another convention used in the RightScale cookbooks is the _Abstract_ _Cookbook_ pattern. 
+In this pattern the abstract cookbook contains a resource that defines a set of general 
+actions (for example initializing, backing up, and restoring a database) and a set of 
+recipes that use these actions. Then, the _concrete_ cookbooks contain providers that
 implement the actions for a specific variety of the abstract cookbook (for
 example a MySQL or PostgreSQL database) and a default recipe that sets up any
 dependencies for the provider.
+
+This differs slightly from the typical use of Chef Resources and Providers, where both 
+are typically contained in the same cookbook.
+
+For an example of an abstract cookbook, please see the "db" cookbook.  The corresponding
+concrete cookbooks are "db_mysql" and "db_postgres". 
+
+To group, abstract cookbooks with their concrete cookbooks, each concrete cookbook is prefixed
+with the name of the abstract cookbook.  This can be seen repeated throughout our 
+collection with groupings such as "app", "db", "lb", "loging", etc.
+
+The only grouping that is currently an exception is the "sys" grouping of cookbooks. These
+are distinct system related cookbooks. 
 
 === Definitions
 
