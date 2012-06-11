@@ -111,7 +111,7 @@ systems using ServerTemplates on the RightScale Cloud Management Platform.
 
 [repo]
  This cookbook provides abstract 'repo' resource for managing code download from
- Git, Subversion or ROS code repositories.
+ Git, Subversion or Remote Object Store code repositories.
 
 [repo_git]
  Provides the Git implementation of the 'repo' resource to manage source code
@@ -119,7 +119,8 @@ systems using ServerTemplates on the RightScale Cloud Management Platform.
 
 [repo_ros]
  Provides the Remote Object Store implementation of the 'repo' resource to
- manage source code download from Remote Object Store repositories.
+ manage source code download from Remote Object Store repositories such as
+ Amazon S3, Rackspace Cloud Files, and OpenStack Swift.
 
 [repo_svn]
  Provides the Subversion implementation of the 'repo' resource to manage source code
@@ -189,26 +190,27 @@ Pattern}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/
 
 === Abstract Cookbooks and LWRPs
 
-Another convention used in the RightScale cookbooks is the _Abstract_ _Cookbook_ pattern. 
-In this pattern the abstract cookbook contains a resource that defines a set of general 
-actions (for example initializing, backing up, and restoring a database) and a set of 
-recipes that use these actions. Then, the _concrete_ cookbooks contain providers that
-implement the actions for a specific variety of the abstract cookbook (for
-example a MySQL or PostgreSQL database) and a default recipe that sets up any
-dependencies for the provider.
+Another convention used in the RightScale cookbooks is the _Abstract_ _Cookbook_
+pattern. In this pattern the abstract cookbook contains a resource that defines
+a set of general actions (for example initializing, backing up, and restoring a
+database) and a set of recipes that use these actions. Then, the _concrete_
+cookbooks contain providers that implement the actions for a specific variety of
+the abstract cookbook (for example a MySQL or PostgreSQL database) and a default
+recipe that sets up any dependencies for the provider.
 
-This differs slightly from the typical use of Chef Resources and Providers, where both 
-are typically contained in the same cookbook.
+This differs slightly from the typical use of Chef Resources and Providers,
+where both are typically contained in the same cookbook.
 
-For an example of an abstract cookbook, please see the "db" cookbook.  The corresponding
-concrete cookbooks are "db_mysql" and "db_postgres". 
+For an example of an abstract cookbook, please see the "db" cookbook. The
+corresponding concrete cookbooks are "db_mysql" and "db_postgres".
 
-To group, abstract cookbooks with their concrete cookbooks, each concrete cookbook is prefixed
-with the name of the abstract cookbook.  This can be seen repeated throughout our 
-collection with groupings such as "app", "db", "lb", "loging", etc.
+To group, abstract cookbooks with their concrete cookbooks, each concrete
+cookbook is prefixed with the name of the abstract cookbook. This can be seen
+repeated throughout our collection with groupings such as "app", "db", "lb",
+"logging", etc.
 
-The only grouping that is currently an exception is the "sys" grouping of cookbooks. These
-are distinct system related cookbooks. 
+The only grouping that is currently an exception is the "sys" grouping of
+cookbooks. These are distinct system related cookbooks.
 
 === Definitions
 
@@ -219,17 +221,16 @@ called with <tt>include_recipe</tt> (for example the
 the <tt>db_do_backup</tt> definition that uses a set of resources from the
 <tt>db</tt> and <tt>block_device</tt> cookbooks to perform a database backup).
 
-In addition to housing reusable recipe snippets used within the cookbook, we also 
+In addition to housing reusable recipe snippets used within the cookbook, we also
 use definitions as external methods that other cookbooks can call.  For example,
-rightscale_logrotate_app which allows other cookbooks to add their logrotate configurations
-while deferring details of logroate to the rightscale cookbook.  
+rightscale_logrotate_app which allows other cookbooks to add their logrotate
+configurations while deferring details of logrotate to the rightscale cookbook.
 
 In the RightScale cookbooks, definitions are named with the cookbook name as a
 prefix so you can easily find which cookbook a definition comes from (for
 example the <tt>rightscale_marker</tt> definition is defined in the
 <tt>rightscale</tt> cookbook and the <tt>db_do_backup</tt> definition is defined
 in the <tt>db</tt> cookbook).
-
 
 
 ==== rightscale_marker
@@ -252,12 +253,15 @@ cookbook, you can use the <tt>rightscale_marker</tt> definition as well:
   ...
 
   rightscale_marker :end
-  
-== RIGHTSCALE RESOURCES
 
-RightScale provides some custom Chef rasources that are available when running a RightImage launched from the RightScale platform.  These resources include remote_recipe, right_link_tag, server_collection, rs_shutdown, and executable_schedule.
+== RIGHTSCALE RESOURCES:
 
-For documentation, see {Chef Resources}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources]
+RightScale provides some custom Chef resources that are available when running a
+RightImage launched from the RightScale platform. These resources include
+<tt>remote_recipe</tt>, <tt>right_link_tag</tt>, <tt>server_collection</tt>,
+<tt>rs_shutdown</tt>, and <tt>executable_schedule</tt>.
+
+For documentation, see {Chef Resources}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources].
 
 == CUSTOMIZATION:
 
