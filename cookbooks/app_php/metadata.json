@@ -26,7 +26,7 @@
       "required": "recommended",
       "display_name": "Database Schema Name",
       "recipes": [
-
+        "app_php::default"
       ]
     },
     "app_php": {
@@ -66,7 +66,7 @@
       "required": "optional",
       "display_name": "PHP module packages",
       "recipes": [
-
+        "app_php::default"
       ]
     }
   },
