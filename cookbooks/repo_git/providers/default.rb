@@ -18,7 +18,7 @@ action :setup_attributes do
   end
 
   # Checking repository URL
-  raise "  ERROR: repo URL input is unset. Please fill 'Repository Url' input" if repository_url.empty?
+  raise "  ERROR: repo URL input is unset. Please fill 'Repository URL' input" if repository_url.empty?
 
 end
 
