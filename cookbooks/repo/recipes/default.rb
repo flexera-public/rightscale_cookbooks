@@ -24,13 +24,7 @@ node[:repo].each do |resource_name, entry|
   container = entry[:container] || ""
   prefix = entry[:prefix] || ""
 
-  # Checking for ros_util presence it is required for repo_ros correct operations
-  ruby_block "Checking for ros_util presence" do
-    block do
-      raise "  Error: ROS gem missing, please add rightscale::install_tool recipe to runlist." unless File.exists?("/opt/rightscale/sandbox/bin/ros_util")
-    end
-    only_if do (entry[:provider]=="repo_ros") end
-  end
+
 
   # Initial setup of "repository" LWRP.
   log "  Registering #{resource_name} prov: #{entry[:provider]}"
