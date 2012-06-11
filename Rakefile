@@ -33,3 +33,10 @@ elsif File.directory?(File.join(TOPDIR, ".git"))
 end
 
 load 'chef/tasks/chef_repo.rake'
+
+desc "Check spelling in the README files"
+task :spell do
+  Dir['README*', 'cookbooks/*/README*'].each do |readme|
+    sh "aspell -x -c #{readme}"
+  end
+end

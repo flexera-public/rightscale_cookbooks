@@ -7,7 +7,7 @@
 
 == REQUIREMENTS:
 
-* Requires "logging" LightWeight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/logging
+* Requires "logging" Light Weight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/logging
 * Requires a VM launched from a RightScale managed RightImage
 
 == COOKBOOKS DEPENDENCIES:
