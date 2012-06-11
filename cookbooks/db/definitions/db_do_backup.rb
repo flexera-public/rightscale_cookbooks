@@ -6,8 +6,6 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 # Does a snapshot backup of the filesystem containing the database
-# Note that the upload becomes a background job in order to allow other recipes to
-# not wait if the upload takes a long time.
 # Since this backup is a snapshot of a filesystem, it will check if the database has
 # been 'initialized', else it will fail.
 #
