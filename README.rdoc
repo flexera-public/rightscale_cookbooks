@@ -255,9 +255,12 @@ cookbook, you can use the <tt>rightscale_marker</tt> definition as well:
   
 == RIGHTSCALE RESOURCES
 
-RightScale provides some custom Chef rasources that are available when running a RightImage launched from the RightScale platform.  These resources include remote_recipe, right_link_tag, server_collection, rs_shutdown, and executable_schedule.
+RightScale provides some custom Chef rasources that are available when running a
+RightImage launched from the RightScale platform. These resources include
+<tt>remote_recipe</tt>, <tt>right_link_tag</tt>, <tt>server_collection</tt>,
+<tt>rs_shutdown</tt>, and <tt>executable_schedule</tt>.
 
-For documentation, see {Chef Resources}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources]
+For documentation, see {Chef Resources}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources].
 
 == CUSTOMIZATION:
 
