@@ -2,12 +2,13 @@
 
 == DESCRIPTION:
 
-This cookbook provides abstract 'repo' resource for managing code download from GIT, SVN or ROS code repositories.
+This cookbook provides abstract 'repo' resource for managing code download from
+Git, Subversion or Remote Object Store code repositories.
 
 == REQUIREMENTS:
 
 * Requires a virtual machine launched from a RightScale-managed RightImage.
-* Ros implementation requires the 'rightscale::install_tools' recipe
+* ROS implementation requires the 'rightscale::install_tools' recipe
 
 == COOKBOOKS DEPENDENCIES:
 
@@ -18,7 +19,7 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 * <tt>repo_git</tt>
 * <tt>repo_ros</tt>
 
-cookbooks must be present in ServerTemplate repository
+cookbooks must be present in ServerTemplate repository.
 
 == KNOWN LIMITATIONS:
 
@@ -26,8 +27,9 @@ There are no known limitations.
 
 == SETUP/USAGE:
 
-* Place repo::default recipe into your runlist to setup the repo resource.
-  When using a RightScale ServerTemplate, this will also automatically add the required attributes to your ServerTemplate inputs.
+* Place repo::default recipe into your runlist to setup the repo resource. When
+  using a RightScale ServerTemplate, this will also automatically add the
+  required attributes to your ServerTemplate inputs.
 
 * Add 'repo' resource call in your recipe and provide all required parameters.
 
@@ -41,7 +43,7 @@ There are no known limitations.
 
   :capistrano_pull - performs pulling and backup of your code.
 
-  For code implementation examples look at <b>LWRP's</b> section of this readme
+  For code implementation examples look at <b>LWRPs</b> section of this README.
 
 == DETAILS:
 
@@ -53,17 +55,26 @@ repo_git cookbook for an example.
 
 === Attributes
 
-All attributes in this cookbook are generally used to assign values for corresponding <tt>repo</tt> LWRP attribute.
+All attributes in this cookbook are generally used to assign values for
+corresponding <tt>repo</tt> LWRP attribute.
 
-All attributes in this cookbook has inputs except <b>Additional capistrano attributes</b> which are used internally in recipes.
+All attributes in this cookbook have inputs except <b>Additional capistrano
+attributes</b> which are used internally in recipes.
 
 ===== Common attributes
 
-* <tt>node[:repo][:default][:destination]</tt> - Path to where project repo will be pulled. Example: "/tmp/repo"
-* <tt>node[:repo][:default][:repository]</tt> - The URL of your svn or git repository where your application code will be checked out.
-* <tt>node[:repo][:default][:revision]</tt> -  Remote repo Branch, Tag or revision. Default is:"HEAD"
-* <tt>node[:repo][:default][:provider]</tt> - A repository provider: repo_git for Git, repo_svn for SVN or repo_ros for Remote Object Store. Default is:"repo_git"
-* <tt>node[:repo][:default][:perform_action]</tt> - The type pull action which will be performed, 'pull'- standard repo pull, 'capistrano_pull' standard pull and then capistrano deployment style will be applied. Default is: "pull"
+* <tt>node[:repo][:default][:destination]</tt> - Path to where project repo will
+  be pulled. Example: "/tmp/repo"
+* <tt>node[:repo][:default][:repository]</tt> - The URL of your svn or git
+  repository where your application code will be checked out.
+* <tt>node[:repo][:default][:revision]</tt> - Remote repo Branch, Tag or
+  revision. The default is "HEAD".
+* <tt>node[:repo][:default][:provider]</tt> - A repository provider:
+  <tt>repo_git</tt> for Git, <tt>repo_svn</tt> for Subversion or
+  <tt>repo_ros</tt> for Remote Object Store. The default is "repo_git".
+* <tt>node[:repo][:default][:perform_action]</tt> - The type pull action which
+  will be performed, 'pull'- standard repo pull, 'capistrano_pull' standard pull
+  and then capistrano deployment style will be applied. Default is: "pull".
 
 ===== SVN attributes
 
@@ -72,48 +83,80 @@ All attributes in this cookbook has inputs except <b>Additional capistrano attri
 
 ===== GIT attributes
 
-* <tt>node[:repo][:default][:ssh_key]</tt> - The private SSH key of the git repository.
+* <tt>node[:repo][:default][:ssh_key]</tt> - The private SSH key of the git
+  repository.
 
 ===== ROS attributes
 
-* <tt>node[:repo][:default][:storage_account_provider]</tt> - Location where the source file is saved. Used by recipes to upload to Amazon S3 or Rackspace Cloud Files. Default is:"S3"
-* <tt>node[:repo][:default][:storage_account_id]</tt> -  Cloud storage account ID required to access specified cloud storage location.
-* <tt>node[:repo][:default][:storage_account_secret]</tt> - Cloud storage account secret required to access specified cloud storage location.
-* <tt>node[:repo][:default][:container]</tt> - The cloud storage location where source project repo is located. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name.
-* <tt>node[:repo][:default][:prefix]</tt> - Filename of required source repository archive. Ex: source.tar.gz
+* <tt>node[:repo][:default][:storage_account_provider]</tt> - Location where the
+  source file is saved. Used by recipes to upload to Amazon S3 or Rackspace
+  Cloud Files. Default is: "S3".
+* <tt>node[:repo][:default][:storage_account_id]</tt> - Cloud storage account ID
+  required to access specified cloud storage location.
+* <tt>node[:repo][:default][:storage_account_secret]</tt> - Cloud storage
+  account secret required to access specified cloud storage location.
+* <tt>node[:repo][:default][:container]</tt> - The cloud storage location where
+  source project repo is located. For Amazon S3, use the bucket name. For
+  Rackspace Cloud Files, use the container name.
+* <tt>node[:repo][:default][:prefix]</tt> - Filename of required source
+  repository archive. Example: "source.tar.gz".
 
 ===== Additional capistrano attributes
 
-* <tt>node[:repo][:default][:environment]</tt> - A hash of the form {"ENV_VARIABLE"=>"VALUE"} ({})
-* <tt>node[:repo][:default][:symlinks]</tt> - An array of paths, relative to app root, to be removed from a checkout before symlinking. Default is:({})
-* <tt>node[:repo][:default][:purge_before_symlink]</tt> - An array of paths, relative to app root, to be removed from a checkout before symlinking. Default is: %w{}
-* <tt>node[:repo][:default][:create_dirs_before_symlink]</tt> - Directories to create before symlinking. Runs after purge_before_symlink. Default is: %w{}
-
-=== Templates:
- none
+* <tt>node[:repo][:default][:environment]</tt> - A hash of the form
+  <tt>{"ENV_VARIABLE"=>"VALUE"}</tt> ({})
+* <tt>node[:repo][:default][:symlinks]</tt> - An array of paths, relative to app
+  root, to be removed from a checkout before symlinking. Default is:({})
+* <tt>node[:repo][:default][:purge_before_symlink]</tt> - An array of paths,
+  relative to app root, to be removed from a checkout before symlinking. Default
+  is: %w{}
+* <tt>node[:repo][:default][:create_dirs_before_symlink]</tt> - Directories to
+  create before symlinking. Runs after purge_before_symlink. Default is: %w{}
 
 === Definitions:
 
 <b>capistranize_repo</b>
 
 Definition used to create Capistrano style project deployment.
-More info about capistrano you can find at http://wiki.opscode.com/display/chef/Deploy+Resource#DeployResource-TheDeployStrategies
+For more information about capistrano see {The Deploy Strategies}[http://wiki.opscode.com/display/chef/Deploy+Resource#DeployResource-TheDeployStrategies].
 
 Parameters:
 
-All parameters in this definition are linked to corresponding attributes. However if you use this definition for your own purposes you can redefine them. See example below.
+All parameters in this definition are linked to corresponding attributes.
+However if you use this definition for your own purposes you can redefine them.
+See example below.
 
-* <tt>:destination</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:destination]</tt> in attributes section of this readme.
-* <tt>:repository</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:repository]</tt> in attributes section of this readme.
-* <tt>:revision</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:revision]</tt> in attributes section of this readme.
-* <tt>:svn_username</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:svn_username]</tt> in attributes section of this readme.
-* <tt>:svn_password</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:svn_password]</tt> in attributes section of this readme.
-* <tt>:app_user</tt> - User wich will be owner of created project deployment.
-* <tt>:environment</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:environment]</tt> in attributes section of this readme.
-* <tt>:create_dirs_before_symlink</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:create_dirs_before_symlink]</tt> in attributes section of this readme.
-* <tt>:purge_before_symlink</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:purge_before_symlink]</tt> in attributes section of this readme.
-* <tt>:symlinks</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:symlinks]</tt> in attributes section of this readme.
-* <tt>:scm_provider</tt> - Receive value of corresponding attribute. See <tt>node[:repo][:default][:provider]</tt> in attributes section of this readme.
+* <tt>:destination</tt> - Receive value of corresponding attribute. See
+  <tt>node[:repo][:default][:destination]</tt> in attributes section of this
+  README.
+* <tt>:repository</tt> - Receive value of corresponding attribute. See
+  <tt>node[:repo][:default][:repository]</tt> in attributes section of this
+  README.
+* <tt>:revision</tt> - Receive value of corresponding attribute. See
+  <tt>node[:repo][:default][:revision]</tt> in attributes section of this
+  README.
+* <tt>:svn_username</tt> - Receive value of corresponding attribute. See
+  <tt>node[:repo][:default][:svn_username]</tt> in attributes section of this
+  README.
+* <tt>:svn_password</tt> - Receive value of corresponding attribute. See
+  <tt>node[:repo][:default][:svn_password]</tt> in attributes section of this
+  README.
+* <tt>:app_user</tt> - User that will be owner of created project deployment.
+* <tt>:environment</tt> - Receive value of corresponding attribute. See
+  <tt>node[:repo][:default][:environment]</tt> in attributes section of this
+  README.
+* <tt>:create_dirs_before_symlink</tt> - Receive value of corresponding
+  attribute. See <tt>node[:repo][:default][:create_dirs_before_symlink]</tt> in
+  attributes section of this README.
+* <tt>:purge_before_symlink</tt> - Receive value of corresponding attribute. See
+  <tt>node[:repo][:default][:purge_before_symlink]</tt> in attributes section of
+  this README.
+* <tt>:symlinks</tt> - Receive value of corresponding attribute. See
+  <tt>node[:repo][:default][:symlinks]</tt> in attributes section of this
+  README.
+* <tt>:scm_provider</tt> - Receive value of corresponding attribute. See
+  <tt>node[:repo][:default][:provider]</tt> in attributes section of this
+  README.
 
 Example:
 
@@ -130,19 +173,21 @@ Example:
   end
 
 
-=== Libraries-helpers:
- none
-
 === LWRPs:
-==== Resources
-This cookbook provides abstract <tt>repo</tt> resource. Which will be used to call existing or user defined LightWeight repo_* providers.
 
-For now we have repo_ros, repo_git and repo_svn cookbooks. Each of them contain implementation of corresponding repo_* LightWeight Provider
-which can be called using this resource.
+==== Resources
+
+This cookbook provides abstract <tt>repo</tt> resource. Which will be used to
+call existing or user defined Light Weight repo_* providers.
+
+Supported cookbooks are repo_ros, repo_git and repo_svn cookbooks. Each of them
+contain implementation of corresponding repo_* Light Weight Provider which can
+be called using this resource.
 
 ===== Actions:
 <tt>:pull</tt>
-Standard repo pull. Your source code repository will be pulled from remote url to specified destination.
+Standard repo pull. Your source code repository will be pulled from remote url
+to specified destination.
 
 <tt>:capistrano_pull</tt>
 Perform standard pull and then capistrano deployment style will be applied.
@@ -165,27 +210,41 @@ Perform standard pull and then capistrano deployment style will be applied.
 
 * <tt>app_user</tt> - System user to run the deploy as
 
-* <tt>purge_before_symlink</tt> - An array of paths, relative to app root, to be removed from a checkout before symlinking
+* <tt>purge_before_symlink</tt> - An array of paths, relative to app root, to be
+  removed from a checkout before symlinking
 
-* <tt>create_dirs_before_symlink</tt> - Directories to create before symlinking. Runs after purge_before_symlink
+* <tt>create_dirs_before_symlink</tt> - Directories to create before symlinking.
+  Runs after purge_before_symlink
 
-* <tt>symlinks</tt> - A hash that maps files in the shared directory to their paths in the current release
+* <tt>symlinks</tt> - A hash that maps files in the shared directory to their
+  paths in the current release
 
 * <tt>environment</tt> - A hash of the form {"ENV_VARIABLE"=>"VALUE"}
 
-* <tt>prefix</tt> - The prefix that will be used to name/locate the backup of a particular code repo.
+* <tt>prefix</tt> - The prefix that will be used to name/locate the backup of a
+  particular code repo.
 
-* <tt>storage_account_provider</tt> - Location where dump file will be saved. Used by dump recipes to back up to Amazon S3 or Rackspace Cloud Files.
+* <tt>storage_account_provider</tt> - Location where dump file will be saved.
+  Used by dump recipes to back up to Amazon S3 or Rackspace Cloud Files.
 
-* <tt>container</tt> - The cloud storage location where the dump file will be restored from. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name.
+* <tt>container</tt> - The cloud storage location where the dump file will be
+  restored from. For Amazon S3, use the bucket name. For Rackspace Cloud Files,
+  use the container name.
 
-* <tt>storage_account_id</tt> - In order to read/write the container file to the specified cloud storage location, you need to provide cloud authentication credentials.
-For Amazon S3, use your Amazon access key ID (e.g., cred:AWS_ACCESS_KEY_ID). For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME).
+* <tt>storage_account_id</tt> - In order to read/write the container file to the
+  specified cloud storage location, you need to provide cloud authentication
+  credentials. For Amazon S3, use your Amazon access key ID (e.g.,
+  cred:AWS_ACCESS_KEY_ID). For Rackspace Cloud Files, use your Rackspace login
+  username (e.g., cred:RACKSPACE_USERNAME).
 
-* <tt>storage_account_secret</tt> - In order to read/write the container file to the specified cloud storage location, you will need to provide cloud authentication credentials.
-For Amazon S3, use your AWS secret access key (e.g., cred:AWS_SECRET_ACCESS_KEY). For Rackspace Cloud Files, use your Rackspace account API key (e.g., cred:RACKSPACE_AUTH_KEY).
+* <tt>storage_account_secret</tt> - In order to read/write the container file to
+  the specified cloud storage location, you will need to provide cloud
+  authentication credentials. For Amazon S3, use your AWS secret access key
+  (e.g., cred:AWS_SECRET_ACCESS_KEY). For Rackspace Cloud Files, use your
+  Rackspace account API key (e.g., cred:RACKSPACE_AUTH_KEY).
 
-* <tt>unpack_source</tt> - Unpack downloaded source or not Source file must be kind of tar archive Default: false
+* <tt>unpack_source</tt> - Unpack downloaded source or not Source file must be
+  kind of tar archive Default: false
 
 ===== Usage Example:
 

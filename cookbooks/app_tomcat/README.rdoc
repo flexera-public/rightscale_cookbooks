@@ -6,8 +6,9 @@
 * Installs and configures, Tomcat application server.
 
 == REQUIREMENTS:
-* Requires "app" LightWeight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
-  or your own implementation of "app" resource. See "app" cookbook readme for details.
+* Requires "app" Light Weight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
+  or your own implementation of "app" resource. See "app" cookbook README for
+  details.
 * Requires a VM launched from a RightScale managed RightImage
 * Tested on CentOS 5.6 RightImage
 * Tested on Ubuntu 10.04 RightImage
@@ -31,11 +32,13 @@ There are no known limitations.
 * Place tomcat::default recipe into your runlist to setup the application server.
 * When using a RightScale ServerTemplate, this will also automatically add the
   common attributes to your ServerTemplate inputs.
-* Set 'jdbc/ConnDB' as your datasource name to setup database connection with the application server.
+* Set 'jdbc/ConnDB' as your datasource name to setup database connection with
+  the application server.
 
 == DETAILS:
 === General
-<tt>app_tocmat</tt> cookbook will help you to install and setup tocmat application server, which can be able to connect, to MySQL or Postgres database server.
+The <tt>app_tomcat</tt> cookbook will install and setup tomcat application
+server, which can connect to MySQL or Postgres database servers.
 
 <b>Apache</b>
 
@@ -74,49 +77,50 @@ also:
 * <tt>Automatic logrotate file configuration for tomcat logs</tt>
 * <tt>Collectd monitoring support</tt>
 
-for more info see:  http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/2012-03-26#Tomcat_App_Server
+For more information see: {Tomcat App Server}[http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/2012-03-26#Tomcat_App_Server].
 
 
 === Attributes:
 These are settings used in recipes and templates. Default values are noted.
 
-Note: Only "internal" cookbook attributes are described here. Descriptions of attributes which have inputs you can find in metadata.rb cookbook file.
+Note: Only "internal" cookbook attributes are described here. Descriptions of
+attributes which have inputs you can find in metadata.rb cookbook file.
 
 ====== General attributes
-* <tt>node[:tomcat][:docroot]</tt> - Path to directory which will contain application.
-* <tt>node[:tomcat][:module_dependencies]</tt> - Additional modules required for Tomcat
+* <tt>node[:tomcat][:docroot]</tt> - Path to directory which will contain
+  application.
+* <tt>node[:tomcat][:module_dependencies]</tt> - Additional modules required
+  for Tomcat
 
 ====== Platform dependent
-* <tt>node[:tomcat][:app_user]</tt> - Username, required for changing owner of created project dirs
+* <tt>node[:tomcat][:app_user]</tt> - Username, required for changing owner of
+  created project dirs
 * <tt>node[:tomcat][:alternatives_cmd]</tt> - Java alternatives command list
-* <tt>node[:tomcat][:db_adapter]</tt> -  - Type of databse adapter. MySQL or Postgres.
+* <tt>node[:tomcat][:db_adapter]</tt> -  - Type of database adapter. MySQL or Postgres.
 
 === Templates:
 
-====== Defined in <tt>:setup_vhost</tt> LWRP action for <tt>app::setup_vhost</tt> recipe
+==== Defined in <tt>:setup_vhost</tt> LWRP action for <tt>app::setup_vhost</tt> recipe
 
 * <tt>apache_mod_jk_vhost.erb</tt> - Configuration for apache vhost file
 * <tt>mod_jk.conf.erb</tt> - Mod_jk configuration template
 * <tt>server_xml.erb</tt> - Tomcat server.xml configuration template
-* <tt>tomcat6_conf.erb</tt> - Tomcat6.conf configuration template used in the <tt>app::setup_vhost</tt> recipe
-* <tt>tomcat6_logrotate.conf.erb</tt> - Logrotate for configuration template for Tomcat
+* <tt>tomcat6_conf.erb</tt> - Tomcat6.conf configuration template used in the
+  <tt>app::setup_vhost</tt> recipe
+* <tt>tomcat6_logrotate.conf.erb</tt> - Logrotate for configuration template for
+  Tomcat
 * <tt>tomcat_workers.properties.erb</tt> - Tomcat worker configuration template
 
-====== Defined in <tt>:setup_db_connection</tt> LWRP action for <tt>app::setup_db_connection</tt> recipe
+==== Defined in <tt>:setup_db_connection</tt> LWRP action for <tt>app::setup_db_connection</tt> recipe
 
 * <tt>web_xml.erb</tt> - Content configuration template for Tomcat
-* <tt>context_xml.erb</tt> - Configuration for project database connection config file
-
-=== Definitions:
-none
-
-=== Libraries-helpers:
-none
-
+* <tt>context_xml.erb</tt> - Configuration for project database connection
+  config file
 
 === LWRPs:
 
-<tt>app_tomcat</tt> LightWeight provider is defined in providers/default.rb file, it contains source for
+<tt>app_tomcat</tt> Light Weight provider is defined in
+<tt>providers/default.rb</tt> file, it contains source for:
 
 * <tt>:install</tt>
 
@@ -136,15 +140,17 @@ none
 
 actions.
 
-For more info about these actions please see <tt>app</tt> cookbook readme.
+For more info about these actions please see <tt>app</tt> cookbook README.
 
-For normal operations it requires "app" resource which will act as interface to all <tt>app_tomcat</tt> provider logic.
+For normal operations it requires "app" resource which will act as interface to
+all <tt>app_tomcat</tt> provider logic.
 
 ===== Actions
 
 * <tt>:install</tt> - Install packages required for application server setup
 
-* <tt>:setup_vhost</tt> - Will setup apache vhost file, with tomcat module directives included Instaall and setup tomcat package dependecies. Tomcat configs setup.
+* <tt>:setup_vhost</tt> - Will setup apache vhost file, with tomcat module
+  directives included Install and setup tomcat package dependencies.
 
 * <tt>:start</tt> - Start sequence for Tomcat application server.
 
@@ -152,15 +158,17 @@ For normal operations it requires "app" resource which will act as interface to 
 
 * <tt>:restart</tt> - Restart sequence for Tomcat application server.
 
-* <tt>:code_update</tt> - Perform project source code update/download using user selected "repo" LWRP. Setup logrotate config.
+* <tt>:code_update</tt> - Perform project source code update/download using user
+  selected "repo" LWRP. Setup logrotate config.
 
-* <tt>:setup_db_connection</tt> - Perform project /etc/tomcat6/context.xml database file configuration
+* <tt>:setup_db_connection</tt> - Perform project
+  <tt>/etc/tomcat6/context.xml</tt> database file configuration
 
 * <tt>:setup_monitoring</tt> - Install and setup of required monitoring software.
 
 ===== Usage Example:
 
-For usage examples please see corresponding section in <tt>app</tt> cookbook readme.
+For usage examples please see corresponding section in <tt>app</tt> cookbook README.
 
 = LICENSE:
 

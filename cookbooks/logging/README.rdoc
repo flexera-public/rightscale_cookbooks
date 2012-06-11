@@ -1,4 +1,4 @@
-= RightScale Loggind
+= RightScale Logging
 
 == DESCRIPTION:
 
@@ -14,7 +14,7 @@ remote server.  If not the the default configuration is used (local files)
 * Must be used with a 'logging' provider in the cookbook path
 * Requires a virtual machine launched from a RightScale-managed RightImage.
 
-== COOKBOOOKS DEPENDENCIES:
+== COOKBOOKS DEPENDENCIES:
 
 Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
@@ -41,7 +41,7 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 * For remote logging.  Set the input logging/remote_server to the FQDN or IP of your
   logging server.  The default configuration will be used with the remote logging
-  configuration appeneded.
+  configuration appended.
 
 == DETAILS:
 
