@@ -9,6 +9,7 @@
 
 actions :pull
 actions :capistrano_pull
+actions :setup_attributes
 
 
 # Common attributes

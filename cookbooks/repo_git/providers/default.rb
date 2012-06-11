@@ -5,6 +5,14 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+action :setup_attributes do
+
+  if node[:repo][:default][:revision].empty?
+    log "  Warning: branch/tag input is empty, switching to 'master' branch"
+    node[:repo][:default][:revision] = "master"
+  end
+
+end
 
 action :pull do
 

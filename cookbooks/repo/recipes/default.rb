@@ -8,6 +8,14 @@
 
 rightscale_marker :begin
 
+log "  Registering default basic repo resource"
+repo "default" do
+  provider node[:repo][:default][:provider]
+  persist true
+  action :nothing
+end
+
+=begin
 log "  Setup all resources that have attributes in the node"
 node[:repo].each do |resource_name, entry|
 
@@ -67,5 +75,5 @@ node[:repo].each do |resource_name, entry|
     persist true
   end
 end
-
+=end
 rightscale_marker :end
