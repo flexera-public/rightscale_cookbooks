@@ -17,9 +17,9 @@ package "php5" do
       "5.6" => "php53u",
       "5.7" => "php53u",
       "5.8" => "php53u",
-      "default" => "php5" # CentOS 6+ 
+      "default" => "php" # CentOS 6+ 
     },
-    "default" => 'php5'
+    "default" => 'php'
   )
   action :install
 end
@@ -62,10 +62,10 @@ if node[:app_php][:db_adapter] == "mysql"
         "5.6" => "php53u-mysql",
         "5.7" => "php53u-mysql",
         "5.8" => "php53u-mysql",
-        "default" => "php5-mysql" # CentOS 6+ 
+        "default" => "php-mysql" # CentOS 6+ 
       },
       [ "ubuntu", "debian" ] => { :default => "php5-mysql" },
-      "default" => 'php5-mysql'
+      "default" => 'php-mysql'
     )
     action :install
   end
