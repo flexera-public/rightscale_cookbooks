@@ -27,7 +27,7 @@ information you need if you want to create a runlist or ServerTemplate by mixing
 and matching recipes.
 
 For a deeper understanding of how to navigate and find things in these
-cookbooks, be sure to take a look at the <b>DESIGN CONVENTIONS</b> section.
+cookbooks, be sure to take a look at the <b>DESIGN DETAILS</b> section.
 This will give you an intro into some of the design patterns and conventions
 used throughout this collection. NOTE: This section is not for the faint of
 heart as it deals with some advanced Chef topics.
@@ -252,6 +252,12 @@ cookbook, you can use the <tt>rightscale_marker</tt> definition as well:
   ...
 
   rightscale_marker :end
+  
+== RIGHTSCALE RESOURCES
+
+RightScale provides some custom Chef rasources that are available when running a RightImage launched from the RightScale platform.  These resources include remote_recipe, right_link_tag, server_collection, rs_shutdown, and executable_schedule.
+
+For documentation, see {Chef Resources}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources]
 
 == CUSTOMIZATION:
 
