@@ -87,7 +87,6 @@ action :capistrano_pull do
   symlinks = new_resource.symlinks
   scm_provider = new_resource.provider
   environment = new_resource.environment
-  raise "  ERROR: repo URL input is unset. Please fill 'Repository Url' input" if repository.empty?
 
   log "  Deploying branch: #{revision} of the #{repository} to #{destination}. New owner #{app_user}"
   log "  Deploy provider #{scm_provider}"
