@@ -8,14 +8,8 @@
 
 rightscale_marker :begin
 
-log "  Registering default basic repo resource"
-repo "default" do
-  provider node[:repo][:default][:provider]
-  persist true
-  action :nothing
-end
 
-=begin
+
 log "  Setup all resources that have attributes in the node"
 node[:repo].each do |resource_name, entry|
 
@@ -29,25 +23,6 @@ node[:repo].each do |resource_name, entry|
   storage_account_secret = entry[:storage_account_secret] || ""
   container = entry[:container] || ""
   prefix = entry[:prefix] || ""
-  #Checking required user attributes
-  case entry[:provider]
-    when "repo_git"
-      if entry[:revision]== ""
-        log "  Warning: branch/tag input is empty, switching to 'master' branch"
-        branch = "master"
-      else
-        branch = entry[:revision]
-      end
-    when "repo_svn"
-      if entry[:revision]== ""
-        log "  Warning: branch/tag input is empty, switching to 'HEAD' version"
-        branch = "HEAD"
-      else
-        branch = entry[:revision]
-      end
-  end
-
-
 
   # Checking for ros_util presence it is required for repo_ros correct operations
   ruby_block "Checking for ros_util presence" do
@@ -75,5 +50,5 @@ node[:repo].each do |resource_name, entry|
     persist true
   end
 end
-=end
+
 rightscale_marker :end

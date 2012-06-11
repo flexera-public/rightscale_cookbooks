@@ -7,10 +7,18 @@
 
 action :setup_attributes do
 
-  if node[:repo][:default][:revision].empty?
+  branch = new_resource.revision
+  repository_url = new_resource.repository
+
+  # Checking branch
+  if branch.empty?
     log "  Warning: branch/tag input is empty, switching to 'master' branch"
-    node[:repo][:default][:revision] = "master"
+    branch = "master"
+    new_resource.revision branch
   end
+
+  # Checking repository URL
+  raise "  ERROR: repo URL input is unset. Please fill 'Repository Url' input" if repository_url.empty?
 
 end
 
@@ -28,16 +36,18 @@ action :pull do
     end
   end
 
+  # Checking attributes
+  action_setup_attributes
+
   destination = new_resource.destination
   repository_url = new_resource.repository
   revision = new_resource.revision
   app_user = new_resource.app_user
-  raise "  ERROR: repo URL input is unset. Please fill 'Repository Url' input" if repository_url.empty?
 
   # If repository already exists, just update it
   if ::File.directory?("#{destination}/.git")
     log "  Git project repository already exists, updating to latest revision"
-    git_action = :checkout
+    git_action = :sync
   else
     ruby_block "Backup of existing project directory" do
       only_if do ::File.directory?(destination) end
@@ -46,7 +56,7 @@ action :pull do
       end
     end
     log "  Downloading new Git project repository"
-    git_action = :sync
+    git_action = :checkout
   end
 
   git "#{destination}" do
@@ -75,6 +85,9 @@ action :capistrano_pull do
     end
   end
 
+  # Checking attributes
+  action_setup_attributes
+
   log "  Preparing to capistrano deploy action. Setting parameters for the process..."
   destination = new_resource.destination
   repository = new_resource.repository
@@ -85,7 +98,7 @@ action :capistrano_pull do
   symlinks = new_resource.symlinks
   scm_provider = new_resource.provider
   environment = new_resource.environment
-  raise "  ERROR: repo URL input is unset. Please fill 'Repository Url' input" if repository.empty?
+
   log "  Deploying branch: #{revision} of the #{repository} to #{destination}. New owner #{app_user}"
   log "  Deploy provider #{scm_provider}"
 
