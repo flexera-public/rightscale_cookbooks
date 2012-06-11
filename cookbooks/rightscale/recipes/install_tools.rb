@@ -7,17 +7,17 @@
 
 rightscale_marker :begin
 
-SANDBOX_BIN_GEM = '/opt/rightscale/sandbox/bin/gem'
+SANDBOX_BIN_GEM = "/opt/rightscale/sandbox/bin/gem"
 
 # right_rackspace gem
-RACKSPACE_GEM = 'right_rackspace'
-RACKSPACE_VERSION = '0.0.0.20111110'
+RACKSPACE_GEM = "right_rackspace"
+RACKSPACE_VERSION = "0.0.0.20111110"
 
 # rightscale_tools gem
-RS_TOOLS_GEM = 'rightscale_tools'
-RS_TOOLS_VERSION = '1.1.9'
+RS_TOOLS_GEM = "rightscale_tools"
+RS_TOOLS_VERSION = "1.1.9"
 
-COOKBOOK_DEFAULT_GEMS = ::File.join(::File.dirname(__FILE__), '..', 'files', 'default')
+COOKBOOK_DEFAULT_GEMS = ::File.join(::File.dirname(__FILE__), "..", "files", "default")
 
 # Install tools dependencies
 #
