@@ -83,6 +83,7 @@ action :configure do
         cookbook 'logging_rsyslog'
         variables(
           :remote_server => remote_server
+          :remote_port => remote_port
         )
       end
     end
