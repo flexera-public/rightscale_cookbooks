@@ -50,6 +50,7 @@ end
 
 action :configure do
   remote_server = new_resource.remote_server
+  remote_port = new_resource.remote_port
   # Keep the default configuration (local file only logging) unless a
   # remote server is defined.
   if remote_server != ""
@@ -62,6 +63,7 @@ action :configure do
       cookbook 'logging_syslog_ng'
       variables(
         :remote_server => remote_server
+        :remote_port => remote_port
       )
     end
     action_restart
