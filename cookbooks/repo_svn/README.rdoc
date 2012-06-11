@@ -7,7 +7,7 @@ manage source code download from SVN repositories.
 
 == REQUIREMENTS:
 
-* Requires repo LightWeight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/repo or your own implementation of "repo" resource. See "repo" cookbook readme for details.
+* Requires repo Light Weight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/repo or your own implementation of "repo" resource. See "repo" cookbook README for details.
 * Requires a virtual machine launched from a RightScale-managed RightImage.
 
 == COOKBOOKS DEPENDENCIES:
@@ -37,7 +37,7 @@ There are no known limitations.
 The 'repo_svn' implementation can be called with help of Lightweight Resource, which can be
 found in the <tt>repo</tt> cookbook.
 
-For more about Lightweight Resources and Providers (LWRPs), please see the Rigtscale
+For more about Lightweight Resources and Providers (LWRPs), please see the RightScale
 Guide at:  http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)
 
 === Attributes:
@@ -56,7 +56,7 @@ none
 === LWRPs:
 
 <tt>repo_svn</tt> provider is defined in providers/default.rb file, it contains source for <tt>:pull</tt> and <tt>:capistrano_pull</tt> actions.
-For more info about these actions please see <tt>repo</tt> cookbook readme.
+For more info about these actions please see <tt>repo</tt> cookbook README.
 
 <tt>repo_svn</tt> provider allows to get source code from SVN remote repositories.
 It supports repositories with public and private (username/password protected) access.
@@ -72,7 +72,7 @@ Perform standard pull and then capistrano deployment style will be applied.
 
 ===== Usage Example:
 
-For usage examples please see corresponding section in <tt>repo</tt> cookbook readme.
+For usage examples please see corresponding section in <tt>repo</tt> cookbook README.
 
 = LICENSE:
 

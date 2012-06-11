@@ -6,8 +6,8 @@
 * Installs and configures, Apache + PHP application server.
 
 == REQUIREMENTS:
-* Requires "app" LightWeight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
-  or your own implementation of "app" resource. See "app" cookbook readme for details.
+* Requires "app" Light Weight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
+  or your own implementation of "app" resource. See "app" cookbook README for details.
 * Requires a VM launched from a RightScale managed RightImage
 * Tested on CentOS 5.6 RightImage
 * Tested on Ubuntu 10.04 RightImage
@@ -67,9 +67,9 @@ These are settings used in recipes and templates. Default values are noted.
 Note: Only "internal" cookbook attributes are described here. Descriptions of attributes which have inputs you can find in metadata.rb cookbook file.
 
 ====== Platform dependent
-* <tt>node[:php][:module_dependencies]</tt> - additional packeges required for php server install
+* <tt>node[:php][:module_dependencies]</tt> - additional packages required for php server install
 * <tt>node[:php][:app_user]</tt> - Apache user, required for changing owner of created project dirs
-* <tt>node[:php][:db_adapter]</tt> - Type of databse adapter. MySQL or Postgres.
+* <tt>node[:php][:db_adapter]</tt> - Type of database adapter. MySQL or Postgres.
 
 === Templates:
 
@@ -84,7 +84,7 @@ none
 
 === LWRPs:
 
-<tt>app_php</tt> LightWeight provider is defined in providers/default.rb file, it contains source for
+<tt>app_php</tt> Light Weight provider is defined in providers/default.rb file, it contains source for
 
 * <tt>:install</tt>
 
@@ -104,7 +104,7 @@ none
 
 actions.
 
-For more info about these actions please see <tt>app</tt> cookbook readme.
+For more info about these actions please see <tt>app</tt> cookbook README.
 
 For normal operations it requires "app" resource which will act as interface to all <tt>app_php</tt> provider logic.
 
@@ -124,11 +124,11 @@ For normal operations it requires "app" resource which will act as interface to 
 
 * <tt>:setup_db_connection</tt> - Perform project config/db.php database connection configuration
 
-* <tt>:setup_monitoring</tt> - Empty action. Monitoring for php is not implemeted yet.
+* <tt>:setup_monitoring</tt> - Empty action. Monitoring for php is not implemented yet.
 
 ===== Usage Example:
 
-For usage examples please see corresponding section in <tt>app</tt> cookbook readme.
+For usage examples please see corresponding section in <tt>app</tt> cookbook README.
 
 = LICENSE:
 
