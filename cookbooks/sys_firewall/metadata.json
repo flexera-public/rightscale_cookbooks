@@ -54,7 +54,7 @@
       "choice": [
         "tcp",
         "udp",
-        "all"
+        "both"
       ],
       "type": "string",
       "recipes": [
