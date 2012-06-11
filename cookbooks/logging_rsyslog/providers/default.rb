@@ -63,12 +63,13 @@ action :configure do
 
       # Skipping if entry already exists in /etc/rsyslog.conf
       log "  Configuring Redhat/CentOS."
+      remote_server_string = "\*.info @#{remote_server}:514"
       bash "add remote log server to centos config file" do
         flags "-ex"
         code <<-EOH
-          echo "\n\*.info @#{remote_server}:514\n\n" >> /etc/rsyslog.conf
+          echo "\n#{remote_server_string}\n\n" >> /etc/rsyslog.conf
         EOH
-        not_if do ::File.open('/etc/rsyslog.conf', 'r') { |f| f.read }.include? "#{remote_server}" end
+        not_if do ::File.open('/etc/rsyslog.conf', 'r') { |f| f.read }.include? "#{remote_server_string}" end
       end
     else
       log "  Configuring ubuntu."
