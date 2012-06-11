@@ -6,4 +6,4 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 default[:logging][:remote_server] = ""
-default[:logging][:remote_port] = ""
+default[:logging][:remote_port] = "514"
