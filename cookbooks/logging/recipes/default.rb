@@ -18,14 +18,19 @@ raise "ERROR: Both or neither syslog-ng or rsyslog is installed!" unless syslog_
 
 log_provider = rsyslog_installed ? "logging_rsyslog" : "logging_syslog_ng"
 remote_server = node[:logging][:remote_server]
-log_str = remote_server == "" ? "DISABLED" : remote_server
 log "  Logging provider: #{log_provider}"
+log_str = remote_server == "" ? "DISABLED" : remote_server
 log "  Remote log server: #{log_str}"
+
+remote_port = node[:logging][:remote_port]
+log_str = remote_port == "" ? "DISABLED" : remote_port
+log "  Remote log port: #{log_str}"
 
 logging "default" do
   persist true
   provider log_provider
   remote_server remote_server
+  remote_port remote_port
   action :configure
 end
 

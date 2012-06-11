@@ -31,3 +31,8 @@ attribute "logging/remote_server",
   :required => "optional",
   :recipes => [ "logging::default" ]
 
+attribute "logging/remote_port",
+  :display_name => "Remote Port",
+  :description => "The port on the remote server to configure the instance to forward log data do. Example: 514",
+  :required => "optional",
+  :recipes => [ "logging::default" ]
