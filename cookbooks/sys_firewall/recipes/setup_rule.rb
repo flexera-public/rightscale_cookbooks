@@ -16,9 +16,9 @@ to_enable = (node[:sys_firewall][:rule][:enable] == "enable") ? true : false
 
 # Create protocol array here to handle with "both" input
 if node[:sys_firewall][:rule][:protocol] == "both"
-rule_protocol = ["tcp","udp"]
+  rule_protocol = ["tcp","udp"]
 else
-rule_protocol = [node[:sys_firewall][:rule][:protocol]]
+  rule_protocol = [node[:sys_firewall][:rule][:protocol]]
 end
 
 # if firewall enabled
