@@ -10,7 +10,7 @@ action :setup_attributes do
   # Checking ros_util presence it is required for repo_ros correct operations
   ruby_block "Checking for ros_util presence" do
     block do
-      raise "  Error: ROS gem missing, please add rightscale::install_tool recipe to runlist." unless File.exists?("/opt/rightscale/sandbox/bin/ros_util")
+      raise "  Error: ROS gem missing, please add rightscale::install_tool recipe to runlist." unless ::File.exists?("/opt/rightscale/sandbox/bin/ros_util")
     end
   end
 
