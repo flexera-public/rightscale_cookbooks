@@ -5,6 +5,8 @@ description      "RightScale Cookbooks"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "12.1.0"
 
+{'centos' => '>= 5.8', 'ubuntu' => '>= 10.04', 'redhat' => '>= 5.8'}.each_pair {|os, version| supports os , version}
+
 recipe "rightscale::default", "Installs the utilities that are required for RightScale support."
 recipe "rightscale::setup_monitoring", "Installs and configures RightScale dashboard monitoring features."
 recipe "rightscale::setup_ssh", "Installs the private ssh key."
