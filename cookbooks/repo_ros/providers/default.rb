@@ -1,19 +1,33 @@
 #
 # Cookbook Name:: repo_ros
 #
-#
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+action :setup_attributes do
+
+  # Checking ros_util presence it is required for repo_ros correct operations
+  ruby_block "Checking for ros_util presence" do
+    block do
+      raise "  Error: ROS gem missing, please add rightscale::install_tool recipe to runlist." unless ::File.exists?("/opt/rightscale/sandbox/bin/ros_util")
+    end
+  end
+
+  # Checking inputs required for getting source from ROS
+  raise "  Storage Provider input is unset" unless new_resource.storage_account_provider
+  raise "  Storage account provider ID input is unset" unless new_resource.storage_account_id
+  raise "  Storage account secret input is unset" unless new_resource.storage_account_secret
+  raise "  Repo container name input is unset." unless new_resource.container
+
+end
 
 action :pull do
 
-  # Check variables and log/skip if not set
+  # Checking attributes
+  action_setup_attributes
+
   log "  Trying to get ros repo from: #{new_resource.storage_account_provider}, bucket: #{new_resource.container}"
-  raise "  Repo container name not provided." unless new_resource.container
-  raise "  Storage account provider ID not provided" unless new_resource.storage_account_id
-  raise "  Storage account secret not provided" unless new_resource.storage_account_secret
 
   # Backup project directory if it is not empty
   ruby_block "Backup of existing project directory" do
