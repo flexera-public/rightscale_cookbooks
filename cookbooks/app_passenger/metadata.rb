@@ -23,27 +23,32 @@ attribute "app_passenger/spawn_method",
   :description => "The  spawn method that Phusion Passenger will use.  The choices are: smart, smart-lv2, and conservative.  Example: conservative",
   :choice => ["conservative", "smart-lv2", "smart"],
   :required => "recommended",
-  :default => "conservative"
+  :default => "conservative",
+  :recipes => ["app_passenger::default"]
 
 attribute "app_passenger/project/environment",
   :display_name => "Rails Environment",
   :description => "Creates a Rails RAILS ENV environment variable. Example: development",
   :choice => ["test", "development", "production"],
   :required => "optional",
-  :default => "development"
+  :default => "development",
+  :recipes => ["app_passenger::default"]
 
 attribute "app_passenger/apache/maintenance_page",
   :display_name => "Apache maintenance page",
   :description => "Maintenance URI to show if the page exists (based on document root).  If this file exists, your site will show a \"Under Maintenance\" page and your site will not be available. Example: /system/maintenance.html",
   :required => "optional",
-  :default => ""
+  :default => "",
+  :recipes => ["app_passenger::default"]
+
 
 attribute "app_passenger/apache/serve_local_files",
   :display_name => "Apache serve local Files",
   :description => "This option tells Apache whether it should serve the (static) content itself. Currently, it will omit PHP and TomCat dynamic content, such as *.php, *.action, *.jsp, and *.do    Example:  true",
   :choice => ["true", "false"],
   :required => "optional",
-  :default => "true"
+  :default => "true",
+  :recipes => ["app_passenger::default"]
 
 attribute "app_passenger/project/gem_list",
   :display_name => "Custom gems list",
@@ -68,5 +73,7 @@ attribute "app_passenger/project/db/adapter",
   :display_name => "Database adapter for database.yml",
   :description => "Enter database adapter which will be used to connect to the database. Example: mysql",
   :choice => [ "mysql", "postgresql" ],
-  :default => "mysql"
+  :default => "mysql",
+  :recipes => ["app_passenger::default"]
+
 

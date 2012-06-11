@@ -71,14 +71,14 @@ grouping "block_device/devices/default",
   :description => "Default attributes for all block devices."
 
 attribute "block_device/devices/default/backup/primary/cred/user",
-  :display_name => "Backup Primary User (default)",
+  :display_name => "Primary Backup User (default)",
   :description => "Primary cloud authentication credentials. For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME). For clouds that do not require primary credentials (e.g., Amazon), set to 'ignore'.",
   :required => "recommended",
   :default => "",
   :recipes => [ "block_device::default" ]
 
 attribute "block_device/devices/default/backup/primary/cred/secret",
-  :display_name => "Backup Primary Secret (default)",
+  :display_name => "Primary Backup Secret (default)",
   :description => "Primary cloud authentication credentials. For Rackspace Cloud Files, use your Rackspace account API key (e.g., cred:RACKSPACE_AUTH_KEY). For clouds that do not require primary credentials (e.g., Amazon), set to 'ignore'.",
   :required => "recommended",
   :default => "",
