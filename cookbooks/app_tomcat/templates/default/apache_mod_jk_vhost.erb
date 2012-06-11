@@ -75,10 +75,6 @@
      CustomLog <%= @apache_log_dir %>/access_log combined
      ErrorLog  <%= @apache_log_dir %>/error_log
 
-     #Remote logging -- handle by syslog
-     ErrorLog "|logger -p local3.info -t httperror"
-     CustomLog "|logger -p local3.info -t http" combined
-
      LogLevel warn
 
      # Deflate
