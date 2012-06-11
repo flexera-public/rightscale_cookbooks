@@ -1,12 +1,33 @@
 #
 # Cookbook Name:: repo_svn
 #
-#
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+
+action :setup_attributes do
+
+  branch = new_resource.revision
+  repository_url = new_resource.repository
+
+  # Checking branch
+  if branch.empty?
+    log "  Warning: branch/tag input is empty, switching to 'HEAD' version"
+    branch = "HEAD"
+    new_resource.revision branch
+  end
+
+  # Checking repository URL
+  raise "  ERROR: repo URL input is unset. Please fill 'Repository Url' input" if repository_url.empty?
+
+end
+
+
 action :pull do
+
+  # Checking attributes
+  action_setup_attributes
 
   # Setting parameters
   destination_path = new_resource.destination
@@ -16,12 +37,12 @@ action :pull do
   svn_password = new_resource.svn_password
   svn_user = new_resource.svn_username
   params = "--no-auth-cache --non-interactive"
-  raise "  ERROR: repo URL input is unset. Please fill 'Repository Url' input" if repository_url.empty?
+
 
   # If repository already exists, just update it
   if ::File.directory?("#{destination_path}/.svn")
     log "  Svn project repository already exists, updating to latest revision"
-    svn_action = :checkout
+    svn_action = :sync
   else
     ruby_block "Backup of existing project directory" do
       only_if do ::File.directory?(destination_path) end
@@ -30,7 +51,7 @@ action :pull do
       end
     end
     log "  Downloading new Svn project repository"
-    svn_action = :sync
+    svn_action = :checkout
   end
 
   # Downloading SVN repository
@@ -50,6 +71,9 @@ action :pull do
 end
 
 action :capistrano_pull do
+
+  # Checking attributes
+  action_setup_attributes
 
   log "  Preparing to capistrano deploy action. Setting parameters for the process..."
   destination = new_resource.destination
