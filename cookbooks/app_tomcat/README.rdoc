@@ -96,7 +96,7 @@ attributes which have inputs you can find in metadata.rb cookbook file.
 * <tt>node[:tomcat][:app_user]</tt> - Username, required for changing owner of
   created project dirs
 * <tt>node[:tomcat][:alternatives_cmd]</tt> - Java alternatives command list
-* <tt>node[:tomcat][:db_adapter]</tt> -  - Type of database adapter. MySQL orPostgres.
+* <tt>node[:tomcat][:db_adapter]</tt> -  - Type of database adapter. MySQL or Postgres.
 
 === Templates:
 

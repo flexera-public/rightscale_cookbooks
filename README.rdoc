@@ -224,7 +224,7 @@ the <tt>db_do_backup</tt> definition that uses a set of resources from the
 In addition to housing reusable recipe snippets used within the cookbook, we also
 use definitions as external methods that other cookbooks can call.  For example,
 rightscale_logrotate_app which allows other cookbooks to add their logrotate
-configurations while deferring details of logroate to the rightscale cookbook.
+configurations while deferring details of logrotate to the rightscale cookbook.
 
 In the RightScale cookbooks, definitions are named with the cookbook name as a
 prefix so you can easily find which cookbook a definition comes from (for
@@ -256,7 +256,7 @@ cookbook, you can use the <tt>rightscale_marker</tt> definition as well:
 
 == RIGHTSCALE RESOURCES:
 
-RightScale provides some custom Chef rasources that are available when running a
+RightScale provides some custom Chef resources that are available when running a
 RightImage launched from the RightScale platform. These resources include
 <tt>remote_recipe</tt>, <tt>right_link_tag</tt>, <tt>server_collection</tt>,
 <tt>rs_shutdown</tt>, and <tt>executable_schedule</tt>.
