@@ -273,7 +273,7 @@ Cookbooks}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guid
 == CONTRIBUTING:
 
 Contributors to the RightScale cookbooks need to agree to and sign the
-{RightScale Contributors Agreement}[https://rightscale.echosign.com/public/hostedForm?formid=3S3CC74X283IXC]
+{RightScale Contributors Agreement}[https://rightscale.echosign.com/public/hostedForm?formid=3SMKS95X3F5G3S]
 before contributions will be accepted.
 
 To contribute changes back to the RightScale cookbooks:
