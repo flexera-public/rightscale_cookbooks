@@ -225,10 +225,10 @@ action :code_update do
     recursive true
   end
 
-    # Symlinking application log directory to ephemeral volume
-    link "#{deploy_dir}/log" do
-      to "/mnt/ephemeral/log/rails/#{node[:web_apache][:application_name]}"
-    end
+  # Symlinking application log directory to ephemeral volume
+  link "#{deploy_dir}/log" do
+    to "/mnt/ephemeral/log/rails/#{node[:web_apache][:application_name]}"
+  end
 
   log "  Generating new logrotate config for rails application"
   rightscale_logrotate_app "rails" do
