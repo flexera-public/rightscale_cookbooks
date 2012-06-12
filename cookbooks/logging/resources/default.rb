@@ -85,6 +85,7 @@ add_action :install
 #
 add_action :configure
   attribute :remote_server, :kind_of => String
+  attribute :remote_port, :kind_of => String
 
 actions @action_list
 
