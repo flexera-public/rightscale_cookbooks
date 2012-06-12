@@ -44,7 +44,7 @@ attribute :cron_backup_recipe, :kind_of => String, :default => "block_device::do
 # == Rotation options
 attribute :max_snapshots, :kind_of => String
 attribute :keep_daily, :kind_of => String
-sattribute :keep_weekly, :kind_of => String
+attribute :keep_weekly, :kind_of => String
 attribute :keep_monthly, :kind_of => String
 attribute :keep_yearly, :kind_of => String
 attribute :force, :kind_of => [TrueClass, FalseClass], :default => false # Used by backup_lock_take action
