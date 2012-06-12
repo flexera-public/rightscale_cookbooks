@@ -218,8 +218,7 @@ action :code_update do
   end
 
   # Creating new rails application log  directory on ephemeral volume
-  # using basename, because node[:web_apache][:application_name] is not available in operational phase
-  directory "/mnt/ephemeral/log/#{::File.basename(deploy_dir)}" do
+  directory "/mnt/ephemeral/log/rails/#{node[:web_apache][:application_name]}" do
     owner node[:app_passenger][:apache][:user]
     mode "0755"
     action :create
@@ -228,7 +227,7 @@ action :code_update do
 
     # Symlinking application log directory to ephemeral volume
     link "#{deploy_dir}/log" do
-      to "/mnt/ephemeral/log/#{::File.basename(deploy_dir)}"
+      to "/mnt/ephemeral/log/rails/#{node[:web_apache][:application_name]}"
     end
 
   log "  Generating new logrotate config for rails application"
