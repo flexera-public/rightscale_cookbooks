@@ -64,7 +64,7 @@ action :configure do
 
       # Skipping if entry already exists in /etc/rsyslog.conf
       log "  Configuring Redhat/CentOS."
-      remote_server_string = "\*.info @#{remote_server}:514"
+      remote_server_string = "\*.info @#{remote_server}:#{remote_port}"
       bash "add remote log server to centos config file" do
         flags "-ex"
         code <<-EOH
