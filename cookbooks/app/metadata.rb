@@ -36,6 +36,8 @@ recipe "app::do_server_restart", "Runs application server restart sequence"
 
 recipe "app::do_server_stop", "Runs application server stop sequence"
 
+recipe "app::do_server_reload", "Runs application server reload sequence"
+
 attribute "app/port",
   :display_name => "Application Listen Port",
   :description => "The port that the application service is listening on. Example: 8000",

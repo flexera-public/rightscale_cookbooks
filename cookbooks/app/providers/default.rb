@@ -26,6 +26,12 @@ action :restart do
 end
 
 
+# Reload application
+action :reload do
+  raise 'Using "default" application provider.  Action is not implemented'
+end
+
+
 action :install do
   # Install user-specified Packages and Modules
   packages = new_resource.packages
