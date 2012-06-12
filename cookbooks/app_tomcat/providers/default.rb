@@ -169,7 +169,7 @@ action :setup_vhost do
   end
 
   log "  Setup logrotate for tomcat"
-  rightscale_logrotate_app "rails" do
+  rightscale_logrotate_app "tomcat" do
     cookbook "rightscale"
     template "logrotate.erb"
     path ["/var/log/tomcat6/*log", "/var/log/tomcat6/*.out"]
@@ -289,16 +289,13 @@ action :setup_vhost do
     port = new_resource.port
 
     log "  Configuring apache vhost for tomcat"
-    template "#{etc_apache}/sites-enabled/#{node[:web_apache][:application_name]}.conf" do
-      action :create_if_missing
-      source "apache_mod_jk_vhost.erb"
-      variables(
-        :docroot     => docroot4apache,
-        :vhost_port  => port.to_s,
-        :server_name => node[:web_apache][:server_name],
-        :apache_log_dir => node[:apache][:log_dir]
-      )
-      cookbook 'app_tomcat'
+    web_app "http-#{port}-#{node[:web_apache][:server_name]}.vhost" do
+      template                   'apache_mod_jk_vhost.erb'
+      cookbook                   'app_tomcat'
+      docroot                    docroot4apache
+      vhost_port                 port.to_s
+      server_name                node[:web_apache][:server_name]
+      apache_log_dir             node[:app_passenger][:apache][:log_dir]
     end
 
     # Apache server restart
