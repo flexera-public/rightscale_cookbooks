@@ -62,7 +62,7 @@ action :configure do
       mode "0644"
       cookbook 'logging_syslog_ng'
       variables(
-        :remote_server => remote_server
+        :remote_server => remote_server,
         :remote_port => remote_port
       )
     end
