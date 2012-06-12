@@ -32,6 +32,10 @@ action :restart do
   action_start
 end
 
+# Reload tomcat service
+action :reload do
+  log "  Action not implemented"
+end
 
 #Installing required packages and prepare system for tomcat
 action :install do

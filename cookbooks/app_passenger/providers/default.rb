@@ -23,6 +23,15 @@ action :start do
   end
 end
 
+# Reload apache/passenger
+action :reload do
+  log "  Running reload sequence"
+  service "apache2" do
+    action :reload
+    persist false
+  end
+end
+
 # Restart apache/passenger
 action :restart do
   log "  Running restart sequence"
