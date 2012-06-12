@@ -16,7 +16,4 @@ db_do_backup "do backup" do
   backup_type "primary"
 end
 
-log "  Setting database state to 'initialized'..."
-db_init_status :set
-
 rightscale_marker :end
