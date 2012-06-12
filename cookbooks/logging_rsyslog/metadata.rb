@@ -7,4 +7,5 @@ version          "12.1.0"
 
 depends "logging"
 
-recipe "logging_rsyslog::default", "Set rsyslog logging provider"
+# There is no need to show this, as the base logging cookbook should be used.
+#recipe "logging_rsyslog::default", "Set rsyslog logging provider"

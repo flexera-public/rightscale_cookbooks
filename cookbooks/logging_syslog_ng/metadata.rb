@@ -7,4 +7,5 @@ version          "12.1.0"
 
 depends "logging"
 
-recipe "logging_syslog_ng::default", "Set syslog_ng logging provider"
+# There is no need to show this, as the base logging cookbook should be used.
+#recipe "logging_syslog_ng::default", "Set syslog_ng logging provider"
