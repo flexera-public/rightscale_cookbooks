@@ -104,15 +104,13 @@ action :post_backup_cleanup do
 end
 
 action :set_privileges do
-  priv = new_resource.privilege
-  priv_username = new_resource.privilege_username
-  priv_password = new_resource.privilege_password
-  priv_database = new_resource.privilege_database
-  # This is a check to verify node is master server
-  slave_state = RightScale::Database::PostgreSQL::Helper.detect_if_slave(node)
-  if ( slave_state == "true")
-    log "  No need to re-run the recipe on slave"
+  if ::File.exist?("#{node[:db][:datadir]}/recovery.conf")
+    Chef::Log.info("no need to rerun on reboot for slave")
   else
+    priv = new_resource.privilege
+    priv_username = new_resource.privilege_username
+    priv_password = new_resource.privilege_password
+    priv_database = new_resource.privilege_database
     db_postgres_set_privileges "setup db privileges" do
       preset priv
       username priv_username
