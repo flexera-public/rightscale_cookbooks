@@ -3,13 +3,14 @@ maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "Enable instance Monitoring in the RightScale dashboard."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "12.1.0"
+version          "12.1.1"
 
 depends "rightscale"
 depends "logging_rsyslog"
 depends "logging_syslog_ng"
 
 recipe "logging::default", "Configures native logging provider"
+recipe "logging::do_server_restart", "Restart Logging Service"
 
 attribute "logging",
   :display_name => "Log Service Settings",
@@ -31,3 +32,8 @@ attribute "logging/remote_server",
   :required => "optional",
   :recipes => [ "logging::default" ]
 
+attribute "logging/remote_port",
+  :display_name => "Remote Port",
+  :description => "The port on the remote server to configure the instance to forward log data do. Example: 514. This variable only changes if Remote Server is not default.",
+  :required => "optional",
+  :recipes => [ "logging::default" ]

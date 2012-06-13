@@ -6,4 +6,10 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 rightscale_marker :begin
+
+logging "do_server_stop" do
+  persist true
+  provider log_provider
+  action :stop
+end
 rightscale_marker :end

@@ -62,7 +62,7 @@ log { source(s_sys); filter(f_boot); destination(d_boot); };
 log { source(s_sys); filter(f_cron); destination(d_cron); };
 
 # vim:ft=syslog-ng:ai:si:ts=4:sw=4:et:
-destination logserver { udp("<%= @remote_server %>" port(514)); };
+destination logserver { udp("<%= @remote_server %>" port(<%= @remote_port %>)); };
 log { source(s_sys); filter(f_default); destination(logserver); };
 # Make sure there is a line after the last configuration line
 

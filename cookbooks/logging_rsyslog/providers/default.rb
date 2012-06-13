@@ -50,6 +50,7 @@ end
 
 action :configure do
   remote_server = new_resource.remote_server
+  remote_port = new_resource.remote_port
   # Keep the default configuration (local file only logging) unless a
   # remote server is defined.
   if remote_server != ""
@@ -63,7 +64,7 @@ action :configure do
 
       # Skipping if entry already exists in /etc/rsyslog.conf
       log "  Configuring Redhat/CentOS."
-      remote_server_string = "\*.info @#{remote_server}:514"
+      remote_server_string = "\*.info @#{remote_server}:#{remote_port}"
       bash "add remote log server to centos config file" do
         flags "-ex"
         code <<-EOH
@@ -81,7 +82,8 @@ action :configure do
         mode "0644"
         cookbook 'logging_rsyslog'
         variables(
-          :remote_server => remote_server
+          :remote_server => remote_server,
+          :remote_port => remote_port
         )
       end
     end
