@@ -30,7 +30,7 @@ There are no known limitations.
 
 === General information
 When the firewall is enabled it is completely closed for incoming connections - only outbound connections are allowed.
-<tt>sys_firewall::default</tt> then opens 22, 80 and 443 ports by default (additionally on softlayer 48000..48020 ports
+<tt>sys_firewall::default</tt> then opens 22, 80 and 443 ports by default (additionally on SoftLayer 48000..48020 ports
 are opened on the private 10.* network for the monitoring agent).
 
 === Updating firewall rules using tags
