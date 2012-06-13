@@ -7,7 +7,6 @@
 
 rightscale_marker :begin
 
-
 # memcached install
 #
 package "memcached" do
@@ -41,12 +40,12 @@ end # now user cannot input wrong thread quantity leading to misconfiguration
 
 # listening ip configuration
 case node[:memcached][:interface]
-  when "localhost"
-    node[:memcached][:interface] = "127.0.0.1" # note: not using "localhost" because value also goes into collectd plugin which doesn't understand it
-  when "private"
-    node[:memcached][:interface] = node[:cloud][:private_ips][0] # when binding to private on aws you also listen to public because of amazons traffic forwarding
-  when "any"
-    node[:memcached][:interface] = "0.0.0.0"
+when "localhost"
+  node[:memcached][:interface] = "127.0.0.1" # note: not using "localhost" because value also goes into collectd plugin which doesn't understand it
+when "private"
+  node[:memcached][:interface] = node[:cloud][:private_ips][0] # when binding to private on aws you also listen to public because of amazons traffic forwarding
+when "any"
+  node[:memcached][:interface] = "0.0.0.0"
 end
 
 # writing settings
@@ -165,6 +164,5 @@ rightscale_logrotate_app "memcached" do
   rotate 4
   create "644 root root"
 end # no restarts or anything needed: logrotate is a cron task
-
 
 rightscale_marker :end

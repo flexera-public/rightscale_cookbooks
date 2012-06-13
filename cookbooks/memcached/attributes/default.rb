@@ -18,12 +18,12 @@ set_unless[:memcached][:cluster_id] = ""
 
 # Platform dependant attributes
 case node[:platform]
-  when "ubuntu", "debian"
-    set[:memcached][:config_file] = "/etc/memcached.conf"
-    set[:memcached][:iptables_rules] = "/etc/iptables.rules"
-  when "centos", "fedora", "suse", "redhat", "redhatenterpriseserver"
-    set[:memcached][:config_file] = "/etc/sysconfig/memcached"
-    set[:memcached][:iptables_rules] = "/etc/sysconfig/iptables"
-  else
-    raise "Unrecognized platform #{node[:platform]}, exiting "
+when "ubuntu", "debian"
+  set[:memcached][:config_file] = "/etc/memcached.conf"
+  set[:memcached][:iptables_rules] = "/etc/iptables.rules"
+when "centos", "fedora", "suse", "redhat", "redhatenterpriseserver"
+  set[:memcached][:config_file] = "/etc/sysconfig/memcached"
+  set[:memcached][:iptables_rules] = "/etc/sysconfig/iptables"
+else
+  raise "Unrecognized platform #{node[:platform]}, exiting "
 end
