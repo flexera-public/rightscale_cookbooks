@@ -18,7 +18,7 @@ log "  Adding firewall rules for loadbalancer to connect"
 sys_firewall port do
   ip_addr rule_ip
   protocol "tcp"
-  enable "enable"
+  enable "true"
   action :update
 end
 
