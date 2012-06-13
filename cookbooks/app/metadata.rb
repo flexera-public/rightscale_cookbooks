@@ -38,9 +38,17 @@ recipe "app::do_server_stop", "Runs application server stop sequence"
 
 recipe "app::do_server_reload", "Runs application server reload sequence"
 
+recipe "app::handle_loadbalancers_allow", "Opens up app ports to loadbalancer requesting access"
+
 attribute "app/port",
   :display_name => "Application Listen Port",
   :description => "The port that the application service is listening on. Example: 8000",
   :default => "8000",
-  :recipes => [ 'app::default' ],
+  :recipes => [ 'app::default', 'app::handle_loadbalancers_allow' ],
+  :required => "optional"
+
+attribute "app/lb_ip",
+  :display_name => "IP address of LoadBalancers requesting access to port",
+  :description => "This IP address will be used to open ports in firewall.  Example: 10.1.2.3",
+  :recipes => [ 'app::default', 'app::handle_loadbalancers_allow' ],
   :required => "optional"
