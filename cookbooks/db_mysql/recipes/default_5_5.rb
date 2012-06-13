@@ -29,4 +29,6 @@ else
   raise "Unsupported platform #{platform} for MySQL Version #{version}"
 end
 
+log "  Using MySQL service name: #{node[:db_mysql][:version]}"
+
 rightscale_marker :end
