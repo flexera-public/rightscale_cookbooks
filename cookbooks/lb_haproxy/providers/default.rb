@@ -74,6 +74,17 @@ action :install do
     )
   end
 
+  # Remove haproxy config file so we can symlink it.
+  file "/etc/haproxy/haproxy.cfg" do
+    not_if { ::File.symlink?("/etc/haproxy/haproxy.cfg") }
+    action :delete
+  end
+
+  # Symlink haproxy config.
+  link "/etc/haproxy/haproxy.cfg" do
+    to "/home/lb/rightscale_lb.cfg"
+  end
+
 end # action :install do
 
 action :add_vhost do
