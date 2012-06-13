@@ -13,6 +13,7 @@ end
 
 # Sending request to application servers, to add iptables rule, which will allow connection with loadbalancer
 
+attrs = {:app => Hash.new}
 attrs[:app][:lb_ip] = node[:cloud][:private_ips][0]
 
 vhosts(node[:lb][:vhost_names]).each do | vhost_name |
