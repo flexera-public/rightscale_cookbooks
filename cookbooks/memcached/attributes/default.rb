@@ -6,6 +6,7 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 # Recommended attributes
+#
 set_unless[:memcached][:tcp_port] = "11211"
 set_unless[:memcached][:udp_port] = "11211"
 set_unless[:memcached][:user] = "nobody"
@@ -17,6 +18,7 @@ set_unless[:memcached][:log_level] = ""
 set_unless[:memcached][:cluster_id] = ""
 
 # Platform dependant attributes
+#
 case node[:platform]
 when "ubuntu", "debian"
   set[:memcached][:config_file] = "/etc/memcached.conf"
