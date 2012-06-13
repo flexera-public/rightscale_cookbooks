@@ -41,6 +41,7 @@ vhosts(node[:lb][:vhost_names]).each do |vhost_name|
       backend_id uuid
       backend_ip deployment_servers[uuid][:ip]
       backend_port deployment_servers[uuid][:backend_port].to_i
+      session_sticky node[:lb][:session_stickiness]
       action :attach
     end
   end
