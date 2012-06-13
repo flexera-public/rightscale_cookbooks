@@ -4,15 +4,9 @@ license          "Copyright RightScale, Inc. All rights reserved."
 description      "Installs/configures the apache2 webserver"
 version          "12.1.0"
 
-
-supports "centos", "< 6.0"
-supports "centos", ">= 5.8"
-
-supports "redhat", "< 6.0"
-supports "redhat", ">= 5.8"
-
-supports "ubuntu", "= 10.04"
-
+supports "centos", "~> 5.8"
+supports "redhat", "~> 5.8"
+supports "ubuntu", "~> 10.04.0"
 
 recipe "web_apache::default", "Runs web_apache::install_apache."
 recipe "web_apache::do_start", "Runs service apache start"

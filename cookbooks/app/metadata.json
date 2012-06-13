@@ -1,64 +1,64 @@
 {
-  "name": "app",
-  "description": "Common utilities for RightScale managed application servers",
-  "long_description": "= RightScale App Cookbook\n\n== DESCRIPTION:\n\nRightScale application server management cookbook\n\nThis is an abstract cookbook that defines the recipes and interface to application provider\ncookbooks.   It is not a standalone cookbook and must be used in conjunction with an\napplication provider cookbook (i.e. app_php, app_tomcat, app_passenger or a user created application provider)\n\nMore detailed info you can find in app::* recipes description.\n\n== REQUIREMENTS:\n\n* Requires a VM launched from a RightScale managed RightImage\n* Requires a corresponding app provider cookbook\n\n== COOKBOOKS DEPENDENCIES:\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n* <tt>sys_firewall</tt>\n* <tt>rightscale</tt>\n* <tt>repo</tt>\n* <tt>app_php</tt>\n* <tt>app_passenger</tt>\n* <tt>app_tomcat</tt>\n\n== KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n== SETUP:\n\nIn order to use App resource, you must create corresponding providers in your app server cookbook.\nSee for example app_passenger, app_php or app_tomcat cookbooks.\n\nYou must define app attributes which will be used in initialized app[default] resource\nRequired attributes:\n  node[:app][:provider] = \"app_passenger\"\nRecommended:\n  node[:app][:destination]\n  node[:app][:port]\n  node[:app][:root]\n  node[:app][:database_name]\n  node[:app][:database_user]\n  node[:app][:database_password]\n  node[:app][:database_sever_fqdn]\nMore detailed description of these attribute variables is located in resource file description.\n\n== USAGE:\n\n1. Add the app_*::default recipe prior to the app::default recipe to define the provider.\n2. Add the default recipe to tag your server as an appserver. This is used by\n   servers (like databases) to identify their clients.\n3. Add desired app::do_* recipes to your application server ServerTemplate\n4. Develop corresponding providers in your application server cookbook.\n5. Define required and recommended attributes in your application server cookbook attributes file.\n\n== DETAILS:\n\n=== General\nThis cookbook is can only be used in conjunction with cookbooks that contain\nLightweight Providers which implement the 'app' interface. See the RightScale\napp_php cookbook for an example.\n\nNote: app[default] resource uses \"persist true\" flag, which allow to save created resource and its attributes in memory for future use.\n\nThis cookbook contains recipes, required to connect your instance to Rightscel Loadbalancer ServerTemplate\n* do_loadbalancers_allow\n* do_loadbalancers_deny\n* request_loadbalancer_allow\n* request_loadbalancer_deny\n\nfor more info please see: http://support.rightscale.com/03-Tutorials/02-AWS/02-Website_Edition/2.5_Load_Balancer_Setups\n\n=== Attributes:\n\n* <tt>node[:app][:provider]</tt> - Set a default provider.\n* <tt>node[:app][:port]</tt> - Set a default port to listen on. Default: 8000\n* <tt>node[:app][:ip]</tt> - Ip to listen on. Default: First private IP\n\n=== Templates:\nnone\n\n=== Definitions:\n\n<b>app_add_listen_port</b>\nAdds a port to the apache listen ports.conf file and node attribute\n\nCreate node[:apache][:listen_ports] - array of strings for the webserver to listen on.\n\nThis definition created specifically for the apache2 cookbook at this time.\n\n===== Example:\n\n app_add_listen_port php_port\n\n\n=== Libraries-helpers:\n\n===== RightScale::App::Helper.bind_ip(private_ips = [ ], public_ips = [ ])\n\nReturn the IP address of the interface that this application server listens on.\n\n<b>Parameters</b>\n\n* <tt>private_ips(Array)::</tt> List of private ips assigned to the application server\n* <tt>public_ips(Array)::</tt> List of public ips assigned to the application server\n\n<b>Returns</b>\n\n<tt>String::</tt> IP Address\n\n<b>Raise</b>\n\n<tt>RuntimeError::</tt> If niether a valid private nor public ip can be found\n\n\n===== RightScale::App::Helper.bind_port()\n\nReturn the port that this application server listens on\n\n<b>Returns</b>\n\n<tt>node[:app][:port](integer)</tt> Port number\n\n\n===== RightScale::App::Helper.vhosts(vhost_list)\n\ncreated to convert vhost names into array from a comma separated list\n\n<b>Parameters</b>\n\n<tt>vhost_list(Sting)::</tt> Comma separated list of virtual hosts\n\n<b>Returns</b>\n\n<tt>Array::</tt> Array of vhosts\n\n\n=== LWRPs:\n\nThis cookbook provides abstract <tt>app</tt> resource. Which will act as \"interface\" for corresponding LightWeight app_* providers\n\nThis includes app_php, app_tomcat and app_passenger cookbooks. Each of them contain implementation of corresponding app__* LightWeight Provider\nwhich can be called using this resource.\n\nProvider persisted in this cookbook will act as a cap if there will be no another app_ LightWeight Provider implementation. To aviod unexpected fails.\n\nFor more information about Lightweight Resources and Providers (LWRPs), please see:\nhttp://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)\n\n\n===== App resource actions\nAll actions declared in this resource define the interface for typical application server operations.\n\n* <tt>:install</tt> - Install packages required for application server setup\n\n* <tt>:setup_vhost</tt> - Action designed to setup APP LWRP with common parameters required for apache vhost file\n\n* <tt>:start</tt> - Action designed to setup user defined start sequence for application server.\n\n* <tt>:stop</tt> - Action designed to setup user defined stop sequence for application server.\n\n* <tt>:restart</tt> - Action designed to setup user defined restart sequence for application server.\n\n* <tt>:code_update</tt> - Action designed to perform project source code update/download\n\n* <tt>:setup_db_connection</tt> -  Action designed to perform database configuration file creation\n\n* <tt>:setup_monitoring</tt> - Action designed to install and setup of required monitoring software.\n\n\n===== App resource attributes\n\n* <tt>packages</tt> - Set of installed packages\n* <tt>root</tt> - Application root\n* <tt>port</tt> - Application port\n* <tt>destination</tt> - Path to where project repo will be pulled\n* <tt>database_name</tt> - Name of the required database\n* <tt>database_user</tt> - Database user\n* <tt>database_password</tt> - Database password\n* <tt>database_sever_fqdn</tt> - Database server fqdn\n\n\n===== Usage Examples:\nOnly basic examples here. More detailed examples of this resource use you can find in cookbook recipes do_* and setup_*\n\n app \"default\" do\n   persist true\nend\n   provider node[:app][:provider]\n   packages node[:app][:packages]\n   action :install\n end\n\n app \"default\" do\n   database_name        node[:app][:database_name]\n   database_user        node[:app][:database_user]\n   database_password    node[:app][:database_password]\n   database_sever_fqdn  node[:app][:database_sever_fqdn]\n   action :setup_db_connection\n end\n\n app \"default\" do\n   root node[:app][:root]\n   port node[:app][:port].to_i\n   action :setup_vhost\n end\n\n\n= LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to the\nRightScale Terms of Service available at http://www.rightscale.com/terms.php and,\nif applicable, other agreements such as a RightScale Master Subscription Agreement.\n",
-  "maintainer": "RightScale, Inc.",
-  "maintainer_email": "support@rightscale.com",
-  "license": "Copyright RightScale, Inc. All rights reserved.",
-  "platforms": {
-    "centos": ">= 5.2",
-    "ubuntu": ">= 8.04",
-    "redhat": ">= 5.2"
-  },
   "dependencies": {
-    "sys_firewall": ">= 0.0.0",
-    "rightscale": ">= 0.0.0",
     "repo": ">= 0.0.0",
     "app_php": ">= 0.0.0",
+    "app_tomcat": ">= 0.0.0",
     "app_passenger": ">= 0.0.0",
-    "app_tomcat": ">= 0.0.0"
+    "rightscale": ">= 0.0.0",
+    "sys_firewall": ">= 0.0.0"
   },
-  "recommendations": {
-  },
-  "suggestions": {
-  },
-  "conflicting": {
-  },
-  "providing": {
-  },
-  "replacing": {
-  },
+  "name": "app",
+  "maintainer_email": "support@rightscale.com",
   "attributes": {
     "app/port": {
-      "display_name": "Application Listen Port",
-      "description": "The port that the application service is listening on. Example: 8000",
-      "default": "8000",
-      "recipes": [
-        "app::default"
-      ],
       "required": "optional",
+      "calculated": false,
       "choice": [
 
       ],
-      "calculated": false,
-      "type": "string"
+      "default": "8000",
+      "type": "string",
+      "recipes": [
+        "app::default"
+      ],
+      "display_name": "Application Listen Port",
+      "description": "The port that the application service is listening on. Example: 8000"
     }
+  },
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "suggestions": {
+  },
+  "platforms": {
+    "centos": "~> 5.8",
+    "ubuntu": "~> 10.04.0",
+    "redhat": "~> 5.8"
+  },
+  "maintainer": "RightScale, Inc.",
+  "long_description": "= RightScale App Cookbook\n\n== DESCRIPTION:\n\nRightScale application server management cookbook\n\nThis is an abstract cookbook that defines the recipes and interface to application provider\ncookbooks.   It is not a standalone cookbook and must be used in conjunction with an\napplication provider cookbook (i.e. app_php, app_tomcat, app_passenger or a user created application provider)\n\nMore detailed info you can find in app::* recipes description.\n\n== REQUIREMENTS:\n\n* Requires a VM launched from a RightScale managed RightImage\n* Requires a corresponding app provider cookbook\n\n== COOKBOOKS DEPENDENCIES:\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n* <tt>sys_firewall</tt>\n* <tt>rightscale</tt>\n* <tt>repo</tt>\n* <tt>app_php</tt>\n* <tt>app_passenger</tt>\n* <tt>app_tomcat</tt>\n\n== KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n== SETUP:\n\nIn order to use App resource, you must create corresponding providers in your app server cookbook.\nSee for example app_passenger, app_php or app_tomcat cookbooks.\n\nYou must define app attributes which will be used in initialized app[default] resource\nRequired attributes:\n  node[:app][:provider] = \"app_passenger\"\nRecommended:\n  node[:app][:destination]\n  node[:app][:port]\n  node[:app][:root]\n  node[:app][:database_name]\n  node[:app][:database_user]\n  node[:app][:database_password]\n  node[:app][:database_sever_fqdn]\nMore detailed description of these attribute variables is located in resource file description.\n\n== USAGE:\n\n1. Add the app_*::default recipe prior to the app::default recipe to define the provider.\n2. Add the default recipe to tag your server as an appserver. This is used by\n   servers (like databases) to identify their clients.\n3. Add desired app::do_* recipes to your application server ServerTemplate\n4. Develop corresponding providers in your application server cookbook.\n5. Define required and recommended attributes in your application server cookbook attributes file.\n\n== DETAILS:\n\n=== General\nThis cookbook is can only be used in conjunction with cookbooks that contain\nLightweight Providers which implement the 'app' interface. See the RightScale\napp_php cookbook for an example.\n\nNote: app[default] resource uses \"persist true\" flag, which allow to save created resource and its attributes in memory for future use.\n\nThis cookbook contains recipes, required to connect your instance to Rightscel Loadbalancer ServerTemplate\n* do_loadbalancers_allow\n* do_loadbalancers_deny\n* request_loadbalancer_allow\n* request_loadbalancer_deny\n\nfor more info please see: http://support.rightscale.com/03-Tutorials/02-AWS/02-Website_Edition/2.5_Load_Balancer_Setups\n\n=== Attributes:\n\n* <tt>node[:app][:provider]</tt> - Set a default provider.\n* <tt>node[:app][:port]</tt> - Set a default port to listen on. Default: 8000\n* <tt>node[:app][:ip]</tt> - Ip to listen on. Default: First private IP\n\n=== Templates:\nnone\n\n=== Definitions:\n\n<b>app_add_listen_port</b>\nAdds a port to the apache listen ports.conf file and node attribute\n\nCreate node[:apache][:listen_ports] - array of strings for the webserver to listen on.\n\nThis definition created specifically for the apache2 cookbook at this time.\n\n===== Example:\n\n app_add_listen_port php_port\n\n\n=== Libraries-helpers:\n\n===== RightScale::App::Helper.bind_ip(private_ips = [ ], public_ips = [ ])\n\nReturn the IP address of the interface that this application server listens on.\n\n<b>Parameters</b>\n\n* <tt>private_ips(Array)::</tt> List of private ips assigned to the application server\n* <tt>public_ips(Array)::</tt> List of public ips assigned to the application server\n\n<b>Returns</b>\n\n<tt>String::</tt> IP Address\n\n<b>Raise</b>\n\n<tt>RuntimeError::</tt> If niether a valid private nor public ip can be found\n\n\n===== RightScale::App::Helper.bind_port()\n\nReturn the port that this application server listens on\n\n<b>Returns</b>\n\n<tt>node[:app][:port](integer)</tt> Port number\n\n\n===== RightScale::App::Helper.vhosts(vhost_list)\n\ncreated to convert vhost names into array from a comma separated list\n\n<b>Parameters</b>\n\n<tt>vhost_list(Sting)::</tt> Comma separated list of virtual hosts\n\n<b>Returns</b>\n\n<tt>Array::</tt> Array of vhosts\n\n\n=== LWRPs:\n\nThis cookbook provides abstract <tt>app</tt> resource. Which will act as \"interface\" for corresponding LightWeight app_* providers\n\nThis includes app_php, app_tomcat and app_passenger cookbooks. Each of them contain implementation of corresponding app__* LightWeight Provider\nwhich can be called using this resource.\n\nProvider persisted in this cookbook will act as a cap if there will be no another app_ LightWeight Provider implementation. To aviod unexpected fails.\n\nFor more information about Lightweight Resources and Providers (LWRPs), please see:\nhttp://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)\n\n\n===== App resource actions\nAll actions declared in this resource define the interface for typical application server operations.\n\n* <tt>:install</tt> - Install packages required for application server setup\n\n* <tt>:setup_vhost</tt> - Action designed to setup APP LWRP with common parameters required for apache vhost file\n\n* <tt>:start</tt> - Action designed to setup user defined start sequence for application server.\n\n* <tt>:stop</tt> - Action designed to setup user defined stop sequence for application server.\n\n* <tt>:restart</tt> - Action designed to setup user defined restart sequence for application server.\n\n* <tt>:code_update</tt> - Action designed to perform project source code update/download\n\n* <tt>:setup_db_connection</tt> -  Action designed to perform database configuration file creation\n\n* <tt>:setup_monitoring</tt> - Action designed to install and setup of required monitoring software.\n\n\n===== App resource attributes\n\n* <tt>packages</tt> - Set of installed packages\n* <tt>root</tt> - Application root\n* <tt>port</tt> - Application port\n* <tt>destination</tt> - Path to where project repo will be pulled\n* <tt>database_name</tt> - Name of the required database\n* <tt>database_user</tt> - Database user\n* <tt>database_password</tt> - Database password\n* <tt>database_sever_fqdn</tt> - Database server fqdn\n\n\n===== Usage Examples:\nOnly basic examples here. More detailed examples of this resource use you can find in cookbook recipes do_* and setup_*\n\n app \"default\" do\n   persist true\nend\n   provider node[:app][:provider]\n   packages node[:app][:packages]\n   action :install\n end\n\n app \"default\" do\n   database_name        node[:app][:database_name]\n   database_user        node[:app][:database_user]\n   database_password    node[:app][:database_password]\n   database_sever_fqdn  node[:app][:database_sever_fqdn]\n   action :setup_db_connection\n end\n\n app \"default\" do\n   root node[:app][:root]\n   port node[:app][:port].to_i\n   action :setup_vhost\n end\n\n\n= LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to the\nRightScale Terms of Service available at http://www.rightscale.com/terms.php and,\nif applicable, other agreements such as a RightScale Master Subscription Agreement.\n",
+  "version": "12.1.0",
+  "recommendations": {
+  },
+  "recipes": {
+    "app::setup_monitoring": "Install collectd monitoring.  This recipe will call corresponding provider from app server cookbook, which will install and configure required monitoring software",
+    "app::do_update_code": "Updates application source files from the remote repository. This recipe will call corresponding provider from app server cookbook, which will download/update application source code.",
+    "app::request_loadbalancer_deny": "Sends a request to all application servers tagged with loadbalancer:app=<applistener_name> to deny connections from the server's private IP address.  This script should be run on a load balancer after disconnecting application servers or upon decommissioning.",
+    "app::default": "Adds the appserver:active=true, appserver:listen_ip=<ip> and appserver:listen_port=<port> tags to your server which identifies it as an application server and tells the load balancer what ip and port to connect to. For example, database servers will update its firewall port permissions to accept incoming requests from application servers with this tag.",
+    "app::do_server_start": "Runs application server start sequence",
+    "app::do_loadbalancers_allow": "Allows connections from all load balancers within a given listener pool which are tagged with loadbalancer:lb=<applistener_name>.  This script should be run on an application server before it makes a request to be connected to the load balancers.",
+    "app::setup_vhost": "Set up the application vhost on port 8000. This recipe will call corresponding provider from app server cookbook, which will create apache vhost file.",
+    "app::request_loadbalancer_allow": "Sends a request to all application servers tagged with loadbalancer:app=<applistener_name> to allow connections from the server's private IP address.  This script should be run on a load balancer before any application servers are attached to it.",
+    "app::do_server_stop": "Runs application server stop sequence",
+    "app::setup_db_connection": "Set up the database connection file. This recipe will call corresponding provider from app server cookbook, which will create application database configuration file.",
+    "app::do_server_restart": "Runs application server restart sequence",
+    "app::do_loadbalancers_deny": "Denies connections from all load balancers which are tagged with loadbalancer:lb=<applistener_name>.  For example, you can run this script on an application server to deny connections from all load balancers within a given listener pool."
   },
   "groupings": {
   },
-  "recipes": {
-    "app::default": "Adds the appserver:active=true, appserver:listen_ip=<ip> and appserver:listen_port=<port> tags to your server which identifies it as an application server and tells the load balancer what ip and port to connect to. For example, database servers will update its firewall port permissions to accept incoming requests from application servers with this tag.",
-    "app::do_loadbalancers_allow": "Allows connections from all load balancers within a given listener pool which are tagged with loadbalancer:lb=<applistener_name>.  This script should be run on an application server before it makes a request to be connected to the load balancers.",
-    "app::do_loadbalancers_deny": "Denies connections from all load balancers which are tagged with loadbalancer:lb=<applistener_name>.  For example, you can run this script on an application server to deny connections from all load balancers within a given listener pool.",
-    "app::request_loadbalancer_allow": "Sends a request to all application servers tagged with loadbalancer:app=<applistener_name> to allow connections from the server's private IP address.  This script should be run on a load balancer before any application servers are attached to it.",
-    "app::request_loadbalancer_deny": "Sends a request to all application servers tagged with loadbalancer:app=<applistener_name> to deny connections from the server's private IP address.  This script should be run on a load balancer after disconnecting application servers or upon decommissioning.",
-    "app::setup_vhost": "Set up the application vhost on port 8000. This recipe will call corresponding provider from app server cookbook, which will create apache vhost file.",
-    "app::setup_db_connection": "Set up the database connection file. This recipe will call corresponding provider from app server cookbook, which will create application database configuration file.",
-    "app::do_update_code": "Updates application source files from the remote repository. This recipe will call corresponding provider from app server cookbook, which will download/update application source code.",
-    "app::setup_monitoring": "Install collectd monitoring.  This recipe will call corresponding provider from app server cookbook, which will install and configure required monitoring software",
-    "app::do_server_start": "Runs application server start sequence",
-    "app::do_server_restart": "Runs application server restart sequence",
-    "app::do_server_stop": "Runs application server stop sequence"
+  "conflicting": {
   },
-  "version": "12.1.0"
+  "replacing": {
+  },
+  "description": "Common utilities for RightScale managed application servers",
+  "providing": {
+  }
 }
