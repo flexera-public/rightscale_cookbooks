@@ -15,7 +15,7 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 == KNOWN LIMITATIONS:
 
-There are no known limitiations.
+There are no known limitations.
 
 == SETUP:
 

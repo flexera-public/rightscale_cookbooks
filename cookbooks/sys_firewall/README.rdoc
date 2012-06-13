@@ -2,8 +2,8 @@
 
 == DESCRIPTION:
 
-Built upon the opscode iptables cookbook, this coobook provides a LWRP for
-managing access to mutliple servers in a deployment using machine tags.
+Built upon the Opscode iptables cookbook, this cookbook provides a LWRP for
+managing access to multiple servers in a deployment using machine tags.
 
 == REQUIREMENTS:
 
@@ -36,7 +36,7 @@ All tag based actions are scoped to the deployment.
 
 To open a local port to all servers with a given tag use:
 
-  sys_firewall "Open this database's ports to all appservers" do
+  sys_firewall "Open this database's ports to all app servers" do
     machine_tag "appserver:active=true"
     port 3306
     enable true
@@ -50,7 +50,7 @@ at once.
 
 To request all servers with a given tag close a port to a given IP address use:
 
-  sys_firewall "Request all appservers close ports to this loadbalancer" do
+  sys_firewall "Request all app servers close ports to this load balancer" do
     machine_tag "loadbalancer:app=www"
     port 8000
     enable false

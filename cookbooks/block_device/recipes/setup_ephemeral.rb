@@ -128,7 +128,7 @@ if cloud == 'ec2' || cloud == 'openstack'
             device = node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
             device = '/dev/' + device if device !~ /^\/dev\//
             device = @api.unmap_device_for_ec2(device) if cloud == 'ec2'
-            # verify that device is actually on the instance and is a blockSpecial 
+            # verify that device is actually on the instance and is a blockSpecial
             if ( File.exists?(device) && File.ftype(device) == "blockSpecial" )
               my_devices << device
             else
@@ -146,22 +146,26 @@ if cloud == 'ec2' || cloud == 'openstack'
           run_command("pvcreate -ff -y #{device}")
         end
 
-        run_command("vgcreate vg-data #{my_devices.join(' ')}")
-        run_command("lvcreate vg-data -n #{lvm_device} -i #{my_devices.size} -I 256 -l 100%VG")
-        run_command("mkfs.#{filesystem_type} /dev/vg-data/#{lvm_device}")
+        if my_devices.empty?
+          Chef::Log.info "  No ephemeral devices attached"
+        else
+          run_command("vgcreate vg-data #{my_devices.join(' ')}")
+          run_command("lvcreate vg-data -n #{lvm_device} -i #{my_devices.size} -I 256 -l 100%VG")
+          run_command("mkfs.#{filesystem_type} /dev/vg-data/#{lvm_device}")
 
-        # Add the mount to fstab
-        fstab = File.readlines("/etc/fstab")
-        File.open("/etc/fstab", "w") do |f|
-          fstab.each do |line|
-            f.puts(line)
+          # Add the mount to fstab
+          fstab = File.readlines("/etc/fstab")
+          File.open("/etc/fstab", "w") do |f|
+            fstab.each do |line|
+              f.puts(line)
+            end
+            Chef::Log.info "  ADDING DEVICE /etc/fstab: #{fstab_entry}"
+            f.puts(fstab_entry)
           end
-          Chef::Log.info "  ADDING DEVICE /etc/fstab: #{fstab_entry}"
-          f.puts(fstab_entry)
-        end
 
-        run_command("mount /dev/vg-data/#{lvm_device}")
-        Chef::Log.info "Done setting up LVM on ephemeral drives"
+          run_command("mount /dev/vg-data/#{lvm_device}")
+          Chef::Log.info "Done setting up LVM on ephemeral drives"
+        end
       end
     end
   end

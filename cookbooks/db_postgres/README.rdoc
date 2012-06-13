@@ -57,7 +57,7 @@ please see:
 
 
 === Public Recipes
-Here is the list of db recipes that can be used without the preimum
+Here is the list of db recipes that can be used without the premium
 rightscale_tools gem:
 
 * db::default

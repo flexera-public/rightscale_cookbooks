@@ -14,7 +14,7 @@ There are no known limitations.
 
 == SETUP/USAGE:
 * Place <tt>web_apache::install_server</tt> recipe into your runlist to setup the apache web server.
-* Use <tt>web_apache::setup_monitoring</tt> recipe to add apache monitoring options to your dasboard "monitoring" tab.
+* Use <tt>web_apache::setup_monitoring</tt> recipe to add apache monitoring options to your dashboard "monitoring" tab.
 
 == DETAILS:
 === General
@@ -26,8 +26,8 @@ Detailed cookbook attributes descriptions you can find in attributed/default.rb 
 === Templates:
 * <tt>apache.conf.erb</tt> - Configuration for apache vhost file
 * <tt>apache2.conf.erb</tt> - Apache2 web server configuration file template.
-* <tt>apache_collectd_exec.erb</tt> - Colectd exec plugin configuration template.
-* <tt>apache_collectd_plugin.conf.erb</tt> - Colectd steatus plugin configuration template.
+* <tt>apache_collectd_exec.erb</tt> - Collectd exec plugin configuration template.
+* <tt>apache_collectd_plugin.conf.erb</tt> - Collectd status plugin configuration template.
 * <tt>apache_ssl_vhost.erb</tt> - Configuration for apache ssl vhost file.
 * <tt>apache_status.conf.erb</tt> - Configuration for apache status information access.
 * <tt>app_server.erb</tt> - Configuration for apache basic application server vhost file.

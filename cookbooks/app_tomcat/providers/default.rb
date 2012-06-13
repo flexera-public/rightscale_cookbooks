@@ -32,6 +32,10 @@ action :restart do
   action_start
 end
 
+# Reload tomcat service
+action :reload do
+  log "  Action not implemented"
+end
 
 #Installing required packages and prepare system for tomcat
 action :install do
@@ -135,6 +139,9 @@ end
 # Setup apache virtual host and corresponding tomcat configs
 action :setup_vhost do
 
+  port = new_resource.port
+  app_root = new_resource.root
+
   log "  Creating tomcat6.conf"
   template "/etc/tomcat6/tomcat6.conf" do
     action :create
@@ -163,13 +170,13 @@ action :setup_vhost do
     mode "0644"
     cookbook 'app_tomcat'
     variables(
-            :doc_root => node[:app][:root],
-            :app_port => node[:app][:port]
+            :doc_root => app_root,
+            :app_port => port.to_s
           )
   end
 
   log "  Setup logrotate for tomcat"
-  rightscale_logrotate_app "rails" do
+  rightscale_logrotate_app "tomcat" do
     cookbook "rightscale"
     template "logrotate.erb"
     path ["/var/log/tomcat6/*log", "/var/log/tomcat6/*.out"]
@@ -269,36 +276,25 @@ action :setup_vhost do
     end
 
     log "  Generating new apache ports.conf"
-    node[:apache][:listen_ports] = "80"
-    # Generation of new apache ports.conf
-    template "#{node[:apache][:dir]}/ports.conf" do
-      cookbook "apache2"
-      source "ports.conf.erb"
-      variables :apache_listen_ports => node[:apache][:listen_ports]
-    end
+    app_add_listen_port "80"
 
     # Configuring document root for apache
-    if ("#{node[:app_tomcat][:code][:root_war]}" == "")
-      log "  root_war not defined, setting apache docroot to #{node[:app][:root]}"
-      docroot4apache = "#{node[:app][:root]}"
+    if node[:app_tomcat][:code][:root_war].empty?
+      log "  root_war not defined, setting apache docroot to #{app_root}"
+      apache_docroot = "#{app_root}"
     else
-      log "  root_war defined, setting apache docroot to #{node[:app][:root]}/ROOT"
-      docroot4apache = "#{node[:app][:root]}/ROOT"
+      log "  root_war defined, setting apache docroot to #{app_root}/ROOT"
+      apache_docroot = "#{app_root}/ROOT"
     end
 
-    port = new_resource.port
-
     log "  Configuring apache vhost for tomcat"
-    template "#{etc_apache}/sites-enabled/#{node[:web_apache][:application_name]}.conf" do
-      action :create_if_missing
-      source "apache_mod_jk_vhost.erb"
-      variables(
-        :docroot     => docroot4apache,
-        :vhost_port  => port.to_s,
-        :server_name => node[:web_apache][:server_name],
-        :apache_log_dir => node[:apache][:log_dir]
-      )
-      cookbook 'app_tomcat'
+    web_app "http-#{port}-#{node[:web_apache][:server_name]}.vhost" do
+      template                   'apache_mod_jk_vhost.erb'
+      cookbook                   'app_tomcat'
+      docroot                    apache_docroot
+      vhost_port                 port.to_s
+      server_name                node[:web_apache][:server_name]
+      apache_log_dir             node[:apache][:log_dir]
     end
 
     # Apache server restart

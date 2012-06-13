@@ -24,6 +24,14 @@ action :start do
   end
 end
 
+# Reload apache
+action :reload do
+  log "  Running reload sequence"
+  service "apache2" do
+    action :reload
+    persist false
+  end
+end
 
 # Restart apache
 action :restart do
