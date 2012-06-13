@@ -1,19 +1,20 @@
 = RightScale Memcached Server Template
 
 == DESCRIPTION:
+
 This cookbook provides recipes for setting up and running a Memcached server.
 
 -------------
 
 == REQUIREMENTS:
-=== General
 
 * Requires a VM launched from a RightScale managed RightImage
-* Tested on CentOS 5.6 RightImage
-* Tested on RHEL 5.6 RightImage
-* Tested on Ubuntu 10.04 RightImage
 
-Implementation depends on <tt>rightscale</tt> and <tt>sys_firewall</tt> cookbooks.
+-------------
+
+== COOKBOOKS DEPENDENCIES:
+
+Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 -------------
 
@@ -27,18 +28,20 @@ Implementation depends on <tt>rightscale</tt> and <tt>sys_firewall</tt> cookbook
 
 * Choose image and cloud.
 * Fill required input fields.
-* When using a RightScale ServerTemplate, use memcached::default recipe to automatically add the server tags.
-* Place memcached::install_server recipe into your runlist to setup the memcached server.
+* When using a RightScale ServerTemplate, use <tt>memcached::default</tt> recipe to automatically add the server tags.
+* Place <tt>memcached::install_server</tt> recipe into your runlist to setup the memcached server.
 
 -------------
 
 == DETAILS:
+
 === General
 
 The cookbook installs memcached with needed configuration for CentOS, Redhat and Ubuntu.
 Opens lisnening port in systems' firewall, setups server tags, monitoring and log rotation.
 
 -------------
+
 === Attributes:
 
 These are the settings used in recipes and templates. Default values are noted.
@@ -56,19 +59,18 @@ These are the settings used in recipes and templates. Default values are noted.
 * <tt>node[:platform][:memcached][:iptables_rules]</tt> - Location of iptables.
 
 -------------
+
 === Templates:
 
-<b>memcached.conf.erb</b>
+* <tt>memcached.conf.erb</tt> - Memcached configuration file. Unique for CentOS and Ubuntu. Used is the <tt>memcached::install_server</tt> recipe.
 
-Memcached configuration file. Unique for CentOS and Ubuntu. Used is the <tt>memcached::install_server</tt> recipe.
-
-<b>memcached_collectd.conf.erb</b>
-
-Memcached collectd plugin template. Used is the <tt>memcached::install_server</tt> recipe.
+* <tt>memcached_collectd.conf.erb</tt> - Memcached collectd plugin template. Used is the <tt>memcached::install_server</tt> recipe.
 
 -------------
 
-= LICENSE
-Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-if applicable, other agreements such as a RightScale Master Subscription Agreement.
+= LICENSE:
+
+Copyright RightScale, Inc. All rights reserved.  All access and use subject to
+the RightScale Terms of Service available at http://www.rightscale.com/terms.php
+and, if applicable, other agreements such as a RightScale Master Subscription
+Agreement.
