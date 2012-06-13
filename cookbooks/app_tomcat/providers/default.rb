@@ -317,7 +317,7 @@ action :setup_db_connection do
   db_name = new_resource.database_name
   db_adapter = node[:app_tomcat][:db_adapter]
 
-  log "  Creating context.xml for DB: #{db_name} using adapter #{db_adapter} and datasource #{datasource}"
+  log "  Creating context.xml for DB: #{db_name} using adapter #{db_adapter} and datasource #{node[:app_tomcat][:datasource_name]}"
   if db_adapter == "mysql"
     db_mysql_connect_app "/etc/tomcat6/context.xml"  do
       template      "context_xml.erb"
