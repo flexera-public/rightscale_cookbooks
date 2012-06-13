@@ -363,8 +363,12 @@ action :enable_replication do
   # Ensure that database started
   # service provider uses the status command to decide if it
   # has to run the start command again.
-  5.times do
-      action_start
+  ruby_block "Start Postgresql service" do
+    block do
+      5.times do
+        action_start
+      end
+    end
   end
 
   # Setup slave monitoring
