@@ -294,35 +294,71 @@ action :grant_replication_slave do
   conn.finish
 end
 
+
 action :enable_replication do
   db_state_get node
+  current_restore_process = new_resource.restore_process
 
   newmaster_host = node[:db][:current_master_ip]
   rep_user = node[:db][:replication][:user]
   rep_pass = node[:db][:replication][:password]
   app_name = node[:rightscale][:instance_uuid]
 
-  master_info = RightScale::Database::PostgreSQL::Helper.load_replication_info(node)
-
-  # Set slave state
-  log "  Setting up slave state..."
-  ruby_block "set slave state" do
+  # Check the volume before performing any actions.  If invalid raise error and exit.
+  ruby_block "validate_master" do
+    not_if { current_restore_process == :no_restore }
     block do
-      node[:db][:this_is_master] = false
+      master_info = RightScale::Database::PostgreSQL::Helper.load_replication_info(node)
+
+      # Check that the snapshot is from the current master or a slave associated with the current master
+      if master_info['Master_instance_uuid']
+        if master_info['Master_instance_uuid'] != node[:db][:current_master_uuid]
+          raise "FATAL: snapshot was taken from a different master! snap_master was:#{master_info['Master_instance_uuid']} != current master: #{node[:db][:current_master_uuid]}"
+        end
+      # File not found or does not contain info
+      else
+        raise "Position and file not saved!"
+      end
     end
   end
 
   # Stopping Postgresql service
   action_stop
 
-  # Sync to Master data
-  RightScale::Database::PostgreSQL::Helper.rsync_db(newmaster_host, rep_user)
+  ruby_block "Sync to Master data" do
+    not_if { current_restore_process == :no_restore }
+    block do
+      RightScale::Database::PostgreSQL::Helper.rsync_db(newmaster_host, rep_user)
+    end
+  end
 
-  # Setup recovery conf
-  RightScale::Database::PostgreSQL::Helper.reconfigure_replication_info(newmaster_host, rep_user, rep_pass, app_name)
+  ruby_block "configure_replication" do
+    not_if { current_restore_process == :no_restore }
+    block do
+      master_info = RightScale::Database::PostgreSQL::Helper.load_replication_info(node)
+      newmaster_host = master_info['Master_IP']
+      RightScale::Database::PostgreSQL::Helper.reconfigure_replication_info(newmaster_host, rep_user, rep_pass, app_name)
+    end
+  end
 
-  log "  Wiping existing runtime config files"
-  `rm -rf "#{node[:db][:datadir]}/pg_xlog/*"`
+  # following done after a stop/start and reboot on a slave
+  ruby_block "reconfigure_replication" do
+    only_if { current_restore_process == :no_restore }
+    block do
+      master_info = RightScale::Database::PostgreSQL::Helper.load_master_info_file(node)
+      newmaster_host = node[:db][:current_master_ip]
+      RightScale::Database::PostgreSQL::Helper.reconfigure_replication_info(newmaster_host, rep_user, rep_pass, app_name)
+    end
+  end
+
+  ruby_block "wipe_existing_runtime_config" do
+    not_if { current_restore_process == :no_restore }
+    block do
+      Chef::Log.info "Wiping existing runtime config files"
+      runtime_config_file = Dir.glob("#{node[:db][:datadir]}/pg_xlog/*")
+      FileUtils.rm_rf(runtime_config_file)
+    end
+  end
 
   # Ensure that database started
   # service provider uses the status command to decide if it
@@ -331,22 +367,9 @@ action :enable_replication do
       action_start
   end
 
-  ruby_block "validate_backup" do
-    block do
-      master_info = RightScale::Database::PostgreSQL::Helper.load_replication_info(node)
-      raise "Position and file not saved!" unless master_info['Master_instance_uuid']
-      # Check that the snapshot is from the current master or a slave associated with the current master
-      if master_info['Master_instance_uuid'] != node[:db][:current_master_uuid]
-        raise "FATAL: snapshot was taken from a different master! snap_master was:#{master_info['Master_instance_uuid']} != current master: #{node[:db][:current_master_uuid]}"
-      end
-    end
-  end
-
   # Setup slave monitoring
   action_setup_slave_monitoring
-
-end
-
+end  
 
 action :promote do
   db_state_get node
