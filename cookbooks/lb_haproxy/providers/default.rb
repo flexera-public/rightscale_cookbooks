@@ -17,8 +17,13 @@ action :install do
   # Create haproxy service.
   service "haproxy" do
     supports :reload => true, :restart => true, :status => true, :start => true, :stop => true
-    persist true
     action :enable
+  end
+
+  # Persist haproxy service to use later
+  service "haproxy" do
+    persist true
+    action :nothing
   end
 
   # Install haproxy file depending on OS/platform.
