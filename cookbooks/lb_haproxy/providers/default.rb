@@ -20,12 +20,6 @@ action :install do
     action :enable
   end
 
-  # Persist haproxy service to use later
-  service "haproxy" do
-    persist true
-    action :nothing
-  end
-
   # Install haproxy file depending on OS/platform.
   template "/etc/default/haproxy" do
     only_if { node[:platform] == "debian" || node[:platform] == "ubuntu" }
@@ -139,7 +133,7 @@ action :attach do
 
   # Create haproxy service.
   service "haproxy" do
-    supports :restart => true, :status => true, :start => true, :stop => true
+    supports :reload => true, :restart => true, :status => true, :start => true, :stop => true
     action :nothing
   end
 
@@ -201,7 +195,7 @@ action :detach do
 
   # Create haproxy service.
   service "haproxy" do
-    supports :restart => true, :status => true, :start => true, :stop => true
+    supports :reload => true, :restart => true, :status => true, :start => true, :stop => true
     action :nothing
   end
 
