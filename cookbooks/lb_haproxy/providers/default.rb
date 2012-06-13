@@ -74,6 +74,14 @@ action :install do
     )
   end
 
+  # Generate the haproxy config file.
+  execute "/home/lb/haproxy-cat.sh" do
+    user "haproxy"
+    group "haproxy"
+    umask 0077
+    notifies :start, resources(:service => "haproxy")
+  end
+
   # Remove haproxy config file so we can symlink it.
   file "/etc/haproxy/haproxy.cfg" do
     backup false
