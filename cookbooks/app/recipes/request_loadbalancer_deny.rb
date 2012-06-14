@@ -11,14 +11,14 @@ class Chef::Recipe
   include RightScale::App::Helper
 end
 
-# Sending request to application servers, to disable iptables rule, which allows connection with loadbalancer
+attrs = {:app => Hash.new}
+attrs[:app][:lb_ip] = node[:cloud][:private_ips][0]
+
 vhosts(node[:lb][:vhost_names]).each do | vhost_name |
-  sys_firewall "Request all appservers close ports to this loadbalancer" do
-    machine_tag "loadbalancer:#{vhost_name}=app"
-    port node[:app][:port].to_i
-    enable false
-    ip_addr node[:cloud][:private_ips][0]
-    action :update_request
+  remote_recipe "Removing loadbalancers from app servers firewall" do
+    recipe "app::handle_loadbalancers_deny"
+    recipients_tags "loadbalancer:#{vhost_name}=app"
+    attributes attrs
   end
 end
 
