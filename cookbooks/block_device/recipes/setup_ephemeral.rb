@@ -6,7 +6,7 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 rightscale_marker :begin
-log "  TEST 1413"
+log "  TEST 1427"
 
 require 'fileutils'
 
@@ -61,11 +61,11 @@ if cloud == 'ec2' || cloud == 'openstack'
   # Generate fstab entry here
   fstab_entry = "/dev/vg-data/#{lvm_device}\t#{mount_point}\t#{filesystem_type}\t#{options}\t0 0"
 
-#  # if fstab & mtab entry exists, assume a reboot and skip to end
-#  if ( File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$") ) &&
-#     ( File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " ) )
-#    log "  Ephemeral entry already exists in fstab"
-#  else
+  # if fstab & mtab entry exists, assume a reboot and skip to end
+  if ( File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$") ) &&
+     ( File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " ) )
+    log "  Ephemeral entry already exists in fstab"
+  else
 #    # Create init script to activate LVM on start for Ubuntu
 #    cookbook_file "/etc/init.d/lvm_activate" do
 #      only_if { node[:platform] == "ubuntu" }
@@ -169,7 +169,7 @@ if cloud == 'ec2' || cloud == 'openstack'
 #        end
 #      end
 #    end
-#  end
+  end
 else
   log "  Skipping LVM on ephemeral drives setup for non-ephemeral cloud #{cloud}"
 end
