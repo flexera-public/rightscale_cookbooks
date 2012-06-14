@@ -26,7 +26,7 @@ lvm_device = "lvol0"
 # upstart will try to boot without waiting for the LVM volume to be mounted.
 options = "defaults,noatime"
 if node[:platform] == "ubuntu"
-  options += ",bootwait"
+  options += ",bootwait,noauto"
 end
 
 # RedHat does not support xfs, so set specific item accordingly
@@ -67,11 +67,11 @@ if cloud == 'ec2' || cloud == 'openstack'
     log "  Ephemeral entry already exists in fstab"
   else
     # Create init script to activate LVM on start for Ubuntu
-#    cookbook_file "/etc/init.d/lvm_activate" do
-#      only_if { node[:platform] == "ubuntu" }
-#      source "lvm_activate"
-#      mode 0744
-#    end
+    cookbook_file "/etc/init.d/lvm_activate" do
+      only_if { node[:platform] == "ubuntu" }
+      source "lvm_activate"
+      mode 0744
+    end
 #
 #    link "/etc/rcS.d/S32lvm_activate" do
 #      only_if { node[:platform] == "ubuntu" }

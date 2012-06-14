@@ -56,6 +56,7 @@ def create_swap(swap_file, swap_size)
     action :enable
     device "#{swap_file}"
     fstype 'swap'
+    options "noauto"
   end
 
 end # def create_swap(swap_file, swap_size)
