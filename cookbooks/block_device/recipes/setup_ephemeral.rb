@@ -6,7 +6,7 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 rightscale_marker :begin
-log "  NOTHING"
+log "  TEST 1413"
 
 require 'fileutils'
 
@@ -18,49 +18,49 @@ end
 
 cloud = node[:cloud][:provider]
 
-## Generate fstab entry and check if entry already in fstab - assuming a reboot
-#mount_point = "/mnt/ephemeral"
-#lvm_device = "lvol0"
-#
-## Ubuntu systems using upstart require the 'bootwait' option, otherwise
-## upstart will try to boot without waiting for the LVM volume to be mounted.
-#options = "defaults,noatime"
-#if node[:platform] == "ubuntu"
-#  options += ",bootwait"
-#end
-#
-## RedHat does not support xfs, so set specific item accordingly
-#if node[:platform] == "redhat"
-#  filesystem_type = "ext3"
-#else
-#  filesystem_type = "xfs"
-#end
-#
-#root_device = `mount`.find {|dev| dev.include? " on / "}.split[0]
-#
-#current_mnt_device = `mount`.find {|dev| dev.include? " on /mnt "}
-#current_mnt_device = current_mnt_device ? current_mnt_device.split[0] : nil
-#
-#mnt_device = current_mnt_device ||
-#             case root_device
-#             when /sda/
-#               "/dev/sdb"
-#             when /sde/
-#               "/dev/sdf"
-#             when /vda/
-#               "/dev/vdb"
-#             when /xvda/
-#               "/dev/xvdb"
-#             when /xvde/
-#               (node[:platform] == "redhat") ? "/dev/xvdj" : "/dev/xvdf"
-#             end
-#
-## Only EC2 and openstack is currently supported
-#if cloud == 'ec2' || cloud == 'openstack'
-#
-#  # Generate fstab entry here
-#  fstab_entry = "/dev/vg-data/#{lvm_device}\t#{mount_point}\t#{filesystem_type}\t#{options}\t0 0"
-#
+# Generate fstab entry and check if entry already in fstab - assuming a reboot
+mount_point = "/mnt/ephemeral"
+lvm_device = "lvol0"
+
+# Ubuntu systems using upstart require the 'bootwait' option, otherwise
+# upstart will try to boot without waiting for the LVM volume to be mounted.
+options = "defaults,noatime"
+if node[:platform] == "ubuntu"
+  options += ",bootwait"
+end
+
+# RedHat does not support xfs, so set specific item accordingly
+if node[:platform] == "redhat"
+  filesystem_type = "ext3"
+else
+  filesystem_type = "xfs"
+end
+
+root_device = `mount`.find {|dev| dev.include? " on / "}.split[0]
+
+current_mnt_device = `mount`.find {|dev| dev.include? " on /mnt "}
+current_mnt_device = current_mnt_device ? current_mnt_device.split[0] : nil
+
+mnt_device = current_mnt_device ||
+             case root_device
+             when /sda/
+               "/dev/sdb"
+             when /sde/
+               "/dev/sdf"
+             when /vda/
+               "/dev/vdb"
+             when /xvda/
+               "/dev/xvdb"
+             when /xvde/
+               (node[:platform] == "redhat") ? "/dev/xvdj" : "/dev/xvdf"
+             end
+
+# Only EC2 and openstack is currently supported
+if cloud == 'ec2' || cloud == 'openstack'
+
+  # Generate fstab entry here
+  fstab_entry = "/dev/vg-data/#{lvm_device}\t#{mount_point}\t#{filesystem_type}\t#{options}\t0 0"
+
 #  # if fstab & mtab entry exists, assume a reboot and skip to end
 #  if ( File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$") ) &&
 #     ( File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " ) )
@@ -170,8 +170,8 @@ cloud = node[:cloud][:provider]
 #      end
 #    end
 #  end
-#else
-#  log "  Skipping LVM on ephemeral drives setup for non-ephemeral cloud #{cloud}"
-#end
+else
+  log "  Skipping LVM on ephemeral drives setup for non-ephemeral cloud #{cloud}"
+end
 
 rightscale_marker :end
