@@ -6,7 +6,7 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 rightscale_marker :begin
-log "  TEST 1427"
+log "  TEST 1438"
 
 require 'fileutils'
 
@@ -66,7 +66,7 @@ if cloud == 'ec2' || cloud == 'openstack'
      ( File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " ) )
     log "  Ephemeral entry already exists in fstab"
   else
-#    # Create init script to activate LVM on start for Ubuntu
+    # Create init script to activate LVM on start for Ubuntu
 #    cookbook_file "/etc/init.d/lvm_activate" do
 #      only_if { node[:platform] == "ubuntu" }
 #      source "lvm_activate"
@@ -87,89 +87,89 @@ if cloud == 'ec2' || cloud == 'openstack'
 #        echo "dm_mod" >> /etc/modules
 #      EOH
 #    end
-#
-#    # /dev/sdb (/dev/sdf on redhat) is mounted on /mnt on the
-#    # image by default as an ext3 filesystem. Umount this device
-#    # so it can be used in the LVM
-#    mount "/mnt" do
-#      device mnt_device
-#      fstype "ext3"
-#      action [:umount, :disable]
-#    end
-#
-#    # Create the mount point
-#    log "  Create #{mount_point}."
-#    directory mount_point do
-#      owner 'root'
-#      group 'root'
-#      mode 0755
-#      recursive true
-#    end
-#
-#    # Setup the LVM across all ephemeral devices
-#    ruby_block "LVM setup" do
-#      block do
-#        require 'rightscale_tools'
-#
-#        @api = RightScale::Tools::API.factory('1.0') if cloud == 'ec2'
-#
-#        def run_command(command, ignore_failure = false)
-#          Chef::Log.info "  Running: #{command}"
-#          Chef::Log.info `#{command}`
-#          STDOUT.flush
-#          raise "command exited non-zero! #{command}" unless ignore_failure || $?.success?
-#        end
-#
-#        # Get a list of ephemeral devices
-#        # Make sure to skip EBS volumes attached on boot
-#        my_devices = []
-#        dev_index = 0
-#        loop do
-#          if node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
-#            device = node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
-#            device = '/dev/' + device if device !~ /^\/dev\//
-#            device = @api.unmap_device_for_ec2(device) if cloud == 'ec2'
-#            # verify that device is actually on the instance and is a blockSpecial
-#            if ( File.exists?(device) && File.ftype(device) == "blockSpecial" )
-#              my_devices << device
-#            else
-#              Chef::Log.warn "WARNING: Cannot use device #{device} - skipping"
-#            end
-#          else
-#            break
-#          end
-#          dev_index += 1
-#        end
-#
-#        Chef::Log.info "  Found ephemeral devices: #{my_devices}"
-#
-#        my_devices.each do |device|
-#          run_command("pvcreate -ff -y #{device}")
-#        end
-#
-#        if my_devices.empty?
-#          Chef::Log.info "  No ephemeral devices attached"
-#        else
-#          run_command("vgcreate vg-data #{my_devices.join(' ')}")
-#          run_command("lvcreate vg-data -n #{lvm_device} -i #{my_devices.size} -I 256 -l 100%VG")
-#          run_command("mkfs.#{filesystem_type} /dev/vg-data/#{lvm_device}")
-#
-#          # Add the mount to fstab
-#          fstab = File.readlines("/etc/fstab")
-#          File.open("/etc/fstab", "w") do |f|
-#            fstab.each do |line|
-#              f.puts(line)
-#            end
-#            Chef::Log.info "  ADDING DEVICE /etc/fstab: #{fstab_entry}"
-#            f.puts(fstab_entry)
-#          end
-#
-#          run_command("mount /dev/vg-data/#{lvm_device}")
-#          Chef::Log.info "Done setting up LVM on ephemeral drives"
-#        end
-#      end
-#    end
-  end
+
+    # /dev/sdb (/dev/sdf on redhat) is mounted on /mnt on the
+    # image by default as an ext3 filesystem. Umount this device
+    # so it can be used in the LVM
+    mount "/mnt" do
+      device mnt_device
+      fstype "ext3"
+      action [:umount, :disable]
+    end
+
+    # Create the mount point
+    log "  Create #{mount_point}."
+    directory mount_point do
+      owner 'root'
+      group 'root'
+      mode 0755
+      recursive true
+    end
+
+    # Setup the LVM across all ephemeral devices
+    ruby_block "LVM setup" do
+      block do
+        require 'rightscale_tools'
+
+        @api = RightScale::Tools::API.factory('1.0') if cloud == 'ec2'
+
+        def run_command(command, ignore_failure = false)
+          Chef::Log.info "  Running: #{command}"
+          Chef::Log.info `#{command}`
+          STDOUT.flush
+          raise "command exited non-zero! #{command}" unless ignore_failure || $?.success?
+        end
+
+        # Get a list of ephemeral devices
+        # Make sure to skip EBS volumes attached on boot
+        my_devices = []
+        dev_index = 0
+        loop do
+          if node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
+            device = node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
+            device = '/dev/' + device if device !~ /^\/dev\//
+            device = @api.unmap_device_for_ec2(device) if cloud == 'ec2'
+            # verify that device is actually on the instance and is a blockSpecial
+            if ( File.exists?(device) && File.ftype(device) == "blockSpecial" )
+              my_devices << device
+            else
+              Chef::Log.warn "WARNING: Cannot use device #{device} - skipping"
+            end
+          else
+            break
+          end
+          dev_index += 1
+        end
+
+        Chef::Log.info "  Found ephemeral devices: #{my_devices}"
+
+        my_devices.each do |device|
+          run_command("pvcreate -ff -y #{device}")
+        end
+
+        if my_devices.empty?
+          Chef::Log.info "  No ephemeral devices attached"
+        else
+          run_command("vgcreate vg-data #{my_devices.join(' ')}")
+          run_command("lvcreate vg-data -n #{lvm_device} -i #{my_devices.size} -I 256 -l 100%VG")
+          run_command("mkfs.#{filesystem_type} /dev/vg-data/#{lvm_device}")
+
+          # Add the mount to fstab
+          fstab = File.readlines("/etc/fstab")
+          File.open("/etc/fstab", "w") do |f|
+            fstab.each do |line|
+              f.puts(line)
+            end
+            Chef::Log.info "  ADDING DEVICE /etc/fstab: #{fstab_entry}"
+            f.puts(fstab_entry)
+          end
+
+          run_command("mount /dev/vg-data/#{lvm_device}")
+          Chef::Log.info "Done setting up LVM on ephemeral drives"
+        end
+      end
+    end
+ end
 else
   log "  Skipping LVM on ephemeral drives setup for non-ephemeral cloud #{cloud}"
 end
