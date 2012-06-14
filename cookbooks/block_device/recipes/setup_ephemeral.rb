@@ -8,16 +8,16 @@
 rightscale_marker :begin
 log "  NOTHING"
 
-#require 'fileutils'
-#
-#package "lvm2"
-#
-#package "xfsprogs" do
-#  not_if { node[:platform] == "redhat" }
-#end
-#
-#cloud = node[:cloud][:provider]
-#
+require 'fileutils'
+
+package "lvm2"
+
+package "xfsprogs" do
+  not_if { node[:platform] == "redhat" }
+end
+
+cloud = node[:cloud][:provider]
+
 ## Generate fstab entry and check if entry already in fstab - assuming a reboot
 #mount_point = "/mnt/ephemeral"
 #lvm_device = "lvol0"
