@@ -161,6 +161,7 @@ action :setup_vhost do
     )
   end
 
+  tomcat_port = port+1
   log "  Creating server.xml"
   template "/etc/tomcat6/server.xml" do
     action :create
@@ -171,7 +172,7 @@ action :setup_vhost do
     cookbook 'app_tomcat'
     variables(
             :doc_root => app_root,
-            :app_port => port.to_s
+            :app_port => tomcat_port.to_s
           )
   end
 
