@@ -5,6 +5,10 @@ description      "Enable instance Monitoring in the RightScale dashboard."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "12.1.0"
 
+supports "centos", "~> 5.8"
+supports "redhat", "~> 5.8"
+supports "ubuntu", "~> 10.04.0"
+
 depends "rightscale"
 depends "logging_rsyslog"
 depends "logging_syslog_ng"
