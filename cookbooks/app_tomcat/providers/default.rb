@@ -161,6 +161,7 @@ action :setup_vhost do
     )
   end
 
+  # Define internal port for tomcat it must be different then apache ports
   tomcat_port = port+1
   log "  Creating server.xml"
   template "/etc/tomcat6/server.xml" do
@@ -276,37 +277,38 @@ action :setup_vhost do
       only_if do node[:platform] == "redhat" end
     end
 
-    log "  Generating new apache ports.conf"
-    app_add_listen_port port
-
-    # Configuring document root for apache
-    if node[:app_tomcat][:code][:root_war].empty?
-      log "  root_war not defined, setting apache docroot to #{app_root}"
-      apache_docroot = "#{app_root}"
-    else
-      log "  root_war defined, setting apache docroot to #{app_root}/ROOT"
-      apache_docroot = "#{app_root}/ROOT"
-    end
-
-    log "  Configuring apache vhost for tomcat"
-    web_app "http-#{port}-#{node[:web_apache][:server_name]}.vhost" do
-      template                   'apache_mod_jk_vhost.erb'
-      cookbook                   'app_tomcat'
-      docroot                    apache_docroot
-      vhost_port                 port.to_s
-      server_name                node[:web_apache][:server_name]
-      apache_log_dir             node[:apache][:log_dir]
-    end
-
-    # Apache server restart
-    service "apache2" do
-      action :restart
-      persist false
-    end
-
   else
     log "  mod_jk already installed, skipping the recipe"
   end
+
+  log "  Generating new apache ports.conf"
+  app_add_listen_port port
+
+  # Configuring document root for apache
+  if node[:app_tomcat][:code][:root_war].empty?
+    log "  root_war not defined, setting apache docroot to #{app_root}"
+    apache_docroot = "#{app_root}"
+  else
+    log "  root_war defined, setting apache docroot to #{app_root}/ROOT"
+    apache_docroot = "#{app_root}/ROOT"
+  end
+
+  log "  Configuring apache vhost for tomcat"
+  web_app "http-#{port}-#{node[:web_apache][:server_name]}.vhost" do
+    template                   'apache_mod_jk_vhost.erb'
+    cookbook                   'app_tomcat'
+    docroot                    apache_docroot
+    vhost_port                 port.to_s
+    server_name                node[:web_apache][:server_name]
+    apache_log_dir             node[:apache][:log_dir]
+  end
+
+  # Apache server restart
+  service "apache2" do
+    action :restart
+    persist false
+  end
+
 
 end
 
