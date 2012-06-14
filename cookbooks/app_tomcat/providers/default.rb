@@ -276,7 +276,7 @@ action :setup_vhost do
     end
 
     log "  Generating new apache ports.conf"
-    app_add_listen_port "80"
+    app_add_listen_port port
 
     # Configuring document root for apache
     if node[:app_tomcat][:code][:root_war].empty?
