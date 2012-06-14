@@ -5,6 +5,10 @@ description      "Installs/Configures block device storage."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "12.1.0"
 
+supports "centos", "~> 5.8"
+supports "redhat", "~> 5.8"
+supports "ubuntu", "~> 10.04.0"
+
 depends "rightscale"
 
 recipe "block_device::default", "Sets up input dependencies for use by other cookbooks."

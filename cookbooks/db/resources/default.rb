@@ -48,7 +48,7 @@ attribute :db_name, :kind_of => String
 
 # = General Database Actions
 #
-# Below are the actions defined by by the db resource interface.
+# Below are the actions defined by the db resource interface.
 #
 
 # == Stop

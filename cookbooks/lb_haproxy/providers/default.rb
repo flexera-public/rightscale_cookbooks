@@ -16,19 +16,11 @@ action :install do
 
   # Create haproxy service.
   service "haproxy" do
-    supports :restart => true, :status => true, :start => true, :stop => true
+    supports :reload => true, :restart => true, :status => true, :start => true, :stop => true
     action :enable
   end
 
   # Install haproxy file depending on OS/platform.
-  template "/etc/init.d/haproxy" do
-    only_if { node[:platform] == "centos" || node[:platform] == "redhat" || node[:platform] == "fedora" }
-    source "haproxy.init.erb"
-    cookbook "lb_haproxy"
-    mode 0755
-    notifies :restart, resources(:service => "haproxy")
-  end
-
   template "/etc/default/haproxy" do
     only_if { node[:platform] == "debian" || node[:platform] == "ubuntu" }
     source "default_haproxy.erb"
@@ -82,6 +74,26 @@ action :install do
     )
   end
 
+  # Generate the haproxy config file.
+  execute "/home/lb/haproxy-cat.sh" do
+    user "haproxy"
+    group "haproxy"
+    umask 0077
+    notifies :start, resources(:service => "haproxy")
+  end
+
+  # Remove haproxy config file so we can symlink it.
+  file "/etc/haproxy/haproxy.cfg" do
+    backup false
+    not_if { ::File.symlink?("/etc/haproxy/haproxy.cfg") }
+    action :delete
+  end
+
+  # Symlink haproxy config.
+  link "/etc/haproxy/haproxy.cfg" do
+    to "/home/lb/rightscale_lb.cfg"
+  end
+
 end # action :install do
 
 action :add_vhost do
@@ -125,7 +137,7 @@ action :add_vhost do
     group "haproxy"
     umask 0077
     action :run
-    notifies :restart, resources(:service => "haproxy")
+    notifies :reload, resources(:service => "haproxy")
   end
 
   # Tag this server as a load balancer for vhost it will answer for so app servers can send requests to it.
@@ -141,7 +153,7 @@ action :attach do
 
   # Create haproxy service.
   service "haproxy" do
-    supports :restart => true, :status => true, :start => true, :stop => true
+    supports :reload => true, :restart => true, :status => true, :start => true, :stop => true
     action :nothing
   end
 
@@ -151,7 +163,7 @@ action :attach do
     group "haproxy"
     umask 0077
     action :nothing
-    notifies :restart, resources(:service => "haproxy")
+    notifies :reload, resources(:service => "haproxy")
   end
 
   # Create an individual server file for each vhost and notify the concatenation script if necessary.
@@ -203,7 +215,7 @@ action :detach do
 
   # Create haproxy service.
   service "haproxy" do
-    supports :restart => true, :status => true, :start => true, :stop => true
+    supports :reload => true, :restart => true, :status => true, :start => true, :stop => true
     action :nothing
   end
 
@@ -213,7 +225,7 @@ action :detach do
     group "haproxy"
     umask 0077
     action :nothing
-    notifies :restart, resources(:service => "haproxy")
+    notifies :reload, resources(:service => "haproxy")
   end
 
   # Delete the individual server file and notify the concatenation script if necessary.
