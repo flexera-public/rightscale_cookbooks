@@ -38,11 +38,13 @@ recipe "app::do_server_stop", "Runs application server stop sequence"
 
 recipe "app::do_server_reload", "Runs application server reload sequence"
 
-recipe "app::handle_loadbalancers_allow", "Opens up app ports to loadbalancer requesting access"
+recipe "app::handle_loadbalancers_allow", "Remote recipe run on app server from loadbalancer requesting access. DO NOT RUN."
+
+recipe "app::handle_loadbalancers_deny", "Remote recipe run on app server from loadbalancer revoking access. DO NOT RUN."
 
 attribute "app/port",
   :display_name => "Application Listen Port",
   :description => "The port that the application service is listening on. Example: 8000",
   :default => "8000",
-  :recipes => [ 'app::default', 'app::handle_loadbalancers_allow' ],
+  :recipes => [ 'app::default', 'app::handle_loadbalancers_allow', 'app::handle_loadbalancers_deny' ],
   :required => "optional"
