@@ -61,10 +61,10 @@ if cloud == 'ec2' || cloud == 'openstack'
                  when /xvde/
                    (node[:platform] == "redhat") ? "/dev/xvdj" : "/dev/xvdf"
                  end
-  
+
     # Generate fstab entry here
     fstab_entry = "/dev/vg-data/#{lvm_device}\t#{mount_point}\t#{filesystem_type}\t#{options}\t0 0"
-  
+
     # If mount point is enabled, mount it.
     # This will catch reboots.
     mount mount_point do
@@ -74,7 +74,7 @@ if cloud == 'ec2' || cloud == 'openstack'
       fstype filesystem_type
       only_if { File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$") }
     end
-  
+
     # if fstab & mtab entry exists, assume a reboot and skip to end
     #( File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$") ) && ( File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " ) )
     # /dev/sdb (/dev/sdf on redhat) is mounted on /mnt on the
@@ -86,7 +86,7 @@ if cloud == 'ec2' || cloud == 'openstack'
       action [:umount, :disable]
       not_if { ( File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$") ) && ( File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " ) ) }
     end
-  
+
     # Create the mount point
     directory mount_point do
       owner 'root'
@@ -95,21 +95,21 @@ if cloud == 'ec2' || cloud == 'openstack'
       recursive true
       not_if { ( File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$") ) && ( File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " ) ) }
     end
-  
+
     # Setup the LVM across all ephemeral devices
     ruby_block "LVM setup" do
       block do
         require 'rightscale_tools'
-  
+
         @api = RightScale::Tools::API.factory('1.0') if cloud == 'ec2'
-  
+
         def run_command(command, ignore_failure = false)
           Chef::Log.info "  Running: #{command}"
           Chef::Log.info `#{command}`
           STDOUT.flush
           raise "command exited non-zero! #{command}" unless ignore_failure || $?.success?
         end
-  
+
         # Get a list of ephemeral devices
         # Make sure to skip EBS volumes attached on boot
         my_devices = []
@@ -130,20 +130,20 @@ if cloud == 'ec2' || cloud == 'openstack'
           end
           dev_index += 1
         end
-  
+
         Chef::Log.info "  Found ephemeral devices: #{my_devices}"
-  
+
         my_devices.each do |device|
           run_command("pvcreate -ff -y #{device}")
         end
-  
+
         if my_devices.empty?
           Chef::Log.info "  No ephemeral devices attached"
         else
           run_command("vgcreate vg-data #{my_devices.join(' ')}")
           run_command("lvcreate vg-data -n #{lvm_device} -i #{my_devices.size} -I 256 -l 100%VG")
           run_command("mkfs.#{filesystem_type} /dev/vg-data/#{lvm_device}")
-  
+
           # Add the fstab_entry to fstab if it does not already exists.
           # Can exists if restart or stop/start
           fstab = File.readlines("/etc/fstab")
