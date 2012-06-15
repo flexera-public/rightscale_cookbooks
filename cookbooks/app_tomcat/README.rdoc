@@ -37,8 +37,14 @@ There are no known limitations.
 
 == DETAILS:
 === General
-The <tt>app_tomcat</tt> cookbook will install and setup tomcat application
-server, which can connect to MySQL or Postgres database servers.
+
+The <tt>app_tomcat</tt> cookbook will install and setup Apache web server with mod_jk module
+and Tomcat application server, with support of MySQL or Postgres database servers.
+Cookbook will create separate vhost config for Apache web server, which will allow
+Apache to handle static content, such as images and HTML documents,
+and forward all requests for dynamic content to Tomcat.
+
+
 
 <b>Apache</b>
 

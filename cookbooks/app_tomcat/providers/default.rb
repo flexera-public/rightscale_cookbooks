@@ -289,8 +289,6 @@ action :setup_vhost do
     only_if do ::File.exists?("/etc/httpd/conf.d/ssl.conf")  end
   end
 
-
-
   log "  Generating new apache ports.conf"
   app_add_listen_port port
 
