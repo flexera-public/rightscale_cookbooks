@@ -61,33 +61,19 @@ if cloud == 'ec2' || cloud == 'openstack'
   # Generate fstab entry here
   fstab_entry = "/dev/vg-data/#{lvm_device}\t#{mount_point}\t#{filesystem_type}\t#{options}\t0 0"
 
+  # If mount point is enabled, mount it.
+  # This will catch reboots.
+  mount mount_point do
+    ignore_failure true
+    fstype filesystem_type
+    only_if { File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$") }
+  end
+
   # if fstab & mtab entry exists, assume a reboot and skip to end
   if ( File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$") ) &&
      ( File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " ) )
     log "  Ephemeral entry already exists in fstab and mtab"
   else
-#    # Create init script to activate LVM on start for Ubuntu
-#    cookbook_file "/etc/init.d/lvm_activate" do
-#      only_if { node[:platform] == "ubuntu" }
-#      source "lvm_activate"
-#      mode 0744
-#    end
-#
-#    link "/etc/rcS.d/S32lvm_activate" do
-#      only_if { node[:platform] == "ubuntu" }
-#      to "/etc/init.d/lvm_activate"
-#    end
-#
-#    # Load device mapper modules for Ubuntu
-#    bash "Load device mapper" do
-#      only_if  { node[:platform] == "ubuntu" }
-#      flags "-ex"
-#      code <<-EOH
-#        modprobe dm_mod
-#        echo "dm_mod" >> /etc/modules
-#      EOH
-#    end
-
     # /dev/sdb (/dev/sdf on redhat) is mounted on /mnt on the
     # image by default as an ext3 filesystem. Umount this device
     # so it can be used in the LVM
