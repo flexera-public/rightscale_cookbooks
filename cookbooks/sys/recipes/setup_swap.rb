@@ -34,9 +34,9 @@ def clean_swap(swap_file)
     action :delete
   end
 
-end # def clean_swap(swap_file)
+end
 
-def create_swap(swap_file, swap_size)
+def activate_swap_file(swap_file, swap_size)
 
   # Make sure swapfile directory exists, create swapfile, set it as swap, and turn swap on.
   bash 'create swapfile' do
@@ -46,6 +46,13 @@ def create_swap(swap_file, swap_size)
       mkdir -p `dirname #{swap_file}`
       dd if=/dev/zero of=#{swap_file} bs=1M count=#{swap_size}
       chmod 600 #{swap_file}
+    eof
+  end
+
+  # set file as swap, and turn swap on.
+  bash 'activate swapfile' do
+    flags "-ex"
+    code <<-eof
       mkswap #{swap_file}
       swapon #{swap_file}
     eof
@@ -56,9 +63,10 @@ def create_swap(swap_file, swap_size)
     action :enable
     device "#{swap_file}"
     fstype 'swap'
+    options "noauto"
   end
 
-end # def create_swap(swap_file, swap_size)
+end
 
 # Sanitize user data 'swap_size'.
 if swap_size !~ /^\d*[.]?\d+$/
@@ -110,7 +118,7 @@ else
     end
 
     # Should now setup swap file.
-    create_swap(swap_file, swap_size)
+    activate_swap_file(swap_file, swap_size)
   end
 end
 
