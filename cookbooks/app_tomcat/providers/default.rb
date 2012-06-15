@@ -271,11 +271,23 @@ action :setup_vhost do
       apache_module mod
     end
 
+    apache_site "000-default" do
+      enable false
+    end
+
     # Apache fix on RHEL
     file "/etc/httpd/conf.d/README" do
       action :delete
       only_if do node[:platform] == "redhat" end
     end
+
+#    # Removing preinstalled apache ssl.conf on RHEL images as it conflicts with ports.conf of web_apache
+#    log "  Removing ssl.conf"
+#    file "/etc/httpd/conf.d/ssl.conf" do
+#      action :delete
+#      backup false
+#      only_if do ::File.exists?("/etc/httpd/conf.d/ssl.conf")  end
+#    end
 
   else
     log "  mod_jk already installed, skipping the recipe"
