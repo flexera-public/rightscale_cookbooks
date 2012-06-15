@@ -50,7 +50,7 @@ def activate_swap_file(swap_file, swap_size)
   end
 
   # set file as swap, and turn swap on.
-  bash 'create swapfile' do
+  bash 'activate swapfile' do
     flags "-ex"
     code <<-eof
       mkswap #{swap_file}
