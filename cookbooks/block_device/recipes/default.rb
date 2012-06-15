@@ -34,6 +34,8 @@ bash "Load kernel modules" do
     modprobe dm_mod
     modprobe dm_snapshot
   EOS
+  # These modules are compiled into the kernel on Ubuntu.
+  not_if { node[:platform] == "ubuntu" }
 end
 
 bash "Load xfs kernel module" do
