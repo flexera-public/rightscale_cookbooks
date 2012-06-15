@@ -75,8 +75,9 @@ if cloud == 'ec2' || cloud == 'openstack'
       only_if { File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$") }
     end
 
-    # if fstab & mtab entry exists, assume a reboot and skip to end
-    #( File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$") ) && ( File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " ) )
+    # From here on, not_if checking if entry in fstab and mtab
+
+    # If fstab & mtab entry exists, assume a reboot and skip to end
     # /dev/sdb (/dev/sdf on redhat) is mounted on /mnt on the
     # image by default as an ext3 filesystem. Umount this device
     # so it can be used in the LVM
