@@ -48,6 +48,7 @@ if cloud == 'ec2' || cloud == 'openstack'
   if current_mnt_device == nil
     log "  Skipping ephemeral drive setup for non-ephemeral image/instance size"
   else
+    # determine mnt_device from root_device name
     mnt_device = current_mnt_device ||
                  case root_device
                  when /sda/
