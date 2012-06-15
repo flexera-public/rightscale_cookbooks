@@ -1,33 +1,34 @@
 {
-  "maintainer": "RightScale, Inc.",
-  "suggestions": {
+  "dependencies": {
+    "logging": ">= 0.0.0"
   },
+  "name": "logging_syslog_ng",
   "maintainer_email": "support@rightscale.com",
-  "long_description": "= RightScale Logging_Syslog_ng Cookbook\n\n== DESCRIPTION:\n\n* Cookbook provides syslog-ng implementation of the logging LWRP.\n* Configures syslog-ng to log to a remote server, or default local file logging.\n\n== REQUIREMENTS:\n\n* Requires \"logging\" LightWeight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/logging\n* Requires a VM launched from a RightScale managed RightImage\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n== KNOWN LIMITATIONS:\n\n* Only supports configuration for remote server.\n* Does not replace or upgrade installed syslog-ng package.\n\n== SETUP/USAGE:\n\n* There are no standalone recipes in the current implementation of this cookbook.\n  The syslog-ng provider is setup by the logging:default recipe based on the\n  logging package installed.\n\n== DETAILS:\n\n=== General:\n\n<tt>logging_syslog_ng</tt> cookbook does the minimal configuration for remote logging setup.\nAdditional features are TBD.\n\n= LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to the\nRightScale Terms of Service available at http://www.rightscale.com/terms.php and,\nif applicable, other agreements such as a RightScale Master Subscription Agreement.\n",
-  "description": "Enable instance Monitoring in the RightScale dashboard.",
-  "conflicting": {
-  },
-  "platforms": {
+  "attributes": {
   },
   "license": "Copyright RightScale, Inc. All rights reserved.",
-  "providing": {
+  "suggestions": {
+  },
+  "platforms": {
+    "centos": "~> 5.8",
+    "ubuntu": "~> 10.04.0",
+    "redhat": "~> 5.8"
+  },
+  "maintainer": "RightScale, Inc.",
+  "long_description": "= RightScale Logging_Syslog_ng Cookbook\n\n== DESCRIPTION:\n\n* Cookbook provides syslog-ng implementation of the logging LWRP.\n* Configures syslog-ng to log to a remote server, or default local file logging.\n\n== REQUIREMENTS:\n\n* Requires \"logging\" Light Weight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/logging\n* Requires a VM launched from a RightScale managed RightImage\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n== KNOWN LIMITATIONS:\n\n* Only supports configuration for remote server.\n* Does not replace or upgrade installed syslog-ng package.\n\n== SETUP/USAGE:\n\n* There are no standalone recipes in the current implementation of this cookbook.\n  The syslog-ng provider is setup by the logging:default recipe based on the\n  logging package installed.\n\n== DETAILS:\n\n=== General:\n\n<tt>logging_syslog_ng</tt> cookbook does the minimal configuration for remote logging setup.\nAdditional features are TBD.\n\n= LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to the\nRightScale Terms of Service available at http://www.rightscale.com/terms.php and,\nif applicable, other agreements such as a RightScale Master Subscription Agreement.\n",
+  "version": "12.1.0",
+  "recommendations": {
   },
   "recipes": {
     "logging_syslog_ng::default": "Set syslog_ng logging provider"
   },
-  "attributes": {
+  "groupings": {
+  },
+  "conflicting": {
   },
   "replacing": {
   },
-  "dependencies": {
-    "logging": [
-
-    ]
-  },
-  "name": "logging_syslog_ng",
-  "groupings": {
-  },
-  "version": "12.1.0",
-  "recommendations": {
+  "description": "Enable instance Monitoring in the RightScale dashboard.",
+  "providing": {
   }
 }

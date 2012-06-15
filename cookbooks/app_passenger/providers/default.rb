@@ -112,16 +112,8 @@ action :setup_vhost do
     only_if do node[:platform] == "redhat" end
   end
 
-
-  log "  Generating new apache ports.conf"
-  node[:apache][:listen_ports] = port.to_s
-
-  # Generation of new apache ports.conf
-  template "#{node[:apache][:dir]}/ports.conf" do
-    cookbook "apache2"
-    source "ports.conf.erb"
-    variables :apache_listen_ports => node[:apache][:listen_ports]
-  end
+  # Adds php port to list of ports for webserver to listen on
+  app_add_listen_port port.to_s
 
   log "  Unlinking default apache vhost"
   apache_site "000-default" do

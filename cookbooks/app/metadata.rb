@@ -5,6 +5,10 @@ description      "Common utilities for RightScale managed application servers"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "12.1.0"
 
+supports "centos", "~> 5.8"
+supports "redhat", "~> 5.8"
+supports "ubuntu", "~> 10.04.0"
+
 depends "sys_firewall"
 depends "rightscale"
 depends "repo"
@@ -38,9 +42,13 @@ recipe "app::do_server_stop", "Runs application server stop sequence"
 
 recipe "app::do_server_reload", "Runs application server reload sequence"
 
+recipe "app::handle_loadbalancers_allow", "Remote recipe run on app server from loadbalancer requesting access. DO NOT RUN."
+
+recipe "app::handle_loadbalancers_deny", "Remote recipe run on app server from loadbalancer revoking access. DO NOT RUN."
+
 attribute "app/port",
   :display_name => "Application Listen Port",
   :description => "The port that the application service is listening on. Example: 8000",
   :default => "8000",
-  :recipes => [ 'app::default' ],
+  :recipes => [ 'app::default', 'app::handle_loadbalancers_allow', 'app::handle_loadbalancers_deny' ],
   :required => "optional"
