@@ -64,14 +64,14 @@ if cloud == 'ec2' || cloud == 'openstack'
   # if fstab & mtab entry exists, assume a reboot and skip to end
   if ( File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$") ) &&
      ( File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " ) )
-    log "  Ephemeral entry already exists in fstab"
+    log "  Ephemeral entry already exists in fstab and mtab"
   else
-    # Create init script to activate LVM on start for Ubuntu
-    cookbook_file "/etc/init.d/lvm_activate" do
-      only_if { node[:platform] == "ubuntu" }
-      source "lvm_activate"
-      mode 0744
-    end
+#    # Create init script to activate LVM on start for Ubuntu
+#    cookbook_file "/etc/init.d/lvm_activate" do
+#      only_if { node[:platform] == "ubuntu" }
+#      source "lvm_activate"
+#      mode 0744
+#    end
 #
 #    link "/etc/rcS.d/S32lvm_activate" do
 #      only_if { node[:platform] == "ubuntu" }
@@ -154,16 +154,20 @@ if cloud == 'ec2' || cloud == 'openstack'
           run_command("lvcreate vg-data -n #{lvm_device} -i #{my_devices.size} -I 256 -l 100%VG")
           run_command("mkfs.#{filesystem_type} /dev/vg-data/#{lvm_device}")
 
-          # Add the mount to fstab
+          # Add the fstab_entry to fstab if it does not already exists.
+          # Can exists if restart or stop/start
           fstab = File.readlines("/etc/fstab")
-          File.open("/etc/fstab", "w") do |f|
-            fstab.each do |line|
-              f.puts(line)
+          if fstab.include?(fstab_entry + "\n")
+            Chef::Log.info "  Device already added to /etc/fstab: #{fstab_entry}"
+          else
+            File.open("/etc/fstab", "w") do |f|
+              fstab.each do |line|
+                f.puts(line)
+              end
+              Chef::Log.info "  ADDING DEVICE /etc/fstab: #{fstab_entry}"
+              f.puts(fstab_entry)
             end
-            Chef::Log.info "  ADDING DEVICE /etc/fstab: #{fstab_entry}"
-            f.puts(fstab_entry)
           end
-
           run_command("mount /dev/vg-data/#{lvm_device}")
           Chef::Log.info "Done setting up LVM on ephemeral drives"
         end
