@@ -161,8 +161,8 @@ action :setup_vhost do
     )
   end
 
-  # Define internal port for tomcat it must be different then apache ports
-  tomcat_port = port+1
+  # Define internal port for tomcat it must be different than apache ports
+  tomcat_port = port + 1
   log "  Creating server.xml"
   template "/etc/tomcat6/server.xml" do
     action :create
@@ -276,10 +276,10 @@ action :setup_vhost do
   end
 
   # Apache fix on RHEL
-  file "/etc/httpd/conf.d/README" do
-    action :delete
-    only_if do node[:platform] == "redhat" end
-  end
+  #file "/etc/httpd/conf.d/README" do
+  #  action :delete
+  #  only_if do node[:platform] == "redhat" end
+  #end
 
   # Removing preinstalled apache ssl.conf on RHEL images as it conflicts with ports.conf of web_apache
   log "  Removing ssl.conf"
