@@ -345,8 +345,6 @@ action :enable_replication do
   ruby_block "reconfigure_replication" do
     only_if { current_restore_process == :no_restore }
     block do
-      master_info = RightScale::Database::PostgreSQL::Helper.load_master_info_file(node)
-      newmaster_host = node[:db][:current_master_ip]
       RightScale::Database::PostgreSQL::Helper.reconfigure_replication_info(newmaster_host, rep_user, rep_pass, app_name)
     end
   end
