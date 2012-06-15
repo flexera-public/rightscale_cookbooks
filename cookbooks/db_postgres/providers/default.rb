@@ -104,7 +104,7 @@ action :post_backup_cleanup do
 end
 
 action :set_privileges do
-  if ::File.exist?("#{node[:db][:datadir]}/recovery.conf")
+  if ::File.exist?("#{node[:db_postgres][:datadir]}/recovery.conf")
     Chef::Log.info("no need to rerun on reboot for slave")
   else
     priv = new_resource.privilege
@@ -353,7 +353,7 @@ action :enable_replication do
     not_if { current_restore_process == :no_restore }
     block do
       Chef::Log.info "Wiping existing runtime config files"
-      runtime_config_file = Dir.glob("#{node[:db][:datadir]}/pg_xlog/*")
+      runtime_config_file = Dir.glob("#{node[:db_postgres][:datadir]}/pg_xlog/*")
       FileUtils.rm_rf(runtime_config_file)
     end
   end
