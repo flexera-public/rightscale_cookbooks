@@ -43,9 +43,31 @@ current_mnt_device = current_mnt_device ? current_mnt_device.split[0] : nil
 # Only EC2 and openstack is currently supported
 if cloud == 'ec2' || cloud == 'openstack'
 
+  # Get a list of ephemeral devices
+  # Make sure to skip EBS volumes attached on boot
+  @api = RightScale::Tools::API.factory('1.0') if cloud == 'ec2'
+  my_devices = []
+  dev_index = 0
+  loop do
+    if node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
+      device = node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
+      device = '/dev/' + device if device !~ /^\/dev\//
+      device = @api.unmap_device_for_ec2(device) if cloud == 'ec2'
+      # verify that device is actually on the instance and is a blockSpecial
+      if ( File.exists?(device) && File.ftype(device) == "blockSpecial" )
+        my_devices << device
+      else
+        log "  WARNING: Cannot use device #{device} - skipping"
+      end
+    else
+      break
+    end
+    dev_index += 1
+  end
+
   # Check if /mnt is actually on a seperate device.
   # ec2 instances and images that do now have ephemeral will be caught by this, eg: t1.micro and HVM
-  if current_mnt_device == nil
+  if my_devices.empty?
     log "  Skipping ephemeral drive setup for non-ephemeral image/instance size"
   else
     # determine mnt_device from root_device name
@@ -103,8 +125,6 @@ if cloud == 'ec2' || cloud == 'openstack'
       block do
         require 'rightscale_tools'
 
-        @api = RightScale::Tools::API.factory('1.0') if cloud == 'ec2'
-
         def run_command(command, ignore_failure = false)
           Chef::Log.info "  Running: #{command}"
           Chef::Log.info `#{command}`
@@ -112,30 +132,8 @@ if cloud == 'ec2' || cloud == 'openstack'
           raise "command exited non-zero! #{command}" unless ignore_failure || $?.success?
         end
 
-        # Get a list of ephemeral devices
-        # Make sure to skip EBS volumes attached on boot
-        my_devices = []
-        dev_index = 0
-        loop do
-          if node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
-            device = node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
-            device = '/dev/' + device if device !~ /^\/dev\//
-            device = @api.unmap_device_for_ec2(device) if cloud == 'ec2'
-            # verify that device is actually on the instance and is a blockSpecial
-            if ( File.exists?(device) && File.ftype(device) == "blockSpecial" )
-              my_devices << device
-            else
-              Chef::Log.warn "WARNING: Cannot use device #{device} - skipping"
-            end
-          else
-            break
-          end
-          dev_index += 1
-        end
-
-        Chef::Log.info "  Found ephemeral devices: #{my_devices}"
-
         my_devices.each do |device|
+          Chef::Log.info "  Updating device #{device}"
           run_command("pvcreate -ff -y #{device}")
         end
 
