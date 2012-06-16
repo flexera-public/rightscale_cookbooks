@@ -8,6 +8,7 @@
 rightscale_marker :begin
 
 require 'fileutils'
+require 'rightscale_tools'
 
 package "lvm2"
 
@@ -123,8 +124,6 @@ if cloud == 'ec2' || cloud == 'openstack'
     # Setup the LVM across all ephemeral devices
     ruby_block "LVM setup" do
       block do
-        require 'rightscale_tools'
-
         def run_command(command, ignore_failure = false)
           Chef::Log.info "  Running: #{command}"
           Chef::Log.info `#{command}`
