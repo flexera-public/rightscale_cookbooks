@@ -216,7 +216,7 @@ action :install_server do
 
   # Stop mysql service
   db node[:db][:data_dir] do
-    action [ :stop ]
+    action :stop
     persist false
   end
 
@@ -268,7 +268,6 @@ action :install_server do
     recursive true
   end
 
-  # Setup my.cnf
   # Setup my.cnf
   db_mysql_set_mycnf "setup_mycnf" do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
@@ -336,8 +335,20 @@ action :install_server do
   # Start MySQL
   log "  Server installed.  Starting MySQL"
   db node[:db][:data_dir] do
-    action [ :start ]
+    action :start
     persist false
+  end
+
+  # Verify mysql has started before completing this action.
+  # Allows mysql to start before running other commands that would fail
+  # unless mysql has completed starting.
+  bash "verifying mysql running" do
+    retries 15
+    retry_delay 2
+    flags "-ex"
+    code <<-EOH
+      mysql -e "SHOW STATUS LIKE 'uptime'"
+    EOH
   end
 
 end
