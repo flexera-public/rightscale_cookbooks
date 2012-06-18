@@ -6,6 +6,7 @@ long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "12.1.0"
 
 supports "centos", "~> 5.8"
+supports "centos", "~> 6.2"
 supports "redhat", "~> 5.8"
 supports "ubuntu", "~> 10.04.0"
 
@@ -56,6 +57,7 @@ ros_clouds = [
   "s3",
   "cloudfiles",
   "cloudfilesuk",
+  "google",
   "swift",
   "SoftLayer_Dallas",
   "SoftLayer_Singapore",
@@ -119,7 +121,7 @@ attribute "block_device/devices/default/backup/secondary/cred/secret",
 
 attribute "block_device/devices/default/backup/secondary/cloud",
   :display_name => "Secondary Backup Storage Cloud (default)",
-  :description => "The secondary backup storage cloud. Specify 'S3' for Amazon, and 'cloudfiles' for Rackspace.",
+  :description => "The secondary backup storage cloud. Specify 'S3' for Amazon, and 'cloudfiles' for Rackspace.",#TODO update for more clouds
   :required => "recommended",
   :choice => ros_clouds,
   :default => "",
