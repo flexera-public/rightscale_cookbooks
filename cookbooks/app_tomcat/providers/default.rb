@@ -161,6 +161,8 @@ action :setup_vhost do
     )
   end
 
+  # Define internal port for tomcat it must be different than apache ports
+  tomcat_port = port + 1
   log "  Creating server.xml"
   template "/etc/tomcat6/server.xml" do
     action :create
@@ -171,7 +173,7 @@ action :setup_vhost do
     cookbook 'app_tomcat'
     variables(
             :doc_root => app_root,
-            :app_port => port.to_s
+            :app_port => tomcat_port.to_s
           )
   end
 
@@ -269,43 +271,46 @@ action :setup_vhost do
       apache_module mod
     end
 
-    # Apache fix on RHEL
-    file "/etc/httpd/conf.d/README" do
-      action :delete
-      only_if do node[:platform] == "redhat" end
-    end
-
-    log "  Generating new apache ports.conf"
-    app_add_listen_port "80"
-
-    # Configuring document root for apache
-    if node[:app_tomcat][:code][:root_war].empty?
-      log "  root_war not defined, setting apache docroot to #{app_root}"
-      apache_docroot = "#{app_root}"
-    else
-      log "  root_war defined, setting apache docroot to #{app_root}/ROOT"
-      apache_docroot = "#{app_root}/ROOT"
-    end
-
-    log "  Configuring apache vhost for tomcat"
-    web_app "http-#{port}-#{node[:web_apache][:server_name]}.vhost" do
-      template                   'apache_mod_jk_vhost.erb'
-      cookbook                   'app_tomcat'
-      docroot                    apache_docroot
-      vhost_port                 port.to_s
-      server_name                node[:web_apache][:server_name]
-      apache_log_dir             node[:apache][:log_dir]
-    end
-
-    # Apache server restart
-    service "apache2" do
-      action :restart
-      persist false
-    end
-
   else
     log "  mod_jk already installed, skipping the recipe"
   end
+
+  # Removing preinstalled apache ssl.conf on RHEL images as it conflicts with ports.conf of web_apache
+  log "  Removing ssl.conf"
+  file "/etc/httpd/conf.d/ssl.conf" do
+    action :delete
+    backup false
+    only_if do ::File.exists?("/etc/httpd/conf.d/ssl.conf")  end
+  end
+
+  log "  Generating new apache ports.conf"
+  app_add_listen_port port
+
+  # Configuring document root for apache
+  if node[:app_tomcat][:code][:root_war].empty?
+    log "  root_war not defined, setting apache docroot to #{app_root}"
+    apache_docroot = "#{app_root}"
+  else
+    log "  root_war defined, setting apache docroot to #{app_root}/ROOT"
+    apache_docroot = "#{app_root}/ROOT"
+  end
+
+  log "  Configuring apache vhost for tomcat"
+  web_app "http-#{port}-#{node[:web_apache][:server_name]}.vhost" do
+    template                   'apache_mod_jk_vhost.erb'
+    cookbook                   'app_tomcat'
+    docroot                    apache_docroot
+    vhost_port                 port.to_s
+    server_name                node[:web_apache][:server_name]
+    apache_log_dir             node[:apache][:log_dir]
+  end
+
+  # Apache server restart
+  service "apache2" do
+    action :restart
+    persist false
+  end
+
 
 end
 
