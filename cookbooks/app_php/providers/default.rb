@@ -14,7 +14,6 @@ action :stop do
   end
 end
 
-
 # Start apache
 action :start do
   log "  Running start sequence"
@@ -36,7 +35,7 @@ end
 # Restart apache
 action :restart do
   action_stop
-     sleep 5
+  sleep 5
   action_start
 end
 
@@ -44,16 +43,20 @@ end
 action :install do
   # Installing required packages
   packages = new_resource.packages
-  log "  Packages which will be installed #{packages}"
+  log "  Packages which will be installed: #{packages}"
 
   packages.each do |p|
     package p
   end
+
   # Installing user-specified additional php modules
+  log "  Modules which will be installed: #{node[:app_php][:modules_list]}"
   node[:app_php][:modules_list].each do |p|
     package p
   end
+
   # Installing php modules dependencies
+  log "  Module dependencies which will be installed: #{node[:app_php][:module_dependencies]}"
   node[:app_php][:module_dependencies].each do |mod|
     apache_module mod
   end
@@ -98,9 +101,8 @@ action :setup_db_connection do
   end
 
   db_adapter = node[:app_php][:db_adapter]
-  # runs only on db_adapter selection
+  # Tells selected db_adapter to fill in it's specific connection template
   if db_adapter == "mysql"
-    # Tell MySQL to fill in our connection template
     db_mysql_connect_app ::File.join(project_root, "config", "db.php") do
       template "db.php.erb"
       cookbook "app_php"
@@ -109,7 +111,6 @@ action :setup_db_connection do
       group node[:app_php][:app_user]
     end
   elsif db_adapter == "postgresql"
-    # Tell PostgreSQL to fill in our connection template
     db_postgres_connect_app ::File.join(project_root, "config", "db.php") do
       template "db.php.erb"
       cookbook "app_php"
@@ -118,7 +119,7 @@ action :setup_db_connection do
       group node[:app_php][:app_user]
     end
   else
-    raise "Unrecognized database adapter #{node[:app_php][:db_adapter]}, exiting "
+    raise "Unrecognized database adapter #{node[:app_php][:db_adapter]}, exiting"
   end
 end
 
@@ -129,7 +130,6 @@ action :code_update do
 
   log "  Starting code update sequence"
   log "  Current project doc root is set to #{deploy_dir}"
-
   log "  Downloading project repo"
 
   # Calling "repo" LWRP to download remote project repository
