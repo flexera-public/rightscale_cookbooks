@@ -9,7 +9,7 @@
 * Requires "app" Light Weight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
   or your own implementation of "app" resource. See "app" cookbook README for details.
 * Requires a VM launched from a RightScale managed RightImage
-* Tested on CentOS 5.6 RightImage
+* Tested on CentOS 5.8 RightImage
 * Tested on Ubuntu 10.04 RightImage
 * Tested on RedHat 5.8 RightImage
 
@@ -41,7 +41,7 @@ For more info see: http://support.rightscale.com/03-Tutorials/PHP_Application_Se
 
 == DETAILS:
 === General
-<tt>app_php</tt> cookbook will help you to install and setup Apache + Zend Engine PHP application server, which can be able to connect, to MySQL or Postgres database server.
+<tt>app_php</tt> cookbook will help you to install and setup Apache + Zend Engine PHP application server, which can connect to a MySQL or Postgres database server.
 
 <b>Apache</b>
 Server version: Apache/2.2.3
@@ -64,7 +64,7 @@ The input type should be set to Array only.
 === Attributes:
 These are settings used in recipes and templates. Default values are noted.
 
-Note: Only "internal" cookbook attributes are described here. Descriptions of attributes which have inputs you can find in metadata.rb cookbook file.
+Note: Only "internal" cookbook attributes are described here. Descriptions of attributes which have inputs can be found in the metadata.rb cookbook file.
 
 ====== Platform dependent
 * <tt>node[:php][:module_dependencies]</tt> - additional packages required for php server install
@@ -84,7 +84,7 @@ none
 
 === LWRPs:
 
-<tt>app_php</tt> Light Weight provider is defined in providers/default.rb file, it contains source for
+<tt>app_php</tt> Light Weight provider is defined in providers/default.rb file, it contains source for the following actions:
 
 * <tt>:install</tt>
 
@@ -101,8 +101,6 @@ none
 * <tt>:setup_db_connection</tt>
 
 * <tt>:setup_monitoring</tt>
-
-actions.
 
 For more info about these actions please see <tt>app</tt> cookbook README.
 
