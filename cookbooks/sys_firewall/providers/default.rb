@@ -49,7 +49,7 @@ action :update do
       end
     end
 
-    ruby_block 'Register all currently active app servers' do
+    ruby_block 'Adding firewall rule' do
       block do
         ip_list = []
 
