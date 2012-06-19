@@ -24,7 +24,7 @@ attribute "app_php",
 
 attribute "app_php/modules_list",
   :display_name => "PHP module packages",
-  :description => "An optional list of php module packages to install.  Accepts an array of package names.  When using CentOS, package names are prefixed with php53u instead of php.  To see a list of available php modules on CentOS, run 'yum search php53u' on the server.  Example: php53u-mysql, php53u-pecl-memcache",
+  :description => "An optional list of php module packages to install. Accepts an array of package names. When using CentOS, package names are prefixed with php53u instead of php. To see a list of available php modules on CentOS, run 'yum search php53u' on the server. Example: php53u-mysql, php53u-pecl-memcache",
   :required => "optional",
   :type => "array",
   :recipes => ["app_php::default"]
@@ -37,7 +37,7 @@ attribute "app_php/db_schema_name",
 
 attribute "app_php/db_adapter",
   :display_name => "Database adapter for application",
-  :description => "Enter database adapter which will be used to connect to the database. Example: mysql",
+  :description => "Enter the database adapter which will be used to connect to the database. Example: mysql",
   :default => "mysql",
   :choice => [ "mysql", "postgresql" ],
   :recipes => ["app_php::default"]
