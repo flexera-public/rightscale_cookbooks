@@ -9,6 +9,7 @@ rightscale_marker :begin
 
 require 'fileutils'
 require 'rightscale_tools'
+require 'pathname'
 
 package "lvm2"
 
@@ -46,7 +47,7 @@ if cloud == 'ec2' || cloud == 'openstack'
 
   # Get a list of ephemeral devices
   # Make sure to skip EBS volumes attached on boot
-  @api = RightScale::Tools::API.factory('1.0') if cloud == 'ec2'
+  @api = RightScale::Tools::API.factory('1.0', {:cloud => cloud}) if cloud == 'ec2'
   my_devices = []
   dev_index = 0
   loop do
@@ -54,6 +55,9 @@ if cloud == 'ec2' || cloud == 'openstack'
       device = node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
       device = '/dev/' + device if device !~ /^\/dev\//
       device = @api.unmap_device_for_ec2(device) if cloud == 'ec2'
+      # for HVM: /dev/xvdb is symlinked to /dev/sda, though it shows up as
+      # /dev/xvdb in /proc/partitions.  unmap function returns that
+      device = Pathname.new(device).realpath.to_s if File.exists?(device)
       # verify that device is actually on the instance and is a blockSpecial
       if ( File.exists?(device) && File.ftype(device) == "blockSpecial" )
         my_devices << device
