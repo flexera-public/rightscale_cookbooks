@@ -71,6 +71,7 @@ ServerTemplate built on this cookbook can be combined in two modes:
 
 1 - For apps with bundler support, add the "install_required app gems" recipe, and
 "run_custom_rails_commands" for migration commands
+
 2 - For apps without bundler support, add "install_custom_gems" recipe, and
 "run_custom_rails_commands" for migration commands
 
@@ -119,7 +120,7 @@ none
 
 === LWRPs:
 
-<tt>app_passenger</tt> Lightweight provider is defined in the providers/default.rb file, it contains source for
+<tt>app_passenger</tt> Lightweight provider is defined in the providers/default.rb file, it contains source for the following actions:
 
 * <tt>:install</tt>
 
