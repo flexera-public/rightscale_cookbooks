@@ -169,7 +169,7 @@ end.each do |device, number|
 
   attribute "block_device/devices/#{device}/backup/lineage",
     :display_name => "Backup Lineage (#{number})",
-    :description => "The prefix or container name that will be used to name/locate the primary backup.",
+    :description => "The name associated with your primary and secondary database backups. It's used to associate them with your database environment for maintenance, restore, and replication purposes. Backup snapshots will automatically be tagged with this value (e.g. rs_backup:lineage=mysqlbackup). Backups are identified by their lineage name. Note: For servers running on Rackspace, this value also indicates the Cloud Files container to use for storing primary backups. If a Cloud Files container with this name does not already exist, one will automatically be created.",
     :required => device != 'device2' ? 'required' : 'optional',
     :recipes => backup_recipes + restore_recipes
 
