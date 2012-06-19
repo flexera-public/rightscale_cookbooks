@@ -62,11 +62,11 @@ systems using ServerTemplates on the RightScale Cloud Management Platform.
 
 [app]
  RightScale application server management cookbook. This cookbook contains
- recipes that generally applicable to all application.
+ recipes that are generally applicable to all applications.
 
 [app_passenger]
- Cookbook provides apache+passenger implementation of the app LWRP. Installs and
- configures, apache+passenger application server.
+ Cookbook provides an Apache + Passenger implementation of the 'app' Lightweight Resource Provider (LWRP). Installs and
+ configures an Apache + Passenger application server.
 
 [app_php]
  Cookbook provides Apache + PHP implementation of the app LWRP. Installs and
@@ -111,7 +111,7 @@ systems using ServerTemplates on the RightScale Cloud Management Platform.
 
 [repo]
  This cookbook provides abstract 'repo' resource for managing code download from
- Git, Subversion or Remote Object Store code repositories.
+ Git, Subversion or Remote Object Store (ROS) code repositories.
 
 [repo_git]
  Provides the Git implementation of the 'repo' resource to manage source code
@@ -119,7 +119,7 @@ systems using ServerTemplates on the RightScale Cloud Management Platform.
 
 [repo_ros]
  Provides the Remote Object Store implementation of the 'repo' resource to
- manage source code download from Remote Object Store repositories such as
+ manage the downloading of source code from Remote Object Store repositories such as
  Amazon S3, Rackspace Cloud Files, and OpenStack Swift.
 
 [repo_svn]
@@ -132,7 +132,7 @@ systems using ServerTemplates on the RightScale Cloud Management Platform.
 [sys_dns]
  This cookbook provides a set of dynamic DNS recipes used by RightScale
  ServerTemplates including Database Manager ServerTemplates. Cookbook currently
- supports DNSMadeEasy, DynDns, and Amazon Route53 DNS service providers.
+ supports DNSMadeEasy, DynDns, CloudDNS, and Amazon Route53 DNS service providers.
 
 [sys_firewall]
  RightScale firewall cookbook. This cookbook provides a LWRP for managing access
@@ -223,8 +223,8 @@ the <tt>db_do_backup</tt> definition that uses a set of resources from the
 
 In addition to housing reusable recipe snippets used within the cookbook, we also
 use definitions as external methods that other cookbooks can call.  For example,
-rightscale_logrotate_app which allows other cookbooks to add their logrotate
-configurations while deferring details of logrotate to the rightscale cookbook.
+<tt>rightscale_logrotate_app</tt> which allows other cookbooks to add their logrotate
+configurations while deferring details of logrotate to the <tt>rightscale</tt> cookbook.
 
 In the RightScale cookbooks, definitions are named with the cookbook name as a
 prefix so you can easily find which cookbook a definition comes from (for
