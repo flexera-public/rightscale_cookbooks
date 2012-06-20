@@ -27,7 +27,7 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 == SETUP:
 
-* Place logging::default recipe into your runlist to setup the logging resource. When
+* Place <tt>logging::default</tt> recipe into your runlist to setup the logging resource. When
   using a RightScale ServerTemplate, this will also automatically configure
   logging service provider (rsyslog/syslog-ng)
 
@@ -36,12 +36,12 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 == USAGE:
 
-* For local logging only.  Set the input logging/remote_server to ignore.  The default
-  configuration installed will be used.
+* Local Logging - Set the 'logging/remote_server' input to 'ignore' to use 
+  the default configuration installed.
 
-* For remote logging.  Set the input logging/remote_server to the FQDN or IP of your
-  logging server.  The default configuration will be used with the remote logging
-  configuration appended.
+* Remote Logging - Set the 'logging/remote_server' input to the FQDN or IP of the
+  desgnated remote logging server to use the default configuration with the remote
+  logging configuration appended.
 
 == DETAILS:
 
@@ -50,10 +50,10 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 The 'logging' interface is defined by a Lightweight Resource, which can be found in
 the <tt>resources/default.rb</tt> file.
 
-This cookbook is intended as a framework for logging providers.  In its current
-implementation it supports the minimum configuration for rsyslog and syslog-ng.
+This cookbook is intended as a framework for logging providers. The current
+implementation supports the minimum configuration for rsyslog and syslog-ng.
 
-This cookbook does not modify the installed logging provider.
+Note: This cookbook does not modify the installed logging provider.
 
 === Providers:
 
@@ -62,7 +62,8 @@ The current implementation does not support providers other than rsyslog and sys
 === Custom Configuration:
 
 By using an override cookbook the default configuration can be customized by replacing
-the default configuration file template for the provider.
+the default configuration file template for the provider. For more information, 
+please see: {Override Chef Cookbooks}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Override_Chef_Cookbooks].
 
 = LICENSE:
 
