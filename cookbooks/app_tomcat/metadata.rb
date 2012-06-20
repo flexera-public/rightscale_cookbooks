@@ -84,7 +84,7 @@ attribute "app_tomcat/db_adapter",
   :recipes => ["app_tomcat::default"]
 
 attribute "app_tomcat/datasource_name",
-  :display_name => "Container datasource  name",
+  :display_name => "Container datasource name",
   :description => "This name is used to setup the database connection with the application server.  You should set the attribute if your application is compiled to use a different datasource name.  Example: jdbc/MyConnDB",
   :required => "optional",
   :default => "jdbc/ConnDB",
