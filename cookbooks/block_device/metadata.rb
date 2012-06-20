@@ -270,7 +270,7 @@ end
 
 attribute "block_device/terminate_safety",
   :display_name => "Terminate Safety",
-  :description => "Prevents the accidental running of the block_device::do_teminate_server recipe. The recipe will only run if the input variable is overwritten and set to \"off\".",
+  :description => "Prevents the accidental running of the block_device::do_teminate_server recipe. The recipe will only run if the input variable is overridden and set to \"off\".",
   :type => "string",
   :required => "recommended",
   :choice => ["Override the dropdown and set to \"off\" to really run this recipe"],
@@ -279,7 +279,7 @@ attribute "block_device/terminate_safety",
 
 attribute "block_device/force_safety",
   :display_name => "Force Reset Safety",
-  :description => "Prevents the accidental running of the block_device::do_force_reset recipe. The recipe will only run if the input variable is overwritten and set to \"off\".",
+  :description => "Prevents the accidental running of the block_device::do_force_reset recipe. The recipe will only run if the input variable is overridden and set to \"off\".",
   :type => "string",
   :required => "recommended",
   :choice => ["Override the dropdown and set to \"off\" to really run this recipe"],
