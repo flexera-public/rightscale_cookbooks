@@ -51,7 +51,7 @@ as parameters to the remote recipe.
 ==== handle_attach recipes
 
 This recipe is used by the load balancer servers to reconfigure HAProxy and
-restart it, if necessary, when an application server requests to be attached. It
+reload it, if necessary, when an application server requests to be attached. It
 uses the IP address and instance UUID parameters it receives from the
 'do_attach_request' recipe called on the application server to construct an
 individual configuration file in the haproxy.d directory with the instance UUID
@@ -73,7 +73,7 @@ as parameters to the remote recipe.
 ==== handle_detach recipes
 
 This recipe is used by the load balancer servers to reconfigure HAProxy and
-restart it, if necessary, when an application server requests to be detached. It
+reload it, if necessary, when an application server requests to be detached. It
 uses the instance UUID parameter it receives from the 'do_attach_request' recipe
 called on the application server to delete the corresponding file from the
 haproxy.d directory which has the instance UUID as its file name. If the file
