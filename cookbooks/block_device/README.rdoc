@@ -65,6 +65,11 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 Mix and match recipes to get the right combination for your deployments.
 
+=== Delete Volumes and Terminate
+
+1. Delete the attached volumes and terminate the server.  Note: if this script
+   is not used to terminate the server the volumes will persist.
+
 == DETAILS:
 
 Multiple block device support is controlled by the

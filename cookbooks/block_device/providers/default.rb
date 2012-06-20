@@ -109,30 +109,30 @@ end
 # Enable cron backups
 action :backup_schedule_enable do
 
-    # Verify parameters
-    minute = new_resource.cron_backup_minute
-    raise "ERROR: missing cron_backup_minute value." unless minute
-    hour = new_resource.cron_backup_hour
-    raise "ERROR: missing cron_backup_hour value." unless hour
+  # Verify parameters
+  minute = new_resource.cron_backup_minute
+  raise "ERROR: missing cron_backup_minute value." unless minute
+  hour = new_resource.cron_backup_hour
+  raise "ERROR: missing cron_backup_hour value." unless hour
 
-    # Verify backup params used in cron recipe
-    lineage = new_resource.lineage
-    raise "ERROR: 'Backup Lineage' required for scheduled process" if lineage.empty?
+  # Verify backup params used in cron recipe
+  lineage = new_resource.lineage
+  raise "ERROR: 'Backup Lineage' required for scheduled process" if lineage.empty?
 
-    # Select recipe to schedule
-    recipe = new_resource.cron_backup_recipe
+  # Select recipe to schedule
+  recipe = new_resource.cron_backup_recipe
 
-    puts "Scheduling #{recipe} to run via cron job: Minute:#{minute} Hour:#{hour}"
+  puts "Scheduling #{recipe} to run via cron job: Minute:#{minute} Hour:#{hour}"
 
-    # Attributes for schedule will default to '*' if not provided so only
-    # specify the schedule attributes if input is not an empty string.
-    cron "RightScale remote_recipe #{recipe}" do
-      minute "#{minute}" unless minute.empty?
-      hour "#{hour}" unless hour.empty?
-      user "root"
-      command "rs_run_recipe -n \"#{recipe}\" 2>&1 > /var/log/rightscale_tools_cron_backup.log"
-      action :create
-    end
+  # Attributes for schedule will default to '*' if not provided so only
+  # specify the schedule attributes if input is not an empty string.
+  cron "RightScale remote_recipe #{recipe}" do
+    minute "#{minute}" unless minute.empty?
+    hour "#{hour}" unless hour.empty?
+    user "root"
+    command "rs_run_recipe -n \"#{recipe}\" 2>&1 > /var/log/rightscale_tools_cron_backup.log"
+    action :create
+  end
 
 end
 

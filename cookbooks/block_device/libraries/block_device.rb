@@ -43,11 +43,11 @@ module RightScale
 
       # Create and return BlockDevice object
       ::RightScale::Tools::BlockDevice.factory(
-          :lvm,                     # Backup using local LVM snapshot + cloud persistence.
-          node[:cloud][:provider],  # The local cloud that we are currently running.
-          new_resource.mount_point,
-          new_resource.nickname,    # Nickname for device.
-          options)
+        :lvm,                     # Backup using local LVM snapshot + cloud persistence.
+        node[:cloud][:provider],  # The local cloud that we are currently running.
+        new_resource.mount_point,
+        new_resource.nickname,    # Nickname for device.
+        options)
     end
 
     # Perform checks to prevent empty values of attributes which are required to get

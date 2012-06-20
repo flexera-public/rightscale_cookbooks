@@ -26,8 +26,8 @@ attribute :nickname, :kind_of => String, :name_attribute => true
 attribute :cloud, :required => true
 attribute :hypervisor, :kind_of => String
 attribute :mount_point, :kind_of => String, :required => true
-attribute :force, :kind_of => [TrueClass, FalseClass], :default => false
-attribute :is_master, :kind_of => [TrueClass, FalseClass], :default => false
+attribute :force, :equal_to => [ true, false ], :default => false
+attribute :is_master, :equal_to => [ true, false ], :default => false
 
 
 # == Backup/Restore options
@@ -47,7 +47,7 @@ attribute :keep_daily, :kind_of => String
 attribute :keep_weekly, :kind_of => String
 attribute :keep_monthly, :kind_of => String
 attribute :keep_yearly, :kind_of => String
-attribute :force, :kind_of => [TrueClass, FalseClass], :default => false # Used by backup_lock_take action
+attribute :force, :equal_to => [ true, false ], :default => false # Used by backup_lock_take action
 
 
 # == Options for volume block devices
