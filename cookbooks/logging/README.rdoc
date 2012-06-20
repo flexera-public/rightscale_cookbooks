@@ -6,8 +6,10 @@ This cookbook provides a set of recipes used by the RightScale
 ServerTemplates to configure the logging service provider.
 
 This cookbook configures the default logging provider installed on the image.
-If a remote server is defined it will configure sending log messages to the
-remote server.  If not the the default configuration is used (local files)
+If a remote server is defined it will configure an instance to send its 
+log messages to the specified remote server based on its FQDN or IP address.
+If a remote server is not defined, the default configuration is used, which
+saves the log files locally on the instance.
 
 == REQUIREMENTS:
 
