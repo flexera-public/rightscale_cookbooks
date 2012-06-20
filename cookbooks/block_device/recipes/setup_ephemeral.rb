@@ -47,7 +47,7 @@ if cloud == 'ec2' || cloud == 'openstack'
 
   # Get a list of ephemeral devices
   # Make sure to skip EBS volumes attached on boot
-  @api = RightScale::Tools::API.factory('1.0') if cloud == 'ec2'
+  @api = RightScale::Tools::API.factory('1.0', {:cloud => cloud}) if cloud == 'ec2'
   my_devices = []
   dev_index = 0
   loop do
