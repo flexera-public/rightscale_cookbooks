@@ -6,8 +6,8 @@
 * Installs and configures, Tomcat application server.
 
 == REQUIREMENTS:
-* Requires "app" Light Weight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
-  or your own implementation of "app" resource. See "app" cookbook README for
+* Requires "app" Lightweight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
+  or your own implementation of "app" resource. See the "app" cookbook README for
   details.
 * Requires a VM launched from a RightScale managed RightImage
 * Tested on CentOS 5.6 RightImage
@@ -15,7 +15,7 @@
 * Tested on RedHat 5.8 RightImage
 
 == COOKBOOKS DEPENDENCIES:
-Please see <tt>metadata.rb</tt> file for the latest dependencies.
+Please see the <tt>metadata.rb</tt> file for the latest dependencies.
 
 * <tt>app</tt>
 * <tt>db_mysql</tt>
@@ -29,21 +29,20 @@ There are no known limitations.
 
 == SETUP/USAGE:
 
-* Place tomcat::default recipe into your runlist to setup the application server.
+* Place <tt>tomcat::default</tt> recipe into your runlist to set up the application server.
 * When using a RightScale ServerTemplate, this will also automatically add the
   common attributes to your ServerTemplate inputs.
-* Set 'jdbc/ConnDB' as your datasource name to setup database connection with
+* Set 'jdbc/ConnDB' as your datasource name to set up a database connection with
   the application server.
 
 == DETAILS:
 === General
 
-The <tt>app_tomcat</tt> cookbook will install and setup the Apache web server with mod_jk module
+The <tt>app_tomcat</tt> cookbook will install and set up the Apache web server with a mod_jk module
 and the Tomcat application server, with support for MySQL or Postgres database servers.
-The Cookbook will create separate vhost config for the Apache web server, which will allow
-Apache to handle static content, such as images and HTML documents,
+The Cookbook will create a separate vhost config for the Apache web server, which will allow
+Apache to handle static content, such as images and HTML documents, 
 and forward all requests for dynamic content to Tomcat.
-
 
 
 <b>Apache</b>
@@ -76,11 +75,11 @@ Java HotSpot(TM) 64-Bit Server VM (build 20.2-b06, mixed mode)
 also:
 * <tt>User defined war file support</tt>
 * <tt>Java heap size Xms and Xmx memory limitations tuning</tt>
-* <tt>Java NewSize,MaxNewSize, PermSize, MaxPermSize limitations tuning</tt>
-* <tt>Application code installation from remote git, svn or ROS repository</tt>
+* <tt>Java NewSize, MaxNewSize, PermSize, MaxPermSize limitations tuning</tt>
+* <tt>Application code installation from the remote git, svn or ROS repository</tt>
 * <tt>MySQL database db.tomcat connection file configuration</tt>
 * <tt>Automatic application vhost file configuration</tt>
-* <tt>Automatic logrotate file configuration for tomcat logs</tt>
+* <tt>Automatic logrotate file configuration for Tomcat logs</tt>
 * <tt>Collectd monitoring support</tt>
 
 For more information see: {Tomcat App Server}[http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/2012-03-26#Tomcat_App_Server].
@@ -90,43 +89,43 @@ For more information see: {Tomcat App Server}[http://support.rightscale.com/18-R
 These are settings used in recipes and templates. Default values are noted.
 
 Note: Only "internal" cookbook attributes are described here. Descriptions of
-attributes which have inputs you can find in metadata.rb cookbook file.
+attributes that are inputs are in the <tt>metadata.rb</tt> cookbook file.
 
 ====== General attributes
-* <tt>node[:tomcat][:docroot]</tt> - Path to directory which will contain
-  application.
+* <tt>node[:tomcat][:docroot]</tt> - Path to the directory which will contain
+  the application.
 * <tt>node[:tomcat][:module_dependencies]</tt> - Additional modules required
-  for Tomcat
+  for Tomcat.
 
 ====== Platform dependent
-* <tt>node[:tomcat][:app_user]</tt> - Username, required for changing owner of
-  created project dirs
-* <tt>node[:tomcat][:alternatives_cmd]</tt> - Java alternatives command list
-* <tt>node[:tomcat][:db_adapter]</tt> -  - Type of database adapter. MySQL or Postgres.
+* <tt>node[:tomcat][:app_user]</tt> - Username. Required for changing the owner
+  of created project dirs.
+* <tt>node[:tomcat][:alternatives_cmd]</tt> - Java alternatives command list.
+* <tt>node[:tomcat][:db_adapter]</tt> - Type of database adapter. MySQL or Postgres.
 
 === Templates:
 
-==== Defined in <tt>:setup_vhost</tt> LWRP action for <tt>app::setup_vhost</tt> recipe
+==== Defined in <tt>:setup_vhost</tt> LWRP action for the <tt>app::setup_vhost</tt> recipe.
 
-* <tt>apache_mod_jk_vhost.erb</tt> - Configuration for apache vhost file
-* <tt>mod_jk.conf.erb</tt> - Mod_jk configuration template
-* <tt>server_xml.erb</tt> - Tomcat server.xml configuration template
+* <tt>apache_mod_jk_vhost.erb</tt> - Configuration for apache vhost file.
+* <tt>mod_jk.conf.erb</tt> - Mod_jk configuration template.
+* <tt>server_xml.erb</tt> - Tomcat server.xml configuration template.
 * <tt>tomcat6_conf.erb</tt> - Tomcat6.conf configuration template used in the
-  <tt>app::setup_vhost</tt> recipe
+  <tt>app::setup_vhost</tt> recipe.
 * <tt>tomcat6_logrotate.conf.erb</tt> - Logrotate for configuration template for
-  Tomcat
-* <tt>tomcat_workers.properties.erb</tt> - Tomcat worker configuration template
+  Tomcat.
+* <tt>tomcat_workers.properties.erb</tt> - Tomcat worker configuration template.
 
-==== Defined in <tt>:setup_db_connection</tt> LWRP action for <tt>app::setup_db_connection</tt> recipe
+==== Defined in <tt>:setup_db_connection</tt> LWRP action for the <tt>app::setup_db_connection</tt> recipe.
 
-* <tt>web_xml.erb</tt> - Content configuration template for Tomcat
+* <tt>web_xml.erb</tt> - Content configuration template for Tomcat.
 * <tt>context_xml.erb</tt> - Configuration for project database connection
-  config file
+  config file.
 
 === LWRPs:
 
-<tt>app_tomcat</tt> Light Weight provider is defined in
-<tt>providers/default.rb</tt> file, it contains source for:
+<tt>app_tomcat</tt> Lightweight provider is defined in the
+<tt>providers/default.rb</tt> file and contains source for the following actions:
 
 * <tt>:install</tt>
 
@@ -144,19 +143,18 @@ attributes which have inputs you can find in metadata.rb cookbook file.
 
 * <tt>:setup_monitoring</tt>
 
-actions.
 
 For more info about these actions please see <tt>app</tt> cookbook README.
 
-For normal operations it requires "app" resource which will act as interface to
-all <tt>app_tomcat</tt> provider logic.
+For normal operations it requires the "app" resource which will act as an 
+interface to all <tt>app_tomcat</tt> provider logic.
 
 ===== Actions
 
-* <tt>:install</tt> - Install packages required for application server setup
+* <tt>:install</tt> - Install packages required for application server setup.
 
-* <tt>:setup_vhost</tt> - Will setup apache vhost file, with tomcat module
-  directives included Install and setup tomcat package dependencies.
+* <tt>:setup_vhost</tt> - Set up Apache vhost file, with Tomcat module
+  directives included. Install and set up Tomcat package dependencies.
 
 * <tt>:start</tt> - Start sequence for Tomcat application server.
 
@@ -165,16 +163,16 @@ all <tt>app_tomcat</tt> provider logic.
 * <tt>:restart</tt> - Restart sequence for Tomcat application server.
 
 * <tt>:code_update</tt> - Perform project source code update/download using user
-  selected "repo" LWRP. Setup logrotate config.
+  selected "repo" LWRP. Set up logrotate config.
 
 * <tt>:setup_db_connection</tt> - Perform project
-  <tt>/etc/tomcat6/context.xml</tt> database file configuration
+  <tt>/etc/tomcat6/context.xml</tt> database file configuration.
 
-* <tt>:setup_monitoring</tt> - Install and setup of required monitoring software.
+* <tt>:setup_monitoring</tt> - Install and set up of required monitoring software.
 
 ===== Usage Example:
 
-For usage examples please see corresponding section in <tt>app</tt> cookbook README.
+For usage examples, please see corresponding section in <tt>app</tt> cookbook README.
 
 = LICENSE:
 
