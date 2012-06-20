@@ -13,20 +13,20 @@ depends "rightscale"
 
 recipe "block_device::default", "Sets up input dependencies for use by other cookbooks."
 recipe "block_device::setup_block_device", "Creates, formats, and mounts a brand new block device on the instance."
-recipe "block_device::setup_ephemeral", "Creates, formats, and mounts a brand new block device on the instances ephemeral drives. Does nothing on clouds without ephemeral drives."
+recipe "block_device::setup_ephemeral", "Creates, formats, and mounts a brand new block device on the instance's ephemeral drives. Does nothing on clouds without ephemeral drives."
 
 recipe "block_device::do_primary_backup", :description => "Creates a primary backup in the local cloud where the server is currently running.", :thread => 'block_backup'
 recipe "block_device::do_primary_restore","Restores a primary backup from the local cloud where the server is currently running."
 
 recipe "block_device::do_secondary_backup", :description => "Creates a secondary backup to the remote cloud specified by block_device/secondary provider", :thread => 'block_backup'
-recipe "block_device::do_secondary_restore","Restores a secondary backup from the remote cloud specified by block_device/secondary provider"
+recipe "block_device::do_secondary_restore","Restores a secondary backup from the remote cloud specified by block_device/secondary provider."
 
 recipe "block_device::do_primary_backup_schedule_enable", "Enables continuous primary backups by updating the crontab file."
 recipe "block_device::do_primary_backup_schedule_disable", "Disables continuous primary backups by updating the crontab file."
 
 recipe "block_device::do_delete_volumes_and_terminate_server", "Deletes any currently attached volumes from the instance and then terminates the machine. WARNING: Execution of this script will delete any data on your block device!"
 
-recipe "block_device::do_force_reset", "Unmount and delete the attached block device(s) for this lineage. For test and development purposes. WARNING: Execution of this script will delete any data on your block device!"
+recipe "block_device::do_force_reset", "Unmount and delete the attached block device(s) for this lineage. Designed for test and development purposes only. WARNING: Execution of this script will delete any data on your block device!"
 
 # all recipes EXCEPT for block_device::default which is used to "export" inputs to other cookbooks.
 all_recipes = [
@@ -134,7 +134,7 @@ attribute "block_device/devices/default/backup/secondary/endpoint",
 
 attribute "block_device/devices/default/backup/rackspace_snet",
   :display_name => "Rackspace SNET Enabled for Backup",
-  :description => "When 'true,' Rackspace internal private networking (preferred) is used for communications between servers and Rackspace Cloud Files. Ignored for all other clouds.",
+  :description => "When 'true', Rackspace internal private networking (preferred) is used for communications between servers and Rackspace Cloud Files. Ignored for all other clouds.",
   :type => "string",
   :required => "optional",
   :choice => ["true", "false"],
@@ -182,7 +182,7 @@ end.each do |device, number|
 
   attribute "block_device/devices/#{device}/backup/lineage_override",
     :display_name => "Backup Lineage Override",
-    :description => "If defined, this will override the input defined for 'Backup Lineage' (block_device/devices/#{device}/backup/lineage) so that you can restore the volume from another backup that has as different lineage name. The most recently completed snapshots will be used unless a specific timestamp value is specified for 'Restore Timestamp Override' (block_device/devices/#{device}/backup/timestamp_override). ",
+    :description => "If defined, this will override the input defined for 'Backup Lineage' (block_device/devices/#{device}/backup/lineage) so that you can restore the volume from another backup that has as a different lineage name. The most recently completed snapshots will be used unless a specific timestamp value is specified for 'Restore Timestamp Override' (block_device/devices/#{device}/backup/timestamp_override). ",
     :required => "optional",
     :default => "",
     :recipes => restore_recipes
@@ -260,7 +260,7 @@ end.each do |device, number|
 
   attribute "block_device/devices/#{device}/vg_data_percentage",
     :display_name => "Percentage of the LVM used for data (#{number})",
-    :description => "The percentage of the total Volume Group extents (LVM) that is used for data. (e.g. 50 percent - 1/2 used for data and remainder used for overhead and snapshots, 100 percent - all space is allocated for data (therefore snapshots can not be taken) WARNING: if the space used for data is to large LVM snapshots can not be performed.  Using a non-default value it not reccommended.  Make sure you understand what you are doing before changing this value.",
+    :description => "The percentage of the total Volume Group extents (LVM) that is used for data. (e.g. 50 percent - 1/2 used for data and remainder used for overhead and snapshots, 100 percent - all space is allocated for data (therefore snapshots can not be taken) WARNING: If the space used for data storage is too large, LVM snapshots cannot be performed. Using a non-default value it not reccommended. Make sure you understand what you are doing before changing this value.",
     :type => "string",
     :required => 'optional',
     :choice => ["50", "60", "70", "80", "90", "100"],
@@ -270,7 +270,7 @@ end
 
 attribute "block_device/terminate_safety",
   :display_name => "Terminate Safety",
-  :description => "Prevents the accidental running of the block_device::do_teminate_server recipe. This recipe will only run if the input variable is overridden and set to \"off\".",
+  :description => "Prevents the accidental running of the block_device::do_teminate_server recipe. The recipe will only run if the input variable is overwritten and set to \"off\".",
   :type => "string",
   :required => "recommended",
   :choice => ["Override the dropdown and set to \"off\" to really run this recipe"],
@@ -279,7 +279,7 @@ attribute "block_device/terminate_safety",
 
 attribute "block_device/force_safety",
   :display_name => "Force Reset Safety",
-  :description => "Prevents the accidental running of the block_device::do_force_reset recipe. This recipe will only run if the input variable is overridden and set to \"off\".",
+  :description => "Prevents the accidental running of the block_device::do_force_reset recipe. The recipe will only run if the input variable is overwritten and set to \"off\".",
   :type => "string",
   :required => "recommended",
   :choice => ["Override the dropdown and set to \"off\" to really run this recipe"],
