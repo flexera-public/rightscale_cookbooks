@@ -15,7 +15,7 @@ depends "db_postgres"
 depends "repo"
 depends "rightscale"
 
-recipe  "app_tomcat::default", "Installs the tomcat application server."
+recipe  "app_tomcat::default", "Installs the Tomcat application server."
 
 # optional attributes
 attribute "app_tomcat/db_name",
@@ -77,15 +77,15 @@ attribute "app_tomcat/java/MaxNewSize",
   :recipes => ["app_tomcat::default"]
 
 attribute "app_tomcat/db_adapter",
-  :display_name => "Database adapter for application ",
+  :display_name => "Database adapter for application",
   :description => "Enter database adapter which will be used to connect to the database. Example: mysql",
   :default => "mysql",
   :choice => [ "mysql", "postgresql" ],
   :recipes => ["app_tomcat::default"]
 
 attribute "app_tomcat/datasource_name",
-  :display_name => "Container datasource  name",
-  :description => "This name is used to setup the database connection with the application server.  You should set the attribute if your application is compiled to use a different datasource name.  Example: jdbc/MyConnDB",
+  :display_name => "Container datasource name",
+  :description => "This name is used to set up the database connection with the application server. You should set the attribute if your application is compiled to use a different datasource name.  Example: jdbc/MyConnDB",
   :required => "optional",
   :default => "jdbc/ConnDB",
   :recipes => ["app_tomcat::default"]
