@@ -18,7 +18,6 @@ when "ubuntu", "debian"
   when "mysql"
     node[:app][:packages] = [
       "ecj-gcj",
-      #"java-gcj-compat-dev",
       "tomcat6",
       "tomcat6-admin",
       "tomcat6-common",
@@ -29,7 +28,6 @@ when "ubuntu", "debian"
   when "postgresql"
     node[:app][:packages] = [
       "ecj-gcj",
-      #"java-gcj-compat-dev",
       "tomcat6",
       "tomcat6-admin",
       "tomcat6-common",
@@ -37,7 +35,7 @@ when "ubuntu", "debian"
       "libtcnative-1"
     ]
   else
-    raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting "
+    raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting"
   end
 when "centos", "fedora", "suse", "redhat", "redhatenterpriseserver"
   case node[:app_tomcat][:db_adapter]
@@ -59,7 +57,7 @@ when "centos", "fedora", "suse", "redhat", "redhatenterpriseserver"
       "tomcat-native"
     ]
   else
-    raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting "
+    raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting"
   end
 else
   raise "Unrecognized distro #{node[:platform]}, exiting "
