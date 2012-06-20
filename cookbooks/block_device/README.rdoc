@@ -53,7 +53,7 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 === Force Reset:
 
 1. WARNING: The "block_device::do_force_reset" recipe detaches all storage 
-   related to your lineage and DESTROYS the volumes\! You should only run
+   related to your lineage and DESTROYS the volumes! You should only run
    this recipe if you want to restore your database to a pristine state 
    and do not want to save any of its data. After running the 
    "block_device::do_force_reset" recipe you can then run the
