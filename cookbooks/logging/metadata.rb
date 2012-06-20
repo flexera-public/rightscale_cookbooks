@@ -13,7 +13,7 @@ depends "rightscale"
 depends "logging_rsyslog"
 depends "logging_syslog_ng"
 
-recipe "logging::default", "Configures native logging provider"
+recipe "logging::default", "Configures a native logging provider."
 
 attribute "logging",
   :display_name => "Log Service Settings",
@@ -31,7 +31,7 @@ attribute "logging",
 
 attribute "logging/remote_server",
   :display_name => "Remote Server",
-  :description => "The FQDN or IP address of a remote server to configure the instance to forward log data do. Example: syslog.example.com or 192.168.0.1",
+  :description => "Configures an instance to forward its log data to a remote server. Specify either the remote server's FQDN or IP address. Example: syslog.example.com or 192.168.0.1",
   :required => "optional",
   :recipes => [ "logging::default" ]
 
