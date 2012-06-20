@@ -16,15 +16,15 @@ depends "logrotate"
 depends "app"
 depends "db"
 
-recipe "app_passenger::default", "Default cookbook recipe which sets provider specific attributes for rails-passenger."
+recipe "app_passenger::default", "Default cookbook recipe which sets provider-specific attributes for rails-passenger."
 recipe "app_passenger::install_custom_gems", "Custom gems to install."
 recipe "app_passenger::install_required_app_gems", "Bundler gems install. Gemfile must be present in app directory."
-recipe "app_passenger::run_custom_rails_commands", "Run specific user defined commands.  Commands will be executed in the app directory. Command path ../rails/bin/"
+recipe "app_passenger::run_custom_rails_commands", "Run specific user defined commands. Commands will be executed in the app directory. Command path ../rails/bin/"
 
 
 attribute "app_passenger/spawn_method",
   :display_name => "Rails spawn method",
-  :description => "The  spawn method that Phusion Passenger will use.  The choices are: smart, smart-lv2, and conservative.  Example: conservative",
+  :description => "The spawn method that Phusion Passenger will use. The choices are: smart, smart-lv2, and conservative. Example: conservative",
   :choice => ["conservative", "smart-lv2", "smart"],
   :required => "recommended",
   :default => "conservative",
@@ -32,7 +32,7 @@ attribute "app_passenger/spawn_method",
 
 attribute "app_passenger/project/environment",
   :display_name => "Rails Environment",
-  :description => "Creates a Rails RAILS ENV environment variable.  Example: development",
+  :description => "Creates a Rails RAILS ENV environment variable. Example: development",
   :choice => ["development", "production", "test"],
   :required => "optional",
   :default => "development",
@@ -40,7 +40,7 @@ attribute "app_passenger/project/environment",
 
 attribute "app_passenger/apache/maintenance_page",
   :display_name => "Apache maintenance page",
-  :description => "Maintenance URI to show if the page exists (based on document root).  If this file exists, your site will show a \"Under Maintenance\" page and your site will not be available. Example: /system/maintenance.html",
+  :description => "Maintenance URI to show if the page exists (based on document root). If this file exists, your site will show a \"Under Maintenance\" page and your site will not be available. Example: /system/maintenance.html",
   :required => "optional",
   :default => "",
   :recipes => ["app_passenger::default"]
@@ -48,7 +48,7 @@ attribute "app_passenger/apache/maintenance_page",
 
 attribute "app_passenger/apache/serve_local_files",
   :display_name => "Apache serve local Files",
-  :description => "This option tells Apache whether it should serve the (static) content itself. Currently, it will omit PHP and TomCat dynamic content, such as *.php, *.action, *.jsp, and *.do    Example:  true",
+  :description => "This option tells Apache whether it should serve the (static) content itself. Currently, it will omit PHP and TomCat dynamic content, such as *.php, *.action, *.jsp, and *.do  Example: true",
   :choice => ["true", "false"],
   :required => "optional",
   :default => "true",
@@ -63,7 +63,7 @@ attribute "app_passenger/project/gem_list",
 
 attribute "app_passenger/project/custom_cmd",
   :display_name => "Custom rails/bin/ command",
-  :description => "A comma separated list of optional commands which will be executed in app directory. Example: rake gems:install, rake db:create, rake get_common",
+  :description => "A comma-separated list of optional commands which will be executed in the app directory. Example: rake gems:install, rake db:create, rake get_common",
   :required => "optional",
   :default => "",
   :recipes => ["app_passenger::run_custom_rails_commands"]
@@ -75,7 +75,7 @@ attribute "app_passenger/project/db/schema_name",
 
 attribute "app_passenger/project/db/adapter",
   :display_name => "Database adapter for database.yml",
-  :description => "Enter database adapter which will be used to connect to the database. Example: mysql",
+  :description => "Enter the database adapter which will be used to connect to the database. Example: mysql",
   :choice => [ "mysql", "postgresql" ],
   :default => "mysql",
   :recipes => ["app_passenger::default"]
