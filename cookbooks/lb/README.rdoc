@@ -2,7 +2,7 @@
 
 == DESCRIPTION:
 
-This cookbook provides a set of load balancer recipes used by the RightScale
+This cookbook provides a set of load balancer recipes used by RightScale's
 Load Balancer ServerTemplates.
 
 This cookbook does not contain a specific load balancer implementation; rather,
@@ -12,16 +12,13 @@ it provides an interface for general load balancer actions and parameters.
 
 === General
 The 'lb' interface is defined by a Lightweight Resource, which can be found in
-the resources/default.rb file.
+the <tt>resources/default.rb</tt> file.
 
 This cookbook is intended to be used in conjunction with cookbooks that contain
 Lightweight Providers that implement the 'lb' interface. See the RightScale
-lb_haproxy cookbook for an example.
+<tt>lb_haproxy</tt> cookbook for an example.
 
-To review information about Lightweight Resources and Providers (LWRPs), see the Chef
-Wiki at:
-
-  http://wiki.opscode.com/display/chef/Lightweight+Resources+and+Providers+%28LWRP%29
+To review information about Lightweight Resources and Providers (LWRPs), see {Lightweight Resources and Providers}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)].
 
 == REQUIREMENTS:
 
@@ -41,7 +38,7 @@ configure themselves to attach to the application server.
 ==== handle_attach recipes
 
 This recipe is used by a load balancer server to add an application server to
-its configuration when the application server requests it, and restart if necessary.
+its configuration when the application server requests it, and restart, if necessary.
 
 === Application Server Detach
 
@@ -53,7 +50,7 @@ configure themselves to detach from the application server.
 ==== handle_detach recipes
 
 This recipe is used by a load balancer server to remove an application server
-from its configuration when the application server requests it, and restart if necessary.
+from its configuration when the application server requests it, and restart, if necessary.
 
 === Automatic Server Detection
 
