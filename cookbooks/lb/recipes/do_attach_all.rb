@@ -57,7 +57,7 @@ vhosts(node[:lb][:vhost_names]).each do |vhost_name|
 
   # Set threshold counters to nil to those not incremented, thus assuming app server now accessable.
   # Set to nil since chef does not delete the key, can only alter it.
-  (Set.new(node[:lb][:threshold][vhost_name].keys)-servers_missing).each do |uuid|
+  (Set.new(node[:lb][:threshold][vhost_name].keys) - servers_missing).each do |uuid|
     if node[:lb][:threshold][vhost_name][uuid]
       node[:lb][:threshold][vhost_name][uuid] = nil
       log "  Resetting threshold for #{uuid}"
