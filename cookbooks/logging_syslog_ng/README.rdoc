@@ -7,8 +7,8 @@
 
 == REQUIREMENTS:
 
-* Requires "logging" Light Weight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/logging
-* Requires a VM launched from a RightScale managed RightImage
+* Requires "logging" Lightweight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/logging
+* Requires a virtual machine launched from a RightScale managed RightImage
 
 == COOKBOOKS DEPENDENCIES:
 
@@ -17,19 +17,19 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 == KNOWN LIMITATIONS:
 
 * Only supports configuration for remote server.
-* Does not replace or upgrade installed syslog-ng package.
+* Does not replace or upgrade installed 'syslog-ng' package.
 
 == SETUP/USAGE:
 
 * There are no standalone recipes in the current implementation of this cookbook.
-  The syslog-ng provider is setup by the logging:default recipe based on the
-  logging package installed.
+  The 'syslog-ng' provider is set up by the <tt>logging:default</tt> recipe 
+  based on the installed logging package.
 
 == DETAILS:
 
 === General:
 
-<tt>logging_syslog_ng</tt> cookbook does the minimal configuration for remote logging setup.
+The <tt>logging_syslog_ng</tt> cookbook does the minimal configuration for remote logging setup.
 Additional features are TBD.
 
 = LICENSE:
