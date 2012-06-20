@@ -153,7 +153,7 @@ action :capistrano_pull do
   log "  Deploy provider #{scm_provider}"
 
   # Applying capistrano style deployment
-  capistranize_repo "Source repo" do
+  repo_capistranize "Source repo" do
     repository "#{repo_dir}/ros_repo/"
     destination destination
     app_user app_user
