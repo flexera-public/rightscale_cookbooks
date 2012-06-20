@@ -12,4 +12,4 @@ supports "ubuntu", "~> 10.04.0"
 depends "db_mysql"
 depends "app_php"
 
-recipe "lamp::default", "Install LAMP specific packages. Setup LAMP specific default attributes"
+recipe "lamp::default", "Installs LAMP specific packages. Sets up LAMP-specific default attributes."
