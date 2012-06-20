@@ -116,5 +116,3 @@ Chef::Log.info("  Setting query_cache_size to: #{one_percent_str}")
 set_unless[:db_mysql][:tunable][:query_cache_size]                  = one_percent_str
 Chef::Log.info("  Setting query_cache_size to: #{eighty_percent_str}")
 set_unless[:db_mysql][:tunable][:innodb_buffer_pool_size]           = eighty_percent_str
-
-
