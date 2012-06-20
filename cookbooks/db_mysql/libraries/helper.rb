@@ -52,7 +52,6 @@ module RightScale
           return node[:db_mysql][:mycnf_relay_log]
         end
 
-
         # Helper to load replication information
         # from "rs_snapshot_position.yaml"
         #
