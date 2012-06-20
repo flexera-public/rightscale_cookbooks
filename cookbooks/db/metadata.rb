@@ -16,7 +16,7 @@ depends "db_mysql"
 depends "db_postgres"
 
 
-recipe "db::default", "Adds the database:active=true tag to your server, identifying it as an database server. The tag is used by application servers to identify active databases. It also loads the required 'db' resources."
+recipe "db::default", "Adds the database:active=true tag to your server, which identifies it as a database server. The tag is used by application servers to identify active databases. It also loads the required 'db' resources."
 
 recipe "db::install_client", "Installs the database client onto the virtual machine so that it can connect to a running server. This should be run on all database servers and servers intended to connect to the servers."
 
@@ -40,7 +40,7 @@ recipe "db::do_secondary_restore", "Restores the database from the most recently
 
 recipe "db::do_force_reset", "Resets the database back to a pristine state. WARNING: Execution of this script will delete any data in your database!"
 
-recipe "db::do_dump_export", "Creates a dump file and uploads it to remote object storage (e.g., Amazon S3 or Rackspace Cloud Files)."
+recipe "db::do_dump_export", "Creates a dump file and uploads it to a remote object storage (e.g., Amazon S3 or Rackspace Cloud Files)."
 recipe "db::do_dump_import", "Retrieves a dump file from remote object storage (e.g., Amazon S3 or Rackspace Cloud Files) and imports it to the database server."
 recipe "db::do_dump_schedule_enable", "Schedules the daily run of do_dump_export."
 recipe "db::do_dump_schedule_disable", "Disables the daily run of do_dump_export."
@@ -48,7 +48,7 @@ recipe "db::do_dump_schedule_disable", "Disables the daily run of do_dump_export
 
 # == Database Firewall Recipes
 #
-recipe "db::do_appservers_allow", "Allows connections from all application servers in the deployment that are tagged with appserver:active=true tag. This script should be run on a database server so that it will accept connections from application servers."
+recipe "db::do_appservers_allow", "Allows connections from all application servers in the deployment that are tagged with appserver:active=true tag. This script should be run on a database server so that it will accept connections from related application servers."
 
 recipe "db::do_appservers_deny", "Denies connections from all application servers in the deployment that are tagged with appserver:active=true tag. This script can be run on a database server to deny connections from all application servers in the deployment."
 
@@ -59,9 +59,9 @@ recipe "db::request_appserver_deny", "Sends a request to deny connections from t
 
 # == Master/Slave Recipes
 #
-recipe "db::do_init_and_become_master", "Initializes database server and tags it as the master. Sets DNS. Starts a fresh backup from this master."
-recipe "db::do_primary_restore_and_become_master", "Restores the database and tags it as the master. Sets DNS. Starts a fresh backup from this master."
-recipe "db::do_secondary_restore_and_become_master", "Restores the database from a secondary backup location and tags it as the master. Sets DNS. Starts a fresh backup from this master."
+recipe "db::do_init_and_become_master", "Initializes the database and tags it as the master database server. Sets DNS. Starts a fresh backup from this master."
+recipe "db::do_primary_restore_and_become_master", "Restores the database and tags it as the master database server. Sets DNS. Starts a fresh backup from this master."
+recipe "db::do_secondary_restore_and_become_master", "Restores the database from a secondary backup location and tags it as the master database server. Sets DNS. Starts a fresh backup from this master."
 recipe "db::do_primary_init_slave", "Initializes the slave server from the primary backup location."
 recipe "db::do_secondary_init_slave", "Initializes the slave server from the secondary backup location."
 recipe "db::do_init_slave_at_boot", "Initializes the slave server at boot."
@@ -89,7 +89,7 @@ attribute "db/dns/master/fqdn",
 
 attribute "db/dns/master/id",
   :display_name => "Database Master DNS Record ID",
-  :description => "The unique identifier that is associated with the DNS A record of the master server.  The unique identifier is assigned by the DNS provider when you create a dynamic DNS A record. This ID is used to update the associated A record with the private IP address of the master server when this recipe is run.  If you are using DNS Made Easy as your DNS provider, a 7-digit number is used (e.g., 4403234).",
+  :description => "The unique identifier that is associated with the DNS A record of the master database server. The unique identifier is assigned by the DNS provider when you create a dynamic DNS A record. This ID is used to update the associated A record with the private IP address of the master server when this recipe is run. If you are using DNS Made Easy as your DNS provider, a 7-digit number is used (e.g., 4403234).",
   :required => "required",
   :recipes => [ 
                 "db::do_primary_restore_and_become_master",
@@ -186,7 +186,7 @@ attribute "db/backup/lineage",
 
 attribute "db/backup/lineage_override",
   :display_name => "Database Restore Lineage Override",
-  :description => "If defined, this will override the input defined for 'Backup Lineage' (db/backup/lineage) so that you can restore the database from another backup that has as different lineage name. The most recently completed snapshots will be used unless a specific timestamp value is specified for 'Restore Timestamp Override' (db/backup/timestamp_override). Although this input allows you to restore from a different set of snapshots, subsequent backups will use 'Backup Lineage' to name the snapshots. Be sure to remove the 'Backup Lineage Override' input after the new master is operational.",
+  :description => "If defined, this will override the input defined for 'Backup Lineage' (db/backup/lineage) so that you can restore the database from another backup that has as a different lineage name. The most recently completed snapshots will be used unless a specific timestamp value is specified for 'Restore Timestamp Override' (db/backup/timestamp_override). Although this input allows you to restore from a different set of snapshots, subsequent backups will use 'Backup Lineage' to name the snapshots. Be sure to remove the 'Backup Lineage Override' input after the new master is operational.",
   :required => "optional",
   :recipes => [
     "db::do_init_slave_at_boot",
@@ -213,7 +213,7 @@ attribute "db/backup/timestamp_override",
   
 attribute "db/backup/restore_version_check",
   :display_name => "Backup restore version check", 
-  :description => "A variable to allow to restore from a backup performed on a different version of the DB software. Make sure you fully understand the implications of cross-version restoration.  Set to false to skip version checking.",
+  :description => "A variable for allowing the restoration of a database from a backup that was performed on a different version of the DB software. Make sure you fully understand the implications of cross-version restoration.  Set to 'False' to skip version checking.",
   :required => "optional",
   :choice => [ "true", "false" ],
   :default => "true",
@@ -247,7 +247,7 @@ attribute "db/backup/primary/master/cron/minute",
 
 attribute "db/backup/primary/slave/cron/minute",
   :display_name => "Slave Backup Cron Minute",
-  :description => "Defines the minute of the hour when the backup EBS snapshot will be taken of the Slave database. Backups of the Slave are taken hourly. By default, a minute will be randomly chosen at launch time. Uses standard crontab format (e.g., 30 for minute 30 of the hour).",
+  :description => "Defines the minute of the hour when the backup EBS snapshot will be taken of the slave database. Backups of the slave are taken hourly. By default, a minute will be randomly chosen at launch time. Uses standard crontab format (e.g., 30 for minute 30 of the hour).",
   :required => "optional",
   :recipes => [ 'db::do_primary_backup_schedule_enable' ]
 
@@ -261,7 +261,7 @@ attribute "db/dump",
 
 attribute "db/dump/storage_account_provider",
   :display_name => "Dump Storage Account Provider",
-  :description => "Location where the dump file will be saved. Used by dump recipes to back up to Amazon S3 or Rackspace Cloud Files.",
+  :description => "Location where the dump file will be saved. Used by dump recipes to back up to remote object storage. (e.g. Amazon S3 or Rackspace Cloud Files)",
   :required => "required",
   :choice => [ "s3", "cloudfiles", "cloudfilesuk", "SoftLayer_Dallas", "SoftLayer_Singapore", "SoftLayer_Amsterdam" ],
   :recipes => [ "db::do_dump_import", "db::do_dump_export", "db::do_dump_schedule_enable" ]
@@ -291,14 +291,14 @@ attribute "db/dump/prefix",
   :recipes => [ "db::do_dump_import", "db::do_dump_export", "db::do_dump_schedule_enable" ]
 
 attribute "db/dump/database_name",
-  :display_name => "Dump Schema/Database Name",
+  :display_name => "Database Schema Name",
   :description => "Enter the name of the database name/schema to create/restore a dump from/for. Ex: mydbschema",
   :required => "required",
   :recipes => [ "db::do_dump_import", "db::do_dump_export", "db::do_dump_schedule_enable" ]
 
 attribute "db/terminate_safety",
   :display_name => "Terminate Safety",
-  :description => "Prevents the accidental running of the db::do_teminate_server recipe. This recipe will only run if this input variable is overridden and set to \"off\".",
+  :description => "Prevents the accidental running of the 'db::do_teminate_server' recipe. This recipe will only run if this input variable is overridden and set to \"off\".",
   :type => "string",
   :choice => ["Override the dropdown and set to \"off\" to really run this recipe"],
   :default => "Override the dropdown and set to \"off\" to really run this recipe",
