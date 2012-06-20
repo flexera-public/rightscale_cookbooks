@@ -277,7 +277,7 @@ action :setup_vhost do
   file "/etc/httpd/conf.d/ssl.conf" do
     action :delete
     backup false
-    only_if do ::File.exists?("/etc/httpd/conf.d/ssl.conf") end
+    only_if { ::File.exists?("/etc/httpd/conf.d/ssl.conf") }
   end
 
   log "  Generating new apache ports.conf"
@@ -386,7 +386,7 @@ action :setup_monitoring do
   # Linking collectd
   link "/usr/share/tomcat6/lib/collectd.jar" do
     to "/usr/share/java/collectd.jar"
-    not_if do !::File.exists?("/usr/share/java/collectd.jar") end
+    not_if { !::File.exists?("/usr/share/java/collectd.jar") }
   end
 
   # Add collectd support to tomcat.conf
@@ -431,7 +431,7 @@ action :code_update do
       chown -R #{node[:app_tomcat][:app_user]}:#{node[:app_tomcat][:app_user]} #{deploy_dir}
       sleep 5
     EOH
-    only_if do node[:app_tomcat][:code][:root_war] != "ROOT.war" end
+    only_if { node[:app_tomcat][:code][:root_war] != "ROOT.war" }
   end
   # Restarting tomcat service.
   # This will automatically deploy ROOT.war if it is available in application root directory
