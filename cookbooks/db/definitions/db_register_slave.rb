@@ -25,7 +25,7 @@ define :db_register_slave, :action => :primary_restore do
 
   r = rightscale_server_collection "master_servers" do
     tags 'rs_dbrepl:master_instance_uuid'
-    secondary_tags ['rs_dbrepl:master_active', 'server:private_ip_0']
+    secondary_tags [ 'rs_dbrepl:master_active', 'server:private_ip_0' ]
     action :nothing
   end
   r.run_action(:load)
@@ -38,7 +38,7 @@ define :db_register_slave, :action => :primary_restore do
   r = ruby_block "find current master" do
     block do
 
-      # Declare vars needed after 'each do' loop below
+      # Declare vars before block to persist after 'each do' loop.
       collect = {}
       lineage = ""
       # Using reverse order to end with first found master if no DB tagged with lineage.
@@ -49,7 +49,8 @@ define :db_register_slave, :action => :primary_restore do
 
         my_uuid = tags.detect { |u| u =~ /rs_dbrepl:master_instance_uuid/ }
         my_ip_0 = tags.detect { |i| i =~ /server:private_ip_0/ }
-        # following used for detecting 11H1 DB servers
+
+        # Following used for detecting 11H1 DB servers
         ec2_instance_id = tags.detect { |each_ec2_instance_id| each_ec2_instance_id =~ /ec2:instance_id/ }
         most_recent = active.sort.last
         collect[most_recent] = my_uuid, my_ip_0, ec2_instance_id
@@ -65,7 +66,7 @@ define :db_register_slave, :action => :primary_restore do
       end
 
       # If lineage was not part of the master_active_tag tag
-      # use old method of using first (or only)  found master
+      # use the first (or only) found master
       unless ( lineage && lineage == node[:db][:backup][:lineage] )
         Chef::Log.info "  Lineage not found in tags, defaulting to first discovered master"
       end
@@ -106,6 +107,7 @@ define :db_register_slave, :action => :primary_restore do
 
   raise "No master DB found" unless node[:db][:current_master_ip] && node[:db][:current_master_uuid]
 
+  # Populate node with master DB info for later reference.
   db_state_set "Set master/slave state" do
     master_uuid node[:db][:current_master_uuid]
     master_ip node[:db][:current_master_ip]
@@ -113,17 +115,20 @@ define :db_register_slave, :action => :primary_restore do
     immediate true
   end
 
+  # Set firewall rules to allow slave to connect to master DB.
   include_recipe "db::request_master_allow"
 
+  # After slave has been initialized, run the specified backup recipe, primary or secondary.
+  # Stop/start or reboot would pass a no_restore action.
   case params[:action]
-    when :primary_restore
-      include_recipe "db::do_primary_restore"
-    when :secondary_restore
-      include_recipe "db::do_secondary_restore"
-    when :no_restore
-      log "  No restore"
-    else
-      raise "invalid parameter"
+  when :primary_restore
+    include_recipe "db::do_primary_restore"
+  when :secondary_restore
+    include_recipe "db::do_secondary_restore"
+  when :no_restore
+    log "  No restore"
+  else
+    raise "invalid parameter"
   end
 
   # Not needed for stop/start since replication has already been enabled.

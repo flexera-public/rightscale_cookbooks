@@ -80,7 +80,7 @@ recipe "db::do_delete_volumes_and_terminate_server", "Deletes any currently atta
 attribute "db",
   :display_name => "General Database Options",
   :type => "hash"
-  
+
 attribute "db/dns/master/fqdn",
   :display_name => "Database Master FQDN",
   :description => "The fully qualified domain name for the master database server.  Example: db-master.example.com",
@@ -91,7 +91,7 @@ attribute "db/dns/master/id",
   :display_name => "Database Master DNS Record ID",
   :description => "The unique identifier that is associated with the DNS A record of the master server.  The unique identifier is assigned by the DNS provider when you create a dynamic DNS A record. This ID is used to update the associated A record with the private IP address of the master server when this recipe is run.  If you are using DNS Made Easy as your DNS provider, a 7-digit number is used (e.g., 4403234).",
   :required => "required",
-  :recipes => [ 
+  :recipes => [
                 "db::do_primary_restore_and_become_master",
                 "db::do_secondary_restore_and_become_master",
                 "db::do_init_and_become_master",
@@ -145,7 +145,7 @@ attribute "db/application/password",
   :description => "The password of the database user that has 'user' privileges (e.g., cred:DBAPPLICATION_PASSWORD).",
   :required => "required",
   :recipes => [ "db::default", "db::setup_privileges_application" ]
-  
+
 attribute "db/init_slave_at_boot",
   :display_name => "Init Slave at Boot",
   :description => "Set to 'True' to have the instance initialize the database server as a slave on boot. Set to 'False' if there is no master database server running.",
@@ -197,7 +197,7 @@ attribute "db/backup/lineage_override",
     "db::do_secondary_restore",
     "db::do_secondary_init_slave"
   ]
-  
+
 attribute "db/backup/timestamp_override",
   :display_name => "Database Restore Timestamp Override",
   :description => "An optional variable to restore a database backup with a specific timestamp rather than the most recent backup in the lineage. You must specify a string that matches the timestamp tag on the volume snapshot. You will need to specify the timestamp that is defined by the snapshot's tag (not the name). For example, if the snapshot's tag is 'rs_backup:timestamp=1303613371' you would specify '1303613371' for this input.",
@@ -210,14 +210,14 @@ attribute "db/backup/timestamp_override",
     "db::do_secondary_restore",
     "db::do_secondary_init_slave"
   ]
-  
+
 attribute "db/backup/restore_version_check",
-  :display_name => "Backup restore version check", 
+  :display_name => "Backup restore version check",
   :description => "A variable to allow to restore from a backup performed on a different version of the DB software. Make sure you fully understand the implications of cross-version restoration.  Set to false to skip version checking.",
   :required => "optional",
   :choice => [ "true", "false" ],
   :default => "true",
-  :recipes => [ 
+  :recipes => [
     "db::do_primary_restore",
     "db::do_secondary_restore",
     "db::do_primary_init_slave",
@@ -226,7 +226,7 @@ attribute "db/backup/restore_version_check",
     "do_primary_restore_and_become_master",
     "do_secondary_restore_and_become_master"
   ]
-  
+
 attribute "db/backup/primary/master/cron/hour",
   :display_name => "Master Backup Cron Hour",
   :description => "Defines the hour of the day when the primary backup will be taken of the master database. Backups of the master are taken daily. By default, an hour will be randomly chosen at launch time. Otherwise, the time of the backup is defined by 'Master Backup Cron Hour' and 'Master Backup Cron Minute'. Uses standard crontab format (e.g., 23 for 11:00 PM).",

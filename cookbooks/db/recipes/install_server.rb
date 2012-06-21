@@ -9,12 +9,12 @@ rightscale_marker :begin
 
 # Master DNS TTL Check - HA Only
 #
-# Checks the TTL of the Master DNS entry and exits with an error if the 
+# Checks the TTL of the Master DNS entry and exits with an error if the
 # TTL is greater than 60 seconds. The purpose of this script is to prevent
 # future DNS related problems pertaining to your database. For example, if you
-# accidentally configure a DNS TTL of 3600 seconds on your Master DB DNS A 
-# Record, it might work fine at first, but you will experience issues when you 
-# attempt to promote a Slave-DB to Master-DB. As a best practice you should 
+# accidentally configure a DNS TTL of 3600 seconds on your Master DB DNS A
+# Record, it might work fine at first, but you will experience issues when you
+# attempt to promote a Slave-DB to Master-DB. As a best practice you should
 # use a low TTL for your database that's less than or equal to 60 seconds.
 # Update: for CloudDNS the TTL should be = 300s.
 #
@@ -48,6 +48,7 @@ end
 # Let others know we are an active DB
 right_link_tag "database:active=true"
 
+# Install server
 db node[:db][:data_dir] do
   user node[:db][:admin][:user]
   password node[:db][:admin][:password]
@@ -61,7 +62,7 @@ end
 if node[:db][:this_is_master] && node[:db][:init_status].to_sym == :initialized
   log "Already set as master and initialized - updating node"
   db_register_master
-# If server is already a slave, update node and config files
+# Else if server is already a slave, update node and config files
 elsif node[:db][:this_is_master] == false && node[:db][:init_status].to_sym == :initialized
   log "Already set as slave and initialized - updating node"
   db_register_slave "Updating slave" do
