@@ -1,10 +1,10 @@
 = RightScale Web Apache Cookbook
 
 == DESCRIPTION:
-This cookbook installs and configures Apache2 web server.
+This cookbook installs and configures an Apache2 web server.
 
 == REQUIREMENTS:
-Requires a virtual machine launched from a RightScale managed RightImage
+Requires a virtual machine launched from a RightScale managed RightImage.
 
 == COOKBOOKS DEPENDENCIES:
 Please see <tt>metadata.rb</tt> file for the latest dependencies.
@@ -13,19 +13,19 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 There are no known limitations.
 
 == SETUP/USAGE:
-* Place <tt>web_apache::install_server</tt> recipe into your runlist to setup the apache web server.
-* Use <tt>web_apache::setup_monitoring</tt> recipe to add apache monitoring options to your dashboard "monitoring" tab.
+* Place the <tt>web_apache::install_server</tt> recipe into your runlist to set up the apache web server.
+* Use the <tt>web_apache::setup_monitoring</tt> recipe to add apache monitoring options to your dashboard "Monitoring" tab.
 
 == DETAILS:
 
 === General
-The recipes in this cookbook are designed to perform basic operations with apache web server.
+The recipes in this cookbook are designed to perform basic operations on an apache web server.
 
 === Attributes:
 Detailed cookbook attributes descriptions you can find in attributed/default.rb file
 
 === Templates:
-* <tt>apache.conf.erb</tt> - Configuration for apache vhost file
+* <tt>apache.conf.erb</tt> - Configuration for apache vhost file.
 * <tt>apache2.conf.erb</tt> - Apache2 web server configuration file template.
 * <tt>apache_collectd_exec.erb</tt> - Collectd exec plugin configuration template.
 * <tt>apache_collectd_plugin.conf.erb</tt> - Collectd status plugin configuration template.
