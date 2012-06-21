@@ -33,10 +33,10 @@ There are no known limitations.
 
 === System Consistency (re-convergence)
 
-  To enforce a consistent system state, one can use this LWRP to schedule
-  a cron job to periodically run a recipe. Currently the period is hard-coded
-  to every 15 minutes -- with a random starting offset (to distribute runs
-  being performed by multiple systems).
+To enforce a consistent system state, one can use this LWRP to schedule
+a cron job to periodically run a recipe. Currently the period is hard-coded
+to every 15 minutes -- with a random starting offset (to distribute runs
+being performed by multiple systems).
 
 To start a periodic reconverge:
 
