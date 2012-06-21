@@ -42,7 +42,7 @@ action :pull do
 
   # "true" we just put downloaded file into "destination" folder
   # "false" we put downloaded file into /tmp and unpack it into "destination" folder
-  if (new_resource.unpack_source == true) then
+  if (new_resource.unpack_source == true)
     tmp_repo_path = "/tmp/downloaded_ros_archive.tar.gz"
   else
     tmp_repo_path = "#{new_resource.destination}/downloaded_ros_archive.tar.gz"
@@ -64,7 +64,7 @@ action :pull do
     code <<-EOH
       tar xzf #{tmp_repo_path} -C #{new_resource.destination}
     EOH
-    only_if do (new_resource.unpack_source == true) end
+    only_if { (new_resource.unpack_source == true) }
   end
 
   log "  ROS repo pull action - finished successfully!"
@@ -141,12 +141,12 @@ action :capistrano_pull do
 
   #initialisation of new git repo with initial commit
   bash "Git init in project folder" do
-      cwd "#{repo_dir}/ros_repo"
-      code <<-EOH
-        git init
-        git add .
-        git commit -a -m "fake commit"
-      EOH
+    cwd "#{repo_dir}/ros_repo"
+    code <<-EOH
+      git init
+      git add .
+      git commit -a -m "fake commit"
+    EOH
   end
 
   log "  Deploying new local git project repo from #{repo_dir}/ros_repo/ to #{destination}. New owner #{app_user}"
