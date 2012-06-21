@@ -18,7 +18,7 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 == KNOWN LIMITATIONS:
 
-Cookbook only supports the retrieval of code from Amazon S3 and Rackspace Cloud Files.
+Cookbook only supports the retrieval of code from Amazon S3, Rackspace Cloud Files, and Swift.
 
 == SETUP/USAGE:
 
@@ -52,7 +52,7 @@ For more information about Lightweight Resources and Providers (LWRPs), please s
 The <tt>repo_ros</tt> provider is defined in providers/default.rb file and contains source code for <tt>:pull</tt> and <tt>:capistrano_pull</tt> actions.
 For more information about these actions please see the <tt>repo</tt> cookbook's README.
 
-The <tt>repo_ros</tt> provider allows the retrieval of source code from Amazon S3 and Rackspace Cloud Files ROS remote repositories.
+The <tt>repo_ros</tt> provider allows the retrieval of source code from Amazon S3, Rackspace Cloud Files, and Swift ROS remote repositories.
 
 For normal operations it requires the "repo" resource, which acts as the interface to all <tt>repo_ros</tt> provider logic.
 
