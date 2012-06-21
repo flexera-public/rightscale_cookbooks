@@ -5,9 +5,10 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+
 # The server collection resource finds a set of servers in a deployment with a set of tags.
 actions :load
-#
+
 # Attribute specifies the tag or tags to search for (if multiple tags are specified servers with any of the tags will match).
 attribute :tags, :kind_of => [String, Array]
 # Optional attribute specifies tags that need to also appear on the servers.
