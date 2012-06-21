@@ -15,15 +15,17 @@ set_unless[:apache][:contact] = "root@localhost"
 
 # Turning off Keepalive to prevent conflicting HAproxy
 set_unless[:apache][:keepalive] = "Off" 
+
 # Turn on generation of "full" apache status
 set_unless[:apache][:extended_status] = "On"
+
 # worker = multithreaded (when you need a great deal of scalability)
 # prefork = single-threaded (when you need stability or compatibility with older software)
 # for more info please visit: http://httpd.apache.org/docs/2.0/en/mpm.html
 set_unless[:apache][:mpm] = "prefork"
+
 # Security: Configuring Server Signature
 set_unless[:apache][:serversignature] = "Off "
-
 
 # Calculated attributes
 

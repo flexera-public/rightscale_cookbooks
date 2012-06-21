@@ -61,7 +61,6 @@ end
 # Checking node[:apache][:listen_ports]
 # it can be a string if single port is defined
 # or array if multiple ports are defined
-
 if node[:apache][:listen_ports].kind_of?(Array)
   port = node[:apache][:listen_ports][0]
 else
