@@ -33,6 +33,10 @@ attribute :service_lb_name, :kind_of => String, :default => ""
 attribute :service_account_id, :kind_of => String, :default => ""
 attribute :service_account_secret, :kind_of => String, :default => ""
 
+#adnanced config attributes
+attribute :backend_fqdn, :kind_of => String, :default => ""
+attribute :pool_name, :kind_of => String, :default => ""
+attribute :backend_url_path, :kind_of => String, :default => ""
 
 # General LoadBalance Actions
 #

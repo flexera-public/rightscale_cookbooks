@@ -187,7 +187,7 @@ action :attach do
 
   # this will add  /advanced_configs directory
   # and home/lb/haproxy-cat.sh will create new
-  action_advanced_configs if node[:lb][advanced_cofiguration]== true
+  action_advanced_configs if node[:lb][:advanced_configuration]== true
 
   ## APP TAGs WILL BE
   # lb: fqdn
@@ -226,7 +226,7 @@ action :advanced_configs do
   #>>>>  acl ns-ss-db1-test-rightscale-com_acl  hdr_dom(host) -i ns-ss-db1.test.rightscale.com
   # TODO add template file
 
-
+  node[:lb][:advanced_config][:acl_condition] = "hdr_dom(host)"
   bash "Creating acl rules config file" do
        flags "-ex"
        code <<-EOH
