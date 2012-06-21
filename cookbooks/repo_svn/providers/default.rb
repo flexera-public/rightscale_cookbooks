@@ -45,7 +45,7 @@ action :pull do
     svn_action = :sync
   else
     ruby_block "Backup of existing project directory" do
-      only_if do ::File.directory?(destination_path) end
+      only_if { ::File.directory?(destination_path) }
       block do
         ::File.rename("#{destination_path}", "#{destination_path}"+::Time.now.strftime("%Y%m%d%H%M"))
       end
