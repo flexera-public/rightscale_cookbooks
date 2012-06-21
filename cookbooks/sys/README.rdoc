@@ -33,18 +33,18 @@ There are no known limitations.
 
 === System Consistency (re-convergence)
 
-  To reconverge the system so it is in the desired state this recipe
-  is run by default every 15 minutes.
+To reconverge the system so it is in the desired state this recipe
+is run by default every 15 minutes.
 
-  To start a periodic reconverge:
+To start a periodic reconverge:
 
-      sys_reconverge "mycookbook::myrecipe"
+  sys_reconverge "mycookbook::myrecipe"
 
-  To stop a periodic reconverge:
+To stop a periodic reconverge:
 
-      sys_reconverge "mycookbook::myrecipe" do
-        action :disable
-      end
+  sys_reconverge "mycookbook::myrecipe" do
+    action :disable
+  end
 
 = LICENSE:
 
