@@ -42,7 +42,7 @@ action :pull do
 
   # "true" we just put downloaded file into "destination" folder
   # "false" we put downloaded file into /tmp and unpack it into "destination" folder
-  if (new_resource.unpack_source == true) then
+  if (new_resource.unpack_source == true)
     tmp_repo_path = "/tmp/downloaded_ros_archive.tar.gz"
   else
     tmp_repo_path = "#{new_resource.destination}/downloaded_ros_archive.tar.gz"
