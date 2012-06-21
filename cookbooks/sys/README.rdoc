@@ -7,7 +7,7 @@ includes setting up the running of periodic recipes and setting up swap.
 
 == REQUIREMENTS:
 
-* Requires a VM launched from a RightScale managed RightImage.
+* Requires a virtual machine launched from a RightScale managed RightImage.
 
 == COOKBOOKS DEPENDENCIES:
 
@@ -25,7 +25,7 @@ There are no known limitations.
   swap on your server. You may wish to use ephemeral storage for swap, in that
   case you should include the <tt>block_device::setup_ephemeral</tt> recipe
   before it.
-* You can disable and enable the periodic recipes running by running the
+* You can disable and enable the periodic recipes by running the
   <tt>sys::do_reconverge_list_disable</tt> and
   <tt>sys::do_reconverge_list_enable</tt> recipes.
 
@@ -34,7 +34,7 @@ There are no known limitations.
 === System Consistency (re-convergence)
 
   To enforce a consistent system state, one can use this LWRP to schedule
-  a cron job to periodically run a recipe.  Currently the period is hard-coded
+  a cron job to periodically run a recipe. Currently the period is hard-coded
   to every 15 minutes -- with a random starting offset (to distribute runs
   being performed by multiple systems).
 
