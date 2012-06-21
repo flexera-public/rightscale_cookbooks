@@ -17,7 +17,7 @@
 
       ],
       "display_name": "NTP Servers",
-      "description": "A comma-separated list of fully qualified domain names for the array of servers we should talk to. Example: time1.example.com, time2.example.com, time3.example.com"
+      "description": "A comma-separated list of fully qualified domain names for the array of servers that instances should talk to. Example: time1.example.com, time2.example.com, time3.example.com"
     }
   },
   "license": "Copyright RightScale, Inc. All rights reserved.",
@@ -36,7 +36,7 @@
   "recommendations": {
   },
   "recipes": {
-    "sys_ntp": "Installs and configures ntp client"
+    "sys_ntp": "Installs and configures ntp client."
   },
   "groupings": {
   },
