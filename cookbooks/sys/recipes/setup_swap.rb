@@ -10,6 +10,7 @@ rightscale_marker :begin
 swap_size = node[:sys][:swap_size]
 swap_file = node[:sys][:swap_file]
 
+
 def clean_swap(swap_file)
 
   # Turn off swap on swap_file if turned on.
