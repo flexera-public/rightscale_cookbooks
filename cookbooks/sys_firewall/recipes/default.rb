@@ -39,12 +39,12 @@ end
 # the VM using this formula: ip_conntrack_max=32*n, where n is the amount
 # of RAM in MB. For the instance types greater or equal to 2GB, the value is
 # 65536.
-#
+
 GB=1024*1024
 mem_mb = node[:memory][:total].to_i/1024
 conn_max = (mem_mb >= 2*GB) ? 65536 : 32*mem_mb
 
-log "Setup IP connection tracking limit of #{conn_max}"
+log "  Setup IP connection tracking limit of #{conn_max}"
 bash "Update net.ipv4.ip_conntrack_max" do
   flags "-ex"
   only_if { node[:platform] =~ /redhat|centos/ }
