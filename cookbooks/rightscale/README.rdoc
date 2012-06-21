@@ -7,7 +7,7 @@ RightScale Cloud Management Platform.
 
 == REQUIREMENTS:
 
-Requires a VM launched from a RightScale managed RightImage.
+Requires a virtual machine launched from a RightScale managed RightImage.
 
 == COOKBOOKS DEPENDENCIES:
 
@@ -64,8 +64,8 @@ Syntax:
 
 ==== rightscale_marker
 
-* Accepts only one parameter, "location" which can be :start or :end. Can also
-  be :begin, :stop, and the string versions.
+* Accepts only one parameter, "location" which generally is :start or :end. Can also
+  be :begin, :stop, and a string.
 * Used to log the start and end of a recipe using the 'log' chef resource.
   Should be added at the beginning and end of a recipe.
 * Log marker:

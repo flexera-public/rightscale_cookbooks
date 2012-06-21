@@ -20,7 +20,6 @@ RS_TOOLS_VERSION = "1.1.18"
 COOKBOOK_DEFAULT_GEMS = ::File.join(::File.dirname(__FILE__), "..", "files", "default")
 
 # Install tools dependencies
-#
 
 # right_rackspace
 r = gem_package "#{COOKBOOK_DEFAULT_GEMS}/#{RACKSPACE_GEM}-#{RACKSPACE_VERSION}.gem" do
@@ -31,7 +30,6 @@ end
 r.run_action(:install)
 
 # Install tools
-#
 r = gem_package "#{COOKBOOK_DEFAULT_GEMS}/#{RS_TOOLS_GEM}-#{RS_TOOLS_VERSION}.gem" do
   gem_binary SANDBOX_BIN_GEM
   version RS_TOOLS_VERSION
