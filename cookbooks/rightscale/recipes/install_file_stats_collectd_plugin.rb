@@ -9,13 +9,12 @@ rightscale_marker :begin
 
 # Load the exec plugin in the main config file
 rightscale_enable_collectd_plugin "exec"
-#node[:rightscale][:plugin_list] += " exec" unless node[:rightscale][:plugin_list] =~ /exec/
 
 include_recipe "rightscale::setup_monitoring"
 
 require 'fileutils'
 
-log "Installing file_stats collectd plugin.."
+log "  Installing file_stats collectd plugin.."
 
 template(::File.join(node[:rightscale][:collectd_plugin_dir], "file-stats.conf")) do
   backup false
@@ -46,7 +45,10 @@ ruby_block "add_collectd_gauges" do
     types_file = ::File.join(node[:rightscale][:collectd_share], 'types.db')
     typesdb = IO.read(types_file)
     unless typesdb.include?('gague-age') && typesdb.include?('gague-size')
-      typesdb += "\ngauge-age          seconds:GAUGE:0:200000000\ngauge-size          bytes:GAUGE:0:200000000\n"
+      typesdb += <<-EOS
+        ngauge-age          seconds:GAUGE:0:200000000
+        gauge-size          bytes:GAUGE:0:200000000
+      EOS
       File.open(types_file, "w") { |f| f.write(typesdb) }
     end
   end
