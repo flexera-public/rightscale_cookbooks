@@ -42,7 +42,7 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
   the default configuration installed.
 
 * Remote Logging - Set the 'logging/remote_server' input to the FQDN or IP of the
-  desgnated remote logging server to use the default configuration with the remote
+  designated remote logging server to use the default configuration with the remote
   logging configuration appended.
 
 == DETAILS:

@@ -36,7 +36,7 @@ All tag-based actions are scoped to the deployment.
 
 To open a local port to all servers with a given tag use:
 
-  sys_firewall "Open this servers's ports to all servers with this 'tag' " do
+  sys_firewall "Open this server's ports to all servers with this 'tag' " do
     machine_tag "servertag:active=true"
     port 3306
     enable true
