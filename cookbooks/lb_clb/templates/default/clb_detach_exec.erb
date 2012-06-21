@@ -32,16 +32,16 @@ if [ -z ${RACKSPACE_API_TOKEN} ] || [ -z ${RACKSPACE_USERNAME} ]; then
 fi
 
 case "$CLB_NODE_IP" in
-   "Public"  ) CLB_NODE_IP=$RS_PUBLIC_IP;;
-   "Private" ) CLB_NODE_IP=$RS_PRIVATE_IP;;
-   *         ) echo "Using the provided IP";;
+  "Public"  ) CLB_NODE_IP=$RS_PUBLIC_IP;;
+  "Private" ) CLB_NODE_IP=$RS_PRIVATE_IP;;
+  *         ) echo "Using the provided IP";;
 esac
 
 case "$CLB_REGION" in
-  ORD*   ) auth_url="https://auth.api.rackspacecloud.com/v1.0" && service_endpoint="https://ord.loadbalancers.api.rackspacecloud.com/v1.0/";;
-  DFW*   ) auth_url="https://auth.api.rackspacecloud.com/v1.0" && service_endpoint="https://dfw.loadbalancers.api.rackspacecloud.com/v1.0/";;
-  LON*   ) auth_url="https://lon.auth.api.rackspacecloud.com/v1.0" && service_endpoint="https://lon.loadbalancers.api.rackspacecloud.com/v1.0/";;
-  *      ) echo "Unsupported region" && exit 1;;
+  ORD* ) auth_url="https://auth.api.rackspacecloud.com/v1.0" && service_endpoint="https://ord.loadbalancers.api.rackspacecloud.com/v1.0/";;
+  DFW* ) auth_url="https://auth.api.rackspacecloud.com/v1.0" && service_endpoint="https://dfw.loadbalancers.api.rackspacecloud.com/v1.0/";;
+  LON* ) auth_url="https://lon.auth.api.rackspacecloud.com/v1.0" && service_endpoint="https://lon.loadbalancers.api.rackspacecloud.com/v1.0/";;
+  *    ) echo "Unsupported region" && exit 1;;
 esac
 
 #auth and setup variables
@@ -51,10 +51,10 @@ account_id=`grep -i "X-Server-Management-Url"<<<"$output" | sed -r 's/.+\/([0-9]
 service_endpoint+=$account_id
 
 if [[ $account_id =~ ^[0-9]+$ ]] ; then
-    echo "Identified account id: $account_id"
+  echo "Identified account id: $account_id"
 else
-    echo 'Cannot parse account it. Aborting!'
-    exit 1
+  echo 'Cannot parse account it. Aborting!'
+  exit 1
 fi
 
 #get LB id for $RAX_CLB_NAME
@@ -62,10 +62,10 @@ output=`curl -k -H "X-Auth-Token: $x_auth_token" $service_endpoint/loadbalancers
 clb_id=`grep -i "loadBalancer"<<<"$output" | sed -r 's/.+lancer id="([0-9]+)" name="'$RAX_CLB_NAME'".+>/\1/'`
 
 if [[ $clb_id =~ ^[0-9]+$ ]] ; then
-    echo "Identified CLB id: $clb_id"
+  echo "Identified CLB id: $clb_id"
 else
-    echo 'Cannot parse CLB id. Aborting!'
-    exit 1
+  echo 'Cannot parse CLB id. Aborting!'
+  exit 1
 fi
 
 #get node id based on listening IP
@@ -74,10 +74,10 @@ output=`curl -k -H "X-Auth-Token: $x_auth_token" $service_endpoint/loadbalancers
 node_id=`grep -i "loadBalancer"<<<"$output"  | sed -r 's/.+node id="([0-9]+)" address="'$CLB_NODE_IP'".+>/\1/'`
 
 if [[ $node_id =~ ^[0-9]+$ ]] ; then
-    echo "Identified node id: $node_id"
+  echo "Identified node id: $node_id"
 else
-    echo 'Cannot parse node id. Aborting!'
-    exit 1
+  echo 'Cannot parse node id. Aborting!'
+  exit 1
 fi
  
 #remove a node($node_id) from a load balancer  

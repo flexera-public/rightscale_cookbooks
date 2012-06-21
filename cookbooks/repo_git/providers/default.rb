@@ -103,7 +103,7 @@ action :capistrano_pull do
   log "  Deploy provider #{scm_provider}"
 
   # Applying capistrano style deployment
-  capistranize_repo "Source repo" do
+  repo_capistranize "Source repo" do
     repository                 repository
     revision                   revision
     destination                destination

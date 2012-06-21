@@ -27,11 +27,6 @@ all_recipes = [
   "web_apache::setup_frontend_http_vhost",
   "web_apache::setup_frontend",
 ]
-other_recipes = [
-  "web_apache::do_start",
-  "web_apache::do_stop",
-  "web_apache::do_restart"
-]
 
 depends "apache2"
 depends "rightscale"

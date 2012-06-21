@@ -10,7 +10,7 @@
 
 capistrano_dir="/home/capistrano_repo"
 # More detailed parameters descriptions you can find in repo/resources/default.rb
-define :capistranize_repo,
+define :repo_capistranize,
        :destination => "",
        :repository => "",
        :revision => "",

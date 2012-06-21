@@ -4,7 +4,7 @@
 This cookbook installs and configures Apache2 web server.
 
 == REQUIREMENTS:
-Requires a VM launched from a RightScale managed RightImage
+Requires a virtual machine launched from a RightScale managed RightImage
 
 == COOKBOOKS DEPENDENCIES:
 Please see <tt>metadata.rb</tt> file for the latest dependencies.
@@ -17,6 +17,7 @@ There are no known limitations.
 * Use <tt>web_apache::setup_monitoring</tt> recipe to add apache monitoring options to your dashboard "monitoring" tab.
 
 == DETAILS:
+
 === General
 The recipes in this cookbook are designed to perform basic operations with apache web server.
 

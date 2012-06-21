@@ -8,7 +8,8 @@
 rightscale_marker :begin
 
 # Set the LAMP specific node variables.
-# Make sure and run this recipe after the php application server default recipe
+#
+# Make sure to run this recipe after the php application server default recipe
 # to ensure that it does not over write these values.
 
 node[:db_mysql][:bind_address] = "localhost"

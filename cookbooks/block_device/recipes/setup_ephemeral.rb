@@ -108,8 +108,11 @@ if cloud == 'ec2' || cloud == 'openstack'
     # If fstab & mtab entry exists, assume a reboot and skip to end
     # /dev/sdb (/dev/sdf on redhat) is mounted on /mnt on the
     # image by default as an ext3 filesystem. Umount this device
-    # so it can be used in the LVM
+    # so it can be used in the LVM.
+    # ignore_failure set because /mnt may not be mounted, such as stop/start on HVM images.
+
     mount "/mnt" do
+      ignore_failure true
       device mnt_device
       fstype "ext3"
       action [:umount, :disable]
