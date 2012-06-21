@@ -51,8 +51,8 @@ elsif secondary_storage_cloud =~ /rackspace/i
 end
 
 log "  Performing Secondary Restore from #{node[:db][:backup][:secondary_location]}..."
-# Requires block_device DATA_DIR to be instantiated
-# previously. Make sure block_device::default recipe has been run.
+# Requires block_device DATA_DIR to be previously instantiated.
+# Make sure block_device::default recipe has been run.
 block_device NICKNAME do
   lineage restore_lineage
   timestamp_override restore_timestamp_override
