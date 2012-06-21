@@ -185,7 +185,131 @@ action :attach do
     notifies :run, resources(:execute => "/home/lb/haproxy-cat.sh")
   end
 
+  ## APP TAGs WILL BE
+  # lb: fqdn
+  # lb: url_path
+  # lb: pool_name
+
+  ### INPUTS WILL BE
+  # acl_type - path_beg, hdr_dom(host),
+  # use_backend_condition -> if
+  #, or, and
+  #
+
+
+  ###ACL -> template
+  # acl url_serverid  path_beg    /serverid
+  #
+  # acl ns-ss-db1-test-rightscale-com_acl
+  # hdr_dom(host)
+  #-i ns-ss-db1.test.rightscale.com
+
+
+
 end # action :attach do
+
+action :advanced_configs do
+  advanced_rule_directory = "/home/lb/#{node[:lb][:service][:provider]}.d/advanced_configs"
+  # create directory where advanced rules configs will be stored
+  directory "#{advanced_rule_directory}"
+
+  # create template which will contain advanced acl rules
+  #
+  ## TEMPLATE EXAMPLE
+  # if (lb:fqdn) and (node[:lb][:advanced_config][:acl_condition] == "hdr_dom(host)")
+  #  "acl #{new_resource.backend_fqdn}_acl hdr_dom(host) -i #{new_resource.backend_fqdn}"
+  # end
+  #>>>>  acl ns-ss-db1-test-rightscale-com_acl  hdr_dom(host) -i ns-ss-db1.test.rightscale.com
+  # TODO add template file
+  template ::File.join("#{advanced_rule_directory}", vhost_name, "acls") do
+    source "haproxy_advanced_acl.erb"
+    owner "haproxy"
+    group "haproxy"
+    mode 0600
+    backup false
+    cookbook "lb_haproxy"
+    variables(
+      # TODO add resource attributes
+      :backend_fqdn => new_resource.backend_fqdn,
+      :backend_url_path => new_resource.backend_url_path,
+      # TODO add input
+      :acl_condition => node[:lb][:advanced_config][:acl_condition]
+    )
+  end
+
+
+  ### USE_BACKEND CASE
+  # use_backend 2_backend if url_serverid
+  # use_backend 2_backend if ns-ss-db2-test-rightscale-com_acl
+  #
+  # use_backend 1_backend
+  # if ns-ss-db1-test-rightscale-com_acl
+  #
+
+
+  # 1  how we will create "1_backend" config file
+  # CODE DRAFT EXAMPLE
+  # if (lb: pool_name)
+  # echo "::File.join("/home/lb/#{node[:lb][:service][:provider]}.d", vhost_name, new_resource.backend_id)" >> "advanced_rule_directory/#{lb:pool_name}"
+  # end
+  # RESULT EXAMPLE
+  # >>>> 1_backend.conf
+  # server 01-0F16VI5 10.85.149.59:8000 cookie 01-0F16VI5 check inter 3000 rise 2 fall 3 maxconn 500
+  # server 01-2UD17HR 10.40.23.216:8000 cookie 01-2UD17HR check inter 3000 rise 2 fall 3 maxconn 500
+  # >>>>
+
+  bash "Creating server pool configs" do
+    flags "-ex"
+    # TODO  put lb:pool_name value from tag to new_resource.pool_name
+    #
+    # this script will allow to create pools which can contain more then one app server
+    code <<-EOH
+    echo "#{::File.join("/home/lb/#{node[:lb][:service][:provider]}.d", vhost_name, new_resource.backend_id)}" >> "#{advanced_rule_directory}/#{new_resource.pool_name}"
+    EOH
+  end
+
+
+  # 2  how we will create "/home/lb/haproxy.d/advanced_configs/use_backend.conf"
+  #
+  # CODE DRAFT EXAMPLE
+  # use_backend #{lb:pool_name} node[:lb][:advanced_config][:use_backend_condition] ns-ss-db1-test-rightscale-com_acl
+  # RESULT EXAMPLE
+  # use_backend 1_backend if ns-ss-db1-test-rightscale-com_acl
+
+
+  bash "Creating use_backend rule configs" do
+     flags "-ex"
+
+     # this script will allow to create pools which can contain more then one app server
+     code <<-EOH
+     $condition= "use_backend #{new_resource.pool_name} if #{new_resource.backend_fqdn}_acl"
+     echo condition >>
+echo "#{::File.join("/home/lb/#{node[:lb][:service][:provider]}.d", vhost_name, new_resource.backend_id)}" >> "#{advanced_rule_directory}/#{new_resource.pool_name}"
+     EOH
+   end
+
+  template ::File.join("#{advanced_rule_directory}", vhost_name, "use_backend.conf") do
+    source "haproxy_advanced_use_backend_conf.erb"
+    owner "haproxy"
+    group "haproxy"
+    mode 0600
+    backup false
+    cookbook "lb_haproxy"
+    variables(
+     :pool_name => new_resource.pool_name,
+     :use_backend_condition => node[:lb][:advanced_config][:use_backend_condition],
+     :acl => "#{new_resource.backend_fqdn}_acl"
+    )
+  end
+
+
+  # backend_pull template
+  # basing on vhost TAG add it to backend pool
+  # will create /haproxy.d/pool_* files which will contain groups of host entries
+
+
+end
+
 
 action :attach_request do
 
