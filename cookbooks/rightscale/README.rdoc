@@ -2,16 +2,16 @@
 
 == DESCRIPTION:
 
-This cookbook provides base recipes used to setup services used by the
+This cookbook provides base recipes used to set up services used by the
 RightScale Cloud Management Platform.
 
 == REQUIREMENTS:
 
-Requires a VM launched from a RightScale managed RightImage.
+Requires a virtual machine launched from a RightScale managed RightImage.
 
 == COOKBOOKS DEPENDENCIES:
 
-Please see <tt>metadata.rb</tt> file for the latest dependencies.
+Please see the <tt>metadata.rb</tt> file for the latest dependencies.
 
 == KNOWN LIMITATIONS:
 
@@ -20,7 +20,8 @@ There are no known limitations.
 == SETUP/USAGE:
 
 The <tt>rightscale::default</tt> recipe performs common server configuration
-steps such as enabling monitoring on the RightScale Dashboard.
+steps such as enabling monitoring on an instance so that graphs cane be
+displayed in the RightScale Dashboard.
 
 The <tt>rightscale::install_tools</tt> recipe installs the
 <tt>rightscale_tools</tt> gem which provides tools for dealing with databases,
@@ -38,9 +39,9 @@ volumes, and remote object storage providers.
   to create the list of plugins in the <tt>/etc/collectd/collectd.conf</tt>
   file.
 * The <tt>node[:rightscale][:plugin_list_array]</tt> will have any plugins listed
-  in <tt>node[:rightscale][:plugin_list]</tt> merged into it. This is to
-  support any legacy recipes as well as allow the input to be manipulated in
-  the RS dashboard.
+  in the <tt>node[:rightscale][:plugin_list]</tt> merged into it, which 
+  supports any legacy recipes, as well as allow the input to be manipulated in
+  the RightScale Dashboard.
 
 Syntax:
 
@@ -50,13 +51,13 @@ Syntax:
 
 * Accepts only one parameter, "name" which is the name of the process to
   monitor.
-* The process name is added to <tt>node[:rightscale][:process_list_array]</tt>
+* The process name is added to the <tt>node[:rightscale][:process_list_array]</tt>
   which is used to create the list of processes in the
   <tt>/etc/collectd/conf/processes.conf</tt> file.
 * The <tt>node[:rightscale][:process_list_array]</tt> will have any processes
-  listed in node[:rightscale][:process_list] merged into it.  This is to support
-  any legacy recipes as well as allow the input to be manipulated in the RS
-  dashboard.
+  listed in node[:rightscale][:process_list] merged into it, which supports
+  any legacy recipes, as well as allow the input to be manipulated in the
+  RightScale Dashboard.
 
 Syntax:
 
@@ -64,8 +65,9 @@ Syntax:
 
 ==== rightscale_marker
 
-* Accepts only one parameter, "location" which can be :start or :end. Can also
-  be :begin, :stop, and the string versions.
+* Accepts only one parameter, "location" which can be used to denote 
+  the :start or :end of a recipe. It can also be :begin, :stop, and 
+  the string versions.
 * Used to log the start and end of a recipe using the 'log' chef resource.
   Should be added at the beginning and end of a recipe.
 * Log marker:
@@ -83,10 +85,10 @@ Syntax:
 
 The server collection resource finds a set of servers in a deployment with a set
 of tags. The <tt>tags</tt> attribute specifies the tag or tags to search for (if
-multiple tags are specified servers with any of the tags will match) and the
+multiple tags are specified, servers with any of the tags will match) and the
 optional <tt>secondary_tags</tt> attribute specifies tags that need to also
 appear on the servers, it will wait one minute for the <tt>secondary_tags</tt>
-to appear (this can be overridden with the <tt>timeout</tt> attribute).
+to appear, which can be overridden with the <tt>timeout</tt> attribute.
 
 Syntax:
 
