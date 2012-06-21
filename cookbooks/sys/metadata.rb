@@ -11,7 +11,7 @@ supports "ubuntu", "~> 10.04.0"
 
 depends "rightscale"
 
-recipe "sys::do_reconverge_list_enable", "Enable list of recipes to run every 15 minutes."
+recipe "sys::do_reconverge_list_enable", "Enables the periodic execution (every 15 minutes) of recipes specified in the 'Reconverge List' input."
 recipe "sys::do_reconverge_list_disable", "Disable recipe reconverge list."
 recipe "sys::setup_swap", "Installs swap space."
 
