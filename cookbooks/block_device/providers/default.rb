@@ -31,7 +31,7 @@ action :backup_lock_take do
   device.backup_lock_take(new_resource.force)
 end
 
-# Create the backup lock
+# Remove the backup lock
 action :backup_lock_give do
   device = init(new_resource)
   device.backup_lock_give
