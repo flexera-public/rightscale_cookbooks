@@ -64,7 +64,7 @@ action :pull do
     code <<-EOH
       tar xzf #{tmp_repo_path} -C #{new_resource.destination}
     EOH
-    only_if do (new_resource.unpack_source == true) end
+    only_if { (new_resource.unpack_source == true) }
   end
 
   log "  ROS repo pull action - finished successfully!"
