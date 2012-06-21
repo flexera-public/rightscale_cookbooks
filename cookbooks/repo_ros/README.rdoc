@@ -8,7 +8,7 @@ manage source code download from Remote Object Store repositories.
 == REQUIREMENTS:
 
 * Requires this 'repo' Lightweight Resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/repo or your own implementation of "repo" resource. See "repo" cookbook README for details.
-* Requires a virtual machine launched from a RightScale-managed RightImage.
+* Requires a virtual machine launched from a RightScale-managed RightImage. 
 
 == COOKBOOKS DEPENDENCIES:
 
