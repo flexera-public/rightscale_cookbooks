@@ -48,18 +48,6 @@ found in the <tt>repo</tt> cookbook.
 For more about Lightweight Resources and Providers (LWRPs), please see the RightScale
 Guide at:  http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)
 
-=== Attributes:
-none
-
-=== Templates:
-none
-
-=== Definitions:
-none
-
-=== Libraries-helpers:
-none
-
 === LWRPs:
 
 <tt>repo_ros</tt> provider is defined in providers/default.rb file, it contains source for <tt>:pull</tt> and <tt>:capistrano_pull</tt> actions.
