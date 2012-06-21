@@ -8,8 +8,6 @@
 
 rightscale_marker :begin
 
-
-
 log "  Setup all resources that have attributes in the node"
 node[:repo].each do |resource_name, entry|
 
@@ -23,8 +21,6 @@ node[:repo].each do |resource_name, entry|
   storage_account_secret = entry[:storage_account_secret] || ""
   container = entry[:container] || ""
   prefix = entry[:prefix] || ""
-
-
 
   # Initial setup of "repository" LWRP.
   log "  Registering #{resource_name} prov: #{entry[:provider]}"
