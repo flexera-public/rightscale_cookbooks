@@ -2,7 +2,7 @@
 
 == DESCRIPTION:
 
-Provides the GIT implementation of the 'repo' resource to
+Provides the Git implementation of the 'repo' resource to
 manage source code downloaded from git repositories.
 
 == REQUIREMENTS:
