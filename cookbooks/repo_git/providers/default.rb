@@ -18,9 +18,10 @@ action :setup_attributes do
   end
 
   # Checking repository URL
-  raise "  ERROR: repo URL input is unset. Please fill 'Repository URL' input" if repository_url.empty?
+  raise "  ERROR: repository input is unset. Please fill 'Repository URL' input" if repository_url.empty?
 
 end
+
 
 action :pull do
 
@@ -75,6 +76,7 @@ action :pull do
 
   log "  GIT repository update/download action - finished successfully!"
 end
+
 
 action :capistrano_pull do
 
