@@ -31,8 +31,8 @@ attribute "repo/default/repository",
   :recipes => ["repo::default"]
 
 attribute "repo/default/revision",
-  :display_name => "Branch/Tag/SHA",
-  :description => "The specific branch, tag, or SHA of the specified git repository that the application code will be retrieved from. Use 'master' to retrieve the master branch from the repository. Example: mybranch",
+  :display_name => "Repository Branch/Tag/Commit",
+  :description => "The specific branch, tag, or commit (SHA) of the specified Git/Subversion repository that the application code will be retrieved from. For Git repositories, use 'master' to retrieve the master branch from the repository. Example: mybranch",
   :required => "recommended",
   :default => "master",
   :recipes => ["repo::default"]
