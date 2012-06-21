@@ -115,7 +115,7 @@ attributes</b> which are used internally in recipes.
 
 === Definitions:
 
-<b>capistranize_repo</b>
+<b>repo_capistranize</b>
 
 Definition used to create Capistrano style project deployment.
 For more information about capistrano see {The Deploy Strategies}[http://wiki.opscode.com/display/chef/Deploy+Resource#DeployResource-TheDeployStrategies].
@@ -160,7 +160,7 @@ See example below.
 
 Example:
 
-  capistranize_repo "Source repo" do
+  repo_capistranize "Source repo" do
     repository                 your_repository_variable
     revision                   revision_variable
     destination                destination_variable

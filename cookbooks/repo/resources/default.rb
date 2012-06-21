@@ -6,7 +6,6 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-
 actions :pull
 actions :capistrano_pull
 actions :setup_attributes
