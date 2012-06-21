@@ -11,4 +11,4 @@ supports "ubuntu", "~> 10.04.0"
 
 depends "repo"
 
-recipe  "repo_ros::default", "Default pattern of loading packages and resources provided"
+recipe  "repo_ros::default", "Default pattern for loading provided packages and resources."

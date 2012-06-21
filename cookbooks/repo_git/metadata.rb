@@ -12,4 +12,4 @@ supports "ubuntu", "~> 10.04.0"
 depends "git"
 depends "repo"
 
-recipe  "repo_git::default", "Default pattern of loading packages"
+recipe  "repo_git::default", "Default pattern for loading provided packages and resources."
