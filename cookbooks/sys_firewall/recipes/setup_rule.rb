@@ -10,6 +10,7 @@ rightscale_marker :begin
 # convert inputs into parameters usable by the firewall_rule definition
 rule_port = node[:sys_firewall][:rule][:port].to_i
 raise "Invalid port specified: #{node[:sys_firewall][:rule][:port]}. Valid range 1-65536" unless rule_port > 0 and rule_port <= 65536
+
 rule_ip = node[:sys_firewall][:rule][:ip_address]
 rule_ip = (rule_ip == "" || rule_ip.downcase =~ /any/) ? nil : rule_ip
 to_enable = (node[:sys_firewall][:rule][:enable] == "enable") ? true : false
@@ -20,6 +21,7 @@ if node[:sys_firewall][:rule][:protocol] == "both"
 else
   rule_protocol = [node[:sys_firewall][:rule][:protocol]]
 end
+
 
 # if firewall enabled
 if node[:sys_firewall][:enabled] == "enabled"
@@ -32,7 +34,6 @@ if node[:sys_firewall][:enabled] == "enabled"
       action :update
     end
   end
-
 else
   log "  Firewall not enabled. Not adding rule for #{rule_port}."
 end
