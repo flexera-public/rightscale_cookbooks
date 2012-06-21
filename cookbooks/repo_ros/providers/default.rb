@@ -141,12 +141,12 @@ action :capistrano_pull do
 
   #initialisation of new git repo with initial commit
   bash "Git init in project folder" do
-      cwd "#{repo_dir}/ros_repo"
-      code <<-EOH
-        git init
-        git add .
-        git commit -a -m "fake commit"
-      EOH
+    cwd "#{repo_dir}/ros_repo"
+    code <<-EOH
+      git init
+      git add .
+      git commit -a -m "fake commit"
+    EOH
   end
 
   log "  Deploying new local git project repo from #{repo_dir}/ros_repo/ to #{destination}. New owner #{app_user}"
