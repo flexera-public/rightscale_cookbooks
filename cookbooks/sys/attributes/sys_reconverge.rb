@@ -6,6 +6,5 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 # Required attributes
-#
 
 set_unless[:sys][:reconverge_list] = ""

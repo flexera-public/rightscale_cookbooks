@@ -7,7 +7,7 @@ includes setting up the running of periodic recipes and setting up swap.
 
 == REQUIREMENTS:
 
-* Requires a VM launched from a RightScale managed RightImage.
+* Requires a virtual machine launched from a RightScale managed RightImage.
 
 == COOKBOOKS DEPENDENCIES:
 
@@ -33,10 +33,8 @@ There are no known limitations.
 
 === System Consistency (re-convergence)
 
-  To enforce a consistent system state, one can use this LWRP to schedule
-  a cron job to periodically run a recipe.  Currently the period is hard-coded
-  to every 15 minutes -- with a random starting offset (to distribute runs
-  being performed by multiple systems).
+  To reconverge the system so it is in the desired state this recipe
+  is run by default every 15 minutes.
 
   To start a periodic reconverge:
 

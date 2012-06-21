@@ -8,7 +8,7 @@
 action :enable do
   recipe = new_resource.recipe_name
   minute_list = RightScale::System::Helper.randomize_reconverge_minutes
-  log "Adding #{recipe} to reconverge via cron on minutes [#{minute_list}]"
+  log "  Adding #{recipe} to reconverge via cron on minutes [#{minute_list}]"
 
   cron "reconverge_#{recipe.gsub("::", "_")}" do
     minute minute_list
@@ -19,13 +19,13 @@ action :enable do
 
 end
 
+
 action :disable do
   recipe = new_resource.recipe_name
-  log "Removing #{recipe} from reconverge via cron"
+  log "  Removing #{recipe} from reconverge via cron"
 
   cron "reconverge_#{recipe.gsub("::", "_")}" do
     user "root"
     action :delete
   end
-
 end
