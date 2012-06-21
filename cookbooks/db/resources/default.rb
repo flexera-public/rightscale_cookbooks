@@ -196,7 +196,7 @@ add_action :set_privileges
 # Installs database client
 #
 # Use to install the client on any system that needs to connect to the server.
-# Also should install language binding packages. For exampler: ruby client gem
+# Also should install language binding packages. For example: ruby client gem
 # java client jar, php client modules, etc
 #
 add_action :install_client
