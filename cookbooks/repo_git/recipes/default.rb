@@ -14,9 +14,12 @@ when "debian", "ubuntu"
 else
   package "git"
 end
+
 # Install additional git packages
+
 # svn compatibility package
 package "git-svn"
+
 # email add-on
 package "git-email"
 
