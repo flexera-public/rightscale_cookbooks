@@ -185,6 +185,10 @@ action :attach do
     notifies :run, resources(:execute => "/home/lb/haproxy-cat.sh")
   end
 
+  # this will add  /advanced_configs directory
+  # and home/lb/haproxy-cat.sh will create new
+  action_advanced_configs if node[:lb][advanced_cofiguration]== true
+
   ## APP TAGs WILL BE
   # lb: fqdn
   # lb: url_path
@@ -221,20 +225,14 @@ action :advanced_configs do
   # end
   #>>>>  acl ns-ss-db1-test-rightscale-com_acl  hdr_dom(host) -i ns-ss-db1.test.rightscale.com
   # TODO add template file
-  template ::File.join("#{advanced_rule_directory}", vhost_name, "acls") do
-    source "haproxy_advanced_acl.erb"
-    owner "haproxy"
-    group "haproxy"
-    mode 0600
-    backup false
-    cookbook "lb_haproxy"
-    variables(
-      # TODO add resource attributes
-      :backend_fqdn => new_resource.backend_fqdn,
-      :backend_url_path => new_resource.backend_url_path,
-      # TODO add input
-      :acl_condition => node[:lb][:advanced_config][:acl_condition]
-    )
+
+
+  bash "Creating acl rules config file" do
+       flags "-ex"
+       code <<-EOH
+       $acl_condition= acl #{new_resource.backend_fqdn}_acl #{node[:lb][:advanced_config][:acl_condition]} #{new_resource.backend_fqdn}
+       echo acl_condition >> #{::File.join("#{advanced_rule_directory}", vhost_name, "acl.conf")}
+       EOH
   end
 
 
@@ -244,7 +242,7 @@ action :advanced_configs do
   #
   # use_backend 1_backend
   # if ns-ss-db1-test-rightscale-com_acl
-  #
+
 
 
   # 1  how we will create "1_backend" config file
@@ -264,7 +262,7 @@ action :advanced_configs do
     #
     # this script will allow to create pools which can contain more then one app server
     code <<-EOH
-    echo "#{::File.join("/home/lb/#{node[:lb][:service][:provider]}.d", vhost_name, new_resource.backend_id)}" >> "#{advanced_rule_directory}/#{new_resource.pool_name}"
+    echo "#{::File.join("/home/lb/#{node[:lb][:service][:provider]}.d", vhost_name, new_resource.backend_id)}" >> "#{advanced_rule_directory}/pool_#{new_resource.pool_name}"
     EOH
   end
 
@@ -276,37 +274,15 @@ action :advanced_configs do
   # RESULT EXAMPLE
   # use_backend 1_backend if ns-ss-db1-test-rightscale-com_acl
 
-
   bash "Creating use_backend rule configs" do
      flags "-ex"
-
-     # this script will allow to create pools which can contain more then one app server
      code <<-EOH
      $condition= "use_backend #{new_resource.pool_name} if #{new_resource.backend_fqdn}_acl"
-     echo condition >>
-echo "#{::File.join("/home/lb/#{node[:lb][:service][:provider]}.d", vhost_name, new_resource.backend_id)}" >> "#{advanced_rule_directory}/#{new_resource.pool_name}"
+     echo condition >> #{::File.join("#{advanced_rule_directory}", vhost_name, "use_backend.conf")}
      EOH
-   end
-
-  template ::File.join("#{advanced_rule_directory}", vhost_name, "use_backend.conf") do
-    source "haproxy_advanced_use_backend_conf.erb"
-    owner "haproxy"
-    group "haproxy"
-    mode 0600
-    backup false
-    cookbook "lb_haproxy"
-    variables(
-     :pool_name => new_resource.pool_name,
-     :use_backend_condition => node[:lb][:advanced_config][:use_backend_condition],
-     :acl => "#{new_resource.backend_fqdn}_acl"
-    )
+    # recreating rightscale_lb.cfg
+    notifies :run, resources(:execute => "/home/lb/haproxy-cat.sh")
   end
-
-
-  # backend_pull template
-  # basing on vhost TAG add it to backend pool
-  # will create /haproxy.d/pool_* files which will contain groups of host entries
-
 
 end
 

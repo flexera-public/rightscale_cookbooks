@@ -30,6 +30,12 @@ do
   echo "  acl ${acl} hdr_dom(host) -i ${single_vhost}" >> ${CONF_FILE}
 done
 
+# this will add advanced acls to config file
+if [ -r  /home/lb/lb_haproxy.d/advanced_configs/${dir}/acl.conf ];
+then
+  echo /home/lb/lb_haproxy.d/advanced_configs/${dir}/acl.conf >> ${CONF_FILE}
+fi
+
 echo "" >> ${CONF_FILE}
 
 for single_vhost in ${vhosts}
@@ -38,6 +44,13 @@ do
   backend=${single_vhost//\./_}"_backend"
   echo "  use_backend ${backend} if ${acl}" >> ${CONF_FILE}
 done
+
+# this will add advanced use_backend statements to config file
+if [ -r  /home/lb/lb_haproxy.d/advanced_configs/${dir}/use_backend.conf ];
+then
+  echo /home/lb/lb_haproxy.d/advanced_configs/${dir}/use_backend.conf>> ${CONF_FILE}
+fi
+
 
 echo "" >> ${CONF_FILE}
 
@@ -56,3 +69,14 @@ do
   echo "" >> ${CONF_FILE}
 
 done
+
+for pool_name in /home/lb/lb_haproxy.d/pool_*
+do
+echo "" >> ${CONF_FILE}
+
+cat /home/lb/rightscale_lb.cfg.default_backend >> ${CONF_FILE}
+
+cat /home/lb/lb_haproxy.d/advanced_configs/${dir}/pool_${pool_name}>> ${CONF_FILE}
+
+done
+
