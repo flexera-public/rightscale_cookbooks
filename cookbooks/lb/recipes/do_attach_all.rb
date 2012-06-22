@@ -36,12 +36,20 @@ vhosts(node[:lb][:vhost_names]).each do |vhost_name|
   log "  No servers to attach" do
     only_if { servers_to_attach.empty? }
   end
+
+  log "adv config  #{node[:lb][:advanced_configuration]}"
+
   servers_to_attach.each do |uuid|
     lb vhost_name do
       backend_id uuid
       backend_ip deployment_servers[uuid][:ip]
       backend_port deployment_servers[uuid][:backend_port].to_i
       session_sticky node[:lb][:session_stickiness]
+      # advanced attrs
+      backend_fqdn deployment_servers[uuid][:backend_fqdn]
+      pool_name deployment_servers[uuid][:pool_name]
+      backend_url_path deployment_servers[uuid][:backend_url_path]
+      # ----
       action :attach
     end
   end

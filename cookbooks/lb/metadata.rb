@@ -140,3 +140,13 @@ attribute "lb/service/account_secret",
     "lb::do_attach_request",
     "lb::do_detach_request"
   ]
+
+attribute "lb/advanced_config/acl_condition",
+  :display_name => "Advanced Acl condition",
+  :description => "Type of the condition which will be used to create haproxy advanced acls. App servers must have following TAGS appserver:pool_name=2_pool  and one of the appserver:backend_fqdn=ns-ss-db2.test.rightscale.com OR appserver:backend_url_path=/appserver.  Example: FQDN  ",
+  :choice => ["FQDN", "URI", "headers", "HTTP_BASIC_AUTH"],
+  :default => "FQDN",
+  :required => "optional",
+  :recipes => [
+    "lb::advanced_config"
+  ]

@@ -213,75 +213,101 @@ action :attach do
 end # action :attach do
 
 action :advanced_configs do
-  advanced_rule_directory = "/home/lb/#{node[:lb][:service][:provider]}.d/advanced_configs"
+
+  log "!- new_resource.backend_id #{new_resource.backend_id}"
+  log "!--- new_resource.backend_fqdn #{new_resource.backend_fqdn}"
+  log "!--- new_resource.pool_name #{new_resource.pool_name}"
+  # TODO REMOVE this hardcode
+  vhost_name = "default"
+
+  advanced_rule_directory = "/home/lb/#{node[:lb][:service][:provider]}.d/#{vhost_name}/advanced_configs"
+
   # create directory where advanced rules configs will be stored
-  directory "#{advanced_rule_directory}"
-
-  # create template which will contain advanced acl rules
-  #
-  ## TEMPLATE EXAMPLE
-  # if (lb:fqdn) and (node[:lb][:advanced_config][:acl_condition] == "hdr_dom(host)")
-  #  "acl #{new_resource.backend_fqdn}_acl hdr_dom(host) -i #{new_resource.backend_fqdn}"
-  # end
-  #>>>>  acl ns-ss-db1-test-rightscale-com_acl  hdr_dom(host) -i ns-ss-db1.test.rightscale.com
-  # TODO add template file
-
-  node[:lb][:advanced_config][:acl_condition] = "hdr_dom(host)"
-  bash "Creating acl rules config file" do
-       flags "-ex"
-       code <<-EOH
-       $acl_condition= acl #{new_resource.backend_fqdn}_acl #{node[:lb][:advanced_config][:acl_condition]} #{new_resource.backend_fqdn}
-       echo acl_condition >> #{::File.join("#{advanced_rule_directory}", vhost_name, "acl.conf")}
-       EOH
+  directory advanced_rule_directory do
+      recursive true
   end
 
 
-  ### USE_BACKEND CASE
-  # use_backend 2_backend if url_serverid
-  # use_backend 2_backend if ns-ss-db2-test-rightscale-com_acl
-  #
-  # use_backend 1_backend
-  # if ns-ss-db1-test-rightscale-com_acl
-
-
-
-  # 1  how we will create "1_backend" config file
+    # 1  how we will create "1_backend" config file
   # CODE DRAFT EXAMPLE
-  # if (lb: pool_name)
-  # echo "::File.join("/home/lb/#{node[:lb][:service][:provider]}.d", vhost_name, new_resource.backend_id)" >> "advanced_rule_directory/#{lb:pool_name}"
-  # end
+  #hosts can have different hostnames, ips ... but equal pool_name
   # RESULT EXAMPLE
   # >>>> 1_backend.conf
   # server 01-0F16VI5 10.85.149.59:8000 cookie 01-0F16VI5 check inter 3000 rise 2 fall 3 maxconn 500
   # server 01-2UD17HR 10.40.23.216:8000 cookie 01-2UD17HR check inter 3000 rise 2 fall 3 maxconn 500
   # >>>>
-
   bash "Creating server pool configs" do
     flags "-ex"
-    # TODO  put lb:pool_name value from tag to new_resource.pool_name
-    #
-    # this script will allow to create pools which can contain more then one app server
     code <<-EOH
-    echo "#{::File.join("/home/lb/#{node[:lb][:service][:provider]}.d", vhost_name, new_resource.backend_id)}" >> "#{advanced_rule_directory}/pool_#{new_resource.pool_name}"
+    cat "#{::File.join("/home/lb/#{node[:lb][:service][:provider]}.d", vhost_name, new_resource.backend_id)}" >> "#{advanced_rule_directory}/pool_#{new_resource.pool_name}"
     EOH
   end
 
 
-  # 2  how we will create "/home/lb/haproxy.d/advanced_configs/use_backend.conf"
-  #
-  # CODE DRAFT EXAMPLE
-  # use_backend #{lb:pool_name} node[:lb][:advanced_config][:use_backend_condition] ns-ss-db1-test-rightscale-com_acl
-  # RESULT EXAMPLE
-  # use_backend 1_backend if ns-ss-db1-test-rightscale-com_acl
+  # Now we will create config files which will contain advanced acls and rules,
+  #if haproxy-cat.sh will find them it will add them to rightscale_lb.cfg
+  # "FQDN", "URI", "headers", "HTTP_BASIC_AUTH"
+  case node[:lb][:advanced_config][:acl_condition]
+    when  "FQDN"
+      # create config which will contain advanced acl rules
+      #
+      # RESULT EXAMPLE
+      #  acl ns-ss-db1-test-rightscale-com_acl  hdr_dom(host) -i ns-ss-db1.test.rightscale.com
+      bash "Creating acl rules config file" do
+        flags "-ex"
+        code <<-EOH
+           acl_condition="acl acl_#{new_resource.backend_fqdn} hdr_dom(host) -i #{new_resource.backend_fqdn}"
+           echo $acl_condition >> #{advanced_rule_directory}/acl.conf
+        EOH
+      end
 
-  bash "Creating use_backend rule configs" do
-     flags "-ex"
-     code <<-EOH
-     $condition= "use_backend #{new_resource.pool_name} if #{new_resource.backend_fqdn}_acl"
-     echo condition >> #{::File.join("#{advanced_rule_directory}", vhost_name, "use_backend.conf")}
-     EOH
-    # recreating rightscale_lb.cfg
-    notifies :run, resources(:execute => "/home/lb/haproxy-cat.sh")
+      #now we will create "/home/lb/haproxy.d/advanced_configs/use_backend.conf"
+      #
+      # CODE DRAFT EXAMPLE
+      # use_backend #{lb:pool_name} node[:lb][:advanced_config][:use_backend_condition] ns-ss-db1-test-rightscale-com_acl
+      # RESULT EXAMPLE
+      # use_backend 1_backend if ns-ss-db1-test-rightscale-com_acl
+      bash "Creating use_backend rule configs" do
+        flags "-ex"
+        code <<-EOH
+          condition="use_backend #{new_resource.pool_name} if acl_#{new_resource.backend_fqdn}"
+          echo $condition >> #{advanced_rule_directory}/use_backend.conf
+        EOH
+        # recreating rightscale_lb.cfg
+        notifies :run, resources(:execute => "/home/lb/haproxy-cat.sh")
+      end
+
+
+    when "URI"
+      # replace all '/' to "_"
+      acl_name = new_resource.backend_uri.gsub(/[\/]/, '_')
+
+      # RESULT EXAMPLE
+      # acl url_serverid  path_beg    /serverid
+      bash "Creating acl rules config file" do
+           flags "-ex"
+           code <<-EOH
+           acl_condition="acl acl_#{acl_name} path_beg #{new_resource.backend_uri}"
+           echo $acl_condition >> #{advanced_rule_directory}/acl.conf
+           EOH
+      end
+
+      # RESULT EXAMPLE
+      # use_backend 2_backend if url_serverid
+      bash "Creating use_backend rule configs" do
+        flags "-ex"
+        code <<-EOH
+          condition="use_backend #{new_resource.pool_name} if acl_#{acl_name}"
+          echo $condition >> #{advanced_rule_directory}/use_backend.conf
+        EOH
+        # recreating rightscale_lb.cfg
+        notifies :run, resources(:execute => "/home/lb/haproxy-cat.sh")
+      end
+
+    when "headers", "HTTP_BASIC_AUTH"
+
+      log "  Not implemented yet. Skipping"
+
   end
 
 end
