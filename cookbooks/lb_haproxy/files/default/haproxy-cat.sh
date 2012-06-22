@@ -21,8 +21,7 @@ for dir in /home/lb/lb_haproxy.d/*
 do
   if [ -d ${dir} ]; then
     vhosts=${vhosts}" "`basename ${dir}`
-      echo "! $vhosts"
-  fi
+   fi
 done
 
 for single_vhost in ${vhosts}
@@ -32,7 +31,7 @@ do
 
   # this will add advanced acls to config file
   if [ -e /home/lb/lb_haproxy.d/${single_vhost}/advanced_configs/acl.conf ]; then
-    cat "/home/lb/lb_haproxy.d/$tmp_vhost/advanced_configs/acl.conf" >> ${CONF_FILE}
+    cat "/home/lb/lb_haproxy.d/${single_vhost}/advanced_configs/acl.conf" >> ${CONF_FILE}
   fi
 
   
@@ -47,9 +46,9 @@ do
   echo "  use_backend ${backend} if ${acl}" >> ${CONF_FILE}
 
   # this will add advanced use_backend statements to config file
-  if [ -r  /home/lb/lb_haproxy.d/${tmp_vhost}/advanced_configs/use_backend.conf ];
+  if [ -r  /home/lb/lb_haproxy.d/${single_vhost}/advanced_configs/use_backend.conf ];
   then
-    cat /home/lb/lb_haproxy.d/${tmp_vhost}/advanced_configs/use_backend.conf>> ${CONF_FILE}
+    cat /home/lb/lb_haproxy.d/${single_vhost}/advanced_configs/use_backend.conf>> ${CONF_FILE}
   fi
 done
 
