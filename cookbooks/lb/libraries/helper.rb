@@ -22,7 +22,7 @@ module RightScale
         end if (::File.directory?(haproxy_d))
 
         attached_servers
-      end # def get_attached_servers(vhost_name)
+      end
 
       # @param [String] vhost_name virtual hosts name.
       #
@@ -48,7 +48,7 @@ module RightScale
         end
 
         app_servers
-      end # def query_appservers(vhost_name)
+      end
 
     end
   end

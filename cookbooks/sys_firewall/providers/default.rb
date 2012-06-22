@@ -49,7 +49,7 @@ action :update do
       end
     end
 
-    ruby_block 'Register all currently active app servers' do
+    ruby_block 'Adding firewall rule' do
       block do
         ip_list = []
 
@@ -62,12 +62,12 @@ action :update do
           ip_list = node[:server_collection][collection_name].collect do |_, tags|
             RightScale::Utils::Helper.get_tag_value(ip_tag, tags, valid_ip_regex)
           end
-        end # if tag
+        end
 
         # Use iptables cookbook to create open/close port for ip list
         ip_list.each do |ip|
 
-          Chef::Log.info "Updating iptables rule for IP Address: #{ip}"
+          Chef::Log.info "  Updating iptables rule for IP Address: #{ip}"
 
           rule = "port_#{port}"
           rule << "_#{ip.gsub('/', '_')}_#{protocol}"
@@ -85,16 +85,14 @@ action :update do
             to_enable, # enable
             "/usr/sbin/rebuild-iptables", # command to run
             node,
-            @run_context)
-        end # each
+            @run_context
+          )
+        end
+      end
+    end
+  end
 
-
-      end # block
-    end # ruby_block
-
-  end # else
-
-end # action
+end
 
 action :update_request do
 

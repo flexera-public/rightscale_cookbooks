@@ -18,9 +18,10 @@ action :setup_attributes do
   end
 
   # Checking repository URL
-  raise "  ERROR: repo URL input is unset. Please fill 'Repository URL' input" if repository_url.empty?
+  raise "  ERROR: repository input is unset. Please fill 'Repository URL' input" if repository_url.empty?
 
 end
+
 
 action :pull do
 
@@ -76,6 +77,7 @@ action :pull do
   log "  GIT repository update/download action - finished successfully!"
 end
 
+
 action :capistrano_pull do
 
   # Add ssh key and exec script
@@ -103,7 +105,7 @@ action :capistrano_pull do
   log "  Deploy provider #{scm_provider}"
 
   # Applying capistrano style deployment
-  capistranize_repo "Source repo" do
+  repo_capistranize "Source repo" do
     repository                 repository
     revision                   revision
     destination                destination

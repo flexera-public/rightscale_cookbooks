@@ -9,6 +9,7 @@ rightscale_marker :begin
 
 # Disable default vhost
 log "  Enabling default vhost"
+
 apache_site "default" do
   enable true
   notifies :reload, resources(:service => "apache2")

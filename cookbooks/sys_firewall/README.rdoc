@@ -2,12 +2,12 @@
 
 == DESCRIPTION:
 
-Built upon the Opscode iptables cookbook, this cookbook provides a LWRP for
+Built upon Opscode's 'iptables' cookbook. This cookbook provides a LWRP for
 managing access to multiple servers in a deployment using machine tags.
 
 == REQUIREMENTS:
 
-Requires a VM launched from a RightScale managed RightImage .
+Requires a virtual machine launched from a RightScale managed RightImage.
 
 == COOKBOOKS DEPENDENCIES:
 
@@ -22,7 +22,7 @@ There are no known limitations.
 * Use the <tt>sys_firewall::default</tt> recipe in conjunction with the
   'Firewall' input to enable or disable iptables.
 * Use the <tt>sys_firewall::setup_rule</tt> recipe for enabling/disabling
-  specific ports.
+  specific firewall rules.
 * Use the <tt>sys_firewall::do_list_rules</tt> recipe to list the existing
   firewall rules set up on the server.
 
@@ -35,25 +35,25 @@ are opened on the private 10.* network for the monitoring agent).
 
 === Updating firewall rules using tags
 
-All tag based actions are scoped to the deployment.
+All tag-based actions are scoped to the deployment.
 
 ==== Update Action
 
 To open a local port to all servers with a given tag use:
 
-  sys_firewall "Open this database's ports to all app servers" do
-    machine_tag "appserver:active=true"
+  sys_firewall "Open this server's ports to all servers with this 'tag' " do
+    machine_tag "servertag:active=true"
     port 3306
     enable true
     action :update
   end
   
-This can be useful as a server is booting to open up access for multiple systems
+This can be used when a server is booting to open up access for multiple systems
 at once.
 
 ==== Update Request Action
 
-To request all servers with a given tag close a port to a given IP address use:
+To request that all servers with a given tag close a port to a given IP address use:
 
   sys_firewall "Request all app servers close ports to this load balancer" do
     machine_tag "loadbalancer:app=www"

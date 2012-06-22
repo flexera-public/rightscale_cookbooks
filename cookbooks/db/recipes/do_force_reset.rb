@@ -17,7 +17,7 @@ class Chef::Recipe
   include RightScale::BlockDeviceHelper
 end
 
-log "  Brute force tear down of the setup....."
+log "  Brute force tear down of the setup..."
 
 DATA_DIR = node[:db][:data_dir]
 NICKNAME = get_device_or_default(node, :device1, :nickname)

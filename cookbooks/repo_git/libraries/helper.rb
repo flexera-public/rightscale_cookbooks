@@ -34,6 +34,7 @@ module RightScale
        ENV["GIT_SSH"] = "#{keyfile}.sh" unless ("#{keyfile}" == "")
      end
 
+
      # Delete SSH key created by "create" method, after successful pull operation. And clear GIT_SSH.
      def delete
        Chef::Log.warn "Deleting ssh key "

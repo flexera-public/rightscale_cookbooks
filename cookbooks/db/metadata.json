@@ -89,7 +89,7 @@
         "db::do_delete_volumes_and_terminate_server"
       ],
       "display_name": "Terminate Safety",
-      "description": "Prevents the accidental running of the db::do_teminate_server recipe. This recipe will only run if this input variable is overridden and set to \"off\"."
+      "description": "Prevents the accidental running of the 'db::do_teminate_server' recipe. This recipe will only run if this input variable is overridden and set to \"off\"."
     },
     "db/dump/container": {
       "required": "required",
@@ -131,7 +131,7 @@
         "db::do_primary_backup_schedule_enable"
       ],
       "display_name": "Slave Backup Cron Minute",
-      "description": "Defines the minute of the hour when the backup EBS snapshot will be taken of the Slave database. Backups of the Slave are taken hourly. By default, a minute will be randomly chosen at launch time. Uses standard crontab format (e.g., 30 for minute 30 of the hour)."
+      "description": "Defines the minute of the hour when the backup EBS snapshot will be taken of the slave database. Backups of the slave are taken hourly. By default, a minute will be randomly chosen at launch time. Uses standard crontab format (e.g., 30 for minute 30 of the hour)."
     },
     "db/dump/database_name": {
       "required": "required",
@@ -145,7 +145,7 @@
         "db::do_dump_export",
         "db::do_dump_schedule_enable"
       ],
-      "display_name": "Dump Schema/Database Name",
+      "display_name": "Database Schema Name",
       "description": "Enter the name of the database name/schema to create/restore a dump from/for. Ex: mydbschema"
     },
     "db/dump": {
@@ -351,7 +351,7 @@
         "do_secondary_restore_and_become_master"
       ],
       "display_name": "Backup restore version check",
-      "description": "A variable to allow to restore from a backup performed on a different version of the DB software. Make sure you fully understand the implications of cross-version restoration.  Set to false to skip version checking."
+      "description": "A variable for allowing the restoration of a database from a backup that was performed on a different version of the DB software. Make sure you fully understand the implications of cross-version restoration.  Set to 'False' to skip version checking."
     },
     "db/replication/user": {
       "required": "required",
@@ -405,7 +405,7 @@
         "db::do_dump_schedule_enable"
       ],
       "display_name": "Dump Storage Account Provider",
-      "description": "Location where the dump file will be saved. Used by dump recipes to back up to Amazon S3 or Rackspace Cloud Files."
+      "description": "Location where the dump file will be saved. Used by dump recipes to back up to remote object storage. (e.g. Amazon S3 or Rackspace Cloud Files)"
     },
     "db/backup/primary/master/cron/minute": {
       "required": "optional",
@@ -455,7 +455,7 @@
         "db::do_secondary_init_slave"
       ],
       "display_name": "Database Restore Lineage Override",
-      "description": "If defined, this will override the input defined for 'Backup Lineage' (db/backup/lineage) so that you can restore the database from another backup that has as different lineage name. The most recently completed snapshots will be used unless a specific timestamp value is specified for 'Restore Timestamp Override' (db/backup/timestamp_override). Although this input allows you to restore from a different set of snapshots, subsequent backups will use 'Backup Lineage' to name the snapshots. Be sure to remove the 'Backup Lineage Override' input after the new master is operational."
+      "description": "If defined, this will override the input defined for 'Backup Lineage' (db/backup/lineage) so that you can restore the database from another backup that has as a different lineage name. The most recently completed snapshots will be used unless a specific timestamp value is specified for 'Restore Timestamp Override' (db/backup/timestamp_override). Although this input allows you to restore from a different set of snapshots, subsequent backups will use 'Backup Lineage' to name the snapshots. Be sure to remove the 'Backup Lineage Override' input after the new master is operational."
     },
     "db/dns/master/id": {
       "required": "required",
@@ -471,7 +471,7 @@
         "db::do_promote_to_master"
       ],
       "display_name": "Database Master DNS Record ID",
-      "description": "The unique identifier that is associated with the DNS A record of the master server.  The unique identifier is assigned by the DNS provider when you create a dynamic DNS A record. This ID is used to update the associated A record with the private IP address of the master server when this recipe is run.  If you are using DNS Made Easy as your DNS provider, a 7-digit number is used (e.g., 4403234)."
+      "description": "The unique identifier that is associated with the DNS A record of the master database server. The unique identifier is assigned by the DNS provider when you create a dynamic DNS A record. This ID is used to update the associated A record with the private IP address of the master server when this recipe is run. If you are using DNS Made Easy as your DNS provider, a 7-digit number is used (e.g., 4403234)."
     }
   },
   "license": "Copyright RightScale, Inc. All rights reserved.",
@@ -483,7 +483,7 @@
     "redhat": "~> 5.8"
   },
   "maintainer": "RightScale, Inc.",
-  "long_description": "= RightScale Database Manager\n\n== DESCRIPTION:\n\nThis cookbook provides a set of database recipes used by the RightScale\nDatabase Manager ServerTemplates.\n\nThis cookbook does not contain a specific database implementation, rather\nit provides an interface for general database actions and parameters.\n\n== REQUIREMENTS:\n\n* Must be used with a 'db' provider in the cookbook path.\n* Depends on a <tt>block_device</tt> resource for backup and restore recipes.\n* Requires a virtual machine launched from a RightScale-managed RightImage.\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n== KNOWN LIMITATIONS:\n\n* Currently only one db provider should be present in your cookbook path.\n\n== SETUP:\n\n* Place db::default recipe into your runlist to setup the db resource. When\n  using a RightScale ServerTemplate, this will also automatically add the common\n  database attributes to your ServerTemplate inputs.\n\n* The default recipe for the cookbook that contains the db provider must also be\n  added to your runlist. For example:\n\n    db_mysql::default\n\n  This will load your provider and pull in any database specific attributes as\n  inputs.\n\n== USAGE:\n\n=== Initialize a master database:\n\n1. Once your VMs is operational, run the:\n\n    \"db::setup_block_device\"\n\n   recipe. This will initialize your database onto a block device\n   that supports backup and restore operations.\n2. Initialize your database from previous dump file or other source.\n3. Register your database with a Dynamic DNS provider using:\n\n    \"sys_dns::do_set_private\"\n\n   to allow you application servers to start making connections.\n4. Backup your database using:\n\n    \"db:do_backup\"\n\n   to allow restoring the master database in case of failure or\n   planned termination.\n\n=== Restore a master database:\n\n1. Once your VMs is operational, run the:\n\n    \"db::do_restore\"\n\n   recipe. This will restore your database from a backup previously saved to\n   persistent cloud storage.\n3. Register your database with a Dynamic DNS provider using:\n\n    \"sys_dns::do_set_private\"\n\n   to allow you application servers to start making connections.\n\n== DETAILS:\n\n=== General\n\nThe 'db' interface is defined by a Lightweight Resource, which can be found in\nthe resources/default.rb file.\n\nThis cookbook is intended to be used in conjunction with cookbooks that contain\nLightweight Providers which implement the 'db' interface. See the RightScale\ndb_mysql cookbook for an example.\n\nFor more about Lightweight Resources and Providers (LWRPs), please see the Chef\nwiki at:\nhttp://wiki.opscode.com/display/chef/Lightweight+Resources+and+Providers+%28LWRP%29\n\n=== Backup/Restore\n\nThis cookbook depends on the block_device LWRP for backup and restore actions.\nSee <tt>db::do_backup</tt> and <tt>db::do_restore</tt> recipes for examples. The\nblock_device cookbook provides primary and secondary persistence solutions for\nmultiple clouds.\n\nHowever, using LWRPs one can provide their own block_device implementation\ninstead.\n\nPlease see the block_device cookbook for the list of available actions,\nattributes and usage.\n\n=== Providers:\n\nWhen writing your own database Lightweight Provider:\n\n* The database provider to use is defined by node[:db][:provider] attribute, you\n  will need to override this. You can do so by adding:\n\n    set[:db][:provider] = \"db_myprovider\"\n\n  in the attributes file of your provider cookbook.\n\n* Any database specific attributes that you wish to make user configurable\n  should be added to the cookbook metadata with the default recipe included in\n  the attribute's 'recipes' array.  For more about Chef metadata, please see the\n  Chef wiki at: http://wiki.opscode.com/display/chef/Metadata\n\n* Your provider cookbook metadata should depend on this cookbook by added a\n  'depends' line to your metadata. For example:\n\n    depends \"db\"\n\n= LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to\nthe RightScale Terms of Service available at http://www.rightscale.com/terms.php\nand, if applicable, other agreements such as a RightScale Master Subscription\nAgreement.\n",
+  "long_description": "= RightScale Database Manager\n\n== DESCRIPTION:\n\nThis cookbook provides a set of database recipes used by the RightScale\nDatabase Manager ServerTemplates.\n\nThis cookbook does not contain a specific database implementation, rather\nit provides an interface for general database actions and parameters.\n\n== REQUIREMENTS:\n\n* Must be used with a 'db' provider in the cookbook path.\n* Depends on a <tt>block_device</tt> resource for backup and restore recipes.\n* Requires a virtual machine launched from a RightScale-managed RightImage.\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n== KNOWN LIMITATIONS:\n\n* Only one db provider should be present in your cookbook path.\n\n== SETUP:\n\n* Place <tt>db::default</tt> recipe into your runlist to set up the db resource. When\n  using a RightScale ServerTemplate, this will also automatically add the common\n  database attributes to your ServerTemplate's inputs.\n\n* The default recipe for the cookbook that contains the db provider must also be\n  added to your runlist. For example:\n\n    db_mysql::default\n\n  This will load your provider and pull in any database specific attributes as\n  inputs.\n\n== USAGE:\n\n=== Initialize a master database:\n\n1. Once your server is operational, run the:\n\n    \"db::setup_block_device\"\n\n   recipe, which initializes your database onto a block device\n   that supports backup and restore operations.\n2. Initialize your database from previous dump file or other source.\n3. Register your database with a DNS provider that supports dynamic DNS using:\n\n    \"sys_dns::do_set_private\"\n\n   to allow your application servers to start making connections.\n4. Backup your database using:\n\n    \"db:do_backup\"\n\n   so that you can restore the master database in the event \n   of a failure or planned termination.\n\n=== Restore a master database:\n\n1. Once your server is operational, run the:\n\n    \"db::do_restore\"\n\n   recipe, which restores your database from a backup previously saved to\n   persistent cloud storage.\n3. Register your database with a DNS provider that supports dynamic DNS using:\n\n    \"sys_dns::do_set_private\"\n\n   to allow your application servers to start making connections.\n\n== DETAILS:\n\n=== General\n\nThe 'db' interface is defined by a Lightweight Resource, which can be found in\nthe 'resources/default.rb' file.\n\nThis cookbook is intended to be used in conjunction with cookbooks that contain\nLightweight Providers which implement the 'db' interface. See RightScale's\n'db_mysql' cookbook for an example.\n\nFor more information about Lightweight Resources and Providers (LWRPs), please see: {Lightweight Resources and Providers}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)]\n\n=== Backup/Restore\n\nThis cookbook depends on the block_device LWRP for backup and restore actions.\nSee <tt>db::do_backup</tt> and <tt>db::do_restore</tt> recipes for examples. The\n'block_device' cookbook provides primary and secondary persistence solutions for\nmultiple clouds.\n\nHowever, using LWRPs one can provide their own block device implementation\ninstead.\n\nPlease see the 'block_device' cookbook for the list of available actions,\nattributes and usage.\n\n=== Providers:\n\nWhen writing your own database Lightweight Provider:\n\n* The database provider to use is defined by the node[:db][:provider] attribute. You\n  will need to override this attribute by adding the following code in the \n  attributes file of your provider cookbook.\n\n    set[:db][:provider] = \"db_myprovider\"\n\n\n* Any database-specific attributes that you wish to make into user-configurable\n  inputs should be added to the cookbook metadata with the default recipe included in\n  the attribute's 'recipes' array. For more about Chef metadata, please see: {Chef Metadata}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-RightScale_Support_of_Chef/Chef_Metadata]\n\n* Your provider cookbook metadata should depend on this cookbook by adding a\n  'depends' line to its metadata. For example:\n\n    depends \"db\"\n\n= LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to\nthe RightScale Terms of Service available at http://www.rightscale.com/terms.php\nand, if applicable, other agreements such as a RightScale Master Subscription\nAgreement.\n",
   "version": "12.1.0",
   "recommendations": {
   },
@@ -498,22 +498,22 @@
     "db::setup_monitoring": "Installs the collectd plugin for database monitoring support, which is required to enable monitoring and alerting functionality for your servers.",
     "db::request_appserver_allow": "Sends a request to allow connections from the caller's private IP address to all database servers in the deployment that are tagged with the database:active=true tag. This should be run on an application server before attempting a database connection.",
     "db::do_dump_schedule_enable": "Schedules the daily run of do_dump_export.",
-    "db::do_dump_export": "Creates a dump file and uploads it to remote object storage (e.g., Amazon S3 or Rackspace Cloud Files).",
+    "db::do_dump_export": "Creates a dump file and uploads it to a remote object storage (e.g., Amazon S3 or Rackspace Cloud Files).",
     "db::request_master_deny": "Sends a request to the master database server tagged with rs_dbrepl:master_instance_uuid=<master_instance_uuid> to deny connections from the server's private IP address. This script should be run on a slave when it stops replicating.",
     "db::setup_replication_privileges": "Sets up privileges for replication slave servers.",
-    "db::do_primary_restore_and_become_master": "Restores the database and tags it as the master. Sets DNS. Starts a fresh backup from this master.",
+    "db::do_primary_restore_and_become_master": "Restores the database and tags it as the master database server. Sets DNS. Starts a fresh backup from this master.",
     "db::do_secondary_backup": {
       "thread": "db_backup",
       "description": "Creates a backup of the database and uploads it to a secondary cloud storage location, which can be used to migrate your database to a different cloud. For example, you can save a secondary backup to an Amazon S3 bucket or a Rackspace Cloud Files container."
     },
-    "db::default": "Adds the database:active=true tag to your server, identifying it as an database server. The tag is used by application servers to identify active databases. It also loads the required 'db' resources.",
+    "db::default": "Adds the database:active=true tag to your server, which identifies it as a database server. The tag is used by application servers to identify active databases. It also loads the required 'db' resources.",
     "db::do_delete_volumes_and_terminate_server": "Deletes any currently attached volumes from the instance and then terminates the machine.",
-    "db::do_secondary_restore_and_become_master": "Restores the database from a secondary backup location and tags it as the master. Sets DNS. Starts a fresh backup from this master.",
+    "db::do_secondary_restore_and_become_master": "Restores the database from a secondary backup location and tags it as the master database server. Sets DNS. Starts a fresh backup from this master.",
     "db::do_secondary_restore": "Restores the database from the most recently completed backup available in a secondary location.",
-    "db::do_init_and_become_master": "Initializes database server and tags it as the master. Sets DNS. Starts a fresh backup from this master.",
+    "db::do_init_and_become_master": "Initializes the database and tags it as the master database server. Sets DNS. Starts a fresh backup from this master.",
     "db::do_primary_backup_schedule_enable": "Enables db::do_primary_backup to be run periodically.",
     "db::install_server": "Installs and sets up the packages that are required for database servers.",
-    "db::do_appservers_allow": "Allows connections from all application servers in the deployment that are tagged with appserver:active=true tag. This script should be run on a database server so that it will accept connections from application servers.",
+    "db::do_appservers_allow": "Allows connections from all application servers in the deployment that are tagged with appserver:active=true tag. This script should be run on a database server so that it will accept connections from related application servers.",
     "db::do_dump_import": "Retrieves a dump file from remote object storage (e.g., Amazon S3 or Rackspace Cloud Files) and imports it to the database server.",
     "db::install_client": "Installs the database client onto the virtual machine so that it can connect to a running server. This should be run on all database servers and servers intended to connect to the servers.",
     "db::do_primary_init_slave": "Initializes the slave server from the primary backup location.",

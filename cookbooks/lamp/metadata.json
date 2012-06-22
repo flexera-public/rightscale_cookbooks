@@ -21,7 +21,7 @@
   "recommendations": {
   },
   "recipes": {
-    "lamp::default": "Install LAMP specific packages. Setup LAMP specific default attributes"
+    "lamp::default": "Installs LAMP specific packages. Sets up LAMP-specific default attributes."
   },
   "groupings": {
   },

@@ -10,6 +10,7 @@ rightscale_marker :begin
 swap_size = node[:sys][:swap_size]
 swap_file = node[:sys][:swap_file]
 
+
 def clean_swap(swap_file)
 
   # Turn off swap on swap_file if turned on.
@@ -35,6 +36,7 @@ def clean_swap(swap_file)
   end
 
 end
+
 
 def activate_swap_file(swap_file, swap_size)
 
@@ -68,6 +70,7 @@ def activate_swap_file(swap_file, swap_size)
 
 end
 
+
 # Sanitize user data 'swap_size'.
 if swap_size !~ /^\d*[.]?\d+$/
   raise "  ERROR: invalid swap size."
@@ -76,10 +79,12 @@ else
   swap_size = ((swap_size.to_f)*1024).to_i
 end
 
+
 # Sanitize user data 'swap_file'.
 if swap_file !~ /^\/{1}(((\/{1}\.{1})?[a-zA-Z0-9 ]+\/?)+(\.{1}[a-zA-Z0-9]{2,4})?)$/
   raise "  ERROR: invalid swap file name"
 end
+
 
 # Skip creating swap or disable swap.
 if swap_size == 0
@@ -88,12 +93,10 @@ if swap_size == 0
   end
   log "  swap creation disabled"
 else
-
   # For idempotency, check if selected swapfle is in place, it's correct size, and it's on.
   if File.exists?(swap_file) && File.stat(swap_file).size/1048576 == swap_size && File.open('/proc/swaps').grep(/^#{swap_file}\b/).any?
     log "  valid current swap config"
   else
-
     # Check for remnents of swap.
     if File.exists?(swap_file) || File.open('/proc/swaps').grep(/^#{swap_file}\b/).any?
       log "  swap remnents detected - cleaning"

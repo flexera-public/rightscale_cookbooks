@@ -79,7 +79,7 @@
         "block_device::do_secondary_restore"
       ],
       "display_name": "Backup Lineage Override",
-      "description": "If defined, this will override the input defined for 'Backup Lineage' (block_device/devices/device1/backup/lineage) so that you can restore the volume from another backup that has as different lineage name. The most recently completed snapshots will be used unless a specific timestamp value is specified for 'Restore Timestamp Override' (block_device/devices/device1/backup/timestamp_override). "
+      "description": "If defined, this will override the input defined for 'Backup Lineage' (block_device/devices/device1/backup/lineage) so that you can restore the volume from another backup that has as a different lineage name. The most recently completed snapshots will be used unless a specific timestamp value is specified for 'Restore Timestamp Override' (block_device/devices/device1/backup/timestamp_override). "
     },
     "block_device/devices/default/backup/secondary/cred/user": {
       "required": "recommended",
@@ -127,7 +127,7 @@
         "block_device::do_secondary_restore"
       ],
       "display_name": "Backup Lineage (2)",
-      "description": "The prefix or container name that will be used to name/locate the primary backup."
+      "description": "The name associated with your primary and secondary database backups. It's used to associate them with your database environment for maintenance, restore, and replication purposes. Backup snapshots will automatically be tagged with this value (e.g. rs_backup:lineage=mysqlbackup). Backups are identified by their lineage name. Note: For servers running on Rackspace, this value also indicates the Cloud Files container to use for storing primary backups. If a Cloud Files container with this name does not already exist, one will automatically be created."
     },
     "block_device/devices/device1/backup/primary/cron/minute": {
       "required": "optional",
@@ -187,7 +187,7 @@
         "block_device::do_secondary_restore"
       ],
       "display_name": "Backup Lineage (1)",
-      "description": "The prefix or container name that will be used to name/locate the primary backup."
+      "description": "The name associated with your primary and secondary database backups. It's used to associate them with your database environment for maintenance, restore, and replication purposes. Backup snapshots will automatically be tagged with this value (e.g. rs_backup:lineage=mysqlbackup). Backups are identified by their lineage name. Note: For servers running on Rackspace, this value also indicates the Cloud Files container to use for storing primary backups. If a Cloud Files container with this name does not already exist, one will automatically be created."
     },
     "block_device/devices/default/backup/rackspace_snet": {
       "required": "optional",
@@ -207,7 +207,7 @@
         "block_device::do_secondary_restore"
       ],
       "display_name": "Rackspace SNET Enabled for Backup",
-      "description": "When 'true,' Rackspace internal private networking (preferred) is used for communications between servers and Rackspace Cloud Files. Ignored for all other clouds."
+      "description": "When 'true', Rackspace internal private networking (preferred) is used for communications between servers and Rackspace Cloud Files. Ignored for all other clouds."
     },
     "block_device/terminate_safety": {
       "required": "recommended",
@@ -221,7 +221,7 @@
         "block_device::do_delete_volumes_and_terminate_server"
       ],
       "display_name": "Terminate Safety",
-      "description": "Prevents the accidental running of the block_device::do_teminate_server recipe. This recipe will only run if the input variable is overridden and set to \"off\"."
+      "description": "Prevents the accidental running of the block_device::do_teminate_server recipe. The recipe will only run if the input variable is overridden and set to \"off\"."
     },
     "block_device/devices/device2/backup/primary/cron/hour": {
       "required": "optional",
@@ -250,7 +250,7 @@
         "block_device::do_secondary_restore"
       ],
       "display_name": "Backup Lineage Override",
-      "description": "If defined, this will override the input defined for 'Backup Lineage' (block_device/devices/device2/backup/lineage) so that you can restore the volume from another backup that has as different lineage name. The most recently completed snapshots will be used unless a specific timestamp value is specified for 'Restore Timestamp Override' (block_device/devices/device2/backup/timestamp_override). "
+      "description": "If defined, this will override the input defined for 'Backup Lineage' (block_device/devices/device2/backup/lineage) so that you can restore the volume from another backup that has as a different lineage name. The most recently completed snapshots will be used unless a specific timestamp value is specified for 'Restore Timestamp Override' (block_device/devices/device2/backup/timestamp_override). "
     },
     "block_device/devices/device1/backup/primary/keep/max_snapshots": {
       "required": "optional",
@@ -299,7 +299,7 @@
         "block_device::do_force_reset"
       ],
       "display_name": "Force Reset Safety",
-      "description": "Prevents the accidental running of the block_device::do_force_reset recipe. This recipe will only run if the input variable is overridden and set to \"off\"."
+      "description": "Prevents the accidental running of the block_device::do_force_reset recipe. The recipe will only run if the input variable is overridden and set to \"off\"."
     },
     "block_device/devices/device2/backup/primary/keep/max_snapshots": {
       "required": "optional",
@@ -363,7 +363,7 @@
         "block_device::default"
       ],
       "display_name": "Percentage of the LVM used for data (1)",
-      "description": "The percentage of the total Volume Group extents (LVM) that is used for data. (e.g. 50 percent - 1/2 used for data and remainder used for overhead and snapshots, 100 percent - all space is allocated for data (therefore snapshots can not be taken) WARNING: if the space used for data is to large LVM snapshots can not be performed.  Using a non-default value it not reccommended.  Make sure you understand what you are doing before changing this value."
+      "description": "The percentage of the total Volume Group extents (LVM) that is used for data. (e.g. 50 percent - 1/2 used for data and remainder used for overhead and snapshots, 100 percent - all space is allocated for data (therefore snapshots can not be taken) WARNING: If the space used for data storage is too large, LVM snapshots cannot be performed. Using a non-default value it not reccommended. Make sure you understand what you are doing before changing this value."
     },
     "block_device/devices/device1/nickname": {
       "required": "recommended",
@@ -426,7 +426,7 @@
         "block_device::default"
       ],
       "display_name": "Percentage of the LVM used for data (2)",
-      "description": "The percentage of the total Volume Group extents (LVM) that is used for data. (e.g. 50 percent - 1/2 used for data and remainder used for overhead and snapshots, 100 percent - all space is allocated for data (therefore snapshots can not be taken) WARNING: if the space used for data is to large LVM snapshots can not be performed.  Using a non-default value it not reccommended.  Make sure you understand what you are doing before changing this value."
+      "description": "The percentage of the total Volume Group extents (LVM) that is used for data. (e.g. 50 percent - 1/2 used for data and remainder used for overhead and snapshots, 100 percent - all space is allocated for data (therefore snapshots can not be taken) WARNING: If the space used for data storage is too large, LVM snapshots cannot be performed. Using a non-default value it not reccommended. Make sure you understand what you are doing before changing this value."
     },
     "block_device/devices/device2/backup/primary/keep/monthly": {
       "required": "optional",
@@ -722,7 +722,7 @@
     "redhat": "~> 5.8"
   },
   "maintainer": "RightScale, Inc.",
-  "long_description": "= Storage Toolbox Cookbook\n\n== DESCRIPTION:\n\nThis cookbook provides the building blocks for Multi-Cloud backup/restore\nsupport. This leverages the RightScale platform's 1.0 and 1.5 API for performing\nvolume management across multiple clouds.\n\n== REQUIREMENTS:\n\n* The block device tools depend on the <tt>rightscale::install_tools</tt>\n  recipe.\n* Requires a virtual machine launched from a RightScale-managed RightImage.\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n== KNOWN LIMITATIONS:\n\n* Rackspace requires an instance size of 512MB or larger. An instance size of\n  256MG is not supported. (w-3947)\n* Multiple block devices are not supported on Rackspace.\n\n== SETUP/USAGE:\n\n=== Getting started and taking the first backup:\n\n1. Import the latest version of 'Storage Toolbox (Chef)' ServerTemplate into\n   your RightScale account.\n2. Set up a deployment and Launch.\n3. Once the Server is operational consider it in a 'pristine state'. Nothing\n   will happen other than installing the tools until you run an operational\n   recipe. You can modify this behavior by cloning the ServerTemplate and\n   changing the list of recipes to run on boot.\n4. Run the recipe \"block_device::setup_block_device\".  This recipe attaches\n   storage based on the volume size and number of volumes you have specified.\n   The storage is located in '/mnt/storage1' by default.\n5. Add your data into /mnt/storage1.\n6. Run the recipe \"block_device::do_primary_backup\". This recipe detects\n   what cloud you are on and performs a backup to local cloud persistence\n   service.\n\n=== Continuous Backups with CRON:\n\n1. Enable continuous backups by running the recipe\n   \"block_device::setup_continuous_backups\".  This sets up a cron job.\n2. You can disable backups at any time by running\n   \"block_device::do_disable_continuous_backups\". This removes the cron job\n   that was performing backups.\n\n=== Force Reset:\n\n1. WARNING: this detaches all storage related to your lineage and DESTROYs the\n   volumes\\! This is to be used if you'd like to force run a restore but you\n   already have storage attached that you don't want. After running the recipe\n   \"block_device::do_force_reset\" you can then run\n   \"block_device::setup_block_device\" or \"block_device::do_restore\".\n\n=== Restore:\n\n1. Start from a pristine state (fresh launch of a new server or using a server\n   that's been reset).\n2. Run the recipe \"block_device::do_restore\".\n\nMix and match recipes to get the right combination for your deployments.\n\n== DETAILS:\n\nMultiple block device support is controlled by the\n<tt>block_device/devices_to_use</tt> input. It can be a comma-separated list of\ndevice names or '*' to indicate all devices. By default there are two available\nblock devices. Currently, in order to add more devices you need to override the\ncookbook. Instructions can be found at:\nhttp://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Increase_the_Number_of_Block_Devices\n\n= LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to\nthe RightScale Terms of Service available at http://www.rightscale.com/terms.php\nand, if applicable, other agreements such as a RightScale Master Subscription\nAgreement.\n",
+  "long_description": "= Storage Toolbox Cookbook\n\n== DESCRIPTION:\n\nThis cookbook provides the building blocks for multi-cloud backup/restore\nsupport. It leverages RightScale's 1.0 and 1.5 API for performing\nvolume management across multiple clouds.\n\n== REQUIREMENTS:\n\n* The block device tools depend on the <tt>rightscale::install_tools</tt>\n  recipe.\n* Requires a virtual machine launched from a RightScale-managed RightImage.\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n== KNOWN LIMITATIONS:\n\n* Rackspace requires an instance size of 512MB or larger. An instance size of\n  256MB is not supported. (w-3947)\n* Multiple block devices are not supported on Rackspace.\n\n== SETUP/USAGE:\n\n=== Getting started and taking the first backup:\n\n1. Import the latest version of 'Storage Toolbox (Chef)' ServerTemplate into\n   your RightScale account.\n2. Set up a new deployment. Add a server into the deployment using the \n   toolbox ServerTemplate and launch the server.\n3. Once the server is operational consider it in a 'pristine state'. Nothing\n   will happen other than installing the tools until you run an operational\n   recipe. You can modify this behavior by cloning the ServerTemplate and\n   changing the list of recipes to run on boot.\n4. Run the \"block_device::setup_block_device\" recipe, which attaches\n   storage based on the volume size and number of volumes you have specified.\n   The storage is located in '/mnt/storage1' by default.\n5. Add your data into /mnt/storage1.\n6. Run the recipe \"block_device::do_primary_backup\". This recipe detects\n   what cloud you are on and performs a backup to the local cloud persistence\n   service.\n\n=== Continuous Backups with CRON:\n\n1. Enable continuous backups by running the recipe\n   \"block_device::setup_continuous_backups\".  This sets up a cron job.\n2. You can disable backups at any time by running the\n   \"block_device::do_disable_continuous_backups\" recipe, which removes \n   the cron job that was performing backups.\n\n=== Force Reset:\n\n1. WARNING: The \"block_device::do_force_reset\" recipe detaches all storage \n   related to your lineage and DESTROYS the volumes! You should only run\n   this recipe if you want to restore your database to a pristine state \n   and do not want to save any of its data. After running the \n   \"block_device::do_force_reset\" recipe you can then run the\n   \"block_device::setup_block_device\" or \"block_device::do_restore\" recipes.\n\n=== Restore:\n\n1. Start from a pristine state (fresh launch of a new server or using a server\n   that's been reset).\n2. Run the \"block_device::do_restore\" recipe.\n\nMix and match recipes to get the right combination for your deployments.\n\n=== Delete Volumes and Terminate\n\n1. Delete the attached volumes and terminate the server.  Note: if this script\n   is not used to terminate the server the volumes will persist.\n\n== DETAILS:\n\nMultiple block device support is controlled by the\n<tt>block_device/devices_to_use</tt> input. It can be a comma-separated list of\ndevice names or '*' to indicate all devices. By default, there are two available\nblock devices. Currently, in order to add more block devices you need to \noverride the cookbook. Instructions can be found at: {Increase the Number of Block Devices}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Increase_the_Number_of_Block_Devices]\n\n= LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to\nthe RightScale Terms of Service available at http://www.rightscale.com/terms.php\nand, if applicable, other agreements such as a RightScale Master Subscription\nAgreement.\n",
   "version": "12.1.0",
   "recommendations": {
   },
@@ -735,15 +735,15 @@
     },
     "block_device::do_delete_volumes_and_terminate_server": "Deletes any currently attached volumes from the instance and then terminates the machine. WARNING: Execution of this script will delete any data on your block device!",
     "block_device::do_primary_backup_schedule_enable": "Enables continuous primary backups by updating the crontab file.",
-    "block_device::do_secondary_restore": "Restores a secondary backup from the remote cloud specified by block_device/secondary provider",
+    "block_device::do_secondary_restore": "Restores a secondary backup from the remote cloud specified by block_device/secondary provider.",
     "block_device::do_secondary_backup": {
       "thread": "block_backup",
       "description": "Creates a secondary backup to the remote cloud specified by block_device/secondary provider"
     },
     "block_device::do_primary_restore": "Restores a primary backup from the local cloud where the server is currently running.",
     "block_device::default": "Sets up input dependencies for use by other cookbooks.",
-    "block_device::do_force_reset": "Unmount and delete the attached block device(s) for this lineage. For test and development purposes. WARNING: Execution of this script will delete any data on your block device!",
-    "block_device::setup_ephemeral": "Creates, formats, and mounts a brand new block device on the instances ephemeral drives. Does nothing on clouds without ephemeral drives."
+    "block_device::do_force_reset": "Unmount and delete the attached block device(s) for this lineage. Designed for test and development purposes only. WARNING: Execution of this script will delete any data on your block device!",
+    "block_device::setup_ephemeral": "Creates, formats, and mounts a brand new block device on the instance's ephemeral drives. Does nothing on clouds without ephemeral drives."
   },
   "groupings": {
     "block_device/devices/device1": {

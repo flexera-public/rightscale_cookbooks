@@ -166,7 +166,7 @@ attribute "rightscale",
 
 # These inputs are set by the core site and can not be set via the metadata.  They are still valid and
 # can be used the same way other node variables are set.  They are included here for documentation
-# purposes.
+# purposes.  Do not delete the commented out code.
 #
 # This list may change so care must be taken when adding or changing node[:rightscale] attributes.
 # Doing so may break ServerTemplate functionality.

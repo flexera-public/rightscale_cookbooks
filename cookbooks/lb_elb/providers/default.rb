@@ -5,9 +5,11 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+
 action :install do
   log "  Install does not apply to ELB"
-end # action :install do
+end
+
 
 action :attach do
 
@@ -44,7 +46,8 @@ action :attach do
   log ".. registering with ELB"
   elb.register_instances_with_load_balancer(new_resource.service_lb_name, node[:ec2][:instance_id])
 
-end # action :attach do
+end
+
 
 action :attach_request do
 
@@ -59,7 +62,8 @@ action :attach_request do
     action :attach
   end
 
-end # action :attach_request do
+end
+
 
 action :detach do
 
@@ -85,7 +89,8 @@ action :detach do
     action :update
   end
 
-end # action :detach do
+end
+
 
 action :detach_request do
 
@@ -100,12 +105,14 @@ action :detach_request do
     action :detach
   end
 
-end # action :detach_request do
+end
+
 
 action :setup_monitoring do
   log "  Setup monitoring does not apply to ELB"
-end # action :setup_monitoring do
+end
+
 
 action :restart do
   log "  Restart does not apply to ELB"
-end # action :restart do
+end

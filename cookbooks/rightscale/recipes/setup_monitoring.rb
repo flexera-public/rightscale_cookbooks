@@ -20,8 +20,8 @@ package "librrd4" if node[:platform] == 'ubuntu'
 
 installed_ver = (node[:platform] =~ /redhat|centos/) ? `rpm -q --queryformat %{VERSION} collectd`.strip : `dpkg-query --showformat='${Version}' -W collectd`.strip
 installed = (installed_ver == "") ? false : true
-log 'Collectd package not installed' unless installed
-log "Checking installed collectd version: installed #{installed_ver}" if installed
+log "  Collectd package not installed" unless installed
+log "  Checking installed collectd version: installed #{installed_ver}" if installed
 
 # Remove existing version of collectd
 
@@ -35,7 +35,7 @@ end
 
 # Install collectd packages
 collectd_version = node[:rightscale][:collectd_packages_version]
-log "Installing collectd package(s) version #{collectd_version}"
+log "  Installing collectd package(s) version #{collectd_version}"
 packages = node[:rightscale][:collectd_packages]
 packages.each do |p|
   package p do

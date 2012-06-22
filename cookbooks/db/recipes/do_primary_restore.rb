@@ -20,7 +20,7 @@ NICKNAME = get_device_or_default(node, :device1, :nickname)
 
 db_init_status :check do
   expected_state :uninitialized
-  error_message "Database already restored.  To over write existing database run do_force_reset before this recipe"
+  error_message "Database already restored.  To over write existing database run do_force_reset before this recipe."
 end
 
 log "  Running pre-restore checks..."

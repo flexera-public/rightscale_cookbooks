@@ -18,9 +18,9 @@ define :db_register_master do
     address private_ip
     action :set_private
   end
-  
+
   # Set master tags
-  # Tag the server with the master tags rs_dbrepl:master_active 
+  # Tag the server with the master tags rs_dbrepl:master_active
   # and rs_dbrepl:master_instance_uuid
 
   active_tag = "rs_dbrepl:master_active=#{Time.now.strftime("%Y%m%d%H%M%S")}-#{node[:db][:backup][:lineage]}"
@@ -30,7 +30,7 @@ define :db_register_master do
   unique_tag = "rs_dbrepl:master_instance_uuid=#{node[:rightscale][:instance_uuid]}"
   log "  Tagging server with #{unique_tag}"
   right_link_tag unique_tag
-  
+
   # Set master node variables
   db_state_set "Set master state" do
     master_uuid node[:rightscale][:instance_uuid]

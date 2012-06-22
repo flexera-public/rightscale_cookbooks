@@ -19,7 +19,7 @@ recipe "sys_firewall::do_list_rules", "List the firewall rules."
 
 attribute "sys_firewall/enabled",
   :display_name => "Firewall",  
-  :description => "Enables an iptables firewall for this server.  When the firewall is enabled it is closed for incoming connections (outbound connections are allowed):  only 22, 80 and 443 (plus softlayer monitoring agent specific) ports are opened by the default recipe.  Use the sys_firewall::setup_rule recipe to enable/disable extra ports.",
+  :description => "Enables an iptables firewall for this server which allows port 22, 80 and 443 open by default.  Use the sys_firewall::setup_rule recipe to enable/disable extra ports. Example: enabled",
   :required => "optional",
   :choice => ["enabled", "disabled"],
   :default => "enabled",
