@@ -230,7 +230,8 @@
     "lb::do_attach_request": "Sends request to all servers with loadbalancer:<vhost_name>=lb tag to attach current server to listener pool. This should be run by a new application server that is ready to accept connections.",
     "lb::do_detach_request": "Sends request to all servers with loadbalancer:<vhost_name>=lb tag to detach current server from listener pool. This should be run by an application server at decommission.",
     "lb::setup_reverse_proxy_config": "Configures Apache reverse proxy.",
-    "lb::setup_monitoring": "Installs the load balancer collectd plugin for monitoring support."
+    "lb::setup_monitoring": "Installs the load balancer collectd plugin for monitoring support.",
+    "lb::advanced_config": "Enable advanced vhost config for loadbalancer"
   },
   "version": "12.1.0"
 }

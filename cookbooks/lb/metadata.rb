@@ -24,6 +24,7 @@ recipe "lb::do_attach_request", "Sends request to all servers with loadbalancer:
 recipe "lb::do_detach_request", "Sends request to all servers with loadbalancer:<vhost_name>=lb tag to detach current server from listener pool. This should be run by an application server at decommission."
 recipe "lb::setup_reverse_proxy_config", "Configures Apache reverse proxy."
 recipe "lb::setup_monitoring", "Installs the load balancer collectd plugin for monitoring support."
+recipe "lb::advanced_config", "Enable advanced vhost config for loadbalancer"
 
 attribute "lb/vhost_names",
   :display_name => "Virtual Host Names",
