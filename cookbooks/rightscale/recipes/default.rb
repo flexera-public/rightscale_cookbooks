@@ -17,7 +17,6 @@ log "rightscale/servers/sketchy/hostname is #{node[:rightscale][:servers][:sketc
 
 include_recipe "rightscale::setup_server_tags"
 include_recipe "rightscale::setup_timezone"
-include_recipe "rightscale::setup_mail"
 include_recipe "rightscale::setup_monitoring"
 
 rightscale_marker :end

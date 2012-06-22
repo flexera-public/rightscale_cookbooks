@@ -8,6 +8,8 @@
 rightscale_marker :begin
 
 require 'fileutils'
+require 'rightscale_tools'
+require 'pathname'
 
 package "lvm2"
 
@@ -25,7 +27,7 @@ lvm_device = "lvol0"
 # upstart will try to boot without waiting for the LVM volume to be mounted.
 options = "defaults,noatime"
 if node[:platform] == "ubuntu"
-  options += ",bootwait"
+  options += ",bootwait,noauto"
 end
 
 # RedHat does not support xfs, so set specific item accordingly
@@ -40,78 +42,95 @@ root_device = `mount`.find {|dev| dev.include? " on / "}.split[0]
 current_mnt_device = `mount`.find {|dev| dev.include? " on /mnt "}
 current_mnt_device = current_mnt_device ? current_mnt_device.split[0] : nil
 
-mnt_device = current_mnt_device ||
-             case root_device
-             when /sda/
-               "/dev/sdb"
-             when /sde/
-               "/dev/sdf"
-             when /vda/
-               "/dev/vdb"
-             when /xvda/
-               "/dev/xvdb"
-             when /xvde/
-               (node[:platform] == "redhat") ? "/dev/xvdj" : "/dev/xvdf"
-             end
-
 # Only EC2 and openstack is currently supported
 if cloud == 'ec2' || cloud == 'openstack'
 
-  # Generate fstab entry here
-  fstab_entry = "/dev/vg-data/#{lvm_device}\t#{mount_point}\t#{filesystem_type}\t#{options}\t0 0"
+  # Get a list of ephemeral devices
+  # Make sure to skip EBS volumes attached on boot
+  @api = RightScale::Tools::API.factory('1.0', {:cloud => cloud}) if cloud == 'ec2'
+  my_devices = []
+  dev_index = 0
+  loop do
+    if node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
+      device = node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
+      device = '/dev/' + device if device !~ /^\/dev\//
+      device = @api.unmap_device_for_ec2(device) if cloud == 'ec2'
+      # for HVM: /dev/xvdb is symlinked to /dev/sda, though it shows up as
+      # /dev/xvdb in /proc/partitions.  unmap function returns that
+      device = Pathname.new(device).realpath.to_s if File.exists?(device)
+      # verify that device is actually on the instance and is a blockSpecial
+      if ( File.exists?(device) && File.ftype(device) == "blockSpecial" )
+        my_devices << device
+      else
+        log "  WARNING: Cannot use device #{device} - skipping"
+      end
+    else
+      break
+    end
+    dev_index += 1
+  end
 
-  # if fstab & mtab entry exists, assume a reboot and skip to end
-  if ( File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$") ) &&
-     ( File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " ) )
-    log "  Ephemeral entry already exists in fstab"
+  # Check if /mnt is actually on a seperate device.
+  # ec2 instances and images that do now have ephemeral will be caught by this, eg: t1.micro and HVM
+  if my_devices.empty?
+    log "  Skipping ephemeral drive setup for non-ephemeral image/instance size"
   else
-    # Create init script to activate LVM on start for Ubuntu
-    remote_file "/etc/init.d/lvm_activate" do
-      only_if { node[:platform] == "ubuntu" }
-      source "lvm_activate"
-      mode 0744
+    # determine mnt_device from root_device name
+    mnt_device = current_mnt_device ||
+                 case root_device
+                 when /sda/
+                   "/dev/sdb"
+                 when /sde/
+                   "/dev/sdf"
+                 when /vda/
+                   "/dev/vdb"
+                 when /xvda/
+                   "/dev/xvdb"
+                 when /xvde/
+                   (node[:platform] == "redhat") ? "/dev/xvdj" : "/dev/xvdf"
+                 end
+
+    # Generate fstab entry here
+    fstab_entry = "/dev/vg-data/#{lvm_device}\t#{mount_point}\t#{filesystem_type}\t#{options}\t0 0"
+
+    # If mount point is enabled, mount it.
+    # This will catch reboots.
+    mount mount_point do
+      ignore_failure true
+      device "/dev/vg-data/#{lvm_device}"
+      options options
+      fstype filesystem_type
+      only_if { File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$") }
     end
 
-    link "/etc/rcS.d/S32lvm_activate" do
-      only_if { node[:platform] == "ubuntu" }
-      to "/etc/init.d/lvm_activate"
-    end
+    # From here on, not_if checking if entry in fstab and mtab
 
-    # Load device mapper modules for Ubuntu
-    bash "Load device mapper" do
-      only_if  { node[:platform] == "ubuntu" }
-      flags "-ex"
-      code <<-EOH
-        modprobe dm_mod
-        echo "dm_mod" >> /etc/modules
-      EOH
-    end
-
+    # If fstab & mtab entry exists, assume a reboot and skip to end
     # /dev/sdb (/dev/sdf on redhat) is mounted on /mnt on the
     # image by default as an ext3 filesystem. Umount this device
-    # so it can be used in the LVM
+    # so it can be used in the LVM.
+    # ignore_failure set because /mnt may not be mounted, such as stop/start on HVM images.
+
     mount "/mnt" do
+      ignore_failure true
       device mnt_device
       fstype "ext3"
       action [:umount, :disable]
+      not_if { ( File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$") ) && ( File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " ) ) }
     end
 
     # Create the mount point
-    log "  Create #{mount_point}."
     directory mount_point do
       owner 'root'
       group 'root'
       mode 0755
       recursive true
+      not_if { ( File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$") ) && ( File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " ) ) }
     end
 
     # Setup the LVM across all ephemeral devices
     ruby_block "LVM setup" do
       block do
-        require 'rightscale_tools'
-
-        @api = RightScale::Tools::API.factory('1.0') if cloud == 'ec2'
-
         def run_command(command, ignore_failure = false)
           Chef::Log.info "  Running: #{command}"
           Chef::Log.info `#{command}`
@@ -119,50 +138,37 @@ if cloud == 'ec2' || cloud == 'openstack'
           raise "command exited non-zero! #{command}" unless ignore_failure || $?.success?
         end
 
-        # Get a list of ephemeral devices
-        # Make sure to skip EBS volumes attached on boot
-        my_devices = []
-        dev_index = 0
-        loop do
-          if node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
-            device = node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
-            device = '/dev/' + device if device !~ /^\/dev\//
-            device = @api.unmap_device_for_ec2(device) if cloud == 'ec2'
-            # verify that device is actually on the instance and is a blockSpecial 
-            if ( File.exists?(device) && File.ftype(device) == "blockSpecial" )
-              my_devices << device
-            else
-              Chef::Log.warn "WARNING: Cannot use device #{device} - skipping"
-            end
-          else
-            break
-          end
-          dev_index += 1
-        end
-
-        Chef::Log.info "  Found ephemeral devices: #{my_devices}"
-
         my_devices.each do |device|
+          Chef::Log.info "  Updating device #{device}"
           run_command("pvcreate -ff -y #{device}")
         end
 
-        run_command("vgcreate vg-data #{my_devices.join(' ')}")
-        run_command("lvcreate vg-data -n #{lvm_device} -i #{my_devices.size} -I 256 -l 100%VG")
-        run_command("mkfs.#{filesystem_type} /dev/vg-data/#{lvm_device}")
+        if my_devices.empty?
+          Chef::Log.info "  No ephemeral devices attached"
+        else
+          run_command("vgcreate vg-data #{my_devices.join(' ')}")
+          run_command("lvcreate vg-data -n #{lvm_device} -i #{my_devices.size} -I 256 -l 100%VG")
+          run_command("mkfs.#{filesystem_type} /dev/vg-data/#{lvm_device}")
 
-        # Add the mount to fstab
-        fstab = File.readlines("/etc/fstab")
-        File.open("/etc/fstab", "w") do |f|
-          fstab.each do |line|
-            f.puts(line)
+          # Add the fstab_entry to fstab if it does not already exists.
+          # Can exists if restart or stop/start
+          fstab = File.readlines("/etc/fstab")
+          if fstab.include?(fstab_entry + "\n")
+            Chef::Log.info "  Device already added to /etc/fstab: #{fstab_entry}"
+          else
+            File.open("/etc/fstab", "w") do |f|
+              fstab.each do |line|
+                f.puts(line)
+              end
+              Chef::Log.info "  ADDING DEVICE /etc/fstab: #{fstab_entry}"
+              f.puts(fstab_entry)
+            end
           end
-          Chef::Log.info "  ADDING DEVICE /etc/fstab: #{fstab_entry}"
-          f.puts(fstab_entry)
+          run_command("mount /dev/vg-data/#{lvm_device}")
+          Chef::Log.info "Done setting up LVM on ephemeral drives"
         end
-
-        run_command("mount /dev/vg-data/#{lvm_device}")
-        Chef::Log.info "Done setting up LVM on ephemeral drives"
       end
+      not_if { ( File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$") ) && ( File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " ) ) }
     end
   end
 else

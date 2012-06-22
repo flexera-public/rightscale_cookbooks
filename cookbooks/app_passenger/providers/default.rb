@@ -12,7 +12,6 @@ action :stop do
     action :stop
     persist false
   end
-
 end
 
 # Start apache/passenger
@@ -20,6 +19,15 @@ action :start do
   log "  Running start sequence"
   service "apache2" do
     action :start
+    persist false
+  end
+end
+
+# Reload apache/passenger
+action :reload do
+  log "  Running reload sequence"
+  service "apache2" do
+    action :reload
     persist false
   end
 end
@@ -104,16 +112,8 @@ action :setup_vhost do
     only_if do node[:platform] == "redhat" end
   end
 
-
-  log "  Generating new apache ports.conf"
-  node[:apache][:listen_ports] = port.to_s
-
-  # Generation of new apache ports.conf
-  template "#{node[:apache][:dir]}/ports.conf" do
-    cookbook "apache2"
-    source "ports.conf.erb"
-    variables :apache_listen_ports => node[:apache][:listen_ports]
-  end
+  # Adds php port to list of ports for webserver to listen on
+  app_add_listen_port port.to_s
 
   log "  Unlinking default apache vhost"
   apache_site "000-default" do
@@ -210,14 +210,34 @@ action :code_update do
     persist false
   end
 
+  # Moving rails application log directory to ephemeral
 
-  log "  Generating new logrotatate config for rails application"
+  # Removing log directory, preparing to symlink
+  directory "#{deploy_dir}/log" do
+    action :delete
+    recursive true
+  end
+
+  # Creating new rails application log  directory on ephemeral volume
+  directory "/mnt/ephemeral/log/rails/#{node[:web_apache][:application_name]}" do
+    owner node[:app_passenger][:apache][:user]
+    mode "0755"
+    action :create
+    recursive true
+  end
+
+  # Symlinking application log directory to ephemeral volume
+  link "#{deploy_dir}/log" do
+    to "/mnt/ephemeral/log/rails/#{node[:web_apache][:application_name]}"
+  end
+
+  log "  Generating new logrotate config for rails application"
   rightscale_logrotate_app "rails" do
-    cookbook "app_passenger"
-    template "logrotate_rails.erb"
+    cookbook "rightscale"
+    template "logrotate.erb"
     path ["#{deploy_dir}/log/*.log" ]
-    frequency "daily"
-    rotate 7
+    frequency "size 10M"
+    rotate 4
     create "660 #{node[:app_passenger][:apache][:user]} #{node[:app_passenger][:apache][:group]}"
   end
 

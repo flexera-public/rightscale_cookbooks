@@ -29,9 +29,9 @@ sample_interval = 20
 
 opts.each do |opt, arg|
   case opt
-    when '--hostname'
+  when '--hostname'
       hostname = arg
-    when '--sample-interval'
+  when '--sample-interval'
       sample_interval = arg.to_i
   end
   arg.inspect

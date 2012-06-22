@@ -51,10 +51,7 @@ define :db_do_backup, :force => false, :backup_type => "primary" do
   end
 
   # Acquire the backup lock or die
-  #
-  # This lock is released in the 'backup' script for now.
-  # See below for more information about 'backup'
-  # if 'force' is true, kills pid and removes locks
+  # If 'force' is true, kills other backups running.
   block_device NICKNAME do
     action :backup_lock_take
     force do_force
@@ -102,6 +99,7 @@ define :db_do_backup, :force => false, :backup_type => "primary" do
     action :post_backup_cleanup
   end
 
+  # Removing backup lock
   block_device NICKNAME do
     action :backup_lock_give
   end

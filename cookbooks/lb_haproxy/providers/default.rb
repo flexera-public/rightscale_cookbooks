@@ -16,19 +16,11 @@ action :install do
 
   # Create haproxy service.
   service "haproxy" do
-    supports :restart => true, :status => true, :start => true, :stop => true
+    supports :reload => true, :restart => true, :status => true, :start => true, :stop => true
     action :enable
   end
 
   # Install haproxy file depending on OS/platform.
-  template "/etc/init.d/haproxy" do
-    only_if { node[:platform] == "centos" || node[:platform] == "redhat" || node[:platform] == "fedora" }
-    source "haproxy.init.erb"
-    cookbook "lb_haproxy"
-    mode 0755
-    notifies :restart, resources(:service => "haproxy")
-  end
-
   template "/etc/default/haproxy" do
     only_if { node[:platform] == "debian" || node[:platform] == "ubuntu" }
     source "default_haproxy.erb"
@@ -68,21 +60,41 @@ action :install do
     )
   end
 
-  # Install the haproxy config head which is the part of the haproxy config that doesn't change.
+  # Install the haproxy config backend which is the part of the haproxy config that doesn't change.
   template "/home/lb/rightscale_lb.cfg.default_backend" do
     source "haproxy_default_backend.erb"
     cookbook "lb_haproxy"
     owner "haproxy"
     group "haproxy"
     mode "0400"
-
     default_backend = node[:lb][:vhost_names].gsub(/\s+/, "").split(",").first.gsub(/\./, "_") + "_backend"
     variables(
       :default_backend_line => default_backend
     )
   end
 
-end # action :install do
+  # Generate the haproxy config file.
+  execute "/home/lb/haproxy-cat.sh" do
+    user "haproxy"
+    group "haproxy"
+    umask 0077
+    notifies :start, resources(:service => "haproxy")
+  end
+
+  # Remove haproxy config file so we can symlink it.
+  file "/etc/haproxy/haproxy.cfg" do
+    backup false
+    not_if { ::File.symlink?("/etc/haproxy/haproxy.cfg") }
+    action :delete
+  end
+
+  # Symlink haproxy config.
+  link "/etc/haproxy/haproxy.cfg" do
+    to "/home/lb/rightscale_lb.cfg"
+  end
+
+end
+
 
 action :add_vhost do
 
@@ -125,13 +137,14 @@ action :add_vhost do
     group "haproxy"
     umask 0077
     action :run
-    notifies :restart, resources(:service => "haproxy")
+    notifies :reload, resources(:service => "haproxy")
   end
 
   # Tag this server as a load balancer for vhost it will answer for so app servers can send requests to it.
   right_link_tag "loadbalancer:#{vhost_name}=lb"
 
-end # action :add_vhost do
+end
+
 
 action :attach do
 
@@ -141,7 +154,7 @@ action :attach do
 
   # Create haproxy service.
   service "haproxy" do
-    supports :restart => true, :status => true, :start => true, :stop => true
+    supports :reload => true, :restart => true, :status => true, :start => true, :stop => true
     action :nothing
   end
 
@@ -151,7 +164,7 @@ action :attach do
     group "haproxy"
     umask 0077
     action :nothing
-    notifies :restart, resources(:service => "haproxy")
+    notifies :reload, resources(:service => "haproxy")
   end
 
   # Create an individual server file for each vhost and notify the concatenation script if necessary.
@@ -167,13 +180,13 @@ action :attach do
       :backend_ip => new_resource.backend_ip,
       :backend_port => new_resource.backend_port,
       :max_conn_per_server => node[:lb][:max_conn_per_server],
-      :session_sticky => node[:lb][:session_stickiness],
+      :session_sticky => new_resource.session_sticky,
       :health_check_uri => node[:lb][:health_check_uri]
     )
     notifies :run, resources(:execute => "/home/lb/haproxy-cat.sh")
   end
 
-end # action :attach do
+end
 
 action :attach_request do
 
@@ -193,7 +206,8 @@ action :attach_request do
     recipients_tags "loadbalancer:#{vhost_name}=lb"
   end
 
-end # action :attach_request do
+end
+
 
 action :detach do
 
@@ -203,7 +217,7 @@ action :detach do
 
   # Create haproxy service.
   service "haproxy" do
-    supports :restart => true, :status => true, :start => true, :stop => true
+    supports :reload => true, :restart => true, :status => true, :start => true, :stop => true
     action :nothing
   end
 
@@ -213,7 +227,7 @@ action :detach do
     group "haproxy"
     umask 0077
     action :nothing
-    notifies :restart, resources(:service => "haproxy")
+    notifies :reload, resources(:service => "haproxy")
   end
 
   # Delete the individual server file and notify the concatenation script if necessary.
@@ -223,7 +237,8 @@ action :detach do
     notifies :run, resources(:execute => "/home/lb/haproxy-cat.sh")
   end
 
-end # action :detach do
+end
+
 
 action :detach_request do
 
@@ -241,14 +256,15 @@ action :detach_request do
     recipients_tags "loadbalancer:#{vhost_name}=lb"
   end
 
-end # action :detach_request do
+end
+
 
 action :setup_monitoring do
 
   log "  Setup monitoring for haproxy"
 
   # Install the haproxy collectd script into the collectd library plugins directory.
-  remote_file(::File.join(node[:rightscale][:collectd_lib], "plugins", "haproxy")) do
+  cookbook_file(::File.join(node[:rightscale][:collectd_lib], "plugins", "haproxy")) do
     source "haproxy1.4.rb"
     cookbook "lb_haproxy"
     mode "0755"
@@ -267,13 +283,18 @@ action :setup_monitoring do
       types_file = ::File.join(node[:rightscale][:collectd_share], "types.db")
       typesdb = IO.read(types_file)
       unless typesdb.include?("gague-age") && typesdb.include?("haproxy_sessions")
-        typesdb += "\nhaproxy_sessions        current_queued:GAUGE:0:65535, current_session:GAUGE:0:65535\nhaproxy_traffic         cumulative_requests:COUNTER:0:200000000, response_errors:COUNTER:0:200000000, health_check_errors:COUNTER:0:200000000\nhaproxy_status          status:GAUGE:-255:255\n"
+        typesdb += <<-EOS
+          haproxy_sessions current_queued:GAUGE:0:65535, current_session:GAUGE:0:65535
+          haproxy_traffic cumulative_requests:COUNTER:0:200000000, response_errors:COUNTER:0:200000000, health_check_errors:COUNTER:0:200000000
+          haproxy_status status:GAUGE:-255:255
+        EOS
         ::File.open(types_file, "w") { |f| f.write(typesdb) }
       end
     end
   end
 
-end # action :setup_monitoring do
+end
+
 
 action :restart do
 
@@ -284,7 +305,6 @@ action :restart do
   Timeout::timeout(new_resource.timeout) do
     while true
       `service #{new_resource.name} stop`
-
       break if `service #{new_resource.name} status` !~ /is running/
       Chef::Log.info "service #{new_resource.name} not stopped; retrying in 5 seconds"
       sleep 5
@@ -292,11 +312,10 @@ action :restart do
 
     while true
       `service #{new_resource.name} start`
-
       break if `service #{new_resource.name} status` =~ /is running/
       Chef::Log.info "service #{new_resource.name} not started; retrying in 5 seconds"
       sleep 5
     end
   end
 
-end # action :restart do
+end

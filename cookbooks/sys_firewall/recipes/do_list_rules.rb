@@ -17,6 +17,7 @@ if node[:sys_firewall][:enabled] == "enabled"
       echo "==================== do_list_rules : /etc/iptables.d End ===================="
     EOH
   end
+
   # Directly list iptable rules
   bash "List contents of iptables.d" do
     user "root"
@@ -26,8 +27,9 @@ if node[:sys_firewall][:enabled] == "enabled"
       echo "==================== do_list_rules : Firewall rules End ===================="
     EOH
   end
+
 else
-  log "Firewall not enabled."
+  log "  Firewall not enabled."
 end
 
 rightscale_marker :end

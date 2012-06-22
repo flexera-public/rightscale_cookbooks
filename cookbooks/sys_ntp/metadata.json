@@ -1,50 +1,50 @@
 {
-  "name": "sys_ntp",
-  "description": "Installs and configures ntp as a client or server",
-  "long_description": "DESCRIPTION\n===========\n\nInstalls and configures ntp client.\n\nREQUIREMENTS\n============\n\nShould work on any Red Hat-family or Debian-family Linux distribution.\n\n\n",
-  "maintainer": "RightScale, Inc.",
-  "maintainer_email": "support@rightscale.com",
-  "license": "Copyright RightScale, Inc. All rights reserved.",
-  "platforms": {
-    "ubuntu": ">= 0.0.0",
-    "debian": ">= 0.0.0",
-    "redhat": ">= 0.0.0",
-    "centos": ">= 0.0.0",
-    "fedora": ">= 0.0.0"
-  },
   "dependencies": {
     "rightscale": ">= 0.0.0"
   },
-  "recommendations": {
-  },
-  "suggestions": {
-  },
-  "conflicting": {
-  },
-  "providing": {
-  },
-  "replacing": {
-  },
+  "name": "sys_ntp",
+  "maintainer_email": "support@rightscale.com",
   "attributes": {
     "sys_ntp/servers": {
-      "display_name": "NTP Servers",
-      "description": "A comma-separated list of fully qualified domain names for the array of servers we should talk to.",
-      "type": "string",
-      "default": "time.rightscale.com, ec2-us-east.time.rightscale.com, ec2-us-west.time.rightscale.com",
+      "required": "optional",
+      "calculated": false,
       "choice": [
 
       ],
-      "calculated": false,
-      "required": "optional",
+      "default": "time.rightscale.com, ec2-us-east.time.rightscale.com, ec2-us-west.time.rightscale.com",
+      "type": "string",
       "recipes": [
 
-      ]
+      ],
+      "display_name": "NTP Servers",
+      "description": "A comma-separated list of fully qualified domain names for the array of servers that instances should talk to. Example: time1.example.com, time2.example.com, time3.example.com"
     }
+  },
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "suggestions": {
+  },
+  "platforms": {
+    "debian": ">= 0.0.0",
+    "fedora": ">= 0.0.0",
+    "centos": ">= 0.0.0",
+    "ubuntu": ">= 0.0.0",
+    "redhat": ">= 0.0.0"
+  },
+  "maintainer": "RightScale, Inc.",
+  "long_description": "= RightScale System NTP Cookbook\n\n== DESCRIPTION:\n\nThis cookbook provides a recipe for setting up time synchronization using NTP.\n\n== REQUIREMENTS:\n\nRequires a virtual machine launched from a RightScale-managed RightImage.\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n== KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n== SETUP/USAGE:\n\nPlace the <tt>sys_ntp::default</tt> recipe into the boot recipes.\n\n== DETAILS:\n\n=== Attributes:\n\nThese are settings used in recipes and templates. Default values are noted.\n\nNote: Only \"internal\" cookbook attributes are described here. Descriptions of\nattributes which have inputs you can find in the <tt>metadata.rb</tt> cookbook\nfile.\n\n* <tt>node[:sys_ntp][:service]</tt> - Name of the service that NTP runs as.\n  Default is <tt>ntp</tt> on Ubuntu and <tt>ntpd</tt> on CentOS and RedHat.\n\n=== Templates:\n\n<b>ntp.conf.erb</b>\n\nConfiguration for the NTP daemon used in the <tt>sys_ntp::default</tt> recipe.\n\n= LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to\nthe RightScale Terms of Service available at http://www.rightscale.com/terms.php\nand, if applicable, other agreements such as a RightScale Master Subscription\nAgreement.\n",
+  "version": "12.1.0",
+  "recommendations": {
+  },
+  "recipes": {
+    "sys_ntp": "Installs and configures ntp client."
   },
   "groupings": {
   },
-  "recipes": {
-    "sys_ntp": "Installs and configures ntp client"
+  "conflicting": {
   },
-  "version": "1.0.0"
+  "replacing": {
+  },
+  "description": "Installs and configures ntp as a client or server",
+  "providing": {
+  }
 }

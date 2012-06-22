@@ -34,7 +34,7 @@ attribute :restore_process, :kind_of => Symbol, :default => :primary_restore
 attribute :privilege, :equal_to => [ "administrator", "user" ], :default => "administrator"
 attribute :privilege_username, :kind_of => String
 attribute :privilege_password, :kind_of => String
-attribute :privilege_database, :kind_of => String, :default => "*.*" # All databases
+attribute :privilege_database, :kind_of => String, :default => "*.*"
 
 # == Firewall options
 attribute :enable, :equal_to => [ true, false ], :default => true
@@ -48,7 +48,7 @@ attribute :db_name, :kind_of => String
 
 # = General Database Actions
 #
-# Below are the actions defined by by the db resource interface.
+# Below are the actions defined by the db resource interface.
 #
 
 # == Stop
@@ -84,7 +84,7 @@ add_action :lock
 # Unlock the database so writes can occur.
 #
 # This must be called as soon as possible after calling the :lock action
-# since no clients will be blocked from writing.
+# since clients will be blocked from writing until unlocked.
 #
 add_action :unlock
 
@@ -121,7 +121,6 @@ add_action :firewall_update_request
 #
 add_action :move_data_dir
 
-
 # == Generate dump file
 add_action :generate_dump_file
 
@@ -150,7 +149,7 @@ add_action :post_backup_cleanup
 # == Write Backup Info
 # Write backup information needed during restore.
 #
-# This action is called before a backup is done.  
+# This action is called before a backup is done.
 # It contains information about the current DB setup (db provider, version, replication
 # details, etc.) that is used during restore to verify the backup and initialize
 # the DB. The file is written to the DB data block device and is part of the backup.
@@ -172,8 +171,8 @@ add_action :pre_restore_check
 # == Post-restore Cleanup Validation
 # Used to validate backup and cleanup VM after restore.
 #
-# Raise and exception if the snapshot is from a different master, from an incompatible
-# database software version, incompatible architecture, or other provider dependent 
+# Raise an exception if the snapshot is from a different master, from an incompatible
+# database software version, incompatible architecture, or other provider dependent
 # conditions.
 #
 # This action is called after the block_device restore has completed and
@@ -197,7 +196,7 @@ add_action :set_privileges
 # Installs database client
 #
 # Use to install the client on any system that needs to connect to the server.
-# Also should install language binding packages For example, ruby client gem
+# Also should install language binding packages. For example: ruby client gem
 # java client jar, php client modules, etc
 #
 add_action :install_client
@@ -224,7 +223,7 @@ add_action :enable_replication
 # Promotes a slave server to the master server.
 #
 # This is called when a new master is needed.  If the prior master is still
-# functioning it is configured as a slave.
+# functioning it is demoted and configured as a slave.
 add_action :promote
 
 # == Grant Replication Slave

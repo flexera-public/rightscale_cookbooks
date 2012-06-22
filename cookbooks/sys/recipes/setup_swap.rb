@@ -10,6 +10,7 @@ rightscale_marker :begin
 swap_size = node[:sys][:swap_size]
 swap_file = node[:sys][:swap_file]
 
+
 def clean_swap(swap_file)
 
   # Turn off swap on swap_file if turned on.
@@ -34,9 +35,10 @@ def clean_swap(swap_file)
     action :delete
   end
 
-end # def clean_swap(swap_file)
+end
 
-def create_swap(swap_file, swap_size)
+
+def activate_swap_file(swap_file, swap_size)
 
   # Make sure swapfile directory exists, create swapfile, set it as swap, and turn swap on.
   bash 'create swapfile' do
@@ -46,6 +48,13 @@ def create_swap(swap_file, swap_size)
       mkdir -p `dirname #{swap_file}`
       dd if=/dev/zero of=#{swap_file} bs=1M count=#{swap_size}
       chmod 600 #{swap_file}
+    eof
+  end
+
+  # set file as swap, and turn swap on.
+  bash 'activate swapfile' do
+    flags "-ex"
+    code <<-eof
       mkswap #{swap_file}
       swapon #{swap_file}
     eof
@@ -56,9 +65,11 @@ def create_swap(swap_file, swap_size)
     action :enable
     device "#{swap_file}"
     fstype 'swap'
+    options "noauto"
   end
 
-end # def create_swap(swap_file, swap_size)
+end
+
 
 # Sanitize user data 'swap_size'.
 if swap_size !~ /^\d*[.]?\d+$/
@@ -68,10 +79,12 @@ else
   swap_size = ((swap_size.to_f)*1024).to_i
 end
 
+
 # Sanitize user data 'swap_file'.
 if swap_file !~ /^\/{1}(((\/{1}\.{1})?[a-zA-Z0-9 ]+\/?)+(\.{1}[a-zA-Z0-9]{2,4})?)$/
   raise "  ERROR: invalid swap file name"
 end
+
 
 # Skip creating swap or disable swap.
 if swap_size == 0
@@ -80,12 +93,10 @@ if swap_size == 0
   end
   log "  swap creation disabled"
 else
-
   # For idempotency, check if selected swapfle is in place, it's correct size, and it's on.
   if File.exists?(swap_file) && File.stat(swap_file).size/1048576 == swap_size && File.open('/proc/swaps').grep(/^#{swap_file}\b/).any?
     log "  valid current swap config"
   else
-
     # Check for remnents of swap.
     if File.exists?(swap_file) || File.open('/proc/swaps').grep(/^#{swap_file}\b/).any?
       log "  swap remnents detected - cleaning"
@@ -110,7 +121,7 @@ else
     end
 
     # Should now setup swap file.
-    create_swap(swap_file, swap_size)
+    activate_swap_file(swap_file, swap_size)
   end
 end
 

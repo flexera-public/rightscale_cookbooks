@@ -17,22 +17,6 @@ module RightScale
         SNAPSHOT_POSITION_FILENAME = 'rs_snapshot_position.yaml'
         DEFAULT_CRITICAL_TIMEOUT = 7
 
-        # Create numeric UUID
-        # MySQL server_id must be a unique number  - use the ip address integer representation
-        #
-        # Duplicate IP's and server_id's may occur with cross cloud replication.
-        def mycnf_uuid
-          node[:db_mysql][:mycnf_uuid] = IPAddr.new(node[:cloud][:private_ips][0]).to_i
-        end
-
-        # Generate unique filename for relay_log used in slave db.
-        # Should only generate once.  Used to create unique relay_log files used for slave
-        # Always set to support stop/start
-        def mycnf_relay_log
-          node[:db_mysql][:mycnf_relay_log] = Time.now.to_i.to_s + rand(9999).to_s.rjust(4,'0') if !node[:db_mysql][:mycnf_relay_log]
-          return node[:db_mysql][:mycnf_relay_log]
-        end
-
         # Create new MySQL object
         #
         # @param [Object] new_resource Resource which will be initialized
@@ -50,6 +34,22 @@ module RightScale
           Chef::Log.info "  Using version: #{version} : #{node[:db_mysql][:version]}"
 
           RightScale::Tools::Database.factory(version, new_resource.user, new_resource.password, mount_point, Chef::Log)
+        end
+
+        # Create numeric UUID
+        # MySQL server_id must be a unique number  - use the ip address integer representation
+        #
+        # Duplicate IP's and server_id's may occur with cross cloud replication.
+        def self.mycnf_uuid(node)
+          node[:db_mysql][:mycnf_uuid] = IPAddr.new(node[:cloud][:private_ips][0]).to_i
+        end
+
+        # Generate unique filename for relay_log used in slave db.
+        # Should only generate once.  Used to create unique relay_log files used for slave
+        # Always set to support stop/start
+        def self.mycnf_relay_log(node)
+          node[:db_mysql][:mycnf_relay_log] = Time.now.to_i.to_s + rand(9999).to_s.rjust(4,'0') if !node[:db_mysql][:mycnf_relay_log]
+          return node[:db_mysql][:mycnf_relay_log]
         end
 
         # Helper to load replication information

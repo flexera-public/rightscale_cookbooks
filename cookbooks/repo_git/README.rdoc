@@ -2,12 +2,13 @@
 
 == DESCRIPTION:
 
-Provides the GIT implementation of the 'repo' resource to
-manage source code download from GIT repositories.
+Provides the Git implementation of the 'repo' resource to
+manage source code downloaded from Git repositories.
 
 == REQUIREMENTS:
 
-* Requires repo Light Weight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/repo or your own implementation of "repo" resource. See "repo" cookbook README for details.
+* Requires repo Lightweight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/repo
+  or your own implementation of "repo" resource. See "repo" cookbook README for details.
 
 * Requires a virtual machine launched from a RightScale-managed RightImage.
 
@@ -24,26 +25,30 @@ There are no known limitations.
 
 == SETUP/USAGE:
 
-* Provider will be automatically initialized when you add "repo:default" recipe to your ServerTemplate runlist
+* Provider will be automatically initialized when you add "repo:default" recipe
+  to your ServerTemplate runlist
 
-* Once setup, use the recipes in the 'repo' cookbook to install and manage your code repo.
-  See the repo/README.rdoc for usage details.
+* Once set up, use the recipes in the 'repo' cookbook to manage downloading from
+  your code repository. See the repo/README.rdoc for usage details.
 
-* Select 'repo_git' option in repo/default/provider input.
+* Select the 'repo_git' option for the repo/default/provider input.
 
-* To perform correct operations  repo/url, and repo/branch inputs must be filled.
+* To perform correct operations, values for the repo/url and repo/branch inputs
+  must be provided.
 
-* To access to private git repositories repo/ssh_key input must contain string with private ssh key or 'key'-type variable from RightScale dashboard.
+* To access private Git repositories, the repo/ssh_key input must contain a
+  string with a valid Git SSH key or 'key'-type variable from the RightScale
+  dashboard.
 
 == DETAILS:
 
 === General
 
-The 'repo_git' implementation can be called with help of Lightweight Resource, which can be
+The 'repo_git' implementation can be called with the help of the Lightweight Resource, which can be
 found in the <tt>repo</tt> cookbook.
 
-For more about Lightweight Resources and Providers (LWRPs), please see the RightScale
-Guide at:  http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)
+For more information about Lightweight Resources and Providers (LWRPs), please see {Lightweight Resources and Providers}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)].
+  
 
 === Attributes:
 none
@@ -53,11 +58,12 @@ none
 
 === Definitions:
 none
+
 === Libraries-helpers:
 
 <b>RightScale::Repo::Ssh_key.create(ssh_key)</b>
 
-Create bash script, which will set user defined ssh key required to access to private git source code repositories.
+Create a bash script that provides the Git SSH key that is required to access code in private git repositories.
 
 Parameters
 
@@ -65,11 +71,11 @@ Parameters
 
 Raise
 
-<tt>RuntimeError::</tt> if ssh key string is empty
+<tt>RuntimeError::</tt> if the Git SSH key string is empty.
 
 <b>RightScale::Repo::Ssh_key.delete</b>
 
-Remove bash script created by <tt>create</tt> method, after successful pull operation.
+Remove bash script created by the <tt>create</tt> method, after a successful pull operation.
 
 Parameters
 
@@ -77,23 +83,23 @@ none
 
 === LWRPs:
 
-<tt>repo_git</tt> provider is defined in providers/default.rb file, it contains source for <tt>:pull</tt> and <tt>:capistrano_pull</tt> actions.
-For more info about these actions please see <tt>repo</tt> cookbook README.
+The <tt>repo_git</tt> provider is defined in the <tt>providers/default.rb</tt> file, which contains source code for <tt>:pull</tt> and <tt>:capistrano_pull</tt> actions.
+For more info about these actions please see the <tt>repo</tt> cookbook's README.
 
-<tt>repo_git</tt> provider allows to get source code from GIT remote repositories. It supports repositories with public and private (ssh key protected) access.
+The <tt>repo_git</tt> provider allows the retrieval of source code from remote Git repositories. It supports repositories with public and private (ssh key protected) access.
 
-For normal operations it requires "repo" resource which will act as interface to all <tt>repo_git</tt> provider logic.
+For normal operations, it requires the 'repo' resource, which acts as the interface to all <tt>repo_git</tt> provider logic.
 
 ===== Actions:
 <tt>:pull</tt>
-Standard repo pull. Your source code repository will be pulled from remote url to specified destination.
+Standard repository pull. Pull source code from a remote repository by specifying its location with a URL.
 
 <tt>:capistrano_pull</tt>
-Perform standard pull and then capistrano deployment style will be applied.
+Perform standard pull and then a capistrano deployment style will be applied.
 
 ===== Usage Example:
 
-For usage examples please see corresponding section in <tt>repo</tt> cookbook README.
+For usage examples, please see the corresponding section in <tt>repo</tt> cookbook's README.
 
 = LICENSE:
 

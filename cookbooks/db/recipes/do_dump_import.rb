@@ -27,7 +27,7 @@ else
   container    = node[:db][:dump][:container]
   cloud        = node[:db][:dump][:storage_account_provider]
 
-  # Obtain the dumpfile from ROS 
+  # Obtain the dumpfile from ROS
   execute "Download dumpfile from Remote Object Store" do
     command "/opt/rightscale/sandbox/bin/ros_util get --cloud #{cloud} --container #{container} --dest #{dumpfilepath} --source #{prefix} --latest"
     creates dumpfilepath
@@ -37,7 +37,7 @@ else
     })
   end
 
-  # Restore the dump file to db. 
+  # Restore the dump file to db
   db node[:db][:data_dir] do
     dumpfile dumpfilepath
     db_name db_name
