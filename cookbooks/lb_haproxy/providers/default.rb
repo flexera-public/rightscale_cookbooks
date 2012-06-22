@@ -29,8 +29,8 @@ action :install do
     notifies :restart, resources(:service => "haproxy")
   end
 
-  # Create /etc/lb directory.
-  directory "/etc/lb/#{node[:lb][:service][:provider]}.d" do
+  # Create /etc/haproxy directory.
+  directory "/etc/haproxy/#{node[:lb][:service][:provider]}.d" do
     owner "haproxy"
     group "haproxy"
     mode 0755
@@ -39,7 +39,7 @@ action :install do
   end
 
   # Install script that concatenates individual server files after the haproxy config head into the haproxy config.
-  cookbook_file "/etc/lb/haproxy-cat.sh" do
+  cookbook_file "/etc/haproxy/haproxy-cat.sh" do
     owner "haproxy"
     group "haproxy"
     mode 0755
@@ -48,20 +48,20 @@ action :install do
   end
 
   # Install the haproxy config head which is the part of the haproxy config that doesn't change.
-  template "/etc/lb/rightscale_lb.cfg.head" do
+  template "/etc/haproxy/rightscale_lb.cfg.head" do
     source "haproxy_http.erb"
     cookbook "lb_haproxy"
     owner "haproxy"
     group "haproxy"
     mode "0400"
-    stats_file="stats socket /etc/lb/status user haproxy group haproxy"
+    stats_file="stats socket /etc/haproxy/status user haproxy group haproxy"
     variables(
       :stats_file_line => stats_file
     )
   end
 
   # Install the haproxy config backend which is the part of the haproxy config that doesn't change.
-  template "/etc/lb/rightscale_lb.cfg.default_backend" do
+  template "/etc/haproxy/rightscale_lb.cfg.default_backend" do
     source "haproxy_default_backend.erb"
     cookbook "lb_haproxy"
     owner "haproxy"
@@ -74,7 +74,7 @@ action :install do
   end
 
   # Generate the haproxy config file.
-  execute "/etc/lb/haproxy-cat.sh" do
+  execute "/etc/haproxy/haproxy-cat.sh" do
     user "haproxy"
     group "haproxy"
     umask 0077
@@ -96,7 +96,7 @@ action :add_vhost do
   vhost_name = new_resource.vhost_name
 
   # Create the directory for vhost server files.
-  directory "/etc/lb/#{node[:lb][:service][:provider]}.d/#{vhost_name}" do
+  directory "/etc/haproxy/#{node[:lb][:service][:provider]}.d/#{vhost_name}" do
     owner "haproxy"
     group "haproxy"
     mode 0755
@@ -105,7 +105,7 @@ action :add_vhost do
   end
 
   # Create backend haproxy files for vhost it will answer for.
-  template ::File.join("/etc/lb/#{node[:lb][:service][:provider]}.d", "#{vhost_name}.cfg") do
+  template ::File.join("/etc/haproxy/#{node[:lb][:service][:provider]}.d", "#{vhost_name}.cfg") do
     source "haproxy_backend.erb"
     cookbook 'lb_haproxy'
     owner "haproxy"
@@ -127,7 +127,7 @@ action :add_vhost do
   end
 
   # (Re)generate the haproxy config file.
-  execute "/etc/lb/haproxy-cat.sh" do
+  execute "/etc/haproxy/haproxy-cat.sh" do
     user "haproxy"
     group "haproxy"
     umask 0077
@@ -154,7 +154,7 @@ action :attach do
   end
 
   # (Re)generate the haproxy config file.
-  execute "/etc/lb/haproxy-cat.sh" do
+  execute "/etc/haproxy/haproxy-cat.sh" do
     user "haproxy"
     group "haproxy"
     umask 0077
@@ -163,7 +163,7 @@ action :attach do
   end
 
   # Create an individual server file for each vhost and notify the concatenation script if necessary.
-  template ::File.join("/etc/lb/#{node[:lb][:service][:provider]}.d", vhost_name, new_resource.backend_id) do
+  template ::File.join("/etc/haproxy/#{node[:lb][:service][:provider]}.d", vhost_name, new_resource.backend_id) do
     source "haproxy_server.erb"
     owner "haproxy"
     group "haproxy"
@@ -178,7 +178,7 @@ action :attach do
       :session_sticky => new_resource.session_sticky,
       :health_check_uri => node[:lb][:health_check_uri]
     )
-    notifies :run, resources(:execute => "/etc/lb/haproxy-cat.sh")
+    notifies :run, resources(:execute => "/etc/haproxy/haproxy-cat.sh")
   end
 
 end
@@ -217,7 +217,7 @@ action :detach do
   end
 
   # (Re)generate the haproxy config file.
-  execute "/etc/lb/haproxy-cat.sh" do
+  execute "/etc/haproxy/haproxy-cat.sh" do
     user "haproxy"
     group "haproxy"
     umask 0077
@@ -226,10 +226,10 @@ action :detach do
   end
 
   # Delete the individual server file and notify the concatenation script if necessary.
-  file ::File.join("/etc/lb/#{node[:lb][:service][:provider]}.d", vhost_name, new_resource.backend_id) do
+  file ::File.join("/etc/haproxy/#{node[:lb][:service][:provider]}.d", vhost_name, new_resource.backend_id) do
     action :delete
     backup false
-    notifies :run, resources(:execute => "/etc/lb/haproxy-cat.sh")
+    notifies :run, resources(:execute => "/etc/haproxy/haproxy-cat.sh")
   end
 
 end
