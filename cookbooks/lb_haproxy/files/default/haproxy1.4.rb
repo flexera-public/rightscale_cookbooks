@@ -14,7 +14,7 @@
 require 'optparse'
 require 'socket'
 
-HAPROXY_SOCKET="/home/lb/status"
+HAPROXY_SOCKET="/etc/lb/status"
 HAPROXY_COMMAND="show stat\n"
 
 @status = {
@@ -28,7 +28,7 @@ HAPROXY_COMMAND="show stat\n"
 
 # Defaults if arguments passed.
 @options = {
-  :socket => "/home/lb/status",
+  :socket => "/etc/lb/status",
   :instanceid => ENV['EC2_INSTANCE_ID'],
   :interval => 20
 }
@@ -43,7 +43,7 @@ def usage(code = 0)
   out << "\t-d, --hostid \e[1;4mINSTANCE ID\e[0m\n"
   out << "\t\tThe instance id of which the data is being collected\n"
   out << "\t-s, --socket UNIX SOCKET\n"
-  out << "\t\tthe unix socket descriptor location (/home/lb/status)\n"
+  out << "\t\tthe unix socket descriptor location (/etc/lb/status)\n"
   out << "\t-n, --sampling-interval \e[1;4mINTERVAL\e[0m\n"
   out << "\t\tThe interval (in second) between each sampling.\n"
   out << "\t-h, --help\n\n"

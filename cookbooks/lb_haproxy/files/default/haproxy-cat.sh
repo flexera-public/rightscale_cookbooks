@@ -9,15 +9,15 @@
 set -e
 shopt -s nullglob
 
-CONF_FILE=/home/lb/rightscale_lb.cfg
+CONF_FILE=/etc/lb/rightscale_lb.cfg
 
-cat /home/lb/rightscale_lb.cfg.head > ${CONF_FILE}
+cat /etc/lb/rightscale_lb.cfg.head > ${CONF_FILE}
 
 echo "frontend all_requests 127.0.0.1:85" >> ${CONF_FILE}
 
 vhosts=""
 
-for dir in /home/lb/lb_haproxy.d/*
+for dir in /etc/lb/lb_haproxy.d/*
 do
   if [ -d ${dir} ]; then
     vhosts=${vhosts}" "`basename ${dir}`
@@ -41,16 +41,16 @@ done
 
 echo "" >> ${CONF_FILE}
 
-cat /home/lb/rightscale_lb.cfg.default_backend >> ${CONF_FILE}
+cat /etc/lb/rightscale_lb.cfg.default_backend >> ${CONF_FILE}
 
 echo "" >> ${CONF_FILE}
 
 for single_vhost in ${vhosts}
 do
-  cat /home/lb/lb_haproxy.d/${single_vhost}.cfg >> ${CONF_FILE}
+  cat /etc/lb/lb_haproxy.d/${single_vhost}.cfg >> ${CONF_FILE}
 
-  if [ $(ls -1A /home/lb/lb_haproxy.d/${single_vhost} | wc -l) -gt 0 ]; then
-    cat /home/lb/lb_haproxy.d/${single_vhost}/* >> ${CONF_FILE}
+  if [ $(ls -1A /etc/lb/lb_haproxy.d/${single_vhost} | wc -l) -gt 0 ]; then
+    cat /etc/lb/lb_haproxy.d/${single_vhost}/* >> ${CONF_FILE}
   fi
 
   echo "" >> ${CONF_FILE}
