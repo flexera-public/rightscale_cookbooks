@@ -9,7 +9,7 @@
 set -e
 shopt -s nullglob
 
-CONF_FILE=/home/lb/1_rightscale_lb.cfg
+CONF_FILE=/home/lb/rightscale_lb.cfg
 
 cat /home/lb/rightscale_lb.cfg.head > ${CONF_FILE}
 
