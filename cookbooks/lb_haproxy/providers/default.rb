@@ -81,13 +81,6 @@ action :install do
     notifies :start, resources(:service => "haproxy")
   end
 
-  # Remove haproxy config file so we can symlink it.
-  file "/etc/haproxy/haproxy.cfg" do
-    backup false
-    not_if { ::File.symlink?("/etc/haproxy/haproxy.cfg") }
-    action :delete
-  end
-
 end
 
 
