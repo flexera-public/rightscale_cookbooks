@@ -262,7 +262,7 @@ action :advanced_configs do
     when "URI"
       raise("appserver:backend_url_path=/appserver TAG empty") if new_resource.backend_uri_path.empty?
       # replace all '/' to "_"
-      acl_name = new_resource.backend_uri.gsub(/[\/]/, '_')
+      acl_name = new_resource.backend_uri_path.gsub(/[\/]/, '_')
 
       # RESULT EXAMPLE
       # acl url_serverid  path_beg    /serverid
