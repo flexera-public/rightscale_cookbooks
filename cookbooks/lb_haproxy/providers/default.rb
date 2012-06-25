@@ -189,30 +189,15 @@ action :attach do
   # and home/lb/haproxy-cat.sh will create new
   action_advanced_configs if node[:lb][:advanced_configuration]== true
 
-  ## APP TAGs WILL BE
-  # lb: fqdn
-  # lb: url_path
-  # lb: pool_name
+x
 
-  ### INPUTS WILL BE
-  # acl_type - path_beg, hdr_dom(host),
-  # use_backend_condition -> if
-  #, or, and
-  #
-
-
-  ###ACL -> template
-  # acl url_serverid  path_beg    /serverid
-  #
-  # acl ns-ss-db1-test-rightscale-com_acl
-  # hdr_dom(host)
-  #-i ns-ss-db1.test.rightscale.com
 
 
 
 end # action :attach do
 
 action :advanced_configs do
+
 
   log "!- new_resource.backend_id #{new_resource.backend_id}"
   log "!--- new_resource.backend_fqdn #{new_resource.backend_fqdn}"
@@ -270,7 +255,7 @@ action :advanced_configs do
       bash "Creating use_backend rule configs" do
         flags "-ex"
         code <<-EOH
-          condition="use_backend #{new_resource.pool_name} if acl_#{new_resource.backend_fqdn}"
+          condition="use_backend pool_#{new_resource.pool_name} if acl_#{new_resource.backend_fqdn}"
           echo $condition >> #{advanced_rule_directory}/use_backend.conf
         EOH
         # recreating rightscale_lb.cfg
@@ -297,7 +282,7 @@ action :advanced_configs do
       bash "Creating use_backend rule configs" do
         flags "-ex"
         code <<-EOH
-          condition="use_backend #{new_resource.pool_name} if acl_#{acl_name}"
+          condition="use_backend pool_#{new_resource.pool_name} if acl_#{acl_name}"
           echo $condition >> #{advanced_rule_directory}/use_backend.conf
         EOH
         # recreating rightscale_lb.cfg

@@ -60,9 +60,9 @@ echo "" >> ${CONF_FILE}
 
 for single_vhost in ${vhosts}
 do
-  if [ $(ls -1A --ignore=advanced_configs /home/lb/lb_haproxy.d/${single_vhost} | wc -l) -gt 0 ]; then
      echo "backend ${single_vhost}_backend" >> ${CONF_FILE}
      cat /home/lb/lb_haproxy.d/${single_vhost}.cfg >> ${CONF_FILE}
+  if [ $(ls -1A --ignore=advanced_configs /home/lb/lb_haproxy.d/${single_vhost} | wc -l) -gt 0 ]; then
      for single_config in /home/lb/lb_haproxy.d/${single_vhost}/*
      do
        if [ -f  $single_config  ]; then
