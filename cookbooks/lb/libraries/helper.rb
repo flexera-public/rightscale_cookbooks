@@ -43,9 +43,9 @@ module RightScale
           ip = RightScale::Utils::Helper.get_tag_value('appserver:listen_ip', tags)
           port = RightScale::Utils::Helper.get_tag_value('appserver:listen_port', tags)
 
-          pool_name = RightScale::Utils::Helper.get_tag_value('appserver:pool_name', tags)
+          pool_name = RightScale::Utils::Helper.get_tag_value('appserver:backend_pool_name', tags)
           backend_fqdn = RightScale::Utils::Helper.get_tag_value('appserver:backend_fqdn', tags)
-          backend_uri_path = RightScale::Utils::Helper.get_tag_value('appserver:backend_url_path', tags)
+          backend_uri_path = RightScale::Utils::Helper.get_tag_value('appserver:backend_uri_path', tags)
 
           app_servers[uuid] = {}
           app_servers[uuid][:ip] = ip

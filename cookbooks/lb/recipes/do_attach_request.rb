@@ -15,6 +15,25 @@ vhosts(node[:lb][:vhost_names]).each do |vhost_name|
   log "  Adding tag to answer for vhost load balancing - #{vhost_name}."
   lb_tag vhost_name
 
+  if node[:lb][:advanced_configuration]
+
+    if node[:lb][:advanced_config][:backend_pool_name]
+      backend_pool_name = "backend_pool_name=#{node[:lb][:advanced_config][:backend_pool_name]}"
+      lb_tag backend_pool_name
+    end
+
+    if node[:lb][:advanced_config][:backend_uri_path]
+      backend_uri_path = "backend_uri_path=#{node[:lb][:advanced_config][:backend_uri_path]}"
+      lb_tag backend_uri_path
+    end
+
+    if node[:lb][:advanced_config][:backend_fqdn]
+      backend_fqdn = "backend_fqdn=#{node[:lb][:advanced_config][:backend_fqdn]}"
+      lb_tag backend_fqdn
+    end
+
+  end
+
   log "  Sending remote attach request..."
   lb vhost_name do
     backend_id node[:rightscale][:instance_uuid]

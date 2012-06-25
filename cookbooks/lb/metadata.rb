@@ -142,6 +142,8 @@ attribute "lb/service/account_secret",
     "lb::do_detach_request"
   ]
 
+# Advanced acls attributes
+
 attribute "lb/advanced_config/acl_condition",
   :display_name => "Advanced Acl condition",
   :description => "Type of the condition which will be used to create haproxy advanced acls. App servers must have following TAGS appserver:pool_name=2_pool  and one of the appserver:backend_fqdn=ns-ss-db2.test.rightscale.com OR appserver:backend_url_path=/appserver.  Example: FQDN  ",
@@ -151,3 +153,35 @@ attribute "lb/advanced_config/acl_condition",
   :recipes => [
     "lb::advanced_config"
   ]
+
+attribute "lb/advanced_config/backend_pool_name",
+  :display_name => "Backend Pool name",
+  :description => "The pool name to which app server will belong to. Advanced loadbalancer configuration must be enabled. Example: text:1_pool ",
+  :required => "optional",
+  :recipes => [
+      "lb::default",
+      "lb::do_attach_request",
+      "lb::do_detach_request"
+    ]
+
+
+attribute "lb/advanced_config/backend_uri_path",
+  :display_name => "Backend URI path",
+  :description => "URI path which will be used by loadbalancer to redirect requests to this application server. Advanced loadbalancer configuration must be enabled. Example: text:/page1",
+  :required => "optional",
+  :recipes => [
+      "lb::default",
+      "lb::do_attach_request",
+      "lb::do_detach_request"
+    ]
+
+attribute "lb/advanced_config/backend_fqdn",
+  :display_name => "Backend URI path",
+  :description => "FQDN which will be used by loadbalancer to redirect requests to this application server. Advanced loadbalancer configuration must be enabled. Example: text:example1.rightscale.com",
+  :required => "optional",
+  :recipes => [
+      "lb::default",
+      "lb::do_attach_request",
+      "lb::do_detach_request"
+    ]
+
