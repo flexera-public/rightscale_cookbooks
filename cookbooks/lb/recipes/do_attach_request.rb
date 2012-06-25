@@ -15,7 +15,6 @@ vhosts(node[:lb][:vhost_names]).each do |vhost_name|
   log "  Adding tag to answer for vhost load balancing - #{vhost_name}."
   lb_tag vhost_name
 
-  if node[:lb][:advanced_configuration]
 
     if node[:lb][:advanced_config][:backend_pool_name]
       backend_pool_name = "backend_pool_name=#{node[:lb][:advanced_config][:backend_pool_name]}"
@@ -32,7 +31,7 @@ vhosts(node[:lb][:vhost_names]).each do |vhost_name|
       lb_tag backend_fqdn
     end
 
-  end
+
 
   log "  Sending remote attach request..."
   lb vhost_name do
