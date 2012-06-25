@@ -176,7 +176,7 @@ attribute "lb/advanced_config/backend_uri_path",
     ]
 
 attribute "lb/advanced_config/backend_fqdn",
-  :display_name => "Backend URI path",
+  :display_name => "Backend FQDN",
   :description => "FQDN which will be used by loadbalancer to redirect requests to this application server. Advanced loadbalancer configuration must be enabled. Example: text:example1.rightscale.com",
   :required => "optional",
   :recipes => [

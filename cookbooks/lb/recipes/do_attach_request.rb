@@ -16,20 +16,23 @@ vhosts(node[:lb][:vhost_names]).each do |vhost_name|
   lb_tag vhost_name
 
 
-    if node[:lb][:advanced_config][:backend_pool_name]
-      backend_pool_name = "backend_pool_name=#{node[:lb][:advanced_config][:backend_pool_name]}"
-      lb_tag backend_pool_name
-    end
+  unless node[:lb][:advanced_config][:backend_pool_name].empty?
+    backend_pool_name = "backend_pool_name=#{node[:lb][:advanced_config][:backend_pool_name]}"
+    lb_tag backend_pool_name
+    log "  Adding #{backend_pool_name} tag."
+  end
 
-    if node[:lb][:advanced_config][:backend_uri_path]
-      backend_uri_path = "backend_uri_path=#{node[:lb][:advanced_config][:backend_uri_path]}"
-      lb_tag backend_uri_path
-    end
+  unless node[:lb][:advanced_config][:backend_uri_path].empty?
+    backend_uri_path = "backend_uri_path=#{node[:lb][:advanced_config][:backend_uri_path]}"
+    lb_tag backend_uri_path
+    log "  Adding #{backend_uri_path} tag."
+  end
 
-    if node[:lb][:advanced_config][:backend_fqdn]
-      backend_fqdn = "backend_fqdn=#{node[:lb][:advanced_config][:backend_fqdn]}"
-      lb_tag backend_fqdn
-    end
+  unless node[:lb][:advanced_config][:backend_fqdn].empty?
+    backend_fqdn = "backend_fqdn=#{node[:lb][:advanced_config][:backend_fqdn]}"
+    lb_tag backend_fqdn
+    log "  Adding #{backend_fqdn} tag."
+  end
 
 
 

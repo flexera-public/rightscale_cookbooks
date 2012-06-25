@@ -16,10 +16,12 @@ define :lb_tag, :action => :publish do
     right_link_tag "appserver:#{vhost_name}" do
         action tag_action
     end
+  else
+    right_link_tag "loadbalancer:#{vhost_name}=app" do
+      action tag_action
+    end
+
   end
 
-  right_link_tag "loadbalancer:#{vhost_name}=app" do
-    action tag_action
-  end
 
 end
