@@ -259,6 +259,7 @@ action :advanced_configs do
 
 
     when "URI"
+      raise("appserver:backend_url_path=/appserver TAG empty") if new_resource.backend_uri_path.empty?
       # replace all '/' to "_"
       acl_name = new_resource.backend_uri.gsub(/[\/]/, '_')
 
@@ -267,7 +268,7 @@ action :advanced_configs do
       bash "Creating acl rules config file" do
            flags "-ex"
            code <<-EOH
-           acl_condition="acl acl_#{acl_name} path_beg #{new_resource.backend_uri}"
+           acl_condition="acl acl_#{acl_name} path_beg #{new_resource.backend_uri_path}"
            echo $acl_condition >> #{advanced_rule_directory}/acl.conf
            EOH
       end
