@@ -53,7 +53,7 @@ module RightScale
 
           app_servers[uuid][:pool_name] = pool_name
           app_servers[uuid][:backend_fqdn] = backend_fqdn
-          app_servers[uuid][:backend_url_path] = backend_uri_path
+          app_servers[uuid][:backend_uri_path] = backend_uri_path
         end
 
         app_servers

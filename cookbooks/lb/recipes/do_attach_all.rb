@@ -48,7 +48,7 @@ vhosts(node[:lb][:vhost_names]).each do |vhost_name|
       # advanced attrs
       backend_fqdn deployment_servers[uuid][:backend_fqdn]
       pool_name deployment_servers[uuid][:pool_name]
-      backend_uri_path deployment_servers[uuid][:backend_url_path]
+      backend_uri_path deployment_servers[uuid][:backend_uri_path]
       # ----
       action :attach
     end

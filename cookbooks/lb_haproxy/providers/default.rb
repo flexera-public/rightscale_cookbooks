@@ -197,6 +197,7 @@ action :advanced_configs do
   log "!- new_resource.backend_id #{new_resource.backend_id}"
   log "!--- new_resource.backend_fqdn #{new_resource.backend_fqdn}"
   log "!--- new_resource.pool_name #{new_resource.pool_name}"
+  log "!--- new_resource.pool_name #{new_resource.backend_uri_path}"
   # TODO REMOVE this hardcode
   vhost_name = "default"
 
@@ -208,7 +209,7 @@ action :advanced_configs do
   end
 
 
-    # 1  how we will create "1_backend" config file
+  # create "1_backend" config file
   # CODE DRAFT EXAMPLE
   #hosts can have different hostnames, ips ... but equal pool_name
   # RESULT EXAMPLE
@@ -225,14 +226,14 @@ action :advanced_configs do
 
 
   # Now we will create config files which will contain advanced acls and rules,
-  #if haproxy-cat.sh will find them it will add them to rightscale_lb.cfg
+  # if haproxy-cat.sh will find them it will add them to rightscale_lb.cfg
   # "FQDN", "URI", "headers", "HTTP_BASIC_AUTH"
   case node[:lb][:advanced_config][:acl_condition]
     when  "FQDN"
       # create config which will contain advanced acl rules
       #
       # RESULT EXAMPLE
-      #  acl ns-ss-db1-test-rightscale-com_acl  hdr_dom(host) -i ns-ss-db1.test.rightscale.com
+      # acl ns-ss-db1-test-rightscale-com_acl  hdr_dom(host) -i ns-ss-db1.test.rightscale.com
       bash "Creating acl rules config file" do
         flags "-ex"
         code <<-EOH
@@ -241,7 +242,7 @@ action :advanced_configs do
         EOH
       end
 
-      #now we will create "/home/lb/haproxy.d/advanced_configs/use_backend.conf"
+      # now we will create "/home/lb/haproxy.d/advanced_configs/use_backend.conf"
       #
       # CODE DRAFT EXAMPLE
       # use_backend #{lb:pool_name} node[:lb][:advanced_config][:use_backend_condition] ns-ss-db1-test-rightscale-com_acl
