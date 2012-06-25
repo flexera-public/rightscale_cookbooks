@@ -23,7 +23,9 @@ require 'chef'
 require 'yard'
 
 YARD::Config.load_plugin 'chef'
-YARD::Rake::YardocTask.new
+YARD::Rake::YardocTask.new do |t|
+  t.files = ['cookbooks/**/*.rb']
+end
 
 # Make sure you have loaded constants first
 require File.join(File.dirname(__FILE__), 'config', 'rake')
