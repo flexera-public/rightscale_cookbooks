@@ -189,11 +189,6 @@ action :attach do
   # and home/lb/haproxy-cat.sh will create new
   action_advanced_configs if node[:lb][:advanced_configuration]== true
 
-x
-
-
-
-
 end # action :attach do
 
 action :advanced_configs do
