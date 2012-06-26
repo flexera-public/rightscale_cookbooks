@@ -8,10 +8,8 @@
 action :setup_attributes do
 
   # Checking inputs required for getting source with RSync
-  raise "  Storage Provider input is unset" unless new_resource.storage_account_provider
-  raise "  Storage account provider ID input is unset" unless new_resource.storage_account_id
-  raise "  Storage account secret input is unset" unless new_resource.storage_account_secret
-  raise "  Repo container name input is unset." unless new_resource.container
+  raise "  RSync username input is unset" unless new_resource.rsync_user
+  raise "  RSync SSH Key input is unset" unless new_resource.rsync_key
 
 end
 
@@ -20,7 +18,7 @@ action :pull do
   # Checking attributes
   action_setup_attributes
 
-  log "  Trying to get ros repo from: #{new_resource.storage_account_provider}, bucket: #{new_resource.container}"
+  log "  Trying to get data from #{new_resource.repository}"
 
   # Backup project directory if it is not empty
   ruby_block "Backup of existing project directory" do
@@ -33,34 +31,12 @@ action :pull do
   # Ensure that destination directory exists after all backups.
   directory "#{new_resource.destination}"
 
-  # "true" we just put downloaded file into "destination" folder
-  # "false" we put downloaded file into /tmp and unpack it into "destination" folder
-  if (new_resource.unpack_source == true)
-    tmp_repo_path = "/tmp/downloaded_ros_archive.tar.gz"
-  else
-    tmp_repo_path = "#{new_resource.destination}/downloaded_ros_archive.tar.gz"
-  end
-  log "  Downloaded file will be available in #{tmp_repo_path}"
-
-  # Obtain the source from ROS
-  execute "Download #{new_resource.container} from Remote Object Store" do
-    command "/opt/rightscale/sandbox/bin/ros_util get --cloud #{new_resource.storage_account_provider} --container #{new_resource.container} --dest #{tmp_repo_path} --source #{new_resource.prefix} --latest"
-    environment ({
-      'STORAGE_ACCOUNT_ID' => new_resource.storage_account_id,
-      'STORAGE_ACCOUNT_SECRET' => new_resource.storage_account_secret
-    })
+  # Get the data with RSync
+  execute "Download #{new_resource.container} with RSync" do
+    command "rsync -#{new_resource.rsync_options}  -e 'ssh -i #{new_resource.rsync_key}' --stats #{new_resource.rsync_user}@#{new_resource.repository} #{new_resource.destination}"
   end
 
-
-  bash "Unpack #{tmp_repo_path} to #{new_resource.destination}" do
-    cwd "/tmp"
-    code <<-EOH
-      tar xzf #{tmp_repo_path} -C #{new_resource.destination}
-    EOH
-    only_if { (new_resource.unpack_source == true) }
-  end
-
-  log "  ROS repo pull action - finished successfully!"
+  log "  Data fetch finished successfully!"
 end
 
 
@@ -100,20 +76,19 @@ action :capistrano_pull do
   # Ensure that destination directory exists after all backups and cleanups
   directory "#{new_resource.destination}"
 
-  log "  Pulling source from ROS"
+  log "  Fetching data..."
   action_pull
 
   # The embedded chef capistrano resource can work only with git or svn repositories
-  # After code download from ROS storage, we will transform this code repository to git type
+  # After code download with RSync, we will transform this code repository to git type
   # Then we will apply capistrano chef provider
   # After that we will remove all git information from new repo (.git folders)
 
-  # Moving dir with downloaded and unpacked ROS source to temp folder
-  # to prepare source for capistrano actions
-  bash "Moving #{new_resource.destination} to #{repo_dir}/ros_repo/" do
+  # Moving dir with downloaded data to temp folder to prepare source for capistrano actions
+  bash "Moving #{new_resource.destination} to #{repo_dir}/repo/" do
     cwd "#{repo_dir}"
     code <<-EOH
-       mv #{new_resource.destination} #{repo_dir}/ros_repo/
+       mv #{new_resource.destination} #{repo_dir}/repo/
     EOH
   end
 
@@ -127,14 +102,14 @@ action :capistrano_pull do
   scm_provider = new_resource.provider
 
   log "  Preparing git transformation"
-  directory "#{repo_dir}/ros_repo/.git" do
+  directory "#{repo_dir}/repo/.git" do
     recursive true
     action :delete
   end
 
   #initialisation of new git repo with initial commit
   bash "Git init in project folder" do
-    cwd "#{repo_dir}/ros_repo"
+    cwd "#{repo_dir}/repo"
     code <<-EOH
       git init
       git add .
@@ -142,12 +117,12 @@ action :capistrano_pull do
     EOH
   end
 
-  log "  Deploying new local git project repo from #{repo_dir}/ros_repo/ to #{destination}. New owner #{app_user}"
+  log "  Deploying new local git project repo from #{repo_dir}/repo/ to #{destination}. New owner #{app_user}"
   log "  Deploy provider #{scm_provider}"
 
   # Applying capistrano style deployment
   repo_capistranize "Source repo" do
-    repository "#{repo_dir}/ros_repo/"
+    repository "#{repo_dir}/repo/"
     destination destination
     app_user app_user
     purge_before_symlink purge_before_symlink
@@ -158,7 +133,7 @@ action :capistrano_pull do
   end
 
   log "  Cleaning transformation temp files"
-  directory "#{repo_dir}/ros_repo/" do
+  directory "#{repo_dir}/repo/" do
     recursive true
     action :delete
   end
@@ -169,5 +144,5 @@ action :capistrano_pull do
     action :delete
   end
 
-  log "  Capistrano ROS deployment action - finished successfully!"
+  log "  Capistrano deployment action - finished successfully!"
 end

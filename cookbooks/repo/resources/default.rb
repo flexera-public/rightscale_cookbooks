@@ -80,3 +80,11 @@ attribute :storage_account_secret, :kind_of => String
 
 # Unpack downloaded source or not Source file must be kind of tar archive
 attribute :unpack_source, :equal_to => [ true, false ], :default => true
+
+#RSync
+
+attribute :rsync_user, :kind_of => String
+attribute :rsync_key, :kind_of => String
+attribute :rsync_options, :kind_of => String
+
+
