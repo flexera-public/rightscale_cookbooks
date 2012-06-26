@@ -20,7 +20,7 @@ attribute "repo/default/provider",
   :display_name => "Repository Provider",
   :description => "Specify where the application code should be checked out from. Select 'repo_git' for Git, 'repo_svn' for SVN or 'repo_ros' for Remote Object Store. Example: repo_git",
   :required => "recommended",
-  :choice => ["repo_git", "repo_svn", "repo_ros"],
+  :choice => ["repo_git", "repo_svn", "repo_ros", "repo_ftp", "repo_rsync"],
   :default => "repo_git",
   :recipes => ["repo::default"]
 
@@ -113,3 +113,36 @@ attribute "repo/default/destination",
   :default => "/home/webapps",
   :required => "optional",
   :recipes => ["repo::default"]
+
+# RSYNC
+attribute "repo/default/rsync_user",
+  :display_name => "RSync username",
+  :description => "The RSync username that is required to access files in the specified location.",
+  :required => "optional",
+  :recipes => ["repo::default"]
+
+attribute "repo/default/rsync_key",
+  :display_name => "RSync SSH Key",
+  :description => "A valid SSH key to where the application code will be retrieved from.",
+  :required => "optional",
+  :recipes => ["repo::default"]
+
+attribute "repo/default/rsync_options",
+  :display_name => "RSync options",
+  :description => "Command line options for rsync.",
+  :required => "optional",
+  :recipes => ["repo::default"]
+
+# FTP
+attribute "repo/default/ftp_user",
+  :display_name => "FTP username",
+  :description => "The username that is required to access files in the specified location.",
+  :required => "optional",
+  :recipes => ["repo::default"]
+
+attribute "repo/default/ftp_password",
+  :display_name => "FTP password",
+  :description => "Password need to establish connection to the FTP server.",
+  :required => "optional",
+  :recipes => ["repo::default"]
+
