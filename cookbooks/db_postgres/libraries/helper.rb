@@ -85,8 +85,8 @@ module RightScale
         #
         # @return [PGresult] result Query result
         #
-        # @raises [TimeoutError] if timeout exceeded
-        # @raises [RuntimeError] if connection try attempts limit reached
+        # @raise [TimeoutError] if timeout exceeded
+        # @raise [RuntimeError] if connection try attempts limit reached
         def self.do_query(query, hostname = 'localhost', username = 'postgres', timeout = nil, tries = 1)
           require 'rubygems'
           Gem.clear_paths

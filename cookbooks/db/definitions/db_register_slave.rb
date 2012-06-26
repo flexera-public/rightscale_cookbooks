@@ -17,8 +17,8 @@
 #   * The +:secondary_restore+ action will do a restore from secondary backup location then become a slave.
 #   * The +:no_restore+ action will not do a restore of any type then will become a slave.  Used for stop/start where data already exists.
 #
-# @raises [RuntimeError] if no master DB found".
-# @raises [RuntimeError] if invalid action type is chosen must be primary_restore, :secondary_restore or no_restore
+# @raise [RuntimeError] if no master DB found".
+# @raise [RuntimeError] if invalid action type is chosen must be primary_restore, :secondary_restore or no_restore
 define :db_register_slave, :action => :primary_restore do
 
   DATA_DIR = node[:db][:data_dir]

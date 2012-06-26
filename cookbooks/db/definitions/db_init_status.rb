@@ -18,7 +18,7 @@
 #   is not this state, will raise an error with the message of error_message param.
 # @param error_message [String] the error message that is used if :check results in an error.
 #
-# @raises [RuntimeError] :name param must be either :set, :reset, :check or will raise an error.
+# @raise [RuntimeError] :name param must be either :set, :reset, :check or will raise an error.
 define :db_init_status, :expected_state => :initialized, :error_message => "ERROR: your database is not in expected state" do
 
   new_action     = params[:name]

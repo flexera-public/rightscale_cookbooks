@@ -17,8 +17,8 @@
 #   to the main backup.  If 'secondary' will do a secondary backup using node attributes for
 #   secondary.  Secondary uses 'ROS'.
 #
-# @raises [RuntimeError] If force is false and a backup is currently running, will raise an exception.
-# @raises [RuntimeError] If database is not 'initialized'
+# @raise [RuntimeError] If force is false and a backup is currently running, will raise an exception.
+# @raise [RuntimeError] If database is not 'initialized'
 define :db_do_backup, :force => false, :backup_type => "primary" do
 
   class Chef::Recipe

@@ -55,7 +55,7 @@ module RightScale
     #
     # @param new_resource [Object] Resource which will be initialized
     #
-    # @raises [RuntimeError] if any of required parameters has no value
+    # @raise [RuntimeError] if any of required parameters has no value
     def secondary_checks(new_resource)
       [:secondary_user, :secondary_secret, :secondary_cloud, :secondary_container].each do |input|
         value = new_resource.method(input).call
@@ -101,7 +101,7 @@ module RightScale
     # @param block_device [Hash] Block device
     # @param block [Proc] Block which will be used for setup of block device resource
     #
-    # @raises [RuntimeError] if block device has no number
+    # @raise [RuntimeError] if block device has no number
     def self.do_for_block_devices(block_device, &block)
       devices_to_use = block_device[:devices_to_use]
 

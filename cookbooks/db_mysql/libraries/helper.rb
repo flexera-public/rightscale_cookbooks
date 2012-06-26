@@ -103,8 +103,8 @@ module RightScale
         #
         # @return [Mysql::Result] MySQL query result
         #
-        # @raises [TimeoutError] if timeout exceeded
-        # @raises [RuntimeError] if connection try attempts limit reached
+        # @raise [TimeoutError] if timeout exceeded
+        # @raise [RuntimeError] if connection try attempts limit reached
         def self.do_query(node, query, hostname = 'localhost', timeout = nil, tries = 1)
           require 'mysql'
 
