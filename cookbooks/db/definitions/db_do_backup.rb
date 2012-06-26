@@ -11,9 +11,9 @@
 # Since this backup is a snapshot of a filesystem, it will check if the database has
 # been 'initialized', else it will fail.
 #
-# @param [Boolean] force If false, if a backup is currently running, will error out stating so.
+# @param force [Boolean] If false, if a backup is currently running, will error out stating so.
 #   If true, if a backup is currently running, will kill that process and take over the lock.
-# @param [String] backup_type If 'primary' will do a primary backup using node attributes specific
+# @param backup_type [String] If 'primary' will do a primary backup using node attributes specific
 #   to the main backup.  If 'secondary' will do a secondary backup using node attributes for
 #   secondary.  Secondary uses 'ROS'.
 #

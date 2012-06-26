@@ -13,8 +13,8 @@ module RightScale
 
       # Determines if a tag matches a given wildcard expression or prefix.
       #
-      # @param [String] wildcard expression or prefix
-      # @param [String] tag
+      # @param wildcard [String] expression or prefix
+      # @param tag [String]
       #
       # @return [Boolean] True if the tag matches the wildcard expression or prefix, false otherwise
       def self.matches_tag_wildcard?(wildcard, tag)
@@ -29,9 +29,9 @@ module RightScale
 
       # Filters a server collection to only include servers with all of the supplied tags.
       #
-      # @param [Chef::Node::Attribute] collection dictionary of server collections
-      # @param [String] name name of the server collection to filter
-      # @param [Array] tags list of tags or tag wildcards to filter by
+      # @param collection [Chef::Node::Attribute] dictionary of server collections
+      # @param name [String] name of the server collection to filter
+      # @param tags [Array] list of tags or tag wildcards to filter by
       #
       # @return [Hash] A filtered server collection
       def self.filter_tags(collection, name, tags)
@@ -48,9 +48,9 @@ module RightScale
 
       # Filters a server collection to only include servers with all of the supplied tags modifying the given server collection.
       #
-      # @param [Chef::Node::Attribute] collection dictionary of server collections
-      # @param [String] name name of the server collection to filter
-      # @param [Array] tags list of tags or tag wildcards to filter by
+      # @param collection [Chef::Node::Attribute] dictionary of server collections
+      # @param name [String] name of the server collection to filter
+      # @param tags [Array] list of tags or tag wildcards to filter by
       #
       # @return [Hash] A filtered server collection
       def self.filter_tags!(collection, name, tags)
@@ -59,9 +59,9 @@ module RightScale
 
       # Get the value portion of a tag with a given prefix from a list of tags.
       #
-      # @param [String] prefix the prefix of tag to retrieve
-      # @param [Array] tags list of tags to search
-      # @param [String] capture optional Regexp portion to validate the value
+      # @param prefix [String] the prefix of tag to retrieve
+      # @param tags [Array] list of tags to search
+      # @param capture [String] optional Regexp portion to validate the value
       #
       # @return [String] The value portion of a tag if found, nil if not found or value is invalid
       def self.get_tag_value(prefix, tags, capture = '.*')

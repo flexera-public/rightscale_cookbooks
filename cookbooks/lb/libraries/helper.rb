@@ -9,7 +9,7 @@ module RightScale
   module LB
     module Helper
 
-      # @param [String] vhost_name virtual hosts name.
+      # @param vhost_name [String] virtual hosts name.
       #
       # @return [Set] attached_servers set of attached servers for vhost i.e., servers in lb config dir
       #
@@ -24,7 +24,7 @@ module RightScale
         attached_servers
       end # def get_attached_servers(vhost_name)
 
-      # @param [String] vhost_name virtual hosts name.
+      # @param vhost_name [String] virtual hosts name.
       #
       # @return [Hash] app_servers hash of app servers in deployment answering for vhost_name
       #

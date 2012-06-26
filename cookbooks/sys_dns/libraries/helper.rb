@@ -17,11 +17,11 @@ module RightScale
 
       # Applicable to the below classes
       #
-      # @param [String] id unique identifier that is associated with the DNS A record of the server.
-      # @param [String] user user name that is used to access and modify your DNS A records.
-      # @param [String] password password that is used to access and modify your DNS A records.
-      # @param [String] address Private IP of instance running the recipe.
-      # @param [Hash{Symbol => String}] options optional parameters to pass:
+      # @param id [String] unique identifier that is associated with the DNS A record of the server.
+      # @param user [String] user name that is used to access and modify your DNS A records.
+      # @param password [String] password that is used to access and modify your DNS A records.
+      # @param address [String] Private IP of instance running the recipe.
+      # @param options [Hash{Symbol => String}] optional parameters to pass:
       # * the +:region+ option is CloudDNS specific: region where the A records should be modified.
       #
       # @return [String] A record successful update message.
