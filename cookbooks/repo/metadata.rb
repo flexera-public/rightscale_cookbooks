@@ -13,6 +13,8 @@ depends "rightscale"
 depends "repo_svn"
 depends "repo_git"
 depends "repo_ros"
+depends "repo_ftp"
+depends "repo_rsync"
 
 recipe  "repo::default", "Default recipe to setup provided resources."
 
