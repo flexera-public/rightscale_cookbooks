@@ -24,3 +24,5 @@ set_unless[:repo][:default][:perform_action] = :pull
 set_unless[:repo][:default][:rsync_user] = ""
 set_unless[:repo][:default][:rsync_key] = ""
 set_unless[:repo][:default][:rsync_options] = "cavzP"
+set_unless[:repo][:default][:ftp_user] = ""
+set_unless[:repo][:default][:ftp_password] = ""

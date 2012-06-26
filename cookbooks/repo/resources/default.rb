@@ -87,4 +87,8 @@ attribute :rsync_user, :kind_of => String
 attribute :rsync_key, :kind_of => String
 attribute :rsync_options, :kind_of => String
 
+#FTP
+
+attribute :ftp_user, :kind_of => String
+attribute :ftp_password, :kind_of => String
 
