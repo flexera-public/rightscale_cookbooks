@@ -37,13 +37,8 @@ case node[:platform]
     raise "Unrecognized distro #{node[:platform]}, exiting "
 end
 
-# Destination directory for the application
+# Setting app LWRP attribute
 node[:app][:destination] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
-
-directory "#{node[:app][:destination]}" do
-  recursive true
-end
-
 node[:app][:root] = node[:app][:destination] + "/public"
 
 rightscale_marker :end
