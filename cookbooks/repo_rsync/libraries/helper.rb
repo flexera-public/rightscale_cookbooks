@@ -7,7 +7,7 @@
 
 module RightScale
   module Repo
-    class Ssh_key
+    class RSync_ssh_key
       KEYFILE = "/tmp/rsync_key"
 
       # Create private key file used to connect via ssh.
