@@ -20,6 +20,13 @@ action :pull do
 
   log "  Trying to get data from #{new_resource.repository}"
 
+  # Add ssh key and exec script
+  ruby_block "Before deploy" do
+    block do
+      RightScale::Repo::Ssh_key.new.create(new_resource.rsync_key)
+    end
+  end
+
   # Backup project directory if it is not empty
   ruby_block "Backup of existing project directory" do
     block do
@@ -33,8 +40,17 @@ action :pull do
 
   # Get the data with RSync
   execute "Download #{new_resource.container} with RSync" do
-    command "rsync -#{new_resource.rsync_options}  -e 'ssh -i #{new_resource.rsync_key}' --stats #{new_resource.rsync_user}@#{new_resource.repository} #{new_resource.destination}"
+    command "rsync -#{new_resource.rsync_options}  -e 'ssh -i /tmp/rsync_key' --stats #{new_resource.rsync_user}@#{new_resource.repository} #{new_resource.destination}"
   end
+
+=begin
+  # Delete SSH key
+  ruby_block "After fetch" do
+    block do
+      RightScale::Repo::Ssh_key.new.delete
+    end
+  end
+=end
 
   log "  Data fetch finished successfully!"
 end
