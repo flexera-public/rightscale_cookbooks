@@ -32,7 +32,7 @@ action :pull do
   directory "#{new_resource.destination}"
 
   # Workaround for wget not to create redundant hierarchy
-  level = new_resource.repository[/^(ftp:\/\/)?(.+)/][$2].split('/') - 1
+  level = new_resource.repository[/^(ftp:\/\/)?(.+)/][$2].split('/').length - 1
 
   # Get the data
   execute "Download #{new_resource.container}" do
