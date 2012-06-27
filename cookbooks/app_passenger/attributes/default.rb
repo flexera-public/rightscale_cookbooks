@@ -42,7 +42,6 @@ set_unless[:app_passenger][:project][:environment]="development"
 set_unless[:app_passenger][:project][:gem_list]=""
 # List of rake commands required for rails application initialization
 set_unless[:app_passenger][:project][:custom_cmd]=""
-# Application database name
-set_unless[:app_passenger][:project][:db][:schema_name]=""
 # Type of database adapter which rails application will use
 set_unless[:app_passenger][:project][:db][:adapter]="mysql"
+

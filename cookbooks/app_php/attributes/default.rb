@@ -7,7 +7,6 @@
 
 # Optional attributes
 # Application database name
-set_unless[:app_php][:db_schema_name] = ""
 
 # List of additional php modules
 set_unless[:app_php][:modules_list] = []

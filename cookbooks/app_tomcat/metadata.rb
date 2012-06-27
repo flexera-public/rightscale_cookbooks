@@ -17,14 +17,6 @@ depends "rightscale"
 
 recipe  "app_tomcat::default", "Installs the Tomcat application server."
 
-# optional attributes
-attribute "app_tomcat/db_name",
-  :display_name => "Database Schema Name",
-  :description => "Enter the name of the MySQL database to use. Example: mydatabase",
-  :required => "required",
-  :recipes => ["app_tomcat::default"]
-
-
 #Code repo attributes
 attribute "app_tomcat/code/root_war",
   :display_name => "War file for ROOT",

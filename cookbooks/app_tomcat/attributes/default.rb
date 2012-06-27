@@ -22,6 +22,7 @@ set_unless[:app_tomcat][:java][:xmx] = "512m"
 set_unless[:app_tomcat][:java][:xms] = "512m"
 # Be default tomcat will use MySQL as primary database adapter
 set_unless[:app_tomcat][:db_adapter] = "mysql"
+
 # List of required apache modules
 set[:app_tomcat][:module_dependencies] = [ "proxy", "proxy_http", "deflate", "rewrite" ]
 

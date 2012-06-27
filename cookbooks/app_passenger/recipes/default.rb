@@ -9,7 +9,6 @@ rightscale_marker :begin
 
 log "  Setting provider specific settings for rails-passenger."
 node[:app][:provider] = "app_passenger"
-node[:app][:database_name] = node[:app_passenger][:project][:db][:schema_name]
 
 case node[:platform]
   when "ubuntu","debian"

@@ -93,6 +93,7 @@ end
 # Setup PHP Database Connection
 action :setup_db_connection do
   project_root = new_resource.destination
+  db_name = new_resource.database_name
   # Make sure config dir exists
   directory ::File.join(project_root, "config") do
     recursive true
@@ -106,7 +107,7 @@ action :setup_db_connection do
     db_mysql_connect_app ::File.join(project_root, "config", "db.php") do
       template "db.php.erb"
       cookbook "app_php"
-      database node[:app_php][:db_schema_name]
+      database db_name
       owner node[:app_php][:app_user]
       group node[:app_php][:app_user]
     end
@@ -114,7 +115,7 @@ action :setup_db_connection do
     db_postgres_connect_app ::File.join(project_root, "config", "db.php") do
       template "db.php.erb"
       cookbook "app_php"
-      database node[:app_php][:db_schema_name]
+      database db_name
       owner node[:app_php][:app_user]
       group node[:app_php][:app_user]
     end

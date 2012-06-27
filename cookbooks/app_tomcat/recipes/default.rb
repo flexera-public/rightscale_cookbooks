@@ -9,7 +9,6 @@ rightscale_marker :begin
 
 log "  Setting provider specific settings for tomcat"
 node[:app][:provider] = "app_tomcat"
-node[:app][:database_name] = node[:app_tomcat][:db_name]
 
 # Preparing list of database adapter packages depending on platform and database adapter
 case node[:platform]
