@@ -31,9 +31,12 @@ action :pull do
   # Ensure that destination directory exists after all backups.
   directory "#{new_resource.destination}"
 
+  # Workaround for wget not to create redundant hierarchy
+  level = new_resource.repository[/^(ftp:\/\/)?(.+)/][$2].split('/') - 1
+
   # Get the data
   execute "Download #{new_resource.container}" do
-    command "wget #{new_resource.repository} --ftp-user=#{ftp_user} --ftp-password=#{ftp_password} -r -P #{new_resource.destination}"
+    command "wget #{new_resource.repository} --ftp-user=#{ftp_user} --ftp-password=#{ftp_password} -r -nH --cut-dirs=#{level} -P #{new_resource.destination}"
   end
 
   log "  Data fetch finished successfully!"
