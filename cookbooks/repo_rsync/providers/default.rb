@@ -39,8 +39,8 @@ action :pull do
   directory "#{new_resource.destination}"
 
   # Get the data with RSync
-  execute "Download #{new_resource.container} with RSync" do
-    command "rsync -#{new_resource.rsync_options}  -e 'ssh -o StrictHostKeyChecking=no -i /tmp/rsync_key' --stats #{new_resource.rsync_user}@#{new_resource.repository} #{new_resource.destination}"
+  execute "Downloading data with RSync" do
+    command "rsync -#{new_resource.rsync_options}  -e 'ssh -o StrictHostKeyChecking=no -i /tmp/rsync_key' --stats #{new_resource.rsync_user}@#{new_resource.repository}/* #{new_resource.destination}"
   end
 
 =begin
