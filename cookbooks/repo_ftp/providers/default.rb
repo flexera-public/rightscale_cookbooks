@@ -36,7 +36,7 @@ action :pull do
 
   # Get the data
   execute "Download #{new_resource.container}" do
-    command "wget #{new_resource.repository} --ftp-user=#{ftp_user} --ftp-password=#{ftp_password} -r -nH --cut-dirs=#{level} -P #{new_resource.destination}"
+    command "wget #{new_resource.repository} --ftp-user=#{new_resource.ftp_user} --ftp-password=#{new_resource.ftp_password} -r -nH --cut-dirs=#{level} -P #{new_resource.destination}"
   end
 
   log "  Data fetch finished successfully!"
