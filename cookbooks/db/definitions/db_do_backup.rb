@@ -56,48 +56,56 @@ define :db_do_backup, :force => false, :backup_type => "primary" do
     action :backup_lock_take
     force do_force
   end
+  
+  begin
+    log "  Performing (#{do_backup_type} backup) lock DB and write backup info file..."
+    db DATA_DIR do
+      timeout node[:db_mysql][:init_timeout]
+      action [ :lock, :write_backup_info ]
+    end
 
-  log "  Performing (#{do_backup_type} backup) lock DB and write backup info file..."
-  db DATA_DIR do
-    timeout node[:db_mysql][:init_timeout]
-    action [ :lock, :write_backup_info ]
-  end
+    log "  Performing (#{do_backup_type} backup) Snapshot with lineage #{node[:db][:backup][:lineage]}.."
+    # Requires block_device node[:db][:block_device] to be instantiated
+    # previously. Make sure block_device::default recipe has been run.
+    block_device NICKNAME do
+      action :snapshot
+    end
 
-  log "  Performing (#{do_backup_type} backup) Snapshot with lineage #{node[:db][:backup][:lineage]}.."
-  # Requires block_device node[:db][:block_device] to be instantiated
-  # previously. Make sure block_device::default recipe has been run.
-  block_device NICKNAME do
-    action :snapshot
-  end
+    log "  Performing unlock DB..."
+    db DATA_DIR do
+      action :unlock
+    end
 
-  log "  Performing unlock DB..."
-  db DATA_DIR do
-    action :unlock
-  end
+    log "  Performing (#{do_backup_type}) Backup of lineage #{node[:db][:backup][:lineage]} and post-backup cleanup..."
+    block_device NICKNAME do
+      # Backup/Restore arguments
+      lineage node[:db][:backup][:lineage]
+      max_snapshots get_device_or_default(node, :device1, :backup, :primary, :keep, :max_snapshots)
+      keep_daily get_device_or_default(node, :device1, :backup, :primary, :keep, :keep_daily)
+      keep_weekly get_device_or_default(node, :device1, :backup, :primary, :keep, :keep_weekly)
+      keep_monthly get_device_or_default(node, :device1, :backup, :primary, :keep, :keep_monthly)
+      keep_yearly get_device_or_default(node, :device1, :backup, :primary, :keep, :keep_yearly)
 
-  log "  Performing (#{do_backup_type}) Backup of lineage #{node[:db][:backup][:lineage]} and post-backup cleanup..."
-  block_device NICKNAME do
-    # Backup/Restore arguments
-    lineage node[:db][:backup][:lineage]
-    max_snapshots get_device_or_default(node, :device1, :backup, :primary, :keep, :max_snapshots)
-    keep_daily get_device_or_default(node, :device1, :backup, :primary, :keep, :keep_daily)
-    keep_weekly get_device_or_default(node, :device1, :backup, :primary, :keep, :keep_weekly)
-    keep_monthly get_device_or_default(node, :device1, :backup, :primary, :keep, :keep_monthly)
-    keep_yearly get_device_or_default(node, :device1, :backup, :primary, :keep, :keep_yearly)
+      # Secondary arguments
+      secondary_cloud get_device_or_default(node, :device1, :backup, :secondary, :cloud)
+      secondary_endpoint get_device_or_default(node, :device1, :backup, :secondary, :endpoint) || ""
+      secondary_container get_device_or_default(node, :device1, :backup, :secondary, :container)
+      secondary_user get_device_or_default(node, :device1, :backup, :secondary, :cred, :user)
+      secondary_secret get_device_or_default(node, :device1, :backup, :secondary, :cred, :secret)
 
-    # Secondary arguments
-    secondary_cloud get_device_or_default(node, :device1, :backup, :secondary, :cloud)
-    secondary_endpoint get_device_or_default(node, :device1, :backup, :secondary, :endpoint) || ""
-    secondary_container get_device_or_default(node, :device1, :backup, :secondary, :container)
-    secondary_user get_device_or_default(node, :device1, :backup, :secondary, :cred, :user)
-    secondary_secret get_device_or_default(node, :device1, :backup, :secondary, :cred, :secret)
+      action do_backup_type == 'primary' ? :primary_backup : :secondary_backup
+    end
 
-    action do_backup_type == 'primary' ? :primary_backup : :secondary_backup
-  end
+    log "  Performing post backup cleanup..."
+    db DATA_DIR do
+      action :post_backup_cleanup
+    end
 
-  log "  Performing post backup cleanup..."
-  db DATA_DIR do
-    action :post_backup_cleanup
+  rescue
+    log "  Error occurred during backup process"
+    block_device NICKNAME do
+      action :backup_lock_give
+    end
   end
 
   # Removing backup lock
