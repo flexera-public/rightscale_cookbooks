@@ -41,7 +41,8 @@ There are no known limitations.
 
 * Select the 'repo_ftp' option for the repo/default/provider input.
 
-* To perform correct operations, values for the repo/url and others must be provided.
+* To perform correct operations, values for the repo/url and others must be provided. FTP username and password
+  inputs are optional - connection may be anonymous.
 
 -------------
 

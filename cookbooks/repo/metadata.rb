@@ -132,13 +132,13 @@ attribute "repo/default/rsync_key",
 # FTP
 attribute "repo/default/ftp_user",
   :display_name => "FTP username",
-  :description => "The username that is required to access files in the specified location.",
+  :description => "The username that is required to access files in the specified location. May not be specified for an anonymous connection.",
   :required => "optional",
   :recipes => ["repo::default"]
 
 attribute "repo/default/ftp_password",
   :display_name => "FTP password",
-  :description => "Password need to establish connection to the FTP server.",
+  :description => "Password need to establish connection to the FTP server. May not be specified for an anonymous connection.",
   :required => "optional",
   :recipes => ["repo::default"]
 
