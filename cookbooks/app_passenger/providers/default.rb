@@ -102,7 +102,7 @@ action :setup_vhost do
   end
 
   # Enabling required apache modules
-  node[:app_passenger][:module_dependencies].each do |mod|
+  node[:app][:module_dependencies].each do |mod|
     apache_module mod
   end
 

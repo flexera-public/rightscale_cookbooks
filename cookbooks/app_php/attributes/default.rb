@@ -15,7 +15,7 @@ set_unless[:app_php][:modules_list] = []
 # Defining apache user, module dependencies, and database adapter parameters depending on platform.
 case platform
 when "ubuntu", "debian"
-  set[:app_php][:module_dependencies] = [ "proxy_http", "php5" ]
+  set[:app][:module_dependencies] = [ "proxy_http", "php5" ]
   set_unless[:app_php][:app_user] = "www-data"
   if app[:db_adapter] == "mysql"
     set[:db_mysql][:socket] = "/var/run/mysqld/mysqld.sock"
@@ -25,7 +25,7 @@ when "ubuntu", "debian"
     raise "Unrecognized database adapter #{node[:app][:db_adapter]}, exiting"
   end
 when "centos", "fedora", "suse", "redhat"
-  set[:app_php][:module_dependencies] = [ "proxy", "proxy_http" ]
+  set[:app][:module_dependencies] = [ "proxy", "proxy_http" ]
   set_unless[:app_php][:app_user] = "apache"
   if app[:db_adapter] == "mysql"
     set[:db_mysql][:socket] = "/var/lib/mysql/mysql.sock"

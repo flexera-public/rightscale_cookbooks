@@ -7,14 +7,14 @@
 
 # By default passenger uses MySQL as the DB adapter
 set_unless[:app][:db_adapter] = "mysql"
+# List of required apache modules
+set[:app][:module_dependencies] = ["proxy", "proxy_ajp"]
 # By default passenger will use "conservative" spawn method for more info see: http://www.modrails.com/documentation/Users%20guide%20Apache.html#PassengerSpawnMethod
 set_unless[:app_passenger][:rails_spawn_method]="conservative"
 # Path to html maintenance page, which will be displayed, when main application is unavailable
 set_unless[:app_passenger][:apache][:maintenance_page]=""
 # By default apache will serve any existing local files directly (except actionable ones)
 set_unless[:app_passenger][:apache][:serve_local_files]="true"
-# List of required apache modules
-set[:app_passenger][:module_dependencies] = ["proxy", "proxy_ajp"]
 
 # Defining apache user, group and log directory path depending on platform.
 case node[:platform]
