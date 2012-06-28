@@ -17,22 +17,8 @@ case platform
 when "ubuntu", "debian"
   set[:app][:module_dependencies] = [ "proxy_http", "php5" ]
   set_unless[:app_php][:app_user] = "www-data"
-  if app[:db_adapter] == "mysql"
-    set[:db_mysql][:socket] = "/var/run/mysqld/mysqld.sock"
-  elsif app[:db_adapter] == "postgresql"
-    set[:db_postgres][:socket] = "/var/run/postgresql"
-  else
-    raise "Unrecognized database adapter #{node[:app][:db_adapter]}, exiting"
-  end
 when "centos", "fedora", "suse", "redhat"
   set[:app][:module_dependencies] = [ "proxy", "proxy_http" ]
   set_unless[:app_php][:app_user] = "apache"
-  if app[:db_adapter] == "mysql"
-    set[:db_mysql][:socket] = "/var/lib/mysql/mysql.sock"
-  elsif app[:db_adapter] == "postgresql"
-    set[:db_postgres][:socket] = "/var/run/postgresql"
-  else
-    raise "Unrecognized database adapter #{node[:app][:db_adapter]}, exiting"
-  end
 end
 
