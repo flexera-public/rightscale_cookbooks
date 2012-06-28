@@ -5,6 +5,8 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+# By default tomcat uses MySQL as the DB adapter
+set_unless[:app][:db_adapter] = "mysql"
 # Recommended attributes
 set_unless[:app_tomcat][:code][:root_war] = ""
 # Java heap tuning attributes. For more info see http://www.tomcatexpert.com/blog/2011/11/22/performance-tuning-jvm-running-tomcat
@@ -23,8 +25,6 @@ set_unless[:app_tomcat][:java][:xms] = "512m"
 
 # List of required apache modules
 set[:app_tomcat][:module_dependencies] = [ "proxy", "proxy_http", "deflate", "rewrite" ]
-# By default tomcat uses MySQL as the DB adapter
-set_unless[:app][:db_adapter] = "mysql"
 
 # Calculated attributes
 # Defining apache user, java alternatives and database adapter parameters depending on platform.

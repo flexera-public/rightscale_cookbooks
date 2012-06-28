@@ -5,6 +5,8 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+# By default passenger uses MySQL as the DB adapter
+set_unless[:app][:db_adapter] = "mysql"
 # By default passenger will use "conservative" spawn method for more info see: http://www.modrails.com/documentation/Users%20guide%20Apache.html#PassengerSpawnMethod
 set_unless[:app_passenger][:rails_spawn_method]="conservative"
 # Path to html maintenance page, which will be displayed, when main application is unavailable
@@ -42,6 +44,4 @@ set_unless[:app_passenger][:project][:environment]="development"
 set_unless[:app_passenger][:project][:gem_list]=""
 # List of rake commands required for rails application initialization
 set_unless[:app_passenger][:project][:custom_cmd]=""
-# By default passenger uses MySQL as the DB adapter
-set_unless[:app][:db_adapter] = "mysql"
 

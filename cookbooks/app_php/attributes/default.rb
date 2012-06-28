@@ -6,10 +6,10 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 # Optional attributes
-# List of additional php modules
-set_unless[:app_php][:modules_list] = []
 # By default php uses MySQL as the DB adapter
 set_unless[:app][:db_adapter] = "mysql"
+# List of additional php modules
+set_unless[:app_php][:modules_list] = []
 
 # Calculated attributes
 # Defining apache user, module dependencies, and database adapter parameters depending on platform.
