@@ -20,12 +20,11 @@ set_unless[:app_tomcat][:java][:maxnewsize] = "256m"
 set_unless[:app_tomcat][:java][:xmx] = "512m"
 # Defines the initial size of the heap used by the JVM
 set_unless[:app_tomcat][:java][:xms] = "512m"
-# Be default tomcat will use MySQL as primary database adapter
-set_unless[:app_tomcat][:db_adapter] = "mysql"
 
 # List of required apache modules
 set[:app_tomcat][:module_dependencies] = [ "proxy", "proxy_http", "deflate", "rewrite" ]
-
+# By default tomcat uses MySQL as the DB adapter
+set_unless[:app][:db_adapter] = "mysql"
 
 # Calculated attributes
 # Defining apache user, java alternatives and database adapter parameters depending on platform.

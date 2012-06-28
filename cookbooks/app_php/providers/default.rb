@@ -101,7 +101,7 @@ action :setup_db_connection do
     group node[:app_php][:app_user]
   end
 
-  db_adapter = node[:app_php][:db_adapter]
+  db_adapter = node[:app][:db_adapter]
   # Tells selected db_adapter to fill in it's specific connection template
   if db_adapter == "mysql"
     db_mysql_connect_app ::File.join(project_root, "config", "db.php") do
@@ -120,7 +120,7 @@ action :setup_db_connection do
       group node[:app_php][:app_user]
     end
   else
-    raise "Unrecognized database adapter #{node[:app_php][:db_adapter]}, exiting"
+    raise "Unrecognized database adapter #{node[:app][:db_adapter]}, exiting"
   end
 end
 

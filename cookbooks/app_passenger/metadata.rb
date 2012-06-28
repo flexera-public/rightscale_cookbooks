@@ -68,11 +68,3 @@ attribute "app_passenger/project/custom_cmd",
   :default => "",
   :recipes => ["app_passenger::run_custom_rails_commands"]
 
-attribute "app_passenger/project/db/adapter",
-  :display_name => "Database adapter for application",
-  :description => "Enter the database adapter which will be used to connect to the database. Example: mysql",
-  :choice => [ "mysql", "postgresql" ],
-  :default => "mysql",
-  :recipes => ["app_passenger::default"]
-
-

@@ -59,3 +59,10 @@ attribute "app/database_name",
   :required => "required",
   :recipes => ["app::setup_db_connection"]
 
+attribute "app/db_adapter",
+  :display_name => "Database adapter for application",
+  :description => "Enter the database adapter which will be used to connect to the database. Example: mysql",
+  :default => "mysql",
+  :choice => [ "mysql", "postgresql" ],
+  :recipes => ["app::default"]
+

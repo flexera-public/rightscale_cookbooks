@@ -68,13 +68,6 @@ attribute "app_tomcat/java/MaxNewSize",
   :default => "256m",
   :recipes => ["app_tomcat::default"]
 
-attribute "app_tomcat/db_adapter",
-  :display_name => "Database adapter for application",
-  :description => "Enter database adapter which will be used to connect to the database. Example: mysql",
-  :default => "mysql",
-  :choice => [ "mysql", "postgresql" ],
-  :recipes => ["app_tomcat::default"]
-
 attribute "app_tomcat/datasource_name",
   :display_name => "Container datasource name",
   :description => "This name is used to set up the database connection with the application server. You should set the attribute if your application is compiled to use a different datasource name.  Example: jdbc/MyConnDB",

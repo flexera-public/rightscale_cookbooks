@@ -29,9 +29,3 @@ attribute "app_php/modules_list",
   :type => "array",
   :recipes => ["app_php::default"]
 
-attribute "app_php/db_adapter",
-  :display_name => "Database adapter for application",
-  :description => "Enter the database adapter which will be used to connect to the database. Example: mysql",
-  :default => "mysql",
-  :choice => [ "mysql", "postgresql" ],
-  :recipes => ["app_php::default"]
