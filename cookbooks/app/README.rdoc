@@ -202,7 +202,7 @@ application server setup operations.
 * <tt>packages</tt> - Set of installed packages
 * <tt>root</tt> - Application root
 * <tt>port</tt> - Application port
-* <tt>destination</tt> - The path in the specified repository where application code will be pulled from
+* <tt>destination</tt> - The path on the instance where the application code will be placed
 * <tt>database_name</tt> - Name of the required database
 * <tt>database_user</tt> - Database user
 * <tt>database_password</tt> - Database password
