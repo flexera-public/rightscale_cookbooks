@@ -25,8 +25,8 @@ action :pull do
   level = new_resource.repository[/^(ftp:\/\/)?(.+)/][$2].split('/').length - 1
 
   # To make anonymous connection possible
-  user = new_resource.ftp_user ? "--ftp-user=#{new_resource.ftp_user}" : ""
-  password = new_resource.ftp_password ? "--ftp-password=#{new_resource.ftp_password}" : ""
+  user = new_resource.ftp_user.to_s.strip.length == 0 ? "" : "--ftp-user=#{new_resource.ftp_user}"
+  password = new_resource.ftp_password.to_s.strip.length == 0 ? "" : "--ftp-password=#{new_resource.ftp_password}"
 
   # Get the data
   execute "Download #{new_resource.container}" do
