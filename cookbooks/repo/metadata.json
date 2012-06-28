@@ -241,19 +241,6 @@
       "calculated": false,
       "type": "string"
     },
-    "repo/default/rsync_options": {
-      "display_name": "RSync options",
-      "description": "Command line options for rsync.",
-      "required": "optional",
-      "recipes": [
-        "repo::default"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
     "repo/default/ftp_user": {
       "display_name": "FTP username",
       "description": "The username that is required to access files in the specified location.",
