@@ -43,14 +43,12 @@ action :pull do
     command "rsync -#{new_resource.rsync_options}  -e 'ssh -o StrictHostKeyChecking=no -i /tmp/rsync_key' --stats #{new_resource.rsync_user}@#{new_resource.repository}/* #{new_resource.destination}"
   end
 
-=begin
   # Delete SSH key
   ruby_block "After fetch" do
     block do
       RightScale::Repo::RSync_ssh_key.new.delete
     end
   end
-=end
 
   log "  Data fetch finished successfully!"
 end

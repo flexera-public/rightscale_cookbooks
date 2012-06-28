@@ -5,18 +5,8 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-action :setup_attributes do
-
-  # Checking inputs required for getting source from FTP
-  raise "  FTP username input is unset" unless new_resource.ftp_user
-  raise "  FTP password input is unset" unless new_resource.ftp_password
-
-end
 
 action :pull do
-
-  # Checking attributes
-  action_setup_attributes
 
   log "  Trying to get data from #{new_resource.repository}"
 
@@ -34,9 +24,13 @@ action :pull do
   # Workaround for wget not to create redundant hierarchy
   level = new_resource.repository[/^(ftp:\/\/)?(.+)/][$2].split('/').length - 1
 
+  # To make anonymous connection possible
+  user = new_resource.ftp_user ? "--ftp-user=#{new_resource.ftp_user}" : ""
+  password = new_resource.ftp_password ? "--ftp-password=#{new_resource.ftp_password}" : ""
+
   # Get the data
   execute "Download #{new_resource.container}" do
-    command "wget #{new_resource.repository} --ftp-user=#{new_resource.ftp_user} --ftp-password=#{new_resource.ftp_password} -r -nH --cut-dirs=#{level} -P #{new_resource.destination}"
+    command "wget #{new_resource.repository} #{user} #{password} -r -nH --cut-dirs=#{level} -P #{new_resource.destination}"
   end
 
   log "  Data fetch finished successfully!"
@@ -63,7 +57,7 @@ action :capistrano_pull do
 
     block do
       Chef::Log.info("  Check previous repo in case of action change")
-      timestamp  = ::Time.now.gmtime.strftime("%Y%m%d%H%M")
+      timestamp = ::Time.now.gmtime.strftime("%Y%m%d%H%M")
       if ::File.exists?("#{capistrano_dir}")
         ::File.rename("#{new_resource.destination}", "#{capistrano_dir}/releases/_initial_#{timestamp}")
         Chef::Log.info("  Destination directory is not empty. Backup to #{capistrano_dir}/releases/_initial_#{timestamp}")
@@ -132,7 +126,7 @@ action :capistrano_pull do
     create_dirs_before_symlink create_dirs_before_symlink
     symlinks symlinks
     scm_provider scm_provider
-    environment  environment
+    environment environment
   end
 
   log "  Cleaning transformation temp files"

@@ -129,12 +129,6 @@ attribute "repo/default/rsync_key",
   :required => "optional",
   :recipes => ["repo::default"]
 
-attribute "repo/default/rsync_options",
-  :display_name => "RSync options",
-  :description => "Command line options for rsync.",
-  :required => "optional",
-  :recipes => ["repo::default"]
-
 # FTP
 attribute "repo/default/ftp_user",
   :display_name => "FTP username",
