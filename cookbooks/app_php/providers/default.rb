@@ -104,7 +104,6 @@ action :setup_db_connection do
   db_connect_app ::File.join(project_root, "config", "db.php") do
     template "db.php.erb"
     cookbook "app_php"
-    db_adapter node[:app_php][:db_adapter]
     database node[:app_php][:db_schema_name]
     owner node[:app_php][:app_user]
     group node[:app_php][:app_user]
