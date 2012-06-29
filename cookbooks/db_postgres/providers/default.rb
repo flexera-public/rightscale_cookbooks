@@ -323,7 +323,10 @@ action :enable_replication do
   end
 
   # Stopping Postgresql service
-  action_stop
+  service "postgresql-#{node[:db_postgres][:version]}" do
+    not_if { current_restore_process == :no_restore }
+    action :stop
+  end
 
   ruby_block "Sync to Master data" do
     not_if { current_restore_process == :no_restore }
@@ -337,14 +340,6 @@ action :enable_replication do
     block do
       master_info = RightScale::Database::PostgreSQL::Helper.load_replication_info(node)
       newmaster_host = master_info['Master_IP']
-      RightScale::Database::PostgreSQL::Helper.reconfigure_replication_info(newmaster_host, rep_user, rep_pass, app_name)
-    end
-  end
-
-  # following done after a stop/start and reboot on a slave
-  ruby_block "reconfigure_replication" do
-    only_if { current_restore_process == :no_restore }
-    block do
       RightScale::Database::PostgreSQL::Helper.reconfigure_replication_info(newmaster_host, rep_user, rep_pass, app_name)
     end
   end
