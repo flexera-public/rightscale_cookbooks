@@ -244,7 +244,7 @@ action :code_update do
 end
 
 
-# Set monitoring tools for application. Not Implemented.
+# Set monitoring tools for Passenger application. Not Implemented.
 action :setup_monitoring do
   raise 'Using "default" application provider. Action is not implemented'
 end
