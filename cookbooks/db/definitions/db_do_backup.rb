@@ -100,8 +100,8 @@ define :db_do_backup, :force => false, :backup_type => "primary" do
       action :post_backup_cleanup
     end
 
-  rescue
-    log "  Error occurred during backup process"
+  rescue Exception => e
+    log "  Exception #{e.message} occurred during backup process"
     block_device NICKNAME do
       action :backup_lock_give
     end
