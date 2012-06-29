@@ -146,3 +146,11 @@ action :code_update do
   action_restart
 
 end
+
+
+# Set monitoring tools for PHP application. Not implemented.
+action :setup_monitoring do
+  raise 'Using "default" application provider. Action is not implemented'
+end
+
+
