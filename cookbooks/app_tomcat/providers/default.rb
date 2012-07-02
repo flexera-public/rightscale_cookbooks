@@ -64,7 +64,7 @@ action :install do
   end
 
   # Installing database adapter for tomcat
-  db_adapter = node[:app_tomcat][:db_adapter]
+  db_adapter = node[:app][:db_adapter]
   if db_adapter == "mysql"
     # Removing existing links to database connector
     file "/usr/share/tomcat6/lib/mysql-connector-java.jar" do
@@ -87,7 +87,7 @@ action :install do
       to "/usr/share/java/postgresql-9.1-901.jdbc4.jar"
     end
   else
-    raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting"
+    raise "Unrecognized database adapter #{db_adapter}, exiting"
   end
 
   # Linking RightImage JAVA_HOME to what Tomcat6 expects to be...
@@ -267,7 +267,7 @@ action :setup_vhost do
     log "  Finished configuring mod_jk, creating the application vhost"
 
     # Enabling required apache modules
-    node[:app_tomcat][:module_dependencies].each do |mod|
+    node[:app][:module_dependencies].each do |mod|
       apache_module mod
     end
 
@@ -317,7 +317,7 @@ end
 action :setup_db_connection do
 
   db_name = new_resource.database_name
-  db_adapter = node[:app_tomcat][:db_adapter]
+  db_adapter = node[:app][:db_adapter]
   datasource = node[:app_tomcat][:datasource_name]
 
   log "  Creating context.xml for DB: #{db_name} using adapter #{db_adapter} and datasource #{datasource}"
@@ -342,7 +342,7 @@ action :setup_db_connection do
       cookbook      'app_tomcat'
     end
   else
-    raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting"
+    raise "Unrecognized database adapter #{db_adapter}, exiting"
   end
 
   log "  Creating web.xml"
