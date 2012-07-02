@@ -41,7 +41,7 @@ define :db_do_backup, :force => false, :backup_type => "primary" do
     error_message "Database not initialized."
   end
 
-  # Verify initalized database
+  # Verify initialized database
   # Check the node state to verify that we have correctly initialized this server.
   db_state_assert :either
 
@@ -59,6 +59,7 @@ define :db_do_backup, :force => false, :backup_type => "primary" do
 
   log "  Performing (#{do_backup_type} backup) lock DB and write backup info file..."
   db DATA_DIR do
+    timeout node[:db_mysql][:init_timeout]
     action [ :lock, :write_backup_info ]
   end
 
