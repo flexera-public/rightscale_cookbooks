@@ -160,6 +160,7 @@ action :setup_db_connection do
     cookbook      "app_passenger"
     owner         node[:app_passenger][:apache][:user]
     group         node[:app_passenger][:apache][:group]
+    database      db_name
   end
 
   # Defining $RAILS_ENV
