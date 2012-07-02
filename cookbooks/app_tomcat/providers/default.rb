@@ -201,7 +201,10 @@ action :setup_vhost do
     when "ubuntu", "debian"
       ubuntu_p = [ "apache2-mpm-prefork", "apache2-threaded-dev", "libapr1-dev", "libapache2-mod-jk" ]
       ubuntu_p.each do |p|
-        package p
+        package p do
+          retries 15
+          retry_delay 2
+        end
       end
 
     when "centos","fedora","suse","redhat"
