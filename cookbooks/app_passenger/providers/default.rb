@@ -102,7 +102,7 @@ action :setup_vhost do
   end
 
   # Enabling required apache modules
-  node[:app_passenger][:module_dependencies].each do |mod|
+  node[:app][:module_dependencies].each do |mod|
     apache_module mod
   end
 
@@ -151,7 +151,7 @@ action :setup_db_connection do
 
   deploy_dir = new_resource.destination
   db_name = new_resource.database_name
-  db_adapter = node[:app_passenger][:project][:db][:adapter]
+  db_adapter = node[:app][:db_adapter]
 
   log "  Generating database.yml"
   # Tell MySQL to fill in our connection template
@@ -173,7 +173,7 @@ action :setup_db_connection do
       database      db_name
     end
   else
-    raise "Unrecognized database adapter #{node[:app_passenger][:project][:db][:adapter]}, exiting "
+    raise "Unrecognized database adapter #{db_adapter}, exiting "
   end
 
   # Defining $RAILS_ENV
@@ -242,3 +242,11 @@ action :code_update do
   end
 
 end
+
+
+# Set monitoring tools for Passenger application. Not Implemented.
+action :setup_monitoring do
+  raise 'Using "default" application provider. Action is not implemented'
+end
+
+

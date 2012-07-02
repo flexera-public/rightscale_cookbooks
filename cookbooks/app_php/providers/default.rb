@@ -56,8 +56,8 @@ action :install do
   end
 
   # Installing php modules dependencies
-  log "  Module dependencies which will be installed: #{node[:app_php][:module_dependencies]}"
-  node[:app_php][:module_dependencies].each do |mod|
+  log "  Module dependencies which will be installed: #{node[:app][:module_dependencies]}"
+  node[:app][:module_dependencies].each do |mod|
     apache_module mod
   end
 
@@ -93,6 +93,7 @@ end
 # Setup PHP Database Connection
 action :setup_db_connection do
   project_root = new_resource.destination
+  db_name = new_resource.database_name
   # Make sure config dir exists
   directory ::File.join(project_root, "config") do
     recursive true
@@ -100,13 +101,13 @@ action :setup_db_connection do
     group node[:app_php][:app_user]
   end
 
-  db_adapter = node[:app_php][:db_adapter]
+  db_adapter = node[:app][:db_adapter]
   # Tells selected db_adapter to fill in it's specific connection template
   if db_adapter == "mysql"
     db_mysql_connect_app ::File.join(project_root, "config", "db.php") do
       template "db.php.erb"
       cookbook "app_php"
-      database node[:app_php][:db_schema_name]
+      database db_name
       owner node[:app_php][:app_user]
       group node[:app_php][:app_user]
     end
@@ -114,12 +115,12 @@ action :setup_db_connection do
     db_postgres_connect_app ::File.join(project_root, "config", "db.php") do
       template "db.php.erb"
       cookbook "app_php"
-      database node[:app_php][:db_schema_name]
+      database db_name
       owner node[:app_php][:app_user]
       group node[:app_php][:app_user]
     end
   else
-    raise "Unrecognized database adapter #{node[:app_php][:db_adapter]}, exiting"
+    raise "Unrecognized database adapter #{node[:app][:db_adapter]}, exiting"
   end
 end
 
@@ -145,3 +146,11 @@ action :code_update do
   action_restart
 
 end
+
+
+# Set monitoring tools for PHP application. Not implemented.
+action :setup_monitoring do
+  raise 'Using "default" application provider. Action is not implemented'
+end
+
+
