@@ -64,3 +64,10 @@ attribute "db_mysql/tmpdir",
   :required => "optional",
   :default => "/mnt/ephemeral/mysqltmp"
 
+attribute "db_mysql/init_timeout",
+  :display_name => "MySQL Init Timeout",
+  :description => "Defines timeout to wait for a MySQL socket connection before a master backup. Default: 60",
+  :recipes => ["db_mysql::db_mysql::default"],
+  :required => "optional",
+  :default => "60"
+
