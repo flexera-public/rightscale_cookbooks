@@ -37,7 +37,7 @@ set_unless[:lb][:cron_reconverge_minute] = "#{5+rand(50)}"
 set_unless[:lb][:appserver_list] = {}
 
 # Config file used by load balancer.
-set_unless[:lb][:cfg_file] = "/home/lb/rightscale_lb.cfg"
+set_unless[:lb][:cfg_file] = "/etc/haproxy/rightscale_lb.cfg"
 
 # Web service name based on OS.
 case platform
