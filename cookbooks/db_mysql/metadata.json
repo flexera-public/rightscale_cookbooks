@@ -103,7 +103,8 @@
       "display_name": "MySQL Init Timeout",
       "description": "Defines timeout to wait for a MySQL socket connection before a master backup. Default: 60",
       "recipes": [
-        "db_mysql::default"
+        "db_mysql::default_5_1",
+        "db_mysql::default_5_5"
       ],
       "required": "optional",
       "default": "60",
