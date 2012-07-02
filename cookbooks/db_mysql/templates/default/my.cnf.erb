@@ -82,6 +82,7 @@ server-id               = <%= @server_id %>
 <%= "log_bin = #{node[:db_mysql][:log_bin]}" %>
 <%= "expire_logs_days        = #{node[:db_mysql][:tunable][:expire_logs_days]}" %>
 <% end %>
+binlog_format           = <%= node[:db_mysql][:binlog_format] %>
 max_binlog_size         = 100M
 #
 # * InnoDB

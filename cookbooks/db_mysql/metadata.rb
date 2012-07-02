@@ -54,6 +54,16 @@ attribute "db_mysql/log_bin",
   :required => "optional",
   :default => "/mnt/ephemeral/mysql-binlogs/mysql-bin"
 
+attribute "db_mysql/binlog_format",
+  :display_name => "MySQL Binlog Format",
+  :description => "Defines the format of your MySQL stored binlog files. Sets the 'binlog_format' option in the MySQL config file. Accepted options: STATEMENT, ROW, and MIXED",
+  :recipes => [
+    "db_mysql::default_5_1",
+    "db_mysql::default_5_5"
+   ],
+  :required => "optional",
+  :default => "MIXED"
+
 attribute "db_mysql/tmpdir",
   :display_name => "MySQL Temp Directory Destination",
   :description => "Defines the location of your MySQL temp directory. Sets the 'tmpdir' variable in the MySQL config file. Example: /tmp",
