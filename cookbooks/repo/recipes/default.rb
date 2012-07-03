@@ -21,6 +21,11 @@ node[:repo].each do |resource_name, entry|
   storage_account_secret = entry[:storage_account_secret] || ""
   container = entry[:container] || ""
   prefix = entry[:prefix] || ""
+  rsync_user = entry[:rsync_user] || ""
+  rsync_key = entry[:rsync_key] || ""
+  rsync_options = entry[:rsync_options] || ""
+  ftp_user = entry[:ftp_user] || ""
+  ftp_password = entry[:ftp_password] || ""
 
   # Initial setup of "repository" LWRP.
   log "  Registering #{resource_name} prov: #{entry[:provider]}"
@@ -38,6 +43,11 @@ node[:repo].each do |resource_name, entry|
     unpack_source true
     prefix prefix
     persist true
+    rsync_user rsync_user
+    rsync_key rsync_key
+    rsync_options rsync_options
+    ftp_user ftp_user
+    ftp_password ftp_password
   end
 end
 

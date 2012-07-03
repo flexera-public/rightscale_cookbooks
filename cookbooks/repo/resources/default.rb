@@ -12,6 +12,7 @@ actions :setup_attributes
 
 
 # Common attributes
+#
 
 # Path to where project repo will be pulled
 attribute :destination, :kind_of => String
@@ -24,6 +25,7 @@ attribute :revision, :kind_of => String
 
 
 # Subversion only
+#
 
 # Subversion username
 attribute :svn_username, :kind_of => String
@@ -35,11 +37,13 @@ attribute :svn_password, :kind_of => String
 attribute :svn_arguments, :kind_of => String
 
 # Git only
+#
 
 # Git SSH key
 attribute :git_ssh_key, :kind_of => String
 
 # Capistrano
+#
 
 # System user to run the deploy as
 attribute :app_user, :kind_of => String
@@ -57,6 +61,7 @@ attribute :symlinks, :kind_of => Hash, :default => ({})
 attribute :environment, :kind_of => Hash, :default => ({})
 
 # ROS
+#
 
 # The prefix that will be used to name/locate the backup of a particular code repo.
 attribute :prefix, :kind_of => String
@@ -80,3 +85,22 @@ attribute :storage_account_secret, :kind_of => String
 
 # Unpack downloaded source or not Source file must be kind of tar archive
 attribute :unpack_source, :equal_to => [ true, false ], :default => true
+
+# RSync
+#
+
+# Username used for the RSync connection
+attribute :rsync_user, :kind_of => String
+# SSH used to establish the connection
+attribute :rsync_key, :kind_of => String
+# Command line options
+attribute :rsync_options, :kind_of => String
+
+# FTP
+#
+
+# FTP username
+attribute :ftp_user, :kind_of => String
+# FTP password
+attribute :ftp_password, :kind_of => String
+
