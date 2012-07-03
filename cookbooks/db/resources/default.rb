@@ -25,7 +25,6 @@ attribute :data_dir, :kind_of => String, :default => "/mnt/storage"
 
 # == Backup/Restore options
 attribute :lineage, :kind_of => String
-attribute :force, :kind_of => String, :default => "false"
 attribute :timestamp_override, :kind_of => String, :default => nil
 attribute :from_master, :kind_of => String, :default => nil
 attribute :restore_process, :kind_of => Symbol, :default => :primary_restore

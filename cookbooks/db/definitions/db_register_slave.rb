@@ -144,11 +144,9 @@ define :db_register_slave, :action => :primary_restore do
   # Force a new backup if this is the initial setup of a slave
   case params[:action]
     when :primary_restore, :secondary_restore
-      db_request_backup "do force backup" do
-        force true
-      end
+      db_request_backup "do backup"
     else
-      log "  No force backup initiated"
+      log "  No backup initiated"
   end
 
   include_recipe "db::do_primary_backup_schedule_enable"
