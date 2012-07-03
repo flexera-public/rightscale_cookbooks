@@ -25,7 +25,7 @@ when "redhat","centos","fedora","suse"
   node[:db_mysql][:packages_uninstall] = ""
   node[:db_mysql][:client_packages_install] = ["mysql55-devel", "mysql55-libs", "mysql55"]
   node[:db_mysql][:server_packages_install] = ["mysql55-server"]
-when "ubuntu","debian" and node[:platform_version] == '12.04'
+when "ubuntu","debian" && node[:platform_version] == '12.04'
   node[:db_mysql][:packages_uninstall] = ""
   node[:db_mysql][:client_packages_install] = ["libmysqlclient-dev", "mysql-client-5.5"]
   node[:db_mysql][:server_packages_install] = ["mysql-server-5.5"]
