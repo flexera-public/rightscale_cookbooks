@@ -15,6 +15,7 @@ node[:db_mysql][:version] = version
 # Set MySQL 5.5 specific node variables in this recipe.
 #
 platform = node[:platform]
+platform_version = node[:platform_version]
 case platform
 when "redhat","centos","fedora","suse"
 # http://dev.mysql.com/doc/refman/5.5/en/linux-installation-native.html
@@ -25,12 +26,12 @@ when "redhat","centos","fedora","suse"
   node[:db_mysql][:packages_uninstall] = ""
   node[:db_mysql][:client_packages_install] = ["mysql55-devel", "mysql55-libs", "mysql55"]
   node[:db_mysql][:server_packages_install] = ["mysql55-server"]
-when "ubuntu","debian" && node[:platform_version] == '12.04'
+when "ubuntu","debian" && platform_version == '12.04'
   node[:db_mysql][:packages_uninstall] = ""
   node[:db_mysql][:client_packages_install] = ["libmysqlclient-dev", "mysql-client-5.5"]
   node[:db_mysql][:server_packages_install] = ["mysql-server-5.5"]
 else
-  raise "Unsupported platform #{platform} for MySQL Version #{version}"
+  raise "Unsupported platform #{platform} and/or platform version #{platform_version} for MySQL Version #{version}"
 end
 
 rightscale_marker :end

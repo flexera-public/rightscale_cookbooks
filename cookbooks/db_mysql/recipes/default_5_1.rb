@@ -18,6 +18,7 @@ node[:db_mysql][:version] = version
 node[:db_mysql][:service_name] = "mysql"
 
 platform = node[:platform]
+platform_version = node[:platform_version]
 case platform
 when "redhat","centos","fedora","suse"
   node[:db_mysql][:packages_uninstall] = ""
@@ -25,12 +26,12 @@ when "redhat","centos","fedora","suse"
                                                "MySQL-devel-community",
                                                "MySQL-client-community" ]
   node[:db_mysql][:server_packages_install] = ["MySQL-server-community"]
-when "debian","ubuntu"
+when "debian","ubuntu" && platform_version != 12.04
   node[:db_mysql][:packages_uninstall] = ""
   node[:db_mysql][:client_packages_install] = ["libmysqlclient-dev", "mysql-client-5.1"]
   node[:db_mysql][:server_packages_install] = ["mysql-server-5.1"]
 else
-  raise "Unsupported platform #{platform} for MySQL Version #{version}"
+  raise "Unsupported platform #{platform} and/or platform version #{platform_version} for MySQL Version #{version}"
 end
 
 rightscale_marker :end
