@@ -28,7 +28,7 @@ when "redhat","centos","fedora","suse"
 when "ubuntu" # and platform_version =~ /^12\..+/
   node[:db_mysql][:service_name] = "mysqld"
   node[:db_mysql][:packages_uninstall] = ""
-  node[:db_mysql][:client_packages_install] = ["mysql-client"]
+  node[:db_mysql][:client_packages_install] = ["libmysqlclient-dev", "mysql-client"]
   node[:db_mysql][:server_packages_install] = ["mysql-server"]
 else
   raise "Unsupported platform #{platform} for MySQL Version #{version}"
