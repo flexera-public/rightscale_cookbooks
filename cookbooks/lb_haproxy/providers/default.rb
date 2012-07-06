@@ -80,18 +80,6 @@ action :install do
     umask 0077
     notifies :start, resources(:service => "haproxy")
   end
-
-  # Remove haproxy config file so we can symlink it.
-  file "/etc/haproxy/haproxy.cfg" do
-    backup false
-    not_if { ::File.symlink?("/etc/haproxy/haproxy.cfg") }
-    action :delete
-  end
-
-  # Symlink haproxy config.
-  link "/etc/haproxy/haproxy.cfg" do
-    to "/etc/haproxy/rightscale_lb.cfg"
-  end
 end
 
 
