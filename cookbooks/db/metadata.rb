@@ -38,6 +38,9 @@ recipe "db::setup_privileges_application", "Adds the username and password for a
 recipe "db::do_secondary_backup", :description => "Creates a backup of the database and uploads it to a secondary cloud storage location, which can be used to migrate your database to a different cloud. For example, you can save a secondary backup to an Amazon S3 bucket or a Rackspace Cloud Files container.", :thread => 'db_backup'
 recipe "db::do_secondary_restore", "Restores the database from the most recently completed backup available in a secondary location."
 
+recipe "db::do_secondary_backup_schedule_enable", "Enables db::do_secondary_backup to be run periodically."
+recipe "db::do_secondary_backup_schedule_disable", "Disables db::do_secondary_backup from being run periodically."
+
 recipe "db::do_force_reset", "Resets the database back to a pristine state. WARNING: Execution of this script will delete any data in your database!"
 
 recipe "db::do_dump_export", "Creates a dump file and uploads it to a remote object storage (e.g., Amazon S3 or Rackspace Cloud Files)."
@@ -181,7 +184,9 @@ attribute "db/backup/lineage",
     "db::do_primary_backup_schedule_disable",
     "db::do_force_reset",
     "db::do_secondary_backup",
-    "db::do_secondary_restore"
+    "db::do_secondary_restore",
+    "db::do_secondary_backup_schedule_enable",
+    "db::do_secondary_backup_schedule_disable"
   ]
 
 attribute "db/backup/lineage_override",
@@ -250,6 +255,31 @@ attribute "db/backup/primary/slave/cron/minute",
   :description => "Defines the minute of the hour when the backup EBS snapshot will be taken of the slave database. Backups of the slave are taken hourly. By default, a minute will be randomly chosen at launch time. Uses standard crontab format (e.g., 30 for minute 30 of the hour).",
   :required => "optional",
   :recipes => [ 'db::do_primary_backup_schedule_enable' ]
+
+
+attribute "db/backup/secondary/master/cron/hour",
+  :display_name => "Master Secondary Backup Cron Hour",
+  :description => "Defines the hour of the day when the secondary backup will be taken of the master database. Backups of the master are taken daily. By default, an hour will be randomly chosen at launch time. Otherwise, the time of the backup is defined by 'Master Secondary Backup Cron Hour' and 'Master Secondary Backup Cron Minute'. Uses standard crontab format (e.g., 23 for 11:00 PM).",
+  :required => "optional",
+  :recipes => [ 'db::do_secondary_backup_schedule_enable' ]
+
+attribute "db/backup/secondary/slave/cron/hour",
+  :display_name => "Slave Secondary Backup Cron Hour",
+  :description => "By default, secondary backups of the slave database are taken hourly. However, if you specify a value in this input (e.g., 23 for 11:00 PM), then backups will occur once per day at the specified hour, rather than hourly. Uses standard crontab format (e.g., 23 for 11:00 PM).",
+  :required => "optional",
+  :recipes => [ 'db::do_secondary_backup_schedule_enable' ]
+
+attribute "db/backup/secondary/master/cron/minute",
+  :display_name => "Master Secondary Backup Cron Minute",
+  :description => "Defines the minute of the hour when the secondary backup will be taken of the master database. Backups of the master are taken daily. By default, a minute will be randomly chosen at launch time. Otherwise, the time of the backup is defined by 'Master Secondary Backup Cron Hour' and 'Master Secondary Backup Cron Minute'. Uses standard crontab format (e.g., 30 for minute 30 of the hour).",
+  :required => "optional",
+  :recipes => [ 'db::do_secondary_backup_schedule_enable' ]
+
+attribute "db/backup/secondary/slave/cron/minute",
+  :display_name => "Slave Secondary Backup Cron Minute",
+  :description => "Defines the minute of the hour when the secondary backup will be taken of the slave database. Backups of the slave are taken hourly. By default, a minute will be randomly chosen at launch time. Uses standard crontab format (e.g., 30 for minute 30 of the hour). Uses standard crontab format (e.g., 30 for minute 30 of the hour).",
+  :required => "optional",
+  :recipes => [ 'db::do_secondary_backup_schedule_enable' ]
 
 
 # == Import/export attributes

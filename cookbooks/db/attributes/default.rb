@@ -57,10 +57,14 @@ cron_min = 5 + rand(24)
 # Master backup every 4 hours at a random minute between 5-29
 set_unless[:db][:backup][:primary][:master][:cron][:hour] = "*/4"
 set_unless[:db][:backup][:primary][:master][:cron][:minute] = cron_min
+set_unless[:db][:backup][:secondary][:master][:cron][:hour] = "*/4"
+set_unless[:db][:backup][:secondary][:master][:cron][:minute] = cron_min + 15
 
 # Slave backup every hour at a random minute 30 minutes offset from the master.
 set_unless[:db][:backup][:primary][:slave][:cron][:hour] = "*" # every hour
 set_unless[:db][:backup][:primary][:slave][:cron][:minute] = cron_min + 30
+set_unless[:db][:backup][:secondary][:slave][:cron][:hour] = "*" # every hour
+set_unless[:db][:backup][:secondary][:slave][:cron][:minute] = cron_min + 45 
 
 # A force backup overrides any running backup.  Setting default here.
 set_unless[:db][:backup][:force] = 'false'
