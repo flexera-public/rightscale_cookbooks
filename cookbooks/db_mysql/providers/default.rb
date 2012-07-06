@@ -381,10 +381,11 @@ action :setup_monitoring do
   end
 
   platform = node[:platform]
+  collectd_version = node[:rightscale][:collectd_packages_version]
   # Centos specific items
   package "collectd-mysql" do
     action :install
-    version "4.10.0-4.el5"
+    version "#{collectd_version}" unless collectd_version == "latest"
     only_if { platform =~ /redhat|centos/ }
   end
 
