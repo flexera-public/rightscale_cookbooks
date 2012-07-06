@@ -158,6 +158,15 @@ end
 
 action :install_client do
 
+  # Uninstall certain packages
+  packages = node[:db_mysql][:client_packages_uninstall]
+  log "  Packages to uninstall: #{packages.join(",")}" unless packages == ""
+  packages.each do |p|
+     package p do
+       action :remove
+     end
+  end unless packages == ""
+
   # Install MySQL client packages
   # Must install during the compile stage because mysql gem build depends on the libs
   if node[:platform] =~ /redhat|centos/
@@ -199,8 +208,8 @@ action :install_server do
   # MySQL server depends on MySQL client
   action_install_client
 
-  # Uninstall other packages we don't
-  packages = node[:db_mysql][:packages_uninstall]
+  # Uninstall certain packages
+  packages = node[:db_mysql][:server_packages_uninstall]
   log "  Packages to uninstall: #{packages.join(",")}" unless packages == ""
   packages.each do |p|
      package p do
