@@ -9,7 +9,7 @@
 set -e
 shopt -s nullglob
 
-CONF_FILE=/etc/haproxy/rightscale_lb.cfg
+CONF_FILE=/etc/haproxy/haproxy.cfg
 
 cat /etc/haproxy/rightscale_lb.cfg.head > ${CONF_FILE}
 
