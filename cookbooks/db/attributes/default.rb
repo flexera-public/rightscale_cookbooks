@@ -83,10 +83,14 @@ cron_min = 5 + rand(24)
 # Master backup daily at a random hour and a random minute between 5-29
 default[:db][:backup][:primary][:master][:cron][:hour] = cron_h
 default[:db][:backup][:primary][:master][:cron][:minute] = cron_min
+default[:db][:backup][:secondary][:master][:cron][:hour] = "*/4"
+default[:db][:backup][:secondary][:master][:cron][:minute] = cron_min + 15
 
 # Slave backup every hour at a random minute 30 minutes offset from the master.
 default[:db][:backup][:primary][:slave][:cron][:hour] = "*" # every hour
 default[:db][:backup][:primary][:slave][:cron][:minute] = cron_min + 30
+default[:db][:backup][:secondary][:slave][:cron][:hour] = "*" # every hour
+default[:db][:backup][:secondary][:slave][:cron][:minute] = cron_min + 45
 
 # DB manager type specific commands array for db_sys_info.log file
 default[:db][:info_file_options] = []
