@@ -22,13 +22,13 @@ when "redhat","centos","fedora","suse"
   # number of separate packages, mysql for the client tools, mysql-server for the 
   # server and associated tools, and mysql-libs for the libraries. 
   node[:db_mysql][:service_name] = "mysqld"
-  node[:db_mysql][:packages_uninstall] = [ ]
+  node[:db_mysql][:client_packages_uninstall] = [ ]
+  node[:db_mysql][:server_packages_uninstall] = [ ]
   node[:db_mysql][:client_packages_install] = [ "mysql55-devel", "mysql55-libs", "mysql55" ]
   node[:db_mysql][:server_packages_install] = [ "mysql55-server" ]
   # centos 6.2 by default has mysql-libs 5.1 installed as requirement for postfix
   if platform == "centos" && node[:platform_version] == "6.2"
-    node[:db_mysql][:packages_uninstall] << "mysql-libs"
-    node[:db_mysql][:client_packages_install] << "postfix"
+    node[:db_mysql][:client_packages_uninstall] << "mysql-libs"
   end
 else
   raise "Unsupported platform #{platform} for MySQL Version #{version}"
