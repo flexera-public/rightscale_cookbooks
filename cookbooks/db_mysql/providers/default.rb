@@ -44,7 +44,11 @@ end
 
 action :move_data_dir do
   @db = init(new_resource)
-  @db.move_datadir
+  if new_resource.data_dir
+    @db.move_datadir new_resource.data_dir
+  else
+    @db.move_data_dir
+  end
 end
 
 action :reset do
