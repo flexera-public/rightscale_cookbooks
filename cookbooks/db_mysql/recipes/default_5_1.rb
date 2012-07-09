@@ -17,21 +17,30 @@ log "  Setting DB MySQL version to #{version}"
 node[:db_mysql][:version] = version
 node[:db_mysql][:service_name] = "mysql"
 
-platform = node[:platform]
-platform_version = node[:platform_version]
-case platform
-when "redhat","centos","fedora","suse"
-  node[:db_mysql][:packages_uninstall] = ""
-  node[:db_mysql][:client_packages_install] = ["MySQL-shared-compat",
-                                               "MySQL-devel-community",
-                                               "MySQL-client-community" ]
-  node[:db_mysql][:server_packages_install] = ["MySQL-server-community"]
-when "debian","ubuntu" && platform_version != 12.04
-  node[:db_mysql][:packages_uninstall] = ""
-  node[:db_mysql][:client_packages_install] = ["libmysqlclient-dev", "mysql-client-5.1"]
-  node[:db_mysql][:server_packages_install] = ["mysql-server-5.1"]
-else
-  raise "Unsupported platform #{platform} and/or platform version #{platform_version} for MySQL Version #{version}"
+node[:db_mysql][:client_packages_uninstall] = [ ]
+node[:db_mysql][:server_packages_uninstall] = [ ]
+
+node[:db_mysql][:client_packages_install] = value_for_platform("centos" => { "6.2" => [ "mysql-devel", "mysql-libs", "mysql" ],
+                                                                             "default" => [ "MySQL-shared-compat",
+                                                                                            "MySQL-devel-community",
+                                                                                            "MySQL-client-community" ] },
+                                                               ["redhat","fedora","suse"] => { "default" => [ "MySQL-shared-compat",
+                                                                                                              "MySQL-devel-community",
+                                                                                                              "MySQL-client-community" ] },
+                                                               ["debian","ubuntu"] => { "default" => ["libmysqlclient-dev", "mysql-client-5.1"] 
+							                                "12.04" => [ ] },
+                                                               "default" => { "default" => [ ] } )
+
+node[:db_mysql][:server_packages_install] = value_for_platform("centos" => { "6.2" => [ "mysql-server" ],
+                                                                             "default" => [ "MySQL-server-community" ] },
+                                                               ["redhat","fedora","suse"] => { "default" => [ "MySQL-server-community" ] },
+                                                               ["debian","ubuntu"] => { "default" => ["mysql-server-5.1"] 
+							                                "12.04" => [ ] },
+                                                               "default" => { "default" => [ ] } )
+
+log "Platform not supported for MySQL #{version}" do
+  level :fatal
+  only_if { node[:db_mysql][:client_packages_install].empty? }
 end
 
 rightscale_marker :end
