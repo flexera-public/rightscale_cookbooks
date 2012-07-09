@@ -15,7 +15,10 @@ log "  Setting DB MySQL version to #{version}"
 # Set MySQL 5.1 specific node variables in this recipe.
 #
 node[:db_mysql][:version] = version
-node[:db_mysql][:service_name] = "mysql"
+
+node[:db_mysql][:service_name] = value_for_platform("centos" => { "6.2" => "mysqld",
+                                                                  "default" => "mysql"},
+                                                    "default" => { "default" => "mysql" } )
 
 node[:db_mysql][:client_packages_uninstall] = [ ]
 node[:db_mysql][:server_packages_uninstall] = [ ]
@@ -38,7 +41,7 @@ node[:db_mysql][:server_packages_install] = value_for_platform("centos" => { "6.
 							                                "12.04" => [ ] },
                                                                "default" => { "default" => [ ] } )
 
-log "Platform not supported for MySQL #{version}" do
+log "  Platform not supported for MySQL #{version}" do
   level :fatal
   only_if { node[:db_mysql][:client_packages_install].empty? }
 end
