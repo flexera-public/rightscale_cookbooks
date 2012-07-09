@@ -1,0 +1,76 @@
+= RightScale Memcached Server Template
+
+== DESCRIPTION:
+
+This cookbook provides recipes for setting up and running a Memcached server.
+
+-------------
+
+== REQUIREMENTS:
+
+* Requires a VM launched from a RightScale managed RightImage
+
+-------------
+
+== COOKBOOKS DEPENDENCIES:
+
+Please see <tt>metadata.rb</tt> file for the latest dependencies.
+
+-------------
+
+== KNOWN LIMITATIONS:
+
+* If you need memcached to listen on public interface must set to listen on any.
+
+-------------
+
+== SETUP/USAGE:
+
+* Choose image and cloud.
+* Fill required input fields.
+* When using a RightScale ServerTemplate, use <tt>memcached::default</tt> recipe to automatically add the server tags.
+* Place <tt>memcached::install_server</tt> recipe into your runlist to setup the memcached server.
+
+-------------
+
+== DETAILS:
+
+=== General
+
+The cookbook installs memcached with needed configuration for CentOS, Redhat and Ubuntu.
+Opens lisnening port in systems' firewall, setups server tags, monitoring and log rotation.
+
+-------------
+
+=== Attributes:
+
+These are the settings used in recipes and templates. Default values are noted.
+* <tt>node[:memcached][:tcp_port]</tt> - TCP port number to listen on. Default is 11211.
+* <tt>node[:memcached][:udp_port]</tt> - UDP port number to listen on. Default is 11211.
+* <tt>node[:memcached][:user]</tt> - Username to run memcached. Default is nobody.
+* <tt>node[:memcached][:connection_limit]</tt> - Number of simultaneous connections. Default is 1024.
+* <tt>node[:memcached][:memtotal_percent]</tt> - Max memory to use for items. Default is 90.
+* <tt>node[:memcached][:threads]</tt> - Number of threads. Default is 1.
+* <tt>node[:memcached][:interface]</tt> - Interface to listen on. Default is any.
+* <tt>node[:memcached][:log_level]</tt> - Memcached logging output level
+* <tt>node[:memcached][:cluster_id]</tt> - Cluster assosiation string.
+
+* <tt>node[:platform][:memcached][:config_file]</tt> - Location of memcached configuration file.
+* <tt>node[:platform][:memcached][:iptables_rules]</tt> - Location of iptables.
+
+-------------
+
+=== Templates:
+
+* <tt>memcached.conf.erb</tt> - Memcached configuration file. Unique for CentOS and Ubuntu. Used is the <tt>memcached::install_server</tt> recipe.
+
+* <tt>memcached_collectd.conf.erb</tt> - Memcached collectd plugin template. Used is the <tt>memcached::install_server</tt> recipe.
+
+-------------
+
+= LICENSE:
+
+Copyright RightScale, Inc. All rights reserved.  All access and use subject to
+the RightScale Terms of Service available at http://www.rightscale.com/terms.php
+and, if applicable, other agreements such as a RightScale Master Subscription
+Agreement.
