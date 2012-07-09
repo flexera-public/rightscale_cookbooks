@@ -36,11 +36,7 @@ end
 
 action :move_data_dir do
   @db = init(new_resource)
-  if new_resource.data_dir
-    @db.move_datadir new_resource.data_dir
-  else
-    @db.move_data_dir
-  end
+  @db.move_datadir new_resource.name, node[:db_postgres][:datadir]
 end
 
 action :reset do
