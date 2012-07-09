@@ -5,6 +5,8 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+set_unless[:app_tomcat][:version] = '6'
+
 # Recommended attributes
 set_unless[:app_tomcat][:code][:root_war] = ""
 # Java heap tuning attributes. For more info see http://www.tomcatexpert.com/blog/2011/11/22/performance-tuning-jvm-running-tomcat
@@ -33,10 +35,10 @@ when "ubuntu", "debian"
   set[:app_tomcat][:app_user] = "tomcat6"
   set[:app_tomcat][:alternatives_cmd] = "update-alternatives --auto java"
   if app_tomcat[:db_adapter] == "mysql"
-    set[:app_tomcat][:datasource_name] = "jdbc/MYSQLDB"
+    set_unless[:app_tomcat][:datasource_name] = "jdbc/MYSQLDB"
     set[:db_mysql][:socket] = "/var/run/mysqld/mysqld.sock"
   elsif app_tomcat[:db_adapter] == "postgresql"
-    set[:app_tomcat][:datasource_name] = "jdbc/postgres"
+    set_unless[:app_tomcat][:datasource_name] = "jdbc/postgres"
     set[:db_postgres][:socket] = "/var/run/postgresql"
   else
     raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting"
@@ -45,10 +47,10 @@ when "centos", "fedora", "suse", "redhat", "redhatenterpriseserver"
   set[:app_tomcat][:app_user] = "tomcat"
   set[:app_tomcat][:alternatives_cmd] = "alternatives --auto java"
   if app_tomcat[:db_adapter] == "mysql"
-    set[:app_tomcat][:datasource_name] = "jdbc/MYSQLDB"
+    set_unless[:app_tomcat][:datasource_name] = "jdbc/MYSQLDB"
     set[:db_mysql][:socket] = "/var/lib/mysql/mysql.sock"
   elsif app_tomcat[:db_adapter] == "postgresql"
-    set[:app_tomcat][:datasource_name] = "jdbc/postgres"
+    set_unless[:app_tomcat][:datasource_name] = "jdbc/postgres"
     set[:db_postgres][:socket] = "/var/run/postgresql"
   else
     raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting"

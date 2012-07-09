@@ -15,7 +15,18 @@ depends "db_postgres"
 depends "repo"
 depends "rightscale"
 
-recipe  "app_tomcat::default", "Installs the Tomcat application server."
+recipe  "app_tomcat::default", "set version and node variables specific to the chosen Tomcat version to installs the tomcat application server."
+recipe  "app_tomcat::default_6", "set version 6 and node variables specific to the chosen Tomcat version to installs the tomcat application server."
+recipe  "app_tomcat::default_7", "set version 7 and node variables specific to the chosen Tomcat version to installs the tomcat application server."
+
+# == Default attributes
+#
+attribute "app_tomcat/version",
+  :display_name => "Tomcat Version",
+  :description => "Specify the Tomcat version that matches that of the Tomcat App Server ServerTemplate version in use. Note: Tomcat 7 is not supported on Ubuntu 10.04.",
+  :recipes => ["app_tomcat::default"],
+  :choice => ['6', '7'],
+  :required => 'required'
 
 # optional attributes
 attribute "app_tomcat/db_name",
@@ -81,11 +92,17 @@ attribute "app_tomcat/db_adapter",
   :description => "Enter database adapter which will be used to connect to the database. Example: mysql",
   :default => "mysql",
   :choice => [ "mysql", "postgresql" ],
-  :recipes => ["app_tomcat::default"]
+  :recipes => [
+    "app_tomcat::default_6",
+    "app_tomcat::default_7"
+   ]
 
 attribute "app_tomcat/datasource_name",
   :display_name => "Container datasource name",
   :description => "This name is used to set up the database connection with the application server. You should set the attribute if your application is compiled to use a different datasource name.  Example: jdbc/MyConnDB",
   :required => "optional",
   :default => "jdbc/ConnDB",
-  :recipes => ["app_tomcat::default"]
+  :recipes => [
+    "app_tomcat::default_6",
+    "app_tomcat::default_7"
+   ]
