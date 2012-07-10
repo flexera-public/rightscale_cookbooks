@@ -320,8 +320,9 @@ action :setup_db_connection do
 
   db_name = new_resource.database_name
   db_adapter = node[:app_tomcat][:db_adapter]
+  datasource = node[:app_tomcat][:datasource_name]
 
-  log "  Creating context.xml for DB: #{db_name} using adapter #{db_adapter} and datasource #{node[:app_tomcat][:datasource_name]}"
+  log "  Creating context.xml for DB: #{db_name} using adapter #{db_adapter} and datasource #{datasource}"
   if db_adapter == "mysql"
     db_mysql_connect_app "/etc/tomcat6/context.xml" do
       template      "context_xml.erb"
@@ -329,6 +330,7 @@ action :setup_db_connection do
       group         "root"
       mode          "0644"
       database      db_name
+      datasource    datasource
       cookbook      'app_tomcat'
     end
   elsif db_adapter == "postgresql"
@@ -338,6 +340,7 @@ action :setup_db_connection do
       group         "root"
       mode          "0644"
       database      db_name
+      datasource    datasource
       cookbook      'app_tomcat'
     end
   else
@@ -351,7 +354,7 @@ action :setup_db_connection do
     group "root"
     mode "0644"
     variables(
-      :datasource => node[:app_tomcat][:datasource_name]
+      :datasource => datasource
     )
     cookbook 'app_tomcat'
   end
