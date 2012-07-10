@@ -361,7 +361,7 @@ action :setup_db_connection do
     group "root"
     mode "0644"
     variables(
-      :datasource => node[:app_tomcat][:datasource_name]
+      :datasource => datasource
     )
     cookbook 'app_tomcat'
   end
