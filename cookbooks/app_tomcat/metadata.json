@@ -17,7 +17,8 @@
       ],
       "type": "string",
       "recipes": [
-        "app_tomcat::default"
+        "app_tomcat::default_6",
+        "app_tomcat::default_7"
       ],
       "display_name": "Database Schema Name",
       "description": "Enter the name of the MySQL database to use. Example: mydatabase"
@@ -45,7 +46,8 @@
       "default": "256m",
       "type": "string",
       "recipes": [
-        "app_tomcat::default"
+        "app_tomcat::default_6",
+        "app_tomcat::default_7"
       ],
       "display_name": "Tomcat Java MaxPermSize",
       "description": "The java MaxPermSize argument. Example: 256m"
@@ -59,7 +61,8 @@
       "default": "",
       "type": "string",
       "recipes": [
-        "app_tomcat::default"
+        "app_tomcat::default_6",
+        "app_tomcat::default_7"
       ],
       "display_name": "War file for ROOT",
       "description": "The path to the war file relative to project repo root directory. Will be renamed to ROOT.war. Example: /dist/app_test.war"
@@ -73,7 +76,8 @@
       "default": "256m",
       "type": "string",
       "recipes": [
-        "app_tomcat::default"
+        "app_tomcat::default_6",
+        "app_tomcat::default_7"
       ],
       "display_name": "Tomcat Java NewSize",
       "description": "The java NewSize argument. Example: 256m"
@@ -102,7 +106,8 @@
       "default": "512m",
       "type": "string",
       "recipes": [
-        "app_tomcat::default"
+        "app_tomcat::default_6",
+        "app_tomcat::default_7"
       ],
       "display_name": "Tomcat Java XMX",
       "description": "The java Xmx argument. Example: 512m"
@@ -116,7 +121,8 @@
       "default": "256m",
       "type": "string",
       "recipes": [
-        "app_tomcat::default"
+        "app_tomcat::default_6",
+        "app_tomcat::default_7"
       ],
       "display_name": "Tomcat Java PermSize",
       "description": "The java PermSize argument. Example: 256m"
@@ -146,7 +152,8 @@
       "default": "256m",
       "type": "string",
       "recipes": [
-        "app_tomcat::default"
+        "app_tomcat::default_6",
+        "app_tomcat::default_7"
       ],
       "display_name": "Tomcat Java MaxNewSize",
       "description": "The java MaxNewSize argument. Example: 256m"
@@ -160,7 +167,8 @@
       "default": "512m",
       "type": "string",
       "recipes": [
-        "app_tomcat::default"
+        "app_tomcat::default_6",
+        "app_tomcat::default_7"
       ],
       "display_name": "Tomcat Java XMS",
       "description": "The java Xms argument. Example: 512m"
