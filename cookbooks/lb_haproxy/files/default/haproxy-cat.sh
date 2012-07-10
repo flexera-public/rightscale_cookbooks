@@ -11,7 +11,7 @@ shopt -s nullglob
 
 CONF_FILE=/etc/haproxy/haproxy.cfg
 
-cat /etc/haproxy/rightscale_lb.cfg.head > ${CONF_FILE}
+cat /etc/haproxy/haproxy.cfg.head > ${CONF_FILE}
 
 echo "frontend all_requests 127.0.0.1:85" >> ${CONF_FILE}
 
@@ -41,7 +41,7 @@ done
 
 echo "" >> ${CONF_FILE}
 
-cat /etc/haproxy/rightscale_lb.cfg.default_backend >> ${CONF_FILE}
+cat /etc/haproxy/haproxy.cfg.default_backend >> ${CONF_FILE}
 
 echo "" >> ${CONF_FILE}
 

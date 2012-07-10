@@ -48,7 +48,7 @@ action :install do
   end
 
   # Install the haproxy config head which is the part of the haproxy config that doesn't change.
-  template "/etc/haproxy/rightscale_lb.cfg.head" do
+  template "/etc/haproxy/haproxy.cfg.head" do
     source "haproxy_http.erb"
     cookbook "lb_haproxy"
     owner "haproxy"
@@ -61,7 +61,7 @@ action :install do
   end
 
   # Install the haproxy config backend which is the part of the haproxy config that doesn't change.
-  template "/etc/haproxy/rightscale_lb.cfg.default_backend" do
+  template "/etc/haproxy/haproxy.cfg.default_backend" do
     source "haproxy_default_backend.erb"
     cookbook "lb_haproxy"
     owner "haproxy"
