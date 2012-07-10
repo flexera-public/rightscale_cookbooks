@@ -376,7 +376,7 @@ action :setup_monitoring do
   package "collectd-mysql" do
     action :install
     version "#{collectd_version}" unless collectd_version == "latest"
-    only_if { platform =~ /redhat|centos|ubuntu/ }
+    only_if { platform =~ /redhat|centos/ }
   end
 
   template ::File.join(node[:rightscale][:collectd_plugin_dir], 'mysql.conf') do
