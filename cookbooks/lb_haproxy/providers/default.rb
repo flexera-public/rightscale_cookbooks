@@ -20,15 +20,6 @@ action :install do
     action :enable
   end
 
-  # Install haproxy file depending on OS/platform.
-  template "/etc/default/haproxy" do
-    only_if { node[:platform] == "debian" || node[:platform] == "ubuntu" }
-    source "default_haproxy.erb"
-    cookbook "lb_haproxy"
-    owner "root"
-    notifies :restart, resources(:service => "haproxy")
-  end
-
   # Create /etc/haproxy directory.
   directory "/etc/haproxy/#{node[:lb][:service][:provider]}.d" do
     owner "haproxy"
@@ -49,7 +40,7 @@ action :install do
 
   # Install the haproxy config head which is the part of the haproxy config that doesn't change.
   template "/etc/haproxy/haproxy.cfg.head" do
-    source "haproxy_http.erb"
+    source "haproxy.cfg.head.erb"
     cookbook "lb_haproxy"
     owner "haproxy"
     group "haproxy"
@@ -62,7 +53,7 @@ action :install do
 
   # Install the haproxy config backend which is the part of the haproxy config that doesn't change.
   template "/etc/haproxy/haproxy.cfg.default_backend" do
-    source "haproxy_default_backend.erb"
+    source "haproxy.cfg.default_backend.erb"
     cookbook "lb_haproxy"
     owner "haproxy"
     group "haproxy"
