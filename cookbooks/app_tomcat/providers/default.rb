@@ -155,8 +155,8 @@ action :setup_vhost do
       :java_permsize => node[:app_tomcat][:java][:permsize],
       :java_maxpermsize => node[:app_tomcat][:java][:maxpermsize],
       :java_newsize => node[:app_tomcat][:java][:newsize],
-      :java_maxnewsize => node[:app_tomcat][:java][:maxnewsize]
-      :platform => node[:platform]
+      :java_maxnewsize => node[:app_tomcat][:java][:maxnewsize],
+      :platform => node[:platform],
       :platform_ver => node[:platform_version]
     )
   end
