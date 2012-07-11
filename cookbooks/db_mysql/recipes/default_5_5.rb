@@ -28,7 +28,7 @@ node[:db_mysql][:service_name] = "mysqld"
 node[:db_mysql][:client_packages_uninstall] = value_for_platform("centos"   => { "6.2"     => [ "postfix",
                                                                                                 "mysql-libs" ],
                                                                                  "default" => [ ] },
-                                                                 "default"  => { "default" => [ ] } )
+                                                                 "default"  => [ ] )
 node[:db_mysql][:server_packages_uninstall] = [ ]
 
 node[:db_mysql][:client_packages_install] = value_for_platform("centos"     => { "6.2"     => [ "mysql55-devel",
@@ -43,7 +43,7 @@ node[:db_mysql][:client_packages_install] = value_for_platform("centos"     => {
                                                                 "suse"]     => { "default" => [ "mysql55-devel",
                                                                                               "mysql55-libs",
                                                                                               "mysql55" ] },
-                                                               "default"    => { "default" => [ ] } )
+                                                               "default"    => [ ] )
 node[:db_mysql][:server_packages_install] = [ "mysql55-server" ]
 
 log "  Platform not supported for MySQL #{version}" do

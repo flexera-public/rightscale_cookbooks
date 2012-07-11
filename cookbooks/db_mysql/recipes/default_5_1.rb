@@ -18,7 +18,7 @@ node[:db_mysql][:version] = version
 
 node[:db_mysql][:service_name] = value_for_platform("centos"  => { "6.2"     => "mysqld",
                                                                    "default" => "mysql"},
-                                                    "default" => { "default" => "mysql" } )
+                                                    "default" => "mysql" )
 
 node[:db_mysql][:client_packages_uninstall] = [ ]
 node[:db_mysql][:server_packages_uninstall] = [ ]
@@ -37,7 +37,7 @@ node[:db_mysql][:client_packages_install] = value_for_platform("centos"   => { "
                                                                ["debian",
                                                                 "ubuntu"] => { "default" => [ "libmysqlclient-dev",
                                                                                               "mysql-client-5.1"] },
-                                                               "default"  => { "default" => [ ] } )
+                                                               "default"  => [ ] )
 
 node[:db_mysql][:server_packages_install] = value_for_platform("centos"   => { "6.2"     => [ "mysql-server" ],
                                                                              "default" => [ "MySQL-server-community" ] },
@@ -46,7 +46,7 @@ node[:db_mysql][:server_packages_install] = value_for_platform("centos"   => { "
                                                                 "suse"]   => { "default" => [ "MySQL-server-community" ] },
                                                                ["debian",
                                                                 "ubuntu"] => { "default" => ["mysql-server-5.1"] },
-                                                               "default"  => { "default" => [ ] } )
+                                                               "default"  => [ ] )
 
 log "  Platform not supported for MySQL #{version}" do
   level :fatal
