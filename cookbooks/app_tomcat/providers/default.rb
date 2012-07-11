@@ -280,8 +280,8 @@ action :setup_vhost do
     log "  Ubuntu version #{node[:platform_version]} needs a fix"
     ruby_block "revome_default_workers_properties_include" do
       block do
-        conf = File.readlines("/etc/apache2/mods-enabled/jk.conf")
-        File.open("/etc/apache2/mods-enabled/jk.conf", "w") do |f|
+        conf = ::File.readlines("/etc/apache2/mods-enabled/jk.conf")
+        ::File.open("/etc/apache2/mods-enabled/jk.conf", "w") do |f|
           conf.each do |line|
             line.insert(0, "# ") if line[/JkWorkersFile/]
             f.puts(line)
