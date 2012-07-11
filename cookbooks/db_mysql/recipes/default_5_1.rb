@@ -15,30 +15,63 @@ log "  Setting DB MySQL version to #{version}"
 # Set MySQL 5.1 specific node variables in this recipe.
 #
 node[:db_mysql][:version] = version
-node[:db_mysql][:service_name] = "mysql"
 
-platform = node[:platform]
-case platform
-when "redhat","centos","fedora","suse"
-  case node[:platform_version]
-  when /^5.*/
-    node[:db_mysql][:packages_uninstall] = ""
-    node[:db_mysql][:client_packages_install] = ["MySQL-shared-compat",
-                                                 "MySQL-devel-community",
-                                                 "MySQL-client-community" ]
-    node[:db_mysql][:server_packages_install] = ["MySQL-server-community"]
-  when /^6.*/
-    node[:db_mysql][:service_name] = "mysqld"
-    node[:db_mysql][:packages_uninstall] = ""
-    node[:db_mysql][:client_packages_install] = ["mysql-devel", "mysql"]
-    node[:db_mysql][:server_packages_install] = ["mysql-server"]    
-  end
-when "debian","ubuntu"
-  node[:db_mysql][:packages_uninstall] = ""
-  node[:db_mysql][:client_packages_install] = ["libmysqlclient-dev", "mysql-client-5.1"]
-  node[:db_mysql][:server_packages_install] = ["mysql-server-5.1"]
-else
-  raise "Unsupported platform #{platform} for MySQL Version #{version}"
+node[:db_mysql][:service_name] = value_for_platform(
+  "centos"  => {
+    "6.2"     => "mysqld",
+    "default" => "mysql"
+  },
+  "default" => "mysql"
+)
+
+node[:db_mysql][:client_packages_uninstall] = [ ]
+node[:db_mysql][:server_packages_uninstall] = [ ]
+
+node[:db_mysql][:client_packages_install] = value_for_platform(
+  "centos" => {
+    "6.2" => [
+      "mysql-devel",
+      "mysql-libs",
+      "mysql"
+    ],
+    "default" => [
+      "MySQL-shared-compat",
+      "MySQL-devel-community",
+      "MySQL-client-community" ]
+  },
+  ["redhat", "fedora", "suse"] => {
+    "default" => [
+      "MySQL-shared-compat",
+      "MySQL-devel-community",
+      "MySQL-client-community"
+    ]
+  },
+  ["debian", "ubuntu"] => {
+    "default" => [
+      "libmysqlclient-dev",
+      "mysql-client-5.1"
+    ]
+  },
+  "default"  => [ ]
+)
+
+node[:db_mysql][:server_packages_install] = value_for_platform(
+  "centos" => {
+    "6.2" => [ "mysql-server" ],
+    "default" => [ "MySQL-server-community" ]
+  },
+  ["redhat", "fedora", "suse"] => {
+    "default" => [ "MySQL-server-community" ]
+  },
+  ["debian", "ubuntu"] => {
+    "default" => ["mysql-server-5.1"]
+  },
+  "default"  => [ ]
+)
+
+log "  Platform not supported for MySQL #{version}" do
+  level :fatal
+  only_if { node[:db_mysql][:client_packages_install].empty? }
 end
 
 log "  Using MySQL service name: #{node[:db_mysql][:version]}"
