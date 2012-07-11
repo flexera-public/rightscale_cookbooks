@@ -275,6 +275,23 @@ action :setup_vhost do
     log "  mod_jk already installed, skipping the recipe"
   end
 
+  # Workaround for Ubuntu 12.04
+  if node[:platform] == "ubuntu" and node[:platform_version] == "12.04"
+    log "  Ubuntu version #{node[:platform_version]} needs a fix"
+    ruby_block "revome_default_workers_properties_include" do
+      block do
+        conf = File.readlines("/etc/apache2/mods-enabled/jk.conf")
+        File.open("/etc/apache2/mods-enabled/jk.conf", "w") do |f|
+          conf.each do |line|
+            line.insert(0, "# ") if line[/JkWorkersFile/]
+            f.puts(line)
+          end
+        end
+      end
+      action :create
+    end
+  end
+
   # Removing preinstalled apache ssl.conf on RHEL images as it conflicts with ports.conf of web_apache
   log "  Removing ssl.conf"
   file "/etc/httpd/conf.d/ssl.conf" do
