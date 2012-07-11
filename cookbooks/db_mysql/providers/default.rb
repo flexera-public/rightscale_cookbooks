@@ -160,7 +160,6 @@ action :install_client do
 
   # Uninstall certain packages
   packages = node[:db_mysql][:client_packages_uninstall]
-  log "  TEST: client_packages_uninstall contains: #{packages}"
   log "  Packages to uninstall: #{packages.join(",")}" unless packages == ""
   packages.each do |p|
     r = package p do
