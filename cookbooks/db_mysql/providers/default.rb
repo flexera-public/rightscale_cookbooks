@@ -177,7 +177,7 @@ action :install_client do
   end
 
   packages = node[:db_mysql][:client_packages_install]
-  log "  Packages to install: #{packages.join(",")}" unless packages == ""
+  log "  Packages to install: #{packages.join(",")}" unless (packages == "" || packages.empty?)
   packages.each do |p|
     r = package p do
       action :nothing
