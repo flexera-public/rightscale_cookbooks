@@ -55,7 +55,7 @@ when "mysql"
       ]
     },
     "default" => []
-    )
+  )
 when "postgresql"
   node[:app][:packages] = value_for_platform(
     "centos" => {
@@ -94,14 +94,12 @@ when "postgresql"
       ]
     },
     "default" => []
-    )
+  )
 else
   raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting"
 end
 
-if node[:app][:packages].empty?
-  raise "Unrecognized distro #{node[:platform]}, exiting "
-end
+raise "Unrecognized distro #{node[:platform]}, exiting " if node[:app][:packages].empty?
 
 # Setting app LWRP attribute
 node[:app][:root] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
