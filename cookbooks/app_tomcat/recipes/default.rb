@@ -53,7 +53,9 @@ when "mysql"
         "tomcat-native",
         "mysql-connector-java"
       ]
-    })
+    },
+    "default" => []
+    )
 when "postgresql"
   node[:app][:packages] = value_for_platform(
     "centos" => {
@@ -90,9 +92,15 @@ when "postgresql"
         "tomcat6-webapps",
         "tomcat-native"
       ]
-    })
+    },
+    "default" => []
+    )
 else
   raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting"
+end
+
+if node[:app][:packages].empty?
+  raise "Unrecognized distro #{node[:platform]}, exiting "
 end
 
 # Setting app LWRP attribute
