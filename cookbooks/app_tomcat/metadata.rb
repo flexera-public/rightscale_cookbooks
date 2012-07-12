@@ -15,14 +15,28 @@ depends "db_postgres"
 depends "repo"
 depends "rightscale"
 
-recipe  "app_tomcat::default", "Installs the Tomcat application server."
+recipe  "app_tomcat::default", "set version and node variables specific to the chosen Tomcat version to installs the tomcat application server."
+recipe  "app_tomcat::default_6", "set version 6 and node variables specific to the chosen Tomcat version to installs the tomcat application server."
+recipe  "app_tomcat::default_7", "set version 7 and node variables specific to the chosen Tomcat version to installs the tomcat application server."
+
+# == Default attributes
+#
+attribute "app_tomcat/version",
+  :display_name => "Tomcat Version",
+  :description => "Specify the Tomcat version that matches that of the Tomcat App Server ServerTemplate version in use. Note: Tomcat 7 is not supported on Ubuntu 10.04.",
+  :recipes => ["app_tomcat::default"],
+  :choice => ['6', '7'],
+  :required => 'required'
 
 # optional attributes
 attribute "app_tomcat/db_name",
   :display_name => "Database Schema Name",
   :description => "Enter the name of the MySQL database to use. Example: mydatabase",
   :required => "required",
-  :recipes => ["app_tomcat::default"]
+  :recipes => [
+    "app_tomcat::default_6",
+    "app_tomcat::default_7"
+   ]
 
 
 #Code repo attributes
@@ -31,7 +45,10 @@ attribute "app_tomcat/code/root_war",
   :description => "The path to the war file relative to project repo root directory. Will be renamed to ROOT.war. Example: /dist/app_test.war",
   :required => "recommended",
   :default => "",
-  :recipes => ["app_tomcat::default"]
+  :recipes => [
+    "app_tomcat::default_6",
+    "app_tomcat::default_7"
+   ]
 
 #Java tuning parameters
 attribute "app_tomcat/java/xms",
@@ -39,53 +56,77 @@ attribute "app_tomcat/java/xms",
   :description => "The java Xms argument. Example: 512m",
   :required => "optional",
   :default => "512m",
-  :recipes => ["app_tomcat::default"]
+  :recipes => [
+    "app_tomcat::default_6",
+    "app_tomcat::default_7"
+   ]
 
 attribute "app_tomcat/java/xmx",
   :display_name => "Tomcat Java XMX",
   :description => "The java Xmx argument. Example: 512m",
   :required => "optional",
   :default => "512m",
-  :recipes => ["app_tomcat::default"]
+  :recipes => [
+    "app_tomcat::default_6",
+    "app_tomcat::default_7"
+   ]
 
 attribute "app_tomcat/java/PermSize",
   :display_name => "Tomcat Java PermSize",
   :description => "The java PermSize argument. Example: 256m",
   :required => "optional",
   :default => "256m",
-  :recipes => ["app_tomcat::default"]
+  :recipes => [
+    "app_tomcat::default_6",
+    "app_tomcat::default_7"
+   ]
 
 attribute "app_tomcat/java/MaxPermSize",
   :display_name => "Tomcat Java MaxPermSize",
   :description => "The java MaxPermSize argument. Example: 256m",
   :required => "optional",
   :default => "256m",
-  :recipes => ["app_tomcat::default"]
+  :recipes => [
+    "app_tomcat::default_6",
+    "app_tomcat::default_7"
+   ]
 
 attribute "app_tomcat/java/NewSize",
   :display_name => "Tomcat Java NewSize",
   :description => "The java NewSize argument. Example: 256m",
   :required => "optional",
   :default => "256m",
-  :recipes => ["app_tomcat::default"]
+  :recipes => [
+    "app_tomcat::default_6",
+    "app_tomcat::default_7"
+   ]
 
 attribute "app_tomcat/java/MaxNewSize",
   :display_name => "Tomcat Java MaxNewSize",
   :description => "The java MaxNewSize argument. Example: 256m",
   :required => "optional",
   :default => "256m",
-  :recipes => ["app_tomcat::default"]
+  :recipes => [
+    "app_tomcat::default_6",
+    "app_tomcat::default_7"
+   ]
 
 attribute "app_tomcat/db_adapter",
   :display_name => "Database adapter for application",
   :description => "Enter database adapter which will be used to connect to the database. Example: mysql",
   :default => "mysql",
   :choice => [ "mysql", "postgresql" ],
-  :recipes => ["app_tomcat::default"]
+  :recipes => [
+    "app_tomcat::default_6",
+    "app_tomcat::default_7"
+   ]
 
 attribute "app_tomcat/datasource_name",
   :display_name => "Container datasource name",
   :description => "This name is used to set up the database connection with the application server. You should set the attribute if your application is compiled to use a different datasource name.  Example: jdbc/MyConnDB",
   :required => "optional",
   :default => "jdbc/ConnDB",
-  :recipes => ["app_tomcat::default"]
+  :recipes => [
+    "app_tomcat::default_6",
+    "app_tomcat::default_7"
+   ]

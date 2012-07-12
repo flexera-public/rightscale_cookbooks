@@ -5,6 +5,8 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+set_unless[:app_tomcat][:version] = '6'
+
 # Recommended attributes
 set_unless[:app_tomcat][:code][:root_war] = ""
 # Java heap tuning attributes. For more info see http://www.tomcatexpert.com/blog/2011/11/22/performance-tuning-jvm-running-tomcat

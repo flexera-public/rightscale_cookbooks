@@ -110,9 +110,9 @@ attributes that are inputs are in the <tt>metadata.rb</tt> cookbook file.
 * <tt>apache_mod_jk_vhost.erb</tt> - Configuration for apache vhost file.
 * <tt>mod_jk.conf.erb</tt> - Mod_jk configuration template.
 * <tt>server_xml.erb</tt> - Tomcat server.xml configuration template.
-* <tt>tomcat6_conf.erb</tt> - Tomcat6.conf configuration template used in the
+* <tt>tomcat_conf.erb</tt> - Tomcat.conf configuration template used in the
   <tt>app::setup_vhost</tt> recipe.
-* <tt>tomcat6_logrotate.conf.erb</tt> - Logrotate for configuration template for
+* <tt>tomcat_logrotate.conf.erb</tt> - Logrotate for configuration template for
   Tomcat.
 * <tt>tomcat_workers.properties.erb</tt> - Tomcat worker configuration template.
 
@@ -166,7 +166,7 @@ interface to all <tt>app_tomcat</tt> provider logic.
   selected "repo" LWRP. Set up logrotate config.
 
 * <tt>:setup_db_connection</tt> - Perform project
-  <tt>/etc/tomcat6/context.xml</tt> database file configuration.
+  <tt>/etc/tomcat{6|7}/context.xml</tt> database file configuration.
 
 * <tt>:setup_monitoring</tt> - Install and set up of required monitoring software.
 

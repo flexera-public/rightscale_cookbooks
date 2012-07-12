@@ -7,8 +7,10 @@
 
 # Stop tomcat service
 action :stop do
+
+  version = node[:app_tomcat][:version].to_i
   log "  Running stop sequence"
-  service "tomcat6" do
+  service "tomcat#{version}" do
     action :stop
     persist false
   end
@@ -16,8 +18,10 @@ end
 
 # Start tomcat service
 action :start do
+
+  version = node[:app_tomcat][:version].to_i
   log "  Running start sequence"
-  service "tomcat6" do
+  service "tomcat#{version}" do
     action :start
     persist false
   end
@@ -38,6 +42,8 @@ end
 
 #Installing required packages and prepare system for tomcat
 action :install do
+
+  version = node[:app_tomcat][:version].to_i
 
   packages = new_resource.packages
   log "  Packages which will be installed: #{packages}"
@@ -67,11 +73,11 @@ action :install do
   db_adapter = node[:app_tomcat][:db_adapter]
   if db_adapter == "mysql"
     # Removing existing links to database connector
-    file "/usr/share/tomcat6/lib/mysql-connector-java.jar" do
+    file "/usr/share/tomcat#{version}/lib/mysql-connector-java.jar" do
       action :delete
     end
     # Link mysql-connector plugin to Tomcat6 lib
-    link "/usr/share/tomcat6/lib/mysql-connector-java.jar" do
+    link "/usr/share/tomcat#{version}/lib/mysql-connector-java.jar" do
       to "/usr/share/java/mysql-connector-java.jar"
     end
   elsif db_adapter == "postgresql"
@@ -83,7 +89,7 @@ action :install do
       cookbook 'app_tomcat'
     end
     # Link postgresql-connector plugin to Tomcat6 lib
-    link "/usr/share/tomcat6/lib/postgresql-9.1-901.jdbc4.jar" do
+    link "/usr/share/tomcat#{version}/lib/postgresql-9.1-901.jdbc4.jar" do
       to "/usr/share/java/postgresql-9.1-901.jdbc4.jar"
     end
   else
@@ -98,13 +104,13 @@ action :install do
   # Moving tomcat logs to ephemeral
 
   # Deleting old tomcat log directory
-  directory "/var/log/tomcat6" do
+  directory "/var/log/tomcat#{version}" do
     recursive true
     action :delete
   end
 
   # Creating new directory for tomcat logs on ephemeral volume
-  directory "/mnt/ephemeral/log/tomcat6" do
+  directory "/mnt/ephemeral/log/tomcat#{version}" do
     owner node[:app_tomcat][:app_user]
     group node[:app_tomcat][:app_user]
     mode "0755"
@@ -112,9 +118,9 @@ action :install do
     recursive true
   end
 
-  # Create symlink from /var/log/tomcat6 to ephemeral volume
-  link "/var/log/tomcat6" do
-    to "/mnt/ephemeral/log/tomcat6"
+  # Create symlink from /var/log/tomcat#{version} to ephemeral volume
+  link "/var/log/tomcat#{version}" do
+    to "/mnt/ephemeral/log/tomcat#{version}"
   end
 
   # Symlinking to new jvm-exports
@@ -139,17 +145,19 @@ action :setup_vhost do
 
   port = new_resource.port
   app_root = new_resource.root
+  version=node[:app_tomcat][:version].to_i
 
-  log "  Creating tomcat6.conf"
-  template "/etc/tomcat6/tomcat6.conf" do
+  log "  Creating tomcat#{version}.conf"
+  template "/etc/tomcat#{version}/tomcat#{version}.conf" do
     action :create
-    source "tomcat6_conf.erb"
+    source "tomcat_conf.erb"
     group "root"
-    owner "root"
+    owner "#{node[:app_tomcat][:app_user]}"
     mode "0644"
     cookbook 'app_tomcat'
     variables(
       :app_user => node[:app_tomcat][:app_user],
+      :version => version,
       :java_xms => node[:app_tomcat][:java][:xms],
       :java_xmx => node[:app_tomcat][:java][:xmx],
       :java_permsize => node[:app_tomcat][:java][:permsize],
@@ -162,7 +170,7 @@ action :setup_vhost do
   # Define internal port for tomcat. It must be different than apache ports
   tomcat_port = port + 1
   log "  Creating server.xml"
-  template "/etc/tomcat6/server.xml" do
+  template "/etc/tomcat#{version}/server.xml" do
     action :create
     source "server_xml.erb"
     group "root"
@@ -179,7 +187,7 @@ action :setup_vhost do
   rightscale_logrotate_app "tomcat" do
     cookbook "rightscale"
     template "logrotate.erb"
-    path [ "/var/log/tomcat6/*log", "/var/log/tomcat6/*.out" ]
+    path [ "/var/log/tomcat#{version}/*log", "/var/log/tomcat#{version}/*.out" ]
     frequency "size 10M"
     rotate 4
   end
@@ -242,11 +250,11 @@ action :setup_vhost do
     end
 
     # Configure workers.properties for mod_jk
-    template "/etc/tomcat6/workers.properties" do
+    template "/etc/tomcat#{version}/workers.properties" do
       action :create
       source "tomcat_workers.properties.erb"
       variables(
-        :tomcat_name => "tomcat6",
+        :version => version,
         :config_subdir => node[:apache][:config_subdir]
       )
       cookbook 'app_tomcat'
@@ -258,7 +266,7 @@ action :setup_vhost do
       backup false
       source "mod_jk.conf.erb"
       variables(
-        :tomcat_name => "tomcat6",
+        :version => version,
         :apache_log_dir => node[:apache][:log_dir]
       )
       cookbook 'app_tomcat'
@@ -319,10 +327,11 @@ action :setup_db_connection do
   db_name = new_resource.database_name
   db_adapter = node[:app_tomcat][:db_adapter]
   datasource = node[:app_tomcat][:datasource_name]
+  version = node[:app_tomcat][:version].to_i
 
   log "  Creating context.xml for DB: #{db_name} using adapter #{db_adapter} and datasource #{datasource}"
   if db_adapter == "mysql"
-    db_mysql_connect_app "/etc/tomcat6/context.xml" do
+    db_mysql_connect_app "/etc/tomcat#{version}/context.xml" do
       template      "context_xml.erb"
       owner         "#{node[:app_tomcat][:app_user]}"
       group         "root"
@@ -332,7 +341,7 @@ action :setup_db_connection do
       cookbook      'app_tomcat'
     end
   elsif db_adapter == "postgresql"
-    db_postgres_connect_app "/etc/tomcat6/context.xml" do
+    db_postgres_connect_app "/etc/tomcat#{version}/context.xml" do
       template      "context_xml.erb"
       owner         "#{node[:app_tomcat][:app_user]}"
       group         "root"
@@ -346,7 +355,7 @@ action :setup_db_connection do
   end
 
   log "  Creating web.xml"
-  template "/etc/tomcat6/web.xml" do
+  template "/etc/tomcat#{version}/web.xml" do
     source "web_xml.erb"
     owner "#{node[:app_tomcat][:app_user]}"
     group "root"
@@ -358,7 +367,7 @@ action :setup_db_connection do
   end
 
   # Installing JavaServer Pages Standard Tag Library API
-  cookbook_file "/usr/share/tomcat6/lib/jstl-api-1.2.jar" do
+  cookbook_file "/usr/share/tomcat#{version}/lib/jstl-api-1.2.jar" do
     source "jstl-api-1.2.jar"
     owner "#{node[:app_tomcat][:app_user]}"
     group "root"
@@ -367,7 +376,7 @@ action :setup_db_connection do
   end
 
   # Installing JavaServer Pages Standard Tag Library specifications library
-  cookbook_file "/usr/share/tomcat6/lib/jstl-impl-1.2.jar" do
+  cookbook_file "/usr/share/tomcat#{version}/lib/jstl-impl-1.2.jar" do
     source "jstl-impl-1.2.jar"
     owner "#{node[:app_tomcat][:app_user]}"
     group "root"
@@ -379,6 +388,7 @@ end
 # Setup monitoring tools for tomcat
 action :setup_monitoring do
 
+  version=node[:app_tomcat][:version].to_i
   log "  Setup of collectd monitoring for tomcat"
   rightscale_enable_collectd_plugin 'exec'
 
@@ -390,7 +400,7 @@ action :setup_monitoring do
   end
 
   # Linking collectd
-  link "/usr/share/tomcat6/lib/collectd.jar" do
+  link "/usr/share/tomcat#{version}/lib/collectd.jar" do
     to "/usr/share/java/collectd.jar"
     not_if { !::File.exists?("/usr/share/java/collectd.jar") }
   end
@@ -399,8 +409,8 @@ action :setup_monitoring do
   bash "Add collectd to tomcat.conf" do
     flags "-ex"
     code <<-EOH
-      cat <<'EOF'>>/etc/tomcat6/tomcat6.conf
-CATALINA_OPTS="\$CATALINA_OPTS -Djcd.host=#{node[:rightscale][:instance_uuid]} -Djcd.instance=tomcat6 -Djcd.dest=udp://#{node[:rightscale][:servers][:sketchy][:hostname]}:3011 -Djcd.tmpl=javalang,tomcat -javaagent:/usr/share/tomcat6/lib/collectd.jar"
+      cat <<'EOF'>>"/etc/tomcat#{version}/tomcat#{version}.conf"
+CATALINA_OPTS="\$CATALINA_OPTS -Djcd.host=#{node[:rightscale][:instance_uuid]} -Djcd.instance=tomcat#{version} -Djcd.dest=udp://#{node[:rightscale][:servers][:sketchy][:hostname]}:3011 -Djcd.tmpl=javalang,tomcat -javaagent:/usr/share/tomcat#{version}/lib/collectd.jar"
     EOH
   end
 
