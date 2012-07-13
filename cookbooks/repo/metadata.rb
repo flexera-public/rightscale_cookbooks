@@ -70,6 +70,7 @@ attribute "repo/default/storage_account_provider",
     "cloudfiles",
     "cloudfilesuk",
     "google",
+    "azure",
     "SoftLayer_Dallas",
     "SoftLayer_Singapore",
     "SoftLayer_Amsterdam"
