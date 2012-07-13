@@ -19,7 +19,8 @@ define :db_postgres_connect_app, :template => "db_connection_example.erb", :cook
       :password => node[:db][:application][:password],
       :fqdn => node[:db][:dns][:master][:fqdn],
       :socket => node[:db_postgres][:socket],
-      :database => params[:database]
+      :database => params[:database],
+      :datasource => params[:datasource]
     )
   end
 
