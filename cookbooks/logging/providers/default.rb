@@ -5,6 +5,8 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+# @resource Chef::Resource::Logging
+
 # Stop logging service
 action :stop do
   raise "Default logging action not implemented"

@@ -8,6 +8,8 @@
 # = Default application server provider
 #
 
+# @resource Chef::Resource::App
+
 # Stop application
 action :stop do
   raise 'Using "default" application provider.  Action is not implemented'

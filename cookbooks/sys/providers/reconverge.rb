@@ -5,6 +5,8 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+# @resource Chef::Resource::SysReconverge
+
 action :enable do
   recipe = new_resource.recipe_name
   minute_list = RightScale::System::Helper.randomize_reconverge_minutes
