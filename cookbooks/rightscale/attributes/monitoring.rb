@@ -11,7 +11,12 @@ set_unless[:rightscale][:collectd_share] = "/usr/share/collectd"
 case platform
 when "ubuntu", "debian"
   set_unless[:rightscale][:collectd_packages] = ["collectd", "collectd-core", "collectd-utils", "libcollectdclient0"]
-  set_unless[:rightscale][:collectd_packages_version] = "4.10.1-2"
+  case platform_version
+  when /^12\..+/
+    set_unless[:rightscale][:collectd_packages_version] = "latest"
+  else
+    set_unless[:rightscale][:collectd_packages_version] = "4.10.1-2"
+  end
   set_unless[:rightscale][:collectd_config] = "/etc/collectd/collectd.conf"
   set_unless[:rightscale][:collectd_plugin_dir] = "/etc/collectd/conf"
 when "centos", "redhat"
