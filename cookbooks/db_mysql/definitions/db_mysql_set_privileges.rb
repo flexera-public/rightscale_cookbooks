@@ -13,6 +13,11 @@ define :db_mysql_set_privileges, :preset => "administrator", :username => nil, :
   db_name = "*.*"
   db_name = "#{params[:db_name]}.*" if params[:db_name]
 
+puts("DEBUG: Removing anonymous '' user access from mysql user table")
+#XXX make this work...
+      host=`hostname`
+puts("DEBUG: host=#{host}")
+
   ruby_block "set admin credentials" do
     block do
       require 'rubygems'
@@ -23,6 +28,13 @@ define :db_mysql_set_privileges, :preset => "administrator", :username => nil, :
       # Now that we have a Mysql object, let's sanitize our inputs
       username = con.escape_string(username)
       password = con.escape_string(password)
+
+
+      # Remove anonymous access via the server IP.  This prevents this use from being backed up
+      # and restored when a server is initialized
+      #XXX this should be it's own recipe / call
+      #      log.debug("DEBUG: Removing anonymous '' user access from mysql user table")
+      con.query("DELETE from mysql.user where user='' and host='#{host}'")
 
       case priv_preset
       when 'administrator'
