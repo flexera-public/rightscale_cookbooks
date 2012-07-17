@@ -13,10 +13,6 @@ define :db_mysql_set_privileges, :preset => "administrator", :username => nil, :
   db_name = "*.*"
   db_name = "#{params[:db_name]}.*" if params[:db_name]
 
-puts("DEBUG: Removing anonymous '' user access from mysql user table")
-#XXX make this work...
-      host=`hostname`
-puts("DEBUG: host=#{host}")
 
   ruby_block "set admin credentials" do
     block do
@@ -34,6 +30,7 @@ puts("DEBUG: host=#{host}")
       # and restored when a server is initialized
       #XXX this should be it's own recipe / call
       #      log.debug("DEBUG: Removing anonymous '' user access from mysql user table")
+      host=`hostname`.strip
       con.query("DELETE from mysql.user where user='' and host='#{host}'")
 
       case priv_preset
