@@ -61,10 +61,7 @@ node[:db_mysql][:client_packages_install] = value_for_platform(
 
 node[:db_mysql][:server_packages_install] = [ "mysql55-server" ]
 
-log "  Platform not supported for MySQL #{version}" do
-  level :fatal
-  only_if { node[:db_mysql][:client_packages_install].empty? }
-end
+raise "Platform not supported for MySQL #{version}" if node[:db_mysql][:client_packages_install].empty?
 
 log "  Using MySQL service name: #{node[:db_mysql][:version]}"
 
