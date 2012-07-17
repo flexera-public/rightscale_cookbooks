@@ -198,7 +198,7 @@ action :setup_vhost do
 
     # Installing required packages depending on platform
     case node[:platform]
-    when "ubuntu", "debian"
+    when "ubuntu"
       ubuntu_p = [ "apache2-mpm-prefork", "apache2-threaded-dev", "libapr1-dev", "libapache2-mod-jk" ]
       ubuntu_p.each do |p|
         package p do
@@ -207,7 +207,7 @@ action :setup_vhost do
         end
       end
 
-    when "centos","fedora","suse","redhat"
+    when "centos","redhat"
 
       package "apr-devel" do
         options "-y"
