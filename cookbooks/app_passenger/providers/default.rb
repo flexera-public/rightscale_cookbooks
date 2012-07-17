@@ -78,11 +78,17 @@ action :install do
     not_if do (::File.exists?("/opt/ruby-enterprise/bin/passenger-install-apache2-module")) end
   end
 
+  bash "Install rack gem" do
+    flags "-ex"
+    code <<-EOH
+      /usr/bin/gem install rack -q --no-rdoc --no-ri
+    EOH
+  end
 
   bash "Install apache passenger module" do
     flags "-ex"
     code <<-EOH
-      /opt/ruby-enterprise/bin/passenger-install-apache2-module --auto
+      /opt/ruby-enterprise/lib/ruby/gems/1.8/gems/passenger-3.0.12/bin/passenger-install-apache2-module --auto
     EOH
     not_if "test -e #{node[:app_passenger][:ruby_gem_base_dir].chomp}/gems/passenger*/ext/apache2/mod_passenger.so"
   end
