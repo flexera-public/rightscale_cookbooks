@@ -40,8 +40,8 @@ recipe "db::do_secondary_restore", "Restores the database from the most recently
 
 recipe "db::do_force_reset", "Resets the database back to a pristine state. WARNING: Execution of this script will delete any data in your database!"
 
-recipe "db::do_dump_export", "Creates a dump file and uploads it to a remote object storage (e.g., Amazon S3 or Rackspace Cloud Files)."
-recipe "db::do_dump_import", "Retrieves a dump file from remote object storage (e.g., Amazon S3 or Rackspace Cloud Files) and imports it to the database server."
+recipe "db::do_dump_export", "Creates a dump file and uploads it to a remote object storage (e.g., Amazon S3, Google Cloud Storage, Azure, Softlayer or Rackspace Cloud Files)."
+recipe "db::do_dump_import", "Retrieves a dump file from remote object storage (e.g., Amazon S3 Google Cloud Storage, Azure, Softlayer or Rackspace Cloud Files) and imports it to the database server."
 recipe "db::do_dump_schedule_enable", "Schedules the daily run of do_dump_export."
 recipe "db::do_dump_schedule_disable", "Disables the daily run of do_dump_export."
 
@@ -261,26 +261,26 @@ attribute "db/dump",
 
 attribute "db/dump/storage_account_provider",
   :display_name => "Dump Storage Account Provider",
-  :description => "Location where the dump file will be saved. Used by dump recipes to back up to remote object storage. (e.g. Amazon S3 or Rackspace Cloud Files)",
+  :description => "Location where the dump file will be saved. Used by dump recipes to back up to remote object storage.(e.g. Amazon S3 or Rackspace Cloud Files)",
   :required => "required",
-  :choice => [ "s3", "cloudfiles", "cloudfilesuk", "SoftLayer_Dallas", "SoftLayer_Singapore", "SoftLayer_Amsterdam" ],
+  :choice => [ "s3", "cloudfiles", "cloudfilesuk", "SoftLayer_Dallas", "SoftLayer_Singapore", "SoftLayer_Amsterdam", "google", "azure" ],
   :recipes => [ "db::do_dump_import", "db::do_dump_export", "db::do_dump_schedule_enable" ]
 
 attribute "db/dump/storage_account_id",
   :display_name => "Dump Storage Account ID",
-  :description => "In order to write the dump file to the specified cloud storage location, you need to provide cloud authentication credentials. For Amazon S3, use your Amazon access key ID (e.g., cred:AWS_ACCESS_KEY_ID). For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME).",
+  :description => "In order to write the dump file to the specified cloud storage location, you need to provide cloud authentication credentials. For Amazon S3, use your Amazon access key ID (e.g., cred:AWS_ACCESS_KEY_ID). For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME). For Google TBD.  For Azure TBD. For Softlayer TBD",
   :required => "required",
   :recipes => [ "db::do_dump_import", "db::do_dump_export", "db::do_dump_schedule_enable" ]
 
 attribute "db/dump/storage_account_secret",
   :display_name => "Dump Storage Account Secret",
-  :description => "In order to write the dump file to the specified cloud storage location, you will need to provide cloud authentication credentials. For Amazon S3, use your AWS secret access key (e.g., cred:AWS_SECRET_ACCESS_KEY). For Rackspace Cloud Files, use your Rackspace account API key (e.g., cred:RACKSPACE_AUTH_KEY).",
+  :description => "In order to write the dump file to the specified cloud storage location, you will need to provide cloud authentication credentials. For Amazon S3, use your AWS secret access key (e.g., cred:AWS_SECRET_ACCESS_KEY). For Rackspace Cloud Files, use your Rackspace account API key (e.g., cred:RACKSPACE_AUTH_KEY). For Google TBD.  For Azure TBD. For Softlayer TBD",
   :required => "required",
   :recipes => [ "db::do_dump_import", "db::do_dump_export", "db::do_dump_schedule_enable" ]
 
 attribute "db/dump/container",
   :display_name => "Dump Container",
-  :description => "The cloud storage location where the dump file will be saved to or restored from. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name.",
+  :description => "The cloud storage location where the dump file will be saved to or restored from. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name. For Google TBD.  For Azure TBD. For Softlayer TBD",
   :required => "required",
   :recipes => [ "db::do_dump_import", "db::do_dump_export", "db::do_dump_schedule_enable" ]
 
