@@ -38,7 +38,7 @@ set_unless[:lb][:appserver_list] = {}
 
 # Web service name based on OS.
 case platform
-when "redhat", "centos", "fedora", "suse"
+when "redhat", "centos"
   set_unless[:lb][:apache_name] = "httpd"
 else
   set_unless[:lb][:apache_name] = "apache2"
