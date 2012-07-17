@@ -18,7 +18,7 @@ set_unless[:app_php][:db_adapter] = "mysql"
 # Calculated attributes
 # Defining apache user, module dependencies, and database adapter parameters depending on platform.
 case platform
-when "ubuntu", "debian"
+when "ubuntu"
   set[:app_php][:module_dependencies] = [ "proxy_http", "php5" ]
   set_unless[:app_php][:app_user] = "www-data"
   if app_php[:db_adapter] == "mysql"
@@ -28,7 +28,7 @@ when "ubuntu", "debian"
   else
     raise "Unrecognized database adapter #{node[:app][:db_adapter]}, exiting"
   end
-when "centos", "fedora", "suse", "redhat"
+when "centos", "redhat"
   set[:app_php][:module_dependencies] = [ "proxy", "proxy_http" ]
   set_unless[:app_php][:app_user] = "apache"
   if app_php[:db_adapter] == "mysql"
