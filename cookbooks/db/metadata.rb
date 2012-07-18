@@ -263,7 +263,16 @@ attribute "db/dump/storage_account_provider",
   :display_name => "Dump Storage Account Provider",
   :description => "Location where the dump file will be saved. Used by dump recipes to back up to remote object storage.(e.g. Amazon S3 or Rackspace Cloud Files)",
   :required => "required",
-  :choice => [ "s3", "cloudfiles", "cloudfilesuk", "SoftLayer_Dallas", "SoftLayer_Singapore", "SoftLayer_Amsterdam", "google", "azure" ],
+  :choice => [
+    "s3",
+    "cloudfiles",
+    "cloudfilesuk",
+    "google",
+    "azure",
+    "SoftLayer_Dallas",
+    "SoftLayer_Singapore",
+    "SoftLayer_Amsterdam"
+  ],
   :recipes => [ "db::do_dump_import", "db::do_dump_export", "db::do_dump_schedule_enable" ]
 
 attribute "db/dump/storage_account_id",

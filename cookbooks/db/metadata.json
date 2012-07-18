@@ -394,11 +394,11 @@
         "s3",
         "cloudfiles",
         "cloudfilesuk",
+        "google",
+        "azure",
         "SoftLayer_Dallas",
         "SoftLayer_Singapore",
-        "SoftLayer_Amsterdam",
-        "google",
-        "azure"
+        "SoftLayer_Amsterdam"
       ],
       "type": "string",
       "recipes": [
