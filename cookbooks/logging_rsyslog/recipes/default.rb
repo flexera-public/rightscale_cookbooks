@@ -14,8 +14,28 @@ rightscale_marker :begin
 # will be made by the inclusion of the logging*::default recipe
 log "  Setting provider specific settings for rsyslog server."
 
-raise 'Not implemented yet'
-
 node[:logging][:provider] = "logging_rsyslog"
+
+sys_firewall "Open logger listening port" do
+  port node[:logging][:port].to_i
+  protocol node[:logging][:protocol]
+  enable true
+  action :update
+end
+
+# For Centos 5.8
+template "/etc/rsyslog.conf" do
+  action :create
+  source "rsyslog.d.server.conf.erb"
+  owner "root"
+  group "root"
+  mode "0644"
+  cookbook 'logging_rsyslog'
+  #variables()
+end
+
+logging "restart service" do
+  action :restart
+end
 
 rightscale_marker :end

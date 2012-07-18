@@ -6,3 +6,5 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 set_unless[:logging][:remote_server] = ""
+set_unless[:logging][:port] = "514"
+set_unless[:logging][:protocol] = "udp"
