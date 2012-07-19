@@ -20,16 +20,16 @@ raise "ERROR: Rsyslog is not installed!" unless rsyslog_installed
 
 node[:logging][:provider] = "logging_rsyslog"
 
-case platform
+case node[:platform]
 #when "ubuntu", "debian"
-#  case platform_version
+#  case node[:platform_version]
 #  when /^10\..+/
 #    set_unless[:logging][:config_dir] = "/etc/rsyslog.d/remote.conf"
 #  when /^12\..+/
 #
 #  end
 when "centos", "redhat"
-  case platform_version
+  case node[:platform_version]
   when /^5\..+/
     set_unless[:logging][:config_dir] = "/etc/rsyslog.conf"
   #when /^6\..+/
