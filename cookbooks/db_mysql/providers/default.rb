@@ -43,6 +43,9 @@ action :unlock do
 end
 
 action :move_data_dir do
+  directory node[:db][:data_dir] do
+    action :create
+  end
   @db = init(new_resource)
   @db.move_datadir(node[:db][:data_dir])
 end
