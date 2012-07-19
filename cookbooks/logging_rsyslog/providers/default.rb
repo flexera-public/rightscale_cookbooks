@@ -90,6 +90,33 @@ action :configure do
 end
 
 
+action :configure_server do
+  # This action would configure an rsyslog logging server.
+
+  # Need to open a listening port on desired protocol
+  sys_firewall "Open logger listening port" do
+    port new_resource.port.to_i
+    protocol new_resource.protocol
+    enable true
+    action :update
+  end
+
+  # Writing configuration template
+  template "#{node[:logging][:config_dir]}" do
+    action :create
+    source "rsyslog.d.server.conf.erb"
+    owner "root"
+    group "root"
+    mode "0644"
+    cookbook 'logging_rsyslog'
+    #variables()
+  end
+
+  # Restarting service in order to apply new settings
+  action_restart
+end
+
+
 action :rotate do
   raise "Rsyslog action not implemented"
 end

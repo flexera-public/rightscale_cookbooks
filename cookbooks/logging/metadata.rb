@@ -14,6 +14,11 @@ depends "logging_rsyslog"
 depends "logging_syslog_ng"
 
 recipe "logging::default", "Configures a native logging provider."
+recipe "logging::install_server", "Configures a syslog server."
+recipe "logging::do_server_start", "Starts syslog server."
+recipe "logging::do_server_stop", "Stops syslog server."
+recipe "logging::do_server_restart", "Restarts syslog server."
+recipe "logging::do_server_reload", "Reloads syslog server."
 
 attribute "logging",
   :display_name => "Log Service Settings",

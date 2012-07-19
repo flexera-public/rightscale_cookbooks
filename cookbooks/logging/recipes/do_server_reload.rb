@@ -7,8 +7,9 @@
 
 rightscale_marker :begin
 
-logging "install_server" do
-  action :configure_server
+log "  Reloading logging server now..."
+logging "default" do
+  action :reload
 end
 
 rightscale_marker :end

@@ -8,9 +8,10 @@
 #$InputTCPServerRun 514
 # For UDP use:
 $modload imudp
-$UDPServerRun 514
+$UDPServerRun 514 # Must be open in firewall!
 
 # Commented out below is only available for rsyslog v4.5+
+# Currently server would put all recieved messages in its /var/log/messages
 # Must be in FRONT of the local/regular rules
 #
 #$template HostBasedLog,”/var/log/%HOSTNAME%.log”

@@ -6,4 +6,10 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 rightscale_marker :begin
+
+log "  Stopping logging server now..."
+logging "default" do
+  action :stop
+end
+
 rightscale_marker :end
