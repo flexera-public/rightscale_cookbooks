@@ -90,7 +90,5 @@ add_action :configure
 # Configures a logging server
 #
 add_action :configure_server
-  attribute :port, :kind_of => String
-  attribute :protocol, :kind_of => String
 
 actions @action_list

@@ -95,8 +95,8 @@ action :configure_server do
 
   # Need to open a listening port on desired protocol
   sys_firewall "Open logger listening port" do
-    port new_resource.port.to_i
-    protocol new_resource.protocol
+    port 514
+    protocol "udp"
     enable true
     action :update
   end
