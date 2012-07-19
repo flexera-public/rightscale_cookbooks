@@ -40,6 +40,7 @@ sys_dns "default" do
   provider "sys_dns_#{node[:sys_dns][:choice]}"
   user node[:sys_dns][:user]
   password node[:sys_dns][:password]
+  region node[:sys_dns][:region]
   persist true
   action :nothing
 end
