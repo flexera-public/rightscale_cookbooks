@@ -16,3 +16,18 @@ $UDPServerRun 514 # Must be open in firewall!
 #
 #$template HostBasedLog,”/var/log/%HOSTNAME%.log”
 #if $fromhost-ip isequal < %= @client_server %> then -?HostBasedLog
+
+# Local rules
+*.info;mail.none;authpriv.none;cron.none      /var/log/messages
+# The authpriv file has restricted access.
+authpriv.*                                    /var/log/secure
+# Log all the mail messages in one place.
+mail.*                                        /var/log/maillog
+# Log cron stuff
+cron.*                                        /var/log/cron
+# Everybody gets emergency messages
+*.emerg                                       *
+# Save news errors of level crit and higher in a special file.
+uucp,news.crit                                /var/log/spooler
+# Save boot messages also to boot.log
+local7.*                                      /var/log/boot.log
