@@ -58,6 +58,7 @@ ros_clouds = [
   "cloudfiles",
   "cloudfilesuk",
   "google",
+  "azure",
   "swift",
   "SoftLayer_Dallas",
   "SoftLayer_Singapore",
