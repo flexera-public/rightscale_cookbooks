@@ -24,14 +24,14 @@ case node[:platform]
 #when "ubuntu", "debian"
 #  case node[:platform_version]
 #  when /^10\..+/
-#    set_unless[:logging][:config_dir] = "/etc/rsyslog.d/remote.conf"
+#    node[:logging][:config_dir] = "/etc/rsyslog.d/remote.conf"
 #  when /^12\..+/
 #
 #  end
 when "centos", "redhat"
   case node[:platform_version]
   when /^5\..+/
-    set_unless[:logging][:config_dir] = "/etc/rsyslog.conf"
+    node[:logging][:config_dir] = "/etc/rsyslog.conf"
   #when /^6\..+/
   end
 else
