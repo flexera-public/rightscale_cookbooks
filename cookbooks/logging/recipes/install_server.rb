@@ -7,7 +7,7 @@
 
 rightscale_marker :begin
 
-logging "install_server" do
+logging "default" do
   action :configure_server
 end
 
