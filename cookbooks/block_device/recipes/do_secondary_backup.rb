@@ -32,7 +32,7 @@ do_for_block_devices node[:block_device] do |device|
     lineage backup_lineage
 
     secondary_cloud get_device_or_default(node, device, :backup, :secondary, :cloud)
-    secondary_endpoint get_device_or_default(node, device, :backup, :secondary, :endpoint)
+    secondary_endpoint get_device_or_default(node, device, :backup, :secondary, :endpoint) || ""
     secondary_container get_device_or_default(node, device, :backup, :secondary, :container)
     secondary_user get_device_or_default(node, device, :backup, :secondary, :cred, :user)
     secondary_secret get_device_or_default(node, device, :backup, :secondary, :cred, :secret)
