@@ -232,5 +232,6 @@ add_action :promote
 # This is called when a slave is initialized.
 add_action :grant_replication_slave
 
+add_action :remove_anonymous
 actions @action_list
 
