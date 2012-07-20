@@ -53,7 +53,7 @@ set_unless[:db][:current_master_ip] = nil
 
 # Generate random time
 # Master and slave backup times are staggered by 30 minutes.
-cron_h = rand(12)
+cron_h = rand(23)
 cron_min = 5 + rand(24)
 
 # Master backup daily at a random hour and a random minute between 5-29
