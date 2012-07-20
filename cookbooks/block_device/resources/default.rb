@@ -59,7 +59,7 @@ attribute :vg_data_percentage, :kind_of => String
 endpoint_callbacks = {
   "invalid endpoint URL" => Proc.new do |value|
     begin
-      URI.parse(value).is_a? URI::HTTP
+      value.empty? || URI.parse(value).is_a?(URI::HTTP)
     rescue URI::InvalidURIError
       false
     end
