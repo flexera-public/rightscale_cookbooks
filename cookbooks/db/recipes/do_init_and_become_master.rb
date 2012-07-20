@@ -31,6 +31,14 @@ block_device NICKNAME do
   action :create
 end
 
+log "  Creating mysql directory in the block device..."
+directory DATA_DIR do
+  owner "mysql"
+  group "mysql"
+  mode  "0755"
+  action :create
+end
+
 log "  Moving database to block device and starting database..."
 db DATA_DIR do
   action [ :move_data_dir, :start ]

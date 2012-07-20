@@ -44,12 +44,6 @@ end
 
 action :move_data_dir do
   @db = init(new_resource)
-  directory node[:db][:data_dir] do
-    user "mysql"
-    group "mysql"
-    mode "0755"
-    action :create
-  end
   @db.move_datadir(node[:db][:data_dir])
 end
 
