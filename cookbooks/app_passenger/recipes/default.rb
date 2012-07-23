@@ -27,7 +27,6 @@ case node[:platform]
       "openssl-devel",
       "readline-devel",
       "curl-devel",
-      "openssl-devel",
       "httpd-devel",
       "apr-devel",
       "apr-util-devel",

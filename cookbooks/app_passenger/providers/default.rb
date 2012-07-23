@@ -50,41 +50,19 @@ action :install do
     package p
   end
 
-  log "  Installing Ruby Enterprise Edition..."
-  # Moving rubyEE sources to /tmp folder preparing to install
-  cookbook_file "/tmp/ruby-enterprise-installed.tar.gz" do
-    source "ruby-enterprise_x86_64.tar.gz"
-    mode "0644"
-    only_if do node[:kernel][:machine].include? "x86_64" end
-    cookbook 'app_passenger'
-  end
-
-  bash "install_ruby_EE" do
-    flags "-ex"
-    code <<-EOH
-      tar xzf /tmp/ruby-enterprise-installed.tar.gz -C /opt/
-    EOH
-    only_if do ::File.exists?("/tmp/ruby-enterprise-installed.tar.gz")  end
-  end
-
-
   # Installing passenger module
-  log "  Installing passenger"
-  bash "Install apache passenger gem" do
-    flags "-ex"
-    code <<-EOH
-      /opt/ruby-enterprise/bin/gem install passenger -q --no-rdoc --no-ri
-    EOH
-    not_if do (::File.exists?("/opt/ruby-enterprise/bin/passenger-install-apache2-module")) end
+  log "  Installing passenger gem"
+  gem_package "passenger" do
+    gem_binary "/opt/rightscale/sandbox/bin/gem"
+    action :install
   end
 
-
+  log "  Installling apache passenger module"
   bash "Install apache passenger module" do
     flags "-ex"
     code <<-EOH
-      /opt/ruby-enterprise/bin/passenger-install-apache2-module --auto
+      /usr/bin/passenger-install-apache2-module
     EOH
-    not_if "test -e #{node[:app_passenger][:ruby_gem_base_dir].chomp}/gems/passenger*/ext/apache2/mod_passenger.so"
   end
 
 end
