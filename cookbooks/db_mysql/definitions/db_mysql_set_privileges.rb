@@ -26,10 +26,8 @@ define :db_mysql_set_privileges, :preset => "administrator", :username => nil, :
       password = con.escape_string(password)
 
 
-      # Remove anonymous access via the server IP.  This prevents this use from being backed up
-      # and restored when a server is initialized
-      #XXX this should be it's own recipe / call
-      #      log.debug("DEBUG: Removing anonymous '' user access from mysql user table")
+      # Remove anonymous access via the server hostname.
+      # Some cloud sets hostname to DNS FQDN name which causes problems for replication.
       host=`hostname`.strip
       con.query("DELETE from mysql.user where user='' and host='#{host}'")
 
