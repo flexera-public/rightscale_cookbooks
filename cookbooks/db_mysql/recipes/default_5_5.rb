@@ -30,7 +30,7 @@ node[:db_mysql][:service_name] = value_for_platform("ubuntu"                => {
 
 node[:db_mysql][:client_packages_uninstall] = value_for_platform("centos"   => { "default"     => [ "postfix",
                                                                                                     "mysql-libs" ],
-                                                                                 "5.*"         => [ ] },
+                                                                                 "5.8"         => [ ] },
                                                                  "default"  => [ ] )
 node[:db_mysql][:server_packages_uninstall] = [ ]
 
@@ -38,7 +38,7 @@ node[:db_mysql][:client_packages_install] = value_for_platform("centos"     => {
                                                                                                     "mysql55-libs",
                                                                                                     "mysql55",
                                                                                                     "postfix" ],
-                                                                                 "5.*"         => [ "mysql55-devel",
+                                                                                 "5.8"         => [ "mysql55-devel",
                                                                                                     "mysql55-libs",
                                                                                                     "mysql55" ] },
                                                                ["ubuntu",

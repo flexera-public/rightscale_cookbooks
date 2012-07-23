@@ -16,14 +16,14 @@ log "  Setting DB MySQL version to #{version}"
 #
 node[:db_mysql][:version] = version
 
-node[:db_mysql][:service_name] = value_for_platform(            "centos"    => { "5.*"       => "mysql",
+node[:db_mysql][:service_name] = value_for_platform(            "centos"    => { "5.8"       => "mysql",
                                                                                  "default"   => "mysqld"},
                                                                 "default"   => "mysql" )
 
 node[:db_mysql][:client_packages_uninstall] = [ ]
 node[:db_mysql][:server_packages_uninstall] = [ ]
 
-node[:db_mysql][:client_packages_install] = value_for_platform( "centos"    => { "5.*"       => [ "MySQL-shared-compat",
+node[:db_mysql][:client_packages_install] = value_for_platform( "centos"    => { "5.8"       => [ "MySQL-shared-compat",
                                                                                                   "MySQL-devel-community",
                                                                                                   "MySQL-client-community" ],
                                                                                  "default"   => [ "mysql-devel", "mysql-libs", "mysql" ] },
@@ -38,7 +38,7 @@ node[:db_mysql][:client_packages_install] = value_for_platform( "centos"    => {
                                                                                                  "mysql-client-5.1"] },
                                                                "default"    => [ ] )
 
-node[:db_mysql][:server_packages_install] = value_for_platform("centos"     => { "5.*"       => [ "MySQL-server-community" ],
+node[:db_mysql][:server_packages_install] = value_for_platform("centos"     => { "5.8"       => [ "MySQL-server-community" ],
                                                                                  "default"   => [ "mysql-server" ]},
                                                                ["redhat",
                                                                 "fedora",
