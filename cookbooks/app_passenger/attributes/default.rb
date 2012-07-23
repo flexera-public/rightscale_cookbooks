@@ -20,7 +20,7 @@ case node[:platform]
     set[:app_passenger][:apache][:user]="www-data"
     set[:app_passenger][:apache][:group]="www-data"
     set[:app_passenger][:apache][:log_dir]="/var/log/apache2"
-  when "centos","redhat","redhatenterpriseserver"
+  when "centos","redhat"
     set[:app_passenger][:apache][:user]="apache"
     set[:app_passenger][:apache][:group]="apache"
     set[:app_passenger][:apache][:log_dir]="/var/log/httpd"

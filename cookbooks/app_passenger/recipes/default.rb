@@ -21,7 +21,7 @@ case node[:platform]
       "libapr1-dev",
       "libcurl4-openssl-dev"
      ]
-  when "centos","redhat","redhatenterpriseserver"
+  when "centos","redhat"
     node[:app][:packages] = [
       "zlib-devel",
       "openssl-devel",
