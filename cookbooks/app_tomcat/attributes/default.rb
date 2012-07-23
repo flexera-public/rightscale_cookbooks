@@ -30,7 +30,8 @@ set[:app_tomcat][:module_dependencies] = [ "proxy", "proxy_http", "deflate", "re
 # Defining apache user, java alternatives and database adapter parameters depending on platform.
 case node[:platform]
 when "ubuntu", "debian"
-  set[:app_tomcat][:app_user] = "tomcat6"
+  set[:app_tomcat][:user] = "tomcat6"
+  set[:app_tomcat][:group] = "tomcat6"
   set[:app_tomcat][:alternatives_cmd] = "update-alternatives --auto java"
   if app_tomcat[:db_adapter] == "mysql"
     set[:app_tomcat][:datasource_name] = "jdbc/MYSQLDB"
@@ -42,8 +43,9 @@ when "ubuntu", "debian"
     raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting"
   end
 when "centos", "fedora", "suse", "redhat", "redhatenterpriseserver"
-  set[:app_tomcat][:app_user] = "tomcat"
-  set[:app_tomcat][:alternatives_cmd] = "alternatives --auto java"
+  set[:app_tomcat][:user] = "tomcat"
+  set[:app_tomcat][:group] = "tomcat"
+    set[:app_tomcat][:alternatives_cmd] = "alternatives --auto java"
   if app_tomcat[:db_adapter] == "mysql"
     set[:app_tomcat][:datasource_name] = "jdbc/MYSQLDB"
     set[:db_mysql][:socket] = "/var/lib/mysql/mysql.sock"
