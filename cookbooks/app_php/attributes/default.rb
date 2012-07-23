@@ -22,9 +22,9 @@ when "ubuntu", "debian"
   set[:app_php][:module_dependencies] = [ "proxy_http", "php5" ]
   set_unless[:app_php][:app_user] = "www-data"
   if app_php[:db_adapter] == "mysql"
-    set[:db_mysql][:socket] = "/var/run/mysqld/mysqld.sock"
+    set[:db][:socket] = "/var/run/mysqld/mysqld.sock"
   elsif app_php[:db_adapter] == "postgresql"
-    set[:db_postgres][:socket] = "/var/run/postgresql"
+    set[:db][:socket] = "/var/run/postgresql"
   else
     raise "Unrecognized database adapter #{node[:app][:db_adapter]}, exiting"
   end
@@ -32,9 +32,9 @@ when "centos", "fedora", "suse", "redhat"
   set[:app_php][:module_dependencies] = [ "proxy", "proxy_http" ]
   set_unless[:app_php][:app_user] = "apache"
   if app_php[:db_adapter] == "mysql"
-    set[:db_mysql][:socket] = "/var/lib/mysql/mysql.sock"
+    set[:db][:socket] = "/var/lib/mysql/mysql.sock"
   elsif app_php[:db_adapter] == "postgresql"
-    set[:db_postgres][:socket] = "/var/run/postgresql"
+    set[:db][:socket] = "/var/run/postgresql"
   else
     raise "Unrecognized database adapter #{node[:app_php][:db_adapter]}, exiting"
   end

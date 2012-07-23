@@ -196,7 +196,7 @@ action :install_server do
 
   # Create the Socket directory
   # directory "/var/run/postgresql" do
-  directory "#{node[:db_postgres][:socket]}" do
+  directory "#{node[:db][:socket]}" do
     owner "postgres"
     group "postgres"
     mode 0770

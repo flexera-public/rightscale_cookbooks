@@ -18,7 +18,7 @@ define :db_connect_app, :template => "db_connection_example.erb", :cookbook => "
       :user => node[:db][:application][:user],
       :password => node[:db][:application][:password],
       :fqdn => node[:db][:dns][:master][:fqdn],
-      :socket => node[:db_mysql][:socket],
+      :socket => node[:db][:socket],
       :database => params[:database],
       :datasource => params[:datasource]
     )
