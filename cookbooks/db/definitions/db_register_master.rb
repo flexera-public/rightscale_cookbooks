@@ -23,6 +23,13 @@ define :db_register_master do
   # Tag the server with the master tags rs_dbrepl:master_active
   # and rs_dbrepl:master_instance_uuid
 
+  slave_tag = "rs_dbrepl:slave_instance_uuid=#{node[:rightscale][:instance_uuid]}"
+  if %x(rs_tag --list)[/#{slave_tag}/]
+    right_link_tag slave_tag do
+      action :remove
+    end
+  end
+
   active_tag = "rs_dbrepl:master_active=#{Time.now.strftime("%Y%m%d%H%M%S")}-#{node[:db][:backup][:lineage]}"
   log "  Tagging server with #{active_tag}"
   right_link_tag active_tag
