@@ -62,6 +62,7 @@ attribute "db_mysql/binlog_format",
     "db_mysql::default_5_5"
    ],
   :required => "optional",
+  :choice => ["STATEMENT", "ROW", "MIXED"],
   :default => "MIXED"
 
 attribute "db_mysql/tmpdir",
