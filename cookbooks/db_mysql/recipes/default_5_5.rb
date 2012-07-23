@@ -16,7 +16,7 @@ node[:db_mysql][:version] = version
 #
 platform = node[:platform]
 case platform
-when "redhat","centos","fedora","suse"
+when "redhat","centos"
 # http://dev.mysql.com/doc/refman/5.5/en/linux-installation-native.html
 # For Red Hat and similar distributions, the MySQL distribution is divided into a 
 # number of separate packages, mysql for the client tools, mysql-server for the 

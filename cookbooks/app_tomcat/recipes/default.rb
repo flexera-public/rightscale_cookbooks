@@ -13,7 +13,7 @@ node[:app][:database_name] = node[:app_tomcat][:db_name]
 
 # Preparing list of database adapter packages depending on platform and database adapter
 case node[:platform]
-when "ubuntu", "debian"
+when "ubuntu"
   case node[:app_tomcat][:db_adapter]
   when "mysql"
     node[:app][:packages] = [
@@ -37,7 +37,7 @@ when "ubuntu", "debian"
   else
     raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting"
   end
-when "centos", "fedora", "suse", "redhat", "redhatenterpriseserver"
+when "centos", "redhat"
   case node[:app_tomcat][:db_adapter]
   when "mysql"
     node[:app][:packages] = [

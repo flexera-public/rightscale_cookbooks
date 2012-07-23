@@ -12,7 +12,7 @@ node[:app][:provider] = "app_php"
 
 # Preparing list of database adapter packages depending on platform and database adapter
 case node[:platform]
-when "ubuntu", "debian"
+when "ubuntu"
   if node[:app_php][:db_adapter] == "mysql"
     node[:app][:packages] = [
       "php5",
@@ -30,7 +30,7 @@ when "ubuntu", "debian"
   else
     raise "Unrecognized database adapter #{node[:app][:db_adapter]}, exiting "
   end
-when "centos","fedora","suse","redhat"
+when "centos","redhat"
   if node[:app_php][:db_adapter] == "mysql"
     node[:app][:packages] = [
       "php53u",

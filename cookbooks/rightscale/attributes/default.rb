@@ -24,9 +24,9 @@ set_unless[:rightscale][:db_backup_file] = "/var/run/db-backup"
 # Setup Distro dependent variables
 #
 case platform
-when "redhat","centos","fedora","suse"
+when "redhat","centos"
   rightscale[:logrotate_config] = "/etc/logrotate.d/syslog"
-when "debian","ubuntu"
+when "ubuntu"
   rightscale[:logrotate_config] = "/etc/logrotate.d/syslog-ng"
 end
 

@@ -37,7 +37,7 @@ end
 file node[:rightscale][:db_backup_file] do
   action :touch
   owner "nobody"
-  group value_for_platform(["centos", "redhat", "suse"] => {"default" => "nobody"}, "default" => "nogroup")
+  group value_for_platform(["centos", "redhat"] => {"default" => "nobody"}, "default" => "nogroup")
 end
 
 ruby_block "add_collectd_gauges" do
