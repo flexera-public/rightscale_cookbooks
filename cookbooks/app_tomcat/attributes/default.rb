@@ -41,7 +41,7 @@ when "ubuntu"
   else
     raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting"
   end
-when "centos", "redhat", "redhatenterpriseserver"
+when "centos", "redhat"
   set[:app_tomcat][:app_user] = "tomcat"
   set[:app_tomcat][:alternatives_cmd] = "alternatives --auto java"
   if app_tomcat[:db_adapter] == "mysql"

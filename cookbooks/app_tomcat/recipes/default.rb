@@ -37,7 +37,7 @@ when "ubuntu"
   else
     raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting"
   end
-when "centos", "redhat", "redhatenterpriseserver"
+when "centos", "redhat"
   case node[:app_tomcat][:db_adapter]
   when "mysql"
     node[:app][:packages] = [
