@@ -32,7 +32,7 @@ when "ubuntu", "debian"
 when "centos", "fedora", "suse", "redhat"
   set[:app_php][:module_dependencies] = [ "proxy", "proxy_http" ]
   set[:app_php][:user] = "apache"
-  set[:app_php][:group] = "www-data"
+  set[:app_php][:group] = "apache"
   if app_php[:db_adapter] == "mysql"
     set[:db_mysql][:socket] = "/var/lib/mysql/mysql.sock"
   elsif app_php[:db_adapter] == "postgresql"
