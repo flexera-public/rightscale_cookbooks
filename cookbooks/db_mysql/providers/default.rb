@@ -158,7 +158,7 @@ end
 
 action :install_client do
 
-  # Uninstall certain packages
+  # Uninstall specified client packages
   packages = node[:db_mysql][:client_packages_uninstall]
   log "  Packages to uninstall: #{packages.join(",")}" unless packages == ""
   packages.each do |p|
@@ -209,7 +209,7 @@ action :install_server do
   # MySQL server depends on MySQL client
   action_install_client
 
-  # Uninstall certain packages
+  # Uninstall specified server packages
   packages = node[:db_mysql][:server_packages_uninstall]
   log "  Packages to uninstall: #{packages.join(",")}" unless packages == ""
   packages.each do |p|

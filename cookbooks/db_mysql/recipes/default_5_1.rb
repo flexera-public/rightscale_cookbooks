@@ -16,36 +16,36 @@ log "  Setting DB MySQL version to #{version}"
 #
 node[:db_mysql][:version] = version
 
-node[:db_mysql][:service_name] = value_for_platform(            "centos"    => { "6.2"       => "mysqld",
-                                                                                 "default"   => "mysql"},
+node[:db_mysql][:service_name] = value_for_platform(            "centos"    => { "5.*"       => "mysql",
+                                                                                 "default"   => "mysqld"},
                                                                 "default"   => "mysql" )
 
 node[:db_mysql][:client_packages_uninstall] = [ ]
 node[:db_mysql][:server_packages_uninstall] = [ ]
 
-node[:db_mysql][:client_packages_install] = value_for_platform( "centos"    => { "6.2"       => [ "mysql-devel", "mysql-libs", "mysql" ],
-                                                                                 "default"   => [ "MySQL-shared-compat",
+node[:db_mysql][:client_packages_install] = value_for_platform( "centos"    => { "5.*"       => [ "MySQL-shared-compat",
                                                                                                   "MySQL-devel-community",
-                                                                                                  "MySQL-client-community" ] },
+                                                                                                  "MySQL-client-community" ],
+                                                                                 "default"   => [ "mysql-devel", "mysql-libs", "mysql" ] },
                                                                ["redhat",
                                                                 "fedora",
                                                                 "suse"]     => { "default"   => [ "MySQL-shared-compat",
                                                                                                   "MySQL-devel-community",
                                                                                                   "MySQL-client-community" ] },
                                                                ["debian",
-                                                                "ubuntu"]   => { "default"   => ["libmysqlclient-dev", 
-                                                                                                 "mysql-client-5.1"] 
-							                         "12.04"     => [ ] },
+                                                                "ubuntu"]   => {  "10.04"    => [ ],
+                                                                                  "default"  => ["libmysqlclient-dev",
+                                                                                                 "mysql-client-5.1"] },
                                                                "default"    => [ ] )
 
-node[:db_mysql][:server_packages_install] = value_for_platform("centos"     => { "6.2"       => [ "mysql-server" ],
-                                                                                 "default"   => [ "MySQL-server-community" ] },
+node[:db_mysql][:server_packages_install] = value_for_platform("centos"     => { "5.*"       => [ "MySQL-server-community" ],
+                                                                                 "default"   => [ "mysql-server" ]},
                                                                ["redhat",
                                                                 "fedora",
                                                                 "suse"]     => { "default"   => [ "MySQL-server-community" ] },
                                                                ["debian",
-                                                                "ubuntu"]   => { "default"   => ["mysql-server-5.1"] 
-							                         "12.04"     => [ ] },
+                                                                "ubuntu"]   => { "10.04"     => ["mysql-server-5.1"],
+							                         "default"   => [ ] },
                                                                "default"    => [ ] )
 
 log "  Platform not supported for MySQL #{version}" do

@@ -23,38 +23,38 @@ platform = node[:platform]
 # centos 6.2 by default has mysql-libs 5.1 installed as requirement for postfix.
 # Will uninstall postfix, install mysql55-lib then reinstall postfix to use new lib.
 
-node[:db_mysql][:service_name] = value_for_platform("ubuntu"                => { "12.04"   => "mysql", 
-                                                                                 "default" => [ ] },
+node[:db_mysql][:service_name] = value_for_platform("ubuntu"                => { "10.04"       => [ ],
+                                                                                 "default"     => "mysql" },
                                                     "default"               => "mysqld" )
 
 
-node[:db_mysql][:client_packages_uninstall] = value_for_platform("centos"   => { "6.2"     => [ "postfix",
-                                                                                                "mysql-libs" ],
-                                                                                 "default" => [ ] },
+node[:db_mysql][:client_packages_uninstall] = value_for_platform("centos"   => { "default"     => [ "postfix",
+                                                                                                    "mysql-libs" ],
+                                                                                 "5.*"         => [ ] },
                                                                  "default"  => [ ] )
 node[:db_mysql][:server_packages_uninstall] = [ ]
 
-node[:db_mysql][:client_packages_install] = value_for_platform("centos"     => { "6.2"     => [ "mysql55-devel",
-                                                                                                "mysql55-libs",
-                                                                                                "mysql55",
-                                                                                                "postfix" ],
-                                                                                 "default" => [ "mysql55-devel",
-                                                                                                "mysql55-libs",
-                                                                                                "mysql55" ] },
+node[:db_mysql][:client_packages_install] = value_for_platform("centos"     => { "default"     => [ "mysql55-devel",
+                                                                                                    "mysql55-libs",
+                                                                                                    "mysql55",
+                                                                                                    "postfix" ],
+                                                                                 "5.*"         => [ "mysql55-devel",
+                                                                                                    "mysql55-libs",
+                                                                                                    "mysql55" ] },
                                                                ["ubuntu",
-                                                                "debian"]   => { "12.04"   => [ "libmysqlclient-dev", 
-                                                                                                "mysql-client-5.5" ],
-                                                                                 "default" => [ ] },
+                                                                "debian"]   => { "default"     => [ "libmysqlclient-dev",
+                                                                                                    "mysql-client-5.5" ],
+                                                                                 "10.04"       => [ ] },
 
                                                                ["redhat",
                                                                 "fedora",
-                                                                "suse"]     => { "default" => [ "mysql55-devel",
-                                                                                              "mysql55-libs",
-                                                                                              "mysql55" ] },
+                                                                "suse"]     => { "default"     => [ "mysql55-devel",
+                                                                                                    "mysql55-libs",
+                                                                                                    "mysql55" ] },
                                                                "default"    => [ ] )
 
-node[:db_mysql][:server_packages_install] = value_for_platform("ubuntu"     => { "12.04"   => "mysql-server-5.5",
-                                                                                 "default" => [ ] },
+node[:db_mysql][:server_packages_install] = value_for_platform("ubuntu"     => { "default"     => "mysql-server-5.5",
+                                                                                 "10.04"       => [ ] },
                                                                "default"    => "mysql55-server" )
 
 log "  Platform not supported for MySQL #{version}" do
