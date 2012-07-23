@@ -28,7 +28,6 @@ log "Inputs volume_size and stripe_count are not used in Rackspace cloud provide
   only_if {node[:cloud][:provider] == 'rackspace'}
 end
 
-#XXX CentOS 6.x sunrise kernels also - not sure about ALL clouds - hack for test
 bash "Load kernel modules" do
   flags '-ex'
   code <<-EOS
