@@ -31,7 +31,7 @@ ruby_block "Install custom gems" do
           name = gem_name
         end
       end
-      log "  Installing custom gem: #{name}"
+      Chef::Log.info('  Installing custom gem: #{name}')
       raise "Error installing gems!" unless
       system("#{node[:app_passenger][:gem_bin].chomp} install #{name} --no-ri --no-rdoc --no-update-sources")
     end
