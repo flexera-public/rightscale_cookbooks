@@ -75,3 +75,13 @@ attribute "db_mysql/tmpdir",
   :required => "optional",
   :default => "/mnt/ephemeral/mysqltmp"
 
+attribute "db_mysql/init_timeout",
+  :display_name => "MySQL Init Timeout",
+  :description => "Defines timeout to wait for a MySQL socket connection before a READ LOCK. Default: 60",
+  :recipes => [
+    "db_mysql::default_5_1",
+    "db_mysql::default_5_5"
+  ],
+  :required => "optional",
+  :default => "60"
+
