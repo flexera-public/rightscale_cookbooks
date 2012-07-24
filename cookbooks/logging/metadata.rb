@@ -15,10 +15,7 @@ depends "logging_syslog_ng"
 
 recipe "logging::default", "Configures a native logging provider."
 recipe "logging::install_server", "Configures a syslog server."
-recipe "logging::do_server_start", "Starts syslog server."
-recipe "logging::do_server_stop", "Stops syslog server."
-recipe "logging::do_server_restart", "Restarts syslog server."
-recipe "logging::do_server_reload", "Reloads syslog server."
+recipe "logging::service_control", "Starts/Stops/Restarts/Reloads syslog server depending on user input."
 
 attribute "logging",
   :display_name => "Log Service Settings",
@@ -40,3 +37,9 @@ attribute "logging/remote_server",
   :required => "optional",
   :recipes => [ "logging::default" ]
 
+attribute "logging/service_action",
+  :display_name => "Logging Service Control Action",
+  :description => "Action to be done with logging service.",
+  :required => "optional",
+  :choice => [ "start", "stop", "restart", "reload" ],
+  :recipes => [ "logging::service_control" ]

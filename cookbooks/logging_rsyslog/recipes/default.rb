@@ -21,18 +21,12 @@ raise "ERROR: Rsyslog is not installed!" unless rsyslog_installed
 node[:logging][:provider] = "logging_rsyslog"
 
 case node[:platform]
-#when "ubuntu", "debian"
-#  case node[:platform_version]
-#  when /^10\..+/
-#    node[:logging][:config_dir] = "/etc/rsyslog.d/remote.conf"
-#  when /^12\..+/
-#
-#  end
 when "centos", "redhat"
   case node[:platform_version]
   when /^5\..+/
     node[:logging][:config_dir] = "/etc/rsyslog.conf"
-  #when /^6\..+/
+  else
+    raise "Version #{node[:platform_version]} not supported."
   end
 else
   raise "Unrecognized distro #{node[:platform]}, exiting "

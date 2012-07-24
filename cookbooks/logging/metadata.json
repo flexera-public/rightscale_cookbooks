@@ -50,6 +50,22 @@
       ],
       "calculated": false,
       "type": "string"
+    },
+    "logging/service_action": {
+      "display_name": "Logging Service Control Action",
+      "description": "Action to be done with logging service.",
+      "required": "optional",
+      "choice": [
+        "start",
+        "stop",
+        "restart",
+        "reload"
+      ],
+      "recipes": [
+        "logging::service_control"
+      ],
+      "calculated": false,
+      "type": "string"
     }
   },
   "groupings": {
@@ -57,10 +73,7 @@
   "recipes": {
     "logging::default": "Configures a native logging provider.",
     "logging::install_server": "Configures a syslog server.",
-    "logging::do_server_start": "Starts syslog server.",
-    "logging::do_server_stop": "Stops syslog server.",
-    "logging::do_server_restart": "Restarts syslog server.",
-    "logging::do_server_reload": "Reloads syslog server."
+    "logging::service_control": "Starts/Stops/Restarts/Reloads syslog server depending on user input."
   },
   "version": "12.1.0"
 }
