@@ -156,6 +156,15 @@ action :set_privileges do
   end
 end
 
+action :remove_anonymous do
+  require 'mysql'
+  con = Mysql.new('localhost', 'root')
+  host=`hostname`.strip
+  con.query("DELETE FROM mysql.user WHERE user='' AND host='#{host}'")
+
+  con.close
+end
+
 action :install_client do
 
   # Install MySQL client packages

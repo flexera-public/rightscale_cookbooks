@@ -34,6 +34,7 @@ recipe "db::do_primary_backup_schedule_disable", "Disables db::do_primary_backup
 
 recipe "db::setup_privileges_admin", "Adds the username and password for 'superuser' privileges."
 recipe "db::setup_privileges_application", "Adds the username and password for application privileges."
+recipe "db::remove_anonymous_users", "Removes anonymous users from database."
 
 recipe "db::do_secondary_backup", :description => "Creates a backup of the database and uploads it to a secondary cloud storage location, which can be used to migrate your database to a different cloud. For example, you can save a secondary backup to an Amazon S3 bucket or a Rackspace Cloud Files container.", :thread => 'db_backup'
 recipe "db::do_secondary_restore", "Restores the database from the most recently completed backup available in a secondary location."
