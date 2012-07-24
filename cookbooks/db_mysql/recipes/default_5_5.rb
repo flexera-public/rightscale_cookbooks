@@ -28,23 +28,23 @@ node[:db_mysql][:service_name] = value_for_platform("ubuntu"                => {
                                                     "default"               => "mysqld" )
 
 
-node[:db_mysql][:client_packages_uninstall] = value_for_platform("centos"   => { "default"     => [ "postfix",
-                                                                                                    "mysql-libs" ],
-                                                                                 "5.8"         => [ ] },
+node[:db_mysql][:client_packages_uninstall] = value_for_platform("centos"   => { "5.8"         => [ ],
+                                                                                 "default"     => [ "postfix",
+                                                                                                    "mysql-libs" ] },
                                                                  "default"  => [ ] )
 node[:db_mysql][:server_packages_uninstall] = [ ]
 
-node[:db_mysql][:client_packages_install] = value_for_platform("centos"     => { "default"     => [ "mysql55-devel",
+node[:db_mysql][:client_packages_install] = value_for_platform("centos"     => { "5.8"         => [ "mysql55-devel",
+                                                                                                    "mysql55-libs",
+                                                                                                    "mysql55" ],
+                                                                                 "default"     => [ "mysql55-devel",
                                                                                                     "mysql55-libs",
                                                                                                     "mysql55",
-                                                                                                    "postfix" ],
-                                                                                 "5.8"         => [ "mysql55-devel",
-                                                                                                    "mysql55-libs",
-                                                                                                    "mysql55" ] },
+                                                                                                    "postfix" ] },
                                                                ["ubuntu",
-                                                                "debian"]   => { "default"     => [ "libmysqlclient-dev",
-                                                                                                    "mysql-client-5.5" ],
-                                                                                 "10.04"       => [ ] },
+                                                                "debian"]   => { "10.04"       => [ ],
+                                                                                 "default"     => [ "libmysqlclient-dev",
+                                                                                                    "mysql-client-5.5" ] },
 
                                                                ["redhat",
                                                                 "fedora",
@@ -53,8 +53,8 @@ node[:db_mysql][:client_packages_install] = value_for_platform("centos"     => {
                                                                                                     "mysql55" ] },
                                                                "default"    => [ ] )
 
-node[:db_mysql][:server_packages_install] = value_for_platform("ubuntu"     => { "default"     => "mysql-server-5.5",
-                                                                                 "10.04"       => [ ] },
+node[:db_mysql][:server_packages_install] = value_for_platform("ubuntu"     => { "10.04"       => [ ],
+                                                                                 "default"     => "mysql-server-5.5" },
                                                                "default"    => "mysql55-server" )
 
 log "  Platform not supported for MySQL #{version}" do
