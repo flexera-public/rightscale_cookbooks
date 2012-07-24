@@ -53,7 +53,7 @@ action :install do
   # Installing passenger module
   log "  Installing passenger gem"
   gem_package "passenger" do
-    gem_binary "/opt/rightscale/sandbox/bin/gem"
+    gem_binary "/usr/bin/gem"
     action :install
   end
 
@@ -61,7 +61,7 @@ action :install do
   bash "Install apache passenger module" do
     flags "-ex"
     code <<-EOH
-      /opt/rightscale/sandbox/bin/passenger-install-apache2-module --auto
+      /usr/bin/passenger-install-apache2-module --auto
     EOH
   end
 

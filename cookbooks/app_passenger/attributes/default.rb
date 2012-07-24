@@ -29,11 +29,11 @@ case node[:platform]
 end
 
 # Path to Ruby EE gem directory
-set[:app_passenger][:ruby_gem_base_dir]="/opt/rightscale/sandbox/lib/ruby/gems/1.8"
+set[:app_passenger][:ruby_gem_base_dir]="/usr/lib64/ruby/gems/1.8"
 # Path to Ruby EE gem executable
-set[:app_passenger][:gem_bin]="/opt/rightscale/sandbox/bin/gem"
+set[:app_passenger][:gem_bin]="/usr/bin/gem"
 # Path to Ruby EE ruby executable
-set[:app_passenger][:ruby_bin]="/opt/rightscale/sandbox/bin/ruby"
+set[:app_passenger][:ruby_bin]="/usr/bin/ruby"
 # Path to passenger module for apache
 set[:app_passenger][:apache_psr_install_module]="/usr/bin/passenger-install-apache2-module"
 # By default rails application environment variable is set to "development"
