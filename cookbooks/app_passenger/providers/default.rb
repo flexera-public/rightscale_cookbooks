@@ -61,7 +61,7 @@ action :install do
   bash "Install apache passenger module" do
     flags "-ex"
     code <<-EOH
-      /usr/bin/passenger-install-apache2-module
+      /opt/rightscale/sandbox/bin/passenger-install-apache2-module --auto
     EOH
   end
 
