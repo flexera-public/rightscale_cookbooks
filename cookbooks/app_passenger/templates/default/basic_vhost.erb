@@ -33,7 +33,7 @@ RewriteEngine On
 #RewriteLog <%= @params[:apache_log_dir]%>/<%=@params[:server_name]%>-http_rewrite_log
 #RewriteLogLevel 9
 
-<% @params[:ruby_base_dir]=%x[/opt/ruby-enterprise/bin/gem environment gemdir] %>
+<% @params[:ruby_base_dir]=%x[/opt/rightscale/sandbox/bin/gem environment gemdir] %>
 <% passenger_dir=%x[/bin/bash -c "ls -d #{@params[:ruby_base_dir].chomp}/gems/passenger*"] %>
 
 #LoadModule deflate_module /usr/lib/apache2/modules/mod_deflate.so
