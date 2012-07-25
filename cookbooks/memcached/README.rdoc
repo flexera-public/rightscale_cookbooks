@@ -4,25 +4,17 @@
 
 This cookbook provides recipes for setting up and running a Memcached server.
 
--------------
-
 == REQUIREMENTS:
 
 * Requires a VM launched from a RightScale managed RightImage
-
--------------
 
 == COOKBOOKS DEPENDENCIES:
 
 Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
--------------
-
 == KNOWN LIMITATIONS:
 
 * If you need memcached to listen on public interface must set to listen on any.
-
--------------
 
 == SETUP/USAGE:
 
@@ -31,16 +23,12 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 * When using a RightScale ServerTemplate, use <tt>memcached::default</tt> recipe to automatically add the server tags.
 * Place <tt>memcached::install_server</tt> recipe into your runlist to setup the memcached server.
 
--------------
-
 == DETAILS:
 
 === General
 
 The cookbook installs memcached with needed configuration for CentOS, Redhat and Ubuntu.
 Opens lisnening port in systems' firewall, setups server tags, monitoring and log rotation.
-
--------------
 
 === Attributes:
 
@@ -58,15 +46,11 @@ These are the settings used in recipes and templates. Default values are noted.
 * <tt>node[:platform][:memcached][:config_file]</tt> - Location of memcached configuration file.
 * <tt>node[:platform][:memcached][:iptables_rules]</tt> - Location of iptables.
 
--------------
-
 === Templates:
 
 * <tt>memcached.conf.erb</tt> - Memcached configuration file. Unique for CentOS and Ubuntu. Used is the <tt>memcached::install_server</tt> recipe.
 
 * <tt>memcached_collectd.conf.erb</tt> - Memcached collectd plugin template. Used is the <tt>memcached::install_server</tt> recipe.
-
--------------
 
 = LICENSE:
 

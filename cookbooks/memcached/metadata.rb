@@ -1,9 +1,13 @@
-maintainer "RightScale, Inc."
+maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
-license "Copyright RightScale, Inc. All rights reserved."
-description "Cookbook for a memcached server setup."
+license          "Copyright RightScale, Inc. All rights reserved."
+description      "RightScale Database Manager"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version "0.1.3"
+version          "13.1.0"
+
+supports "centos", "~> 5.8"
+supports "redhat", "~> 5.8"
+supports "ubuntu", "~> 10.04.0"
 
 
 depends "rightscale"
@@ -48,23 +52,23 @@ attribute "memcached/connection_limit",
   :recipes => ["memcached::install_server"]
 
 attribute "memcached/memtotal_percent",
-  :display_name => "Memcached Cache size %",
-  :description => "Max memory to use for items.",
+  :display_name => "Memcached Cache size percentage",
+  :description => "Maximum memory to use for items.",
   :required => "recommended",
   :choice => ["10", "20", "30", "40", "50", "60", "70", "80", "90"],
-  :default => "90", #using str for further conversion to int
+  :default => "90",
   :recipes => ["memcached::install_server"]
 
 attribute "memcached/threads",
   :display_name => "Memcached used threads",
-  :description => "Use a number from 1 to %maximum number of threads for the instance%.",
+  :description => "Use a number from one to the maximum number of threads for the instance.",
   :required => "recommended",
   :default => "1",
   :recipes => ["memcached::install_server"]
 
 attribute "memcached/interface",
   :display_name => "Memcached listening interface",
-  :description => "Interface to listen on.",
+  :description => "Specify the interface you want memcached to listen on.",
   :required => "recommended",
   :choice => ["localhost", "private", "any"],
   :default => "any",

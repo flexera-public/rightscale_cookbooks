@@ -7,6 +7,19 @@
 
 rightscale_marker :begin
 
+# Installing server tags
+#
+# The instance is identified as a memcached server.
+right_link_tag "memcached_server:active=true"
+# The server name so that sorts can be done to get the correct order across app servers.
+right_link_tag "memcached_server:uuid=#{node[:rightscale][:instance_uuid]}"
+# The instance is associated with a cluster
+right_link_tag "memcached_server:cluster=#{node[:memcached][:cluster_id]}"
+# The listening port
+right_link_tag "memcached_server:port=#{node[:memcached][:tcp_port]}"
+
+log "  Server tags installed."
+
 # Memcached installation.
 #
 package "memcached" do
@@ -15,7 +28,8 @@ end
 
 # Initializing supported commands for memcached services for further usage.
 service "memcached" do
-  action :enable # We need the service to autostart after reboot.
+  # We need the service to autostart after reboot.
+  action :enable
   persist true
   reload_command "/etc/init.d/memcached force-reload" # Had to override because ubuntu package doesn't have a "reload" option.
   supports :status => true, :start => true, :stop => true, :restart => true, :reload => true
@@ -25,11 +39,11 @@ end
 # Memcached configuration.
 #
 # Based on the "memcached/memtotal_percent" input this calculates the amount of memory memcached will be using.
-node[:memcached][:memtotal] = (((node[:memcached][:memtotal_percent].to_i/100.0)*node[:memory][:total].to_i)/1024.0).to_i
+node[:memcached][:memtotal] = (((node[:memcached][:memtotal_percent].to_i / 100.0) * node[:memory][:total].to_i) / 1024.0).to_i
 
 log "  Cache size will be set to #{node[:memcached][:memtotal_percent]}% of total system memory : #{node[:memcached][:memtotal]}mb"
 
-# Threads input check: now user cannot input wrong thread quantity leading to misconfiguration.
+# Checking the memcached/threads input to avoid server misconfiguration.
 if node[:memcached][:threads].to_i < 1
   log "  Number of threads less than 1, using minimum possible"
   node[:memcached][:threads] = "1"
@@ -41,9 +55,11 @@ end
 # Listening ip configuration.
 case node[:memcached][:interface]
 when "localhost"
-  node[:memcached][:interface] = "127.0.0.1" # Note: not using "localhost" because value also goes into collectd plugin which doesn't understand it.
+  # Note: not using "localhost" because value also goes into collectd plugin which doesn't understand it.
+  node[:memcached][:interface] = "127.0.0.1"
 when "private"
-  node[:memcached][:interface] = node[:cloud][:private_ips][0] # When binding to private on aws you also listen to public because of amazons traffic forwarding.
+  # When binding to private on aws you also listen to public because of amazons traffic forwarding.
+  node[:memcached][:interface] = node[:cloud][:private_ips][0]
 when "any"
   node[:memcached][:interface] = "0.0.0.0"
 end
@@ -56,13 +72,14 @@ template "#{node[:memcached][:config_file]}" do
     :udp_port => node[:memcached][:udp_port],
     :user => node[:memcached][:user],
     :connection_limit => node[:memcached][:connection_limit],
-    :memtotal => node[:memcached][:memtotal], # calculated option
+    :memtotal => node[:memcached][:memtotal],
     :threads => node[:memcached][:threads],
     :interface => node[:memcached][:interface],
     :log_level => node[:memcached][:log_level]
   )
   cookbook "memcached"
-  notifies :restart, resources(:service => "memcached"), :immediately # Restart needed for new settings to apply.
+  # Restart needed for new settings to apply.
+  notifies :restart, resources(:service => "memcached"), :immediately
 end
 
 log "  Memcached configuration done."
@@ -74,7 +91,7 @@ log "  Attention: when using a listening public ip make sure the #{node[:memcach
 log "  Opening port #{node[:memcached][:tcp_port]} in iptables."
 
 sys_firewall "Open memcached port" do
-  port node[:memcached][:tcp_port].to_i # Port should be passed as int.
+  port node[:memcached][:tcp_port].to_i
   enable true
   action :update
 end
@@ -88,15 +105,18 @@ ruby_block "memcached_check" do
   block do
     # Test ip configuration.
     if "#{node[:memcached][:interface]}" == "0.0.0.0"
-      node[:memcached][:check_ip] = "127.0.0.1" # Can't run TCPSocket with 0.0.0.0
+      # Can't run TCPSocket with 0.0.0.0
+      check_ip = "127.0.0.1"
     else
-      node[:memcached][:check_ip] = node[:memcached][:interface]
+      check_ip = node[:memcached][:interface]
     end
     begin
-      TCPSocket.new("#{node[:memcached][:check_ip]}", "#{node[:memcached][:tcp_port]}").close # Thus you'll be sure memcached is really running.
+      # Thus you'll be sure memcached is really running.
+      TCPSocket.new(check_ip, "#{node[:memcached][:tcp_port]}").close
       Chef::Log.info("  Memcached server started.")
     rescue Errno::ECONNREFUSED
-      raise "  Memcached service didn't start." # Most probably memcached is misconfigured.
+      # Most probably memcached is misconfigured.
+      raise "  Memcached service didn't start."
     end
   end
   action :create
@@ -108,20 +128,7 @@ end
 log "  Configuring collectd memcached plugin."
 
 # Writing settings to memcached.conf plugin.
-ruby_block "process_memcached" do
-  block do
-    processes = File.readlines("#{node[:rightscale][:collectd_plugin_dir]}/processes.conf")
-    File.open("#{node[:rightscale][:collectd_plugin_dir]}/processes.conf", "w") do |f|
-      processes.each do |line|
-        next if line =~ /<\/Plugin>/ # Will add memcached process monitoring as last in list regardless of how file may change in the future.
-        f.puts(line)
-      end
-      f.puts("  process \"memcached\"")
-      f.puts("</Plugin>")
-    end
-  end
-  action :create
-end
+rightscale_monitor_process "memcached"
 
 template "#{node[:rightscale][:collectd_plugin_dir]}/memcached.conf" do
   source "memcached_collectd.conf.erb"
@@ -130,7 +137,8 @@ template "#{node[:rightscale][:collectd_plugin_dir]}/memcached.conf" do
     :tcp_port => node[:memcached][:tcp_port]
   )
   cookbook "memcached"
-  notifies :restart, resources(:service => "collectd"), :immediately # Need to restart/start after configuration in order for the monitoring to run correctly.
+  # Need to restart/start after configuration in order for the monitoring to run correctly.
+  notifies :restart, resources(:service => "collectd"), :immediately
 end
 
 log "  Disabling collectd swap monitoring."
