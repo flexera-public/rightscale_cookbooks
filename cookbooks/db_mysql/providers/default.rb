@@ -156,6 +156,15 @@ action :set_privileges do
   end
 end
 
+action :remove_anonymous do
+  require 'mysql'
+  con = Mysql.new('localhost', 'root')
+  host=`hostname`.strip
+  con.query("DELETE FROM mysql.user WHERE user='' AND host='#{host}'")
+
+  con.close
+end
+
 action :install_client do
 
   # Uninstall specified client packages
@@ -383,6 +392,7 @@ action :setup_monitoring do
   platform = node[:platform]
   collectd_version = node[:rightscale][:collectd_packages_version]
   # Centos specific items
+  collectd_version = node[:rightscale][:collectd_packages_version]
   package "collectd-mysql" do
     action :install
     version "#{collectd_version}" unless collectd_version == "latest"

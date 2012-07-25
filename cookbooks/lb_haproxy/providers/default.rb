@@ -20,15 +20,6 @@ action :install do
     action :enable
   end
 
-  # Install haproxy file depending on OS/platform.
-  template "/etc/default/haproxy" do
-    only_if { node[:platform] == "debian" || node[:platform] == "ubuntu" }
-    source "default_haproxy.erb"
-    cookbook "lb_haproxy"
-    owner "root"
-    notifies :restart, resources(:service => "haproxy")
-  end
-
   # Create /etc/haproxy directory.
   directory "/etc/haproxy/#{node[:lb][:service][:provider]}.d" do
     owner "haproxy"
@@ -48,8 +39,8 @@ action :install do
   end
 
   # Install the haproxy config head which is the part of the haproxy config that doesn't change.
-  template "/etc/haproxy/rightscale_lb.cfg.head" do
-    source "haproxy_http.erb"
+  template "/etc/haproxy/haproxy.cfg.head" do
+    source "haproxy.cfg.head.erb"
     cookbook "lb_haproxy"
     owner "haproxy"
     group "haproxy"
@@ -61,8 +52,8 @@ action :install do
   end
 
   # Install the haproxy config backend which is the part of the haproxy config that doesn't change.
-  template "/etc/haproxy/rightscale_lb.cfg.default_backend" do
-    source "haproxy_default_backend.erb"
+  template "/etc/haproxy/haproxy.cfg.default_backend" do
+    source "haproxy.cfg.default_backend.erb"
     cookbook "lb_haproxy"
     owner "haproxy"
     group "haproxy"
@@ -79,18 +70,6 @@ action :install do
     group "haproxy"
     umask 0077
     notifies :start, resources(:service => "haproxy")
-  end
-
-  # Remove haproxy config file so we can symlink it.
-  file "/etc/haproxy/haproxy.cfg" do
-    backup false
-    not_if { ::File.symlink?("/etc/haproxy/haproxy.cfg") }
-    action :delete
-  end
-
-  # Symlink haproxy config.
-  link "/etc/haproxy/haproxy.cfg" do
-    to "/etc/haproxy/rightscale_lb.cfg"
   end
 end
 

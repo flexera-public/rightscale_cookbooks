@@ -24,6 +24,11 @@ node[:db_mysql][:service_name] = value_for_platform(
   "default"   => "mysql"
 )
 
+node[:db][:socket] = value_for_platform(
+  "ubuntu"  => "/var/run/mysqld/mysqld.sock",
+  "default" => "/var/lib/mysql/mysql.sock"
+)
+
 node[:db_mysql][:client_packages_uninstall] = [ ]
 node[:db_mysql][:server_packages_uninstall] = [ ]
 
@@ -72,9 +77,8 @@ node[:db_mysql][:server_packages_install] = value_for_platform(
   "default" => [ ] 
 )
 
-log "  Platform not supported for MySQL #{version}" do
-  level :fatal
-  only_if { node[:db_mysql][:client_packages_install].empty? }
-end
+raise "Platform not supported for MySQL #{version}" if node[:db_mysql][:client_packages_install].empty?
+
+log "  Using MySQL service name: #{node[:db_mysql][:version]}"
 
 rightscale_marker :end

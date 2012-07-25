@@ -15,6 +15,11 @@ platform = node[:platform]
 
 # Set MySQL 5.5 specific node variables in this recipe.
 #
+node[:db][:socket] = value_for_platform(
+  "ubuntu"  => "/var/run/mysqld/mysqld.sock",
+  "default" => "/var/lib/mysql/mysql.sock"
+)
+
 # http://dev.mysql.com/doc/refman/5.5/en/linux-installation-native.html
 # For Red Hat and similar distributions, the MySQL distribution is divided into a
 # number of separate packages, mysql for the client tools, mysql-server for the
@@ -82,9 +87,8 @@ node[:db_mysql][:server_packages_install] = value_for_platform(
   "default" => "mysql55-server"
 )
 
-log "  Platform not supported for MySQL #{version}" do
-  level :fatal
-  only_if { node[:db_mysql][:client_packages_install].empty? }
-end
+raise "Platform not supported for MySQL #{version}" if node[:db_mysql][:client_packages_install].empty?
+
+log "  Using MySQL service name: #{node[:db_mysql][:version]}"
 
 rightscale_marker :end

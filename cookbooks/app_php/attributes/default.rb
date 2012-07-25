@@ -18,23 +18,25 @@ set_unless[:app_php][:db_adapter] = "mysql"
 # Calculated attributes
 # Defining apache user, module dependencies, and database adapter parameters depending on platform.
 case platform
-when "ubuntu", "debian"
+when "ubuntu"
   set[:app_php][:module_dependencies] = [ "proxy_http", "php5" ]
-  set_unless[:app_php][:app_user] = "www-data"
+  set[:app_php][:user] = "www-data"
+  set[:app_php][:group] = "www-data"
   if app_php[:db_adapter] == "mysql"
-    set[:db_mysql][:socket] = "/var/run/mysqld/mysqld.sock"
+    set[:db][:socket] = "/var/run/mysqld/mysqld.sock"
   elsif app_php[:db_adapter] == "postgresql"
-    set[:db_postgres][:socket] = "/var/run/postgresql"
+    set[:db][:socket] = "/var/run/postgresql"
   else
     raise "Unrecognized database adapter #{node[:app][:db_adapter]}, exiting"
   end
-when "centos", "fedora", "suse", "redhat"
+when "centos", "redhat"
   set[:app_php][:module_dependencies] = [ "proxy", "proxy_http" ]
-  set_unless[:app_php][:app_user] = "apache"
+  set[:app_php][:user] = "apache"
+  set[:app_php][:group] = "apache"
   if app_php[:db_adapter] == "mysql"
-    set[:db_mysql][:socket] = "/var/lib/mysql/mysql.sock"
+    set[:db][:socket] = "/var/lib/mysql/mysql.sock"
   elsif app_php[:db_adapter] == "postgresql"
-    set[:db_postgres][:socket] = "/var/run/postgresql"
+    set[:db][:socket] = "/var/run/postgresql"
   else
     raise "Unrecognized database adapter #{node[:app_php][:db_adapter]}, exiting"
   end

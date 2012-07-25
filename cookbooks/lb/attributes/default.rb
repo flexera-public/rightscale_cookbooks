@@ -36,12 +36,9 @@ set_unless[:lb][:cron_reconverge_minute] = "#{5+rand(50)}"
 # Stores the list of appplication servers being loadbalanced.
 set_unless[:lb][:appserver_list] = {}
 
-# Config file used by load balancer.
-set_unless[:lb][:cfg_file] = "/etc/haproxy/rightscale_lb.cfg"
-
 # Web service name based on OS.
 case platform
-when "redhat", "centos", "fedora", "suse"
+when "redhat", "centos"
   set_unless[:lb][:apache_name] = "httpd"
 else
   set_unless[:lb][:apache_name] = "apache2"

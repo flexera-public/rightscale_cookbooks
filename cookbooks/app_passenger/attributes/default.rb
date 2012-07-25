@@ -16,11 +16,11 @@ set[:app_passenger][:module_dependencies] = ["proxy", "proxy_ajp"]
 
 # Defining apache user, group and log directory path depending on platform.
 case node[:platform]
-  when "ubuntu","debian"
+  when "ubuntu"
     set[:app_passenger][:apache][:user]="www-data"
     set[:app_passenger][:apache][:group]="www-data"
     set[:app_passenger][:apache][:log_dir]="/var/log/apache2"
-  when "centos","redhat","redhatenterpriseserver","fedora","suse"
+  when "centos","redhat"
     set[:app_passenger][:apache][:user]="apache"
     set[:app_passenger][:apache][:group]="apache"
     set[:app_passenger][:apache][:log_dir]="/var/log/httpd"
