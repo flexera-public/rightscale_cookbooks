@@ -62,6 +62,8 @@ node[:db_mysql][:client_packages_install] = value_for_platform(
   "default" => [ ] 
 )
 
+# Ubuntu 12.04 doesn't support MySQL 5.1 server
+
 node[:db_mysql][:server_packages_install] = value_for_platform(
   "centos" => {
     "5.8" => [ "MySQL-server-community" ],
