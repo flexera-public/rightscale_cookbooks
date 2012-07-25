@@ -78,7 +78,7 @@ action :install do
     # Copy to /usr/share/java/postgresql-9.1-901.jdbc4.jar
     cookbook_file "/usr/share/java/postgresql-9.1-901.jdbc4.jar" do
       source "postgresql-9.1-901.jdbc4.jar"
-      owner "root"
+      owner node[:app_tomcat][:app_user]
       group "root"
       cookbook 'app_tomcat'
     end
@@ -351,6 +351,9 @@ action :setup_db_connection do
     owner "#{node[:app_tomcat][:app_user]}"
     group "root"
     mode "0644"
+    variables(
+      :datasource => datasource
+    )
     cookbook 'app_tomcat'
   end
 
