@@ -20,12 +20,14 @@ node[:db_mysql][:service_name] = "mysql"
 platform = node[:platform]
 case platform
 when "redhat","centos"
+  node[:db][:socket] = "/var/lib/mysql/mysql.sock"
   node[:db_mysql][:packages_uninstall] = ""
   node[:db_mysql][:client_packages_install] = ["MySQL-shared-compat",
                                                "MySQL-devel-community",
                                                "MySQL-client-community" ]
   node[:db_mysql][:server_packages_install] = ["MySQL-server-community"]
 when "ubuntu"
+  node[:db][:socket] = "/var/run/mysqld/mysqld.sock"
   node[:db_mysql][:packages_uninstall] = ""
   node[:db_mysql][:client_packages_install] = ["libmysqlclient-dev", "mysql-client-5.1"]
   node[:db_mysql][:server_packages_install] = ["mysql-server-5.1"]
