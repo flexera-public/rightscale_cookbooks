@@ -101,7 +101,8 @@
       "calculated": false,
 >>>>>>> implemeted Neve's comments
       "choice": [
-        "jdbc/ConnDB"
+        "jdbc/MYSQLDB",
+        "jdbc/postgres"
       ],
 <<<<<<< HEAD
       "calculated": false,
