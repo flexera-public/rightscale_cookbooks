@@ -28,11 +28,11 @@ case node[:platform]
     raise "Unrecognized distro #{node[:platform]}, exiting "
 end
 
-# Path to Ruby EE gem directory
+# Path to Ruby gem directory
 set[:app_passenger][:ruby_gem_base_dir]="/usr/lib64/ruby/gems/1.8"
-# Path to Ruby EE gem executable
+# Path to Ruby gem executable
 set[:app_passenger][:gem_bin]="/usr/bin/gem"
-# Path to Ruby EE ruby executable
+# Path to Ruby ruby executable
 set[:app_passenger][:ruby_bin]="/usr/bin/ruby"
 # Path to passenger module for apache
 set[:app_passenger][:apache_psr_install_module]="/usr/bin/passenger-install-apache2-module"
