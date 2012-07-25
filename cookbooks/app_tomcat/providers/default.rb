@@ -105,8 +105,8 @@ action :install do
 
   # Creating new directory for tomcat logs on ephemeral volume
   directory "/mnt/ephemeral/log/tomcat6" do
-    owner node[:app_tomcat][:app_user]
-    group node[:app_tomcat][:app_user]
+    owner node[:app_tomcat][:user]
+    group node[:app_tomcat][:group]
     mode "0755"
     action :create
     recursive true
@@ -149,7 +149,7 @@ action :setup_vhost do
     mode "0644"
     cookbook 'app_tomcat'
     variables(
-      :app_user => node[:app_tomcat][:app_user],
+      :app_user => node[:app_tomcat][:user],
       :java_xms => node[:app_tomcat][:java][:xms],
       :java_xmx => node[:app_tomcat][:java][:xmx],
       :java_permsize => node[:app_tomcat][:java][:permsize],
@@ -166,7 +166,7 @@ action :setup_vhost do
     action :create
     source "server_xml.erb"
     group "root"
-    owner "#{node[:app_tomcat][:app_user]}"
+    owner "#{node[:app_tomcat][:user]}"
     mode "0644"
     cookbook 'app_tomcat'
     variables(
@@ -323,7 +323,7 @@ action :setup_db_connection do
   log "  Creating context.xml for DB: #{db_name} using adapter #{db_adapter} and datasource #{datasource}"
   db_connect_app "/etc/tomcat6/context.xml" do
     template      "context_xml.erb"
-    owner         "#{node[:app_tomcat][:app_user]}"
+    owner         "#{node[:app_tomcat][:user]}"
     group         "root"
     mode          "0644"
     database      db_name
@@ -334,7 +334,7 @@ action :setup_db_connection do
   log "  Creating web.xml"
   template "/etc/tomcat6/web.xml" do
     source "web_xml.erb"
-    owner "#{node[:app_tomcat][:app_user]}"
+    owner "#{node[:app_tomcat][:user]}"
     group "root"
     mode "0644"
     cookbook 'app_tomcat'
@@ -343,7 +343,7 @@ action :setup_db_connection do
   # Installing JavaServer Pages Standard Tag Library API
   cookbook_file "/usr/share/tomcat6/lib/jstl-api-1.2.jar" do
     source "jstl-api-1.2.jar"
-    owner "#{node[:app_tomcat][:app_user]}"
+    owner "#{node[:app_tomcat][:user]}"
     group "root"
     mode "0644"
     cookbook 'app_tomcat'
@@ -352,7 +352,7 @@ action :setup_db_connection do
   # Installing JavaServer Pages Standard Tag Library specifications library
   cookbook_file "/usr/share/tomcat6/lib/jstl-impl-1.2.jar" do
     source "jstl-impl-1.2.jar"
-    owner "#{node[:app_tomcat][:app_user]}"
+    owner "#{node[:app_tomcat][:user]}"
     group "root"
     mode "0644"
     cookbook 'app_tomcat'
@@ -402,7 +402,7 @@ action :code_update do
   repo "default" do
     destination deploy_dir
     action node[:repo][:default][:perform_action].to_sym
-    app_user node[:app_tomcat][:app_user]
+    app_user node[:app_tomcat][:user]
     repository node[:repo][:default][:repository]
     persist false
   end
@@ -417,7 +417,7 @@ action :code_update do
       if [ ! -z "#{node[:app_tomcat][:code][:root_war]}" -a -e "#{deploy_dir}/#{node[:app_tomcat][:code][:root_war]}" ] ; then
         mv #{deploy_dir}/#{node[:app_tomcat][:code][:root_war]} #{deploy_dir}/ROOT.war
       fi
-      chown -R #{node[:app_tomcat][:app_user]}:#{node[:app_tomcat][:app_user]} #{deploy_dir}
+      chown -R #{node[:app_tomcat][:user]}:#{node[:app_tomcat][:group]} #{deploy_dir}
       sleep 5
     EOH
     only_if { node[:app_tomcat][:code][:root_war] != "ROOT.war" }

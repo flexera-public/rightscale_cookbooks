@@ -96,8 +96,8 @@ action :setup_db_connection do
   # Make sure config dir exists
   directory ::File.join(project_root, "config") do
     recursive true
-    owner node[:app_php][:app_user]
-    group node[:app_php][:app_user]
+    owner node[:app_php][:user]
+    group node[:app_php][:group]
   end
 
   # Tells selected db_adapter to fill in it's specific connection template
@@ -105,8 +105,8 @@ action :setup_db_connection do
     template "db.php.erb"
     cookbook "app_php"
     database node[:app_php][:db_schema_name]
-    owner node[:app_php][:app_user]
-    group node[:app_php][:app_user]
+    owner node[:app_php][:user]
+    group node[:app_php][:user]
   end
 end
 
@@ -123,7 +123,7 @@ action :code_update do
   repo "default" do
     destination deploy_dir
     action node[:repo][:default][:perform_action].to_sym
-    app_user node[:app_php][:app_user]
+    app_user node[:app_php][:user]
     repository node[:repo][:default][:repository]
     persist false
   end

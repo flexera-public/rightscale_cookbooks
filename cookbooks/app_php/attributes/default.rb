@@ -20,7 +20,8 @@ set_unless[:app_php][:db_adapter] = "mysql"
 case platform
 when "ubuntu"
   set[:app_php][:module_dependencies] = [ "proxy_http", "php5" ]
-  set_unless[:app_php][:app_user] = "www-data"
+  set[:app_php][:user] = "www-data"
+  set[:app_php][:group] = "www-data"
   if app_php[:db_adapter] == "mysql"
     set[:db][:socket] = "/var/run/mysqld/mysqld.sock"
   elsif app_php[:db_adapter] == "postgresql"
@@ -30,7 +31,8 @@ when "ubuntu"
   end
 when "centos", "redhat"
   set[:app_php][:module_dependencies] = [ "proxy", "proxy_http" ]
-  set_unless[:app_php][:app_user] = "apache"
+  set[:app_php][:user] = "apache"
+  set[:app_php][:group] = "apache"
   if app_php[:db_adapter] == "mysql"
     set[:db][:socket] = "/var/lib/mysql/mysql.sock"
   elsif app_php[:db_adapter] == "postgresql"
