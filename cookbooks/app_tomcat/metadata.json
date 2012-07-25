@@ -68,7 +68,8 @@
       "required": "required",
       "calculated": false,
       "choice": [
-        "jdbc/ConnDB"
+        "jdbc/MYSQLDB",
+        "jdbc/postgres"
       ],
       "type": "string",
       "recipes": [
