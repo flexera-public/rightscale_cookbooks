@@ -91,9 +91,19 @@
       "recipes": [
         "app_tomcat::default"
       ],
+<<<<<<< HEAD
+=======
+      "display_name": "Tomcat Java NewSize",
+      "description": "The java NewSize argument. Example: 256m"
+    },
+    "app_tomcat/datasource_name": {
+      "required": "required",
+      "calculated": false,
+>>>>>>> implemeted Neve's comments
       "choice": [
-
+        "jdbc/ConnDB"
       ],
+<<<<<<< HEAD
       "calculated": false,
       "type": "string"
     },
@@ -105,6 +115,18 @@
       "recipes": [
         "app_tomcat::default"
       ],
+=======
+      "type": "string",
+      "recipes": [
+        "app_tomcat::default"
+      ],
+      "display_name": "Container datasource name",
+      "description": "This name is used to set up the database connection with the application server. You should set the attribute if your application is compiled to use a different datasource name. To set custom datasource you must override input value.  Example: jdbc/MyConnDB"
+    },
+    "app_tomcat/java/xmx": {
+      "required": "optional",
+      "calculated": false,
+>>>>>>> implemeted Neve's comments
       "choice": [
 
       ],
