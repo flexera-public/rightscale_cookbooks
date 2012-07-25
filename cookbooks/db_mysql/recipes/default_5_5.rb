@@ -21,10 +21,13 @@ when "redhat","centos"
 # For Red Hat and similar distributions, the MySQL distribution is divided into a 
 # number of separate packages, mysql for the client tools, mysql-server for the 
 # server and associated tools, and mysql-libs for the libraries. 
+  node[:db][:socket] = "/var/lib/mysql/mysql.sock"
   node[:db_mysql][:service_name] = "mysqld"
   node[:db_mysql][:packages_uninstall] = ""
   node[:db_mysql][:client_packages_install] = ["mysql55-devel", "mysql55-libs", "mysql55"]
   node[:db_mysql][:server_packages_install] = ["mysql55-server"]
+when "ubuntu"
+  node[:db][:socket] = "/var/run/mysqld/mysqld.sock"
 else
   raise "Unsupported platform #{platform} for MySQL Version #{version}"
 end
