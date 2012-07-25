@@ -16,17 +16,17 @@ log "  Setting DB MySQL version to #{version}"
 #
 node[:db_mysql][:version] = version
 
+node[:db_mysql][:service_name] = value_for_platform(
+  "centos" => {
+    "5.8"     => "mysql",
+    "default" => "mysqld"
+  },
+  "default"   => "mysql"
+)
+
 node[:db][:socket] = value_for_platform(
   "ubuntu"  => "/var/run/mysqld/mysqld.sock",
   "default" => "/var/lib/mysql/mysql.sock"
-)
-
-node[:db_mysql][:service_name] = value_for_platform(
-  "centos"  => {
-    "6.2"     => "mysqld",
-    "default" => "mysql"
-  },
-  "default" => "mysql"
 )
 
 node[:db_mysql][:client_packages_uninstall] = [ ]
@@ -34,16 +34,16 @@ node[:db_mysql][:server_packages_uninstall] = [ ]
 
 node[:db_mysql][:client_packages_install] = value_for_platform(
   "centos" => {
-    "6.2" => [
-      "mysql-devel",
-      "mysql-libs",
-      "mysql"
-    ],
-    "default" => [
+    "5.8"=> [
       "MySQL-shared-compat",
       "MySQL-devel-community",
       "MySQL-client-community"
-    ]
+    ],
+    "default" => [
+      "mysql-devel",
+      "mysql-libs",
+      "mysql"
+    ] 
   },
   ["redhat", "fedora", "suse"] => {
     "default" => [
@@ -53,26 +53,30 @@ node[:db_mysql][:client_packages_install] = value_for_platform(
     ]
   },
   ["debian", "ubuntu"] => {
+    "10.04" => [ ],
     "default" => [
       "libmysqlclient-dev",
       "mysql-client-5.1"
     ]
   },
-  "default"  => [ ]
+  "default" => [ ] 
 )
+
+# Ubuntu 12.04 doesn't support MySQL 5.1 server
 
 node[:db_mysql][:server_packages_install] = value_for_platform(
   "centos" => {
-    "6.2" => [ "mysql-server" ],
-    "default" => [ "MySQL-server-community" ]
+    "5.8" => [ "MySQL-server-community" ],
+    "default" => [ "mysql-server" ]
   },
   ["redhat", "fedora", "suse"] => {
     "default" => [ "MySQL-server-community" ]
   },
   ["debian", "ubuntu"] => {
-    "default" => ["mysql-server-5.1"]
+    "10.04" => [ "mysql-server-5.1" ],
+    "default"   => [ ]
   },
-  "default"  => [ ]
+  "default" => [ ] 
 )
 
 raise "Platform not supported for MySQL #{version}" if node[:db_mysql][:client_packages_install].empty?

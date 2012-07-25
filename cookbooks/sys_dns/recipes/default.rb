@@ -9,8 +9,13 @@ rightscale_marker :begin
 
 # Installing packages depending on platform
 package value_for_platform(
-  "ubuntu" => { "default" => "libdigest-sha1-perl" },
-  [ "centos", "redhat" ] => { "default" => "perl-Digest-SHA1" }
+  "ubuntu" => {
+    "10.04" => "libdigest-sha1-perl",
+    "default" => "libdigest-sha-perl"
+  },
+  [ "centos", "redhat" ] => {
+    "default" => "perl-Digest-SHA1"
+  }
 )
 
 package value_for_platform(
