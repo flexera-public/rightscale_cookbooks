@@ -19,7 +19,10 @@ package "php5" do
       "5.8" => "php53u",
       "default" => "php" # CentOS 6+ 
     },
-    "default" => 'php'
+    "ubuntu" => {
+      "default" => "php5"
+    },
+    "default" => [ ]
   )
   action :install
 end
