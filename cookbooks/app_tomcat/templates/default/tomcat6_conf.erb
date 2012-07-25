@@ -27,6 +27,15 @@ CATALINA_HOME="/usr/share/tomcat6"
 JASPER_HOME="/usr/share/tomcat6"
 CATALINA_TMPDIR="/var/tmp/tomcat6"
 
+<% if @platform == "centos" %>
+  <% if @platform_ver == "6.2" %>
+# Cannot resolve user database reference - naming-factory-dbcp
+# the real problem is a cnfe that is avoided by configuring
+# the -Djavax.sql.DataSource.Factory. This fixes the rpm install.
+JAVA_OPTS="${JAVA_OPTS} -Djavax.sql.DataSource.Factory=org.apache.commons.dbcp.BasicDataSourceFactory"
+  <% end %>
+<% end %>
+
 # You can pass some parameters to java here if you wish to
 #JAVA_OPTS="-Xminf0.1 -Xmaxf0.3"
 

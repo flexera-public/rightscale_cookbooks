@@ -43,10 +43,13 @@ end
 action :install do
   # Installing required packages
   packages = new_resource.packages
-  log "  Packages which will be installed: #{packages}"
+ 
+  if not packages.nil?
+    log "  Packages which will be installed #{packages}"
 
-  packages.each do |p|
-    package p
+    packages.each do |p|
+      package p
+    end
   end
 
   # Installing user-specified additional php modules
