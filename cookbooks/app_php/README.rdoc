@@ -64,13 +64,10 @@ The input type should be set to Array only.
 === Attributes:
 These are settings used in recipes and templates. Default values are noted.
 
-Note: Only "internal" cookbook attributes are described here. Descriptions of attributes which have inputs can be found in the metadata.rb cookbook file.
+Note: Only "internal" cookbook attributes are described here. Descriptions of attributes which have inputs can be found in the metadata.rb cookbook file. For generic app attributes, refer to the app cookbook readme.
 
 ====== General attributes
 * <tt>node[:app_php][:modules_list]</tt> - List of additional php modules.
-
-====== Platform dependent
-* <tt>node[:app][:user]</tt> - Apache user. Required for changing owner of created project dirs.
 
 === Templates:
 
