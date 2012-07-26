@@ -8,7 +8,6 @@
 rightscale_marker :begin
 
 db_do_backup "do secondary backup" do
-  force node[:db][:backup][:force] == 'true'
   backup_type "secondary"
 end
 

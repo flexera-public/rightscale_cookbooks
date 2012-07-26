@@ -50,39 +50,18 @@ action :install do
     package p
   end
 
-  log "  Installing Ruby Enterprise Edition..."
-  # Moving rubyEE sources to /tmp folder preparing to install
-  cookbook_file "/tmp/ruby-enterprise-installed.tar.gz" do
-    source "ruby-enterprise_x86_64.tar.gz"
-    mode "0644"
-    only_if do node[:kernel][:machine].include? "x86_64" end
-    cookbook 'app_passenger'
-  end
-
-  bash "install_ruby_EE" do
-    flags "-ex"
-    code <<-EOH
-      tar xzf /tmp/ruby-enterprise-installed.tar.gz -C /opt/
-    EOH
-    only_if do ::File.exists?("/tmp/ruby-enterprise-installed.tar.gz")  end
-  end
-
-
   # Installing passenger module
-  log "  Installing passenger"
-  bash "Install apache passenger gem" do
-    flags "-ex"
-    code <<-EOH
-      /opt/ruby-enterprise/bin/gem install passenger -q --no-rdoc --no-ri
-    EOH
-    not_if do (::File.exists?("/opt/ruby-enterprise/bin/passenger-install-apache2-module")) end
+  log "  Installing passenger gem"
+  gem_package "passenger" do
+    gem_binary "/usr/bin/gem"
+    action :install
   end
 
-
+  log "  Installing apache passenger module"
   bash "Install apache passenger module" do
     flags "-ex"
     code <<-EOH
-      /opt/ruby-enterprise/bin/passenger-install-apache2-module --auto
+      /usr/bin/passenger-install-apache2-module --auto
     EOH
     not_if "test -e #{node[:app_passenger][:ruby_gem_base_dir].chomp}/gems/passenger*/ext/apache2/mod_passenger.so"
   end
@@ -154,26 +133,13 @@ action :setup_db_connection do
   db_adapter = node[:app_passenger][:project][:db][:adapter]
 
   log "  Generating database.yml"
-  # Tell MySQL to fill in our connection template
-  if db_adapter == "mysql"
-    db_mysql_connect_app "#{deploy_dir.chomp}/config/database.yml" do
-      template      "database.yml.erb"
-      cookbook      "app_passenger"
-      owner         node[:app_passenger][:apache][:user]
-      group         node[:app_passenger][:apache][:group]
-      database      db_name
-    end
-  # Tell PostgreSQL to fill in our connection template
-  elsif db_adapter == "postgresql"
-    db_postgres_connect_app "#{deploy_dir.chomp}/config/database.yml" do
-      template      "database.yml.erb"
-      cookbook      "app_passenger"
-      owner         node[:app_passenger][:apache][:user]
-      group         node[:app_passenger][:apache][:group]
-      database      db_name
-    end
-  else
-    raise "Unrecognized database adapter #{node[:app_passenger][:project][:db][:adapter]}, exiting "
+  # Tell Database to fill in our connection template
+  db_connect_app "#{deploy_dir.chomp}/config/database.yml" do
+    template      "database.yml.erb"
+    cookbook      "app_passenger"
+    owner         node[:app_passenger][:apache][:user]
+    group         node[:app_passenger][:apache][:group]
+    database      db_name
   end
 
   # Defining $RAILS_ENV

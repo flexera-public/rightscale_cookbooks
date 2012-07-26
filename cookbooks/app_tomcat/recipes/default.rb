@@ -12,56 +12,94 @@ node[:app][:provider] = "app_tomcat"
 node[:app][:database_name] = node[:app_tomcat][:db_name]
 
 # Preparing list of database adapter packages depending on platform and database adapter
-case node[:platform]
-when "ubuntu", "debian"
-  case node[:app_tomcat][:db_adapter]
-  when "mysql"
-    node[:app][:packages] = [
-      "ecj-gcj",
-      "tomcat6",
-      "tomcat6-admin",
-      "tomcat6-common",
-      "tomcat6-user",
-      "libmysql-java",
-      "libtcnative-1"
-    ]
-  when "postgresql"
-    node[:app][:packages] = [
-      "ecj-gcj",
-      "tomcat6",
-      "tomcat6-admin",
-      "tomcat6-common",
-      "tomcat6-user",
-      "libtcnative-1"
-    ]
-  else
-    raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting"
-  end
-when "centos", "fedora", "suse", "redhat", "redhatenterpriseserver"
-  case node[:app_tomcat][:db_adapter]
-  when "mysql"
-    node[:app][:packages] = [
-      "eclipse-ecj",
-      "tomcat6",
-      "tomcat6-admin-webapps",
-      "tomcat6-webapps",
-      "tomcat-native",
-      "mysql-connector-java"
-    ]
-  when "postgresql"
-    node[:app][:packages] = [
-      "eclipse-ecj",
-      "tomcat6",
-      "tomcat6-admin-webapps",
-      "tomcat6-webapps",
-      "tomcat-native"
-    ]
-  else
-    raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting"
-  end
+case node[:app_tomcat][:db_adapter]
+when "mysql"
+  node[:app][:packages] = value_for_platform(
+    "centos" => {
+      "6.2" => [
+        "ecj", 
+        "tomcat6",
+        "tomcat6-admin-webapps",
+        "tomcat6-webapps",
+        "tomcat-native",
+        "mysql-connector-java"
+      ],  
+      "default" => [
+        "eclipse-ecj",
+        "tomcat6",
+        "tomcat6-admin-webapps",
+        "tomcat6-webapps",
+        "tomcat-native",
+        "mysql-connector-java"
+      ]   
+    }, 
+    [ "ubuntu", "debian" ] => {
+      "default"  => [
+        "ecj-gcj",
+        "tomcat6",
+        "tomcat6-admin",
+        "tomcat6-common",
+        "tomcat6-user",
+        "libmysql-java",
+        "libtcnative-1"
+      ]   
+    }, 
+    [ "fedora", "suse", "redhat", "redhatenterpriseserver" ] => {
+      "default" => [
+        "eclipse-ecj",
+        "tomcat6",
+        "tomcat6-admin-webapps",
+        "tomcat6-webapps",
+        "tomcat-native",
+        "mysql-connector-java"
+      ]
+    },
+    "default" => []
+  )
+when "postgresql"
+  node[:app][:packages] = value_for_platform(
+    "centos" => {
+      "6.2" => [
+        "ecj",
+        "tomcat6",
+        "tomcat6-admin-webapps",
+        "tomcat6-webapps",
+        "tomcat-native"
+      ],
+      "default" => [
+        "eclipse-ecj",
+        "tomcat6",
+        "tomcat6-admin-webapps",
+        "tomcat6-webapps",
+        "tomcat-native"
+      ]
+    },
+    [ "ubuntu", "debian" ] => {
+      "default" => [
+        "ecj-gcj",
+        "tomcat6",
+        "tomcat6-admin",
+        "tomcat6-common",
+        "tomcat6-user",
+        "libtcnative-1"
+      ]
+    },
+    [ "fedora", "suse", "redhat", "redhatenterpriseserver" ] => {
+      "default" => [
+        "eclipse-ecj",
+        "tomcat6",
+        "tomcat6-admin-webapps",
+        "tomcat6-webapps",
+        "tomcat-native"
+      ]
+    },
+    "default" => []
+  )
 else
-  raise "Unrecognized distro #{node[:platform]}, exiting "
+  raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting"
 end
+
+raise "Unrecognized distro #{node[:platform]}, exiting " if node[:app][:packages].empty?
 
 # Setting app LWRP attribute
 node[:app][:root] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
