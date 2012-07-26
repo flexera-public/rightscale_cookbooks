@@ -127,7 +127,7 @@ action :code_update do
   repo "default" do
     destination deploy_dir
     action node[:repo][:default][:perform_action].to_sym
-    app_user node[:appp][:user]
+    app_user node[:app][:user]
     repository node[:repo][:default][:repository]
     persist false
   end
