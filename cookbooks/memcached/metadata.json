@@ -1,11 +1,14 @@
 {
   "name": "memcached",
-  "description": "Cookbook for a memcached server setup.",
-  "long_description": "= RightScale Memcached Server Template\n\n== DESCRIPTION:\nThis cookbook provides recipes for setting up and running a Memcached server.\n\n== DETAILS:\n\n=== General\n\nThe cookbook installs memcached with needed configuration for CentOS, Redhat and Ubuntu.\nOpens lisnening port in systems' firewall, setups server tags, monitoring and log rotation.\n\n=== Recipes\n\nrecipe \"memcached::default\", \"Default recipe for memcached setup. Installs server tags.\"\nrecipe \"memcached::install_server\", \"Installation and configuration recipe for memcached. Does memcached setup and configuration, opens port in firewall, configures collectd and logrotate.\"\nrecipe \"memcached::do_start\", \"Start memcached service.\"\nrecipe \"memcached::do_restart\", \"Restart memcached service.\"\nrecipe \"memcached::do_reload\", \"Reload memcached service.\"\nrecipe \"memcached::do_stop\", \"Stop memcached service.\"\n\n=== Attributes\n\nThe amount of memory used for item storage is calculated as user defined percent from total system memory.\nOthers are system-dependant and/or have default values.\n\n=== Templates\n\nHas memcached configuration templates for CentOS/Redhat and Ubuntu, a collectd plugin template.\n\n\n== REQUIREMENTS:\n\n=== General\n\n=== Cookbooks dependecies\n\nUses \"rightscale\", \"sys_firewall\" and \"logrotate\".\n\n== SETUP:\n\n== USAGE:\n\n=== General\n\n=== Examples\n\n= LICENSE\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to the\nRightScale Terms of Service available at http://www.rightscale.com/terms.php and,\nif applicable, other agreements such as a RightScale Master Subscription Agreement.",
+  "description": "RightScale Database Manager",
+  "long_description": "= RightScale Memcached Server Template\n\n== DESCRIPTION:\n\nThis cookbook provides recipes for setting up and running a Memcached server.\n\n== REQUIREMENTS:\n\n* Requires a VM launched from a RightScale managed RightImage\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n== KNOWN LIMITATIONS:\n\n* If you need memcached to listen on public interface must set to listen on any.\n\n== SETUP/USAGE:\n\n* Choose image and cloud.\n* Fill required input fields.\n* When using a RightScale ServerTemplate, use <tt>memcached::default</tt> recipe to automatically add the server tags.\n* Place <tt>memcached::install_server</tt> recipe into your runlist to setup the memcached server.\n\n== DETAILS:\n\n=== General\n\nThe cookbook installs memcached with needed configuration for CentOS, Redhat and Ubuntu.\nOpens lisnening port in systems' firewall, setups server tags, monitoring and log rotation.\n\n=== Attributes:\n\nThese are the settings used in recipes and templates. Default values are noted.\n* <tt>node[:memcached][:tcp_port]</tt> - TCP port number to listen on. Default is 11211.\n* <tt>node[:memcached][:udp_port]</tt> - UDP port number to listen on. Default is 11211.\n* <tt>node[:memcached][:user]</tt> - Username to run memcached. Default is nobody.\n* <tt>node[:memcached][:connection_limit]</tt> - Number of simultaneous connections. Default is 1024.\n* <tt>node[:memcached][:memtotal_percent]</tt> - Max memory to use for items. Default is 90.\n* <tt>node[:memcached][:threads]</tt> - Number of threads. Default is 1.\n* <tt>node[:memcached][:interface]</tt> - Interface to listen on. Default is any.\n* <tt>node[:memcached][:log_level]</tt> - Memcached logging output level\n* <tt>node[:memcached][:cluster_id]</tt> - Cluster assosiation string.\n\n* <tt>node[:platform][:memcached][:config_file]</tt> - Location of memcached configuration file.\n* <tt>node[:platform][:memcached][:iptables_rules]</tt> - Location of iptables.\n\n=== Templates:\n\n* <tt>memcached.conf.erb</tt> - Memcached configuration file. Unique for CentOS and Ubuntu. Used is the <tt>memcached::install_server</tt> recipe.\n\n* <tt>memcached_collectd.conf.erb</tt> - Memcached collectd plugin template. Used is the <tt>memcached::install_server</tt> recipe.\n\n= LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to\nthe RightScale Terms of Service available at http://www.rightscale.com/terms.php\nand, if applicable, other agreements such as a RightScale Master Subscription\nAgreement.",
   "maintainer": "RightScale, Inc.",
   "maintainer_email": "support@rightscale.com",
   "license": "Copyright RightScale, Inc. All rights reserved.",
   "platforms": {
+    "centos": "~> 5.8",
+    "redhat": "~> 5.8",
+    "ubuntu": "~> 10.04.0"
   },
   "dependencies": {
     "rightscale": ">= 0.0.0",
@@ -25,7 +28,7 @@
   "attributes": {
     "memcached/tcp_port": {
       "display_name": "Memcached TCP Port",
-      "description": "TCP port number to listen on. (Default : 11211).",
+      "description": "TCP port number to listen on. Default : 11211",
       "required": "recommended",
       "default": "11211",
       "recipes": [
@@ -40,7 +43,7 @@
     },
     "memcached/udp_port": {
       "display_name": "Memcached UDP Port",
-      "description": "UDP port number to listen on.",
+      "description": "UDP port number to listen on. Default : 11211",
       "required": "recommended",
       "default": "11211",
       "recipes": [
@@ -82,8 +85,8 @@
       "type": "string"
     },
     "memcached/memtotal_percent": {
-      "display_name": "Memcached Cache size %",
-      "description": "Max memory to use for items.",
+      "display_name": "Memcached Cache size percentage",
+      "description": "Maximum memory to use for items.",
       "required": "recommended",
       "choice": [
         "10",
@@ -105,7 +108,7 @@
     },
     "memcached/threads": {
       "display_name": "Memcached used threads",
-      "description": "Use a number from 1 to %maximum number of threads for the instance%.",
+      "description": "Use a number from one to the maximum number of threads for the instance.",
       "required": "recommended",
       "default": "1",
       "recipes": [
@@ -119,7 +122,7 @@
     },
     "memcached/interface": {
       "display_name": "Memcached listening interface",
-      "description": "Interface to listen on.",
+      "description": "Specify the interface you want memcached to listen on.",
       "required": "recommended",
       "choice": [
         "localhost",
@@ -135,15 +138,15 @@
     },
     "memcached/log_level": {
       "display_name": "Memcached logging output level",
-      "description": "\"\" (off), -v (verbose) -vv (debug)  -vvv (extremely verbose)",
+      "description": "Without the verbose options, memcached normally produces no output during normal operating.",
       "required": "optional",
       "choice": [
-        "",
-        "-v",
-        "-vv",
-        "-vvv"
+        "off",
+        "verbose",
+        "debug",
+        "extremely verbose"
       ],
-      "default": "",
+      "default": "off",
       "recipes": [
         "memcached::install_server"
       ],
@@ -176,5 +179,5 @@
     "memcached::do_reload": "Reload memcached service.",
     "memcached::do_stop": "Stop memcached service."
   },
-  "version": "0.1.3"
+  "version": "13.1.0"
 }
