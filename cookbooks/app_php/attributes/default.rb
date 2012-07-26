@@ -14,11 +14,13 @@ set_unless[:app_php][:modules_list] = []
 # Calculated attributes
 # Defining apache user, module dependencies, and database adapter parameters depending on platform.
 case platform
-when "ubuntu", "debian"
-  set[:app][:module_dependencies] = [ "proxy_http", "php5" ]
-  set_unless[:app_php][:app_user] = "www-data"
-when "centos", "fedora", "suse", "redhat"
-  set[:app][:module_dependencies] = [ "proxy", "proxy_http" ]
-  set_unless[:app_php][:app_user] = "apache"
+when "ubuntu"
+  set[:app_php][:module_dependencies] = [ "proxy_http", "php5" ]
+  set[:app_php][:user] = "www-data"
+  set[:app_php][:group] = "www-data"
+when "centos", "redhat"
+  set[:app_php][:module_dependencies] = [ "proxy", "proxy_http" ]
+  set[:app_php][:user] = "apache"
+  set[:app_php][:group] = "apache"
 end
 

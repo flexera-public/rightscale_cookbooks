@@ -43,10 +43,13 @@ end
 action :install do
   # Installing required packages
   packages = new_resource.packages
-  log "  Packages which will be installed: #{packages}"
+ 
+  if not packages.nil?
+    log "  Packages which will be installed #{packages}"
 
-  packages.each do |p|
-    package p
+    packages.each do |p|
+      package p
+    end
   end
 
   # Installing user-specified additional php modules
@@ -97,30 +100,17 @@ action :setup_db_connection do
   # Make sure config dir exists
   directory ::File.join(project_root, "config") do
     recursive true
-    owner node[:app_php][:app_user]
-    group node[:app_php][:app_user]
+    owner node[:app_php][:user]
+    group node[:app_php][:group]
   end
 
-  db_adapter = node[:app][:db_adapter]
   # Tells selected db_adapter to fill in it's specific connection template
-  if db_adapter == "mysql"
-    db_mysql_connect_app ::File.join(project_root, "config", "db.php") do
-      template "db.php.erb"
-      cookbook "app_php"
-      database db_name
-      owner node[:app_php][:app_user]
-      group node[:app_php][:app_user]
-    end
-  elsif db_adapter == "postgresql"
-    db_postgres_connect_app ::File.join(project_root, "config", "db.php") do
-      template "db.php.erb"
-      cookbook "app_php"
-      database db_name
-      owner node[:app_php][:app_user]
-      group node[:app_php][:app_user]
-    end
-  else
-    raise "Unrecognized database adapter #{node[:app][:db_adapter]}, exiting"
+  db_connect_app ::File.join(project_root, "config", "db.php") do
+    template "db.php.erb"
+    cookbook "app_php"
+    database node[:app_php][:db_schema_name]
+    owner node[:app_php][:user]
+    group node[:app_php][:group]
   end
 end
 
@@ -137,7 +127,7 @@ action :code_update do
   repo "default" do
     destination deploy_dir
     action node[:repo][:default][:perform_action].to_sym
-    app_user node[:app_php][:app_user]
+    app_user node[:app_php][:user]
     repository node[:repo][:default][:repository]
     persist false
   end
@@ -152,5 +142,4 @@ end
 action :setup_monitoring do
   raise 'Using "default" application provider. Action is not implemented'
 end
-
 

@@ -18,11 +18,11 @@ set_unless[:app_passenger][:apache][:serve_local_files]="true"
 
 # Defining apache user, group and log directory path depending on platform.
 case node[:platform]
-  when "ubuntu","debian"
+  when "ubuntu"
     set[:app_passenger][:apache][:user]="www-data"
     set[:app_passenger][:apache][:group]="www-data"
     set[:app_passenger][:apache][:log_dir]="/var/log/apache2"
-  when "centos","redhat","redhatenterpriseserver","fedora","suse"
+  when "centos","redhat"
     set[:app_passenger][:apache][:user]="apache"
     set[:app_passenger][:apache][:group]="apache"
     set[:app_passenger][:apache][:log_dir]="/var/log/httpd"
@@ -30,14 +30,14 @@ case node[:platform]
     raise "Unrecognized distro #{node[:platform]}, exiting "
 end
 
-# Path to Ruby EE gem directory
-set[:app_passenger][:ruby_gem_base_dir]="/opt/ruby-enterprise/lib/ruby/gems/1.8"
-# Path to Ruby EE gem executable
-set[:app_passenger][:gem_bin]="/opt/ruby-enterprise/bin/gem"
-# Path to Ruby EE ruby executable
-set[:app_passenger][:ruby_bin]="/opt/ruby-enterprise/bin/ruby"
+# Path to Ruby gem directory
+set[:app_passenger][:ruby_gem_base_dir]="/usr/lib64/ruby/gems/1.8"
+# Path to Ruby gem executable
+set[:app_passenger][:gem_bin]="/usr/bin/gem"
+# Path to Ruby ruby executable
+set[:app_passenger][:ruby_bin]="/usr/bin/ruby"
 # Path to passenger module for apache
-set[:app_passenger][:apache_psr_install_module]="/opt/ruby-enterprise/bin/passenger-install-apache2-module"
+set[:app_passenger][:apache_psr_install_module]="/usr/bin/passenger-install-apache2-module"
 # By default rails application environment variable is set to "development"
 set_unless[:app_passenger][:project][:environment]="development"
 # List of additional gems, required for rails application

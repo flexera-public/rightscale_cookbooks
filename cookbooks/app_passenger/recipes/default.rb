@@ -11,7 +11,7 @@ log "  Setting provider specific settings for rails-passenger."
 node[:app][:provider] = "app_passenger"
 
 case node[:platform]
-  when "ubuntu","debian"
+  when "ubuntu"
     node[:app][:packages] = [
       "libopenssl-ruby",
       "libcurl4-openssl-dev",
@@ -20,13 +20,12 @@ case node[:platform]
       "libapr1-dev",
       "libcurl4-openssl-dev"
      ]
-  when "centos","redhat","redhatenterpriseserver","fedora","suse"
+  when "centos","redhat"
     node[:app][:packages] = [
       "zlib-devel",
       "openssl-devel",
       "readline-devel",
       "curl-devel",
-      "openssl-devel",
       "httpd-devel",
       "apr-devel",
       "apr-util-devel",

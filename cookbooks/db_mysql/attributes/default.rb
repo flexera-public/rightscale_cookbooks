@@ -21,6 +21,7 @@ set_unless[:db_mysql][:previous_master] = nil
 set_unless[:db_mysql][:port] = "3306"
 set_unless[:db_mysql][:log_bin_enabled] = true
 set_unless[:db_mysql][:log_bin] = "/mnt/ephemeral/mysql-binlogs/mysql-bin"
+set_unless[:db_mysql][:binlog_format] = "MIXED"
 set_unless[:db_mysql][:tmpdir] = "/mnt/ephemeral/tmp"
 set_unless[:db_mysql][:datadir] = "/var/lib/mysql"
 set_unless[:db_mysql][:datadir_relocate] = "/mnt/storage"
@@ -38,12 +39,10 @@ set_unless[:db_mysql][:dump][:prefix] = ""
 set_unless[:db_mysql][:kill_bug_mysqld_safe] = true
 
 case platform
-when "redhat","centos","fedora","suse"
-  set[:db_mysql][:socket] = "/var/lib/mysql/mysql.sock"
+when "redhat","centos"
   set_unless[:db_mysql][:log] = ""
   set_unless[:db_mysql][:log_error] = "" 
-when "debian","ubuntu"
-  set[:db_mysql][:socket] = "/var/run/mysqld/mysqld.sock"
+when "ubuntu"
   set_unless[:db_mysql][:log] = "log = /var/log/mysql.log"
   set_unless[:db_mysql][:log_error] = "log_error = /var/log/mysql.err" 
 else
