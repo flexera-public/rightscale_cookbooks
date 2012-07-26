@@ -16,11 +16,11 @@ set_unless[:app_php][:modules_list] = []
 case platform
 when "ubuntu"
   set[:app_php][:module_dependencies] = [ "proxy_http", "php5" ]
-  set[:app_php][:user] = "www-data"
-  set[:app_php][:group] = "www-data"
+  set[:app][:user] = "www-data"
+  set[:app][:group] = "www-data"
 when "centos", "redhat"
   set[:app_php][:module_dependencies] = [ "proxy", "proxy_http" ]
-  set[:app_php][:user] = "apache"
-  set[:app_php][:group] = "apache"
+  set[:app][:user] = "apache"
+  set[:app][:group] = "apache"
 end
 

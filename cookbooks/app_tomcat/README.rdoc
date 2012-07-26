@@ -103,7 +103,7 @@ attributes that are inputs are in the <tt>metadata.rb</tt> cookbook file.
 * <tt>node[:app_tomcat][:java][:xms]</tt> - The initial size of the heap used by the JVM.
 
 ====== Platform dependent
-* <tt>node[:app_tomcat][:app_user]</tt> - Username. Required for changing the owner
+* <tt>node[:app][:user]</tt> - Username. Required for changing the owner
   of created project dirs.
 * <tt>node[:app_tomcat][:alternatives_cmd]</tt> - Java alternatives command list.
 

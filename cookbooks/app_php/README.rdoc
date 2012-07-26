@@ -70,7 +70,7 @@ Note: Only "internal" cookbook attributes are described here. Descriptions of at
 * <tt>node[:app_php][:modules_list]</tt> - List of additional php modules.
 
 ====== Platform dependent
-* <tt>node[:app_php][:app_user]</tt> - Apache user. Required for changing owner of created project dirs.
+* <tt>node[:app][:user]</tt> - Apache user. Required for changing owner of created project dirs.
 
 === Templates:
 

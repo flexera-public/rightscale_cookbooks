@@ -30,12 +30,12 @@ set_unless[:app_tomcat][:java][:xms] = "512m"
 # Defining apache user, java alternatives and database adapter parameters depending on platform.
 case node[:platform]
 when "ubuntu", "debian"
-  set[:app_tomcat][:user] = "tomcat6"
-  set[:app_tomcat][:group] = "tomcat6"
+  set[:app][:user] = "tomcat6"
+  set[:app][:group] = "tomcat6"
   set[:app_tomcat][:alternatives_cmd] = "update-alternatives --auto java"
 when "centos", "fedora", "suse", "redhat", "redhatenterpriseserver"
-  set[:app_tomcat][:user] = "tomcat"
-  set[:app_tomcat][:group] = "tomcat"
+  set[:app][:user] = "tomcat"
+  set[:app][:group] = "tomcat"
   set[:app_tomcat][:alternatives_cmd] = "alternatives --auto java"
 else
   raise "Unrecognized distro #{node[:platform]}, exiting "

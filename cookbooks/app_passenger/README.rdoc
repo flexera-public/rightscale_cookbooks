@@ -102,7 +102,7 @@ Note: Only "internal" cookbook attributes are described here. Descriptions of at
 
 ====== Platform dependent
 
-* <tt>node[:app_passenger][:apache][:user]</tt> - Apache user. Required for changing owner of created project dirs.
+* <tt>node[:app][:user]</tt> - Apache user. Required for changing owner of created project dirs.
 * <tt>node[:app_passenger][:apache][:log_dir]</tt> - Path to apache log directory.
 
 === Templates:
