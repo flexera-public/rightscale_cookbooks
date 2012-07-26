@@ -14,18 +14,5 @@ set_unless[:memcached][:connection_limit] = "1024"
 set_unless[:memcached][:memtotal_percent] = "90"
 set_unless[:memcached][:threads] = "1"
 set_unless[:memcached][:interface] = "any"
-set_unless[:memcached][:log_level] = ""
+set_unless[:memcached][:log_level] = "off"
 set_unless[:memcached][:cluster_id] = ""
-
-# Platform dependant attributes
-#
-case node[:platform]
-when "ubuntu", "debian"
-  set[:memcached][:config_file] = "/etc/memcached.conf"
-  set[:memcached][:iptables_rules] = "/etc/iptables.rules"
-when "centos", "fedora", "suse", "redhat", "redhatenterpriseserver"
-  set[:memcached][:config_file] = "/etc/sysconfig/memcached"
-  set[:memcached][:iptables_rules] = "/etc/sysconfig/iptables"
-else
-  raise "Unrecognized platform #{node[:platform]}, exiting "
-end

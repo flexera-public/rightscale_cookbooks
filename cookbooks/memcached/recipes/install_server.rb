@@ -31,7 +31,10 @@ service "memcached" do
   # We need the service to autostart after reboot.
   action :enable
   persist true
-  reload_command "/etc/init.d/memcached force-reload" # Had to override because ubuntu package doesn't have a "reload" option.
+  reload_command value_for_platform(
+                   # Had to override because ubuntu package doesn't have a "reload" option.
+                   "ubuntu" => {"default" => "/etc/init.d/memcached force-reload"},
+                   ["centos", "redhat"] => {"default" => "/etc/init.d/memcached reload"})
   supports :status => true, :start => true, :stop => true, :restart => true, :reload => true
 end
 
@@ -64,8 +67,20 @@ when "any"
   node[:memcached][:interface] = "0.0.0.0"
 end
 
+# Logging output level
+case node[:memcached][:log_level]
+when "verbose"
+  log_level = "-v"
+when "debug"
+  log_level = "-vv"
+when "extremely verbose"
+  log_level = "-vvv"
+end
+
 # Writing settings to memcached configuration template.
-template "#{node[:memcached][:config_file]}" do
+template value_for_platform(
+           "ubuntu" => {"default" => "/etc/memcached.conf"},
+           ["centos", "redhat"] => {"default" => "/etc/sysconfig/memcached"}) do
   source "memcached.conf.erb"
   variables(
     :tcp_port => node[:memcached][:tcp_port],
@@ -75,7 +90,7 @@ template "#{node[:memcached][:config_file]}" do
     :memtotal => node[:memcached][:memtotal],
     :threads => node[:memcached][:threads],
     :interface => node[:memcached][:interface],
-    :log_level => node[:memcached][:log_level]
+    :log_level => log_level
   )
   cookbook "memcached"
   # Restart needed for new settings to apply.

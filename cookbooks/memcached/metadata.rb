@@ -25,14 +25,14 @@ recipe "memcached::do_stop", "Stop memcached service."
 
 attribute "memcached/tcp_port",
   :display_name => "Memcached TCP Port",
-  :description => "TCP port number to listen on. (Default : 11211).",
+  :description => "TCP port number to listen on. Default : 11211",
   :required => "recommended",
   :default => "11211",
   :recipes => ["memcached::install_server", "memcached::default"]
 
 attribute "memcached/udp_port",
   :display_name => "Memcached UDP Port",
-  :description => "UDP port number to listen on.",
+  :description => "UDP port number to listen on. Default : 11211",
   :required => "recommended",
   :default => "11211",
   :recipes => ["memcached::install_server", "memcached::default"]
@@ -76,10 +76,10 @@ attribute "memcached/interface",
 
 attribute "memcached/log_level",
   :display_name => "Memcached logging output level",
-  :description => "\"\" (off), -v (verbose) -vv (debug)  -vvv (extremely verbose)",
+  :description => "Without the verbose options, memcached normally produces no output during normal operating.",
   :required => "optional",
-  :choice => ["", "-v", "-vv", "-vvv"],
-  :default => "",
+  :choice => ["off", "verbose", "debug", "extremely verbose"],
+  :default => "off",
   :recipes => ["memcached::install_server"]
 
 attribute "memcached/cluster_id",
