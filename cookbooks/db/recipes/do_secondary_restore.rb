@@ -33,16 +33,15 @@ db DATA_DIR do
   action :stop
 end
 
-# TODO: this code is duplicated between db and block device AND primary and secondary
-#.  Need to do something
-# about that...... Getting it working first
 lineage = node[:db][:backup][:lineage]
 lineage_override = node[:db][:backup][:lineage_override]
 restore_lineage = lineage_override == nil || lineage_override.empty? ? lineage : lineage_override
-log "  Input lineage #{restore_lineage}"
-log "  Input lineage_override #{lineage_override}"
-log "  Using lineage #{restore_lineage}"
-
+restore_timestamp_override = node[:db][:backup][:timestamp_override]
+log "  Input lineage #{restore_lineage.inspect}"
+log "  Input lineage_override #{lineage_override.inspect}"
+log "  Using lineage #{restore_lineage.inspect}"
+log "  Input timestamp_override #{restore_timestamp_override.inspect}"
+restore_timestamp_override ||= ""
 
 secondary_storage_cloud = get_device_or_default(node, :device1, :backup, :secondary, :cloud)
 if secondary_storage_cloud =~ /aws/i
@@ -52,16 +51,16 @@ elsif secondary_storage_cloud =~ /rackspace/i
 end
 
 log "  Performing Secondary Restore from #{node[:db][:backup][:secondary_location]}..."
-# Requires block_device DATA_DIR to be instantiated
-# previously. Make sure block_device::default recipe has been run.
+# Requires block_device DATA_DIR to be previously instantiated.
+# Make sure block_device::default recipe has been run.
 block_device NICKNAME do
   lineage restore_lineage
-  timestamp_override node[:db][:backup][:timestamp_override]
+  timestamp_override restore_timestamp_override
 
   volume_size get_device_or_default(node, :device1, :volume_size)
 
   secondary_cloud secondary_storage_cloud
-  secondary_endpoint get_device_or_default(node, :device1, :backup, :secondary, :endpoint)
+  secondary_endpoint get_device_or_default(node, :device1, :backup, :secondary, :endpoint) || ""
   secondary_container get_device_or_default(node, :device1, :backup, :secondary, :container)
   secondary_user get_device_or_default(node, :device1, :backup, :secondary, :cred, :user)
   secondary_secret get_device_or_default(node, :device1, :backup, :secondary, :cred, :secret)

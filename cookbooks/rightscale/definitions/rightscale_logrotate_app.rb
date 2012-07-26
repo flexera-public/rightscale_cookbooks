@@ -49,4 +49,3 @@ define :rightscale_logrotate_app, :enable => true, :frequency => "weekly", :temp
 
   end
 end
-

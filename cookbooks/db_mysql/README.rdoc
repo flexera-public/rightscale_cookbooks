@@ -7,7 +7,7 @@ MySQL database stand-alone servers and clients.
 
 == REQUIREMENTS:
 
-* Requires a VM launched from a RightScale managed RightImage.
+* Requires a server launched from a RightScale managed RightImage.
 
 == COOKBOOKS DEPENDENCIES:
 
@@ -15,17 +15,17 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 == KNOWN LIMITATIONS:
 
-There are no known limitiations.
+There are no known limitations.
 
 == SETUP:
 
 * Place the <tt>db_mysql::default</tt> recipe into your runlist to load the
-  MySQL provider, tuning parameters, as well as other MySQL specific attributes
-  in as inputs.
+  MySQL provider, tuning parameters, as well as other MySQL-specific attributes
+  into the node as inputs.
 
-* Place <tt>db::default</tt> recipe into your runlist to setup the db resource.
+* Place the <tt>db::default</tt> recipe into your runlist to set up the 'db' resource.
   When using a RightScale ServerTemplate, this will also automatically add the
-  common database attributes to your ServerTemplate inputs.
+  common database attributes to your ServerTemplate's inputs.
 
 == USAGE:
 
@@ -39,8 +39,7 @@ details.
 
 Custom tuning parameters can be applied by overriding the
 <tt>mysql_tuning.rb</tt> attributes file. For more information and an example
-override repository please see:
-https://github.com/ekargard/cookbooks_override/tree/master/cookbooks/db_mysql
+override repository please see: {Override Chef Cookbooks}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Override_Chef_Cookbooks].
 
 == DETAILS:
 

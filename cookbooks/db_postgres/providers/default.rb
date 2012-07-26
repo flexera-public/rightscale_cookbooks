@@ -72,12 +72,12 @@ action :write_backup_info do
   slavestatus ||= Hash.new
   slavestatus['File_position'] = File_position
   if node[:db][:this_is_master]
-    Chef::Log.info "Backing up Master info"
+    log "  Backing up Master info"
   else
-    Chef::Log.info "Backing up slave replication status"
+    log "  Backing up slave replication status"
     masterstatus['File_position'] = slavestatus['File_position']
   end
-  Chef::Log.info "Saving master info...:\n#{masterstatus.to_yaml}"
+  log "  Saving master info...:\n#{masterstatus.to_yaml}"
   ::File.open(::File.join(node[:db][:data_dir], RightScale::Database::PostgreSQL::Helper::SNAPSHOT_POSITION_FILENAME), ::File::CREAT|::File::TRUNC|::File::RDWR) do |out|
     YAML.dump(masterstatus, out)
   end
@@ -111,7 +111,7 @@ action :set_privileges do
   # This is a check to verify node is master server
   slave_state = RightScale::Database::PostgreSQL::Helper.detect_if_slave(node)
   if ( slave_state == "true")
-    Chef::Log.info "No need to re-run the recipe on slave"
+    log "  No need to re-run the recipe on slave"
   else
     db_postgres_set_privileges "setup db privileges" do
       preset priv
@@ -134,7 +134,7 @@ action :install_client do
     end
 
     packages = node[:db_postgres][:client_packages_install]
-    Chef::Log.info("Packages to install: #{packages.join(",")}")
+    log  "Packages to install: #{packages.join(",")}"
     packages.each do |p|
       package p do
         action :install
@@ -166,7 +166,7 @@ action :install_server do
   end
 
   packages = node[:db_postgres][:server_packages_install]
-  Chef::Log.info("Packages to install: #{packages.join(",")}")
+  log "  Packages to install: #{packages.join(",")}"
   packages.each do |p|
     package p do
       action :install
@@ -186,7 +186,7 @@ action :install_server do
     not_if "test -f #{touchfile}"
   end
 
-  # == Configure system for PostgreSQL
+  # Configure system for PostgreSQL
   #
   # Stop PostgreSQL
   service "postgresql-#{node[:db_postgres][:version]}" do
@@ -196,7 +196,7 @@ action :install_server do
 
   # Create the Socket directory
   # directory "/var/run/postgresql" do
-  directory "#{node[:db_postgres][:socket]}" do
+  directory "#{node[:db][:socket]}" do
     owner "postgres"
     group "postgres"
     mode 0770
@@ -205,9 +205,8 @@ action :install_server do
 
   # Setup postgresql.conf
   # template_source = "postgresql.conf.erb"
-
   configfile = ::File.expand_path "~/.postgresql_config.done"
-  template value_for_platform([ "centos", "redhat", "suse" ] => {"default" => "#{node[:db_postgres][:confdir]}/postgresql.conf"}, "default" => "#{node[:db_postgres][:confdir]}/postgresql.conf") do
+  template value_for_platform([ "centos", "redhat" ] => {"default" => "#{node[:db_postgres][:confdir]}/postgresql.conf"}, "default" => "#{node[:db_postgres][:confdir]}/postgresql.conf") do
     source "postgresql.conf.erb"
     owner "postgres"
     group "postgres"
@@ -218,7 +217,6 @@ action :install_server do
 
   # Setup pg_hba.conf
   # pg_hba_source = "pg_hba.conf.erb"
-
   cookbook_file ::File.join(node[:db_postgres][:confdir], 'pg_hba.conf') do
     source "pg_hba.conf"
     owner "postgres"
@@ -232,12 +230,11 @@ action :install_server do
     creates configfile
   end
 
-  # == Setup PostgreSQL user limits
+  # Setup PostgreSQL user limits
   #
   # Set the postgres and root users max open files to a really large number.
   # 1/3 of the overall system file max should be large enough.  The percentage can be
   # adjusted if necessary.
-  #
   postgres_file_ulimit = node[:db_postgres][:tunable][:ulimit]
 
   template "/etc/security/limits.d/postgres.limits.conf" do
@@ -251,13 +248,10 @@ action :install_server do
   # Change root's limitations for THIS shell.  The entry in the limits.d will be
   # used for future logins.
   # The setting needs to be in place before postgresql-9 is started.
-  #
   execute "ulimit -n #{postgres_file_ulimit}"
 
-  # == Start PostgreSQL
-  #
+  # Start PostgreSQL
   service "postgresql-#{node[:db_postgres][:version]}" do
-    # supports :status => true, :restart => true, :reload => true
     action :start
   end
 
@@ -268,7 +262,7 @@ action :grant_replication_slave do
   Gem.clear_paths
   require 'pg'
 
-  Chef::Log.info "GRANT REPLICATION SLAVE to user #{node[:db][:replication][:user]}"
+  log "  GRANT REPLICATION SLAVE to user #{node[:db][:replication][:user]}"
   # Opening connection for pg operation
   conn = PGconn.open("localhost", nil, nil, nil, nil, "postgres", nil)
 
@@ -277,14 +271,14 @@ action :grant_replication_slave do
   res = conn.exec("show transaction_read_only")
   slavestatus = res.getvalue(0,0)
   if ( slavestatus == 'off' )
-    Chef::Log.info "Detected Master server."
+    log "  Detected Master server."
     result = conn.exec("SELECT COUNT(*) FROM pg_user WHERE usename='#{node[:db][:replication][:user]}'")
     userstat = result.getvalue(0,0)
     if ( userstat == '1' )
-      Chef::Log.info "User #{node[:db][:replication][:user]} already exists, updating user using current inputs"
+      log "  User #{node[:db][:replication][:user]} already exists, updating user using current inputs"
       conn.exec("ALTER USER #{node[:db][:replication][:user]} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{node[:db][:replication][:password]}'")
     else
-      Chef::Log.info "creating replication user #{node[:db][:replication][:user]}"
+      log "  Creating replication user #{node[:db][:replication][:user]}"
       conn.exec("CREATE USER #{node[:db][:replication][:user]} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{node[:db][:replication][:password]}'")
       # Setup pg_hba.conf for replication user allow
       RightScale::Database::PostgreSQL::Helper.configure_pg_hba(node)
@@ -292,7 +286,7 @@ action :grant_replication_slave do
       RightScale::Database::PostgreSQL::Helper.do_query('select pg_reload_conf()')
     end
   else
-    Chef::Log.info "Do nothing, Detected read_only db or slave mode"
+    log "  Do nothing, Detected read_only db or slave mode"
   end
   conn.finish
 end
@@ -307,32 +301,27 @@ action :enable_replication do
 
   master_info = RightScale::Database::PostgreSQL::Helper.load_replication_info(node)
 
-  # == Set slave state
-  #
-  log "Setting up slave state..."
+  # Set slave state
+  log "  Setting up slave state..."
   ruby_block "set slave state" do
     block do
       node[:db][:this_is_master] = false
     end
   end
 
-  # Stoping Postgresql service
+  # Stopping Postgresql service
   action_stop
 
   # Sync to Master data
   RightScale::Database::PostgreSQL::Helper.rsync_db(newmaster_host, rep_user)
 
-
   # Setup recovery conf
   RightScale::Database::PostgreSQL::Helper.reconfigure_replication_info(newmaster_host, rep_user, rep_pass, app_name)
 
-
-  Chef::Log.info "Wiping existing runtime config files"
+  log "  Wiping existing runtime config files"
   `rm -rf "#{node[:db][:datadir]}/pg_xlog/*"`
 
-
-
-  # ensure_db_started
+  # Ensure that database started
   # service provider uses the status command to decide if it
   # has to run the start command again.
   5.times do
@@ -350,7 +339,7 @@ action :enable_replication do
     end
   end
 
-   # Setup slave monitoring
+  # Setup slave monitoring
   action_setup_slave_monitoring
 
 end
@@ -361,20 +350,19 @@ action :promote do
 
   previous_master = node[:db][:current_master_ip]
   raise "FATAL: could not determine master host from slave status" if previous_master.nil?
-  Chef::Log.info "host: #{previous_master}}"
+  log "  host: #{previous_master}}"
 
   begin
-
     # Promote the slave into the new master
-    Chef::Log.info "Promoting slave.."
+    Chef::Log.info "  Promoting slave.."
     RightScale::Database::PostgreSQL::Helper.write_trigger(node)
     sleep 10
 
     # Let the new slave loose and thus let him become the new master
-    Chef::Log.info  "New master is ReadWrite."
+    Chef::Log.info  "  New master is ReadWrite."
 
   rescue => e
-    Chef::Log.info "WARNING: caught exception #{e} during critical operations on the MASTER"
+    Chef::Log.info "  WARNING: caught exception #{e} during critical operations on the MASTER"
   end
 end
 
@@ -406,14 +394,14 @@ action :setup_monitoring do
       cookbook 'db_postgres'
     end
 
-    # install the postgres_ps collectd script into the collectd library plugins directory
+    # Install the postgres_ps collectd script into the collectd library plugins directory
     cookbook_file ::File.join(node[:rightscale][:collectd_lib], "plugins", 'postgres_ps') do
       source "postgres_ps"
       mode "0755"
       cookbook 'db_postgres'
     end
 
-    # add a collectd config file for the postgres_ps script with the exec plugin and restart collectd if necessary
+    # Add a collectd config file for the postgres_ps script with the exec plugin and restart collectd if necessary
     template ::File.join(node[:rightscale][:collectd_plugin_dir], 'postgres_ps.conf') do
       source "postgres_collectd_exec.erb"
       notifies :restart, resources(:service => "collectd")
@@ -422,7 +410,7 @@ action :setup_monitoring do
 
   else
 
-    log "WARNING: attempting to install collectd-postgresql on unsupported platform #{node[:platform]}, continuing.." do
+    log "  WARNING: attempting to install collectd-postgresql on unsupported platform #{node[:platform]}, continuing.." do
       level :warn
     end
 
@@ -435,30 +423,31 @@ action :setup_slave_monitoring do
   service "collectd" do
     action :nothing
   end
+
   # Now setup monitoring for slave replication, hard to define the lag, we are trying to get master/slave sync health status
 
-  # install the pg_cluster_status collectd script into the collectd library plugins directory
+  # Install the pg_cluster_status collectd script into the collectd library plugins directory
   cookbook_file ::File.join(node[:rightscale][:collectd_lib], "plugins", 'pg_cluster_status') do
     source "pg_cluster_status"
     mode "0755"
     cookbook 'db_postgres'
   end
 
-  # add a collectd config file for the pg_cluster_status script with the exec plugin and restart collectd if necessary
+  # Add a collectd config file for the pg_cluster_status script with the exec plugin and restart collectd if necessary
   template ::File.join(node[:rightscale][:collectd_plugin_dir], 'pg_cluster_status.conf') do
     source "pg_cluster_status_exec.erb"
     notifies :restart, resources(:service => "collectd")
     cookbook 'db_postgres'
   end
 
-  # install the check_hot_standby_delay collectd script into the collectd library plugins directory
+  # Install the check_hot_standby_delay collectd script into the collectd library plugins directory
   cookbook_file ::File.join(node[:rightscale][:collectd_lib], "plugins", 'check_hot_standby_delay') do
     source "check_hot_standby_delay"
     mode "0755"
     cookbook 'db_postgres'
   end
 
-  # add a collectd config file for the check_hot_standby_delay script with the exec plugin and restart collectd if necessary
+  # Add a collectd config file for the check_hot_standby_delay script with the exec plugin and restart collectd if necessary
   template ::File.join(node[:rightscale][:collectd_plugin_dir], 'check_hot_standby_delay.conf') do
     source "check_hot_standby_delay_exec.erb"
     notifies :restart, resources(:service => "collectd")

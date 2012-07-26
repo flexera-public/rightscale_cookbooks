@@ -5,8 +5,6 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-#
 # Required attributes
-#
 
 set_unless[:sys][:reconverge_list] = ""

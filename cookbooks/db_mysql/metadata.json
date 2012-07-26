@@ -1,106 +1,143 @@
 {
-  "dependencies": {
-    "sys_dns": ">= 0.0.0",
-    "rightscale": ">= 0.0.0",
-    "db": ">= 0.0.0",
-    "block_device": ">= 0.0.0"
-  },
   "name": "db_mysql",
+  "description": "Installs/configures a MySQL database client and server.",
+  "long_description": "= RightScale MySQL Database Cookbook\n\n== DESCRIPTION:\n\nProvides the MySQL implementation of the 'db' resource to install and manage\nMySQL database stand-alone servers and clients.\n\n== REQUIREMENTS:\n\n* Requires a server launched from a RightScale managed RightImage.\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n== KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n== SETUP:\n\n* Place the <tt>db_mysql::default</tt> recipe into your runlist to load the\n  MySQL provider, tuning parameters, as well as other MySQL-specific attributes\n  into the node as inputs.\n\n* Place the <tt>db::default</tt> recipe into your runlist to set up the 'db' resource.\n  When using a RightScale ServerTemplate, this will also automatically add the\n  common database attributes to your ServerTemplate's inputs.\n\n== USAGE:\n\n=== Basic usage\n\nOnce setup, use the recipes in the 'db' cookbook to install and manage your\nMySQL database servers and clients. See the <tt>db/README.rdoc</tt> for usage\ndetails.\n\n=== MySQL Tuning and my.cnf\n\nCustom tuning parameters can be applied by overriding the\n<tt>mysql_tuning.rb</tt> attributes file. For more information and an example\noverride repository please see: {Override Chef Cookbooks}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Override_Chef_Cookbooks].\n\n== DETAILS:\n\nThe 'db' implementation is defined by a Lightweight Provider, which can be\nfound in the <tt>providers/default.rb</tt> file.\n\n= LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to\nthe RightScale Terms of Service available at http://www.rightscale.com/terms.php\nand, if applicable, other agreements such as a RightScale Master Subscription\nAgreement.\n",
+  "maintainer": "RightScale, Inc.",
   "maintainer_email": "support@rightscale.com",
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "platforms": {
+    "centos": "~> 5.8",
+    "redhat": "~> 5.8",
+    "ubuntu": "~> 10.04.0"
+  },
+  "dependencies": {
+    "db": ">= 0.0.0",
+    "block_device": ">= 0.0.0",
+    "sys_dns": ">= 0.0.0",
+    "rightscale": ">= 0.0.0"
+  },
+  "recommendations": {
+  },
+  "suggestions": {
+  },
+  "conflicting": {
+  },
+  "providing": {
+  },
+  "replacing": {
+  },
   "attributes": {
     "db_mysql": {
-      "required": "optional",
-      "calculated": false,
-      "choice": [
-
-      ],
+      "display_name": "General Database Options",
       "type": "hash",
-      "recipes": [
-
-      ],
-      "display_name": "General Database Options"
-    },
-    "db_mysql/tmpdir": {
-      "required": "optional",
-      "calculated": false,
       "choice": [
 
       ],
-      "default": "/mnt/ephemeral/mysqltmp",
-      "type": "string",
-      "recipes": [
-        "db_mysql::default_server"
-      ],
-      "display_name": "MySQL Temp Directory Destination",
-      "description": "Defines the location of your MySQL temp directory.  This sets the tmpdir variable in the MySQL config file. Ex: /tmp"
-    },
-    "db_mysql/log_bin": {
-      "required": "optional",
       "calculated": false,
-      "choice": [
+      "required": "optional",
+      "recipes": [
 
-      ],
-      "default": "/mnt/ephemeral/mysql-binlogs/mysql-bin",
-      "type": "string",
-      "recipes": [
-        "db_mysql::default_server"
-      ],
-      "display_name": "MySQL Binlog Destination",
-      "description": "Defines the filename and location of your MySQL stored binlog files.  This sets the log-bin variable in the MySQL config file. Ex: /mnt/mysql-binlogs/mysql-bin"
-    },
-    "db_mysql/server_usage": {
-      "required": "optional",
-      "calculated": false,
-      "choice": [
-        "shared",
-        "dedicated"
-      ],
-      "default": "shared",
-      "type": "string",
-      "recipes": [
-        "db_mysql::default_server"
-      ],
-      "display_name": "Server Usage",
-      "description": "Use 'dedicated' if the mysql config file allocates all existing resources of the machine.  Use 'shared' if the MySQL config file is configured to use less resources so that it can be run concurrently with other apps like Apache and Rails for example."
+      ]
     },
     "db_mysql/version": {
-      "required": "required",
-      "calculated": false,
+      "display_name": "MySQL Version",
+      "description": "Specify the MySQL version that matches the ServerTemplate's specified MySQL version. Note: MySQL 5.5 is not supported on Ubuntu 10.04. Example: 5.5",
+      "recipes": [
+        "db_mysql::default"
+      ],
       "choice": [
         "5.1",
         "5.5"
       ],
-      "type": "string",
+      "required": "required",
+      "calculated": false,
+      "type": "string"
+    },
+    "db_mysql/server_usage": {
+      "display_name": "Server Usage",
+      "description": "When set to 'dedicated' all server resources are allocated to MySQL. When set to 'shared' less resources are allocated for MySQL so that it can be run concurrently with other apps like Apache and Rails for example.  Example: shared",
       "recipes": [
-        "db_mysql::default"
+        "db_mysql::default_5_1",
+        "db_mysql::default_5_5"
       ],
-      "display_name": "MySQL Version",
-      "description": "Specify the MySQL version that matches that of the Database Manager for MySQL ServerTemplate version in use. Note: MySQL 5.5 is not supported on Ubuntu 10.04."
+      "choice": [
+        "shared",
+        "dedicated"
+      ],
+      "required": "optional",
+      "default": "shared",
+      "calculated": false,
+      "type": "string"
+    },
+    "db_mysql/log_bin": {
+      "display_name": "MySQL Binlog Destination",
+      "description": "Defines the filename and location of your MySQL stored binlog files. Sets the 'log-bin' variable in the MySQL config file. Example: /mnt/mysql-binlogs/mysql-bin",
+      "recipes": [
+        "db_mysql::default_5_1",
+        "db_mysql::default_5_5"
+      ],
+      "required": "optional",
+      "default": "/mnt/ephemeral/mysql-binlogs/mysql-bin",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "db_mysql/binlog_format": {
+      "display_name": "MySQL Binlog Format",
+      "description": "Defines the format of your MySQL stored binlog files. Sets the 'binlog_format' option in the MySQL config file. Accepted options: STATEMENT, ROW, and MIXED",
+      "recipes": [
+        "db_mysql::default_5_1",
+        "db_mysql::default_5_5"
+      ],
+      "required": "optional",
+      "choice": [
+        "STATEMENT",
+        "ROW",
+        "MIXED"
+      ],
+      "default": "MIXED",
+      "calculated": false,
+      "type": "string"
+    },
+    "db_mysql/tmpdir": {
+      "display_name": "MySQL Temp Directory Destination",
+      "description": "Defines the location of your MySQL temp directory. Sets the 'tmpdir' variable in the MySQL config file. Example: /tmp",
+      "recipes": [
+        "db_mysql::default_5_1",
+        "db_mysql::default_5_5"
+      ],
+      "required": "optional",
+      "default": "/mnt/ephemeral/mysqltmp",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "db_mysql/init_timeout": {
+      "display_name": "MySQL Init Timeout",
+      "description": "Defines timeout to wait for a MySQL socket connection before a READ LOCK. Default: 60",
+      "recipes": [
+        "db_mysql::default_5_1",
+        "db_mysql::default_5_5"
+      ],
+      "required": "optional",
+      "default": "60",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
     }
-  },
-  "license": "Copyright RightScale, Inc. All rights reserved.",
-  "suggestions": {
-  },
-  "platforms": {
-  },
-  "maintainer": "RightScale, Inc.",
-  "long_description": "= RightScale Database Manager for MySQL  \n\n== DESCRIPTION:\n\nProvides the MySQL implementation of the 'db' resource to install and \nmanage MySQL database stand-alone servers and clients.\n\n\n== DETAILS\n\nThe 'db' implementation is defined by a Lightweight Provider, which can be \nfound in the providers/default.rb file.\n\nThe majority of the functionality of the MySQL provider is encapsulated \nin the premium rightscale_tools gem, however, there are currently a handful\nof recipes that can be used without it. See 'Public Recipes' in the USAGE\nsection below.\n\n\n== REQUIREMENTS:\n\n* Requires a VM launched from a RightScale managed RightImage \n\n* Tested on CentOS 5.6 RightImage\n\n* Supports MySQL 5.1 \n\n* Needs RightScale Premium ServerTemplate tools gem installed on system.\n  This gem is only available for paid RightScale customers.\n  Please contact sales@rightscale.com to upgrade you account.\n\n\n== SETUP:\n\n* Place db::default recipe into your runlist to setup the db resource.  When\n  using a RightScale ServerTemplate, this will also automatically add the \n  common database attributes to your ServerTemplate inputs.\n   \n* Also, place the db_mysql::default recipe into your runlist to load the\n  MySQL provider, tuning parameters, as well as other MySQL specific \n  attributes in as inputs.\n\n== USAGE:\n\n=== Basic usage\nOnce setup, use the recipes in the 'db' cookbook to install and manage your\nMySQL database servers and clients.  See the db/README.rdoc for usage \ndetails.\n\n\n=== MySQL Tuning and my.cnf\n\nCustom tuning parameters can be applied by overriding the mysql_tuning.rb\nattributes file.  For more information and an example override repository\nplease see:\n\n  https://github.com/ekargard/cookbooks_override/tree/master/cookbooks/db_mysql\n  \n\n=== Public Recipes\nHere is the list of db recipes that can be used without the preimum \nrightscale_tools gem:\n\n* db::default\n* db::install_client\n* db::install_server\n* db::setup_monitoring\n* db::setup_privileges_admin\n* db::setup_privileges_application\n* db::do_appserver_allow\n* db::do_appserver_deny\n* db::request_appserver_allow\n* db::request_appserver_deny\n\nThese recipes are used by the RightScale LAMP ServerTemplate.\n\n\n== KNOWN LIMITATIONS\n\n* none\n\n\n   \n\n",
-  "version": "0.0.2",
-  "recommendations": {
-  },
-  "recipes": {
-    "db_mysql::default_5_1": "Set DB MySQL provider, set version 5.1 and node variables specific to MySQL 5.1",
-    "db_mysql::default": "Set DB MySQL provider, set version and node variables specific to the chosen MySQL version",
-    "db_mysql::default_5_5": "Set DB MySQL provider, set version 5.5 and node variables specific to MySQL 5.5",
-    "db_mysql::default_server": "Set DB MySQL server specfic input variables"
   },
   "groupings": {
   },
-  "conflicting": {
+  "recipes": {
+    "db_mysql::default": "Set the DB MySQL provider. Sets version and node variables specific to the chosen MySQL version.",
+    "db_mysql::default_5_1": "Set the DB MySQL provider. Sets version 5.1 and node variables specific to MySQL 5.1.",
+    "db_mysql::default_5_5": "Set the DB MySQL provider. Sets version 5.5 and node variables specific to MySQL 5.5."
   },
-  "replacing": {
-  },
-  "description": "Installs/configures a MySQL database client and server.",
-  "providing": {
-  }
+  "version": "12.1.0"
 }

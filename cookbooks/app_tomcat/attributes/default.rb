@@ -7,7 +7,7 @@
 
 # Recommended attributes
 set_unless[:app_tomcat][:code][:root_war] = ""
-# Java heap tuning attributes for more info see http://www.tomcatexpert.com/blog/2011/11/22/performance-tuning-jvm-running-tomcat
+# Java heap tuning attributes. For more info see http://www.tomcatexpert.com/blog/2011/11/22/performance-tuning-jvm-running-tomcat
 # Defines the initial value of the permanent generation space size
 set_unless[:app_tomcat][:java][:permsize] = "256m"
 # Defines the maximum value of the permanent generation space size
@@ -23,31 +23,37 @@ set_unless[:app_tomcat][:java][:xms] = "512m"
 # Be default tomcat will use MySQL as primary database adapter
 set_unless[:app_tomcat][:db_adapter] = "mysql"
 # List of required apache modules
-set[:app_tomcat][:module_dependencies] = [ "proxy", "proxy_http", "deflate", "rewrite"]
+set[:app_tomcat][:module_dependencies] = [ "proxy", "proxy_http", "deflate", "rewrite" ]
 
 
 # Calculated attributes
 # Defining apache user, java alternatives and database adapter parameters depending on platform.
 case node[:platform]
 when "ubuntu", "debian"
-  set[:app_tomcat][:app_user] = "tomcat6"
-  set[:app_tomcat][:alternatives_cmd] = "update-alternatives  --auto java"
+  set[:app_tomcat][:user] = "tomcat6"
+  set[:app_tomcat][:group] = "tomcat6"
+  set[:app_tomcat][:alternatives_cmd] = "update-alternatives --auto java"
   if app_tomcat[:db_adapter] == "mysql"
-    set[:db_mysql][:socket] = "/var/run/mysqld/mysqld.sock"
+    set[:app_tomcat][:datasource_name] = "jdbc/MYSQLDB"
+    set[:db][:socket] = "/var/run/mysqld/mysqld.sock"
   elsif app_tomcat[:db_adapter] == "postgresql"
-    set[:db_postgres][:socket] = "/var/run/postgresql"
+    set[:app_tomcat][:datasource_name] = "jdbc/postgres"
+    set[:db][:socket] = "/var/run/postgresql"
   else
-    raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting "
+    raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting"
   end
 when "centos", "fedora", "suse", "redhat", "redhatenterpriseserver"
-  set[:app_tomcat][:app_user] = "tomcat"
-  set[:app_tomcat][:alternatives_cmd] = "alternatives --auto java"
+  set[:app_tomcat][:user] = "tomcat"
+  set[:app_tomcat][:group] = "tomcat"
+    set[:app_tomcat][:alternatives_cmd] = "alternatives --auto java"
   if app_tomcat[:db_adapter] == "mysql"
-    set[:db_mysql][:socket] = "/var/lib/mysql/mysql.sock"
+    set[:app_tomcat][:datasource_name] = "jdbc/MYSQLDB"
+    set[:db][:socket] = "/var/lib/mysql/mysql.sock"
   elsif app_tomcat[:db_adapter] == "postgresql"
-    set[:db_postgres][:socket] = "/var/run/postgresql"
+    set[:app_tomcat][:datasource_name] = "jdbc/postgres"
+    set[:db][:socket] = "/var/run/postgresql"
   else
-    raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting "
+    raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting"
   end
 else
   raise "Unrecognized distro #{node[:platform]}, exiting "

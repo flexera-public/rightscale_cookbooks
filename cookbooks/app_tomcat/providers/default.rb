@@ -21,24 +21,27 @@ action :start do
     action :start
     persist false
   end
-
 end
 
 # Restart tomcat service
 action :restart do
   log "  Running restart sequence"
   action_stop
-     sleep 5
+  sleep 5
   action_start
 end
 
+# Reload tomcat service
+action :reload do
+  log "  Action not implemented"
+end
 
 #Installing required packages and prepare system for tomcat
 action :install do
 
   packages = new_resource.packages
   log "  Packages which will be installed: #{packages}"
-  packages .each do |p|
+  packages.each do |p|
     log "installing #{p}"
     package p
 
@@ -51,10 +54,10 @@ action :install do
       link "/usr/share/java/ecj.jar" do
         to "/usr/share/java/eclipse-ecj.jar"
       end
-
     end
+
   end
-  # Executing java alternatives command, this will set installed java as choose as default
+  # Executing java alternatives command to set installed java as default.
   execute "alternatives" do
     command "#{node[:app_tomcat][:alternatives_cmd]}"
     action :run
@@ -73,7 +76,7 @@ action :install do
     end
   elsif db_adapter == "postgresql"
     # Copy to /usr/share/java/postgresql-9.1-901.jdbc4.jar
-    remote_file "/usr/share/java/postgresql-9.1-901.jdbc4.jar" do
+    cookbook_file "/usr/share/java/postgresql-9.1-901.jdbc4.jar" do
       source "postgresql-9.1-901.jdbc4.jar"
       owner "root"
       group "root"
@@ -84,7 +87,7 @@ action :install do
       to "/usr/share/java/postgresql-9.1-901.jdbc4.jar"
     end
   else
-    raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting "
+    raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting"
   end
 
   # Linking RightImage JAVA_HOME to what Tomcat6 expects to be...
@@ -92,29 +95,26 @@ action :install do
     to "/usr/java/default"
   end
 
-
-  # Moving tomcat logs to mnt
-  # Creating new directory for tomcat logs on ephemeral volume
-  directory "/mnt/ephemeral/log/tomcat6" do
-    owner node[:app_tomcat][:app_user]
-    group node[:app_tomcat][:app_user]
-    mode "0755"
-    action :create
-    recursive true
-    not_if do ::File.directory?("/mnt/ephemeral/log/tomcat6") end
-  end
+  # Moving tomcat logs to ephemeral
 
   # Deleting old tomcat log directory
   directory "/var/log/tomcat6" do
-    action :delete
     recursive true
-    not_if do ::File.directory?("/mnt/ephemeral/log/tomcat6") end
+    action :delete
   end
 
-  # Symlinking new directory to /var/log/tomcat6
+  # Creating new directory for tomcat logs on ephemeral volume
+  directory "/mnt/ephemeral/log/tomcat6" do
+    owner node[:app_tomcat][:user]
+    group node[:app_tomcat][:group]
+    mode "0755"
+    action :create
+    recursive true
+  end
+
+  # Create symlink from /var/log/tomcat6 to ephemeral volume
   link "/var/log/tomcat6" do
     to "/mnt/ephemeral/log/tomcat6"
-    not_if do ::File.directory?("/mnt/ephemeral/log/tomcat6") end
   end
 
   # Symlinking to new jvm-exports
@@ -137,6 +137,9 @@ end
 # Setup apache virtual host and corresponding tomcat configs
 action :setup_vhost do
 
+  port = new_resource.port
+  app_root = new_resource.root
+
   log "  Creating tomcat6.conf"
   template "/etc/tomcat6/tomcat6.conf" do
     action :create
@@ -146,35 +149,41 @@ action :setup_vhost do
     mode "0644"
     cookbook 'app_tomcat'
     variables(
-      :app_user => node[:app_tomcat][:app_user],
+      :app_user => node[:app_tomcat][:user],
       :java_xms => node[:app_tomcat][:java][:xms],
       :java_xmx => node[:app_tomcat][:java][:xmx],
       :java_permsize => node[:app_tomcat][:java][:permsize],
       :java_maxpermsize => node[:app_tomcat][:java][:maxpermsize],
       :java_newsize => node[:app_tomcat][:java][:newsize],
-      :java_maxnewsize => node[:app_tomcat][:java][:maxnewsize]
+      :java_maxnewsize => node[:app_tomcat][:java][:maxnewsize],
+      :platform => node[:platform],
+      :platform_ver => node[:platform_version]
     )
   end
 
+  # Define internal port for tomcat. It must be different than apache ports
+  tomcat_port = port + 1
   log "  Creating server.xml"
   template "/etc/tomcat6/server.xml" do
     action :create
     source "server_xml.erb"
     group "root"
-    owner "#{node[:app_tomcat][:app_user]}"
+    owner "#{node[:app_tomcat][:user]}"
     mode "0644"
     cookbook 'app_tomcat'
     variables(
-            :doc_root => node[:app][:root],
-            :app_port => node[:app][:port]
+            :doc_root => app_root,
+            :app_port => tomcat_port.to_s
           )
   end
 
   log "  Setup logrotate for tomcat"
-  template "/etc/logrotate.d/tomcat6" do
-    source "tomcat6_logrotate.conf.erb"
-    variables :tomcat_name => "tomcat6"
-    cookbook 'app_tomcat'
+  rightscale_logrotate_app "tomcat" do
+    cookbook "rightscale"
+    template "logrotate.erb"
+    path [ "/var/log/tomcat6/*log", "/var/log/tomcat6/*.out" ]
+    frequency "size 10M"
+    rotate 4
   end
 
   # Starting tomcat service
@@ -191,17 +200,19 @@ action :setup_vhost do
 
     # Installing required packages depending on platform
     case node[:platform]
-    when "ubuntu", "debian"
-      ubuntu_p = ["apache2-mpm-prefork", "apache2-threaded-dev", "libapr1-dev", "libapache2-mod-jk"]
+    when "ubuntu"
+      ubuntu_p = [ "apache2-mpm-prefork", "apache2-threaded-dev", "libapr1-dev", "libapache2-mod-jk" ]
       ubuntu_p.each do |p|
-        package p
+        package p do
+          retries 15
+          retry_delay 2
+        end
       end
 
-    when "centos","fedora","suse","redhat"
+    when "centos","redhat"
 
       package "apr-devel" do
         options "-y"
-        only_if { node[:kernel][:machine] == "x86_64" }
       end
 
       package "httpd-devel" do
@@ -243,69 +254,63 @@ action :setup_vhost do
       cookbook 'app_tomcat'
     end
 
-    # Configure mod_jk conf
+    # Configure mod_jk.conf
     template "#{etc_apache}/conf.d/mod_jk.conf" do
       action :create
       backup false
       source "mod_jk.conf.erb"
-      variables :tomcat_name => "tomcat6"
+      variables(
+        :tomcat_name => "tomcat6",
+        :apache_log_dir => node[:apache][:log_dir]
+      )
       cookbook 'app_tomcat'
     end
 
-    log "  Finished configuring mod_jk, creating the application vhost..."
+    log "  Finished configuring mod_jk, creating the application vhost"
 
     # Enabling required apache modules
     node[:app_tomcat][:module_dependencies].each do |mod|
       apache_module mod
     end
 
-    # Apache fix on RHEL
-    file "/etc/httpd/conf.d/README" do
-      action :delete
-      only_if do node[:platform] == "redhat" end
-    end
-
-    log "  Generating new apache ports.conf"
-    node[:apache][:listen_ports] = "80"
-    # Generation of new apache ports.conf
-    template "#{node[:apache][:dir]}/ports.conf" do
-      cookbook "apache2"
-      source "ports.conf.erb"
-      variables :apache_listen_ports => node[:apache][:listen_ports]
-    end
-
-    # Configuring document root for apache
-    if ("#{node[:app_tomcat][:code][:root_war]}" == "")
-      log "  root_war not defined, setting apache docroot to #{node[:app][:root]}"
-      docroot4apache = "#{node[:app][:root]}"
-    else
-      log "  root_war defined, setting apache docroot to #{node[:app][:root]}/ROOT"
-      docroot4apache = "#{node[:app][:root]}/ROOT"
-    end
-
-    port = new_resource.port
-
-    log "  Configuring apache vhost for tomcat"
-    template "#{etc_apache}/sites-enabled/#{node[:web_apache][:application_name]}.conf" do
-      action :create_if_missing
-      source "apache_mod_jk_vhost.erb"
-      variables(
-        :docroot     => docroot4apache,
-        :vhost_port  => port.to_s,
-        :server_name => node[:web_apache][:server_name],
-        :apache_log_dir => node[:apache][:log_dir]
-      )
-      cookbook 'app_tomcat'
-    end
-
-    # Apache server restart
-    service "apache2" do
-      action :restart
-      persist false
-    end
-
   else
     log "  mod_jk already installed, skipping the recipe"
+  end
+
+  # Removing preinstalled apache ssl.conf on RHEL images as it conflicts with ports.conf of web_apache
+  log "  Removing ssl.conf"
+  file "/etc/httpd/conf.d/ssl.conf" do
+    action :delete
+    backup false
+    only_if { ::File.exists?("/etc/httpd/conf.d/ssl.conf") }
+  end
+
+  log "  Generating new apache ports.conf"
+  app_add_listen_port port
+
+  # Configuring document root for apache
+  if node[:app_tomcat][:code][:root_war].empty?
+    log "  root_war not defined, setting apache docroot to #{app_root}"
+    apache_docroot = "#{app_root}"
+  else
+    log "  root_war defined, setting apache docroot to #{app_root}/ROOT"
+    apache_docroot = "#{app_root}/ROOT"
+  end
+
+  log "  Configuring apache vhost for tomcat"
+  web_app "http-#{port}-#{node[:web_apache][:server_name]}.vhost" do
+    template        'apache_mod_jk_vhost.erb'
+    cookbook        'app_tomcat'
+    docroot         apache_docroot
+    vhost_port      port.to_s
+    server_name     node[:web_apache][:server_name]
+    apache_log_dir  node[:apache][:log_dir]
+  end
+
+  # Apache server restart
+  service "apache2" do
+    action :restart
+    persist false
   end
 
 end
@@ -318,34 +323,20 @@ action :setup_db_connection do
   datasource = node[:app_tomcat][:datasource_name]
 
   log "  Creating context.xml for DB: #{db_name} using adapter #{db_adapter} and datasource #{datasource}"
-  if db_adapter == "mysql"
-    db_mysql_connect_app "/etc/tomcat6/context.xml"  do
-      template      "context_xml.erb"
-      owner         "#{node[:app_tomcat][:app_user]}"
-      group         "root"
-      mode          "0644"
-      database      db_name
-      datasource    datasource
-      cookbook      'app_tomcat'
-    end
-  elsif db_adapter == "postgresql"
-    db_postgres_connect_app "/etc/tomcat6/context.xml"  do
-      template      "context_xml.erb"
-      owner         "#{node[:app_tomcat][:app_user]}"
-      group         "root"
-      mode          "0644"
-      database      db_name
-      datasource    datasource
-      cookbook      'app_tomcat'
-    end
-  else
-    raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting "
+  db_connect_app "/etc/tomcat6/context.xml" do
+    template      "context_xml.erb"
+    owner         "#{node[:app_tomcat][:user]}"
+    group         "root"
+    mode          "0644"
+    database      db_name
+    datasource    datasource
+    cookbook      'app_tomcat'
   end
 
   log "  Creating web.xml"
   template "/etc/tomcat6/web.xml" do
     source "web_xml.erb"
-    owner "#{node[:app_tomcat][:app_user]}"
+    owner "#{node[:app_tomcat][:user]}"
     group "root"
     mode "0644"
     cookbook 'app_tomcat'
@@ -354,7 +345,7 @@ action :setup_db_connection do
   # Installing JavaServer Pages Standard Tag Library API
   cookbook_file "/usr/share/tomcat6/lib/jstl-api-1.2.jar" do
     source "jstl-api-1.2.jar"
-    owner "#{node[:app_tomcat][:app_user]}"
+    owner "#{node[:app_tomcat][:user]}"
     group "root"
     mode "0644"
     cookbook 'app_tomcat'
@@ -363,7 +354,7 @@ action :setup_db_connection do
   # Installing JavaServer Pages Standard Tag Library specifications library
   cookbook_file "/usr/share/tomcat6/lib/jstl-impl-1.2.jar" do
     source "jstl-impl-1.2.jar"
-    owner "#{node[:app_tomcat][:app_user]}"
+    owner "#{node[:app_tomcat][:user]}"
     group "root"
     mode "0644"
     cookbook 'app_tomcat'
@@ -386,7 +377,7 @@ action :setup_monitoring do
   # Linking collectd
   link "/usr/share/tomcat6/lib/collectd.jar" do
     to "/usr/share/java/collectd.jar"
-    not_if do !::File.exists?("/usr/share/java/collectd.jar") end
+    not_if { !::File.exists?("/usr/share/java/collectd.jar") }
   end
 
   # Add collectd support to tomcat.conf
@@ -412,8 +403,9 @@ action :code_update do
   # Calling "repo" LWRP to download remote project repository
   repo "default" do
     destination deploy_dir
-    action   node[:repo][:default][:perform_action].to_sym
-    app_user node[:app_tomcat][:app_user]
+    action node[:repo][:default][:perform_action].to_sym
+    app_user node[:app_tomcat][:user]
+    repository node[:repo][:default][:repository]
     persist false
   end
 
@@ -427,10 +419,10 @@ action :code_update do
       if [ ! -z "#{node[:app_tomcat][:code][:root_war]}" -a -e "#{deploy_dir}/#{node[:app_tomcat][:code][:root_war]}" ] ; then
         mv #{deploy_dir}/#{node[:app_tomcat][:code][:root_war]} #{deploy_dir}/ROOT.war
       fi
-      chown -R #{node[:app_tomcat][:app_user]}:#{node[:app_tomcat][:app_user]} #{deploy_dir}
+      chown -R #{node[:app_tomcat][:user]}:#{node[:app_tomcat][:group]} #{deploy_dir}
       sleep 5
     EOH
-    only_if do node[:app_tomcat][:code][:root_war] != "ROOT.war" end
+    only_if { node[:app_tomcat][:code][:root_war] != "ROOT.war" }
   end
   # Restarting tomcat service.
   # This will automatically deploy ROOT.war if it is available in application root directory

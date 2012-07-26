@@ -12,7 +12,6 @@ action :stop do
     action :stop
     persist false
   end
-
 end
 
 # Start apache/passenger
@@ -20,6 +19,15 @@ action :start do
   log "  Running start sequence"
   service "apache2" do
     action :start
+    persist false
+  end
+end
+
+# Reload apache/passenger
+action :reload do
+  log "  Running reload sequence"
+  service "apache2" do
+    action :reload
     persist false
   end
 end
@@ -42,39 +50,18 @@ action :install do
     package p
   end
 
-  log "  Installing Ruby Enterprise Edition..."
-  # Moving rubyEE sources to /tmp folder preparing to install
-  cookbook_file "/tmp/ruby-enterprise-installed.tar.gz" do
-    source "ruby-enterprise_x86_64.tar.gz"
-    mode "0644"
-    only_if do node[:kernel][:machine].include? "x86_64" end
-    cookbook 'app_passenger'
-  end
-
-  bash "install_ruby_EE" do
-    flags "-ex"
-    code <<-EOH
-      tar xzf /tmp/ruby-enterprise-installed.tar.gz -C /opt/
-    EOH
-    only_if do ::File.exists?("/tmp/ruby-enterprise-installed.tar.gz")  end
-  end
-
-
   # Installing passenger module
-  log "  Installing passenger"
-  bash "Install apache passenger gem" do
-    flags "-ex"
-    code <<-EOH
-      /opt/ruby-enterprise/bin/gem install passenger -q --no-rdoc --no-ri
-    EOH
-    not_if do (::File.exists?("/opt/ruby-enterprise/bin/passenger-install-apache2-module")) end
+  log "  Installing passenger gem"
+  gem_package "passenger" do
+    gem_binary "/usr/bin/gem"
+    action :install
   end
 
-
+  log "  Installing apache passenger module"
   bash "Install apache passenger module" do
     flags "-ex"
     code <<-EOH
-      /opt/ruby-enterprise/bin/passenger-install-apache2-module --auto
+      /usr/bin/passenger-install-apache2-module --auto
     EOH
     not_if "test -e #{node[:app_passenger][:ruby_gem_base_dir].chomp}/gems/passenger*/ext/apache2/mod_passenger.so"
   end
@@ -104,16 +91,8 @@ action :setup_vhost do
     only_if do node[:platform] == "redhat" end
   end
 
-
-  log "  Generating new apache ports.conf"
-  node[:apache][:listen_ports] = port.to_s
-
-  # Generation of new apache ports.conf
-  template "#{node[:apache][:dir]}/ports.conf" do
-    cookbook "apache2"
-    source "ports.conf.erb"
-    variables :apache_listen_ports => node[:apache][:listen_ports]
-  end
+  # Adds php port to list of ports for webserver to listen on
+  app_add_listen_port port.to_s
 
   log "  Unlinking default apache vhost"
   apache_site "000-default" do
@@ -154,26 +133,13 @@ action :setup_db_connection do
   db_adapter = node[:app_passenger][:project][:db][:adapter]
 
   log "  Generating database.yml"
-  # Tell MySQL to fill in our connection template
-  if db_adapter == "mysql"
-    db_mysql_connect_app "#{deploy_dir.chomp}/config/database.yml" do
-      template      "database.yml.erb"
-      cookbook      "app_passenger"
-      owner         node[:app_passenger][:apache][:user]
-      group         node[:app_passenger][:apache][:group]
-      database      db_name
-    end
-  # Tell PostgreSQL to fill in our connection template
-  elsif db_adapter == "postgresql"
-    db_postgres_connect_app "#{deploy_dir.chomp}/config/database.yml" do
-      template      "database.yml.erb"
-      cookbook      "app_passenger"
-      owner         node[:app_passenger][:apache][:user]
-      group         node[:app_passenger][:apache][:group]
-      database      db_name
-    end
-  else
-    raise "Unrecognized database adapter #{node[:app_passenger][:project][:db][:adapter]}, exiting "
+  # Tell Database to fill in our connection template
+  db_connect_app "#{deploy_dir.chomp}/config/database.yml" do
+    template      "database.yml.erb"
+    cookbook      "app_passenger"
+    owner         node[:app_passenger][:apache][:user]
+    group         node[:app_passenger][:apache][:group]
+    database      db_name
   end
 
   # Defining $RAILS_ENV
@@ -206,17 +172,38 @@ action :code_update do
     action node[:repo][:default][:perform_action].to_sym
     app_user node[:app_passenger][:apache][:user]
     environment "RAILS_ENV" => "#{node[:app_passenger][:project][:environment]}"
+    repository node[:repo][:default][:repository]
     persist false
   end
 
+  # Moving rails application log directory to ephemeral
 
-  log "  Generating new logrotatate config for rails application"
+  # Removing log directory, preparing to symlink
+  directory "#{deploy_dir}/log" do
+    action :delete
+    recursive true
+  end
+
+  # Creating new rails application log  directory on ephemeral volume
+  directory "/mnt/ephemeral/log/rails/#{node[:web_apache][:application_name]}" do
+    owner node[:app_passenger][:apache][:user]
+    mode "0755"
+    action :create
+    recursive true
+  end
+
+  # Symlinking application log directory to ephemeral volume
+  link "#{deploy_dir}/log" do
+    to "/mnt/ephemeral/log/rails/#{node[:web_apache][:application_name]}"
+  end
+
+  log "  Generating new logrotate config for rails application"
   rightscale_logrotate_app "rails" do
-    cookbook "app_passenger"
-    template "logrotate_rails.erb"
+    cookbook "rightscale"
+    template "logrotate.erb"
     path ["#{deploy_dir}/log/*.log" ]
-    frequency "daily"
-    rotate 7
+    frequency "size 10M"
+    rotate 4
     create "660 #{node[:app_passenger][:apache][:user]} #{node[:app_passenger][:apache][:group]}"
   end
 

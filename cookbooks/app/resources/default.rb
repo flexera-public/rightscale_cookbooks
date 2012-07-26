@@ -9,7 +9,7 @@
 
 # Install packages required for application server setup
 actions :install
-  # Set of installed packages
+  # Set of packages to be installed in addition to the base application packages.
   attribute :packages, :kind_of => Array
 
 # Set up the application vhost on specified port
@@ -30,6 +30,9 @@ actions :stop
 # Runs application server restart sequence
 actions :restart
 
+# Runs application server reload sequence
+actions :reload
+
 # Updates application source files from the remote repository
 # Action designed to setup APP LWRP with common parameters required for source code update/download
 actions :code_update
@@ -42,7 +45,7 @@ actions :code_update
 actions :setup_db_connection
   # Name of the required database
   attribute :database_name, :kind_of => String
-  # Database user
+  # Database username
   attribute :database_user, :kind_of => String
   # Database password
   attribute :database_password, :kind_of => String

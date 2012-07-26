@@ -9,14 +9,17 @@ rightscale_marker :begin
 
 # Install git client
 case node[:platform]
-when "debian", "ubuntu"
+when "ubuntu"
   package "git-core"
 else
   package "git"
 end
+
 # Install additional git packages
+
 # svn compatibility package
 package "git-svn"
+
 # email add-on
 package "git-email"
 

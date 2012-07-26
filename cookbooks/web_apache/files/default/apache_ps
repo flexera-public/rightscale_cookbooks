@@ -5,10 +5,9 @@
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
-# 
+
 
 # Arguments: hostname to use to report the stats (Instance ID or UUID)
-#            
 
 require 'getoptlong'
 
@@ -30,9 +29,9 @@ sample_interval = 20
 
 opts.each do |opt, arg|
   case opt
-    when '--hostname'
+  when '--hostname'
       hostname = arg
-    when '--sample-interval'
+  when '--sample-interval'
       sample_interval = arg.to_i
   end
   arg.inspect

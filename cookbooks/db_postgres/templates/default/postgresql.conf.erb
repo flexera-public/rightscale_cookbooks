@@ -1,4 +1,11 @@
-# Managed by RightScale 
+#
+# Cookbook Name:: db_postgres
+#
+# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
+# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
+# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+#
+# Managed by RightScale
 # DO NOT EDIT BY HAND
 #
 # Local modifications will be overwritten.
@@ -25,7 +32,7 @@ listen_addresses = '*'          # what IP address(es) to listen on;
                                         # defaults to 'localhost', '*' = all
                                         # (change requires restart)
 max_connections = <%= @node[:db_postgres][:tunable][:max_connections] %>                   # (change requires restart)
-unix_socket_directory = '<%= @node[:db_postgres][:socket] %>'             # (change requires restart)
+unix_socket_directory = '<%= @node[:db][:socket] %>'             # (change requires restart)
 shared_buffers = <%= @node[:db_postgres][:tunable][:shared_buffers] %>                   # min 128kB
                                         # (change requires restart)
 wal_level = hot_standby                 # minimal, archive, or hot_standby

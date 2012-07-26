@@ -5,6 +5,23 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+action :setup_attributes do
+
+  branch = new_resource.revision
+  repository_url = new_resource.repository
+
+  # Checking branch
+  if branch.empty?
+    log "  Warning: branch/tag input is empty, switching to 'master' branch"
+    branch = "master"
+    new_resource.revision branch
+  end
+
+  # Checking repository URL
+  raise "  ERROR: repository input is unset. Please fill 'Repository URL' input" if repository_url.empty?
+
+end
+
 
 action :pull do
 
@@ -20,6 +37,9 @@ action :pull do
     end
   end
 
+  # Checking attributes
+  action_setup_attributes
+
   destination = new_resource.destination
   repository_url = new_resource.repository
   revision = new_resource.revision
@@ -28,7 +48,7 @@ action :pull do
   # If repository already exists, just update it
   if ::File.directory?("#{destination}/.git")
     log "  Git project repository already exists, updating to latest revision"
-    git_action = :checkout
+    git_action = :sync
   else
     ruby_block "Backup of existing project directory" do
       only_if do ::File.directory?(destination) end
@@ -37,7 +57,7 @@ action :pull do
       end
     end
     log "  Downloading new Git project repository"
-    git_action = :sync
+    git_action = :checkout
   end
 
   git "#{destination}" do
@@ -57,6 +77,7 @@ action :pull do
   log "  GIT repository update/download action - finished successfully!"
 end
 
+
 action :capistrano_pull do
 
   # Add ssh key and exec script
@@ -65,6 +86,9 @@ action :capistrano_pull do
        RightScale::Repo::Ssh_key.new.create(new_resource.git_ssh_key)
     end
   end
+
+  # Checking attributes
+  action_setup_attributes
 
   log "  Preparing to capistrano deploy action. Setting parameters for the process..."
   destination = new_resource.destination
@@ -76,11 +100,12 @@ action :capistrano_pull do
   symlinks = new_resource.symlinks
   scm_provider = new_resource.provider
   environment = new_resource.environment
+
   log "  Deploying branch: #{revision} of the #{repository} to #{destination}. New owner #{app_user}"
   log "  Deploy provider #{scm_provider}"
 
   # Applying capistrano style deployment
-  capistranize_repo "Source repo" do
+  repo_capistranize "Source repo" do
     repository                 repository
     revision                   revision
     destination                destination

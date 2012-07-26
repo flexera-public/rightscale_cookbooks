@@ -9,12 +9,12 @@ rightscale_marker :begin
 
 # RightScale unique identifier
 uuid = node[:rightscale][:instance_uuid]
-log "Adding server tag for UUID #{uuid}"
+log "  Adding server tag for UUID #{uuid}"
 right_link_tag "server:uuid=#{uuid}"
 
 i=0
 # Add a tag for each private IP address
-while node[:cloud][:private_ips] && node[:cloud][:private_ips][i] do 
+while node[:cloud][:private_ips] && node[:cloud][:private_ips][i] do
   ip = node[:cloud][:private_ips][i]
   log "Adding private ip tag for ip address #{ip}"
   right_link_tag "server:private_ip_#{i}=#{ip}"
@@ -23,9 +23,9 @@ end
 
 i=0
 # Add a tag for each public IP address
-while node[:cloud][:public_ips] && node[:cloud][:public_ips][i] do 
+while node[:cloud][:public_ips] && node[:cloud][:public_ips][i] do
   ip = node[:cloud][:public_ips][i]
-  log "Adding public ip tag for ip address #{ip}"
+  log "  Adding public ip tag for ip address #{ip}"
   right_link_tag "server:public_ip_#{i}=#{ip}"
   i += 1
 end

@@ -9,13 +9,11 @@ rightscale_marker :begin
 
 DATA_DIR = node[:db][:data_dir]
 
-# == Verify initalized database
+# Verify initialized database
 # Check the node state to verify that we have correctly initialized this server.
-#
 db_state_assert :slave
 
-# == Open port for slave replication by old-master
-#
+# Open port for slave replication by old-master
 sys_firewall "Open port to the old master which is becoming a slave" do
   port node[:"#{node[:db][:provider]}"][:port].to_i
   enable true
@@ -23,26 +21,25 @@ sys_firewall "Open port to the old master which is becoming a slave" do
   action :update
 end
 
-# == Promote to master
-# Do promote, but do not change master tags or node state yet.
-#
+# Set mysql username and password with permissions to replicate from the new master.
 include_recipe "db::setup_replication_privileges"
 
+# Promote to master
+# Tags are not set here.  We need the tags on the old master in order
+# to demote it later.  Once demoted, then we add master tags.
 db DATA_DIR do
   action :promote
 end
 
-# == Schedule backups on slave
+# Schedule backups on slave
 # This should be done before calling db::do_lookup_master
 # changes current_master from old to new.
-#
 remote_recipe "enable slave backups on oldmaster" do
   recipe "db::do_primary_backup_schedule_enable"
   recipients_tags "rs_dbrepl:master_instance_uuid=#{node[:db][:current_master_uuid]}"
 end
 
-# == Demote old master
-#
+# Demote old master
 remote_recipe "demote master" do
   recipe "db::handle_demote_master"
   attributes :remote_recipe => {
@@ -52,24 +49,19 @@ remote_recipe "demote master" do
   recipients_tags "rs_dbrepl:master_instance_uuid=#{node[:db][:current_master_uuid]}"
 end
 
-# == Tag as master
+# Tag as master
 # Changes master status tags and node state
-#
 db_register_master
 
-# == Setup collected to monitor for a master db
+# Setup collected to monitor for a master db
 db DATA_DIR do
   action :setup_monitoring
 end
 
-# == force a backup
-#
-db_request_backup "do force backup" do
-  force true
-end
+# Perform a backup
+db_request_backup "do backup"
 
-# == Schedule master backups
-#
+# Schedule master backups
 include_recipe "db::do_primary_backup_schedule_enable"
 
 rightscale_marker :end

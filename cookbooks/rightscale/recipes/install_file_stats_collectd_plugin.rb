@@ -9,13 +9,12 @@ rightscale_marker :begin
 
 # Load the exec plugin in the main config file
 rightscale_enable_collectd_plugin "exec"
-#node[:rightscale][:plugin_list] += " exec" unless node[:rightscale][:plugin_list] =~ /exec/
 
 include_recipe "rightscale::setup_monitoring"
 
 require 'fileutils'
 
-log "Installing file_stats collectd plugin.."
+log "  Installing file_stats collectd plugin.."
 
 template(::File.join(node[:rightscale][:collectd_plugin_dir], "file-stats.conf")) do
   backup false
@@ -28,7 +27,7 @@ directory ::File.join(node[:rightscale][:collectd_lib], "plugins") do
   recursive true
 end
 
-remote_file(::File.join(node[:rightscale][:collectd_lib], "plugins", 'file-stats.rb')) do
+cookbook_file(::File.join(node[:rightscale][:collectd_lib], "plugins", 'file-stats.rb')) do
   source "file-stats.rb"
   mode "0755"
   notifies :restart, resources(:service => "collectd")
@@ -38,7 +37,7 @@ end
 file node[:rightscale][:db_backup_file] do
   action :touch
   owner "nobody"
-  group value_for_platform([ "centos", "redhat", "suse" ] => {"default" => "nobody"}, "default" => "nogroup")
+  group value_for_platform(["centos", "redhat"] => {"default" => "nobody"}, "default" => "nogroup")
 end
 
 ruby_block "add_collectd_gauges" do
@@ -46,7 +45,10 @@ ruby_block "add_collectd_gauges" do
     types_file = ::File.join(node[:rightscale][:collectd_share], 'types.db')
     typesdb = IO.read(types_file)
     unless typesdb.include?('gague-age') && typesdb.include?('gague-size')
-      typesdb += "\ngauge-age          seconds:GAUGE:0:200000000\ngauge-size          bytes:GAUGE:0:200000000\n"
+      typesdb += <<-EOS
+        ngauge-age          seconds:GAUGE:0:200000000
+        gauge-size          bytes:GAUGE:0:200000000
+      EOS
       File.open(types_file, "w") { |f| f.write(typesdb) }
     end
   end

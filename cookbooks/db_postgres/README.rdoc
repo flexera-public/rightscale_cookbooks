@@ -12,7 +12,7 @@ The 'db' implementation is defined by a Lightweight Provider, which can be
 found in the providers/default.rb file.
 
 The majority of the functionality of the PostgreSQL provider is encapsulated
-in the premium rightscale_tools gem, however, there are currently a handful
+in the premium rightscale_tools gem. However, there are currently a handful
 of recipes that can be used without it. See 'Public Recipes' in the USAGE
 section below.
 
@@ -31,33 +31,33 @@ section below.
 
 == SETUP:
 
-* Place db::default recipe into your runlist to setup the db resource.  When
-  using a RightScale ServerTemplate, this will also automatically add the
-  common database attributes to your ServerTemplate inputs.
+* Place the <tt>db::default</tt> recipe into your runlist to set up the db resource.
+  When using a RightScale ServerTemplate, it will automatically add the
+  common database attributes to your ServerTemplate's inputs.
 
-* Also, place the db_postgres::default recipe into your runlist to load the
-  PostgreSQL provider, tuning parameters, as well as other PostgreSQL specific
+* Also, place the <tt>db_postgres::default</tt> recipe into your runlist to load the
+  PostgreSQL provider, tuning parameters, as well as other PostgreSQL-specific
   attributes in as inputs.
 
 == USAGE:
 
 === Basic usage
 Once setup, use the recipes in the 'db' cookbook to install and manage your
-PostgreSQL database servers and clients.  See the db/README.rdoc for usage
+PostgreSQL database servers and clients.  See the <tt>db/README.rdoc</tt> for usage
 details.
 
 
 === PostgreSQL Tuning and postgresql.conf and pg_hba.conf
 
-Custom tuning parameters can be applied by overriding the postgres_tuning.rb
-attributes file.  For more information and an example override repository
+Custom tuning parameters can be applied by overriding the <tt>postgres_tuning.rb</tt>
+attributes file. For more information and an example override repository,
 please see:
 
   https://github.com/ravibhure/cookbooks_public/tree/master/cookbooks/db_postgres
 
 
 === Public Recipes
-Here is the list of db recipes that can be used without the preimum
+Here is the list of db recipes that can be used without the premium
 rightscale_tools gem:
 
 * db::default
@@ -71,7 +71,7 @@ rightscale_tools gem:
 * db::request_appserver_allow
 * db::request_appserver_deny
 
-These recipes are used by the RightScale LAPP ServerTemplate.
+These recipes are used by RightScale's LAMP ServerTemplates.
 
 
 == KNOWN LIMITATIONS

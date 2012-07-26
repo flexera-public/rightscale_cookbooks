@@ -13,26 +13,32 @@ define :db_mysql_set_privileges, :preset => "administrator", :username => nil, :
   db_name = "*.*"
   db_name = "#{params[:db_name]}.*" if params[:db_name]
 
+
   ruby_block "set admin credentials" do
     block do
       require 'rubygems'
       require 'mysql'
 
-      con = Mysql.new("", "root",nil,nil,nil,"#{node[:db_mysql][:socket]}")
+      con = Mysql.new("", "root",nil,nil,nil,"#{node[:db][:socket]}")
 
-      # Now that we have a Mysql object, let's santize our inputs
+      # Now that we have a Mysql object, let's sanitize our inputs
       username = con.escape_string(username)
       password = con.escape_string(password)
+
+
+      # Remove anonymous access via the server hostname.
+      # Some cloud sets hostname to DNS FQDN name which causes problems for replication.
+      host=`hostname`.strip
+      con.query("DELETE from mysql.user where user='' and host='#{host}'")
 
       case priv_preset
       when 'administrator'
         con.query("GRANT ALL PRIVILEGES on *.* TO '#{username}'@'%' IDENTIFIED BY '#{password}' WITH GRANT OPTION")
         con.query("GRANT ALL PRIVILEGES on *.* TO '#{username}'@'localhost' IDENTIFIED BY '#{password}' WITH GRANT OPTION")
       when 'user'
-        con.query("GRANT ALL PRIVILEGES on #{db_name} TO '#{username}'@'%' IDENTIFIED BY '#{password}'")
-        con.query("GRANT ALL PRIVILEGES on #{db_name} TO '#{username}'@'localhost' IDENTIFIED BY '#{password}'")
-        con.query("REVOKE SUPER on *.* FROM '#{username}'@'%' IDENTIFIED BY '#{password}'")
-        con.query("REVOKE SUPER on *.* FROM '#{username}'@'localhost' IDENTIFIED BY '#{password}'")
+        # Grant only the appropriate privs
+        con.query("GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, RELOAD, SHUTDOWN, PROCESS, FILE, REFERENCES, INDEX, ALTER, SHOW DATABASES, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, REPLICATION SLAVE, REPLICATION CLIENT, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, CREATE USER, EVENT, TRIGGER on #{db_name} TO '#{username}'@'%' IDENTIFIED BY '#{password}'")
+        con.query("GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, RELOAD, SHUTDOWN, PROCESS, FILE, REFERENCES, INDEX, ALTER, SHOW DATABASES, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, REPLICATION SLAVE, REPLICATION CLIENT, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, CREATE USER, EVENT, TRIGGER on #{db_name} TO '#{username}'@'localhost' IDENTIFIED BY '#{password}'")
       else
         raise "only 'administrator' and 'user' type presets are supported!"
       end

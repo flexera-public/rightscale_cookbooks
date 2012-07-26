@@ -15,33 +15,33 @@ require 'getoptlong'
 def usage
   puts("#{$0} -h <hostname> [-i <sample_interval>] <file1> <file2> ...")
   puts("    -h: The hostname of the machine. When using EC2 use the instance ID")
-  puts("    -i: The sample interval of the file check (in seconds).  Default: 20 seconds")
+  puts("    -i: The sample interval of the file check (in seconds). Default: 20 seconds")
   exit
 end
 
 opts = GetoptLong.new(
-    [ '--hostname', '-h', GetoptLong::REQUIRED_ARGUMENT ],
-    [ '--sample-interval', '-i',  GetoptLong::OPTIONAL_ARGUMENT ]
+  ['--hostname', '-h', GetoptLong::REQUIRED_ARGUMENT],
+  ['--sample-interval', '-i', GetoptLong::OPTIONAL_ARGUMENT]
 )
 
-# default values
+# Default values.
 hostname = nil
 sample_interval = 20
 
 opts.each do |opt, arg|
   case opt
-    when '--hostname'
-      hostname = arg
-    when '--sample-interval'
-      sample_interval = arg.to_i
+  when '--hostname'
+    hostname = arg
+  when '--sample-interval'
+    sample_interval = arg.to_i
   end
   arg.inspect
 end
 
-# Remaining arguments should be files to monitor
+# Remaining arguments should be files to monitor.
 files = ARGV
 
-# ensure we have all the needed params to run, show usage if we don't
+# Ensure we have all the needed params to run, show usage if we don't.
 usage if !hostname
 usage if files.length == 0
 

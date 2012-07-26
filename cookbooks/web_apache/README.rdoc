@@ -1,19 +1,46 @@
-= RightScale Web Apache 
+= RightScale Web Apache Cookbook
 
 == DESCRIPTION:
-
-== DETIALS:
+This cookbook installs and configures an Apache2 web server.
 
 == REQUIREMENTS:
+Requires a virtual machine launched from a RightScale managed RightImage.
 
-== SETUP:
-
-== USAGE:
+== COOKBOOKS DEPENDENCIES:
+Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 == KNOWN LIMITATIONS:
+There are no known limitations.
+
+== SETUP/USAGE:
+* Place the <tt>web_apache::install_server</tt> recipe into your runlist to set up the apache web server.
+* Use the <tt>web_apache::setup_monitoring</tt> recipe to add apache monitoring options to your dashboard "Monitoring" tab.
+
+== DETAILS:
+
+=== General
+The recipes in this cookbook are designed to perform basic operations on an apache web server.
+
+=== Attributes:
+Detailed cookbook attributes descriptions you can find in attributed/default.rb file
+
+=== Templates:
+* <tt>apache.conf.erb</tt> - Configuration for apache vhost file.
+* <tt>apache2.conf.erb</tt> - Apache2 web server configuration file template.
+* <tt>apache_collectd_exec.erb</tt> - Collectd exec plugin configuration template.
+* <tt>apache_collectd_plugin.conf.erb</tt> - Collectd status plugin configuration template.
+* <tt>apache_ssl_vhost.erb</tt> - Configuration for apache ssl vhost file.
+* <tt>apache_status.conf.erb</tt> - Configuration for apache status information access.
+* <tt>app_server.erb</tt> - Configuration for apache basic application server vhost file.
+* <tt>ssl_certificate.erb</tt> - Apache ssl certificate path template.
+* <tt>ssl_certificate_chain.erb</tt> - Apache ssl certificate chain path template.
+* <tt>ssl_key.erb</tt> - Apache ssl key template.
+* <tt>sysconfig_httpd.erb</tt> - Configuration file template for the apache service.
+
 
 = LICENSE
 
-Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-if applicable, other agreements such as a RightScale Master Subscription Agreement.
+Copyright RightScale, Inc. All rights reserved.  All access and use subject to
+the RightScale Terms of Service available at http://www.rightscale.com/terms.php
+and, if applicable, other agreements such as a RightScale Master Subscription
+Agreement.

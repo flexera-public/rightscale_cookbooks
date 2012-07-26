@@ -7,71 +7,83 @@
 
 rightscale_marker :begin
 
-# include the public recipe for basic installation
+apache_log_dir = node[:apache][:log_dir]
+
+# Symlink Apache log location
+apache_name = node[:apache][:dir].split("/").last
+log " Apache name was #{apache_name}"
+log " Apache log dir was #{apache_log_dir}"
+
+# Create physical directory holding the logs
+directory "/mnt/ephemeral/log/#{apache_name}" do
+  action :create
+  recursive true
+end
+
+# If directory exists for any reason, delete it.
+# This should error out if there is content in the dir,
+# explicitly setting recursive to false to show behavior.
+directory apache_log_dir do
+  not_if { File.symlink?(apache_log_dir) }
+  recursive false
+  action :delete
+end
+
+# Create symlink from where apache logs to physical directory
+link apache_log_dir do
+  to "/mnt/ephemeral/log/#{apache_name}"
+end
+
+# Include the public recipe for basic installation
 include_recipe "apache2"
 
 # Persist apache2 resource to node for use in other run lists
 service "apache2" do
   action :nothing
-  persist true  
+  persist true
 end
 
+# Installing ssl support from "apache2" cookbook if enabled
 if node[:web_apache][:ssl_enable]
   include_recipe "apache2::mod_ssl"
 end
 
-# Checking /var/www symlink (broken after start/stop)
-default_web_dir = '/var/www'
-bash "Checking #{default_web_dir} symlink" do
-  flags "-ex"
-  code <<-EOH
-    if [[ ! -e #{default_web_dir} &&  -L #{default_web_dir} ]]; then
-      echo "#{default_web_dir} symlink is broken! Removing..."
-      rm -f #{default_web_dir}
-    fi
-  EOH
-  only_if do File.symlink?(default_web_dir) end
- end
+# Move default apache content files to ephemeral storage and make symlink.
+default_web_dir = "/var/www"
+content_web_dir = "/mnt/ephemeral/www"
 
-# Move Apache /var/www to /mnt/ephemeral/www
-content_dir = '/mnt/ephemeral/www'
-bash "Move apache #{default_web_dir} to #{content_dir}" do
+# Creates content_web_dir if it does not exists.
+# Gone after stop/start.
+directory content_web_dir do
+  action :create
+  recursive true
+end
+
+# If default_web_dir is not a link, move it's files to content_web_dir.
+# default_web_dir will later become a symlink to content_web_dir.
+bash "Moving #{default_web_dir} to #{content_web_dir}" do
+  not_if { File.symlink?(default_web_dir) }
   flags "-ex"
-  not_if do File.directory?(content_dir) end
   code <<-EOH
-    mkdir -p #{content_dir}
-    if [ -d #{default_web_dir}]; then
-      cp -rf #{default_web_dir}/. #{content_dir}
-    fi
-    rm -rf #{default_web_dir}
-    ln -nsf #{content_dir} #{default_web_dir}
+    mv #{default_web_dir}/* #{content_web_dir}
+    rmdir #{default_web_dir}
   EOH
 end
 
-
-## Move Apache Logs
-apache_name = node[:apache][:dir].split("/").last
-log "apache_name was #{apache_name}"
-log "apache log dir was #{node[:apache][:log_dir]}"
-bash "move_apache_logs" do
-  flags "-ex"
-  not_if do File.symlink?(node[:apache][:log_dir]) end
-  code <<-EOH
-    rm -rf #{node[:apache][:log_dir]}
-    mkdir -p /mnt/ephemeral/log/#{apache_name}
-    ln -s /mnt/ephemeral/log/#{apache_name} #{node[:apache][:log_dir]}
-  EOH
+# Create symlink from default_web_dir to content_web_dir.
+link default_web_dir do
+  to content_web_dir
 end
 
-# Configuring Apache Multi-Processing Module
+# Apache Multi-Processing Module configuration
 case node[:platform]
-  when "centos","redhat","fedora","suse"
-
+when "centos","redhat"
+    # RedHat based systems have no mpm change scripts included so we have to configure mpm here.
+    # Configuring "HTTPD" option to insert it to /etc/sysconfig/httpd file
     binary_to_use = node[:apache][:binary]
-    if node[:web_apache][:mpm] != 'prefork'
-      binary_to_use << ".worker"
-    end
+    binary_to_use << ".#{node[:web_apache][:mpm]}" unless node[:web_apache][:mpm] == 'prefork'
 
+    # Updating /etc/sysconfig/httpd  to use required worker
     template "/etc/sysconfig/httpd" do
       source "sysconfig_httpd.erb"
       mode "0644"
@@ -80,11 +92,10 @@ case node[:platform]
       )
       notifies :reload, resources(:service => "apache2"), :immediately
     end
-  when "debian","ubuntu"
+when "ubuntu"
     package "apache2-mpm-#{node[:web_apache][:mpm]}"
 end
 
-# Log resource submitted to opscode. http://tickets.opscode.com/browse/CHEF-923
-log "Started the apache server."
+log "  Started the apache server."
 
 rightscale_marker :end

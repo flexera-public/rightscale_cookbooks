@@ -1,24 +1,48 @@
 #
 # Cookbook Name:: repo_ros
 #
-#
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+action :setup_attributes do
+
+  # Checking ros_util presence it is required for repo_ros correct operations
+  ruby_block "Checking for ros_util presence" do
+    block do
+      raise "  Error: ROS gem missing, please add rightscale::install_tool recipe to runlist." unless ::File.exists?("/opt/rightscale/sandbox/bin/ros_util")
+    end
+  end
+
+  # Checking inputs required for getting source from ROS
+  raise "  Storage Provider input is unset" unless new_resource.storage_account_provider
+  raise "  Storage account provider ID input is unset" unless new_resource.storage_account_id
+  raise "  Storage account secret input is unset" unless new_resource.storage_account_secret
+  raise "  Repo container name input is unset." unless new_resource.container
+
+end
 
 action :pull do
 
-  # Check variables and log/skip if not set
-  log "  Trying to get ros repo from: #{new_resource.storage_account_provider}, bucket: #{new_resource.container}"
-  raise "  Repo container name not provided." unless new_resource.container
-  raise "  Storage account provider ID not provided" unless new_resource.storage_account_id
-  raise "  Storage account secret not provided" unless new_resource.storage_account_secret
+  # Checking attributes
+  action_setup_attributes
 
+  log "  Trying to get ros repo from: #{new_resource.storage_account_provider}, bucket: #{new_resource.container}"
+
+  # Backup project directory if it is not empty
+  ruby_block "Backup of existing project directory" do
+     block do
+       ::File.rename("#{new_resource.destination}", "#{new_resource.destination}_" + ::Time.now.gmtime.strftime("%Y%m%d%H%M"))
+     end
+     not_if { ::Dir["#{new_resource.destination}/*"].empty? }
+  end
+
+  # Ensure that destination directory exists after all backups.
+  directory "#{new_resource.destination}"
 
   # "true" we just put downloaded file into "destination" folder
   # "false" we put downloaded file into /tmp and unpack it into "destination" folder
-  if (new_resource.unpack_source == true) then
+  if (new_resource.unpack_source == true)
     tmp_repo_path = "/tmp/downloaded_ros_archive.tar.gz"
   else
     tmp_repo_path = "#{new_resource.destination}/downloaded_ros_archive.tar.gz"
@@ -40,7 +64,7 @@ action :pull do
     code <<-EOH
       tar xzf #{tmp_repo_path} -C #{new_resource.destination}
     EOH
-    only_if do (new_resource.unpack_source == true) end
+    only_if { (new_resource.unpack_source == true) }
   end
 
   log "  ROS repo pull action - finished successfully!"
@@ -49,29 +73,39 @@ end
 
 action :capistrano_pull do
 
-  repo_dir="/home"
-
   log "  Recreating project directory for :pull action"
-  # In case if it is capistrano symlink
-  directory "#{new_resource.destination}" do
-    recursive true
+
+  repo_dir="/home"
+  capistrano_dir="/home/capistrano_repo"
+
+  # Delete if destination is a symlink
+  link "#{new_resource.destination}" do
     action :delete
-    only_if do (::File.symlink?("#{new_resource.destination}") == true) end
+    only_if { ::File.symlink?("#{new_resource.destination}") }
   end
 
-  capistrano_dir="/home/capistrano_repo"
+  # If destination directory is not empty AND capistrano folder exists,
+  # this mean that this folder is a result of previous user interaction, an error or multiple action changes.
+  # We will backup destination directory to capistrano folder and warn user if this is the case.
   ruby_block "Backup old repo" do
+
     block do
-      t=Time.now.gmtime
-      now=t.strftime("%Y%m%d%H%M%S")
       Chef::Log.info("  Check previous repo in case of action change")
-      if (::File.exists?("#{new_resource.destination}") == true && ::File.symlink?("#{new_resource.destination}") == false)
-        ::File.rename("#{new_resource.destination}", "#{new_resource.destination}_old_#{now}")
-      elsif (::File.exists?("#{new_resource.destination}") == true && ::File.symlink?("#{new_resource.destination}") == false && ::File.exists?("#{capistrano_dir}") == true)
-        ::File.rename("#{new_resource.destination}", "#{capistrano_dir}/releases/_initial_#{now}")
+      timestamp  = ::Time.now.gmtime.strftime("%Y%m%d%H%M")
+      if ::File.exists?("#{capistrano_dir}")
+        ::File.rename("#{new_resource.destination}", "#{capistrano_dir}/releases/_initial_#{timestamp}")
+        Chef::Log.info("  Destination directory is not empty. Backup to #{capistrano_dir}/releases/_initial_#{timestamp}")
+      else
+        ::File.rename("#{new_resource.destination}", "#{new_resource.destination}_#{timestamp}")
+        Chef::Log.info("  Destination directory is not empty. Backup to #{new_resource.destination}_#{timestamp}")
       end
     end
+    only_if { ::File.exists?("#{new_resource.destination}") and ::Dir["#{new_resource.destination}/*"].empty? == false }
+
   end
+
+  # Ensure that destination directory exists after all backups and cleanups
+  directory "#{new_resource.destination}"
 
   log "  Pulling source from ROS"
   action_pull
@@ -107,19 +141,19 @@ action :capistrano_pull do
 
   #initialisation of new git repo with initial commit
   bash "Git init in project folder" do
-      cwd "#{repo_dir}/ros_repo"
-      code <<-EOH
-        git init
-        git add .
-        git commit -a -m "fake commit"
-      EOH
+    cwd "#{repo_dir}/ros_repo"
+    code <<-EOH
+      git init
+      git add .
+      git commit -a -m "fake commit"
+    EOH
   end
 
   log "  Deploying new local git project repo from #{repo_dir}/ros_repo/ to #{destination}. New owner #{app_user}"
   log "  Deploy provider #{scm_provider}"
 
   # Applying capistrano style deployment
-  capistranize_repo "Source repo" do
+  repo_capistranize "Source repo" do
     repository "#{repo_dir}/ros_repo/"
     destination destination
     app_user app_user

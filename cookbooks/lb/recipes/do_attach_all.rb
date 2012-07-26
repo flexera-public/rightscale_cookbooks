@@ -14,8 +14,8 @@ end
 
 DROP_THRESHOLD = 3
 
-# Iterate thru each vhost
-vhosts(node[:lb][:vhost_names]).each do | vhost_name |
+# Iterate through each vhost.
+vhosts(node[:lb][:vhost_names]).each do |vhost_name|
 
   log "Attach all for [#{vhost_name}]"
   # Obtain current list from lb config file.
@@ -41,11 +41,12 @@ vhosts(node[:lb][:vhost_names]).each do | vhost_name |
       backend_id uuid
       backend_ip deployment_servers[uuid][:ip]
       backend_port deployment_servers[uuid][:backend_port].to_i
+      session_sticky node[:lb][:session_stickiness]
       action :attach
     end
   end
 
-  # Increment threshold counter if servers in config not in deployment
+  # Increment threshold counter if servers in config not in deployment.
   node[:lb][:threshold] ||= Hash.new
   node[:lb][:threshold][vhost_name] ||= Hash.new
   servers_missing = inconfig_servers - Set.new(deployment_servers.keys)
@@ -54,18 +55,18 @@ vhosts(node[:lb][:vhost_names]).each do | vhost_name |
     log "  Increment threshold counter for #{uuid} = #{node[:lb][:threshold][vhost_name][uuid]}"
   end
 
-  # Set threshold counters to nil to those not incremented, thus assuming app server now accessable
-  # set to nil since chef does not delete the key, can only alter it
-  (Set.new(node[:lb][:threshold][vhost_name].keys)-servers_missing).each do |uuid|
+  # Set threshold counters to nil to those not incremented, thus assuming app server now accessable.
+  # Set to nil since chef does not delete the key, can only alter it.
+  (Set.new(node[:lb][:threshold][vhost_name].keys) - servers_missing).each do |uuid|
     if node[:lb][:threshold][vhost_name][uuid]
       node[:lb][:threshold][vhost_name][uuid] = nil
       log "  Resetting threshold for #{uuid}"
     end
   end
 
-  # Delete servers that hit threshold
+  # Delete servers that hit threshold.
   app_servers_detached = 0
-  node[:lb][:threshold][vhost_name].each do |uuid,counter|
+  node[:lb][:threshold][vhost_name].each do |uuid, counter|
     if counter == nil
       next
     elsif counter >= DROP_THRESHOLD
@@ -74,7 +75,7 @@ vhosts(node[:lb][:vhost_names]).each do | vhost_name |
         backend_id uuid
         action :detach
       end
-      node[:lb][:threshold][vhost_name][uuid] = nil # set to nil - chef does not delete the key, can only alter it.
+      node[:lb][:threshold][vhost_name][uuid] = nil # Set to nil - chef does not delete the key, can only alter it.
       app_servers_detached += 1
     else
       log "  Threshold not reached for #{uuid} : #{node[:lb][:threshold][vhost_name][uuid]}"

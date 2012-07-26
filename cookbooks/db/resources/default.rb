@@ -25,15 +25,16 @@ attribute :data_dir, :kind_of => String, :default => "/mnt/storage"
 
 # == Backup/Restore options
 attribute :lineage, :kind_of => String
-attribute :force, :kind_of => String, :default => "false"
 attribute :timestamp_override, :kind_of => String, :default => nil
 attribute :from_master, :kind_of => String, :default => nil
+attribute :restore_process, :kind_of => Symbol, :default => :primary_restore
+attribute :timeout, :kind_of => String, :default => "60"
 
 # == Privilege options
 attribute :privilege, :equal_to => [ "administrator", "user" ], :default => "administrator"
 attribute :privilege_username, :kind_of => String
 attribute :privilege_password, :kind_of => String
-attribute :privilege_database, :kind_of => String, :default => "*.*" # All databases
+attribute :privilege_database, :kind_of => String, :default => "*.*"
 
 # == Firewall options
 attribute :enable, :equal_to => [ true, false ], :default => true
@@ -47,7 +48,7 @@ attribute :db_name, :kind_of => String
 
 # = General Database Actions
 #
-# Below are the actions defined by by the db resource interface.
+# Below are the actions defined by the db resource interface.
 #
 
 # == Stop
@@ -75,7 +76,7 @@ add_action :status
 # == Lock
 # Lock the database so writes will be blocked.
 #
-# This must insure a conistent state while taking a snapshot.
+# This must insure a consistent state while taking a snapshot.
 #
 add_action :lock
 
@@ -83,7 +84,7 @@ add_action :lock
 # Unlock the database so writes can occur.
 #
 # This must be called as soon as possible after calling the :lock action
-# since no clients will be blocked from writting.
+# since clients will be blocked from writing until unlocked.
 #
 add_action :unlock
 
@@ -120,7 +121,6 @@ add_action :firewall_update_request
 #
 add_action :move_data_dir
 
-
 # == Generate dump file
 add_action :generate_dump_file
 
@@ -149,8 +149,8 @@ add_action :post_backup_cleanup
 # == Write Backup Info
 # Write backup information needed during restore.
 #
-# This action is called before a backup is done.  
-# It contains information about the current DB setup (dbprovider, version, replication
+# This action is called before a backup is done.
+# It contains information about the current DB setup (db provider, version, replication
 # details, etc.) that is used during restore to verify the backup and initialize
 # the DB. The file is written to the DB data block device and is part of the backup.
 add_action :write_backup_info
@@ -171,8 +171,8 @@ add_action :pre_restore_check
 # == Post-restore Cleanup Validation
 # Used to validate backup and cleanup VM after restore.
 #
-# Raise and exception if the snapshot is from a different master, from an incompatible
-# database software version, incompatible architecture, or other provider dependent 
+# Raise an exception if the snapshot is from a different master, from an incompatible
+# database software version, incompatible architecture, or other provider dependent
 # conditions.
 #
 # This action is called after the block_device restore has completed and
@@ -187,8 +187,8 @@ add_action :post_restore_cleanup
 # == Set Privileges
 # Set database user privileges.
 #
-# Use the privilage attributes of this resource to setup 'administrator' or
-# 'user' privilages to the given username with the given password.
+# Use the privilege attributes of this resource to setup 'administrator' or
+# 'user' privilege to the given username with the given password.
 #
 add_action :set_privileges
 
@@ -196,7 +196,7 @@ add_action :set_privileges
 # Installs database client
 #
 # Use to install the client on any system that needs to connect to the server.
-# Also should install language binding packages For example, ruby client gem
+# Also should install language binding packages. For example: ruby client gem
 # java client jar, php client modules, etc
 #
 add_action :install_client
@@ -207,9 +207,9 @@ add_action :install_client
 add_action :install_server
 
 # == Setup Monitoring
-# Install and configure collectd plgins for the server.
+# Install and configure collectd plugins for the server.
 #
-# This is used by the RightScale platorm to display metrics about the database
+# This is used by the RightScale platform to display metrics about the database
 # on the RightScale dashboard.  Also enables alerts and escalations for the
 # database.
 #
@@ -223,14 +223,15 @@ add_action :enable_replication
 # Promotes a slave server to the master server.
 #
 # This is called when a new master is needed.  If the prior master is still
-# functioning it is configured as a slave.
+# functioning it is demoted and configured as a slave.
 add_action :promote
 
 # == Grant Replication Slave
-# Set database replication priviliges for a slave.
+# Set database replication privileges for a slave.
 #
 # This is called when a slave is initialized.
 add_action :grant_replication_slave
 
+add_action :remove_anonymous
 actions @action_list
 

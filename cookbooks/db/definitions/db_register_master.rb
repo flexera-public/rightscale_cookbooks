@@ -5,43 +5,37 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-# == Sets a database server to be a master in a replication db setup.
+# Sets a database server to be a master in a replication db setup.
 # The tasks include setting up DNS, setting tags, and setting node attributes.
-# == Params
-# none
-# == Exceptions
-# none
-
 define :db_register_master do
 
-  # == Set master DNS
+  # Set master DNS
   # Do this first so that DNS can propagate while the recipe runs
-  #
   private_ip = node[:cloud][:private_ips][0]
-  log "   Setting master database #{node[:db][:dns][:master][:fqdn]} to #{private_ip}"
+  log "  Setting master database #{node[:db][:dns][:master][:fqdn]} to #{private_ip}"
   sys_dns "default" do
     id node[:db][:dns][:master][:id]
     address private_ip
     action :set_private
   end
-  
-  # == Set master tags
-  # Tag the server with the master tags rs_dbrepl:master_active 
+
+  # Set master tags
+  # Tag the server with the master tags rs_dbrepl:master_active
   # and rs_dbrepl:master_instance_uuid
-  #
+
   active_tag = "rs_dbrepl:master_active=#{Time.now.strftime("%Y%m%d%H%M%S")}-#{node[:db][:backup][:lineage]}"
-  log "Tagging server with #{active_tag}"
+  log "  Tagging server with #{active_tag}"
   right_link_tag active_tag
 
   unique_tag = "rs_dbrepl:master_instance_uuid=#{node[:rightscale][:instance_uuid]}"
-  log "Tagging server with #{unique_tag}"
+  log "  Tagging server with #{unique_tag}"
   right_link_tag unique_tag
-  
-  # == Set master node variables
-  #
+
+  # Set master node variables
   db_state_set "Set master state" do
     master_uuid node[:rightscale][:instance_uuid]
     master_ip node[:cloud][:private_ips][0]
     is_master true
   end
+
 end

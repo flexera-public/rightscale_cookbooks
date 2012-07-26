@@ -10,16 +10,16 @@ rightscale_marker :begin
 # Run only on master server
 db_state_assert :master
 
-#
+
 # Set sync mode on master server
-#
-log "Initializing slave to connect to master in sync state..."
-# updates postgresql.conf for replication
-Chef::Log.info "updates postgresql.conf for replication"
+
+log "  Initializing slave to connect to master in sync state..."
+# Updates postgresql.conf for replication
+log "  Updates postgresql.conf for replication"
 RightScale::Database::PostgreSQL::Helper.configure_postgres_conf(node)
 
 # Reload postgresql to read new updated postgresql.conf
-Chef::Log.info "Reload postgresql to read new updated postgresql.conf"
+log "  Reload postgresql to read new updated postgresql.conf"
 RightScale::Database::PostgreSQL::Helper.do_query('select pg_reload_conf()')
 
 rightscale_marker :end

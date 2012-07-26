@@ -1,17 +1,25 @@
-# Mod_jk settings
+#
+# Cookbook Name:: app_tomcat
+#
+# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
+# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
+# if applicable, other agreements such as a RightScale Master Subscription Agreement.
 #
 # Managed by RightScale
 # DO NOT EDIT BY HAND
 #
+# Mod_jk settings
+#
+
 # Load mod_jk module
 LoadModule    jk_module  modules/mod_jk.so
 
 # Where to find workers.properties
 JkWorkersFile /etc/<%= @tomcat_name %>/workers.properties
 # Where to put jk shared memory
-JkShmFile     /var/log/<%= @tomcat_name %>/mod_jk.shm
+JkShmFile     <%= @apache_log_dir %>/mod_jk.shm
 # Where to put jk logs
-JkLogFile     /var/log/<%= @tomcat_name %>/mod_jk.log
+JkLogFile     <%= @apache_log_dir %>/mod_jk.log
 # Set the jk log level [debug/error/info]
 JkLogLevel    info
 # Select the log format

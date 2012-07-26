@@ -12,7 +12,7 @@ node[:app][:provider] = "app_passenger"
 node[:app][:database_name] = node[:app_passenger][:project][:db][:schema_name]
 
 case node[:platform]
-  when "ubuntu","debian"
+  when "ubuntu"
     node[:app][:packages] = [
       "libopenssl-ruby",
       "libcurl4-openssl-dev",
@@ -21,13 +21,12 @@ case node[:platform]
       "libapr1-dev",
       "libcurl4-openssl-dev"
      ]
-  when "centos","redhat","redhatenterpriseserver","fedora","suse"
+  when "centos","redhat"
     node[:app][:packages] = [
       "zlib-devel",
       "openssl-devel",
       "readline-devel",
       "curl-devel",
-      "openssl-devel",
       "httpd-devel",
       "apr-devel",
       "apr-util-devel",
@@ -37,18 +36,8 @@ case node[:platform]
     raise "Unrecognized distro #{node[:platform]}, exiting "
 end
 
-log " Preparing rails document root variable"
-dest_dir = "/home/rails"
-if node[:repo][:default][:destination].empty?
-  log "  Your repo/default/destination input is not set. Setting project root to default: #{dest_dir}"
-  project_home = dest_dir
-else
-  project_home = node[:repo][:default][:destination]
-end
-
-# Setting app LWRP attribute
 # Destination directory for the application
-node[:app][:destination]= "#{project_home}/#{node[:web_apache][:application_name]}"
+node[:app][:destination] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
 
 directory "#{node[:app][:destination]}" do
   recursive true

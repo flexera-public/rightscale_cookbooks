@@ -13,17 +13,15 @@ end
 
 VHOST_NAMES = node[:lb][:vhost_names]
 
-log "  Install load balancer" 
+log "  Install load balancer"
 
-# In the 'install' action, the name is not used,
-# but the provider from default recipe is needed.
-# Any vhost name set with provider can be used.
-# Using first one in list to make it simple.
+# In the 'install' action, the name is not used, but the provider from default recipe is needed.
+# Any vhost name set with provider can be used. Using first one in list to make it simple.
 lb vhosts(VHOST_NAMES).first do
   action :install
 end
 
-vhosts(VHOST_NAMES).each do | vhost_name |
+vhosts(VHOST_NAMES).each do |vhost_name|
   lb vhost_name do
     action :add_vhost
   end

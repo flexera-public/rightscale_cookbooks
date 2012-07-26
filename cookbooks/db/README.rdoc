@@ -14,19 +14,19 @@ it provides an interface for general database actions and parameters.
 * Depends on a <tt>block_device</tt> resource for backup and restore recipes.
 * Requires a virtual machine launched from a RightScale-managed RightImage.
 
-== COOKBOOOKS DEPENDENCIES:
+== COOKBOOKS DEPENDENCIES:
 
 Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 == KNOWN LIMITATIONS:
 
-* Currently only one db provider should be present in your cookbook path.
+* Only one db provider should be present in your cookbook path.
 
 == SETUP:
 
-* Place db::default recipe into your runlist to setup the db resource. When
+* Place <tt>db::default</tt> recipe into your runlist to set up the db resource. When
   using a RightScale ServerTemplate, this will also automatically add the common
-  database attributes to your ServerTemplate inputs.
+  database attributes to your ServerTemplate's inputs.
 
 * The default recipe for the cookbook that contains the db provider must also be
   added to your runlist. For example:
@@ -40,85 +40,82 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 === Initialize a master database:
 
-1. Once your VMs is operational, run the:
+1. Once your server is operational, run the:
 
     "db::setup_block_device"
 
-   recipe. This will initialize your database onto a block device
+   recipe, which initializes your database onto a block device
    that supports backup and restore operations.
-2. Initialize your database from previous dumpfile or other source.
-3. Register your database with a Dynamic DNS provider using:
+2. Initialize your database from previous dump file or other source.
+3. Register your database with a DNS provider that supports dynamic DNS using:
 
     "sys_dns::do_set_private"
 
-   to allow you application servers to start making connections.
+   to allow your application servers to start making connections.
 4. Backup your database using:
 
     "db:do_backup"
 
-   to allow restoring the master database in case of failure or
-   planned termination.
+   so that you can restore the master database in the event 
+   of a failure or planned termination.
 
 === Restore a master database:
 
-1. Once your VMs is operational, run the:
+1. Once your server is operational, run the:
 
     "db::do_restore"
 
-   recipe. This will restore your database from a backup previously saved to
+   recipe, which restores your database from a backup previously saved to
    persistent cloud storage.
-3. Register your database with a Dynamic DNS provider using:
+3. Register your database with a DNS provider that supports dynamic DNS using:
 
     "sys_dns::do_set_private"
 
-   to allow you application servers to start making connections.
+   to allow your application servers to start making connections.
 
 == DETAILS:
 
 === General
 
 The 'db' interface is defined by a Lightweight Resource, which can be found in
-the resources/default.rb file.
+the 'resources/default.rb' file.
 
 This cookbook is intended to be used in conjunction with cookbooks that contain
-Lightweight Providers which implement the 'db' interface. See the RightScale
-db_mysql cookbook for an example.
+Lightweight Providers which implement the 'db' interface. See RightScale's
+'db_mysql' cookbook for an example.
 
-For more about Lightweight Resources and Providers (LWRPs), please see the Chef
-wiki at:
-http://wiki.opscode.com/display/chef/Lightweight+Resources+and+Providers+%28LWRP%29
+For more information about Lightweight Resources and Providers (LWRPs), please see: {Lightweight Resources and Providers}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)]
 
 === Backup/Restore
 
 This cookbook depends on the block_device LWRP for backup and restore actions.
 See <tt>db::do_backup</tt> and <tt>db::do_restore</tt> recipes for examples. The
-block_device cookbook provides primary and secondary persistence solutions for
+'block_device' cookbook provides primary and secondary persistence solutions for
 multiple clouds.
 
-However, using LWRPs one can provide their own block_device implementation
+However, using LWRPs one can provide their own block device implementation
 instead.
 
-Please see the block_device cookbook for the list of available actions,
+Please see the 'block_device' cookbook for the list of available actions,
 attributes and usage.
 
 === Providers:
 
 When writing your own database Lightweight Provider:
 
-* The database provider to use is defined by node[:db][:provider] attribute, you
-  will need to override this. You can do so by adding:
+* The database provider to use is defined by the node[:db][:provider] attribute. You
+  will need to override this attribute by adding the following code in the 
+  attributes file of your provider cookbook.
 
     set[:db][:provider] = "db_myprovider"
 
-  in the attributes file of your provider cookbook.
 
-* Any database specific attributes that you wish to make user configurable
-  should be added to the cookbook metadata with the default recipe included in
-  the attribute's 'recipes' array.  For more about Chef metadata, please see the
-  Chef wiki at: http://wiki.opscode.com/display/chef/Metadata
+* Any database-specific attributes that you wish to make into user-configurable
+  inputs should be added to the cookbook metadata with the default recipe included in
+  the attribute's 'recipes' array. For more about Chef metadata, please see: {Chef Metadata}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-RightScale_Support_of_Chef/Chef_Metadata]
 
-* Your provider cookbook metadata should depend on this cookbook by added a
-  'depends' line to your metadata. For example:
+* Your provider cookbook metadata should depend on this cookbook by adding a
+  'depends' line to its metadata. For example:
 
     depends "db"
 

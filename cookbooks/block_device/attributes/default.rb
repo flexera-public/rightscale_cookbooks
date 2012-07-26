@@ -5,6 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+# Detailed descriptions of variables below can be found in block_device/metadata.rb file
 set_unless[:block_device][:devices][:default][:backup][:lineage] = ""
 set_unless[:block_device][:devices][:default][:backup][:lineage_override] = ""
 
@@ -20,9 +21,10 @@ set_unless[:block_device][:devices][:default][:backup][:secondary][:cred][:secre
 
 set_unless[:block_device][:devices_to_use] = 'device1'
 
+# Defining initial backup parameters for all block devices
 RightScale::BlockDeviceHelper.do_for_all_block_devices block_device do |device, number|
   # Backup every hour on a randomly calculated minute
-  set_unless[:block_device][:devices][device][:backup][:primary][:cron][:hour] = "" # Every hour
+  set_unless[:block_device][:devices][device][:backup][:primary][:cron][:hour] = "*" # Every hour
   set_unless[:block_device][:devices][device][:backup][:primary][:cron][:minute] = "#{5+rand(50)}"
 
   set_unless[:block_device][:devices][device][:mount_point] = "/mnt/storage#{number}"
