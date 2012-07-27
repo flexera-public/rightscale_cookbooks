@@ -20,8 +20,7 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 * Choose image and cloud.
 * Fill required input fields.
-* When using a RightScale ServerTemplate, use <tt>memcached::default</tt> recipe to automatically add the server tags.
-* Place <tt>memcached::install_server</tt> recipe into your runlist to setup the memcached server.
+* When using a RightScale ServerTemplate, place <tt>memcached::install_server</tt> recipe into your runlist to setup the memcached server and add the server tags..
 
 == DETAILS:
 
@@ -33,18 +32,17 @@ Opens lisnening port in systems' firewall, setups server tags, monitoring and lo
 === Attributes:
 
 These are the settings used in recipes and templates. Default values are noted.
-* <tt>node[:memcached][:tcp_port]</tt> - TCP port number to listen on. Default is 11211.
-* <tt>node[:memcached][:udp_port]</tt> - UDP port number to listen on. Default is 11211.
-* <tt>node[:memcached][:user]</tt> - Username to run memcached. Default is nobody.
-* <tt>node[:memcached][:connection_limit]</tt> - Number of simultaneous connections. Default is 1024.
-* <tt>node[:memcached][:memtotal_percent]</tt> - Max memory to use for items. Default is 90.
-* <tt>node[:memcached][:threads]</tt> - Number of threads. Default is 1.
-* <tt>node[:memcached][:interface]</tt> - Interface to listen on. Default is any.
+* <tt>node[:memcached][:tcp_port]</tt> - The TCP port to used for connections. Default : 11211
+* <tt>node[:memcached][:udp_port]</tt> - The UDP port to used for connections. Default : 11211
+* <tt>node[:memcached][:user]</tt> - The user for executing memcached. Default: nobody
+* <tt>node[:memcached][:connection_limit]</tt> - Option to either reduce the number of connections (to prevent overloading memcached service) or to increase the number making more effective use of the server running memcached. Default: 1024
+* <tt>node[:memcached][:memtotal_percent]</tt> - The amount of memory allocated to memcached for object storage in percentage from total system memory. Example: 80
+* <tt>node[:memcached][:threads]</tt> - The number of threads to use when processing incoming requests. Example: 4
+* <tt>node[:memcached][:interface]</tt> - Interface used for memcached connections. Default: any
 * <tt>node[:memcached][:log_level]</tt> - Memcached logging output level
 * <tt>node[:memcached][:cluster_id]</tt> - Cluster assosiation string.
 
 * <tt>node[:platform][:memcached][:config_file]</tt> - Location of memcached configuration file.
-* <tt>node[:platform][:memcached][:iptables_rules]</tt> - Location of iptables.
 
 === Templates:
 

@@ -31,11 +31,7 @@ service "memcached" do
   # We need the service to autostart after reboot.
   action :enable
   persist true
-  reload_command value_for_platform(
-                   # Had to override because ubuntu package doesn't have a "reload" option.
-                   "ubuntu" => {"default" => "/etc/init.d/memcached force-reload"},
-                   ["centos", "redhat"] => {"default" => "/etc/init.d/memcached reload"})
-  supports :status => true, :start => true, :stop => true, :restart => true, :reload => true
+  supports :status => true, :start => true, :stop => true, :restart => true
 end
 
 
@@ -80,7 +76,8 @@ end
 # Writing settings to memcached configuration template.
 template value_for_platform(
            "ubuntu" => {"default" => "/etc/memcached.conf"},
-           ["centos", "redhat"] => {"default" => "/etc/sysconfig/memcached"}) do
+           ["centos", "redhat"] => {"default" => "/etc/sysconfig/memcached"}
+) do
   source "memcached.conf.erb"
   variables(
     :tcp_port => node[:memcached][:tcp_port],
@@ -154,22 +151,6 @@ template "#{node[:rightscale][:collectd_plugin_dir]}/memcached.conf" do
   cookbook "memcached"
   # Need to restart/start after configuration in order for the monitoring to run correctly.
   notifies :restart, resources(:service => "collectd"), :immediately
-end
-
-log "  Disabling collectd swap monitoring."
-
-# Disable collectd swap monitoring: memcached server has swap disabled due to the nature of the system.
-ruby_block "disable_collectd_swap" do
-  block do
-    collectd = File.readlines("#{node[:rightscale][:collectd_config]}")
-    File.open("#{node[:rightscale][:collectd_config]}", "w") do |f|
-      collectd.each do |line|
-        next if line =~ /LoadPlugin swap/ # Simply cut out useless line.
-        f.puts(line)
-      end
-    end
-  end
-  action :create
 end
 
 log "  Collectd configuration done."
