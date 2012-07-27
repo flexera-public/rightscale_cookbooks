@@ -10,10 +10,6 @@ rightscale_marker :begin
 log "  Setting provider specific settings for php application server."
 node[:app][:provider] = "app_php"
 
-# Optional attributes
-# By default php uses MySQL as the DB adapter
-set_unless[:app][:db_adapter] = "mysql"
-
 # Setting generic app attributes
 case platform
 when "ubuntu"
