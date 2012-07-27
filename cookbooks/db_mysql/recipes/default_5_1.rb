@@ -25,7 +25,9 @@ node[:db_mysql][:service_name] = value_for_platform(
 )
 
 node[:db][:socket] = value_for_platform(
-  "ubuntu"  => "/var/run/mysqld/mysqld.sock",
+  "ubuntu"  => {
+    "default" => "/var/run/mysqld/mysqld.sock"
+  },
   "default" => "/var/lib/mysql/mysql.sock"
 )
 
