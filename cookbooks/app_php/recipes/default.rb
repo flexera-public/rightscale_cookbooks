@@ -11,6 +11,7 @@ log "  Setting provider specific settings for php application server."
 node[:app][:provider] = "app_php"
 
 # Setting generic app attributes
+platform = node[:platform]
 case platform
 when "ubuntu"
   node[:app][:user] = "www-data"
