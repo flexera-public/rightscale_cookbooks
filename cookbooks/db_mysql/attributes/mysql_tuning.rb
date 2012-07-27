@@ -23,10 +23,8 @@ set_unless[:db_mysql][:server_usage] = "dedicated"  # or "shared"
 usage = 1 # Dedicated server
 usage = 0.5 if db_mysql[:server_usage] == "shared"
 
-# Ohai returns total in KB.  Set GB so X*GB can be used in conditional
-GB=1024*1024
-
-mem = memory[:total].to_i/1024
+# Convert memory to MB
+mem = memory[:total].to_i / 1024
 Chef::Log.info("  Auto-tuning MySQL parameters.  Total memory: #{mem}M")
 one_percent_mem = (mem*0.01).to_i
 one_percent_str=value_with_units(one_percent_mem,"M",usage)
@@ -57,7 +55,7 @@ set_unless[:db_mysql][:tunable][:expire_logs_days]                  = 2
 # Adjust based on memory range.
 #
 # The memory ranges used are < 1GB, 1GB - 3GB, 3GB - 10GB, 10GB - 25GB, 25GB - 50GB, > 50GB.
-if mem < 1*GB
+if mem < 1 * 1024
 
   # Override buffer sizes for really small servers
   set_unless[:db_mysql][:tunable][:key_buffer]                      = value_with_units(16,"M",usage)
