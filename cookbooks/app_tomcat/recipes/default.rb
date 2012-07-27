@@ -10,6 +10,18 @@ rightscale_marker :begin
 log "  Setting provider specific settings for tomcat"
 node[:app][:provider] = "app_tomcat"
 
+# Defining app user and group attributes
+case node[:platform]
+when "ubuntu", "debian"
+  node[:app][:user] = "tomcat6"
+  node[:app][:group] = "tomcat6"
+when "centos", "fedora", "suse", "redhat", "redhatenterpriseserver"
+  node[:app][:user] = "tomcat"
+  node[:app][:group] = "tomcat"
+else
+  raise "Unrecognized distro #{node[:platform]}, exiting "
+end
+
 # Preparing list of database adapter packages depending on platform and database adapter
 case node[:app][:db_adapter]
 when "mysql"
