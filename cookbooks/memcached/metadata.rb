@@ -25,35 +25,35 @@ recipe "memcached::do_stop", "Stop memcached service."
 
 attribute "memcached/tcp_port",
   :display_name => "Memcached TCP Port",
-  :description => "TCP port number to listen on. Default : 11211",
+  :description => "The TCP port to used for connections. Default : 11211",
   :required => "recommended",
   :default => "11211",
   :recipes => ["memcached::install_server", "memcached::default"]
 
 attribute "memcached/udp_port",
   :display_name => "Memcached UDP Port",
-  :description => "UDP port number to listen on. Default : 11211",
+  :description => "The UDP port to used for connections. Default : 11211",
   :required => "recommended",
   :default => "11211",
   :recipes => ["memcached::install_server", "memcached::default"]
 
 attribute "memcached/user",
   :display_name => "Memcached user",
-  :description => "Username to run memcached.",
+  :description => "The user for executing memcached. Default: nobody",
   :required => "recommended",
   :default => "nobody",
   :recipes => ["memcached::install_server"]
 
 attribute "memcached/connection_limit",
   :display_name => "Memcached connection limit",
-  :description => "Number of simultaneous connections.",
+  :description => "Option to either reduce the number of connections (to prevent overloading memcached service) or to increase the number making more effective use of the server running memcached. Default: 1024",
   :required => "recommended",
   :default => "1024",
   :recipes => ["memcached::install_server"]
 
 attribute "memcached/memtotal_percent",
   :display_name => "Memcached Cache size percentage",
-  :description => "Maximum memory to use for items.",
+  :description => "Set the amount of memory allocated to memcached for object storage in percentage from total system memory. Example: 80",
   :required => "recommended",
   :choice => ["10", "20", "30", "40", "50", "60", "70", "80", "90"],
   :default => "90",
@@ -61,14 +61,14 @@ attribute "memcached/memtotal_percent",
 
 attribute "memcached/threads",
   :display_name => "Memcached used threads",
-  :description => "Use a number from one to the maximum number of threads for the instance.",
+  :description => "The number of threads to use when processing incoming requests. Example: 4",
   :required => "recommended",
   :default => "1",
   :recipes => ["memcached::install_server"]
 
 attribute "memcached/interface",
   :display_name => "Memcached listening interface",
-  :description => "Specify the interface you want memcached to listen on.",
+  :description => "Interface used for memcached connections. Default: any",
   :required => "recommended",
   :choice => ["localhost", "private", "any"],
   :default => "any",
