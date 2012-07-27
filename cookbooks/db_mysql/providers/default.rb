@@ -108,6 +108,9 @@ end
 
 action :post_restore_cleanup do
   # Performs checks for snapshot compatibility with current server
+
+  innodb_log_files_resize_required = false
+
   ruby_block "validate_backup" do
     block do
       master_info = RightScale::Database::MySQL::Helper.load_replication_info(node)
@@ -125,11 +128,70 @@ action :post_restore_cleanup do
       else
         Chef::Log.info "  Skipping #{provider} restore version check"
       end
+
+      # create symlink from package default mysql datadir to restored datadir
+      default_datadir = "/var/lib/mysql"
+      unless ::File.symlink?(default_datadir)
+        FileUtils.rm_rf(default_datadir)
+        File.symlink(node[:db][:data_dir], default_datadir)
+      end
+
+      # compare size of node[:db_mysql][:tunable][:innodb_log_file_size] to
+      # actual size of restored /var/lib/mysql/ib_logfile0 (symlink)
+      innodb_log_file_size_to_bytes = case node[:db_mysql][:tunable][:innodb_log_file_size]
+                                        when /^(\d+)[Kk]$/ then $1.to_i * 1024
+                                        when /^(\d+)[Mm]$/ then $1.to_i * 1024**2
+                                        when /^(\d+)[Gg]$/ then $1.to_i * 1024**3
+                                        when /^(\d+)$/ then $1
+                                        else raise "FATAL: unknown log file size"
+                                      end
+
+      # if sizes do not match, must re-create my.cnf, start mysqld, stop, then delete files
+      if ::File.stat("/var/lib/mysql/ib_logfile0").size == innodb_log_file_size_to_bytes
+        Chef::Log.info "  innodb log file sizes the same...keeping file"
+      else
+        innodb_log_files_resize_required = true
+      end
+    end
+  end
+
+  if innodb_log_files_resize_required
+    # recreate my.cnf
+    db_mysql_set_mycnf "setup_mycnf" do
+      server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
+      relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
+      innodb_log_file_size ::File.stat("/var/lib/mysql/ib_logfile0").size
+    end
+
+    log "  Temp Starting MySQL"
+    db node[:db][:data_dir] do
+      action :start
+      persist false
+    end
+
+    log "  Stop MySQL"
+    db node[:db][:data_dir] do
+      action :stop
+      persist false
+    end
+
+    ruby_block "delete innodb logfiles" do
+      block do
+        require 'fileutils'
+        remove_files = ::Dir.glob(::File.join(node[:db_mysql][:datadir], 'ib_logfile*')) + ::Dir.glob(::File.join(node[:db_mysql][:datadir], 'ibdata*'))
+        FileUtils.rm_rf(remove_files)
+      end
+    end
+
+    # set mycnf back
+    db_mysql_set_mycnf "setup_mycnf" do
+      server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
+      relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
+      innodb_log_file_size node[:db_mysql][:tunable][:innodb_log_file_size]
     end
   end
 
   @db = init(new_resource)
-  @db.symlink_datadir("/var/lib/mysql", node[:db][:data_dir])
   @db.post_restore_cleanup
 end
 
