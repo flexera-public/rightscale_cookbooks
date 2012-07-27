@@ -48,7 +48,6 @@ default[:rightscale][:plugin_list_array] = [
   "load",
   "memory",
   "processes",
-  "swap",
   "users",
   "ping"
 ]
