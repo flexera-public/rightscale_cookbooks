@@ -109,53 +109,50 @@ end
 action :post_restore_cleanup do
   # Performs checks for snapshot compatibility with current server
 
-  innodb_log_files_resize_required = false
-
-  ruby_block "validate_backup" do
-    block do
-      master_info = RightScale::Database::MySQL::Helper.load_replication_info(node)
-      # Check version matches
-      # Not all 11H2 snapshots (prior to 5.5 release) saved provider or version.
-      # Assume MySQL 5.1 if nil
-      snap_version=master_info['DB_Version']||='5.1'
-      snap_provider=master_info['DB_Provider']||='db_mysql'
-      current_version= node[:db_mysql][:version]
-      current_provider=master_info['DB_Provider']||=node[:db][:provider]
-      Chef::Log.info "  Snapshot from #{snap_provider} version #{snap_version}"
-      # skip check if restore version check is false
-      if node[:db][:backup][:restore_version_check] == "true"
-        raise "FATAL: Attempting to restore #{snap_provider} #{snap_version} snapshot to #{current_provider} #{current_version} with :restore_version_check enabled." unless ( snap_version == current_version ) && ( snap_provider == current_provider )
-      else
-        Chef::Log.info "  Skipping #{provider} restore version check"
-      end
-
-      # create symlink from package default mysql datadir to restored datadir
-      default_datadir = "/var/lib/mysql"
-      unless ::File.symlink?(default_datadir)
-        FileUtils.rm_rf(default_datadir)
-        File.symlink(node[:db][:data_dir], default_datadir)
-      end
-
-      # compare size of node[:db_mysql][:tunable][:innodb_log_file_size] to
-      # actual size of restored /var/lib/mysql/ib_logfile0 (symlink)
-      innodb_log_file_size_to_bytes = case node[:db_mysql][:tunable][:innodb_log_file_size]
-                                        when /^(\d+)[Kk]$/ then $1.to_i * 1024
-                                        when /^(\d+)[Mm]$/ then $1.to_i * 1024**2
-                                        when /^(\d+)[Gg]$/ then $1.to_i * 1024**3
-                                        when /^(\d+)$/ then $1
-                                        else raise "FATAL: unknown log file size"
-                                      end
-
-      # if sizes do not match, must re-create my.cnf, start mysqld, stop, then delete files
-      if ::File.stat("/var/lib/mysql/ib_logfile0").size == innodb_log_file_size_to_bytes
-        Chef::Log.info "  innodb log file sizes the same...keeping file"
-      else
-        innodb_log_files_resize_required = true
-      end
+  master_info = RightScale::Database::MySQL::Helper.load_replication_info(node)
+  # Check version matches
+  # Not all 11H2 snapshots (prior to 5.5 release) saved provider or version.
+  # Assume MySQL 5.1 if nil
+  snap_version=master_info['DB_Version']||='5.1'
+  snap_provider=master_info['DB_Provider']||='db_mysql'
+  current_version= node[:db_mysql][:version]
+  current_provider=master_info['DB_Provider']||=node[:db][:provider]
+  Chef::Log.info "  Snapshot from #{snap_provider} version #{snap_version}"
+  # skip check if restore version check is false
+  if node[:db][:backup][:restore_version_check] == "true"
+    unless (snap_version == current_version) && (snap_provider == current_provider)
+      raise "FATAL: Attempting to restore #{snap_provider} #{snap_version} snapshot to #{current_provider} #{current_version} with :restore_version_check enabled."
     end
+  else
+    Chef::Log.info "  Skipping #{provider} restore version check"
   end
 
-  if innodb_log_files_resize_required
+  # create symlink from package default mysql datadir to restored datadir
+  default_datadir = "/var/lib/mysql"
+  unless ::File.symlink?(default_datadir)
+    FileUtils.rm_rf(default_datadir)
+    File.symlink(node[:db][:data_dir], default_datadir)
+  end
+
+  # compare size of node[:db_mysql][:tunable][:innodb_log_file_size] to
+  # actual size of restored /var/lib/mysql/ib_logfile0 (symlink)
+  innodb_log_file_size_to_bytes = case node[:db_mysql][:tunable][:innodb_log_file_size]
+  when /^(\d+)[Kk]$/
+    $1.to_i * 1024
+  when /^(\d+)[Mm]$/
+    $1.to_i * 1024**2
+  when /^(\d+)[Gg]$/
+    $1.to_i * 1024**3
+  when /^(\d+)$/
+    $1
+  else
+    raise "FATAL: unknown log file size"
+  end
+
+  # if sizes do not match, must re-create my.cnf, start mysqld, stop, then delete files
+  if ::File.stat("/var/lib/mysql/ib_logfile0").size == innodb_log_file_size_to_bytes
+    Chef::Log.info "  innodb log file sizes the same...keeping file"
+  else
     # recreate my.cnf
     db_mysql_set_mycnf "setup_mycnf" do
       server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
