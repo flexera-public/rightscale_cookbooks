@@ -20,6 +20,8 @@ case node[:platform]
       "libapr1-dev",
       "libcurl4-openssl-dev"
      ]
+    node[:app][:user] = "www-data"
+    node[:app][:group] = "www-data"
   when "centos","redhat"
     node[:app][:packages] = [
       "zlib-devel",
@@ -31,6 +33,8 @@ case node[:platform]
       "apr-util-devel",
       "readline-devel"
      ]
+    node[:app][:user] = "apache"
+    node[:app][:group] = "apache"
   else
     raise "Unrecognized distro #{node[:platform]}, exiting "
 end

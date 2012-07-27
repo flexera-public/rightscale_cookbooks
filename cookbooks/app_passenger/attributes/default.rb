@@ -19,12 +19,8 @@ set_unless[:app_passenger][:apache][:serve_local_files]="true"
 # Defining apache user, group and log directory path depending on platform.
 case node[:platform]
   when "ubuntu"
-    set[:app][:user]="www-data"
-    set[:app][:group]="www-data"
     set[:app_passenger][:apache][:log_dir]="/var/log/apache2"
   when "centos","redhat"
-    set[:app][:user]="apache"
-    set[:app][:group]="apache"
     set[:app_passenger][:apache][:log_dir]="/var/log/httpd"
   else
     raise "Unrecognized distro #{node[:platform]}, exiting "
