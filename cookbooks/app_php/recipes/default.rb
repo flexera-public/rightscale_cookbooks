@@ -13,11 +13,11 @@ node[:app][:provider] = "app_php"
 # Setting generic app attributes
 case platform
 when "ubuntu"
-  set[:app][:user] = "www-data"
-  set[:app][:group] = "www-data"
+  node[:app][:user] = "www-data"
+  node[:app][:group] = "www-data"
 when "centos", "redhat"
-  set[:app][:user] = "apache"
-  set[:app][:group] = "apache"
+  node[:app][:user] = "apache"
+  node[:app][:group] = "apache"
 end
 
 log "  Install PHP"
