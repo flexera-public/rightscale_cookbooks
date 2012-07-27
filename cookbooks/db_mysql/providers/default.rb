@@ -131,7 +131,7 @@ action :post_restore_cleanup do
   default_datadir = "/var/lib/mysql"
   unless ::File.symlink?(default_datadir)
     FileUtils.rm_rf(default_datadir)
-    File.symlink(node[:db][:data_dir], default_datadir)
+    ::File.symlink(node[:db][:data_dir], default_datadir)
   end
 
   # compare size of node[:db_mysql][:tunable][:innodb_log_file_size] to
