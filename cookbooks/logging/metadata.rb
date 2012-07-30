@@ -43,3 +43,54 @@ attribute "logging/service_action",
   :required => "optional",
   :choice => [ "start", "stop", "restart", "reload" ],
   :recipes => [ "logging::service_control" ]
+
+attribute "logging/ssl_enable",
+  :display_name => "SSL Enable",
+  :description => "Enables SSL (TLS). Example: true",
+  :recipes => [
+  "logging::default",
+  "logging::install_server"
+  ],
+  :required => "optional",
+  :choice => [ "true", "false" ],
+  :default =>  "false"
+
+attribute "logging/ssl_certificate",
+  :display_name => "SSL Certificate",
+  :description => "The name of your SSL Certificate. Example: cred:SSL_CERT",
+  :required => "optional",
+  :default =>  "",
+  :recipes => [
+  "logging::default",
+  "logging::install_server"
+  ]
+
+attribute "logging/ssl_certificate_chain",
+  :display_name => "SSL Certificate Chain",
+  :description => "Your SSL Certificate Chain. Example: cred:SSL_CERT_CHAIN",
+  :required => "optional",
+  :default =>  "",
+  :recipes => [
+  "logging::default",
+  "logging::install_server"
+  ]
+
+attribute "logging/ssl_key",
+  :display_name => "SSL Certificate Key",
+  :description => "Your SSL Certificate Key. Example: cred:SSL_KEY",
+  :required => "optional",
+  :default =>  "",
+  :recipes => [
+  "logging::default",
+  "logging::install_server"
+  ]
+
+attribute "logging/ssl_passphrase",
+  :display_name => "SSL Passphrase",
+  :description => "Your SSL passphrase. Example: cred:SSL_PASSPHRASE",
+  :required => "optional",
+  :default =>  "",
+  :recipes => [
+  "logging::default",
+  "logging::install_server"
+  ]
