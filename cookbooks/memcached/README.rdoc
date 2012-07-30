@@ -32,8 +32,8 @@ Opens listening port in systems' firewall, setups server tags, monitoring and lo
 === Attributes:
 
 These are the settings used in recipes and templates. Default values are noted.
-* <tt>node[:memcached][:tcp_port]</tt> - The TCP port to used for connections. Default : 11211
-* <tt>node[:memcached][:udp_port]</tt> - The UDP port to used for connections. Default : 11211
+* <tt>node[:memcached][:tcp_port]</tt> - The TCP port to use for connections. Default : 11211
+* <tt>node[:memcached][:udp_port]</tt> - The UDP port to use for connections. Default : 11211
 * <tt>node[:memcached][:user]</tt> - The user for executing memcached. Default: nobody
 * <tt>node[:memcached][:connection_limit]</tt> - Option to either reduce the number of connections (to prevent overloading memcached service) or to increase the number making more effective use of the server running memcached. Default: 1024
 * <tt>node[:memcached][:memtotal_percent]</tt> - The amount of memory allocated to memcached for object storage in percentage from total system memory. Example: 80
