@@ -20,14 +20,14 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 * Choose image and cloud.
 * Fill required input fields.
-* When using a RightScale ServerTemplate, place <tt>memcached::install_server</tt> recipe into your runlist to setup the memcached server and add the server tags..
+* When using a RightScale ServerTemplate, place <tt>memcached::install_server</tt> recipe into your runlist to setup the memcached server and add the server tags.
 
 == DETAILS:
 
 === General
 
 The cookbook installs memcached with needed configuration for CentOS, Redhat and Ubuntu.
-Opens lisnening port in systems' firewall, setups server tags, monitoring and log rotation.
+Opens listening port in systems' firewall, setups server tags, monitoring and log rotation.
 
 === Attributes:
 

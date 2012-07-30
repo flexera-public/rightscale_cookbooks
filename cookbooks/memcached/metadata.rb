@@ -25,14 +25,14 @@ recipe "memcached::do_stop", "Stop memcached service."
 
 attribute "memcached/tcp_port",
   :display_name => "Memcached TCP Port",
-  :description => "The TCP port to used for connections. Default : 11211",
+  :description => "The TCP port to use for connections. Default : 11211",
   :required => "recommended",
   :default => "11211",
   :recipes => ["memcached::install_server", "memcached::default"]
 
 attribute "memcached/udp_port",
   :display_name => "Memcached UDP Port",
-  :description => "The UDP port to used for connections. Default : 11211",
+  :description => "The UDP port to use for connections. Default : 11211",
   :required => "recommended",
   :default => "11211",
   :recipes => ["memcached::install_server", "memcached::default"]
