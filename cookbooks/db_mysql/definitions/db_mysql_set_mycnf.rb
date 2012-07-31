@@ -21,12 +21,21 @@ define :db_mysql_set_mycnf, :server_id => nil, :relay_log => nil do
     cookbook "db_mysql"
   end
 
-  template value_for_platform("default" => "/etc/my.cnf") do
-    source "simple_my.cnf.erb"
-    owner "root"
-    group "root"
-    mode "0644"
-    cookbook "db_mysql"
+  bash "create_config_file"
+    user "root"
+    cwd "/etc"
+    code <<-EOH
+      string="!includedir /etc/mysql/conf.d/"
+      if [ -e my.cnf ]
+      then
+        if ! grep -Eq "\s*\!includedir\s*/etc/mysql/conf\.d" my.cnf
+        then
+          echo "$string" >> my.cnf
+        fi
+      else
+        echo "$string" > my.cnf
+      fi
+    EOH
   end
 
 end
