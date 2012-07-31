@@ -9,7 +9,7 @@
 set_unless[:lb][:service][:provider] = "lb_haproxy"
 
 # Logical name for the application (balancing group) to use.
-set_unless[:lb][:vhost_names] = nil
+set_unless[:lb][:pool_names] = nil
 set_unless[:lb][:host]= nil
 set_unless[:server_collection]['app_servers'] = Hash.new
 

@@ -41,7 +41,19 @@ module RightScale
       #
       # @return [Array<String>] Array of vhosts
       def vhosts(vhost_list)
-        return vhost_list.gsub(/\s+/, "").split(",").uniq.each
+        vhost_full_name = vhost_list.gsub(/\s+/, "").split(",").uniq.each
+        vhost_norm_name = vhost_list.gsub(/[\/]/, '_').split(", ").uniq.each
+        vhost_list_temp = Hash[vhost_norm_name.zip vhost_full_name]
+        return vhost_list_temp
+      end
+
+      # Return vhost normalized name, e.g vhost name without "/"
+      #
+      # @vhost_full_name [string] vhost full name Example: /serverid
+      #
+      # @return [String] vhost normalized name Example: _serverid
+      def get_vhost_short_name(vhost_full_name)
+        vhost_norm_name = vhost_full_name.gsub(/[\/]/, '_')
       end
 
     end

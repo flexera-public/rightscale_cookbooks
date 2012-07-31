@@ -11,18 +11,18 @@ class Chef::Recipe
   include RightScale::App::Helper
 end
 
-VHOST_NAMES = node[:lb][:vhost_names]
+POOL_NAMES = node[:lb][:pool_names]
 
 log "  Install load balancer"
 
 # In the 'install' action, the name is not used, but the provider from default recipe is needed.
 # Any vhost name set with provider can be used. Using first one in list to make it simple.
-lb vhosts(VHOST_NAMES).first do
+lb vhosts(POOL_NAMES).keys[0] do
   action :install
 end
 
-vhosts(VHOST_NAMES).each do |vhost_name|
-  lb vhost_name do
+vhosts(POOL_NAMES).each_key do |pool_name|
+  lb pool_name do
     action :add_vhost
   end
 end

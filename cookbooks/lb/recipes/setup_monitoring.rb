@@ -24,7 +24,7 @@ directory File.join(node[:rightscale][:collectd_lib], "plugins") do
 end
 
 log "  Setup Monitoring"
-lb vhosts(node[:lb][:vhost_names]).first do
+lb vhosts(node[:lb][:pool_names]).keys[0] do
   action :setup_monitoring
 end
 

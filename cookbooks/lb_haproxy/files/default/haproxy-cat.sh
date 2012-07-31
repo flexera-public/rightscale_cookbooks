@@ -24,24 +24,38 @@ do
   fi
 done
 
+
 for single_vhost in ${vhosts}
 do
-  acl=${single_vhost//\./_}"_acl"
-  echo "  acl ${acl} hdr_dom(host) -i ${single_vhost}" >> ${CONF_FILE}
+ if [ -e /etc/haproxy/lb_haproxy.d/acl_${single_vhost}.conf ]; then
+    cat "/etc/haproxy/lb_haproxy.d/acl_${single_vhost}.conf" >> ${CONF_FILE}
+  fi
 done
 
 echo "" >> ${CONF_FILE}
 
 for single_vhost in ${vhosts}
 do
-  acl=${single_vhost//\./_}"_acl"
-  backend=${single_vhost//\./_}"_backend"
-  echo "  use_backend ${backend} if ${acl}" >> ${CONF_FILE}
+  # this will add advanced use_backend statements to config file
+  if [ -r  /etc/haproxy/lb_haproxy.d/use_backend_${single_vhost}.conf ];
+  then
+    cat /etc/haproxy/lb_haproxy.d/use_backend_${single_vhost}.conf>> ${CONF_FILE}
+  fi
 done
 
 echo "" >> ${CONF_FILE}
 
 cat /etc/haproxy/haproxy.cfg.default_backend >> ${CONF_FILE}
+
+echo "" >> ${CONF_FILE}
+
+for single_vhost in ${vhosts}
+do
+  if [ -r  /etc/haproxy/lb_haproxy.d/userlist_backend_${single_vhost}.conf ];
+  then
+    cat /etc/haproxy/lb_haproxy.d/userlist_backend_${single_vhost}.conf>> ${CONF_FILE}
+  fi
+done
 
 echo "" >> ${CONF_FILE}
 
