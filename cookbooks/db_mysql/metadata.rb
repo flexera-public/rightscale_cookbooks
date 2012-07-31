@@ -5,6 +5,10 @@ description      "Installs/configures a MySQL database client and server."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "12.1.0"
 
+# supports "centos", "= 5.8", "= 6.2"
+# supports "redhat", "= 5.8"
+# supports "ubuntu", "= 10.04", "= 12.04"
+
 depends "db"
 depends "block_device"
 depends "sys_dns"
