@@ -53,8 +53,6 @@ Server built: Feb 8 2012 08:19:50
 
 Phusion Passenger version 3.0.9
 
-ruby 1.8.7 (2011-02-18 patchlevel 334) (x86_64-linux), MBARI 0x6770, Ruby Enterprise Edition 2011.03
-
 also:
 * <tt>Rails spawn method input</tt>
 * <tt>Custom rails command input</tt>
@@ -77,11 +75,6 @@ ServerTemplate built on this cookbook can be combined in two modes:
 
 Mix these recipes in any way to satisfy project requirements.
 
-Note: RubyEE packages coming from official RubyEE project page
-http://code.google.com/p/rubyenterpriseedition/downloads/detail?name=ruby-enterprise-1.8.7-2011.03.tar.gz&can=2&q=
-configured and packed for Ubuntu CentOS and RHEL.
-
-
 === Attributes:
 These are settings used in recipes and templates. Default values are noted.
 
@@ -90,10 +83,10 @@ Note: Only "internal" cookbook attributes are described here. Descriptions of at
 ====== General attributes
 * <tt>node[:app_passenger][:module_dependencies]</tt> - Modules required for Apache.
 * <tt>node[:app_passenger][:deploy_dir]</tt> - Path in the specified repository where application code will be pulled from.
-* <tt>node[:app_passenger][:ruby_gem_base_dir]</tt> - Path to RubyEE gem directory.
-* <tt>node[:app_passenger][:gem_bin]</tt> - Path to RubyEE gem bin directory.
-* <tt>node[:app_passenger][:ruby_bin]</tt> - Path to RubyEE bin directory.
-* <tt>node[:app_passenger][:apache_psr_install_module]</tt> - Path to RubyEE passenger executable.
+* <tt>node[:app_passenger][:ruby_gem_base_dir]</tt> - Path to Ruby gem directory.
+* <tt>node[:app_passenger][:gem_bin]</tt> - Path to Ruby gem bin directory.
+* <tt>node[:app_passenger][:ruby_bin]</tt> - Path to Ruby bin directory.
+* <tt>node[:app_passenger][:apache_psr_install_module]</tt> - Path to Ruby passenger executable.
 
 ====== Platform dependent
 
