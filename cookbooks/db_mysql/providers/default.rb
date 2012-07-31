@@ -29,7 +29,7 @@ end
 action :status do
   @db = init(new_resource)
   status = @db.status
-  log "  Database Status:\n#{status}"
+  Chef::Log.info "  Database Status:\n#{status}"
 end
 
 action :lock do
@@ -81,9 +81,9 @@ action :write_backup_info do
   slavestatus = RightScale::Database::MySQL::Helper.do_query(node, 'SHOW SLAVE STATUS')
   slavestatus ||= Hash.new
   if node[:db][:this_is_master]
-    log "  Backing up Master info"
+    Chef::Log.info "  Backing up Master info"
   else
-    log "  Backing up slave replication status"
+    Chef::Log.info "  Backing up slave replication status"
     masterstatus['File'] = slavestatus['Relay_Master_Log_File']
     masterstatus['Position'] = slavestatus['Exec_Master_Log_Pos']
   end
@@ -91,11 +91,11 @@ action :write_backup_info do
   # Save the db provider (MySQL) and version number as set in the node
   version=node[:db_mysql][:version]
   provider=node[:db][:provider]
-  log "  Saving #{provider} version #{version} in master info file"
+  Chef::Log.info "  Saving #{provider} version #{version} in master info file"
   masterstatus['DB_Provider']=provider
   masterstatus['DB_Version']=version
 
-  log "  Saving master info...:\n#{masterstatus.to_yaml}"
+  Chef::Log.info "  Saving master info...:\n#{masterstatus.to_yaml}"
   ::File.open(::File.join(node[:db][:data_dir], RightScale::Database::MySQL::Helper::SNAPSHOT_POSITION_FILENAME), ::File::CREAT|::File::TRUNC|::File::RDWR) do |out|
     YAML.dump(masterstatus, out)
   end
@@ -160,13 +160,13 @@ action :post_restore_cleanup do
       innodb_log_file_size ::File.stat("/var/lib/mysql/ib_logfile0").size
     end
 
-    log "  Temp Starting MySQL"
+    Chef::Log.info "  Temp Starting MySQL"
     db node[:db][:data_dir] do
       action :start
       persist false
     end
 
-    log "  Stop MySQL"
+    Chef::Log.info "  Stop MySQL"
     db node[:db][:data_dir] do
       action :stop
       persist false
@@ -245,7 +245,7 @@ action :install_client do
   end
 
   packages = node[:db_mysql][:client_packages_install]
-  log "  Packages to install: #{packages.join(",")}" unless packages == ""
+  Chef::Log.info "  Packages to install: #{packages.join(",")}" unless packages == ""
   packages.each do |p|
     r = package p do
       action :nothing
@@ -267,7 +267,7 @@ action :install_client do
       Gem.clear_paths
     end
   end
-  log "  Gem reload forced with Gem.clear_paths"
+  Chef::Log.info "  Gem reload forced with Gem.clear_paths"
 end
 
 action :install_server do
@@ -279,7 +279,7 @@ action :install_server do
 
   # Uninstall specified server packages
   packages = node[:db_mysql][:server_packages_uninstall]
-  log "  Packages to uninstall: #{packages.join(",")}" unless packages == ""
+  Chef::Log.info "  Packages to uninstall: #{packages.join(",")}" unless packages == ""
   packages.each do |p|
      package p do
        action :remove
@@ -373,7 +373,7 @@ action :install_server do
   # Ubuntu's init script does not support configurable startup timeout
   #
   log_msg = ( platform =~ /redhat|centos/ ) ?  "  Setting mysql startup timeout" : "  Skipping mysql startup timeout setting for Ubuntu"
-  log log_msg
+  Chef::Log.info log_msg
   template "/etc/sysconfig/#{node[:db_mysql][:service_name]}" do
     source "sysconfig-mysqld.erb"
     mode "0755"
@@ -411,7 +411,7 @@ action :install_server do
   end
 
   # Start MySQL
-  log "  Server installed.  Starting MySQL"
+  Chef::Log.info "  Server installed.  Starting MySQL"
   db node[:db][:data_dir] do
     action :start
     persist false
@@ -467,7 +467,7 @@ action :setup_monitoring do
   end
 
   # Send warning if not centos/redhat or ubuntu
-  log "  WARNING: attempting to install collectd-mysql on unsupported platform #{platform}, continuing.." do
+  Chef::Log.info "  WARNING: attempting to install collectd-mysql on unsupported platform #{platform}, continuing.." do
     not_if { platform =~ /centos|redhat|ubuntu/ }
     level :warn
   end
@@ -716,7 +716,7 @@ action :restore_from_dump_file do
   dumpfile  = new_resource.dumpfile
   db_check  = `mysql -e "SHOW DATABASES LIKE '#{db_name}'"`
 
-  log "  Check if DB already exists"
+  Chef::Log.info "  Check if DB already exists"
   ruby_block "checking existing db" do
     block do
       if ! db_check.empty?
