@@ -25,15 +25,20 @@ define :db_mysql_set_mycnf, :server_id => nil, :relay_log => nil do
     user "root"
     cwd "/etc"
     code <<-EOH
-      string="!includedir /etc/mysql/conf.d/"
+      read -rd '' string << 'EOF'
+# * IMPORTANT: Additional settings that can override those from this file!\n
+#   The files must end with '.cnf', otherwise they'll be ignored.\n
+#\n
+!includedir /etc/mysql/conf.d/
+EOF
       if [ -e my.cnf ]
       then
         if ! grep -Eq "\s*\!includedir\s*/etc/mysql/conf\.d" my.cnf
         then
-          echo "$string" >> my.cnf
+          echo -e $string >> my.cnf
         fi
       else
-        echo "$string" > my.cnf
+        echo -e $string > my.cnf
       fi
     EOH
   end
