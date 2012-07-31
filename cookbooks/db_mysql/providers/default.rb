@@ -151,7 +151,7 @@ action :post_restore_cleanup do
 
   # if sizes do not match, must re-create my.cnf, start mysqld, stop, then delete files
   if ::File.stat("/var/lib/mysql/ib_logfile0").size == innodb_log_file_size_to_bytes
-    Chef::Log.info "  innodb log file sizes the same...keeping file"
+    Chef::Log.info "  innodb log file sizes the same...keeping file(s)"
   else
     # recreate my.cnf
     db_mysql_set_mycnf "setup_mycnf" do
