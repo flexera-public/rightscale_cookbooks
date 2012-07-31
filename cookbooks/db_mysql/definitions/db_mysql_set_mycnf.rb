@@ -7,7 +7,16 @@
 
 define :db_mysql_set_mycnf, :server_id => nil, :relay_log => nil do
 
-  log "  Installing my.cnf with server_id = #{params[:server_id]}, relay_log = #{params[:relay_log]}" 
+  log "  Installing my.cnf with server_id = #{params[:server_id]}, relay_log = #{params[:relay_log]}"
+
+  template value_for_platform("default" => "/etc/my.cnf") do
+    source "simple_my.cnf.erb"
+    owner "root"
+    group "root"
+    mode "0644"
+    cookbook "db_mysql"
+  end
+
   template value_for_platform("default" => "/etc/mysql/conf.d/my.cnf") do
     source "my.cnf.erb"
     owner "root"
