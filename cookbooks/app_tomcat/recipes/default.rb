@@ -33,7 +33,7 @@ when "mysql"
         "mysql-connector-java"
       ]   
     }, 
-    [ "ubuntu", "debian" ] => {
+    "ubuntu" => {
       "default"  => [
         "ecj-gcj",
         "tomcat6",
@@ -44,7 +44,7 @@ when "mysql"
         "libtcnative-1"
       ]   
     }, 
-    [ "fedora", "suse", "redhat", "redhatenterpriseserver" ] => {
+    "redhat" => {
       "default" => [
         "eclipse-ecj",
         "tomcat6",
@@ -74,7 +74,7 @@ when "postgresql"
         "tomcat-native"
       ]
     },
-    [ "ubuntu", "debian" ] => {
+    "ubuntu" => {
       "default" => [
         "ecj-gcj",
         "tomcat6",
@@ -84,7 +84,7 @@ when "postgresql"
         "libtcnative-1"
       ]
     },
-    [ "fedora", "suse", "redhat", "redhatenterpriseserver" ] => {
+    "redhat" => {
       "default" => [
         "eclipse-ecj",
         "tomcat6",

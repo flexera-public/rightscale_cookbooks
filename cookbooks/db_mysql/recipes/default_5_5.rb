@@ -64,14 +64,14 @@ node[:db_mysql][:client_packages_install] = value_for_platform(
       "postfix" 
     ]
   },
-  ["ubuntu", "debian"] => {
+  "ubuntu" => {
     "10.04" => [ ],
     "default" => [
       "libmysqlclient-dev",
       "mysql-client-5.5"
     ]
   },
-  ["redhat", "fedora", "suse"] => {
+  "redhat" => {
     "default" => [
       "mysql55-devel",
       "mysql55-libs",

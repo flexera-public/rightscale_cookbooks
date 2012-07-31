@@ -29,7 +29,7 @@ set[:app_tomcat][:module_dependencies] = [ "proxy", "proxy_http", "deflate", "re
 # Calculated attributes
 # Defining apache user, java alternatives and database adapter parameters depending on platform.
 case node[:platform]
-when "ubuntu", "debian"
+when "ubuntu"
   set[:app_tomcat][:user] = "tomcat6"
   set[:app_tomcat][:group] = "tomcat6"
   set[:app_tomcat][:alternatives_cmd] = "update-alternatives --auto java"
@@ -42,7 +42,7 @@ when "ubuntu", "debian"
   else
     raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting"
   end
-when "centos", "fedora", "suse", "redhat", "redhatenterpriseserver"
+when "centos", "redhat"
   set[:app_tomcat][:user] = "tomcat"
   set[:app_tomcat][:group] = "tomcat"
     set[:app_tomcat][:alternatives_cmd] = "alternatives --auto java"
