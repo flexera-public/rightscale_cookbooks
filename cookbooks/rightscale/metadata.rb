@@ -5,10 +5,6 @@ description      "RightScale Cookbooks"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "12.1.0"
 
-supports "centos", "~> 5.8"
-supports "redhat", "~> 5.8"
-supports "ubuntu", "~> 10.04.0"
-
 recipe "rightscale::default", "Installs the utilities that are required for RightScale support."
 recipe "rightscale::setup_monitoring", "Installs and configures RightScale dashboard monitoring features."
 recipe "rightscale::setup_ssh", "Installs the private ssh key."

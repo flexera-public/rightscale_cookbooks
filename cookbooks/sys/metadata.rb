@@ -5,10 +5,6 @@ description      "Installs/Configures RightScale system utilities."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "12.1.0"
 
-supports "centos", "~> 5.8"
-supports "redhat", "~> 5.8"
-supports "ubuntu", "~> 10.04.0"
-
 depends "rightscale"
 
 recipe "sys::do_reconverge_list_enable", "Enables the periodic execution (every 15 minutes) of recipes specified in the 'Reconverge List' input."
