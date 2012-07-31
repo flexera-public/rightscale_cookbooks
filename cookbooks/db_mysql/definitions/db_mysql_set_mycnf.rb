@@ -21,7 +21,7 @@ define :db_mysql_set_mycnf, :server_id => nil, :relay_log => nil do
     cookbook "db_mysql"
   end
 
-  bash "create_config_file"
+  bash "create_config_file" do
     user "root"
     cwd "/etc"
     code <<-EOH
