@@ -24,6 +24,7 @@ do
   fi
 done
 
+echo "" >> ${CONF_FILE}
 
 for single_vhost in ${vhosts}
 do
