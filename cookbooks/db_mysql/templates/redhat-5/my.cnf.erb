@@ -20,10 +20,10 @@
 
 [client]
 port            = 3306
-socket          = <%= node[:db_mysql][:socket] %>
+socket          = <%= node[:db][:socket] %>
 
 [mysqld_safe]
-socket          = <%= node[:db_mysql][:socket] %>
+socket          = <%= node[:db][:socket] %>
 nice            = 0
 
 [mysqld]
@@ -32,7 +32,7 @@ nice            = 0
 #
 user            = mysql
 #pid-file        = /var/run/mysqld/mysqld.pid
-socket          = <%= node[:db_mysql][:socket] %>
+socket          = <%= node[:db][:socket] %>
 port            = 3306
 datadir         = <%= node[:db_mysql][:datadir] %>
 tmpdir          = <%= node[:db_mysql][:tmpdir] %>
