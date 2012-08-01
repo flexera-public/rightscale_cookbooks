@@ -9,6 +9,7 @@
 CONFIG_FILE=/etc/my.cnf
 
 string="
+\n
 # IMPORTANT: Additional settings that can override those from this file!\n
 # The files must end with '.cnf', otherwise they'll be ignored.\n
 #\n
