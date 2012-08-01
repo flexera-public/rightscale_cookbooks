@@ -9,8 +9,8 @@
 CONFIG_FILE=/etc/my.cnf
 
 string="
-# * IMPORTANT: Additional settings that can override those from this file!\n
-#   The files must end with '.cnf', otherwise they'll be ignored.\n
+# IMPORTANT: Additional settings that can override those from this file!\n
+# The files must end with '.cnf', otherwise they'll be ignored.\n
 #\n
 !includedir /etc/mysql/conf.d/"
 
