@@ -21,25 +21,12 @@ define :db_mysql_set_mycnf, :server_id => nil, :relay_log => nil do
     cookbook "db_mysql"
   end
 
-  bash "create_config_file" do
-    user "root"
-    cwd "/etc"
-    code <<-EOH
-      string="
-# * IMPORTANT: Additional settings that can override those from this file!\n
-#   The files must end with '.cnf', otherwise they'll be ignored.\n
-#\n
-!includedir /etc/mysql/conf.d/"
-      if [ -e my.cnf ]
-      then
-        if ! grep -Eq "\s*\!includedir\s*/etc/mysql/conf\.d" my.cnf
-        then
-          echo -e $string >> my.cnf
-        fi
-      else
-        echo -e $string > my.cnf
-      fi
-    EOH
+  cookbook_file "/etc/mysql/conf.d/my-cnf.sh" do
+    owner "root"
+    group "root"
+    mode 0755
+    source "setup_my_cnf.sh"
+    cookbook "db_mysql"
   end
 
 end
