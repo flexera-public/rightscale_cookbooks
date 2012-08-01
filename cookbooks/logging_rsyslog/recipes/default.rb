@@ -14,7 +14,7 @@ rightscale_marker :begin
 # will be made by the inclusion of the logging*::default recipe
 log "  Setting provider specific settings for rsyslog server."
 
-case node[:platform_version]
+case node[:platform]
 when "ubuntu"
   rsyslog_installed = %x(apt-cache policy rsyslog).include?("Installed: (none)") ? false : true
 when "centos", "redhat"
