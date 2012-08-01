@@ -50,69 +50,116 @@ end
 
 action :configure do
   remote_server = new_resource.remote_server
-  # Keep the default configuration (local file only logging) unless a
-  # remote server is defined.
+  # Keep the default configuration (local file only logging) unless a remote server is defined.
   if remote_server != ""
-    if node[:platform] =~ /redhat|centos/
-      # Centos uses an old version of rsyslog that does not by default support
-      # using /etc/rsyslog.d.  Instead of maintaining CentOS specific configuration
-      # we can just append the remote log line to the end of the existing file.
-      # Note this will work with the configuration files that support /etc/rsyslog.d
-      # (i.e. centos 6) without removing it.  However once all supportted OS's use
-      # /etc/rsyslog.d this should be removed.
 
-      # Skipping if entry already exists in /etc/rsyslog.conf
-      log "  Configuring Redhat/CentOS."
-      remote_server_string = "\*.info @#{remote_server}:514"
-      bash "add remote log server to centos config file" do
-        flags "-ex"
-        code <<-EOH
-          echo "\n#{remote_server_string}\n\n" >> /etc/rsyslog.conf
-        EOH
-        not_if do ::File.open('/etc/rsyslog.conf', 'r') { |f| f.read }.include? "#{remote_server_string}" end
+    # Installing additional packages if needed.
+    package "rsyslog-gnutls" if node[:logging][:protocol] == "tcp+tls"
+    package "rsyslog-relp" if node[:logging][:protocol] == "relp"
+
+    # Pull the credentials from the inputs into local files for TLS configuration.
+    if node[:logging][:protocol] == "tcp+tls"
+
+      # Creating directory where certificate files will be stored
+      directory node[:logging][:cert_dir] do
+        mode "0700"
+        recursive true
       end
-    else
-      log "  Configuring ubuntu."
-      template "/etc/rsyslog.d/remote.conf" do
-        action :create
-        source "rsyslog.d.remote.conf.erb"
-        owner "root"
-        group "root"
-        mode "0644"
-        cookbook 'logging_rsyslog'
-        variables(
-          :remote_server => remote_server
-        )
+
+      tls_ca_certificate = ::File.join(node[:logging][:cert_dir], "ca.pem")
+
+      template tls_ca_certificate do
+        mode "0400"
+        cookbook "logging"
+        source "tls_ca_certificate.erb"
       end
+
     end
-    action_restart
+
+    # Writing configuration template.
+    template value_for_platform(
+               ["ubuntu"] => {"default" => "/etc/rsyslog.d/client.conf"},
+               ["centos", "redhat"] => {"5.8" => "/etc/rsyslog.conf", "default" => "/etc/rsyslog.d/client.conf"}
+             ) do
+      action :create
+      source "client.conf.erb"
+      owner "root"
+      group "root"
+      mode "0644"
+      cookbook "logging_rsyslog"
+      variables(
+        :remote_server => remote_server
+      )
+    end
   end
+
+  # Restarting service in order to apply new settings.
+  action_restart
 end
 
 
 action :configure_server do
   # This action would configure an rsyslog logging server.
 
-  # Need to open a listening port on desired protocol
+  # Installing additional packages if needed.
+  package "rsyslog-gnutls" if node[:logging][:protocol] == "tcp+tls"
+  package "rsyslog-relp" if node[:logging][:protocol] == "relp"
+
+  # Pull the credentials from the inputs into local files for TLS configuration.
+  if node[:logging][:protocol] == "tcp+tls"
+
+    # Creating directory where certificate files will be stored
+    directory node[:logging][:cert_dir] do
+      mode "0700"
+      recursive true
+    end
+
+    tls_ca_certificate = ::File.join(node[:logging][:cert_dir], "ca.pem")
+    tls_certificate = ::File.join(node[:logging][:cert_dir], "cert.pem")
+    tls_key = ::File.join(node[:logging][:cert_dir], "key.pem")
+
+    template tls_ca_certificate do
+      mode "0400"
+      cookbook "logging"
+      source "tls_ca_certificate.erb"
+    end
+
+    template tls_certificate do
+      mode "0400"
+      cookbook "logging"
+      source "tls_certificate.erb"
+    end
+
+    template tls_key do
+      mode "0400"
+      cookbook "logging"
+      source "tls_key.erb"
+    end
+
+  end
+
+  # Need to open a listening port on desired protocol.
   sys_firewall "Open logger listening port" do
     port 514
-    protocol "udp"
+    protocol node[:logging][:protocol] == "udp" ? "udp" : "tcp"
     enable true
     action :update
   end
 
-  # Writing configuration template
-  template "#{node[:logging][:config_dir]}" do
+  # Writing configuration template.
+  template value_for_platform(
+             ["ubuntu"] => {"default" => "/etc/rsyslog.d/10-server.conf"},
+             ["centos", "redhat"] => {"5.8" => "/etc/rsyslog.conf", "default" => "/etc/rsyslog.d/10-server.conf"}
+           ) do
     action :create
-    source "rsyslog.d.server.conf.erb"
+    source "server.conf.erb"
     owner "root"
     group "root"
     mode "0644"
-    cookbook 'logging_rsyslog'
-    #variables()
+    cookbook "logging_rsyslog"
   end
 
-  # Restarting service in order to apply new settings
+  # Restarting service in order to apply new settings.
   action_restart
 end
 

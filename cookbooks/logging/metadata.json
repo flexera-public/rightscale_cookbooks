@@ -67,25 +67,27 @@
       "calculated": false,
       "type": "string"
     },
-    "logging/ssl_enable": {
-      "display_name": "SSL Enable",
-      "description": "Enables SSL (TLS). Example: true",
+    "logging/protocol": {
+      "display_name": "Logging Protocol",
+      "description": "Protocol used to send logging messages from client to server.",
+      "required": "optional",
+      "choice": [
+        "udp",
+        "tcp",
+        "tcp+tls",
+        "relp"
+      ],
+      "default": "udp",
       "recipes": [
         "logging::default",
         "logging::install_server"
       ],
-      "required": "optional",
-      "choice": [
-        "true",
-        "false"
-      ],
-      "default": "false",
       "calculated": false,
       "type": "string"
     },
-    "logging/ssl_certificate": {
-      "display_name": "SSL Certificate",
-      "description": "The name of your SSL Certificate. Example: cred:SSL_CERT",
+    "logging/tls_ca_certificate": {
+      "display_name": "TLS CA Certificate",
+      "description": "The name of your CA TLS Certificate. Example: cred:TLS_CA_CERT",
       "required": "optional",
       "default": "",
       "recipes": [
@@ -98,13 +100,12 @@
       "calculated": false,
       "type": "string"
     },
-    "logging/ssl_certificate_chain": {
-      "display_name": "SSL Certificate Chain",
-      "description": "Your SSL Certificate Chain. Example: cred:SSL_CERT_CHAIN",
+    "logging/tls_certificate": {
+      "display_name": "TLS Certificate",
+      "description": "Your TLS Certificate. Example: cred:TLS_CERT",
       "required": "optional",
       "default": "",
       "recipes": [
-        "logging::default",
         "logging::install_server"
       ],
       "choice": [
@@ -113,28 +114,12 @@
       "calculated": false,
       "type": "string"
     },
-    "logging/ssl_key": {
-      "display_name": "SSL Certificate Key",
-      "description": "Your SSL Certificate Key. Example: cred:SSL_KEY",
+    "logging/tls_key": {
+      "display_name": "TLS Certificate Key",
+      "description": "Your TLS Certificate Key. Example: cred:TLS_KEY",
       "required": "optional",
       "default": "",
       "recipes": [
-        "logging::default",
-        "logging::install_server"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "logging/ssl_passphrase": {
-      "display_name": "SSL Passphrase",
-      "description": "Your SSL passphrase. Example: cred:SSL_PASSPHRASE",
-      "required": "optional",
-      "default": "",
-      "recipes": [
-        "logging::default",
         "logging::install_server"
       ],
       "choice": [

@@ -1,0 +1,67 @@
+#
+# Cookbook Name:: logging_rsyslog
+#
+# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
+# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
+# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+#
+# Managed by RightScale
+# DO NOT EDIT BY HAND
+#
+
+<% if node[:platform_version] =~ /^5\..+/ %>
+# Use traditional timestamp format
+$ActionFileDefaultTemplate RSYSLOG_TraditionalFileFormat
+
+# Provides kernel logging support (previously done by rklogd)
+$ModLoad imklog
+# Provides support for local system logging (e.g. via logger command)
+$ModLoad imuxsock
+
+# Log all kernel messages to the console.
+# Logging much else clutters up the screen.
+#kern.*                                                 /dev/console
+# Log anything (except mail) of level info or higher.
+# Don't log private authentication messages!
+*.info;mail.none;authpriv.none;cron.none                /var/log/messages
+# The authpriv file has restricted access.
+authpriv.*                                              /var/log/secure
+# Log all the mail messages in one place.
+mail.*                                                  -/var/log/maillog
+# Log cron stuff
+cron.*                                                  /var/log/cron
+# Everybody gets emergency messages
+*.emerg                                                 *
+# Save news errors of level crit and higher in a special file.
+uucp,news.crit                                          /var/log/spooler
+# Save boot messages also to boot.log
+local7.*                                                /var/log/boot.log
+<% end %>
+
+<% case node[:logging][:protocol] %>
+<% when "udp" %>
+$ModLoad imudp
+*.* @<%= @remote_server %>:514
+<% when "tcp" %>
+$ModLoad imtcp
+*.* @@<%= @remote_server %>:514
+<% when "tcp+tls" %>
+$ModLoad imtcp
+# Certificate files - just CA for an unauthenticated client
+$DefaultNetstreamDriverCAFile /etc/ssl/private/ca.pem
+# For Authentication you also need these:
+#$DefaultNetstreamDriverCertFile /etc/ssl/private/machine-cert.pem
+#$DefaultNetstreamDriverKeyFile /etc/ssl/private/machine-key.pem
+
+$DefaultNetstreamDriver gtls         # Use gtls netstream driver
+$ActionSendStreamDriverMode 1        # Require TLS for the connection
+$ActionSendStreamDriverAuthMode anon # Server is NOT authenticated; For Authentication use: x509/name
+*.* @@<%= @remote_server %>:514
+<% when "relp" %>
+$ModLoad omrelp
+$ActionQueueType LinkedList   # Use asynchronous processing
+$ActionQueueFileName srvrfwd  # Set file name, also enables disk mode
+$ActionResumeRetryCount -1    # Infinite retries on insert failure
+$ActionQueueSaveOnShutdown on # Save in-memory data if rsyslog shuts down
+*.* :omrelp:<%= @remote_server %>:514
+<% end %>
