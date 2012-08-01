@@ -10,8 +10,8 @@
   or your own implementation of "app" resource. See the "app" cookbook README for
   details.
 * Requires a VM launched from a RightScale managed RightImage
-* Tested on CentOS 5.6 RightImage
-* Tested on Ubuntu 10.04 RightImage
+* Tested on CentOS 5.8 and CentOS 6.2 RightImages
+* Tested on Ubuntu 10.04 and Ubuntu 12.04 RightImages
 * Tested on RedHat 5.8 RightImage
 
 == COOKBOOKS DEPENDENCIES:
@@ -35,6 +35,8 @@ There are no known limitations.
 * Set 'jdbc/ConnDB' as your datasource name to set up a database connection with
   the application server.
 
+For more info see: http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current (Section ‘Tomcat App Server’ under ServerTemplates)
+
 == DETAILS:
 === General
 
@@ -49,7 +51,7 @@ and forward all requests for dynamic content to Tomcat.
 
 Server version: Apache/2.2.3
 
-Server built: Feb 8 2012 08:19:50
+Server built: Jun 6 2012 10:00:42
 
 <b>Apache Tomcat</b>
 
@@ -65,12 +67,11 @@ mod_jk/1.2.32
 
 <b>Java</b>
 
-Java version "1.6.0_27"
+Java version "1.6.0_31"
 
-Java(TM) SE Runtime Environment (build 1.6.0_27-b07)
+Java(TM) SE Runtime Environment (build 1.6.0_31-b04)
 
-Java HotSpot(TM) 64-Bit Server VM (build 20.2-b06, mixed mode)
-
+Java HotSpot(TM) 64-Bit Server VM (build 20.6-b01, mixed mode)
 
 also:
 * <tt>User defined war file support</tt>
@@ -81,9 +82,6 @@ also:
 * <tt>Automatic application vhost file configuration</tt>
 * <tt>Automatic logrotate file configuration for Tomcat logs</tt>
 * <tt>Collectd monitoring support</tt>
-
-For more information see: {Tomcat App Server}[http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/2012-03-26#Tomcat_App_Server].
-
 
 === Attributes:
 These are settings used in recipes and templates. Default values are noted.

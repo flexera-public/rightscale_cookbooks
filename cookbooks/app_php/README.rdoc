@@ -9,8 +9,8 @@
 * Requires "app" Light Weight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
   or your own implementation of "app" resource. See "app" cookbook README for details.
 * Requires a VM launched from a RightScale managed RightImage
-* Tested on CentOS 5.8 RightImage
-* Tested on Ubuntu 10.04 RightImage
+* Tested on CentOS 5.8 and CentOS 6.2 RightImages
+* Tested on Ubuntu 10.04 and Ubuntu 12.04 RightImages
 * Tested on RedHat 5.8 RightImage
 
 == COOKBOOKS DEPENDENCIES:
@@ -36,8 +36,7 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 * When using a RightScale ServerTemplate, this will also automatically add the
   common attributes to your ServerTemplate inputs.
 
-For more info see: http://support.rightscale.com/03-Tutorials/PHP_Application_Server_Setup
-
+For more info see: http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current (Section ‘PHP App Server’ under ServerTemplates)
 
 == DETAILS:
 === General
@@ -46,7 +45,7 @@ The <tt>app_php</tt> cookbook will help you to install and set up an Apache + Ze
 <b>Apache</b>
 Server version: Apache/2.2.3
 
-Server built: Mar 27 2010 13:52:45
+Server built: Jun 6 2012 10:00:42
 
 <b>PHP</b>
 PHP 5.3.6 (cli) (built: Apr 25 2011 10:45:29)
