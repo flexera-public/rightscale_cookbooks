@@ -48,10 +48,10 @@ $ModLoad imtcp
 <% when "tcp+tls" %>
 $ModLoad imtcp
 # Certificate files - just CA for an unauthenticated client
-$DefaultNetstreamDriverCAFile /etc/ssl/private/ca.pem
+$DefaultNetstreamDriverCAFile <%= node[:logging][:cert_dir] %>ca.pem
 # For Authentication you also need these:
-#$DefaultNetstreamDriverCertFile /etc/ssl/private/machine-cert.pem
-#$DefaultNetstreamDriverKeyFile /etc/ssl/private/machine-key.pem
+#$DefaultNetstreamDriverCertFile <%= node[:logging][:cert_dir] %>machine-cert.pem
+#$DefaultNetstreamDriverKeyFile <%= node[:logging][:cert_dir] %>machine-key.pem
 
 $DefaultNetstreamDriver gtls         # Use gtls netstream driver
 $ActionSendStreamDriverMode 1        # Require TLS for the connection

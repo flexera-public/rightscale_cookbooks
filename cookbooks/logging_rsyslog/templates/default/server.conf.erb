@@ -21,9 +21,9 @@ $InputTCPServerRun 514
 $DefaultNetstreamDriver gtls
 
 # Certificate files
-$DefaultNetstreamDriverCAFile /etc/ssl/private/ca.pem
-$DefaultNetstreamDriverCertFile /etc/ssl/private/cert.pem
-$DefaultNetstreamDriverKeyFile /etc/ssl/private/key.pem
+$DefaultNetstreamDriverCAFile <%= node[:logging][:cert_dir] %>ca.pem
+$DefaultNetstreamDriverCertFile <%= node[:logging][:cert_dir] %>cert.pem
+$DefaultNetstreamDriverKeyFile <%= node[:logging][:cert_dir] %>key.pem
 
 $ModLoad imtcp # Load TCP listener
 

@@ -14,17 +14,9 @@ rightscale_marker :begin
 # will be made by the inclusion of the logging*::default recipe
 log "  Setting provider specific settings for rsyslog server."
 
-case node[:platform]
-when "ubuntu"
-  rsyslog_installed = %x(apt-cache policy rsyslog).include?("Installed: (none)") ? false : true
-when "centos", "redhat"
-  rsyslog_installed = %x(yum list rsyslog).include?("Installed Packages") ? true : false
-end
-
-raise "ERROR: Rsyslog is not installed!" unless rsyslog_installed
+raise "ERROR: Rsyslog is not installed!" unless system("which rsyslogd")
 raise "ERROR: Rsyslog version doesn't support RELP" if node[:logging][:protocol] == "relp" and node[:platform_version] =~ /^5\..+/
 
 node[:logging][:provider] = "logging_rsyslog"
-node[:logging][:cert_dir] = "/etc/tls/"
 
 rightscale_marker :end

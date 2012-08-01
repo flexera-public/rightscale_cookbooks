@@ -6,3 +6,5 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 set_unless[:logging][:remote_server] = ""
+
+set[:logging][:cert_dir] = "/etc/tls/"

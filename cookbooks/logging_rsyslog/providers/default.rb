@@ -53,12 +53,12 @@ action :configure do
   # Keep the default configuration (local file only logging) unless a remote server is defined.
   if remote_server != ""
 
-    # Installing additional packages if needed.
-    package "rsyslog-gnutls" if node[:logging][:protocol] == "tcp+tls"
     package "rsyslog-relp" if node[:logging][:protocol] == "relp"
 
     # Pull the credentials from the inputs into local files for TLS configuration.
     if node[:logging][:protocol] == "tcp+tls"
+
+      package "rsyslog-gnutls"
 
       # Creating directory where certificate files will be stored
       directory node[:logging][:cert_dir] do
@@ -101,12 +101,12 @@ end
 action :configure_server do
   # This action would configure an rsyslog logging server.
 
-  # Installing additional packages if needed.
-  package "rsyslog-gnutls" if node[:logging][:protocol] == "tcp+tls"
   package "rsyslog-relp" if node[:logging][:protocol] == "relp"
 
   # Pull the credentials from the inputs into local files for TLS configuration.
   if node[:logging][:protocol] == "tcp+tls"
+
+    package "rsyslog-gnutls"
 
     # Creating directory where certificate files will be stored
     directory node[:logging][:cert_dir] do
