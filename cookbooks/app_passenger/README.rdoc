@@ -10,8 +10,8 @@
 * Requires "app" Lightweight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
   or your own implementation of the "app" resource. See "app" cookbook README for details.
 * Requires a VM launched from a RightScale managed RightImage
-* Tested on CentOS 5.6 RightImage
-* Tested on Ubuntu 10.04 RightImage
+* Tested on CentOS 5.8 and CentOS 6.2 RightImage
+* Tested on Ubuntu 10.04 and Ubuntu 12.04 RightImage
 * Tested on RedHat 5.8 RightImage
 
 == COOKBOOKS DEPENDENCIES:
@@ -21,7 +21,6 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 * <tt>rightscale</tt>
 * <tt>web_apache</tt>
 * <tt>repo</tt>
-* <tt>logrotate</tt>
 * <tt>app</tt>
 * <tt>db</tt>
 
@@ -61,7 +60,6 @@ also:
 * <tt>Application code installation from remote git, svn or Remote Object Store (ROS) location</tt>
 * <tt>MySQL or Postgres database connection file configuration</tt>
 * <tt>Automatic application vhost file configuration</tt>
-* <tt>Automatic logrotate file configuration for passenger logs</tt>
 
 For more info see: http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/2012-01-05#Apache-Rails-Passenger_App_Server_-_Beta
 
