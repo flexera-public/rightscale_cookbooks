@@ -208,3 +208,68 @@ action :code_update do
   end
 
 end
+
+# Setup monitoring tools for passenger
+action :setup_monitoring do
+   plugin_path = "#{node[:rs_utils][:collectd_lib]}/plugins/passenger"
+
+   log "  Stopping collectd service"
+   service "collectd" do
+     action :stop
+   end
+
+   directory "#{node[:rs_utils][:collectd_lib]}/plugins/" do
+     recursive true
+     not_if do ::File.exists?("#{node[:rs_utils][:collectd_lib]}/plugins/")  end
+   end
+
+  # Installing collectd plugin for passenger monitoring
+  cookbook_file "#{plugin_path}" do
+    source "collectd_passenger"
+    mode "0755"
+    backup false
+    cookbook 'app_passenger'
+  end
+
+   # Removing previous passenger.conf in case of stop-start
+   file "#{node[:rs_utils][:collectd_plugin_dir]}/passenger.conf" do
+     backup false
+     action :delete
+   end
+
+  # Installing collectd config for passenger plugin
+  template "#{node[:rs_utils][:collectd_plugin_dir]}/passenger.conf" do
+    cookbook "app_passenger"
+    source "collectd_passenger.conf.erb"
+    variables(
+      :apache_executable => node[:apache][:config_subdir],
+      :apache_user => node[:app_passenger][:apache][:user],
+      :plugin_path => plugin_path)
+  end
+
+  # Collectd exec cannot run scripts under root user, so we need to give ability to use sudo to to "apache" user
+  # passenger monitoring resources have strict restrictions, only for root can gather full stat info
+  # we gave permissions to apache user to access passenger monitoring resources
+  set[:app_passenger][:sudo_str]= ["# Allowing apache user to access passenger monitoring resources",\
+    "Defaults:#{node[:app_passenger][:apache][:user]} !requiretty",\
+    "Defaults:#{node[:app_passenger][:apache][:user]} !env_reset",\
+    "#{node[:app_passenger][:apache][:user]} ALL = NOPASSWD: /opt/ruby-enterprise/bin/passenger-status, \
+    /opt/ruby-enterprise/bin/passenger-memory-stats, \
+    /opt/ruby-enterprise/lib/ruby/gems/1.8/gems/passenger-3.0.9/bin/passenger-status, \
+    /opt/ruby-enterprise/lib/ruby/gems/1.8/gems/passenger-3.0.9/bin/passenger-memory-stats" ]
+
+  ruby_block "sudo setup" do
+    block do
+      ::File.open('/etc/sudoers', 'a'){ |file|
+        node[:app_passenger][:sudo_str].each do |string|
+          file.puts
+          file.write string
+          file.puts
+        end
+      }
+    end
+    not_if do ::File.open('/etc/sudoers', 'r') { |f| f.read }.include? "#{node[:app_passenger][:sudo_str][0]}" end
+    notifies :start, resources(:service => "collectd")
+  end
+
+end
