@@ -47,14 +47,14 @@ node[:db_mysql][:client_packages_install] = value_for_platform(
       "mysql"
     ] 
   },
-  ["redhat", "fedora", "suse"] => {
+  "redhat" => {
     "default" => [
       "MySQL-shared-compat",
       "MySQL-devel-community",
       "MySQL-client-community"
     ]
   },
-  ["debian", "ubuntu"] => {
+  "ubuntu" => {
     "10.04" => [ ],
     "default" => [
       "libmysqlclient-dev",
@@ -71,10 +71,10 @@ node[:db_mysql][:server_packages_install] = value_for_platform(
     "5.8" => [ "MySQL-server-community" ],
     "default" => [ "mysql-server" ]
   },
-  ["redhat", "fedora", "suse"] => {
+  "redhat" => {
     "default" => [ "MySQL-server-community" ]
   },
-  ["debian", "ubuntu"] => {
+  "ubuntu" => {
     "10.04" => [ "mysql-server-5.1" ],
     "default"   => [ ]
   },
