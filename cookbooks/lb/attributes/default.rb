@@ -33,7 +33,7 @@ set_unless[:lb][:max_conn_per_server] = "500"
 set_unless[:lb][:cron_reconverge_hour] = "*"
 set_unless[:lb][:cron_reconverge_minute] = "#{5+rand(50)}"
 
-# Stores the list of appplication servers being loadbalanced.
+# Stores the list of application servers being loadbalanced.
 set_unless[:lb][:appserver_list] = {}
 
 # Web service name based on OS.

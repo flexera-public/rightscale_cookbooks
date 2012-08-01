@@ -10,6 +10,17 @@ rightscale_marker :begin
 log "  Setting provider specific settings for php application server."
 node[:app][:provider] = "app_php"
 
+# Setting generic app attributes
+platform = node[:platform]
+case platform
+when "ubuntu"
+  node[:app][:user] = "www-data"
+  node[:app][:group] = "www-data"
+when "centos", "redhat"
+  node[:app][:user] = "apache"
+  node[:app][:group] = "apache"
+end
+
 log "  Install PHP"
 package "php5" do
   package_name value_for_platform(
@@ -57,7 +68,7 @@ package "php apache integration" do
   action :install
 end
 
-if node[:app_php][:db_adapter] == "mysql"
+if node[:app][:db_adapter] == "mysql"
   log "  Install PHP mysql support"
   package "php mysql integration" do
     package_name value_for_platform(
@@ -72,7 +83,7 @@ if node[:app_php][:db_adapter] == "mysql"
     )
     action :install
   end
-elsif node[:app_php][:db_adapter] == "postgresql"
+elsif node[:app][:db_adapter] == "postgresql"
   log "  Install PHP postgres support"
   package "php postgres integration" do
     package_name value_for_platform(
@@ -91,14 +102,10 @@ else
   raise "Unrecognized database adapter #{node[:app][:db_adapter]}, exiting "
 end
 
-
 # Setting app LWRP attribute
-node[:app][:root] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
-# PHP shares the same doc root with the application destination
-node[:app][:destination] = "#{node[:app][:root]}"
+node[:app][:destination] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
 
-directory "#{node[:app][:destination]}" do
-  recursive true
-end
+# PHP shares the same doc root with the application destination
+node[:app][:root] = "#{node[:app][:destination]}"
 
 rightscale_marker :end
