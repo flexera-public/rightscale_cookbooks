@@ -48,7 +48,7 @@ attribute "logging/protocol",
   :display_name => "Logging Protocol",
   :description => "Protocol used to send logging messages from client to server.",
   :required => "optional",
-  :choice => [ "udp", "tcp", "tcp+tls", "relp" ],
+  :choice => [ "udp", "tcp", "tcp+tls", "relp", "relp+stunnel" ],
   :default =>  "udp",
   :recipes => [
     "logging::default",

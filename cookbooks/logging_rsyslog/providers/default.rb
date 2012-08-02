@@ -76,6 +76,33 @@ action :configure do
 
     end
 
+    if node[:logging][:protocol] == "relp+stunnel"
+
+      package "stunnel"
+
+      template "/etc/stunnel/client.conf" do
+        action :create
+        source "stunnel.conf.erb"
+        owner "root"
+        group "root"
+        mode "0644"
+        cookbook "logging_rsyslog"
+        variables(
+          :accept => "127.0.0.1:5514",
+          :connect => "#{remote_server}:514",
+          :client => "client = yes"
+        )
+      end
+
+      bash "Apply new settings to STunnel" do
+        flags "-ex"
+        code <<-EOH
+        stunnel4 /etc/stunnel/client.conf
+        EOH
+      end
+
+    end
+
     # Writing configuration template.
     template value_for_platform(
                ["ubuntu"] => {"default" => "/etc/rsyslog.d/client.conf"},
@@ -134,6 +161,42 @@ action :configure_server do
       mode "0400"
       cookbook "logging"
       source "tls_key.erb"
+    end
+
+  end
+
+  if node[:logging][:protocol] == "relp+stunnel"
+
+    package "stunnel"
+
+    tls_certificate = ::File.join(node[:logging][:cert_dir], "stunnel.pem")
+
+    template tls_certificate do
+      mode "0400"
+      cookbook "logging"
+      source "tls_certificate.erb"
+    end
+
+
+    template "/etc/stunnel/server.conf" do
+      action :create
+      source "stunnel.conf.erb"
+      owner "root"
+      group "root"
+      mode "0644"
+      cookbook "logging_rsyslog"
+      variables(
+        :accept => "514",
+        :connect => "5514",
+        :cert => "cert = #{node[:logging][:cert_dir]}stunnel.pem"
+      )
+    end
+
+    bash "Apply new settings to STunnel" do
+      flags "-ex"
+      code <<-EOH
+        stunnel4 /etc/stunnel/server.conf
+      EOH
     end
 
   end

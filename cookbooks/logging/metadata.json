@@ -75,7 +75,8 @@
         "udp",
         "tcp",
         "tcp+tls",
-        "relp"
+        "relp",
+        "relp+stunnel"
       ],
       "default": "udp",
       "recipes": [

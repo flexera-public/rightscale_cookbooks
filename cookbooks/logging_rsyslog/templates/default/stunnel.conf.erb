@@ -1,0 +1,42 @@
+;
+; Cookbook Name:: logging_rsyslog
+;
+; Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
+; RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
+; if applicable, other agreements such as a RightScale Master Subscription Agreement.
+;
+; Managed by RightScale
+; DO NOT EDIT BY HAND
+;
+
+; Certificate/key is needed in server mode and optional in client mode
+<%= cert %>
+;key = /etc/ssl/certs/stunnel.pem
+
+; Protocol version (all, SSLv2, SSLv3, TLSv1)
+sslVersion = SSLv3
+
+; Some security enhancements for UNIX systems - comment them out on Win32
+chroot = /var/lib/stunnel4/
+setuid = stunnel4
+setgid = stunnel4
+; PID is created inside the chroot jail
+pid = /stunnel4.pid
+
+; Some performance tunings
+socket = l:TCP_NODELAY=1
+socket = r:TCP_NODELAY=1
+;compression = zlib
+
+; Some debugging stuff useful for troubleshooting
+;debug = 7
+;output = /var/log/stunnel4/stunnel.log
+
+<%= client %>
+
+; Service-level configuration
+
+[ssyslog]
+accept  = <%= accept %>
+connect = <%= connect %>
+
