@@ -88,7 +88,7 @@ These are settings used in recipes and templates. Default values are noted.
 Note: Only "internal" cookbook attributes are described here. Descriptions of attributes which have inputs you can find in metadata.rb cookbook file.
 
 ====== General attributes
-* <tt>node:app_passenger][:rails_spawn_method]</tt> - The spawn method used by the passenger.
+* <tt>node[:app_passenger][:rails_spawn_method]</tt> - The spawn method used by the passenger.
 * <tt>node[:app_passenger][:apache][:maintenance_page]</tt> - Path to html maintenance page, which will be displayed, when main application is unavailable.
 * <tt>node[:app_passenger][:apache][:serve_local_files]</tt> - Used to enable/disable the serve of any existing local files.
 * <tt>node[:app_passenger][:deploy_dir]</tt> - Path in the specified repository where application code will be pulled from.

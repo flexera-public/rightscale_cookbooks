@@ -98,8 +98,8 @@ For more info please see: {Load Balancer Setups}[http://support.rightscale.com/0
 * <tt>node[:app][:provider]</tt> - Set a default provider.
 * <tt>node[:app][:port]</tt> - Set a default port to listen on. Default: 8000
 * <tt>node[:app][:ip]</tt> - IP to listen on. Default: First private IP
-* <tt>node[:app][:user]</tt> - Apache user. Required for changing owner of created project dirs.
-* <tt>node[:app][:group]</tt> - Apache group. Required for changing owner of created project dirs.
+* <tt>node[:app][:user]</tt> - Application server user. Required for changing owner of created project dirs.
+* <tt>node[:app][:group]</tt> - Application server group. Required for changing owner of created project dirs.
 
 === Definitions:
 
