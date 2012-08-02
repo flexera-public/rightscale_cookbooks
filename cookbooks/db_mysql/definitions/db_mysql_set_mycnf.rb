@@ -32,7 +32,7 @@ define :db_mysql_set_mycnf, :server_id => nil, :relay_log => nil do
   execute "/etc/mysql/setup-my-cnf.sh" do
     user "root"
     group "root"
-    umask 0077
+    umask 0022
     action :run
   end
 end
