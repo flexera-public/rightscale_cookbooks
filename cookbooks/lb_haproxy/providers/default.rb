@@ -326,6 +326,11 @@ action :detach do
   # backend_id file deleted, so we just check that resulting set contain only one element
   # and this element is id of detached instance
   if attached_servers.size == 1 and attached_servers.include?(backend_id)
+    # Removing pool store directory
+    directory "/etc/haproxy/#{node[:lb][:service][:provider]}.d/#{pool_name}" do
+      action :delete
+    end
+
     first_connected_pool = ::File.basename(::Dir["/etc/haproxy/#{node[:lb][:service][:provider]}.d/*"].reject{|o| not ::File.directory?(o)}.first || "dummy")
 
     # Create dummy backend section for haproxy correct operations
