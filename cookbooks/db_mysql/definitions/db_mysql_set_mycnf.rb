@@ -20,9 +20,4 @@ define :db_mysql_set_mycnf, :server_id => nil, :relay_log => nil do
     cookbook "db_mysql"
   end
 
-  log "  Removing system installed my.cnf"
-  cookbook_file "/etc/my.cnf" do
-    action :delete
-    only_if do File.exists?("/etc/my.cnf") end
-  end
 end
