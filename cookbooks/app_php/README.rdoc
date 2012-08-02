@@ -36,7 +36,7 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 * When using a RightScale ServerTemplate, this will also automatically add the
   common attributes to your ServerTemplate inputs.
 
-For more info see: http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current (Section ‘PHP App Server’ under ServerTemplates)
+For more info see: {Release Notes}[http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current] (Section ‘PHP App Server’ under ServerTemplates)
 
 == DETAILS:
 === General
