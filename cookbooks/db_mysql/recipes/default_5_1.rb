@@ -17,8 +17,8 @@ log "  Setting DB MySQL version to #{version}"
 node[:db_mysql][:version] = version
 
 node[:db][:socket] = value_for_platform(
-  "ubuntu"  => "/var/run/mysqld/mysqld.sock",
-  "default" => "/var/lib/mysql/mysql.sock"
+  "ubuntu"  => { "default" => [ "/var/run/mysqld/mysqld.sock" ] },
+  "centos" => { "default" => [ "/var/lib/mysql/mysql.sock" ] }
 )
 
 node[:db_mysql][:service_name] = value_for_platform(
