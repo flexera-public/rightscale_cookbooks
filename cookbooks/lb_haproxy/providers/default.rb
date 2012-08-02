@@ -263,6 +263,26 @@ action :advanced_configs do
 
   end
 
+  # Restoring default config if we have dummy value
+  directory "/etc/haproxy/#{node[:lb][:service][:provider]}.d/dummy" do
+    action :delete
+    only_if do ::File.open('/etc/haproxy/haproxy.cfg.default_backend', 'r') { |f| f.read }.include? "dummy" end
+  end
+
+  template "/etc/haproxy/haproxy.cfg.default_backend" do
+    source "haproxy.cfg.default_backend.erb"
+    cookbook "lb_haproxy"
+    owner "haproxy"
+    group "haproxy"
+    mode "0400"
+    backup false
+    variables(
+       :default_backend_line => "#{pool_name}_backend"
+    )
+    only_if do ::File.open('/etc/haproxy/haproxy.cfg.default_backend', 'r') { |f| f.read }.include? "dummy" end
+    notifies :run, resources(:execute => "/etc/haproxy/haproxy-cat.sh")
+  end
+
 end
 
 
@@ -322,22 +342,29 @@ action :detach do
   # if it is true we need to point haproxy to
   # another existing pool or put default value if that pool was last one.
   attached_servers = get_attached_servers(pool_name)
+  default_entry = ::File.open('/etc/haproxy/haproxy.cfg.default_backend', 'r') { |f| f.read }.include? "#{pool_name}"
   # We use this conditional because "get_attached_servers" is evaluated before
   # backend_id file deleted, so we just check that resulting set contain only one element
   # and this element is id of detached instance
-  if attached_servers.size == 1 and attached_servers.include?(backend_id)
+
+
+  if attached_servers.size == 1 and attached_servers.include?(backend_id) and default_entry == true
     # Removing pool store directory
-    directory "/etc/haproxy/#{node[:lb][:service][:provider]}.d/#{pool_name}" do
+    full_pool_path = "/etc/haproxy/#{node[:lb][:service][:provider]}.d/#{pool_name}"
+
+    directory full_pool_path do
       action :delete
     end
 
-    first_connected_pool = ::File.basename(::Dir["/etc/haproxy/#{node[:lb][:service][:provider]}.d/*"].reject{|o| not ::File.directory?(o)}.first || "dummy")
+    first_connected_pool = ::File.basename(::Dir["/etc/haproxy/#{node[:lb][:service][:provider]}.d/*"].reject{|o| not (::File.directory?(o) and o != full_pool_path) }.first || "dummy")
 
     # Create dummy backend section for haproxy correct operations
     if first_connected_pool == "dummy"
+      directory "/etc/haproxy/#{node[:lb][:service][:provider]}.d/dummy"
+
       lb_haproxy_backend  "create dummy backend section" do
         pool_name  "dummy"
-        advanced_configs "true"
+        advanced_configs "false"
       end
     end
 
@@ -352,7 +379,7 @@ action :detach do
       variables(
          :default_backend_line => "#{first_connected_pool}_backend"
       )
-      only_if do ::File.open('/etc/haproxy/haproxy.cfg.default_backend', 'r') { |f| f.read }.include? "#{pool_name}" end
+      only_if do ::File.open('/etc/haproxy/haproxy.cfg.default_backend', 'r') { |f| f.read }.include? "#{pool_name}" end  # not working
       notifies :run, resources(:execute => "/etc/haproxy/haproxy-cat.sh")
     end
   else
