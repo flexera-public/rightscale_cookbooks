@@ -5,6 +5,8 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+include RightScale::LB::Helper
+
 action :install do
 
   log "  Installing haproxy"
@@ -59,6 +61,7 @@ action :install do
     owner "haproxy"
     group "haproxy"
     mode "0400"
+    backup false
     variables(
        :default_backend_line => "#{pool_name}_backend"
     )
@@ -94,8 +97,6 @@ action :add_vhost do
 
   action_advanced_configs
 
-
-
   # (Re)generate the haproxy config file.
   execute "/etc/haproxy/haproxy-cat.sh" do
     user "haproxy"
@@ -121,6 +122,15 @@ action :attach do
   service "haproxy" do
     supports :reload => true, :restart => true, :status => true, :start => true, :stop => true
     action :nothing
+  end
+
+    # Create the directory for vhost server files.
+  directory "/etc/haproxy/#{node[:lb][:service][:provider]}.d/#{pool_name}" do
+    owner "haproxy"
+    group "haproxy"
+    mode 0755
+    recursive true
+    action :create
   end
 
   # (Re)generate the haproxy config file.
@@ -205,6 +215,11 @@ action :advanced_configs do
     )
   end
 
+  lb_haproxy_backend  "create main backend section" do
+    pool_name  pool_name
+    advanced_configs "false"
+  end
+
   # http-request auth section, supported only from haproxy v 1.4
   if backend_authorized_users
 
@@ -275,6 +290,7 @@ end
 action :detach do
 
   pool_name = new_resource.pool_name
+  backend_id = new_resource.backend_id
 
   log "  Detaching #{new_resource.backend_id} from #{pool_name}"
 
@@ -294,10 +310,48 @@ action :detach do
   end
 
   # Delete the individual server file and notify the concatenation script if necessary.
-  file ::File.join("/etc/haproxy/#{node[:lb][:service][:provider]}.d", pool_name, new_resource.backend_id) do
+  file ::File.join("/etc/haproxy/#{node[:lb][:service][:provider]}.d", pool_name, backend_id) do
     action :delete
     backup false
     notifies :run, resources(:execute => "/etc/haproxy/haproxy-cat.sh")
+  end
+
+
+  # After detaching instance from backend pool we must check if that pool is default
+  # and if the detached instance was last in that pool
+  # if it is true we need to point haproxy to
+  # another existing pool or put default value if that pool was last one.
+  attached_servers = get_attached_servers(pool_name)
+  # We use this conditional because "get_attached_servers" is evaluated before
+  # backend_id file deleted, so we just check that resulting set contain only one element
+  # and this element is id of detached instance
+  if attached_servers.size == 1 and attached_servers.include?(backend_id)
+    first_connected_pool = ::File.basename(::Dir["/etc/haproxy/#{node[:lb][:service][:provider]}.d/*"].reject{|o| not ::File.directory?(o)}.first || "dummy")
+
+    # Create dummy backend section for haproxy correct operations
+    if first_connected_pool == "dummy"
+      lb_haproxy_backend  "create dummy backend section" do
+        pool_name  "dummy"
+        advanced_configs "true"
+      end
+    end
+
+    log "  Changing default pool to #{first_connected_pool}"
+    template "/etc/haproxy/haproxy.cfg.default_backend" do
+      source "haproxy.cfg.default_backend.erb"
+      cookbook "lb_haproxy"
+      owner "haproxy"
+      group "haproxy"
+      mode "0400"
+      backup false
+      variables(
+         :default_backend_line => "#{first_connected_pool}_backend"
+      )
+      only_if do ::File.open('/etc/haproxy/haproxy.cfg.default_backend', 'r') { |f| f.read }.include? "#{pool_name}" end
+      notifies :run, resources(:execute => "/etc/haproxy/haproxy-cat.sh")
+    end
+  else
+    log "  No pools to detach"
   end
 
 end
