@@ -61,7 +61,7 @@ also:
 * <tt>MySQL or Postgres database connection file configuration</tt>
 * <tt>Automatic application vhost file configuration</tt>
 
-For more info see: http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current (Section 'Apache-Rails-Passenger App Server' under ServerTemplates)
+For more info see: {Release Notes}[http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current] (Section 'Apache-Rails-Passenger App Server' under ServerTemplates)
 
 ServerTemplate built on this cookbook can be combined in two modes:
 
