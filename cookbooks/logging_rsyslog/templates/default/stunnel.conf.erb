@@ -10,7 +10,7 @@
 ;
 
 ; Certificate/key is needed in server mode and optional in client mode
-<%= cert %>
+<%= @cert %>
 ;key = /etc/ssl/certs/stunnel.pem
 
 ; Protocol version (all, SSLv2, SSLv3, TLSv1)
@@ -32,11 +32,11 @@ socket = r:TCP_NODELAY=1
 ;debug = 7
 ;output = /var/log/stunnel4/stunnel.log
 
-<%= client %>
+<%= @client %>
 
 ; Service-level configuration
 
 [ssyslog]
-accept  = <%= accept %>
-connect = <%= connect %>
+accept  = <%= @accept %>
+connect = <%= @connect %>
 
