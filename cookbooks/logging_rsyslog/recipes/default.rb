@@ -14,22 +14,8 @@ rightscale_marker :begin
 # will be made by the inclusion of the logging*::default recipe
 log "  Setting provider specific settings for rsyslog server."
 
-`rpm -qa | grep rsyslog`
-rsyslog_installed = $?.exitstatus == 0 ?  true : false
-raise "ERROR: Rsyslog is not installed!" unless rsyslog_installed
+raise "ERROR: Rsyslog is not installed!" unless system("which rsyslogd")
 
 node[:logging][:provider] = "logging_rsyslog"
-
-case node[:platform]
-when "centos", "redhat"
-  case node[:platform_version]
-  when /^5\..+/
-    node[:logging][:config_dir] = "/etc/rsyslog.conf"
-  else
-    raise "Version #{node[:platform_version]} not supported."
-  end
-else
-  raise "Unrecognized distro #{node[:platform]}, exiting "
-end
 
 rightscale_marker :end
