@@ -30,7 +30,7 @@ $ModLoad imtcp # Load TCP listener
 $InputTCPServerStreamDriverMode 1 # Run driver in TLS-only mode
 $InputTCPServerStreamDriverAuthMode anon # Client is NOT authenticated # For Authentication enable: x509/name
 $InputTCPServerRun 514 # Start up listener
-<% when "relp" %>
+<% when "relp", "relp+stunnel" %>
 $ModLoad imrelp
 $InputRELPServerRun 514
 <% end %>

@@ -78,6 +78,7 @@ action :configure do
 
     if node[:logging][:protocol] == "relp+stunnel"
 
+      package "rsyslog-relp"
       package "stunnel"
 
       template "/etc/stunnel/client.conf" do
@@ -88,7 +89,7 @@ action :configure do
         mode "0644"
         cookbook "logging_rsyslog"
         variables(
-          :accept => "127.0.0.1:5514",
+          :accept => "127.0.0.1:515",
           :connect => "#{remote_server}:514",
           :client => "client = yes"
         )
@@ -167,6 +168,7 @@ action :configure_server do
 
   if node[:logging][:protocol] == "relp+stunnel"
 
+    package "rsyslog-relp"
     package "stunnel"
 
     tls_certificate = ::File.join(node[:logging][:cert_dir], "stunnel.pem")
@@ -187,7 +189,7 @@ action :configure_server do
       cookbook "logging_rsyslog"
       variables(
         :accept => "514",
-        :connect => "5514",
+        :connect => "515",
         :cert => "cert = #{node[:logging][:cert_dir]}stunnel.pem"
       )
     end
