@@ -57,14 +57,18 @@ $DefaultNetstreamDriver gtls         # Use gtls netstream driver
 $ActionSendStreamDriverMode 1        # Require TLS for the connection
 $ActionSendStreamDriverAuthMode anon # Server is NOT authenticated; For Authentication use: x509/name
 *.* @@<%= @remote_server %>:514
-<% when "relp", "relp+stunnel" %>
+<% when "relp" %>
 $ModLoad omrelp
 $ActionQueueType LinkedList   # Use asynchronous processing
 $ActionQueueFileName srvrfwd  # Set file name, also enables disk mode
 $ActionResumeRetryCount -1    # Infinite retries on insert failure
 $ActionQueueSaveOnShutdown on # Save in-memory data if rsyslog shuts down
-<% when "relp" %>
 *.* :omrelp:<%= @remote_server %>:514
 <% when "relp+stunnel" %>
-*.* :omrelp:127.0.0.1:515 # Sending logs to STunnel
+$ModLoad omrelp
+$ActionQueueType LinkedList   # Use asynchronous processing
+$ActionQueueFileName srvrfwd  # Set file name, also enables disk mode
+$ActionResumeRetryCount -1    # Infinite retries on insert failure
+$ActionQueueSaveOnShutdown on # Save in-memory data if rsyslog shuts down
+*.* :omrelp:127.0.0.1:515     # Sending logs to STunnel
 <% end %>
