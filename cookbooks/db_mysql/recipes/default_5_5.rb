@@ -16,7 +16,9 @@ platform = node[:platform]
 # Set MySQL 5.5 specific node variables in this recipe.
 #
 node[:db][:socket] = value_for_platform(
-  "ubuntu"  => "/var/run/mysqld/mysqld.sock",
+  "ubuntu"  => {
+    "default" => "/var/run/mysqld/mysqld.sock"
+  },
   "default" => "/var/lib/mysql/mysql.sock"
 )
 
@@ -62,14 +64,14 @@ node[:db_mysql][:client_packages_install] = value_for_platform(
       "postfix" 
     ]
   },
-  ["ubuntu", "debian"] => {
+  "ubuntu" => {
     "10.04" => [ ],
     "default" => [
       "libmysqlclient-dev",
       "mysql-client-5.5"
     ]
   },
-  ["redhat", "fedora", "suse"] => {
+  "redhat" => {
     "default" => [
       "mysql55-devel",
       "mysql55-libs",

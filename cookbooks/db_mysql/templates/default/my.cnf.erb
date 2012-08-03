@@ -99,7 +99,7 @@ innodb_log_group_home_dir = /var/lib/mysql
 innodb_file_per_table
 innodb_buffer_pool_size = <%= node[:db_mysql][:tunable][:innodb_buffer_pool_size] %>
 innodb_additional_mem_pool_size = <%= node[:db_mysql][:tunable][:innodb_additional_mem_pool_size] %>
-innodb_log_file_size = <%= node[:db_mysql][:tunable][:innodb_log_file_size] %>
+innodb_log_file_size = <%= @innodb_log_file_size %>
 innodb_log_buffer_size = <%= node[:db_mysql][:tunable][:innodb_log_buffer_size] %>
 innodb_flush_log_at_trx_commit = 2
 innodb_lock_wait_timeout = 50
@@ -128,8 +128,3 @@ sort_buffer_size        = <%= node[:db_mysql][:tunable][:isamchk][:sort_buffer_s
 [myisamchk]
 key_buffer        = <%= node[:db_mysql][:tunable][:myisamchk][:key_buffer] %>
 sort_buffer_size        = <%= node[:db_mysql][:tunable][:myisamchk][:sort_buffer_size] %>
-
-# * IMPORTANT: Additional settings that can override those from this file!
-#   The files must end with '.cnf', otherwise they'll be ignored.
-#
-!includedir /etc/mysql/conf.d/

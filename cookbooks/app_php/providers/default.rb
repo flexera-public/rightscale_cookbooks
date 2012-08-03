@@ -59,8 +59,8 @@ action :install do
   end
 
   # Installing php modules dependencies
-  log "  Module dependencies which will be installed: #{node[:app_php][:module_dependencies]}"
-  node[:app_php][:module_dependencies].each do |mod|
+  log "  Module dependencies which will be installed: #{node[:app][:module_dependencies]}"
+  node[:app][:module_dependencies].each do |mod|
     apache_module mod
   end
 
@@ -96,20 +96,21 @@ end
 # Setup PHP Database Connection
 action :setup_db_connection do
   project_root = new_resource.destination
+  db_name = new_resource.database_name
   # Make sure config dir exists
   directory ::File.join(project_root, "config") do
     recursive true
-    owner node[:app_php][:user]
-    group node[:app_php][:group]
+    owner node[:app][:user]
+    group node[:app][:group]
   end
 
   # Tells selected db_adapter to fill in it's specific connection template
   db_connect_app ::File.join(project_root, "config", "db.php") do
     template "db.php.erb"
     cookbook "app_php"
-    database node[:app_php][:db_schema_name]
-    owner node[:app_php][:user]
-    group node[:app_php][:user]
+    database db_name
+    owner node[:app][:user]
+    group node[:app][:group]
   end
 end
 
@@ -126,7 +127,7 @@ action :code_update do
   repo "default" do
     destination deploy_dir
     action node[:repo][:default][:perform_action].to_sym
-    app_user node[:app_php][:user]
+    app_user node[:app][:user]
     repository node[:repo][:default][:repository]
     persist false
   end
@@ -135,3 +136,10 @@ action :code_update do
   action_restart
 
 end
+
+
+# Set monitoring tools for PHP application. Not implemented.
+action :setup_monitoring do
+  raise 'Using "default" application provider. Action is not implemented'
+end
+
