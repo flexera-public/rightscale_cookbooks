@@ -171,6 +171,12 @@ action :configure_server do
     package "rsyslog-relp"
     package "stunnel"
 
+    # Creating directory where certificate files will be stored
+    directory node[:logging][:cert_dir] do
+      mode "0700"
+      recursive true
+    end
+
     tls_certificate = ::File.join(node[:logging][:cert_dir], "stunnel.pem")
 
     template tls_certificate do
