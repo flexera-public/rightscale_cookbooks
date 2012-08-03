@@ -46,7 +46,6 @@ attribute :keep_daily, :kind_of => String
 attribute :keep_weekly, :kind_of => String
 attribute :keep_monthly, :kind_of => String
 attribute :keep_yearly, :kind_of => String
-attribute :force, :equal_to => [ true, false ], :default => false # Used by backup_lock_take action
 
 
 # == Options for volume block devices
