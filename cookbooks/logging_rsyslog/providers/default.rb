@@ -81,6 +81,11 @@ action :configure do
       package "rsyslog-relp"
       package "stunnel"
 
+      service "stunnel4" do
+        supports :reload => true, :restart => true, :start => true, :stop => true
+        action :nothing
+      end
+
       template "/etc/stunnel/stunnel.conf" do
         action :create
         source "stunnel.conf.erb"
@@ -98,8 +103,9 @@ action :configure do
       bash "Apply new settings to STunnel" do
         flags "-ex"
         code <<-EOH
-          #{node[:logging][:stunnel_service]} /etc/stunnel/stunnel.conf && ruby -pi -e "gsub(/ENABLED=0/,'ENABLED=1')" /etc/default/stunnel4 && /etc/init.d/stunnel4 restart
+        ruby -pi -e "gsub(/ENABLED=0/,'ENABLED=1')" /etc/default/stunnel4
         EOH
+        notifies :restart, resources(:service => "stunnel4")
       end
 
     end
