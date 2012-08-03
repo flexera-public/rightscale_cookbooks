@@ -137,15 +137,6 @@ if platform?('ubuntu')
   end
 end
 
-if platform?('debian')
-  log "  Starting hostname.sh service."
-  service "hostname.sh" do
-    service_name "hostname.sh"
-    supports :restart => false, :status => true, :reload => false
-    action :start
-  end
-end
-
 # rightlink commandline tools set tag with rs_tag
 log "  Setting hostname tag."
 bash "set_node_hostname_tag" do

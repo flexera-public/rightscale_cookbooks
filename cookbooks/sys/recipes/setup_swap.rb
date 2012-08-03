@@ -68,6 +68,13 @@ def activate_swap_file(swap_file, swap_size)
     options "noauto"
   end
 
+  # Activate collectd swap monitoring plugin
+  #
+  # Add the collectd swap plugin to the set of collectd plugins if it isn't already there
+  rightscale_enable_collectd_plugin 'swap'
+  # Rebuild the collectd configuration file if necessary
+  include_recipe "rightscale::setup_monitoring"
+
 end
 
 

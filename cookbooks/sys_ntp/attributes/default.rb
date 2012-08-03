@@ -7,9 +7,9 @@
 
 # Choosing the correct naming for NTP service
 case platform 
-when "ubuntu","debian"
+when "ubuntu"
   default[:sys_ntp][:service] = "ntp"
-when "redhat","centos","fedora"
+when "redhat","centos"
   default[:sys_ntp][:service] = "ntpd"
 end
 

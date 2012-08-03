@@ -13,7 +13,7 @@ depends "rightscale"
 
 recipe "sys_ntp", "Installs and configures ntp client."
 
-%w{ ubuntu debian redhat centos fedora }.each do |os|
+%w{ ubuntu redhat centos }.each do |os|
   supports os
 end
 

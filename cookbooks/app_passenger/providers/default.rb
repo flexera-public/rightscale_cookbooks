@@ -50,39 +50,18 @@ action :install do
     package p
   end
 
-  log "  Installing Ruby Enterprise Edition..."
-  # Moving rubyEE sources to /tmp folder preparing to install
-  cookbook_file "/tmp/ruby-enterprise-installed.tar.gz" do
-    source "ruby-enterprise_x86_64.tar.gz"
-    mode "0644"
-    only_if do node[:kernel][:machine].include? "x86_64" end
-    cookbook 'app_passenger'
-  end
-
-  bash "install_ruby_EE" do
-    flags "-ex"
-    code <<-EOH
-      tar xzf /tmp/ruby-enterprise-installed.tar.gz -C /opt/
-    EOH
-    only_if do ::File.exists?("/tmp/ruby-enterprise-installed.tar.gz")  end
-  end
-
-
   # Installing passenger module
-  log "  Installing passenger"
-  bash "Install apache passenger gem" do
-    flags "-ex"
-    code <<-EOH
-      /opt/ruby-enterprise/bin/gem install passenger -q --no-rdoc --no-ri
-    EOH
-    not_if do (::File.exists?("/opt/ruby-enterprise/bin/passenger-install-apache2-module")) end
+  log "  Installing passenger gem"
+  gem_package "passenger" do
+    gem_binary "/usr/bin/gem"
+    action :install
   end
 
-
+  log "  Installing apache passenger module"
   bash "Install apache passenger module" do
     flags "-ex"
     code <<-EOH
-      /opt/ruby-enterprise/bin/passenger-install-apache2-module --auto
+      /usr/bin/passenger-install-apache2-module --auto
     EOH
     not_if "test -e #{node[:app_passenger][:ruby_gem_base_dir].chomp}/gems/passenger*/ext/apache2/mod_passenger.so"
   end
@@ -102,7 +81,7 @@ action :setup_vhost do
   end
 
   # Enabling required apache modules
-  node[:app_passenger][:module_dependencies].each do |mod|
+  node[:app][:module_dependencies].each do |mod|
     apache_module mod
   end
 
@@ -138,8 +117,8 @@ action :setup_vhost do
     destination                node[:app][:destination]
     apache_maintenance_page    node[:app_passenger][:apache][:maintenance_page]
     apache_serve_local_files   node[:app_passenger][:apache][:serve_local_files]
-    passenger_user             node[:app_passenger][:apache][:user]
-    passenger_group            node[:app_passenger][:apache][:group]
+    passenger_user             node[:app][:user]
+    passenger_group            node[:app][:group]
   end
 
 
@@ -151,29 +130,17 @@ action :setup_db_connection do
 
   deploy_dir = new_resource.destination
   db_name = new_resource.database_name
-  db_adapter = node[:app_passenger][:project][:db][:adapter]
+  db_adapter = node[:app][:db_adapter]
 
   log "  Generating database.yml"
-  # Tell MySQL to fill in our connection template
-  if db_adapter == "mysql"
-    db_mysql_connect_app "#{deploy_dir.chomp}/config/database.yml" do
-      template      "database.yml.erb"
-      cookbook      "app_passenger"
-      owner         node[:app_passenger][:apache][:user]
-      group         node[:app_passenger][:apache][:group]
-      database      db_name
-    end
-  # Tell PostgreSQL to fill in our connection template
-  elsif db_adapter == "postgresql"
-    db_postgres_connect_app "#{deploy_dir.chomp}/config/database.yml" do
-      template      "database.yml.erb"
-      cookbook      "app_passenger"
-      owner         node[:app_passenger][:apache][:user]
-      group         node[:app_passenger][:apache][:group]
-      database      db_name
-    end
-  else
-    raise "Unrecognized database adapter #{node[:app_passenger][:project][:db][:adapter]}, exiting "
+  
+  # Tell Database to fill in our connection template
+  db_connect_app "#{deploy_dir.chomp}/config/database.yml" do
+    template      "database.yml.erb"
+    cookbook      "app_passenger"
+    owner         node[:app][:user]
+    group         node[:app][:group]
+    database      db_name
   end
 
   # Defining $RAILS_ENV
@@ -204,7 +171,7 @@ action :code_update do
   repo "default" do
     destination deploy_dir
     action node[:repo][:default][:perform_action].to_sym
-    app_user node[:app_passenger][:apache][:user]
+    app_user node[:app][:user]
     environment "RAILS_ENV" => "#{node[:app_passenger][:project][:environment]}"
     repository node[:repo][:default][:repository]
     persist false
@@ -220,7 +187,7 @@ action :code_update do
 
   # Creating new rails application log  directory on ephemeral volume
   directory "/mnt/ephemeral/log/rails/#{node[:web_apache][:application_name]}" do
-    owner node[:app_passenger][:apache][:user]
+    owner node[:app][:user]
     mode "0755"
     action :create
     recursive true
@@ -238,7 +205,15 @@ action :code_update do
     path ["#{deploy_dir}/log/*.log" ]
     frequency "size 10M"
     rotate 4
-    create "660 #{node[:app_passenger][:apache][:user]} #{node[:app_passenger][:apache][:group]}"
+    create "660 #{node[:app][:user]} #{node[:app][:group]}"
   end
 
 end
+
+
+# Set monitoring tools for Passenger application. Not Implemented.
+action :setup_monitoring do
+  raise 'Using "default" application provider. Action is not implemented'
+end
+
+
