@@ -9,22 +9,22 @@ rightscale_marker :begin
 
 case node[:logging][:service_action]
 when "start"
-  log "  Starting logging server now..."
+  log "  Starting logging server"
   logging "default" do
     action :start
   end
 when "stop"
-  log "  Stopping logging server now..."
+  log "  Stopping logging server"
   logging "default" do
     action :stop
   end
 when "restart"
-  log "  Restarting logging server now..."
+  log "  Restarting logging server"
   logging "default" do
     action :restart
   end
 when "reload"
-  log "  Reloading logging server now..."
+  log "  Reloading logging server"
   logging "default" do
     action :reload
   end
