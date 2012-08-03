@@ -196,7 +196,7 @@ action :configure_server do
 
     service "stunnel4" do
       supports :reload => true, :restart => true, :start => true, :stop => true
-      action :none
+      action :nothing
     end
 
     template "/etc/stunnel/stunnel.conf" do
