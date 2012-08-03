@@ -8,3 +8,12 @@
 set_unless[:logging][:remote_server] = ""
 
 set[:logging][:cert_dir] = "/etc/tls/"
+
+set[:logging][:stunnel_service] = value_for_platform(
+  ["centos", "redhat"] => {
+    "default" => "stunnel"
+  },
+  ["ubuntu"] => {
+    "default" => "stunnel4"
+  }
+)

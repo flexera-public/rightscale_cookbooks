@@ -98,7 +98,7 @@ action :configure do
       bash "Apply new settings to STunnel" do
         flags "-ex"
         code <<-EOH
-          stunnel /etc/stunnel/client.conf
+          #{node[:logging][:stunnel_service]} /etc/stunnel/client.conf
         EOH
       end
 
@@ -211,7 +211,7 @@ action :configure_server do
     bash "Apply new settings to STunnel" do
       flags "-ex"
       code <<-EOH
-        stunnel /etc/stunnel/server.conf
+        #{node[:logging][:stunnel_service]} /etc/stunnel/server.conf
       EOH
     end
 
