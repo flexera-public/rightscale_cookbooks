@@ -81,7 +81,7 @@ action :configure do
       package "rsyslog-relp"
       package "stunnel"
 
-      template "/etc/stunnel/client.conf" do
+      template "/etc/stunnel/stunnel.conf" do
         action :create
         source "stunnel.conf.erb"
         owner "root"
@@ -98,7 +98,7 @@ action :configure do
       bash "Apply new settings to STunnel" do
         flags "-ex"
         code <<-EOH
-          #{node[:logging][:stunnel_service]} /etc/stunnel/client.conf
+          #{node[:logging][:stunnel_service]} /etc/stunnel/stunnel.conf && ruby -pi -e "gsub(/ENABLED=0/,'ENABLED=1')" /etc/default/stunnel4 && /etc/init.d/stunnel4 restart
         EOH
       end
 
@@ -194,7 +194,7 @@ action :configure_server do
       not_if { node[:logging][:tls_certificate] }
     end
 
-    template "/etc/stunnel/server.conf" do
+    template "/etc/stunnel/stunnel.conf" do
       action :create
       source "stunnel.conf.erb"
       owner "root"
@@ -211,7 +211,7 @@ action :configure_server do
     bash "Apply new settings to STunnel" do
       flags "-ex"
       code <<-EOH
-        #{node[:logging][:stunnel_service]} /etc/stunnel/server.conf
+        #{node[:logging][:stunnel_service]} /etc/stunnel/stunnel.conf && ruby -pi -e "gsub(/ENABLED=0/,'ENABLED=1')" /etc/default/stunnel4 && /etc/init.d/stunnel4 restart
       EOH
     end
 

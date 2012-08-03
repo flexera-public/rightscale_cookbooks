@@ -15,7 +15,7 @@ rightscale_marker :begin
 log "  Setting provider specific settings for rsyslog server."
 
 raise "ERROR: Rsyslog is not installed!" unless system("which rsyslogd")
-raise "ERROR: Rsyslog version doesn't support RELP(+STunnel)" if ((node[:logging][:protocol] == "relp" or "relp+stunnel") and node[:platform_version] =~ /^5\..+/)
+raise "ERROR: Rsyslog version doesn't support RELP(+STunnel)" if ((node[:logging][:protocol] == "relp" or "relp+stunnel") and node[:platform] = "centos")
 #raise "ERROR: RELP+STunnel isn't implemented for this OS" unless node[:logging][:protocol] == "relp+stunnel" and node[:platform_version] =~ /^10\..+/
 #raise "ERROR: TLS support for this OS isn't implemented: use RELP+STunnel" unless node[:logging][:protocol] == "tcp+tls" and node[:platform_version] =~ /^5\..+/
 
