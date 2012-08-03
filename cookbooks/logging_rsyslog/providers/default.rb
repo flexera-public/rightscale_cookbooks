@@ -98,7 +98,7 @@ action :configure do
       bash "Apply new settings to STunnel" do
         flags "-ex"
         code <<-EOH
-        stunnel4 /etc/stunnel/client.conf
+          #{node[:logging][:stunnel_service]} /etc/stunnel/client.conf
         EOH
       end
 
@@ -177,14 +177,22 @@ action :configure_server do
       recursive true
     end
 
-    tls_certificate = ::File.join(node[:logging][:cert_dir], "stunnel.pem")
+    certificate = ::File.join(node[:logging][:cert_dir], "stunnel.pem")
 
-    template tls_certificate do
+    template certificate do
       mode "0400"
       cookbook "logging"
       source "tls_certificate.erb"
     end
 
+    # If the user doesn't input a certificate we can generate a self-signed one and use it
+    bash "Generate key for STunnel" do
+      flags "-ex"
+      code <<-EOH
+        rm #{certificate} && openssl req -new -x509 -days 3650 -nodes -out #{certificate} -keyout #{certificate} -subj "/C=US/ST=CA/L=SB/O=Rightscale/OU=Rightscale/CN=Rightscale/emailAddress=support@rightscale.com"
+      EOH
+      not_if { node[:logging][:tls_certificate] }
+    end
 
     template "/etc/stunnel/server.conf" do
       action :create
@@ -196,14 +204,14 @@ action :configure_server do
       variables(
         :accept => "514",
         :connect => "515",
-        :cert => "cert = #{node[:logging][:cert_dir]}stunnel.pem"
+        :cert => "cert = #{certificate}"
       )
     end
 
     bash "Apply new settings to STunnel" do
       flags "-ex"
       code <<-EOH
-        stunnel4 /etc/stunnel/server.conf
+        #{node[:logging][:stunnel_service]} /etc/stunnel/server.conf
       EOH
     end
 

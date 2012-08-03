@@ -63,5 +63,8 @@ $ActionQueueType LinkedList   # Use asynchronous processing
 $ActionQueueFileName srvrfwd  # Set file name, also enables disk mode
 $ActionResumeRetryCount -1    # Infinite retries on insert failure
 $ActionQueueSaveOnShutdown on # Save in-memory data if rsyslog shuts down
+<% when "relp" %>
 *.* :omrelp:<%= @remote_server %>:514
+<% when "relp+stunnel" %>
+*.* :omrelp:127.0.0.1:515 # Sending logs to STunnel
 <% end %>
