@@ -174,7 +174,7 @@ action :setup_vhost do
     action :create
     source "server_xml.erb"
     group "root"
-    owner "#{node[:app][user]}"
+    owner "#{node[:app][:user]}"
     mode "0644"
     cookbook 'app_tomcat'
     variables(
