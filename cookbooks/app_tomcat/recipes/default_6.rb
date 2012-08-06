@@ -8,72 +8,117 @@
 rightscale_marker :begin
 
 version="6"
-log "  Setting Tomcat version to #{version}"
+log "  Setting tomcat version to #{version}"
 
-log "  Setting provider specific settings for tomcat"
+log "  Setting provider specific settings for tomcat#{version}"
 node[:app][:provider] = "app_tomcat"
-node[:app_tomcat][:version] = version
-node[:app][:database_name] = node[:app_tomcat][:db_name]
+
+# Defining app user and group attributes
+case node[:platform]
+when "ubuntu"
+  node[:app][:user] = "tomcat6"
+  node[:app][:group] = "tomcat6"
+when "centos", "redhat"
+  node[:app][:user] = "tomcat"
+  node[:app][:group] = "tomcat"
+else
+  raise "Unrecognized distro #{node[:platform]} for tomcat#{version}, exiting "
+end
 
 # Preparing list of database adapter packages depending on platform and database adapter
-case node[:platform]
-when "ubuntu", "debian"
-  case node[:app_tomcat][:db_adapter]
-  when "mysql"
-    node[:app][:packages] = [
-      "ecj-gcj",
-      "tomcat6",
-      "tomcat6-admin",
-      "tomcat6-common",
-      "tomcat6-user",
-      "libmysql-java",
-      "libtcnative-1"
-    ]
-  when "postgresql"
-    node[:app][:packages] = [
-      "ecj-gcj",
-      "tomcat6",
-      "tomcat6-admin",
-      "tomcat6-common",
-      "tomcat6-user",
-      "libtcnative-1"
-    ]
-  else
-    raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting"
-  end
-when "centos", "fedora", "suse", "redhat", "redhatenterpriseserver"
-  case node[:app_tomcat][:db_adapter]
-  when "mysql"
-    node[:app][:packages] = [
-      "eclipse-ecj",
-      "tomcat6",
-      "tomcat6-admin-webapps",
-      "tomcat6-webapps",
-      "tomcat-native",
-      "mysql-connector-java"
-    ]
-  when "postgresql"
-    node[:app][:packages] = [
-      "eclipse-ecj",
-      "tomcat6",
-      "tomcat6-admin-webapps",
-      "tomcat6-webapps",
-      "tomcat-native"
-    ]
-  else
-    raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting"
-  end
+case node[:app][:db_adapter]
+when "mysql"
+  node[:app][:packages] = value_for_platform(
+    "centos" => {
+      "6.2" => [
+        "ecj", 
+        "tomcat6",
+        "tomcat6-admin-webapps",
+        "tomcat6-webapps",
+        "tomcat-native",
+        "mysql-connector-java"
+      ],  
+      "default" => [
+        "eclipse-ecj",
+        "tomcat6",
+        "tomcat6-admin-webapps",
+        "tomcat6-webapps",
+        "tomcat-native",
+        "mysql-connector-java"
+      ]
+    }, 
+    "ubuntu" => {
+      "default"  => [
+        "ecj-gcj",
+        "tomcat6",
+        "tomcat6-admin",
+        "tomcat6-common",
+        "tomcat6-user",
+        "libmysql-java",
+        "libtcnative-1"
+      ]   
+    }, 
+    "redhat" => {
+      "default" => [
+        "eclipse-ecj",
+        "tomcat6",
+        "tomcat6-admin-webapps",
+        "tomcat6-webapps",
+        "tomcat-native",
+        "mysql-connector-java"
+      ]
+    },
+    "default" => []
+  )
+when "postgresql"
+  node[:app][:packages] = value_for_platform(
+    "centos" => {
+      "6.2" => [
+        "ecj",
+        "tomcat6",
+        "tomcat6-admin-webapps",
+        "tomcat6-webapps",
+        "tomcat-native"
+      ],
+      "default" => [
+        "eclipse-ecj",
+        "tomcat6",
+        "tomcat6-admin-webapps",
+        "tomcat6-webapps",
+        "tomcat-native"
+      ]
+    },
+    "ubuntu" => {
+      "default" => [
+        "ecj-gcj",
+        "tomcat6",
+        "tomcat6-admin",
+        "tomcat6-common",
+        "tomcat6-user",
+        "libtcnative-1"
+      ]
+    },
+    "redhat" => {
+      "default" => [
+        "eclipse-ecj",
+        "tomcat6",
+        "tomcat6-admin-webapps",
+        "tomcat6-webapps",
+        "tomcat-native"
+      ]
+    },
+    "default" => []
+  )
 else
-  raise "Unsupported platform #{node[:platform]} for Tomcat Version #{version}"
+  raise "Unrecognized database adapter #{node[:app][:db_adapter]}, exiting"
 end
+
+raise "Unrecognized distro #{node[:platform]} for tomcat#{version}, exiting " if node[:app][:packages].empty?
 
 # Setting app LWRP attribute
-node[:app][:root] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
-# tomcat shares the same doc root with the application destination
-node[:app][:destination]="#{node[:app][:root]}"
+node[:app][:destination] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
 
-directory "#{node[:app][:destination]}" do
-  recursive true
-end
+# tomcat shares the same doc root with the application destination
+node[:app][:root]="#{node[:app][:destination]}"
 
 rightscale_marker :end
