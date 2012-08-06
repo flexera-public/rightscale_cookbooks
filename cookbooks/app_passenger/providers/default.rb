@@ -211,16 +211,16 @@ end
 
 # Setup monitoring tools for passenger
 action :setup_monitoring do
-   plugin_path = "#{node[:rs_utils][:collectd_lib]}/plugins/passenger"
+   plugin_path = "#{node[:rightscale][:collectd_lib]}/plugins/passenger"
 
    log "  Stopping collectd service"
    service "collectd" do
      action :stop
    end
 
-   directory "#{node[:rs_utils][:collectd_lib]}/plugins/" do
+   directory "#{node[:rightscale][:collectd_lib]}/plugins/" do
      recursive true
-     not_if do ::File.exists?("#{node[:rs_utils][:collectd_lib]}/plugins/")  end
+     not_if do ::File.exists?("#{node[:rightscale][:collectd_lib]}/plugins/")  end
    end
 
   # Installing collectd plugin for passenger monitoring
@@ -232,13 +232,13 @@ action :setup_monitoring do
   end
 
    # Removing previous passenger.conf in case of stop-start
-   file "#{node[:rs_utils][:collectd_plugin_dir]}/passenger.conf" do
+   file "#{node[:rightscale][:collectd_plugin_dir]}/passenger.conf" do
      backup false
      action :delete
    end
 
   # Installing collectd config for passenger plugin
-  template "#{node[:rs_utils][:collectd_plugin_dir]}/passenger.conf" do
+  template "#{node[:rightscale][:collectd_plugin_dir]}/passenger.conf" do
     cookbook "app_passenger"
     source "collectd_passenger.conf.erb"
     variables(
