@@ -253,10 +253,8 @@ action :setup_monitoring do
   sudo_string = ["# Allowing apache user to access passenger monitoring resources",\
     "Defaults:#{node[:app_passenger][:apache][:user]} !requiretty",\
     "Defaults:#{node[:app_passenger][:apache][:user]} !env_reset",\
-    "#{node[:app_passenger][:apache][:user]} ALL = NOPASSWD: /opt/ruby-enterprise/bin/passenger-status, \
-    /opt/ruby-enterprise/bin/passenger-memory-stats, \
-    /opt/ruby-enterprise/lib/ruby/gems/1.8/gems/passenger-3.0.9/bin/passenger-status, \
-    /opt/ruby-enterprise/lib/ruby/gems/1.8/gems/passenger-3.0.9/bin/passenger-memory-stats" ]
+    "#{node[:app_passenger][:apache][:user]} ALL = NOPASSWD: /usr/bin/passenger-status, \
+    /usr/bin/passenger-memory-stats" ]
 
   ruby_block "sudo setup" do
     block do

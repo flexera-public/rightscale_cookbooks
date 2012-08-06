@@ -4,8 +4,8 @@
 INTERVAL="${COLLECTD_INTERVAL:-10}"
 PLUGIN_NAME="passenger"
 HTTPD="/usr/sbin/httpd"
-MEMORY="sudo -u root HTTPD="$2" /opt/ruby-enterprise/bin/passenger-memory-stats"
-STATUS="sudo -u root /opt/ruby-enterprise/bin/passenger-status"
+MEMORY="sudo -u root HTTPD="$2" /usr/bin/passenger-memory-stats"
+STATUS="sudo -u root /usr/bin/passenger-status"
 SERVER=$1
 
 while sleep "$INTERVAL"
