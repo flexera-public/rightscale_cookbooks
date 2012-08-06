@@ -64,6 +64,7 @@ when "any"
 end
 
 # Logging output level
+log_level = ""
 case node[:memcached][:log_level]
 when "verbose"
   log_level = "-v"
