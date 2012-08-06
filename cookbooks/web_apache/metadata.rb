@@ -18,6 +18,7 @@ recipe "web_apache::setup_frontend", "Frontend apache vhost. Select ssl_enabled 
 recipe "web_apache::setup_frontend_ssl_vhost", "Frontend apache vhost with SSL enabled."
 recipe "web_apache::setup_frontend_http_vhost", "Frontend apache vhost with SSL enabled."
 recipe "web_apache::setup_monitoring", "Installs the collectd-apache plugin for monitoring support."
+recipe "web_apache::do_enable_maintenance_mode", "Enable or disable maintenance mode for Apache2 webserver"
 
 
 all_recipes = [
@@ -107,3 +108,19 @@ attribute "web_apache/application_name",
     "web_apache::setup_frontend",
     "web_apache::default"
   ]
+
+attribute "web_apache/maintenance_mode",
+  :display_name => "Maintenance mode",
+  :description => "Enable or disable maintenance mode. Example: Enable",
+  :required => "optional",
+  :choice => [ "enable", "disable" ],
+  :default =>  "disable",
+  :recipes => ["web_apache::do_enable_maintenance_mode"]
+
+
+attribute "web_apache/maintenance_file",
+  :display_name => "Path to maintenance.html",
+  :description => "Optional system-root related path to maintenance html page which will be used if maintenance mode is enabled  Example: /home/webapp/maintenance.html",
+  :required => "optional",
+  :default =>  "",
+  :recipes => ["web_apache::do_enable_maintenance_mode"]
