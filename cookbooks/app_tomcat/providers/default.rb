@@ -156,7 +156,7 @@ action :setup_vhost do
     mode "0644"
     cookbook 'app_tomcat'
     variables(
-      :app_user => node[:app_tomcat][:app_user],
+      :app_user => node[:app][:user],
       :version => version,
       :java_xms => node[:app_tomcat][:java][:xms],
       :java_xmx => node[:app_tomcat][:java][:xmx],
