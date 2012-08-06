@@ -44,12 +44,12 @@ end
 
 action :move_data_dir do
   @db = init(new_resource)
-  @db.move_datadir(node[:db][:data_dir])
+  @db.move_datadir(node[:db][:data_dir], node[:db_mysql][:datadir_default])
 end
 
 action :reset do
   @db = init(new_resource)
-  @db.reset(node[:db][:data_dir])
+  @db.reset(node[:db][:data_dir], node[:db_mysql][:datadir_default])
 end
 
 action :firewall_update_request do
