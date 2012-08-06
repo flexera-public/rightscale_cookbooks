@@ -40,6 +40,5 @@ do
   echo "PUTVAL $COLLECTD_HOSTNAME/$PLUGIN_NAME-memory/gauge-server_rss interval=$INTERVAL N:$server_rss"
   echo "PUTVAL $COLLECTD_HOSTNAME/$PLUGIN_NAME-memory/gauge-passenger_vm_size interval=$INTERVAL N:$passenger_vm_size"
   echo "PUTVAL $COLLECTD_HOSTNAME/$PLUGIN_NAME-memory/gauge-passenger_rss interval=$INTERVAL N:$passenger_rss"
-  
-    echo "PUTVAL $COLLECTD_HOSTNAME/$PLUGIN_NAME-memory/gauge-passenger_rss interval=$INTERVAL N:$passenger_rss" > /tmp/str
+
 done
