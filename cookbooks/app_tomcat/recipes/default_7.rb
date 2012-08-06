@@ -10,47 +10,62 @@ rightscale_marker :begin
 version="7"
 log "  Setting Tomcat version to #{version}"
 
-log "  Setting provider specific settings for tomcat"
+log "  Setting provider specific settings for tomcat#{version}"
 node[:app][:provider] = "app_tomcat"
 node[:app_tomcat][:version] = version
-node[:app][:database_name] = node[:app_tomcat][:db_name]
 
-# Preparing list of database adapter packages depending on platform and database adapter
+node[:app][:database_name] = node[:app_tomcat][:db_name]  #XXX: Is this needed?
+
+#Defining app user and group attributes
 case node[:platform]
-when "centos"
-  case node[:app_tomcat][:db_adapter]
-  when "mysql"
-    node[:app][:packages] = [
-      "eclipse-ecj",
-      "ecj3",
-      "tomcat7",
-      "tomcat7-admin-webapps",
-      "tomcat7-webapps",
-      "tomcat-native",
-      "mysql-connector-java"
-    ]
-  when "postgresql"
-    node[:app][:packages] = [
-      "eclipse-ecj",
-      "ecj3",
-      "tomcat7",
-      "tomcat7-admin-webapps",
-      "tomcat7-webapps",
-      "tomcat-native"
-    ]
-  else
-    raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting "
-  end
+when "centos", "redhat"
+  node[:app][:user] = "tomcat"
+  node[:app][:group] = "tomcat"
 else
-  raise "Unsupported platform #{node[:platform]} for Tomcat Version #{version}"
+  raise "Unrecognized distro #{node[:platform]} for tomcat#{version}, exiting "
 end
 
-# Setting app LWRP attribute
-node[:app][:root] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
-# tomcat shares the same doc root with the application destination
-node[:app][:destination]="#{node[:app][:root]}"
+# Preparing list of database adapter packages depending on platform and database adapter
+case node[:app][:db_adapter]
+when "mysql"
+  node[:app][:packages] = value_for_platform(
+    "centos" => {
+      "default" => [
+        "eclipse-ecj",
+        "ecj3",
+        "tomcat7",
+        "tomcat7-admin-webapps",
+        "tomcat7-webapps",
+        "tomcat-native",
+        "mysql-connector-java"
+      ]
+    }
+  )
+when "postgresql"
+  node[:app][:packages] = value_for_platform(
+    "centos" => {
+      "default" => [
+        "eclipse-ecj",
+        "ecj3",
+        "tomcat7",
+        "tomcat7-admin-webapps",
+        "tomcat7-webapps",
+        "tomcat-native"
+      ]
+    }
+  )
+else
+  raise "Unrecognized database adapter #{node[:app][:db_adapter]}, exiting"
+end
 
-  # Adding custmized repo for tomcat7 rpm, later when these rpm are part of the mirror, it should be removed
+raise "Unrecognized distro #{node[:platform]} for tomcat#{version}, exiting " if node[:app][:packages].empty?
+        
+# Setting app LWRP attribute
+node[:app][:destination] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
+# tomcat shares the same doc root with the application destination
+node[:app][:root] = "#{node[:app][:destination]}"
+
+  # Adding custiomized repo for tomcat7 rpm, later when these rpm are part of the mirror, it should be removed
   template "/etc/yum.repos.d/tomcat7.repo" do
     source "tomcat7.repo.erb"
     owner "root"
