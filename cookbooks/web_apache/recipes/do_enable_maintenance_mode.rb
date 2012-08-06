@@ -6,7 +6,7 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 # This recipe will enable maintenance mode for Apache
-# All RightScale apache vhost erb templates has maintenance mode rewrite rule:
+# All RightScale apache vhost erb templates have maintenance mode rewrite rule:
 # RewriteCond %{DOCUMENT_ROOT}/system/maintenance.html -f
 # RewriteCond %{SCRIPT_FILENAME} !/system/maintenance.html
 # RewriteCond %{SCRIPT_FILENAME} !^(.+).(gif|png|jpg|css|js|swf)$
