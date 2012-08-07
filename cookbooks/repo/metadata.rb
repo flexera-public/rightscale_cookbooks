@@ -18,9 +18,10 @@ depends "repo_rsync"
 
 recipe  "repo::default", "Default recipe to setup provided resources."
 
+
 attribute "repo/default/provider",
   :display_name => "Repository Provider",
-  :description => "Specify where the application code should be checked out from. Select 'repo_git' for Git, 'repo_svn' for SVN or 'repo_ros' for Remote Object Store. Example: repo_git",
+  :description => "Specify where the application code should be checked out from. Example: repo_git",
   :required => "recommended",
   :choice => ["repo_git", "repo_svn", "repo_ros", "repo_ftp", "repo_rsync"],
   :default => "repo_git",
@@ -39,67 +40,15 @@ attribute "repo/default/revision",
   :default => "master",
   :recipes => ["repo::default"]
 
-# SVN
-attribute "repo/default/svn_username",
-  :display_name => "SVN Username",
-  :description => "Username that will be used to retrieve the application code from the SVN repository. Example: myusername",
-  :required => "optional",
-  :default => "",
-  :recipes => ["repo::default"]
-
-attribute "repo/default/svn_password",
-  :display_name => "SVN Password",
-  :description => "Password of the user that will be used to retrieve the application code from the SVN repository. Example: mypassword",
-  :required => "optional",
-  :default => "",
-  :recipes => ["repo::default"]
-
-# GIT
-attribute "repo/default/git_ssh_key",
-  :display_name => "Git SSH Key",
-  :description => "A valid SSH key of the Git account where the application code will be retrieved from. Required to retrieve application code from a private git repository. Set to 'ignore' for public git repositories. For security purposes, create a credential to store the key material. Example: key:mykey",
-  :default => "",
-  :required => "recommended",
-  :recipes => ["repo::default"]
-
-# ROS
-attribute "repo/default/storage_account_provider",
-  :display_name => "ROS Storage Account Provider",
-  :description => "The Remote Object Storage (ROS) service where the tarball of the application code will be retrieved from. Example: s3",
-  :required => "optional",
-  :choice => [
-    "s3",
-    "cloudfiles",
-    "cloudfilesuk",
-    "google",
-    "azure",
-    "SoftLayer_Dallas",
-    "SoftLayer_Singapore",
-    "SoftLayer_Amsterdam"
-  ],
-  :recipes => ["repo::default"]
-
-attribute "repo/default/storage_account_id",
-  :display_name => "ROS Storage Account ID",
-  :description => "The Remote Object Store account ID that is required to access files in the specified cloud storage location. For Amazon S3, use your Amazon access key ID (e.g., cred:AWS_ACCESS_KEY_ID). For Rackspace Cloud Files, use your Rackspace login username.  Example: cred:RACKSPACE_USERNAME",
+attribute "repo/default/account",
+  :display_name => "Account name",
+  :description => "The account name (i.e. username, ID) that is required to access files in the specified location.",
   :required => "optional",
   :recipes => ["repo::default"]
 
-attribute "repo/default/storage_account_secret",
-  :display_name => "ROS Storage Account Secret",
-  :description => "Cloud storage account secret required to access specified cloud storage location. For Amazon S3, use your AWS secret access key (e.g., cred:AWS_SECRET_ACCESS_KEY). For Rackspace Cloud Files, use your Rackspace account API key.  Example: cred:RACKSPACE_AUTH_KEY",
-  :required => "optional",
-  :recipes => ["repo::default"]
-
-attribute "repo/default/container",
-  :display_name => "ROS Container",
-  :description => "The name of the ROS container where a tarball of the application code will be retrieved from. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name. Example: mycontainer",
-  :required => "optional",
-  :recipes => ["repo::default"]
-
-attribute "repo/default/prefix",
-  :display_name => "ROS Prefix",
-  :description => "The prefix that will be used to locate the correct tarball of the application. For example, if you're using 'myapp.tgz' specify 'myapp' as the ROS Prefix.",
+attribute "repo/default/credential",
+  :display_name => "Account credential",
+  :description => "A valid credential (i.e. password, SSH key, account secret) to access files in the specified location.",
   :required => "optional",
   :recipes => ["repo::default"]
 
@@ -118,29 +67,32 @@ attribute "repo/default/destination",
   :required => "optional",
   :recipes => ["repo::default"]
 
-# RSYNC
-attribute "repo/default/rsync_user",
-  :display_name => "RSync username",
-  :description => "The RSync username that is required to access files in the specified location.",
+# ROS
+#
+attribute "repo/default/storage_account_provider",
+  :display_name => "ROS Storage Account Provider",
+  :description => "The Remote Object Storage (ROS) service where the tarball of the application code will be retrieved from. Example: s3",
+  :required => "optional",
+  :choice => [
+    "s3",
+    "cloudfiles",
+    "cloudfilesuk",
+    "google",
+    "azure",
+    "SoftLayer_Dallas",
+    "SoftLayer_Singapore",
+    "SoftLayer_Amsterdam"
+  ],
+  :recipes => ["repo::default"]
+
+attribute "repo/default/container",
+  :display_name => "ROS Container",
+  :description => "The name of the ROS container where a tarball of the application code will be retrieved from. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name. Example: mycontainer",
   :required => "optional",
   :recipes => ["repo::default"]
 
-attribute "repo/default/rsync_key",
-  :display_name => "RSync SSH Key",
-  :description => "A valid SSH key to where the application code will be retrieved from.",
+attribute "repo/default/prefix",
+  :display_name => "ROS Prefix",
+  :description => "The prefix that will be used to locate the correct tarball of the application. For example, if you're using 'myapp.tgz' specify 'myapp' as the ROS Prefix.",
   :required => "optional",
   :recipes => ["repo::default"]
-
-# FTP
-attribute "repo/default/ftp_user",
-  :display_name => "FTP username",
-  :description => "The username that is required to access files in the specified location. May not be specified for an anonymous connection.",
-  :required => "optional",
-  :recipes => ["repo::default"]
-
-attribute "repo/default/ftp_password",
-  :display_name => "FTP password",
-  :description => "Password need to establish connection to the FTP server. May not be specified for an anonymous connection.",
-  :required => "optional",
-  :recipes => ["repo::default"]
-

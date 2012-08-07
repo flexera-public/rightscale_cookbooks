@@ -34,8 +34,8 @@ To access to Remote Object Store repositories all inputs shown below must be fil
 * repo/default/storage_account_provider
 * repo/default/container
 * repo/default/prefix
-* repo/default/storage_account_id
-* repo/default/storage_account_secret
+* repo/default/account
+* repo/default/credintial
 
 More detailed input descriptions can be found in the 'repo' cookbook's README.rdoc.
 

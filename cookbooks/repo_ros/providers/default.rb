@@ -16,8 +16,8 @@ action :setup_attributes do
 
   # Checking inputs required for getting source from ROS
   raise "  Storage Provider input is unset" unless new_resource.storage_account_provider
-  raise "  Storage account provider ID input is unset" unless new_resource.storage_account_id
-  raise "  Storage account secret input is unset" unless new_resource.storage_account_secret
+  raise "  Storage account provider ID input is unset" unless new_resource.account
+  raise "  Storage account secret input is unset" unless new_resource.credential
   raise "  Repo container name input is unset." unless new_resource.container
 
 end
@@ -53,8 +53,8 @@ action :pull do
   execute "Download #{new_resource.container} from Remote Object Store" do
     command "/opt/rightscale/sandbox/bin/ros_util get --cloud #{new_resource.storage_account_provider} --container #{new_resource.container} --dest #{tmp_repo_path} --source #{new_resource.prefix} --latest"
     environment ({
-      'STORAGE_ACCOUNT_ID' => new_resource.storage_account_id,
-      'STORAGE_ACCOUNT_SECRET' => new_resource.storage_account_secret
+      'STORAGE_ACCOUNT_ID' => new_resource.account,
+      'STORAGE_ACCOUNT_SECRET' => new_resource.credential
     })
   end
 

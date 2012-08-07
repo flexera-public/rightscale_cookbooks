@@ -10,22 +10,13 @@ rightscale_marker :begin
 
 log "  Setup all resources that have attributes in the node"
 node[:repo].each do |resource_name, entry|
-
   url = entry[:repository] || ""
   branch = entry[:revision] || ""
-  svn_username = entry[:svn_username] || ""
-  svn_password = entry[:svn_password] || ""
-  key = entry[:git_ssh_key] || ""
+  account = entry[:account] || ""
+  credential = entry[:credential] || ""
   storage_account_provider = entry[:storage_account_provider] || ""
-  storage_account_id = entry[:storage_account_id] || ""
-  storage_account_secret = entry[:storage_account_secret] || ""
   container = entry[:container] || ""
   prefix = entry[:prefix] || ""
-  rsync_user = entry[:rsync_user] || ""
-  rsync_key = entry[:rsync_key] || ""
-  rsync_options = entry[:rsync_options] || ""
-  ftp_user = entry[:ftp_user] || ""
-  ftp_password = entry[:ftp_password] || ""
 
   # Initial setup of "repository" LWRP.
   log "  Registering #{resource_name} prov: #{entry[:provider]}"
@@ -33,21 +24,13 @@ node[:repo].each do |resource_name, entry|
     provider entry[:provider]
     repository url
     revision branch
-    git_ssh_key key
-    svn_username svn_username
-    svn_password svn_password
+    account account
+    credential credential
     storage_account_provider storage_account_provider
-    storage_account_id storage_account_id
-    storage_account_secret storage_account_secret
     container container
-    unpack_source true
     prefix prefix
+    unpack_source true
     persist true
-    rsync_user rsync_user
-    rsync_key rsync_key
-    rsync_options rsync_options
-    ftp_user ftp_user
-    ftp_password ftp_password
   end
 end
 

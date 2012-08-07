@@ -25,12 +25,15 @@ action :pull do
   level = new_resource.repository[/^(ftp:\/\/)?(.+)/][$2].split('/').length - 1
 
   # To make anonymous connection possible
-  user = new_resource.ftp_user.to_s.strip.length == 0 ? "" : "--ftp-user=#{new_resource.ftp_user}"
-  password = new_resource.ftp_password.to_s.strip.length == 0 ? "" : "--ftp-password=#{new_resource.ftp_password}"
+  user = new_resource.account.to_s.strip.length == 0 ? "" : "--ftp-user=#{new_resource.account}"
+  password = new_resource.credential.to_s.strip.length == 0 ? "" : "--ftp-password=#{new_resource.credential}"
+
+  # To be sure RSync is installed
+  package "wget"
 
   # Get the data
   execute "Download #{new_resource.container}" do
-    command "wget #{new_resource.repository} #{user} #{password} -r -nH --cut-dirs=#{level} -P #{new_resource.destination}"
+    command "wget #{new_resource.repository} #{user} #{password} --recursive --no-host-directories --cut-dirs=#{level} --directory-prefix=#{new_resource.destination}"
   end
 
   log "  Data fetch finished successfully!"

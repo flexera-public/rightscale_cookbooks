@@ -7,8 +7,8 @@
 
 module RightScale
   module Repo
-    class RSync_ssh_key
-      KEYFILE = "/tmp/rsync_key"
+    class RSyncSshKey
+      KEYFILE = "/tmp/rsync.key"
 
       # Create private key file used to connect via ssh.
       #
@@ -16,15 +16,13 @@ module RightScale
       #
       # @raise [RuntimeError] if ssh key string is empty
       def create(rsync_key)
-        Chef::Log.info("  Creating temporary rsync ssh key")
-        keyname = rsync_key
+        raise "  SSH Key is empty!" unless rsync_key
 
-        if "#{keyname}" != ""
-          keyfile = KEYFILE
-          # Writing key to file
-          system("echo -n '#{keyname}' > #{keyfile}")
-          # Setting permissions
-          system("chmod 700 #{keyfile}")
+        Chef::Log.info("  Creating temporary rsync ssh key")
+        ::File.open(KEYFILE, "w") do |keyfile|
+          keyfile << rsync_key
+          keyfile.chmod(0600)
+
         end
       end
 
@@ -32,11 +30,7 @@ module RightScale
       # Delete SSH key created by "create" method.
       def delete
         Chef::Log.info("  Deleting temporary ssh key")
-        keyfile = KEYFILE
-        if keyfile != nil
-          # Removing previously created files.
-          system("rm -f #{keyfile}")
-        end
+        ::File.delete(KEYFILE)
       end
 
     end

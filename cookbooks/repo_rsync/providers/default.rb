@@ -8,8 +8,8 @@
 action :setup_attributes do
 
   # Checking inputs required for getting source with RSync
-  raise "  RSync username input is unset" unless new_resource.rsync_user
-  raise "  RSync SSH Key input is unset" unless new_resource.rsync_key
+  raise "  RSync username input is unset" unless new_resource.account
+  raise "  RSync SSH Key input is unset" unless new_resource.credential
 
 end
 
@@ -23,7 +23,7 @@ action :pull do
   # Add ssh key and exec script
   ruby_block "Before deploy" do
     block do
-      RightScale::Repo::RSync_ssh_key.new.create(new_resource.rsync_key)
+      RightScale::Repo::RSyncSshKey.new.create(new_resource.credential)
     end
   end
 
@@ -38,15 +38,25 @@ action :pull do
   # Ensure that destination directory exists after all backups.
   directory "#{new_resource.destination}"
 
+  # To be sure RSync is installed
+  package "rsync"
+
   # Get the data with RSync
+  # -c, --checksum              skip based on checksum, not mod-time & size
+  # -a, --archive               archive mode
+  # -v, --verbose               increase verbosity
+  # -z, --compress              compress file data during the transfer
+  # -P                          keep partially transferred files; show progress during transfer
+  # -e, --rsh=COMMAND           specify the remote shell to use
+  # --stats                     give some file-transfer stats
   execute "Downloading data with RSync" do
-    command "rsync -#{new_resource.rsync_options}  -e 'ssh -o StrictHostKeyChecking=no -i /tmp/rsync_key' --stats #{new_resource.rsync_user}@#{new_resource.repository}/* #{new_resource.destination}"
+    command "rsync -cavzP -e 'ssh -o StrictHostKeyChecking=no -i /tmp/rsync.key' --stats #{new_resource.account}@#{new_resource.repository}/* #{new_resource.destination}"
   end
 
   # Delete SSH key
   ruby_block "After fetch" do
     block do
-      RightScale::Repo::RSync_ssh_key.new.delete
+      RightScale::Repo::RSyncSshKey.new.delete
     end
   end
 

@@ -35,7 +35,7 @@ There are no known limitations.
 * To perform correct operations, values for the repo/url and repo/branch inputs
   must be provided.
 
-* To access private Git repositories, the repo/ssh_key input must contain a
+* To access private Git repositories, the repo/default/credential input must contain a
   string with a valid Git SSH key or 'key'-type variable from the RightScale
   dashboard.
 
@@ -60,19 +60,19 @@ none
 
 === Libraries-helpers:
 
-<b>RightScale::Repo::Ssh_key.create(ssh_key)</b>
+<b>RightScale::Repo::SshKey.create(git_ssh_key)</b>
 
 Create a bash script that provides the Git SSH key that is required to access code in private git repositories.
 
 Parameters
 
-<tt>ssh_key(String)::</tt> Git private ssh key
+<tt>git_ssh_key(String)::</tt> Git private ssh key
 
 Raise
 
 <tt>RuntimeError::</tt> if the Git SSH key string is empty.
 
-<b>RightScale::Repo::Ssh_key.delete</b>
+<b>RightScale::Repo::SshKey.delete</b>
 
 Remove bash script created by the <tt>create</tt> method, after a successful pull operation.
 
