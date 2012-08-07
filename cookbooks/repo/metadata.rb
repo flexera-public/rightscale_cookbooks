@@ -25,9 +25,10 @@ attribute "repo/default/provider",
   :recipes => ["repo::default"]
 
 attribute "repo/default/repository",
-  :display_name => "Repository URL",
-  :description => "The URL that points to the location of the repository that contains the application code. Specify a read-only URL. Example: http://mysvn.net/app/ or git://github.com/username/myapp.git",
-  :required => "recommended",
+  :display_name => "Repository URL/ROS Container",
+  :description => "The URL that points to the location of the repository that contains the application code. Or the name of the ROS container where a tarball of the application code will be retrieved from if you use 'repo_ros' provider. For Amazon S3, use the bucket name. Example: mycontainer,  http://mysvn.net/app/ or git://github.com/username/myapp.git",
+  :required => "required",
+  :default => "",
   :recipes => ["repo::default"]
 
 attribute "repo/default/revision",
@@ -89,11 +90,11 @@ attribute "repo/default/storage_account_secret",
   :required => "optional",
   :recipes => ["repo::default"]
 
-attribute "repo/default/container",
-  :display_name => "ROS Container",
-  :description => "The name of the ROS container where a tarball of the application code will be retrieved from. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name. Example: mycontainer",
-  :required => "optional",
-  :recipes => ["repo::default"]
+#attribute "repo/default/container",
+#  :display_name => "ROS Container",
+#  :description => "The name of the ROS container where a tarball of the application code will be retrieved from. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name. Example: mycontainer",
+#  :required => "optional",
+#  :recipes => ["repo::default"]
 
 attribute "repo/default/prefix",
   :display_name => "ROS Prefix",
