@@ -7,9 +7,8 @@ manage source code downloaded from Git repositories.
 
 == REQUIREMENTS:
 
-* Requires repo Lightweight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/repo
-  or your own implementation of "repo" resource. See "repo" cookbook README for details.
-
+* Requires the 'repo' Lightweight Resource cookbook
+https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/repo . See "repo" cookbook README for details.
 * Requires a virtual machine launched from a RightScale-managed RightImage.
 
 == COOKBOOKS DEPENDENCIES:
@@ -47,8 +46,8 @@ There are no known limitations.
 The 'repo_git' implementation can be called with the help of the Lightweight Resource, which can be
 found in the <tt>repo</tt> cookbook.
 
-For more information about Lightweight Resources and Providers (LWRPs), please see {Lightweight Resources and Providers}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)].
-  
+For more information about Lightweight Resources and Providers (LWRPs), please see
+{Lightweight Resources and Providers}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)].
 
 === Attributes:
 none

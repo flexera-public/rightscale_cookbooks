@@ -5,16 +5,11 @@
 Provides the FTP implementation of the 'repo' resource to
 manage source code downloaded from FTP.
 
--------------
-
 == REQUIREMENTS:
 
-* Requires repo Lightweight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/repo
-  or your own implementation of "repo" resource. See "repo" cookbook README for details.
-
+* Requires the 'repo' Lightweight Resource cookbook
+https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/repo . See "repo" cookbook README for details.
 * Requires a virtual machine launched from a RightScale-managed RightImage.
-
--------------
 
 == COOKBOOKS DEPENDENCIES:
 
@@ -23,13 +18,9 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 * <tt>rightscale</tt>
 * <tt>repo</tt>
 
--------------
-
 == KNOWN LIMITATIONS:
 
 There are no known limitations.
-
--------------
 
 == SETUP/USAGE:
 
@@ -44,8 +35,6 @@ There are no known limitations.
 * To perform correct operations, values for the repo/url and others must be provided. FTP username and password
   inputs are optional - connection may be anonymous.
 
--------------
-
 == DETAILS:
 
 === General
@@ -53,9 +42,8 @@ There are no known limitations.
 The 'repo_ftp' implementation can be called with the help of the Lightweight Resource, which can be
 found in the <tt>repo</tt> cookbook.
 
-For more information about Lightweight Resources and Providers (LWRPs), please see {Lightweight Resources and Providers}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)].
-
--------------
+For more information about Lightweight Resources and Providers (LWRPs), please see
+{Lightweight Resources and Providers}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)].
 
 === LWRPs:
 
@@ -76,8 +64,6 @@ Perform standard pull and then a capistrano deployment style will be applied.
 ===== Usage Example:
 
 For usage examples, please see the corresponding section in <tt>repo</tt> cookbook's README.
-
--------------
 
 = LICENSE:
 

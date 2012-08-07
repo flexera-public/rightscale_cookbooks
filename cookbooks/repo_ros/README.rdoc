@@ -7,7 +7,8 @@ manage source code download from Remote Object Store repositories.
 
 == REQUIREMENTS:
 
-* Requires this 'repo' Lightweight Resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/repo or your own implementation of "repo" resource. See "repo" cookbook README for details.
+* Requires the 'repo' Lightweight Resource cookbook
+https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/repo . See "repo" cookbook README for details.
 * Requires a virtual machine launched from a RightScale-managed RightImage. 
 
 == COOKBOOKS DEPENDENCIES:
@@ -45,7 +46,8 @@ More detailed input descriptions can be found in the 'repo' cookbook's README.rd
 The 'repo_ros' implementation can be called with help from the Lightweight Resource, which can be
 found in the <tt>repo</tt> cookbook.
 
-For more information about Lightweight Resources and Providers (LWRPs), please see {Lightweight Resources and Providers}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)].
+For more information about Lightweight Resources and Providers (LWRPs), please see
+{Lightweight Resources and Providers}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)].
 
 === LWRPs:
 
@@ -67,7 +69,6 @@ Performs a standard repository pull plus a capistrano deployment style is applie
 * Downloaded ROS repository will be converted to a git repository
 * Then the capistrano deployment will be applied using the <tt>capistranize</tt> definition
 * Git attributes will be removed after everything is applied.
-
 
 ===== Usage Example:
 
