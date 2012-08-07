@@ -11,7 +11,7 @@ supports "ubuntu", "~> 10.04.0"
 
 depends "rightscale"
 
-recipe "sys_dns::default", "Installs Amazon's dnscurl.pl utility."
+recipe "sys_dns::default", "Installs tools needed by chosen DNS provider."
 recipe "sys_dns::do_set_private", "Sets the dynamic DNS entry to the first private IP of the server."
 
 attribute "sys_dns/choice",

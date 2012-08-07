@@ -83,7 +83,7 @@ attributes</b> which are used internally in recipes.
 
 ===== GIT attributes
 
-* <tt>node[:repo][:default][:ssh_key]</tt> - The private SSH key of the git
+* <tt>node[:repo][:default][:git_ssh_key]</tt> - The private SSH key of the git
   repository.
 
 ===== ROS attributes

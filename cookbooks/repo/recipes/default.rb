@@ -15,7 +15,7 @@ node[:repo].each do |resource_name, entry|
   branch = entry[:revision] || ""
   svn_username = entry[:svn_username] || ""
   svn_password = entry[:svn_password] || ""
-  key = entry[:ssh_key] || ""
+  key = entry[:git_ssh_key] || ""
   storage_account_provider = entry[:storage_account_provider] || ""
   storage_account_id = entry[:storage_account_id] || ""
   storage_account_secret = entry[:storage_account_secret] || ""

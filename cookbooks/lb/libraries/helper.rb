@@ -15,7 +15,7 @@ module RightScale
       #
       def get_attached_servers(vhost_name)
         attached_servers = Set.new
-        haproxy_d = "/home/lb/#{node[:lb][:service][:provider]}.d/#{vhost_name}"
+        haproxy_d = "/etc/haproxy/#{node[:lb][:service][:provider]}.d/#{vhost_name}"
         Dir.entries(haproxy_d).select do |file|
           next if file == "." or file == ".."
           attached_servers.add?(file)

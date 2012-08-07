@@ -104,7 +104,7 @@
         "db::do_dump_schedule_enable"
       ],
       "display_name": "Dump Container",
-      "description": "The cloud storage location where the dump file will be saved to or restored from. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name."
+      "description": "The cloud storage location where the dump file will be saved to or restored from. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name. For Google TBD.  For Azure TBD. For Softlayer TBD"
     },
     "db/admin/password": {
       "required": "required",
@@ -227,7 +227,7 @@
         "db::do_dump_schedule_enable"
       ],
       "display_name": "Dump Storage Account Secret",
-      "description": "In order to write the dump file to the specified cloud storage location, you will need to provide cloud authentication credentials. For Amazon S3, use your AWS secret access key (e.g., cred:AWS_SECRET_ACCESS_KEY). For Rackspace Cloud Files, use your Rackspace account API key (e.g., cred:RACKSPACE_AUTH_KEY)."
+      "description": "In order to write the dump file to the specified cloud storage location, you will need to provide cloud authentication credentials. For Amazon S3, use your AWS secret access key (e.g., cred:AWS_SECRET_ACCESS_KEY). For Rackspace Cloud Files, use your Rackspace account API key (e.g., cred:RACKSPACE_AUTH_KEY). For Google TBD.  For Azure TBD. For Softlayer TBD"
     },
     "db/dump/prefix": {
       "required": "required",
@@ -330,7 +330,7 @@
         "db::do_dump_schedule_enable"
       ],
       "display_name": "Dump Storage Account ID",
-      "description": "In order to write the dump file to the specified cloud storage location, you need to provide cloud authentication credentials. For Amazon S3, use your Amazon access key ID (e.g., cred:AWS_ACCESS_KEY_ID). For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME)."
+      "description": "In order to write the dump file to the specified cloud storage location, you need to provide cloud authentication credentials. For Amazon S3, use your Amazon access key ID (e.g., cred:AWS_ACCESS_KEY_ID). For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME). For Google TBD.  For Azure TBD. For Softlayer TBD"
     },
     "db/backup/restore_version_check": {
       "required": "optional",
@@ -394,6 +394,8 @@
         "s3",
         "cloudfiles",
         "cloudfilesuk",
+        "google",
+        "azure",
         "SoftLayer_Dallas",
         "SoftLayer_Singapore",
         "SoftLayer_Amsterdam"
@@ -405,7 +407,7 @@
         "db::do_dump_schedule_enable"
       ],
       "display_name": "Dump Storage Account Provider",
-      "description": "Location where the dump file will be saved. Used by dump recipes to back up to remote object storage. (e.g. Amazon S3 or Rackspace Cloud Files)"
+      "description": "Location where the dump file will be saved. Used by dump recipes to back up to remote object storage.(e.g. Amazon S3 or Rackspace Cloud Files)"
     },
     "db/backup/primary/master/cron/minute": {
       "required": "optional",
@@ -498,7 +500,7 @@
     "db::setup_monitoring": "Installs the collectd plugin for database monitoring support, which is required to enable monitoring and alerting functionality for your servers.",
     "db::request_appserver_allow": "Sends a request to allow connections from the caller's private IP address to all database servers in the deployment that are tagged with the database:active=true tag. This should be run on an application server before attempting a database connection.",
     "db::do_dump_schedule_enable": "Schedules the daily run of do_dump_export.",
-    "db::do_dump_export": "Creates a dump file and uploads it to a remote object storage (e.g., Amazon S3 or Rackspace Cloud Files).",
+    "db::do_dump_export": "Creates a dump file and uploads it to a remote object storage (e.g., Amazon S3, Google Cloud Storage, Azure, Softlayer or Rackspace Cloud Files).",
     "db::request_master_deny": "Sends a request to the master database server tagged with rs_dbrepl:master_instance_uuid=<master_instance_uuid> to deny connections from the server's private IP address. This script should be run on a slave when it stops replicating.",
     "db::setup_replication_privileges": "Sets up privileges for replication slave servers.",
     "db::do_primary_restore_and_become_master": "Restores the database and tags it as the master database server. Sets DNS. Starts a fresh backup from this master.",
@@ -511,10 +513,11 @@
     "db::do_secondary_restore_and_become_master": "Restores the database from a secondary backup location and tags it as the master database server. Sets DNS. Starts a fresh backup from this master.",
     "db::do_secondary_restore": "Restores the database from the most recently completed backup available in a secondary location.",
     "db::do_init_and_become_master": "Initializes the database and tags it as the master database server. Sets DNS. Starts a fresh backup from this master.",
+    "db::remove_anonymous_users": "Removes anonymous users from database.",
     "db::do_primary_backup_schedule_enable": "Enables db::do_primary_backup to be run periodically.",
     "db::install_server": "Installs and sets up the packages that are required for database servers.",
     "db::do_appservers_allow": "Allows connections from all application servers in the deployment that are tagged with appserver:active=true tag. This script should be run on a database server so that it will accept connections from related application servers.",
-    "db::do_dump_import": "Retrieves a dump file from remote object storage (e.g., Amazon S3 or Rackspace Cloud Files) and imports it to the database server.",
+    "db::do_dump_import": "Retrieves a dump file from remote object storage (e.g., Amazon S3 Google Cloud Storage, Azure, Softlayer or Rackspace Cloud Files) and imports it to the database server.",
     "db::install_client": "Installs the database client onto the virtual machine so that it can connect to a running server. This should be run on all database servers and servers intended to connect to the servers.",
     "db::do_primary_init_slave": "Initializes the slave server from the primary backup location.",
     "db::do_force_reset": "Resets the database back to a pristine state. WARNING: Execution of this script will delete any data in your database!",
