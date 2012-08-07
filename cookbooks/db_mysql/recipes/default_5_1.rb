@@ -55,11 +55,11 @@ node[:db_mysql][:client_packages_install] = value_for_platform(
     ]
   },
   "ubuntu" => {
-    "10.04" => [ ],
-    "default" => [
+    "10.04" => [
       "libmysqlclient-dev",
       "mysql-client-5.1"
-    ]
+    ],
+    "default" => [ ]
   },
   "default" => [ ] 
 )
