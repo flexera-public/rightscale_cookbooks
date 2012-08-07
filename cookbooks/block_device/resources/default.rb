@@ -27,7 +27,7 @@ attribute :cloud, :required => true
 attribute :hypervisor, :kind_of => String
 attribute :mount_point, :kind_of => String, :required => true
 attribute :is_master, :equal_to => [ true, false ], :default => false
-
+attribute :force, :equal_to => [ true, false ], :default => false
 
 # == Backup/Restore options
 attribute :lineage, :kind_of => String
