@@ -47,7 +47,7 @@ attribute "app_django/apache/serve_local_files",
 
 attribute "app_django/project/opt_pip_list",
   :display_name => "Custom Python Package list",
-  :description => "A space-separated list of optional python package(s), along with their versions in the Format:  py-pkg1==version  py-pkg2==version py-pkg3==version. Example: mygem:1.0, yourgem:2.0",
+  :description => "A space-separated list of optional python package(s), along with their versions in the Format:  py-pkg1==version  py-pkg2==version py-pkg3==version. Example: simplejson==1.7.1, Markdown==2.0.3",
   :required => "optional",
   :default => "",
   :recipes => ["app_django::install_custom_python_packages"]
