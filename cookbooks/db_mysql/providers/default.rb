@@ -44,7 +44,7 @@ end
 
 action :move_data_dir do
   @db = init(new_resource)
-  @db.move_datadir new_resource.name, node[:db_mysql][:data_dir]
+  @db.move_datadir(new_resource.name, node[:db_mysql][:data_dir])
 end
 
 action :reset do
