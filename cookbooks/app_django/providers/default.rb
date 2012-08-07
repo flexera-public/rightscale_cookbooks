@@ -49,7 +49,7 @@ action :install do
   end
 
   # Installing python modules dependencies
-  log "  Module dependencies which will be installed: #{node[:app_django][:module_dependencies]}"
+  log "  Module dependencies which will be installed: #{node[:app][:module_dependencies]}"
   node[:app][:module_dependencies].each do |mod|
     apache_module mod
   end

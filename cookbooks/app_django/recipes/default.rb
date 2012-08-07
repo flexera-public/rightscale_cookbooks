@@ -9,7 +9,6 @@ rightscale_marker :begin
 
 log "  Setting provider specific settings for Django."
 node[:app][:provider] = "app_django"
-node[:app][:database_name] = node[:app_django][:db_name]
 
 case node[:platform]
   when "ubuntu","debian"
