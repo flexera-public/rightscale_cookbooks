@@ -21,7 +21,6 @@ end
 # == General options
 attribute :user, :kind_of => String, :default => "root"
 attribute :password, :kind_of => String, :default => ""
-attribute :data_dir, :kind_of => String, :default => "/mnt/storage"
 
 # == Backup/Restore options
 attribute :lineage, :kind_of => String
