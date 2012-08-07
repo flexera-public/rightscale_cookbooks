@@ -38,9 +38,6 @@ action :pull do
   # Ensure that destination directory exists after all backups.
   directory "#{new_resource.destination}"
 
-  # To be sure RSync is installed
-  package "rsync"
-
   # Get the data with RSync
   # -c, --checksum              skip based on checksum, not mod-time & size
   # -a, --archive               archive mode

@@ -28,9 +28,6 @@ action :pull do
   user = new_resource.account.to_s.strip.length == 0 ? "" : "--ftp-user=#{new_resource.account}"
   password = new_resource.credential.to_s.strip.length == 0 ? "" : "--ftp-password=#{new_resource.credential}"
 
-  # To be sure RSync is installed
-  package "wget"
-
   # Get the data
   execute "Download #{new_resource.container}" do
     command "wget #{new_resource.repository} #{user} #{password} --recursive --no-host-directories --cut-dirs=#{level} --directory-prefix=#{new_resource.destination}"

@@ -8,4 +8,6 @@
 
 rightscale_marker :begin
 
+package "wget"
+
 rightscale_marker :end

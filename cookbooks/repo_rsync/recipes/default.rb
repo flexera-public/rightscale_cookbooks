@@ -8,4 +8,6 @@
 
 rightscale_marker :begin
 
+package "rsync"
+
 rightscale_marker :end
