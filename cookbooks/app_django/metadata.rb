@@ -1,0 +1,61 @@
+maintainer       "RightScale, Inc."
+maintainer_email "support@rightscale.com"
+license          "Copyright RightScale, Inc. All rights reserved."
+description      "Installs the Django application server."
+long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
+version          "12.1.0"
+
+supports "centos", "~> 6.2"
+supports "ubuntu", "~> 12.04"
+
+depends "app"
+depends "web_apache"
+depends "db_mysql"
+depends "db_postgres"
+depends "repo"
+depends "rightscale"
+depends "python"
+
+recipe  "app_django::default", "Installs the Django application server."
+recipe  "app_django::install_custom_python_packages", "Custom python packages to install."
+recipe  "app_django::install_required_app_python_packages", "Bundler python packages install. requirement.txt must be present in app directory."
+recipe  "app_django::run_custom_django_commands", "Run specific user defined commands. Commands will be executed in the app directory."
+
+
+attribute "app_django/debug_mode",
+  :display_name => "Django App Debug Mode",
+  :description => "Creates a Django application debug environment variable. Example: False",
+  :choice => ["True", "False"],
+  :required => "optional",
+  :default => "False",
+  :recipes => ["app_django::default"]
+
+attribute "app_django/apache/maintenance_page",
+  :display_name => "Apache maintenance page",
+  :description => "Maintenance URI to show if the page exists (based on document root). If this file exists, your site will show a \"Under Maintenance\" page and your site will not be available. Example: /system/maintenance.html",
+  :required => "optional",
+  :default => "",
+  :recipes => ["app_django::default"]
+
+attribute "app_django/apache/serve_local_files",
+  :display_name => "Apache serve local Files",
+  :description => "This option tells Apache whether it should serve the (static) content itself. Currently, it will omit PHP and TomCat dynamic content, such as *.php, *.action, *.jsp, and *.do  Example: true",
+  :choice => ["true", "false"],
+  :required => "optional",
+  :default => "true",
+  :recipes => ["app_django::default"]
+
+attribute "app_django/project/opt_pip_list",
+  :display_name => "Custom Python Package list",
+  :description => "A space-separated list of optional python package(s), along with their versions in the Format:  py-pkg1==version  py-pkg2==version py-pkg3==version. Example: mygem:1.0, yourgem:2.0",
+  :required => "optional",
+  :default => "",
+  :recipes => ["app_django::install_custom_python_packages"]
+
+attribute "app_django/project/custom_cmd",
+  :display_name => "Custom Django command",
+  :description => "A comma-separated list of optional commands which will be executed in the app directory. Example: manage.py syncdb, manage.py migrate, manage.py loaddata ./fixtures/example_initial_data.json",
+  :required => "optional",
+  :default => "",
+  :recipes => ["app_django::run_custom_django_commands"]
+

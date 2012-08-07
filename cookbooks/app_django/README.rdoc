@@ -1,0 +1,167 @@
+= RightScale App Django Cookbook
+
+== DESCRIPTION:
+
+* Cookbook provides Apache + Django implementation of the 'app' LWRP.
+* Installs and configures, Apache + Django application servers.
+
+== REQUIREMENTS:
+
+* Requires "app" Lightweight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
+  or your own implementation of the "app" resource. See "app" cookbook README for details.
+* Requires a VM launched from a RightScale managed RightImage
+* Tested on CentOS 6.2 RightImage
+* Tested on RedHat 6.2 RightImage
+* Tested on Ubuntu 12.04 RightImage
+
+== COOKBOOKS DEPENDENCIES:
+
+Please see <tt>metadata.rb</tt> file for the latest dependencies.
+
+* <tt>rightscale</tt>
+* <tt>web_apache</tt>
+* <tt>repo</tt>
+* <tt>logrotate</tt>
+* <tt>app</tt>
+* <tt>db</tt>
+* <tt>python</tt>
+
+== KNOWN LIMITATIONS:
+
+There are no known limitations.
+
+== SETUP/USAGE:
+
+* Place <tt>app_django::default</tt> recipe into your runlist to set up the application
+  server. Since this sets up the app provider, it must be run before the
+  <tt>app::default</tt> recipe, which expects a provider to already be set.
+* When using a RightScale ServerTemplate, this will also automatically add the
+  common attributes to your ServerTemplate inputs.
+
+== DETAILS:
+
+=== General:
+
+The <tt>app_django</tt> cookbook will install and set up an Apache + Django application server configured to connect with a MySQL or Postgres database server.
+
+<b>Apache</b>
+
+Server version: Apache/2.2.15
+
+Server built: Feb 13 2012 22:31:42
+
+<b>Python</b>
+
+Python version 2.6.6 (2012-06-18) (x86_64-linux)
+Pip version 1.1
+
+<b>Django</b>
+
+Django version 1.4
+
+also:
+* <tt>Custom python command input</tt>
+* <tt>Bundler support</tt>
+* <tt>Input for user defined python module installation</tt>
+* <tt>Application code installation from remote git, svn or Remote Object Store (ROS) location</tt>
+* <tt>MySQL or Postgres database connection file configuration</tt>
+* <tt>Automatic application vhost file configuration</tt>
+* <tt>Automatic logrotate file configuration for Django logs</tt>
+
+For more info see: http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/2012-01-05#Apache-Django_App_Server_-_Beta
+
+ServerTemplate built on this cookbook can be combined in two modes:
+
+1 - For apps with bundler support, add the "install_required_app_python_modules" recipe, and
+"run_custom_python_commands" for migration commands
+
+2 - For apps without bundler support, add "install_custom_python_packages" recipe, and
+"run_custom_python_commands" for migration commands
+
+Mix these recipes in any way to satisfy project requirements.
+
+=== Attributes:
+These are settings used in recipes and templates. Default values are noted.
+
+Note: Only "internal" cookbook attributes are described here. Descriptions of attributes which have inputs you can find in metadata.rb cookbook file.
+
+====== General attributes
+* <tt>node[:app_django][:module_dependencies]</tt> - Modules required for Apache.
+* <tt>node[:app_django][:deploy_dir]</tt> - Path in the specified repository where application code will be pulled from.
+
+====== Platform dependent
+
+* <tt>node[:app_django][:apache][:user]</tt> - Apache user. Required for changing owner of created project dirs.
+* <tt>node[:app_django][:apache][:log_dir]</tt> - Path to apache log directory.
+
+=== Templates:
+
+* <tt>basic_vhost.erb</tt> - Configuration for apache vhost file used in the <tt>app::setup_vhost</tt> recipe
+  and defined in <tt>:setup_vhost</tt> action of the <tt>app_django</tt> LWRP.
+* <tt>settings.erb</tt> - move the existing django settings.py to settings_default.py and Configure new settings.py 
+  for project database connection config file used in the <tt>app::setup_db_connection</tt> recipe
+  and defined in <tt>:setup_db_connection</tt> action of the <tt>app_django</tt> LWRP.
+* <tt>logrotate_django.erb</tt> - Configuration for logrotate used in the <tt>app::setup_vhost</tt> recipe
+  and defined in <tt>:setup_vhost</tt> action of the <tt>app_django</tt> LWRP.
+  and defined in <tt>:setup_db_connection</tt> action of the <tt>app_passenger</tt> LWRP.
+
+=== Definitions:
+none
+
+=== Libraries-helpers:
+none
+
+
+=== LWRPs:
+
+<tt>app_django</tt> Lightweight provider is defined in the providers/default.rb file, it contains source for the following actions:
+
+* <tt>:install</tt>
+
+* <tt>:setup_vhost</tt>
+
+* <tt>:start</tt>
+
+* <tt>:stop</tt>
+
+* <tt>:restart</tt>
+
+* <tt>:code_update</tt>
+
+* <tt>:setup_db_connection</tt>
+
+* <tt>:setup_monitoring</tt>
+
+actions.
+
+For more info about these actions, please see the <tt>app</tt> cookbook README.
+
+For normal operations it requires "app" resource which will act as the interface to all <tt>app_django</tt> provider logic.
+
+===== Actions
+
+* <tt>:install</tt> - Install packages required for application server setup.
+
+* <tt>:setup_vhost</tt> - Set up apache vhost file with passenger module directives included.
+
+* <tt>:start</tt> - Start sequence for Django application server.
+
+* <tt>:stop</tt> - Stop sequence for Django application server.
+
+* <tt>:restart</tt> - Restart sequence for Django application server.
+
+* <tt>:code_update</tt> - Perform project source code update/download using user selected "repo" LWRP. Set up logrotate configuration.
+
+* <tt>:setup_db_connection</tt> - Perform project settings.py database connection configuration.
+
+* <tt>:setup_monitoring</tt> - Install and set up of required monitoring software.
+
+===== Usage Example:
+
+For usage examples please see corresponding section in <tt>app</tt> cookbook README.
+
+= LICENSE:
+
+Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
+RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
+if applicable, other agreements such as a RightScale Master Subscription Agreement.
