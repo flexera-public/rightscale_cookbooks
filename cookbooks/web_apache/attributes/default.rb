@@ -31,9 +31,9 @@ set_unless[:apache][:serversignature] = "Off "
 
 # DISTRO specific config dir
 case platform
-when "ubuntu", "debian"
+when "ubuntu"
   set[:apache][:config_subdir] = "apache2"
-when "centos", "fedora", "suse","redhat"
+when "centos", "redhat"
   set[:apache][:config_subdir] = "httpd"
 end
 

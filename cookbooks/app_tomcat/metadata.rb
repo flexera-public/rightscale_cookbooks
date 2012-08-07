@@ -28,17 +28,6 @@ attribute "app_tomcat/version",
   :choice => ['6', '7'],
   :required => 'required'
 
-# optional attributes
-attribute "app_tomcat/db_name",
-  :display_name => "Database Schema Name",
-  :description => "Enter the name of the MySQL database to use. Example: mydatabase",
-  :required => "required",
-  :recipes => [
-    "app_tomcat::default_6",
-    "app_tomcat::default_7"
-   ]
-
-
 #Code repo attributes
 attribute "app_tomcat/code/root_war",
   :display_name => "War file for ROOT",
@@ -71,7 +60,7 @@ attribute "app_tomcat/java/xmx",
     "app_tomcat::default_7"
    ]
 
-attribute "app_tomcat/java/PermSize",
+attribute "app_tomcat/java/permsize",
   :display_name => "Tomcat Java PermSize",
   :description => "The java PermSize argument. Example: 256m",
   :required => "optional",
@@ -81,7 +70,7 @@ attribute "app_tomcat/java/PermSize",
     "app_tomcat::default_7"
    ]
 
-attribute "app_tomcat/java/MaxPermSize",
+attribute "app_tomcat/java/maxpermsize",
   :display_name => "Tomcat Java MaxPermSize",
   :description => "The java MaxPermSize argument. Example: 256m",
   :required => "optional",
@@ -91,7 +80,7 @@ attribute "app_tomcat/java/MaxPermSize",
     "app_tomcat::default_7"
    ]
 
-attribute "app_tomcat/java/NewSize",
+attribute "app_tomcat/java/newsize",
   :display_name => "Tomcat Java NewSize",
   :description => "The java NewSize argument. Example: 256m",
   :required => "optional",
@@ -101,21 +90,11 @@ attribute "app_tomcat/java/NewSize",
     "app_tomcat::default_7"
    ]
 
-attribute "app_tomcat/java/MaxNewSize",
+attribute "app_tomcat/java/maxnewsize",
   :display_name => "Tomcat Java MaxNewSize",
   :description => "The java MaxNewSize argument. Example: 256m",
   :required => "optional",
   :default => "256m",
-  :recipes => [
-    "app_tomcat::default_6",
-    "app_tomcat::default_7"
-   ]
-
-attribute "app_tomcat/db_adapter",
-  :display_name => "Database adapter for application",
-  :description => "Enter database adapter which will be used to connect to the database. Example: mysql",
-  :default => "mysql",
-  :choice => [ "mysql", "postgresql" ],
   :recipes => [
     "app_tomcat::default_6",
     "app_tomcat::default_7"

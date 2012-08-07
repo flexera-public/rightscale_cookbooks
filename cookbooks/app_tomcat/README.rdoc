@@ -92,16 +92,20 @@ Note: Only "internal" cookbook attributes are described here. Descriptions of
 attributes that are inputs are in the <tt>metadata.rb</tt> cookbook file.
 
 ====== General attributes
-* <tt>node[:tomcat][:docroot]</tt> - Path to the directory which will contain
-  the application.
-* <tt>node[:tomcat][:module_dependencies]</tt> - Additional modules required
-  for Tomcat.
+* <tt>node[:app_tomcat][:code][:root_war]</tt> - Path to the directory which will contain the application for Tomcat.
+
+====== Java heap tuning attributes
+* <tt>node[:app_tomcat][:java][:permsize]</tt> - The initial value of the permanent generation space size.
+* <tt>node[:app_tomcat][:java][:maxpermsize]</tt> - The maximum value of the permanent generation space size.
+* <tt>node[:app_tomcat][:java][:newsize]</tt> - The initial size of new space generation.
+* <tt>node[:app_tomcat][:java][:maxnewsize]</tt> - The maximum size of new space generation.
+* <tt>node[:app_tomcat][:java][:xmx]</tt> - The maximum size of the heap used by the JVM.
+* <tt>node[:app_tomcat][:java][:xms]</tt> - The initial size of the heap used by the JVM.
 
 ====== Platform dependent
-* <tt>node[:tomcat][:app_user]</tt> - Username. Required for changing the owner
+* <tt>node[:app][:user]</tt> - Username. Required for changing the owner
   of created project dirs.
-* <tt>node[:tomcat][:alternatives_cmd]</tt> - Java alternatives command list.
-* <tt>node[:tomcat][:db_adapter]</tt> - Type of database adapter. MySQL or Postgres.
+* <tt>node[:app_tomcat][:alternatives_cmd]</tt> - Java alternatives command list.
 
 === Templates:
 
@@ -135,6 +139,8 @@ attributes that are inputs are in the <tt>metadata.rb</tt> cookbook file.
 
 * <tt>:stop</tt>
 
+* <tt>:reload</tt>
+
 * <tt>:restart</tt>
 
 * <tt>:code_update</tt>
@@ -159,6 +165,8 @@ interface to all <tt>app_tomcat</tt> provider logic.
 * <tt>:start</tt> - Start sequence for Tomcat application server.
 
 * <tt>:stop</tt> - Stop sequence for Tomcat application server.
+
+* <tt>:reload</tt> - Reload sequence for Tomcat application server.
 
 * <tt>:restart</tt> - Restart sequence for Tomcat application server.
 

@@ -111,8 +111,8 @@ action :install do
 
   # Creating new directory for tomcat logs on ephemeral volume
   directory "/mnt/ephemeral/log/tomcat#{version}" do
-    owner node[:app_tomcat][:app_user]
-    group node[:app_tomcat][:app_user]
+    owner node[:app][:user]
+    group node[:app][:group]
     mode "0755"
     action :create
     recursive true
@@ -163,7 +163,9 @@ action :setup_vhost do
       :java_permsize => node[:app_tomcat][:java][:permsize],
       :java_maxpermsize => node[:app_tomcat][:java][:maxpermsize],
       :java_newsize => node[:app_tomcat][:java][:newsize],
-      :java_maxnewsize => node[:app_tomcat][:java][:maxnewsize]
+      :java_maxnewsize => node[:app_tomcat][:java][:maxnewsize],
+      :platform => node[:platform],
+      :platform_ver => node[:platform_version]
     )
   end
 
@@ -275,7 +277,7 @@ action :setup_vhost do
     log "  Finished configuring mod_jk, creating the application vhost"
 
     # Enabling required apache modules
-    node[:app_tomcat][:module_dependencies].each do |mod|
+    node[:app][:module_dependencies].each do |mod|
       apache_module mod
     end
 
