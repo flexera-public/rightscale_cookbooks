@@ -7,12 +7,6 @@
 
 rightscale_marker :begin
 
-# If block_device is used, set that to be node[:db][:data_dir]
-mount_point = node[:block_device][:devices][:device1][:mount_point]
-if !mount_point.nil? && !mount_point.empty?
-  node[:db][:data_dir] = mount_point
-end
-
 # Setup default values for database resource
 db node[:db][:data_dir] do
   persist true
