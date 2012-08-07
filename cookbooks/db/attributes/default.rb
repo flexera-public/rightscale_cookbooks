@@ -12,10 +12,6 @@ set_unless[:db][:dns][:master][:fqdn] = "localhost"
 # can be db_mysql or db_postgres, for more info please refer to corresponding cookbooks
 set_unless[:db][:provider] = "db_mysql"
 
-# Initial setting for data directory location.
-# This extracts the database name from the provider and creates a directory with that name
-set_unless[:db][:data_dir] = "/mnt/storage/#{node[:db][:provider].split('_')[1]}"
-
 # Default settings for database administrator user and password
 set_unless[:db][:admin][:user] = "root"
 set_unless[:db][:admin][:password] = ""

@@ -7,6 +7,10 @@
 
 rightscale_marker :begin
 
+# Initial setting for data directory location.
+# This extracts the database name from the provider and creates a directory with that name in the mount point
+node[:db][:data_dir] = "#{node[:block_device][:devices][:device1][:mount_point]}/#{node[:db][:provider].split('_')[1]}"
+
 # Setup default values for database resource
 db node[:db][:data_dir] do
   persist true
