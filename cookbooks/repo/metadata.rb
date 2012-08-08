@@ -89,12 +89,6 @@ attribute "repo/default/storage_account_secret",
   :required => "optional",
   :recipes => ["repo::default"]
 
-#attribute "repo/default/container",
-#  :display_name => "ROS Container",
-#  :description => "The name of the ROS container where a tarball of the application code will be retrieved from. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name. Example: mycontainer",
-#  :required => "optional",
-#  :recipes => ["repo::default"]
-
 attribute "repo/default/prefix",
   :display_name => "ROS Prefix",
   :description => "The prefix that will be used to locate the correct tarball of the application. For example, if you're using 'myapp.tgz' specify 'myapp' as the ROS Prefix.",
