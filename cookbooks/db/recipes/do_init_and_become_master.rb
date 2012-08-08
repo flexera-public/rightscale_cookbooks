@@ -50,10 +50,8 @@ end
 log "  Adding replication privileges for this master database..."
 include_recipe "db::setup_replication_privileges"
 
-log "  Forcing a backup so slaves can init from this master..."
-db_request_backup "do force backup" do
-  force true
-end
+log "  Perform a backup so slaves can init from this master..."
+db_request_backup "do backup"
 
 log "  Setting up cron to do scheduled backups..."
 include_recipe "db::do_primary_backup_schedule_enable"

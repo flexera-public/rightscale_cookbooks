@@ -19,9 +19,9 @@
 
 rightscale_marker :begin
 
-# Install ntpdate package if "ubuntu" or "debian"
+# Install ntpdate package if "ubuntu"
 case node[:platform]
-when "ubuntu","debian"
+when "ubuntu"
   package "ntpdate" do
     action :install
   end
