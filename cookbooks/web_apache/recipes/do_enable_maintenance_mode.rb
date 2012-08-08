@@ -18,8 +18,6 @@
 
 rightscale_marker :begin
 
-if node[:web_apache][:maintenance_mode] == "enable"
-
   # Creating directory for maintenance page
   directory "#{node[:web_apache][:docroot]}/system/" do
     recursive true
@@ -51,17 +49,5 @@ if node[:web_apache][:maintenance_mode] == "enable"
     EOH
     not_if do node[:web_apache][:maintenance_file].empty? end
   end
-
-else
-
-  # Removing /system/maintenance.html from apache docroot
-  log "  Removing #{node[:web_apache][:docroot]}/system/maintenance.html"
-  file "#{node[:web_apache][:docroot]}/system/maintenance.html" do
-    action :delete
-    backup false
-    only_if do ::File.exists?("#{node[:web_apache][:docroot]}/system/maintenance.html")  end
-  end
-
-end
 
 rightscale_marker :end

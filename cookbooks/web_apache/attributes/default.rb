@@ -52,4 +52,3 @@ set[:web_apache][:server_name] = "localhost"
 
 # Maintenance mode attributes
 set_unless[:web_apache][:maintenance_file] = ""
-set_unless[:web_apache][:maintenance_mode] = "disable"
