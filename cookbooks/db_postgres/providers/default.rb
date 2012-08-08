@@ -36,12 +36,12 @@ end
 
 action :move_data_dir do
   @db = init(new_resource)
-  @db.move_datadir
+  @db.move_datadir(node[:db][:data_dir], node[:db_postgres][:datadir])
 end
 
 action :reset do
   @db = init(new_resource)
-  @db.reset
+  @db.reset(node[:db][:data_dir], node[:db_postgres][:datadir])
 end
 
 action :firewall_update_request do
