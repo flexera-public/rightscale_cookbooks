@@ -332,29 +332,14 @@ action :setup_db_connection do
   version = node[:app_tomcat][:version].to_i
 
   log "  Creating context.xml for DB: #{db_name} using adapter #{db_adapter} and datasource #{datasource}"
-  case db_adapter
-  when "mysql"
-    db_mysql_connect_app "/etc/tomcat#{version}/context.xml" do
-      template      "context_xml.erb"
-      owner         "#{node[:app][:user]}"
-      group         "root"
-      mode          "0644"
-      database      db_name
-      datasource    datasource
-      cookbook      'app_tomcat'
-    end
-  when "postgresql"
-    db_postgres_connect_app "/etc/tomcat#{version}/context.xml" do
-      template      "context_xml.erb"
-      owner         "#{node[:app][:user]}"
-      group         "root"
-      mode          "0644"
-      database      db_name
-      datasource    datasource
-      cookbook      'app_tomcat'
-    end
-  else
-    raise "Unrecognized database adapter #{db_adapter}, exiting"
+  db_connect_app "/etc/tomcat#{version}/context.xml" do
+    template      "context_xml.erb"
+    owner         "#{node[:app][:user]}"
+    group         "root"
+    mode          "0644"
+    database      db_name
+    datasource    datasource
+    cookbook      'app_tomcat'
   end
 
   log "  Creating web.xml"
