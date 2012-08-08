@@ -247,7 +247,7 @@ action :setup_monitoring do
       :plugin_path => plugin_path)
   end
 
-  # Collectd exec cannot run scripts under root user, so we need to give ability to use sudo to to "apache" user
+  # Collectd exec cannot run scripts under root user, so we need to give ability to use sudo to "apache" user
   # passenger monitoring resources have strict restrictions, only for root can gather full stat info
   # we gave permissions to apache user to access passenger monitoring resources
   sudo_string = ["# Allowing apache user to access passenger monitoring resources",\
