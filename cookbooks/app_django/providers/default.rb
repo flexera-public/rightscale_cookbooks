@@ -57,7 +57,7 @@ action :install do
 
   # install Django 1.4
   python_pip "django" do
-    version "#{dversion}"
+    version "1.4"
     action :install
   end
 
