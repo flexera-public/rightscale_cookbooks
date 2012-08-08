@@ -42,6 +42,7 @@ end
 action :install do
   # Installing required packages
   packages = new_resource.packages
+  dversion = node[:app_django][:version].to_i
   log "  Packages which will be installed: #{packages}"
 
   packages.each do |p|
@@ -56,12 +57,13 @@ action :install do
 
   # install Django 1.4
   python_pip "django" do
-    version "#{node[:app_django][:version]}"
+    version "#{dversion}"
     action :install
   end
 
   # Installing database adapter for Django
   db_adapter = node[:app][:db_adapter]
+  log "Installing python packages for database support"
   if db_adapter == "mysql"
     python_pip "MySQL-python" do
       version "1.2.3"
@@ -127,6 +129,7 @@ action :setup_db_connection do
 
   project_root = new_resource.destination
   db_name = new_resource.database_name
+  db_adapter = node[:app][:db_adapter]
   debug_mode = node[:app_django][:debug_mode]
 
   # moves django default settings file to settings_default and create settings.py from django template
@@ -141,26 +144,17 @@ action :setup_db_connection do
     end
   end
 
-  db_adapter = node[:app][:db_adapter]
   # Tells selected db_adapter to fill in it's specific connection template
-  log "  Creating settings.py"
-  if db_adapter == "mysql"
-    db_mysql_connect_app ::File.join(project_root, "settings.py") do
-      template "settings.py.erb"
-      cookbook "app_django"
-      database db_name
-      debug    debug_mode
-    end
-  elsif db_adapter == "postgresql"
-    db_postgres_connect_app ::File.join(project_root, "settings.py") do
-      template "settings.py.erb"
-      cookbook "app_django"
-      database db_name
-      debug    debug_mode
-    end
-  else
-    raise "Unrecognized database adapter #{node[:app][:db_adapter]}, exiting"
+  log "  Creating settings.py for DB: #{db_name} using adapter #{db_adapter}"
+  db_connect_app ::File.join(project_root, "settings.py") do
+    template      "settings.py.erb"
+    owner         "#{node[:app][:user]}"
+    group         "root"
+    database      db_name
+    debug         debug_mode
+    cookbook      "app_django"
   end
+
 end
 
 # Download/Update application repository
