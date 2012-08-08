@@ -45,7 +45,7 @@ rightscale_marker :begin
   bash "Applying user defined maintenance.html file" do
     flags "-ex"
     code <<-EOH
-      cp #{node[:web_apache][:maintenance_file]}" #{node[:web_apache][:docroot]}/system/maintenance.html
+      cp -f #{node[:web_apache][:maintenance_file]} #{node[:web_apache][:docroot]}/system/maintenance.html
     EOH
     not_if do node[:web_apache][:maintenance_file].empty? end
   end
