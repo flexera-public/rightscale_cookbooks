@@ -23,7 +23,7 @@ action :pull do
   # Add ssh key and exec script
   ruby_block "Before deploy" do
     block do
-      RightScale::Repo::RSyncSshKey.new.create(new_resource.credential)
+      RightScale::Repo::SshKey.new.create(new_resource.credential)
     end
   end
 
@@ -53,7 +53,7 @@ action :pull do
   # Delete SSH key
   ruby_block "After fetch" do
     block do
-      RightScale::Repo::RSyncSshKey.new.delete
+      RightScale::Repo::SshKey.new.delete
     end
   end
 

@@ -3,7 +3,7 @@ maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "Abstract cookbook for managing source code repositories."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "12.1.0"
+version          "13.1.0"
 
 supports "centos", "~> 5.8"
 supports "redhat", "~> 5.8"
@@ -42,13 +42,13 @@ attribute "repo/default/revision",
 
 attribute "repo/default/account",
   :display_name => "Account name",
-  :description => "The account name (i.e. username, ID) that is required to access files in the specified location.",
+  :description => "The account name (i.e. username, ID) that is required to access files in the specified location. Example: cred:RACKSPACE_USERNAME",
   :required => "optional",
   :recipes => ["repo::default"]
 
 attribute "repo/default/credential",
   :display_name => "Account credential",
-  :description => "A valid credential (i.e. password, SSH key, account secret) to access files in the specified location.",
+  :description => "A valid credential (i.e. password, SSH key, account secret) to access files in the specified location. Example: cred:RACKSPACE_AUTH_KEY",
   :required => "optional",
   :recipes => ["repo::default"]
 

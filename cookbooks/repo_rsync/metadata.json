@@ -30,5 +30,5 @@
   "recipes": {
     "repo_rsync::default": "Default pattern for loading provided packages and resources."
   },
-  "version": "12.1.0"
+  "version": "13.1.0"
 }
