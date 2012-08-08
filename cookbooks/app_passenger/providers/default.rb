@@ -14,6 +14,7 @@ action :stop do
   end
 end
 
+
 # Start apache/passenger
 action :start do
   log "  Running start sequence"
@@ -22,6 +23,7 @@ action :start do
     persist false
   end
 end
+
 
 # Reload apache/passenger
 action :reload do
@@ -32,6 +34,7 @@ action :reload do
   end
 end
 
+
 # Restart apache/passenger
 action :restart do
   log "  Running restart sequence"
@@ -39,6 +42,7 @@ action :restart do
   sleep 5
   action_start
 end
+
 
 # Installing required packages to system
 action :install do
@@ -72,6 +76,7 @@ action :install do
 
 end
 
+
 # Setup apache/passenger virtual host
 action :setup_vhost do
   port = new_resource.port
@@ -81,9 +86,7 @@ action :setup_vhost do
   file "/etc/httpd/conf.d/ssl.conf" do
     action :delete
     backup false
-    only_if do
-      ::File.exists?("/etc/httpd/conf.d/ssl.conf")
-    end
+    only_if do ::File.exists?("/etc/httpd/conf.d/ssl.conf")  end
   end
 
   # Enabling required apache modules
@@ -94,9 +97,7 @@ action :setup_vhost do
   # Apache fix on RHEL
   file "/etc/httpd/conf.d/README" do
     action :delete
-    only_if do
-      node[:platform] == "redhat"
-    end
+    only_if do node[:platform] == "redhat" end
   end
 
   # Adds php port to list of ports for webserver to listen on
@@ -128,7 +129,6 @@ action :setup_vhost do
     passenger_user node[:app][:user]
     passenger_group node[:app][:group]
   end
-
 
 end
 
@@ -166,6 +166,7 @@ action :setup_db_connection do
   end
 
 end
+
 
 # Download/Update application repository
 action :code_update do
@@ -218,6 +219,7 @@ action :code_update do
 
 end
 
+
 # Setup monitoring tools for passenger
 action :setup_monitoring do
   plugin_path = "#{node[:rightscale][:collectd_lib]}/plugins/passenger"
@@ -229,10 +231,8 @@ action :setup_monitoring do
 
   directory "#{node[:rightscale][:collectd_lib]}/plugins/" do
     recursive true
-    not_if do
-      ::File.exists?("#{node[:rightscale][:collectd_lib]}/plugins/")
-    end
-  end
+     not_if do ::File.exists?("#{node[:rightscale][:collectd_lib]}/plugins/")  end
+   end
 
   # Installing collectd plugin for passenger monitoring
   cookbook_file "#{plugin_path}" do
@@ -277,9 +277,7 @@ action :setup_monitoring do
         end
       }
     end
-    not_if do
-      ::File.open('/etc/sudoers', 'r') { |f| f.read }.include? "#{sudo_string[0]}"
-    end
+    not_if do ::File.open('/etc/sudoers', 'r') { |f| f.read }.include? "#{sudo_string[0]}" end
     notifies :start, resources(:service => "collectd")
   end
 
