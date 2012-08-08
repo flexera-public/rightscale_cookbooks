@@ -151,21 +151,6 @@
       "calculated": false,
       "type": "string"
     },
-    "web_apache/maintenance_mode": {
-      "display_name": "Maintenance mode",
-      "description": "Enable or disable maintenance mode. Example: Enable",
-      "required": "optional",
-      "choice": [
-        "enable",
-        "disable"
-      ],
-      "default": "disable",
-      "recipes": [
-        "web_apache::do_enable_maintenance_mode"
-      ],
-      "calculated": false,
-      "type": "string"
-    },
     "web_apache/maintenance_file": {
       "display_name": "Path to maintenance.html",
       "description": "Optional system-root related path to maintenance html page which will be used if maintenance mode is enabled  Example: /home/webapp/maintenance.html",
@@ -194,7 +179,8 @@
     "web_apache::setup_frontend_ssl_vhost": "Frontend apache vhost with SSL enabled.",
     "web_apache::setup_frontend_http_vhost": "Frontend apache vhost with SSL enabled.",
     "web_apache::setup_monitoring": "Installs the collectd-apache plugin for monitoring support.",
-    "web_apache::do_enable_maintenance_mode": "Enable or disable maintenance mode for Apache2 webserver"
+    "web_apache::do_enable_maintenance_mode": "Enable maintenance mode for Apache2 webserver",
+    "web_apache::do_disable_maintenance_mode": "Disable maintenance mode for Apache2 webserver"
   },
   "version": "12.1.0"
 }
