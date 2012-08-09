@@ -16,7 +16,7 @@ module RightScale
       #
       # @raises [RuntimeError] if ssh key string is empty
       def create(ssh_key)
-        super
+        super(ssh_key)
 
         Chef::Log.info("  Creating GIT_SSH environment variable")
         ::File.open("#{KEYFILE}.sh", "w") do |sshfile|
