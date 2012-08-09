@@ -49,3 +49,6 @@ set[:web_apache][:docroot] = "/home/webapp/#{web_apache[:application_name]}"
 
 # Default servername for web_apache vhost file
 set[:web_apache][:server_name] = "localhost"
+
+# Maintenance mode attributes
+set_unless[:web_apache][:maintenance_file] = ""
