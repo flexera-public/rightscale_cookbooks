@@ -17,9 +17,9 @@ platform = node[:platform]
 #
 node[:db][:socket] = value_for_platform(
   "ubuntu"  => {
-    "default" => "/var/run/mysqld/mysqld.sock"
+    "default" => [ "/var/run/mysqld/mysqld.sock" ]
   },
-  "default" => "/var/lib/mysql/mysql.sock"
+  "default" => [ "/var/lib/mysql/mysql.sock" ]
 )
 
 # http://dev.mysql.com/doc/refman/5.5/en/linux-installation-native.html
@@ -32,23 +32,23 @@ node[:db][:socket] = value_for_platform(
 
 node[:db_mysql][:service_name] = value_for_platform(
   "ubuntu" => {
-    "10.04" => [ ],
-    "default" => "mysql" 
+    "10.04" => [],
+    "default" => [ "mysql" ]
   },
-  "default" => "mysqld"
+  "default" => [ "mysqld" ]
 )
 
 node[:db_mysql][:client_packages_uninstall] = value_for_platform(
   "centos"  => {
-    "5.8" => [ ],
+    "5.8" => [],
     "default" => [
       "postfix",
       "mysql-libs"
     ]
   },
-  "default" => [ ] 
+  "default" => []
 )
-node[:db_mysql][:server_packages_uninstall] = [ ]
+node[:db_mysql][:server_packages_uninstall] = []
 
 node[:db_mysql][:client_packages_install] = value_for_platform(
   "centos" => {
@@ -65,7 +65,7 @@ node[:db_mysql][:client_packages_install] = value_for_platform(
     ]
   },
   "ubuntu" => {
-    "10.04" => [ ],
+    "10.04" => [],
     "default" => [
       "libmysqlclient-dev",
       "mysql-client-5.5"
@@ -78,15 +78,15 @@ node[:db_mysql][:client_packages_install] = value_for_platform(
       "mysql55"
     ]
   },
-  "default" => [ ]
+  "default" => []
 )
 
 node[:db_mysql][:server_packages_install] = value_for_platform(
   "ubuntu" => {
-    "10.04" => [ ],
-    "default" => "mysql-server-5.5"
+    "10.04" => [],
+    "default" => [ "mysql-server-5.5" ]
   },
-  "default" => "mysql55-server"
+  "default" => [ "mysql55-server" ]
 )
 
 raise "Platform not supported for MySQL #{version}" if node[:db_mysql][:client_packages_install].empty?
