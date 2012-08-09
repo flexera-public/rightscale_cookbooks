@@ -10,16 +10,30 @@ rightscale_marker :begin
 log "  Setting provider specific settings for php application server."
 node[:app][:provider] = "app_php"
 
+# Setting generic app attributes
+platform = node[:platform]
+case platform
+when "ubuntu"
+  node[:app][:user] = "www-data"
+  node[:app][:group] = "www-data"
+when "centos", "redhat"
+  node[:app][:user] = "apache"
+  node[:app][:group] = "apache"
+end
+
 log "  Install PHP"
 package "php5" do
   package_name value_for_platform(
-    [ "centos", "redhat", "suse", "fedora"] => { 
+    [ "centos", "redhat" ] => {
       "5.6" => "php53u",
       "5.7" => "php53u",
       "5.8" => "php53u",
-      "default" => "php" # CentOS 6+ 
+      "default" => "php"
     },
-    "default" => 'php'
+    "ubuntu" => {
+      "default" => "php5"
+    },
+    "default" => ""
   )
   action :install
 end
@@ -27,14 +41,16 @@ end
 log "  Install PHP Pear"
 package "php-pear" do
   package_name value_for_platform(
-    [ "centos", "redhat", "suse", "fedora"] => { 
+    [ "centos", "redhat" ] => {
       "5.6" => "php53u-pear",
       "5.7" => "php53u-pear",
       "5.8" => "php53u-pear",
-      "default" => "php-pear" # CentOS 6+ 
+      "default" => "php-pear"
     },
-    [ "ubuntu", "debian" ] => { :default => "php-pear" },
-    "default" => 'php-pear'
+    "ubuntu" => {
+      "default" => "php-pear"
+    },
+    "default" => "php-pear"
   )
   action :install
 end
@@ -42,45 +58,51 @@ end
 log "  Install PHP apache support"
 package "php apache integration" do
   package_name value_for_platform(
-    [ "centos", "redhat", "suse", "fedora"] => { 
+    [ "centos", "redhat" ] => {
       "5.6" => "php53u-zts",
       "5.7" => "php53u-zts",
       "5.8" => "php53u-zts",
-      "default" => "php-zts" # CentOS 6+ 
+      "default" => "php-zts"
     },
-    [ "ubuntu", "debian" ] => { :default => "libapache2-mod-php5" },
-    "default" => 'php-zts'
+    "ubuntu" => {
+      "default" => "libapache2-mod-php5"
+    },
+    "default" => "php-zts"
   )
   action :install
 end
 
-if node[:app_php][:db_adapter] == "mysql"
+if node[:app][:db_adapter] == "mysql"
   log "  Install PHP mysql support"
   package "php mysql integration" do
     package_name value_for_platform(
-      [ "centos", "redhat", "suse", "fedora"] => { 
+      [ "centos", "redhat" ] => {
         "5.6" => "php53u-mysql",
         "5.7" => "php53u-mysql",
         "5.8" => "php53u-mysql",
-        "default" => "php-mysql" # CentOS 6+ 
+        "default" => "php-mysql"
       },
-      [ "ubuntu", "debian" ] => { :default => "php5-mysql" },
-      "default" => 'php-mysql'
+      "ubuntu" => {
+        "default" => "php5-mysql"
+      },
+      "default" => "php-mysql"
     )
     action :install
   end
-elsif node[:app_php][:db_adapter] == "postgresql"
+elsif node[:app][:db_adapter] == "postgresql"
   log "  Install PHP postgres support"
   package "php postgres integration" do
     package_name value_for_platform(
-      [ "centos", "redhat", "suse", "fedora"] => { 
+      [ "centos", "redhat" ] => {
         "5.6" => "php53u-pgsql",
         "5.7" => "php53u-pgsql",
         "5.8" => "php53u-pgsql",
-        "default" => "php5-pgsql" # CentOS 6+ 
+        "default" => "php5-pgsql"
       },
-      [ "ubuntu", "debian" ] => { :default => "php5-pgsql" },
-      "default" => 'php5-pgsql'
+      "ubuntu" => {
+        "default" => "php5-pgsql"
+      },
+      "default" => "php5-pgsql"
     )
     action :install
   end
@@ -88,14 +110,10 @@ else
   raise "Unrecognized database adapter #{node[:app][:db_adapter]}, exiting "
 end
 
-
 # Setting app LWRP attribute
-node[:app][:root] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
-# PHP shares the same doc root with the application destination
-node[:app][:destination] = "#{node[:app][:root]}"
+node[:app][:destination] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
 
-directory "#{node[:app][:destination]}" do
-  recursive true
-end
+# PHP shares the same doc root with the application destination
+node[:app][:root] = "#{node[:app][:destination]}"
 
 rightscale_marker :end

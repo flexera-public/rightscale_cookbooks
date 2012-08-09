@@ -55,6 +55,12 @@ action :setup_db_connection do
 end
 
 
+# Set monitoring tools for application
+action :setup_monitoring do
+  raise 'Using "default" application provider. Action is not implemented'
+end
+
+
 # Download/Update application repository
 action :code_update do
   raise 'Using "default" application provider.  Action is not implemented'

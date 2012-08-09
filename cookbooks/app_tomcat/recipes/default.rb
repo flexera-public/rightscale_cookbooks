@@ -9,10 +9,21 @@ rightscale_marker :begin
 
 log "  Setting provider specific settings for tomcat"
 node[:app][:provider] = "app_tomcat"
-node[:app][:database_name] = node[:app_tomcat][:db_name]
+
+# Defining app user and group attributes
+case node[:platform]
+when "ubuntu", "debian"
+  node[:app][:user] = "tomcat6"
+  node[:app][:group] = "tomcat6"
+when "centos", "fedora", "suse", "redhat", "redhatenterpriseserver"
+  node[:app][:user] = "tomcat"
+  node[:app][:group] = "tomcat"
+else
+  raise "Unrecognized distro #{node[:platform]}, exiting "
+end
 
 # Preparing list of database adapter packages depending on platform and database adapter
-case node[:app_tomcat][:db_adapter]
+case node[:app][:db_adapter]
 when "mysql"
   node[:app][:packages] = value_for_platform(
     "centos" => {
@@ -33,7 +44,7 @@ when "mysql"
         "mysql-connector-java"
       ]   
     }, 
-    [ "ubuntu", "debian" ] => {
+    "ubuntu" => {
       "default"  => [
         "ecj-gcj",
         "tomcat6",
@@ -44,7 +55,7 @@ when "mysql"
         "libtcnative-1"
       ]   
     }, 
-    [ "fedora", "suse", "redhat", "redhatenterpriseserver" ] => {
+    "redhat" => {
       "default" => [
         "eclipse-ecj",
         "tomcat6",
@@ -74,7 +85,7 @@ when "postgresql"
         "tomcat-native"
       ]
     },
-    [ "ubuntu", "debian" ] => {
+    "ubuntu" => {
       "default" => [
         "ecj-gcj",
         "tomcat6",
@@ -84,7 +95,7 @@ when "postgresql"
         "libtcnative-1"
       ]
     },
-    [ "fedora", "suse", "redhat", "redhatenterpriseserver" ] => {
+    "redhat" => {
       "default" => [
         "eclipse-ecj",
         "tomcat6",
@@ -96,18 +107,15 @@ when "postgresql"
     "default" => []
   )
 else
-  raise "Unrecognized database adapter #{node[:app_tomcat][:db_adapter]}, exiting"
+  raise "Unrecognized database adapter #{node[:app][:db_adapter]}, exiting"
 end
 
 raise "Unrecognized distro #{node[:platform]}, exiting " if node[:app][:packages].empty?
 
 # Setting app LWRP attribute
-node[:app][:root] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
-# tomcat shares the same doc root with the application destination
-node[:app][:destination]="#{node[:app][:root]}"
+node[:app][:destination] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
 
-directory "#{node[:app][:destination]}" do
-  recursive true
-end
+# tomcat shares the same doc root with the application destination
+node[:app][:root]="#{node[:app][:destination]}"
 
 rightscale_marker :end
