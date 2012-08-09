@@ -21,7 +21,7 @@ TEMPLATE_DEBUG = DEBUG
 
 DATABASES = {
     'default': {
-        <%  case node[:app_django][:db_adapter]
+        <%  case node[:app][:db_adapter]
             when "mysql" %>
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': '<%= @database %>',                      # Or path to database file if using sqlite3.
