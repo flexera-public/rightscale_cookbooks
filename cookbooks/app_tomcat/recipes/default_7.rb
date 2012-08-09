@@ -14,8 +14,6 @@ log "  Setting provider specific settings for tomcat#{version}"
 node[:app][:provider] = "app_tomcat"
 node[:app_tomcat][:version] = version
 
-node[:app][:database_name] = node[:app_tomcat][:db_name]  #XXX: Is this needed?
-
 #Defining app user and group attributes
 case node[:platform]
 when "centos", "redhat"
