@@ -39,9 +39,9 @@ file node[:rightscale][:db_backup_file] do
   owner "nobody"
   group value_for_platform(
     ["centos", "redhat"] => {
-      "default" => [ "nobody" ]
+      "default" => "nobody"
     },
-    "default" => [ "nogroup" ]
+    "default" => "nogroup"
   )
 end
 

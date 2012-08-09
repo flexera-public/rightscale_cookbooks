@@ -17,9 +17,9 @@ platform = node[:platform]
 #
 node[:db][:socket] = value_for_platform(
   "ubuntu"  => {
-    "default" => [ "/var/run/mysqld/mysqld.sock" ]
+    "default" => "/var/run/mysqld/mysqld.sock"
   },
-  "default" => [ "/var/lib/mysql/mysql.sock" ]
+  "default" => "/var/lib/mysql/mysql.sock"
 )
 
 # http://dev.mysql.com/doc/refman/5.5/en/linux-installation-native.html
@@ -32,10 +32,10 @@ node[:db][:socket] = value_for_platform(
 
 node[:db_mysql][:service_name] = value_for_platform(
   "ubuntu" => {
-    "10.04" => [],
-    "default" => [ "mysql" ]
+    "10.04" => "",
+    "default" => "mysql"
   },
-  "default" => [ "mysqld" ]
+  "default" => "mysqld"
 )
 
 node[:db_mysql][:client_packages_uninstall] = value_for_platform(

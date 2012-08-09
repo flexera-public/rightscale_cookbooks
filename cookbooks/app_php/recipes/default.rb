@@ -25,15 +25,15 @@ log "  Install PHP"
 package "php5" do
   package_name value_for_platform(
     [ "centos", "redhat" ] => {
-      "5.6" => [ "php53u" ],
-      "5.7" => [ "php53u" ],
-      "5.8" => [ "php53u" ],
-      "default" => [ "php" ] # CentOS 6+
+      "5.6" => "php53u",
+      "5.7" => "php53u",
+      "5.8" => "php53u",
+      "default" => "php"
     },
     "ubuntu" => {
-      "default" => [ "php5" ]
+      "default" => "php5"
     },
-    "default" => []
+    "default" => ""
   )
   action :install
 end
@@ -42,15 +42,15 @@ log "  Install PHP Pear"
 package "php-pear" do
   package_name value_for_platform(
     [ "centos", "redhat" ] => {
-      "5.6" => [ "php53u-pear" ],
-      "5.7" => [ "php53u-pear" ],
-      "5.8" => [ "php53u-pear" ],
-      "default" => [ "php-pear" ] # CentOS 6+
+      "5.6" => "php53u-pear",
+      "5.7" => "php53u-pear",
+      "5.8" => "php53u-pear",
+      "default" => "php-pear"
     },
     "ubuntu" => {
-      "default" => [ "php-pear" ]
+      "default" => "php-pear"
     },
-    "default" => [ "php-pear" ]
+    "default" => "php-pear"
   )
   action :install
 end
@@ -59,15 +59,15 @@ log "  Install PHP apache support"
 package "php apache integration" do
   package_name value_for_platform(
     [ "centos", "redhat" ] => {
-      "5.6" => [ "php53u-zts" ],
-      "5.7" => [ "php53u-zts" ],
-      "5.8" => [ "php53u-zts" ],
-      "default" => [ "php-zts" ] # CentOS 6+
+      "5.6" => "php53u-zts",
+      "5.7" => "php53u-zts",
+      "5.8" => "php53u-zts",
+      "default" => "php-zts"
     },
     "ubuntu" => {
-      "default" => [ "libapache2-mod-php5" ]
+      "default" => "libapache2-mod-php5"
     },
-    "default" => [ "php-zts" ]
+    "default" => "php-zts"
   )
   action :install
 end
@@ -77,15 +77,15 @@ if node[:app][:db_adapter] == "mysql"
   package "php mysql integration" do
     package_name value_for_platform(
       [ "centos", "redhat" ] => {
-        "5.6" => [ "php53u-mysql" ],
-        "5.7" => [ "php53u-mysql" ],
-        "5.8" => [ "php53u-mysql" ],
-        "default" => [ "php-mysql" ] # CentOS 6+
+        "5.6" => "php53u-mysql",
+        "5.7" => "php53u-mysql",
+        "5.8" => "php53u-mysql",
+        "default" => "php-mysql"
       },
       "ubuntu" => {
-        "default" => [ "php5-mysql" ]
+        "default" => "php5-mysql"
       },
-      "default" => [ "php-mysql" ]
+      "default" => "php-mysql"
     )
     action :install
   end
@@ -94,15 +94,15 @@ elsif node[:app][:db_adapter] == "postgresql"
   package "php postgres integration" do
     package_name value_for_platform(
       [ "centos", "redhat" ] => {
-        "5.6" => [ "php53u-pgsql" ],
-        "5.7" => [ "php53u-pgsql" ],
-        "5.8" => [ "php53u-pgsql" ],
-        "default" => [ "php5-pgsql" ] # CentOS 6+
+        "5.6" => "php53u-pgsql",
+        "5.7" => "php53u-pgsql",
+        "5.8" => "php53u-pgsql",
+        "default" => "php5-pgsql"
       },
       "ubuntu" => {
-        "default" => [ "php5-pgsql" ]
+        "default" => "php5-pgsql"
       },
-      "default" => [ "php5-pgsql" ]
+      "default" => "php5-pgsql"
     )
     action :install
   end
