@@ -18,17 +18,17 @@ node[:db_mysql][:version] = version
 
 node[:db_mysql][:service_name] = value_for_platform(
   "centos" => {
-    "5.8"     => [ "mysql" ],
-    "default" => [ "mysqld" ]
+    "5.8"     => "mysql",
+    "default" => "mysqld"
   },
-  "default"   => [ "mysql" ]
+  "default"   => "mysql"
 )
 
 node[:db][:socket] = value_for_platform(
   "ubuntu"  => {
-    "default" => [ "/var/run/mysqld/mysqld.sock" ]
+    "default" => "/var/run/mysqld/mysqld.sock"
   },
-  "default" => [ "/var/lib/mysql/mysql.sock" ]
+  "default" => "/var/lib/mysql/mysql.sock"
 )
 
 node[:db_mysql][:client_packages_uninstall] = []
