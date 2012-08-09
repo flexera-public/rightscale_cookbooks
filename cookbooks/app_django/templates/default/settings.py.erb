@@ -12,6 +12,10 @@
 # Copy this file to settings.py.
 from settings_default import *
 
+import os
+PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
+
+
 DEBUG = <%= @debug %>
 TEMPLATE_DEBUG = DEBUG
 
