@@ -228,7 +228,7 @@ action :setup_monitoring do
 
   # Installing collectd plugin for passenger monitoring
   template "#{plugin_path}" do
-    source "collectd_passenger"
+    source "collectd_passenger.erb"
     mode "0755"
     backup false
     cookbook "app_passenger"
@@ -250,7 +250,7 @@ action :setup_monitoring do
     source "collectd_passenger.conf.erb"
     variables(
       :apache_executable => node[:apache][:config_subdir],
-        :apache_user => node[:app_passenger][:apache][:user],
+        :apache_user => node[:app][:user],
         :plugin_path => plugin_path)
   end
 
@@ -258,9 +258,9 @@ action :setup_monitoring do
   # passenger monitoring resources have strict restrictions, only for root can gather full stat info
   # we gave permissions to apache user to access passenger monitoring resources
   sudo_string = ["# Allowing apache user to access passenger monitoring resources", \
-    "Defaults:#{node[:app_passenger][:apache][:user]} !requiretty", \
-    "Defaults:#{node[:app_passenger][:apache][:user]} !env_reset", \
-    "#{node[:app_passenger][:apache][:user]} ALL = NOPASSWD: #{node[:app_passenger][:passenger_bin_dir]}passenger-status, \
+    "Defaults:#{node[:app][:user]} !requiretty", \
+    "Defaults:#{node[:app][:user]} !env_reset", \
+    "#{node[:app][:user]} ALL = NOPASSWD: #{node[:app_passenger][:passenger_bin_dir]}passenger-status, \
      #{node[:app_passenger][:passenger_bin_dir]}passenger-memory-stats"]
 
   ruby_block "sudo setup" do
