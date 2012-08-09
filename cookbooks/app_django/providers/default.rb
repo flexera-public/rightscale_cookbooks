@@ -57,7 +57,7 @@ action :install do
 
   # install Django 1.4
   python_pip "django" do
-    version "1.4"
+    version "#{dversion}"
     action :install
   end
 
@@ -148,8 +148,8 @@ action :setup_db_connection do
   log "  Creating settings.py for DB: #{db_name} using adapter #{db_adapter}"
   db_connect_app ::File.join(project_root, "settings.py") do
     template      "settings.py.erb"
-    owner         "#{node[:app][:user]}"
-    group         "root"
+    owner         node[:app][:user]
+    group         node[:app][:group]
     database      db_name
     debug         debug_mode
     cookbook      "app_django"
