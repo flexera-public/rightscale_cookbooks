@@ -206,9 +206,7 @@ action :install_server do
   # Setup postgresql.conf
   # template_source = "postgresql.conf.erb"
   configfile = ::File.expand_path "~/.postgresql_config.done"
-  template value_for_platform(
-    "default" => [ "#{node[:db_postgres][:confdir]}/postgresql.conf" ]
-  ) do
+  template "#{node[:db_postgres][:confdir]}/postgresql.conf" do
     source "postgresql.conf.erb"
     owner "postgres"
     group "postgres"
