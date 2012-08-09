@@ -32,14 +32,6 @@ set[:app_passenger][:ruby_gem_base_dir] = "/usr/lib64/ruby/gems/1.8"
 set[:app_passenger][:gem_bin] = "/usr/bin/gem"
 # Path to Ruby ruby executable
 set[:app_passenger][:ruby_bin] = "/usr/bin/ruby"
-# Passenger binary directory
-set[:app_passenger][:passenger_bin_dir] = value_for_platform(
-  "ubuntu" => {
-    "12.04" => "/usr/local/bin/",
-    "default" => "/usr/bin/"
-  },
-    "default" => "/usr/bin/"
-)
 # By default rails application environment variable is set to "development"
 set_unless[:app_passenger][:project][:environment] = "development"
 # List of additional gems, required for rails application

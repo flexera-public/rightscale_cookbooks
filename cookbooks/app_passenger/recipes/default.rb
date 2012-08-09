@@ -37,7 +37,16 @@ case node[:platform]
     node[:app][:group] = "apache"
   else
     raise "Unrecognized distro #{node[:platform]}, exiting "
-end
+  end
+
+# Setting passenger binary directory
+node[:app_passenger][:passenger_bin_dir] = value_for_platform(
+  "ubuntu" => {
+    "12.04" => "/usr/local/bin/",
+    "default" => "/usr/bin/"
+  },
+    "default" => "/usr/bin/"
+)
 
 # Setting app LWRP attribute
 node[:app][:destination] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"

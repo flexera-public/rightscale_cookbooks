@@ -62,12 +62,8 @@ action :install do
   end
 
   log "  Installing apache passenger module"
-  bash "Install apache passenger module" do
-    flags "-ex"
-    code <<-EOH
-      #{node[:app_passenger][:passenger_bin_dir]}passenger-install-apache2-module --auto
-    EOH
-    not_if "test -e #{node[:app_passenger][:ruby_gem_base_dir].chomp}/gems/passenger*/ext/apache2/mod_passenger.so"
+  execute "Install apache passenger module" do
+    command "#{node[:app_passenger][:passenger_bin_dir]}passenger-install-apache2-module --auto"
   end
 
 end
