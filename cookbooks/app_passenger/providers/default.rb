@@ -64,8 +64,6 @@ action :install do
   log "  Installing apache passenger module"
   execute "Install apache passenger module" do
     command "#{node[:app_passenger][:passenger_bin_dir]}passenger-install-apache2-module --auto"
-    creates "#{node[:app_passenger][:ruby_gem_base_dir].chomp}/gems/passenger*/ext/apache2/mod_passenger.so"
-    action :run
   end
 
 end

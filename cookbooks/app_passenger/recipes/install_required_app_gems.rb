@@ -22,7 +22,6 @@ log "  Bundler will install gems from Gemfile"
 execute "Install apache passenger module" do
   command "#{node[:app_passenger][:passenger_bin_dir]}bundle install --gemfile=#{node[:app][:destination]}/Gemfile"
   only_if do File.exists?("#{node[:app][:destination]}/Gemfile") end
-  action :run
 end
 
 rightscale_marker :end
