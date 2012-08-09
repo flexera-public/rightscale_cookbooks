@@ -27,7 +27,7 @@ package "php5" do
     [ "centos", "redhat" ] => {
       "5.6" => "php53u",
       "5.7" => "php53u",
-      "5.8" => "php53u"],
+      "5.8" => "php53u",
       "default" => "php" # CentOS 6+
     },
     "ubuntu" => {
