@@ -63,13 +63,7 @@ action :install do
 
   log "  Installing apache passenger module"
   execute "Install apache passenger module" do
-    command value_for_platform(
-      "ubuntu" => {
-        "12.04" => "/usr/local/bin/passenger-install-apache2-module --auto",
-        "default" => "/usr/bin/passenger-install-apache2-module --auto"
-      },
-        "default" => "/usr/bin/passenger-install-apache2-module --auto"
-    )
+    command "#{node[:app_passenger][:passenger_bin_dir]}passenger-install-apache2-module --auto"
     creates "#{node[:app_passenger][:ruby_gem_base_dir].chomp}/gems/passenger*/ext/apache2/mod_passenger.so"
     action :run
   end
@@ -235,11 +229,15 @@ action :setup_monitoring do
    end
 
   # Installing collectd plugin for passenger monitoring
-  cookbook_file "#{plugin_path}" do
+  template "#{plugin_path}" do
     source "collectd_passenger"
     mode "0755"
     backup false
-    cookbook 'app_passenger'
+    cookbook "app_passenger"
+    variables(
+      :apache_binary => node[:apache][:binary],
+      :passenger_memory_stats => "#{node[:app_passenger][:passenger_bin_dir]}passenger-memory-stats",
+      :passenger_status => "#{node[:app_passenger][:passenger_bin_dir]}passenger-status")
   end
 
   # Removing previous passenger.conf in case of stop-start
@@ -264,8 +262,8 @@ action :setup_monitoring do
   sudo_string = ["# Allowing apache user to access passenger monitoring resources", \
     "Defaults:#{node[:app_passenger][:apache][:user]} !requiretty", \
     "Defaults:#{node[:app_passenger][:apache][:user]} !env_reset", \
-    "#{node[:app_passenger][:apache][:user]} ALL = NOPASSWD: /usr/bin/passenger-status, \
-    /usr/bin/passenger-memory-stats"]
+    "#{node[:app_passenger][:apache][:user]} ALL = NOPASSWD: #{node[:app_passenger][:passenger_bin_dir]}passenger-status, \
+     #{node[:app_passenger][:passenger_bin_dir]}passenger-memory-stats"]
 
   ruby_block "sudo setup" do
     block do
