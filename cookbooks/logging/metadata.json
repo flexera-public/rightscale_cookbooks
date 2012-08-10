@@ -6,12 +6,6 @@
   "maintainer_email": "support@rightscale.com",
   "license": "Copyright RightScale, Inc. All rights reserved.",
   "platforms": {
-<<<<<<< HEAD
-    "centos": "~> 5.8",
-    "redhat": "~> 5.8",
-    "ubuntu": "~> 10.04.0"
-=======
->>>>>>> master
   },
   "dependencies": {
     "rightscale": ">= 0.0.0",
@@ -58,7 +52,6 @@
   "groupings": {
   },
   "recipes": {
-<<<<<<< HEAD
     "logging::default": "Configures a native logging provider.",
     "logging::install_server": "Configures a syslog server.",
     "logging::do_server_start": "Starts syslog server.",
@@ -66,10 +59,5 @@
     "logging::do_server_restart": "Restarts syslog server.",
     "logging::do_server_reload": "Reloads syslog server."
   },
-  "version": "13.1.0"
-=======
-    "logging::default": "Configures a native logging provider."
-  },
   "version": "12.1.0"
->>>>>>> master
 }
