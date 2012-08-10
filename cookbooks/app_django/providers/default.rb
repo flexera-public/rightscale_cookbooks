@@ -55,6 +55,14 @@ action :install do
     apache_module mod
   end
 
+ # Install pip if not found
+  bash "install-pip" do
+    code <<-EOF
+      easy_install pip
+    EOF
+    not_if "which pip"
+  end
+
   # install Django 1.4
   python_pip "django" do
     version "#{dversion}"
