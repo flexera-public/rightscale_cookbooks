@@ -11,9 +11,6 @@ define :lb_tag, :action => :publish do
   pool_name = params[:name] == "" ? "localhost" : params[:name]
   tag_action = params[:action]
 
-  # Additional check for "/" in tag name
-  pool_name = pool_name.gsub(/[\/]/, '_')
-
   right_link_tag "loadbalancer:#{pool_name}=app" do
     action tag_action
   end
