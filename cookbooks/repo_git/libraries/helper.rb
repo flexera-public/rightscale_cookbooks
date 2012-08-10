@@ -8,7 +8,6 @@
 module RightScale
   module Repo
     class GitSshKey < SshKey
-      KEYFILE = "/tmp/gitkey"
 
       # Create bash script, which will set user defined ssh key required to access to private git source code repositories.
       #

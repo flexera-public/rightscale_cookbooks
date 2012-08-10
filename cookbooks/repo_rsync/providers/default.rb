@@ -47,7 +47,7 @@ action :pull do
   # -e, --rsh=COMMAND           specify the remote shell to use
   # --stats                     give some file-transfer stats
   execute "Downloading data with RSync" do
-    command "rsync -cavzP -e 'ssh -o StrictHostKeyChecking=no -i /tmp/rsync.key' --stats #{new_resource.account}@#{new_resource.repository}/* #{new_resource.destination}"
+    command "rsync -cavzP -e 'ssh -o StrictHostKeyChecking=no -i /tmp/ssh.key' --stats #{new_resource.account}@#{new_resource.repository}/* #{new_resource.destination}"
   end
 
   # Delete SSH key
