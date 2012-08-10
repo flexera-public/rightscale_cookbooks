@@ -28,7 +28,7 @@ define :db_register_master do
       action :remove
     end
   rescue Exception => e
-   # Just ignore if there was no slave tag to remove
+   log "  This server wasn't a slave previously"
   end
 
   active_tag = "rs_dbrepl:master_active=#{Time.now.strftime("%Y%m%d%H%M%S")}-#{node[:db][:backup][:lineage]}"

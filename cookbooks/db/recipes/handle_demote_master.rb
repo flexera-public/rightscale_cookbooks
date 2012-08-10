@@ -14,7 +14,12 @@ right_link_tag master_instance_uuid_tag do
   action :remove
 end
 
-master_active_tag = %x(rs_tag --list)[/(rs_dbrepl:master_active=.+)"/][$1]
+# Populating server_collection node
+server_collection "#{node[:rightscale][:instance_uuid]}" do
+  tags "server:uuid=#{node[:rightscale][:instance_uuid]}"
+end
+
+master_active_tag = node[:server_collection][:"#{node[:rightscale][:instance_uuid]}"].values.first.find { |tag| tag[/^rs_dbrepl:master_active=/] }
 log "  Clearing tag #{master_active_tag}"
 right_link_tag master_active_tag do
   action :remove
