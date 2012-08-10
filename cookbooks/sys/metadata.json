@@ -56,7 +56,7 @@
   "suggestions": {
   },
   "platforms": {
-    "centos": "~> 5.8",
+    "centos": "~> 6.2",
     "ubuntu": "~> 10.04.0",
     "redhat": "~> 5.8"
   },
