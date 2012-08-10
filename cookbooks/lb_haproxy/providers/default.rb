@@ -53,7 +53,7 @@ action :install do
     )
   end
 
-  pool_name = new_resource.pool_name
+
   # Install the haproxy config backend which is the part of the haproxy config that doesn't change.
   template "/etc/haproxy/haproxy.cfg.default_backend" do
     source "haproxy.cfg.default_backend.erb"
@@ -63,7 +63,7 @@ action :install do
     mode "0400"
     backup false
     variables(
-       :default_backend_line => "#{pool_name}_backend"
+       :default_backend_line => "#{new_resource.pool_name}_backend"
     )
   end
 
@@ -215,11 +215,6 @@ action :advanced_configs do
     )
   end
 
-  lb_haproxy_backend  "create main backend section" do
-    pool_name  pool_name
-    advanced_configs false
-  end
-
   # http-request auth section, supported only from haproxy v 1.4
   if backend_authorized_users
 
@@ -263,26 +258,6 @@ action :advanced_configs do
 
   end
 
-  # Restoring default config if we have dummy value
-  directory "/etc/haproxy/#{node[:lb][:service][:provider]}.d/dummy" do
-    action :delete
-    only_if do ::File.open('/etc/haproxy/haproxy.cfg.default_backend', 'r') { |f| f.read }.include? "dummy" end
-  end
-
-  template "/etc/haproxy/haproxy.cfg.default_backend" do
-    source "haproxy.cfg.default_backend.erb"
-    cookbook "lb_haproxy"
-    owner "haproxy"
-    group "haproxy"
-    mode "0400"
-    backup false
-    variables(
-       :default_backend_line => "#{pool_name}_backend"
-    )
-    only_if do ::File.open('/etc/haproxy/haproxy.cfg.default_backend', 'r') { |f| f.read }.include? "dummy" end
-    notifies :run, resources(:execute => "/etc/haproxy/haproxy-cat.sh")
-  end
-
 end
 
 
@@ -312,7 +287,7 @@ action :detach do
   pool_name = new_resource.pool_name
   backend_id = new_resource.backend_id
 
-  log "  Detaching #{new_resource.backend_id} from #{pool_name}"
+  log "  Detaching #{backend_id} from #{pool_name}"
 
   # Create haproxy service.
   service "haproxy" do
@@ -334,56 +309,6 @@ action :detach do
     action :delete
     backup false
     notifies :run, resources(:execute => "/etc/haproxy/haproxy-cat.sh")
-  end
-
-
-  # After detaching instance from backend pool we must check if that pool is default
-  # and if the detached instance was last in that pool
-  # if it is true we need to point haproxy to
-  # another existing pool or put default value if that pool was last one.
-  attached_servers = get_attached_servers(pool_name)
-  default_entry = ::File.open('/etc/haproxy/haproxy.cfg.default_backend', 'r') { |f| f.read }.include? "#{pool_name}"
-  # We use this conditional because "get_attached_servers" is evaluated before
-  # backend_id file deleted, so we just check that resulting set contain only one element
-  # and this element is id of detached instance
-
-
-  if attached_servers.size == 1 and attached_servers.include?(backend_id) and default_entry == true
-    # Removing pool store directory
-    full_pool_path = "/etc/haproxy/#{node[:lb][:service][:provider]}.d/#{pool_name}"
-
-    directory full_pool_path do
-      action :delete
-    end
-
-    first_connected_pool = ::File.basename(::Dir["/etc/haproxy/#{node[:lb][:service][:provider]}.d/*"].reject{|o| not (::File.directory?(o) and o != full_pool_path) }.first || "dummy")
-
-    # Create dummy backend section for haproxy correct operations
-    if first_connected_pool == "dummy"
-      directory "/etc/haproxy/#{node[:lb][:service][:provider]}.d/dummy"
-
-      lb_haproxy_backend  "create dummy backend section" do
-        pool_name  "dummy"
-        advanced_configs false
-      end
-    end
-
-    log "  Changing default pool to #{first_connected_pool}"
-    template "/etc/haproxy/haproxy.cfg.default_backend" do
-      source "haproxy.cfg.default_backend.erb"
-      cookbook "lb_haproxy"
-      owner "haproxy"
-      group "haproxy"
-      mode "0400"
-      backup false
-      variables(
-         :default_backend_line => "#{first_connected_pool}_backend"
-      )
-      only_if do ::File.open('/etc/haproxy/haproxy.cfg.default_backend', 'r') { |f| f.read }.include? "#{pool_name}" end  # not working
-      notifies :run, resources(:execute => "/etc/haproxy/haproxy-cat.sh")
-    end
-  else
-    log "  No pools to detach"
   end
 
 end
