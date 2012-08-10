@@ -14,7 +14,7 @@ end
 log "  Setup default load balancer resource."
 
 # Set provider for each pool name.
-vhosts(node[:lb][:pool_names]).each_key do | pool_name |
+pool_names(node[:lb][:pool_names]).each do | pool_name |
   lb pool_name do
     provider node[:lb][:service][:provider]
     persist true # Store this resource in node between converges.

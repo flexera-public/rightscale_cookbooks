@@ -24,7 +24,7 @@ if node[:lb][:advanced_config][:backend_authorized_users].length > 0
     user_array = users.split ", " # -> ["admin:123","admin2:345"]
     cred_store["#{backend_name}"]= user_array
 
-    backend_short_name = get_vhost_short_name(backend_name)
+    backend_short_name = backend_name.gsub(/[\/]/, '_')
 
     lb backend_short_name do
       backend_authorized_users  cred_store["#{backend_name}"]

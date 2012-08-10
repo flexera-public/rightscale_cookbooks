@@ -92,7 +92,7 @@ action :add_vhost do
 
   lb_haproxy_backend  "create main backend section" do
     pool_name  pool_name
-    advanced_configs "false"
+    advanced_configs false
   end
 
   action_advanced_configs
@@ -217,7 +217,7 @@ action :advanced_configs do
 
   lb_haproxy_backend  "create main backend section" do
     pool_name  pool_name
-    advanced_configs "false"
+    advanced_configs false
   end
 
   # http-request auth section, supported only from haproxy v 1.4
@@ -249,7 +249,7 @@ action :advanced_configs do
     # http-request auth realm _appserver if !Auth__appserver
     lb_haproxy_backend  "create main backend section" do
       pool_name  pool_name
-      advanced_configs "true"
+      advanced_configs true
     end
 
     # (Re)generate the haproxy config file.
@@ -364,7 +364,7 @@ action :detach do
 
       lb_haproxy_backend  "create dummy backend section" do
         pool_name  "dummy"
-        advanced_configs "false"
+        advanced_configs false
       end
     end
 

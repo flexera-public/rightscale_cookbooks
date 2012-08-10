@@ -14,7 +14,13 @@ end
 log "  Override load balancer to use HAProxy."
 node[:lb][:service][:provider] = "lb_haproxy"
 
-vhosts(node[:lb][:pool_names]).each do |pool_name_short, pool_name_full|
+# 2D array of pools
+# Example: ["_serverid"=>"/serverid", "_appsever"=>"/appsever", "default"=>"default"]
+pool_full_name = node[:lb][:pool_names].gsub(/\s+/, "").split(",").uniq.each
+pool_norm_name = node[:lb][:pool_names].gsub(/[\/]/, '_').split(", ").uniq.each
+pool_list_temp = pool_norm_name.zip pool_full_name
+
+pool_list_temp.each do |pool_name_short, pool_name_full|
   log "  Setup default load balancer resource for vhost '#{pool_name_short}'."
   log "  load balancer vhost full name is '#{pool_name_full}'."
 

@@ -12,7 +12,7 @@ class Chef::Recipe
 end
 
 log "  Remote recipe executed by do_attach_request"
-vhosts(node[:remote_recipe][:pool_names]).each_key do |pool_name|
+pool_names(node[:remote_recipe][:pool_names]).each do |pool_name|
   lb pool_name do
     backend_id node[:remote_recipe][:backend_id]
     backend_ip node[:remote_recipe][:backend_ip]

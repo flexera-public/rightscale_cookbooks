@@ -12,7 +12,7 @@ class Chef::Recipe
 end
 
 # Adding iptables rule to disable loadbalancers <-> application servers connections
-vhosts(node[:lb][:pool_names]).each_key do | pool_name |
+pool_names(node[:lb][:pool_names]).each do | pool_name |
   sys_firewall "Close this appserver's ports to all loadbalancers" do
     machine_tag "loadbalancer:#{pool_name}=lb"
     port node[:app][:port].to_i

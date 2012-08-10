@@ -11,9 +11,7 @@
 # Then update the apache port.conf file. If the ports are already configured correctly
 # nothing happens.
 
-define :lb_haproxy_backend,
-      :pool_name => "",
-      :advanced_configs=> "" do
+define :lb_haproxy_backend, :pool_name => "", :advanced_configs=> false do
 
   backend_name = params[:pool_name].gsub(".", "_") + "_backend"
   stats_uri = "stats uri #{node[:lb][:stats_uri]}" unless "#{node[:lb][:stats_uri]}".empty?
@@ -22,11 +20,7 @@ define :lb_haproxy_backend,
   health_uri = "option httpchk GET #{node[:lb][:health_check_uri]}" unless "#{node[:lb][:health_check_uri]}".empty?
   health_chk = "http-check disable-on-404" unless "#{node[:lb][:health_check_uri]}".empty?
 
-  if params[:advanced_configs] == "true"
-    userlist_pool_name = "#{params[:pool_name]}"
-  else
-    userlist_pool_name = ""
-  end
+  userlist_pool_name = params[:advanced_configs] ? "#{params[:pool_name]}" : ""
 
   # Create backend haproxy files for vhost it will answer for.
   template ::File.join("/etc/haproxy/#{node[:lb][:service][:provider]}.d", "#{params[:pool_name]}.cfg") do

@@ -28,7 +28,7 @@ echo "" >> ${CONF_FILE}
 
 for single_vhost in ${vhosts}
 do
- if [ -e /etc/haproxy/lb_haproxy.d/acl_${single_vhost}.conf ]; then
+  if [ -e /etc/haproxy/lb_haproxy.d/acl_${single_vhost}.conf ]; then
     cat "/etc/haproxy/lb_haproxy.d/acl_${single_vhost}.conf" >> ${CONF_FILE}
   fi
 done
@@ -38,8 +38,7 @@ echo "" >> ${CONF_FILE}
 for single_vhost in ${vhosts}
 do
   # this will add advanced use_backend statements to config file
-  if [ -r  /etc/haproxy/lb_haproxy.d/use_backend_${single_vhost}.conf ];
-  then
+  if [ -r  /etc/haproxy/lb_haproxy.d/use_backend_${single_vhost}.conf ]; then
     cat /etc/haproxy/lb_haproxy.d/use_backend_${single_vhost}.conf>> ${CONF_FILE}
   fi
 done
@@ -52,8 +51,7 @@ echo "" >> ${CONF_FILE}
 
 for single_vhost in ${vhosts}
 do
-  if [ -r  /etc/haproxy/lb_haproxy.d/userlist_backend_${single_vhost}.conf ];
-  then
+  if [ -r  /etc/haproxy/lb_haproxy.d/userlist_backend_${single_vhost}.conf ]; then
     cat /etc/haproxy/lb_haproxy.d/userlist_backend_${single_vhost}.conf>> ${CONF_FILE}
   fi
 done
