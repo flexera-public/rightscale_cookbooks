@@ -56,7 +56,7 @@ action :install do
   end
 
   # Include the public recipe for basic installation
-  include_recipe "python"
+  #include_recipe "python"
 
   # install Django 1.4
   python_pip "django" do
