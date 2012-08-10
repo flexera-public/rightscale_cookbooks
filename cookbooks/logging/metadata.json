@@ -57,7 +57,10 @@
   "recipes": {
     "logging::default": "Configures a native logging provider.",
     "logging::install_server": "Configures a syslog server.",
-    "logging::service_control": "Starts/Stops/Restarts/Reloads syslog server depending on user input."
+    "logging::do_server_start": "Starts syslog server.",
+    "logging::do_server_stop": "Stops syslog server.",
+    "logging::do_server_restart": "Restarts syslog server.",
+    "logging::do_server_reload": "Reloads syslog server."
   },
   "version": "13.1.0"
 }
