@@ -124,7 +124,7 @@ action :post_restore_cleanup do
       raise "FATAL: Attempting to restore #{snap_provider} #{snap_version} snapshot to #{current_provider} #{current_version} with :restore_version_check enabled."
     end
   else
-    Chef::Log.info "  Skipping #{provider} restore version check"
+    Chef::Log.info "  Skipping #{snap_provider} restore version check"
   end
 
   # create symlink from package default mysql datadir to restored datadir
