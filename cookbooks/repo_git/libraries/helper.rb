@@ -7,7 +7,11 @@
 
 module RightScale
   module Repo
-    class GitSshKey < SshKey
+    class GitSshKey
+
+      def initialize
+        @sshkey = SshKey.new
+      end
 
       # Create bash script, which will set user defined ssh key required to access to private git source code repositories.
       #
@@ -15,7 +19,7 @@ module RightScale
       #
       # @raises [RuntimeError] if ssh key string is empty
       def create(ssh_key)
-        super(ssh_key)
+        @sshkey.create(ssh_key)
 
         Chef::Log.info("  Creating GIT_SSH environment variable")
         ::File.open("#{KEYFILE}.sh", "w") do |sshfile|
@@ -29,7 +33,7 @@ module RightScale
 
       # Delete SSH key created by "create" method, after successful pull operation. And clear GIT_SSH.
       def delete
-        super
+        @sshkey.delete
         ::File.delete("#{KEYFILE}.sh")
       end
 
