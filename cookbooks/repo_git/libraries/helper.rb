@@ -7,7 +7,7 @@
 
 module RightScale
   module Repo
-    class GitSshKey < SshKey
+    class GitSshKey
 
       def initialize
         @sshkey = SshKey.new
