@@ -52,7 +52,12 @@
   "groupings": {
   },
   "recipes": {
-    "logging::default": "Configures a native logging provider."
+    "logging::default": "Configures a native logging provider.",
+    "logging::install_server": "Configures a syslog server.",
+    "logging::do_server_start": "Starts syslog server.",
+    "logging::do_server_stop": "Stops syslog server.",
+    "logging::do_server_restart": "Restarts syslog server.",
+    "logging::do_server_reload": "Reloads syslog server."
   },
   "version": "12.1.0"
 }
