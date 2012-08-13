@@ -218,7 +218,7 @@ action :code_update do
   log "  pip will install python packages from requirement.txt"
   # Installing python packages from /requirement.txt if it exists
   bash "Bundle python packages install" do
-    flags "-ex"
+    flags "-x"
     code <<-EOH
       #{node[:app_django][:pip_bin].chomp} install --requirement=#{deploy_dir}/requirement.txt
     EOH
