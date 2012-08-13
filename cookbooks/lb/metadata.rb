@@ -26,7 +26,6 @@ recipe "lb::setup_reverse_proxy_config", "Configures Apache reverse proxy."
 recipe "lb::setup_monitoring", "Installs the load balancer collectd plugin for monitoring support."
 recipe "lb::setup_advanced_configuration", "recipe for advanced load balancer configuration"
 
-#Comma separated list of URIs or FQDNs to create HAProxy pools for.
 attribute "lb/pools",
   :display_name => "Load balancer Pools",
   :description => "Comma-separated list of URIs or FQDNs for which the load balancer will create server pools to answer website requests.
