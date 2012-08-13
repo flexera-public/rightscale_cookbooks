@@ -55,7 +55,7 @@ Syntax:
   which is used to create the list of processes in the
   <tt>/etc/collectd/conf/processes.conf</tt> file.
 * The <tt>node[:rightscale][:process_list_array]</tt> will have any processes
-  listed in node[:rightscale][:process_list] merged into it, which supports
+  listed in <tt>node[:rightscale][:process_list]</tt> merged into it, which supports
   any legacy recipes, as well as allow the input to be manipulated in the
   RightScale Dashboard.
 
@@ -71,7 +71,7 @@ Syntax:
 * Used to log the start and end of a recipe using the 'Chef::Log.info' chef resource.
   Should be added at the beginning and end of a recipe.
 * Example:
-  ``========================= recipe::name : START/END =========================``
+  `========================= cookbook_name::recipe_name : START/END =========================`
 
 Syntax:
 
