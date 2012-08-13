@@ -50,7 +50,7 @@ attribute "app_django/project/opt_pip_list",
   :description => "A space-separated list of optional python package(s), along with their versions in the Format:  py-pkg1==version  py-pkg2==version py-pkg3==version. Example: simplejson==1.7.1, Markdown==2.0.3",
   :required => "optional",
   :default => "",
-  :recipes => ["app_django::install_custom_python_packages"]
+  :recipes => ["app_django::default"]
 
 attribute "app_django/project/custom_cmd",
   :display_name => "Custom Django command",

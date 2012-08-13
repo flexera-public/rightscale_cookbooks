@@ -30,7 +30,7 @@ case node[:platform]
 end
 
 # Path to PIP executable
-set[:app_django][:pip_bin]="/usr/bin/pip-python"
+set[:app_django][:pip_bin]="/usr/bin/pip"
 # Path to python executable
 set[:app_django][:python_bin]="/usr/bin/python"
 # List of additional python packages, required for django application

@@ -64,6 +64,38 @@ action :install do
     action :install
   end
 
+  # Install specified python packages
+
+  # Variable node[:app_django][:project][:opt_pip_list] contains space separated list of Python packages along
+  # with their versions in the format:
+  #
+  #   py-pkg1==version  py-pkg2==version py-pkg3==version
+  #
+  log "  Installing user specified python packages:"
+  ruby_block "Install custom python packages" do
+    block do
+
+      pip_list = node[:app_django][:project][:opt_pip_list]
+
+      # Split pip_list into an array
+      pip_list = pip_list.split
+      # Installing python packages
+      pip_list.each do |pip_name|
+        begin
+          if pip_name =~ /(.+)==([\d\.]{2,})/
+            name = "#{$1}==#{$2}"
+          else
+            name = pip_name
+          end
+        end
+        raise "Error installing python packages!" unless
+        system("#{node[:app_django][:pip_bin].chomp} install #{name}")
+      end
+
+    end
+     only_if do (node[:app_django][:project][:opt_pip_list]!="") end
+  end
+
   # Installing database adapter for Django
   db_adapter = node[:app][:db_adapter]
   log "Installing python packages for database support"
@@ -176,6 +208,21 @@ action :code_update do
     app_user node[:app][:user]
     repository node[:repo][:default][:repository]
     persist false
+  end
+
+  # Installing python packages using requirement.txt
+  #
+  # If the checked application contains a requirement.txt, then we can install all
+  # the required python packages using "pip install" command.
+  #
+  log "  pip will install python packages from requirement.txt"
+  # Installing python packages from /requirement.txt if it exists
+  bash "Bundle python packages install" do
+    flags "-ex"
+    code <<-EOH
+      #{node[:app_django][:pip_bin].chomp} install --requirement=#{deploy_dir}/requirement.txt
+    EOH
+    only_if do File.exists?("#{deploy_dir}/requirement.txt")  end
   end
 
   # Restarting apache
