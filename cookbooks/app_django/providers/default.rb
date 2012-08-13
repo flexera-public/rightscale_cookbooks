@@ -131,7 +131,7 @@ action :setup_vhost do
 
   # Configure apache vhost for Django
   log "  Creating apache.vhost"
-  web_app "http-#{port}-#{node[:web_apache][:server_name]}.vhost" do
+  web_app "http-#{django_port}-#{node[:web_apache][:server_name]}.vhost" do
     template                   "apache_mod_wsgi_vhost.erb"
     docroot                    project_root
     vhost_port                 django_port.to_s
