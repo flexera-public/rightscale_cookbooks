@@ -153,7 +153,7 @@ action :setup_vhost do
     owner  "#{node[:app][:user]}"
     cookbook 'app_django'
     variables(
-            :doc_root => project_root,
+            :docroot => project_root,
             :project =>  node[:web_apache][:application_name]
           )
   end
