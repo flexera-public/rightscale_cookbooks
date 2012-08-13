@@ -43,10 +43,13 @@ end
 action :install do
   # Installing required packages
   packages = new_resource.packages
-  log "  Packages which will be installed: #{packages}"
+ 
+  if not packages.nil?
+    log "  Packages which will be installed #{packages}"
 
-  packages.each do |p|
-    package p
+    packages.each do |p|
+      package p
+    end
   end
 
   # Installing user-specified additional php modules
@@ -56,8 +59,8 @@ action :install do
   end
 
   # Installing php modules dependencies
-  log "  Module dependencies which will be installed: #{node[:app_php][:module_dependencies]}"
-  node[:app_php][:module_dependencies].each do |mod|
+  log "  Module dependencies which will be installed: #{node[:app][:module_dependencies]}"
+  node[:app][:module_dependencies].each do |mod|
     apache_module mod
   end
 
@@ -93,33 +96,21 @@ end
 # Setup PHP Database Connection
 action :setup_db_connection do
   project_root = new_resource.destination
+  db_name = new_resource.database_name
   # Make sure config dir exists
   directory ::File.join(project_root, "config") do
     recursive true
-    owner node[:app_php][:app_user]
-    group node[:app_php][:app_user]
+    owner node[:app][:user]
+    group node[:app][:group]
   end
 
-  db_adapter = node[:app_php][:db_adapter]
   # Tells selected db_adapter to fill in it's specific connection template
-  if db_adapter == "mysql"
-    db_mysql_connect_app ::File.join(project_root, "config", "db.php") do
-      template "db.php.erb"
-      cookbook "app_php"
-      database node[:app_php][:db_schema_name]
-      owner node[:app_php][:app_user]
-      group node[:app_php][:app_user]
-    end
-  elsif db_adapter == "postgresql"
-    db_postgres_connect_app ::File.join(project_root, "config", "db.php") do
-      template "db.php.erb"
-      cookbook "app_php"
-      database node[:app_php][:db_schema_name]
-      owner node[:app_php][:app_user]
-      group node[:app_php][:app_user]
-    end
-  else
-    raise "Unrecognized database adapter #{node[:app_php][:db_adapter]}, exiting"
+  db_connect_app ::File.join(project_root, "config", "db.php") do
+    template "db.php.erb"
+    cookbook "app_php"
+    database db_name
+    owner node[:app][:user]
+    group node[:app][:group]
   end
 end
 
@@ -136,12 +127,18 @@ action :code_update do
   repo "default" do
     destination deploy_dir
     action node[:repo][:default][:perform_action].to_sym
-    app_user node[:app_php][:app_user]
+    app_user node[:app][:user]
     repository node[:repo][:default][:repository]
     persist false
   end
 
   # Restarting apache
   action_restart
+
+end
+
+action :setup_monitoring do
+
+  log "  Monitoring resource is not implemented in php framework yet. Use apache monitoring instead."
 
 end

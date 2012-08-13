@@ -17,13 +17,11 @@ set_unless[:db_postgres][:version] = "9.1"
 set_unless[:db_postgres][:tmpdir] = "/tmp"
 set_unless[:db_postgres][:ident_file] = ""
 set_unless[:db_postgres][:pid_file] = ""
-set_unless[:db_postgres][:datadir_relocate] = "/mnt/storage"
 set_unless[:db_postgres][:bind_address] = cloud[:private_ips][0]
 
 # Platform specific attributes
 case platform
 when "centos"
-  set[:db_postgres][:socket] = "/var/run/postgresql"
   set_unless[:db_postgres][:basedir] = "/var/lib/pgsql/#{node[:db_postgres][:version]}"
   set_unless[:db_postgres][:confdir] = "/var/lib/pgsql/#{node[:db_postgres][:version]}/data"
   set_unless[:db_postgres][:datadir] = "/var/lib/pgsql/#{node[:db_postgres][:version]}/data"

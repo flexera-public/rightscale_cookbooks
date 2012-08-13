@@ -86,5 +86,9 @@ add_action :install
 add_action :configure
   attribute :remote_server, :kind_of => String
 
-actions @action_list
+# == Configure server
+# Configures a logging server
+#
+add_action :configure_server
 
+actions @action_list

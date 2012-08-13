@@ -5,9 +5,9 @@ description      "Installs/configures a MySQL database client and server."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "12.1.0"
 
-supports "centos", "~> 5.8"
-supports "redhat", "~> 5.8"
-supports "ubuntu", "~> 10.04.0"
+# supports "centos", "~> 5.8", "~> 6.2"
+# supports "redhat", "~> 5.8"
+# supports "ubuntu", "~> 10.04", "~> 12.04"
 
 depends "db"
 depends "block_device"
@@ -54,6 +54,17 @@ attribute "db_mysql/log_bin",
   :required => "optional",
   :default => "/mnt/ephemeral/mysql-binlogs/mysql-bin"
 
+attribute "db_mysql/binlog_format",
+  :display_name => "MySQL Binlog Format",
+  :description => "Defines the format of your MySQL stored binlog files. Sets the 'binlog_format' option in the MySQL config file. Accepted options: STATEMENT, ROW, and MIXED",
+  :recipes => [
+    "db_mysql::default_5_1",
+    "db_mysql::default_5_5"
+   ],
+  :required => "optional",
+  :choice => ["STATEMENT", "ROW", "MIXED"],
+  :default => "MIXED"
+
 attribute "db_mysql/tmpdir",
   :display_name => "MySQL Temp Directory Destination",
   :description => "Defines the location of your MySQL temp directory. Sets the 'tmpdir' variable in the MySQL config file. Example: /tmp",
@@ -63,4 +74,14 @@ attribute "db_mysql/tmpdir",
    ],
   :required => "optional",
   :default => "/mnt/ephemeral/mysqltmp"
+
+attribute "db_mysql/init_timeout",
+  :display_name => "MySQL Init Timeout",
+  :description => "Defines timeout to wait for a MySQL socket connection before a READ LOCK. Default: 60",
+  :recipes => [
+    "db_mysql::default_5_1",
+    "db_mysql::default_5_5"
+  ],
+  :required => "optional",
+  :default => "60"
 

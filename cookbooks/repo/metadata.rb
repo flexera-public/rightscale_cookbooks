@@ -5,9 +5,9 @@ description      "Abstract cookbook for managing source code repositories."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "12.1.0"
 
-supports "centos", "~> 5.8"
-supports "redhat", "~> 5.8"
-supports "ubuntu", "~> 10.04.0"
+# supports "centos", "~> 5.8", "~> 6.2"
+# supports "redhat", "~> 5.8"
+# supports "ubuntu", "~> 10.04", "~> 12.04"
 
 depends "rightscale"
 depends "repo_svn"
@@ -25,9 +25,9 @@ attribute "repo/default/provider",
   :recipes => ["repo::default"]
 
 attribute "repo/default/repository",
-  :display_name => "Repository URL",
-  :description => "The URL that points to the location of the repository that contains the application code. Specify a read-only URL. Example: http://mysvn.net/app/ or git://github.com/username/myapp.git",
-  :required => "recommended",
+  :display_name => "Repository URL/ROS Container",
+  :description => "The URL that points to the location of the repository that contains the application code. Or the name of the ROS container where a tarball of the application code will be retrieved from if you use 'repo_ros' provider. For Amazon S3, use the bucket name. Example: mycontainer,  http://mysvn.net/app/ or git://github.com/username/myapp.git",
+  :required => "required",
   :recipes => ["repo::default"]
 
 attribute "repo/default/revision",
@@ -69,6 +69,8 @@ attribute "repo/default/storage_account_provider",
     "s3",
     "cloudfiles",
     "cloudfilesuk",
+    "google",
+    "azure",
     "SoftLayer_Dallas",
     "SoftLayer_Singapore",
     "SoftLayer_Amsterdam"
@@ -84,12 +86,6 @@ attribute "repo/default/storage_account_id",
 attribute "repo/default/storage_account_secret",
   :display_name => "ROS Storage Account Secret",
   :description => "Cloud storage account secret required to access specified cloud storage location. For Amazon S3, use your AWS secret access key (e.g., cred:AWS_SECRET_ACCESS_KEY). For Rackspace Cloud Files, use your Rackspace account API key.  Example: cred:RACKSPACE_AUTH_KEY",
-  :required => "optional",
-  :recipes => ["repo::default"]
-
-attribute "repo/default/container",
-  :display_name => "ROS Container",
-  :description => "The name of the ROS container where a tarball of the application code will be retrieved from. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name. Example: mycontainer",
   :required => "optional",
   :recipes => ["repo::default"]
 

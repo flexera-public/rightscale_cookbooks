@@ -36,12 +36,14 @@ bash "Load kernel modules" do
   EOS
   # These modules are compiled into the kernel on Ubuntu.
   not_if { node[:platform] == "ubuntu" }
+  only_if { File.exists?("/proc/modules") }
 end
 
 bash "Load xfs kernel module" do
   flags '-ex'
   code 'modprobe xfs'
   not_if { node[:platform] == "redhat" }
+  only_if { File.exists?("/proc/modules") }
 end
 
 # Setup block_device resources
@@ -67,7 +69,7 @@ do_for_all_block_devices node[:block_device] do |device|
     vg_data_percentage get_device_or_default(node, device, :vg_data_percentage)
 
     primary_cloud get_device_or_default(node, device, :backup, :primary, :cloud)
-    primary_endpoint get_device_or_default(node, device, :backup, :primary, :endpoint)
+    primary_endpoint get_device_or_default(node, device, :backup, :primary, :endpoint) || ""
     primary_user get_device_or_default(node, device, :backup, :primary, :cred, :user)
     primary_secret get_device_or_default(node, device, :backup, :primary, :cred, :secret)
 

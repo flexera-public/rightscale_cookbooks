@@ -31,9 +31,9 @@ set_unless[:apache][:serversignature] = "Off "
 
 # DISTRO specific config dir
 case platform
-when "ubuntu", "debian"
+when "ubuntu"
   set[:apache][:config_subdir] = "apache2"
-when "centos", "fedora", "suse","redhat"
+when "centos", "redhat"
   set[:apache][:config_subdir] = "httpd"
 end
 
@@ -49,3 +49,6 @@ set[:web_apache][:docroot] = "/home/webapp/#{web_apache[:application_name]}"
 
 # Default servername for web_apache vhost file
 set[:web_apache][:server_name] = "localhost"
+
+# Maintenance mode attributes
+set_unless[:web_apache][:maintenance_file] = ""

@@ -58,10 +58,8 @@ db DATA_DIR do
   action :setup_monitoring
 end
 
-# Force a backup
-db_request_backup "do force backup" do
-  force true
-end
+# Perform a backup
+db_request_backup "do backup"
 
 # Schedule master backups
 include_recipe "db::do_primary_backup_schedule_enable"

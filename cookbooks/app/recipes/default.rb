@@ -10,6 +10,13 @@ rightscale_marker :begin
 log "  Provider is #{node[:app][:provider]}"
 log "  Application IP is #{node[:app][:ip]}"
 log "  Application port is #{node[:app][:port]}"
+
+
+directory "#{node[:app][:destination]}" do
+  recursive true
+end
+
+
 log "  Installing #{node[:app][:packages]}" if node[:app][:packages]
 
 # Setup default values for application resource and install required packages

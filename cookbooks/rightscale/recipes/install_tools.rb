@@ -13,9 +13,13 @@ SANDBOX_BIN_GEM = "/opt/rightscale/sandbox/bin/gem"
 RACKSPACE_GEM = "right_rackspace"
 RACKSPACE_VERSION = "0.0.0.20111110"
 
+# right_cloud_api gem
+RIGHT_CLOUD_API_GEM = "right_cloud_api"
+RIGHT_CLOUD_API_VERSION = "0.0.0"
+
 # rightscale_tools gem
 RS_TOOLS_GEM = "rightscale_tools"
-RS_TOOLS_VERSION = "1.3.0"
+RS_TOOLS_VERSION = "1.3.8"
 
 COOKBOOK_DEFAULT_GEMS = ::File.join(::File.dirname(__FILE__), "..", "files", "default")
 
@@ -25,6 +29,14 @@ COOKBOOK_DEFAULT_GEMS = ::File.join(::File.dirname(__FILE__), "..", "files", "de
 r = gem_package "#{COOKBOOK_DEFAULT_GEMS}/#{RACKSPACE_GEM}-#{RACKSPACE_VERSION}.gem" do
   gem_binary SANDBOX_BIN_GEM
   version RACKSPACE_VERSION
+  action :nothing
+end
+r.run_action(:install)
+
+# right_cloud_api
+r = gem_package "#{COOKBOOK_DEFAULT_GEMS}/#{RIGHT_CLOUD_API_GEM}-#{RIGHT_CLOUD_API_VERSION}" do
+  gem_binary SANDBOX_BIN_GEM
+  version RIGHT_CLOUD_API_VERSION
   action :nothing
 end
 r.run_action(:install)
