@@ -218,11 +218,11 @@ action :code_update do
   log "  pip will install python packages from requirement.txt"
   # Installing python packages from /requirement.txt if it exists
   bash "Bundle python packages install" do
-    flags "-x"
+    flags "-ex"
     code <<-EOH
       #{node[:app_django][:pip_bin].chomp} install --requirement=#{deploy_dir}/requirement.txt
     EOH
-    only_if do File.exists?("#{deploy_dir}/requirement.txt")  end
+    only_if { ::File.exists?("#{node[:app][:destination]}/requirement.txt") }
   end
 
   # Restarting apache

@@ -17,8 +17,6 @@ depends "rightscale"
 depends "python"
 
 recipe  "app_django::default", "Installs the Django application server."
-recipe  "app_django::install_custom_python_packages", "Custom python packages to install."
-recipe  "app_django::install_required_app_python_packages", "Bundler python packages install. requirement.txt must be present in app directory."
 recipe  "app_django::run_custom_django_commands", "Run specific user defined commands. Commands will be executed in the app directory."
 
 
