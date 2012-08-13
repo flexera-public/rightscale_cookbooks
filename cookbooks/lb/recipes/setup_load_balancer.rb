@@ -11,7 +11,7 @@ class Chef::Recipe
   include RightScale::App::Helper
 end
 
-POOL_NAMES = node[:lb][:pool_names]
+POOL_NAMES = node[:lb][:pools]
 
 log "  Install load balancer"
 

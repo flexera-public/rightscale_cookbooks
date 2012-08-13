@@ -14,7 +14,7 @@ end
 attrs = {:app => Hash.new}
 attrs[:app][:lb_ip] = node[:cloud][:private_ips][0]
 
-pool_names(node[:lb][:pool_names]).each do | pool_name |
+pool_names(node[:lb][:pools]).each do | pool_name |
   remote_recipe "Removing loadbalancers from app servers firewall" do
     recipe "app::handle_loadbalancers_deny"
     recipients_tags "loadbalancer:#{pool_name}=app"

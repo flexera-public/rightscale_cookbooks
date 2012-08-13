@@ -15,7 +15,7 @@ end
 DROP_THRESHOLD = 3
 
 # Iterate through each vhost.
-pool_names(node[:lb][:pool_names]).each do |pool_name|
+pool_names(node[:lb][:pools]).each do |pool_name|
 
   log "Attach all for [#{pool_name}]"
   # Obtain current list from lb config file.

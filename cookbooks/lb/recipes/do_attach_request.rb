@@ -11,7 +11,7 @@ class Chef::Recipe
   include RightScale::App::Helper
 end
 
-pool_names(node[:lb][:pool_names]).each do |pool_name|
+pool_names(node[:lb][:pools]).each do |pool_name|
   log "  Adding tag to answer for vhost load balancing - #{pool_name}."
   lb_tag pool_name
 
