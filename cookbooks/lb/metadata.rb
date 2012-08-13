@@ -27,7 +27,7 @@ recipe "lb::setup_monitoring", "Installs the load balancer collectd plugin for m
 recipe "lb::setup_advanced_configuration", "recipe for advanced load balancer configuration"
 
 #Comma separated list of URIs or FQDNs to create HAProxy pools for.
-attribute "lb/server_pools",
+attribute "lb/pools",
   :display_name => "Load balancer Pools",
   :description => "Comma-separated list of URIs or FQDNs for which the load balancer will create server pools to answer website requests.
 First entry will be the default backend and will answer for all URIs and FQDNs not listed here.
