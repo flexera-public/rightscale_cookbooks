@@ -10,17 +10,6 @@ rightscale_marker :begin
 log "  Setting provider specific settings for Django."
 node[:app][:provider] = "app_django"
 
-# Setting generic app attributes
-platform = node[:platform]
-case platform
-when "ubuntu"
-  node[:app][:user] = "www-data"
-  node[:app][:group] = "www-data"
-when "centos", "redhat"
-  node[:app][:user] = "apache"
-  node[:app][:group] = "apache"
-end
-
 case node[:platform]
   when "ubuntu","debian"
     node[:app][:packages] = [
@@ -34,6 +23,8 @@ case node[:platform]
       "libapache2-mod-wsgi",
       "python-pip"
      ]
+    node[:app][:user] = "www-data"
+    node[:app][:group] = "www-data"
   when "centos","redhat","redhatenterpriseserver","fedora","suse"
     node[:app][:packages] = [
       "zlib-devel",
@@ -48,7 +39,8 @@ case node[:platform]
       "mod_wsgi",
       "python-pip"
      ]
-
+    node[:app][:user] = "apache"
+    node[:app][:group] = "apache"
   else
     raise "Unrecognized distro #{node[:platform]}, exiting "
 end
@@ -56,7 +48,7 @@ end
 # Setting app LWRP attribute
 node[:app][:root] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
 # Django shares the same doc root with the application destination
-node[:app][:destination]="#{node[:app][:root]}"
+node[:app][:destination] = node[:app][:root]
 
 directory "#{node[:app][:destination]}" do
   recursive true
