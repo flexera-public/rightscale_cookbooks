@@ -9,15 +9,12 @@
 # Since this backup is a snapshot of a filesystem, it will check if the database has
 # been 'initialized', else it will fail.
 #
-# @param [Boolean] force If false, if a backup is currently running, will error out stating so.
-#   If true, if a backup is currently running, will kill that process and take over the lock.
 # @param [String] backup_type If 'primary' will do a primary backup using node attributes specific
 #   to the main backup.  If 'secondary' will do a secondary backup using node attributes for
 #   secondary.  Secondary uses 'ROS'.
 #
-# @raises [RuntimeError] If force is false and a backup is currently running, will raise an exception.
 # @raises [RuntimeError] If database is not 'initialized'
-define :db_do_backup, :force => false, :backup_type => "primary" do
+define :db_do_backup, :backup_type => "primary" do
 
   class Chef::Recipe
     include RightScale::BlockDeviceHelper
@@ -30,7 +27,6 @@ define :db_do_backup, :force => false, :backup_type => "primary" do
   NICKNAME = get_device_or_default(node, :device1, :nickname)
   DATA_DIR = node[:db][:data_dir]
 
-  do_force        = params[:force]
   do_backup_type  = params[:backup_type] == "primary" ? "primary" : "secondary"
 
   # Check if database is able to be backed up (initialized)
@@ -49,17 +45,9 @@ define :db_do_backup, :force => false, :backup_type => "primary" do
   db DATA_DIR do
     action :pre_backup_check
   end
-
-  # Acquire the backup lock or die
-  # If 'force' is true, kills other backups running.
-  block_device NICKNAME do
-    action :backup_lock_take
-    force do_force
-  end
-
+  
   log "  Performing (#{do_backup_type} backup) lock DB and write backup info file..."
   db DATA_DIR do
-    timeout node[:db_mysql][:init_timeout]
     action [ :lock, :write_backup_info ]
   end
 
@@ -98,10 +86,5 @@ define :db_do_backup, :force => false, :backup_type => "primary" do
   log "  Performing post backup cleanup..."
   db DATA_DIR do
     action :post_backup_cleanup
-  end
-
-  # Removing backup lock
-  block_device NICKNAME do
-    action :backup_lock_give
   end
 end
