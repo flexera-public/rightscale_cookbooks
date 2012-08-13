@@ -68,10 +68,10 @@ Syntax:
 * Accepts only one parameter, "location" which can be used to denote 
   the :start or :end of a recipe. It can also be :begin, :stop, and 
   the string versions.
-* Used to log the start and end of a recipe using the 'log' chef resource.
+* Used to log the start and end of a recipe using the 'Chef::Log.info' chef resource.
   Should be added at the beginning and end of a recipe.
-* Log marker:
-  ```========================= recipe::name : START/END =========================```
+* Example:
+  ``========================= recipe::name : START/END =========================``
 
 Syntax:
 
