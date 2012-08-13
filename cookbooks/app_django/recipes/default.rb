@@ -10,6 +10,17 @@ rightscale_marker :begin
 log "  Setting provider specific settings for Django."
 node[:app][:provider] = "app_django"
 
+# Setting generic app attributes
+platform = node[:platform]
+case platform
+when "ubuntu"
+  node[:app][:user] = "www-data"
+  node[:app][:group] = "www-data"
+when "centos", "redhat"
+  node[:app][:user] = "apache"
+  node[:app][:group] = "apache"
+end
+
 case node[:platform]
   when "ubuntu","debian"
     node[:app][:packages] = [

@@ -88,7 +88,7 @@ action :install do
             name = pip_name
           end
         end
-        raise "Error installing python packages!" unless
+        raise "Error installing #{name} python packages!" unless
         system("#{node[:app_django][:pip_bin].chomp} install #{name}")
       end
 
@@ -148,8 +148,8 @@ action :setup_vhost do
   template "#{project_root}/wsgi.py" do
     action :create
     source "wsgi.py.erb"
-    group "root"
-    owner "#{node[:app][:user]}"
+    group  "root"
+    owner  "#{node[:app][:user]}"
     cookbook 'app_django'
     variables(
             :doc_root => project_root,
