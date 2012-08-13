@@ -5,15 +5,15 @@ description      "Installs and configures ntp as a client or server"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "12.1.0"
 
-supports "centos", "~> 5.8"
-supports "redhat", "~> 5.8"
-supports "ubuntu", "~> 10.04.0"
+# supports "centos", "~> 5.8", "~> 6.2"
+# supports "redhat", "~> 5.8"
+# supports "ubuntu", "~> 10.04", "~> 12.04"
 
 depends "rightscale"
 
 recipe "sys_ntp", "Installs and configures ntp client."
 
-%w{ ubuntu debian redhat centos fedora }.each do |os|
+%w{ ubuntu redhat centos }.each do |os|
   supports os
 end
 

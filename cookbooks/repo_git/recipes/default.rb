@@ -9,7 +9,7 @@ rightscale_marker :begin
 
 # Install git client
 case node[:platform]
-when "debian", "ubuntu"
+when "ubuntu"
   package "git-core"
 else
   package "git"

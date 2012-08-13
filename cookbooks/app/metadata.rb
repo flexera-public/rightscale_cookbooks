@@ -5,9 +5,9 @@ description      "Common utilities for RightScale managed application servers"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "12.1.0"
 
-supports "centos", "~> 5.8"
-supports "redhat", "~> 5.8"
-supports "ubuntu", "~> 10.04.0"
+# supports "centos", "~> 5.8", "~> 6.2"
+# supports "redhat", "~> 5.8"
+# supports "ubuntu", "~> 10.04", "~> 12.04"
 
 depends "sys_firewall"
 depends "rightscale"
@@ -52,3 +52,17 @@ attribute "app/port",
   :default => "8000",
   :recipes => [ 'app::default', 'app::handle_loadbalancers_allow', 'app::handle_loadbalancers_deny' ],
   :required => "optional"
+
+attribute "app/database_name",
+  :display_name => "Database Schema Name",
+  :description => "Enter the name of the database schema to which applications will connect to. The database schema should have been created when the initial database was first set up. This input will be used to set the application server's database configuration file so that applications can connect to the correct schema within the database.  This input is also used for database dump backups in order to determine which schema will be backed up.  Example: mydbschema",
+  :required => "required",
+  :recipes => ["app::setup_db_connection"]
+
+attribute "app/db_adapter",
+  :display_name => "Database adapter for application",
+  :description => "Enter the database adapter which will be used to connect to the database. Example: mysql",
+  :default => "mysql",
+  :choice => [ "mysql", "postgresql" ],
+  :recipes => ["app::default"]
+

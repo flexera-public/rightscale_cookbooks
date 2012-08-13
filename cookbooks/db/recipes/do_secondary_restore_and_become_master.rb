@@ -19,10 +19,8 @@ end
 
 include_recipe "db::setup_replication_privileges"
 
-# Force first backup so that slaves can init from this master
-db_request_backup "do force backup" do
-  force true
-end
+# Perform first backup so that slaves can init from this master
+db_request_backup "do backup"
 
 include_recipe "db::do_primary_backup_schedule_enable"
 
