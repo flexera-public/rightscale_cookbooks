@@ -1,7 +1,7 @@
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
-description      "RightScale Database Manager"
+description      "Installs/Configures a memcached server"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "13.1.0"
 
@@ -15,7 +15,7 @@ depends "sys_firewall"
 depends "logrotate"
 
 
-recipe "memcached::default", "Default recipe for memcached setup. Installs server tags."
+recipe "memcached::default", "Default recipe for memcached setup."
 recipe "memcached::install_server", "Installation and configuration recipe for memcached. Does memcached setup and configuration, opens port in firewall, configures collectd and logrotate."
 recipe "memcached::do_start", "Start memcached service."
 recipe "memcached::do_restart", "Restart memcached service."
