@@ -51,11 +51,13 @@ set_unless[:db][:current_master_ip] = nil
 #  overloading the API and cloud providers.  If every rightscale server sent a request at the same
 #  time to perform a snapshot it would be a huge usage spike.  The random start time even out these spikes.
 
-# Generate random minute
+# Generate random time
 # Master and slave backup times are staggered by 30 minutes.
+cron_h = rand(23)
 cron_min = 5 + rand(24)
-# Master backup every 4 hours at a random minute between 5-29
-set_unless[:db][:backup][:primary][:master][:cron][:hour] = "*/4"
+
+# Master backup daily at a random hour and a random minute between 5-29
+set_unless[:db][:backup][:primary][:master][:cron][:hour] = cron_h
 set_unless[:db][:backup][:primary][:master][:cron][:minute] = cron_min
 
 # Slave backup every hour at a random minute 30 minutes offset from the master.
