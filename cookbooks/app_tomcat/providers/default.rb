@@ -278,9 +278,13 @@ action :setup_vhost do
   end
 
   # Workaround for Ubuntu 12.04
-  execute "revome_default_workers_properties_include" do
+  # The /etc/apache2/mods-enabled/jk.conf now comes with a JkWorkersFile include that conflicts
+  # with the include we make in */conf.d/mod_jk.conf pointing to the custom
+  # /etc/tomcat6/workers.properties file creates from an .erb template resulting
+  # in apache failing to restart after a configuration check
+  execute "remove_default_workers_properties_include" do
     command "ruby -pi -e \"gsub(/(JkWorkersFile)/,'#\\1')\" /etc/apache2/mods-enabled/jk.conf"
-    only_if do node[:platform] == "ubuntu" and node[:platform_version] == "12.04" end
+    only_if { node[:platform] == "ubuntu" and node[:platform_version] == "12.04" }
   end
 
 # Removing preinstalled apache ssl.conf on RHEL images as it conflicts with ports.conf of web_apache

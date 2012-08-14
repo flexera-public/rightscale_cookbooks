@@ -10,9 +10,10 @@
   or your own implementation of "app" resource. See the "app" cookbook README for
   details.
 * Requires a VM launched from a RightScale managed RightImage
-* Tested on CentOS 5.6 RightImage
-* Tested on Ubuntu 10.04 RightImage
-* Tested on RedHat 5.8 RightImage
+ Tested on following RightImages:
+* CentOS 5.8, 6.2
+* Ubuntu 10.04, 12.04
+* RedHat 5.8
 
 == COOKBOOKS DEPENDENCIES:
 Please see the <tt>metadata.rb</tt> file for the latest dependencies.
