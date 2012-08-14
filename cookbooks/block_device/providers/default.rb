@@ -25,18 +25,6 @@ action :snapshot do
   device.snapshot
 end
 
-# Acquire the backup lock
-action :backup_lock_take do
-  device = init(new_resource)
-  device.backup_lock_take(new_resource.force)
-end
-
-# Remove the backup lock
-action :backup_lock_give do
-  device = init(new_resource)
-  device.backup_lock_give
-end
-
 # Prepare device for primary backup
 action :primary_backup do
   device = init(new_resource)
