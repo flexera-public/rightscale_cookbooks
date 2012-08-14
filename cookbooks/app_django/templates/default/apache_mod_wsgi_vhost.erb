@@ -17,20 +17,20 @@
     Deny from all
   </DirectoryMatch>
 
-  Alias /robots.txt /<%= @docroot %>/static/robots.txt
-  Alias /favicon.ico /<%= @docroot %>/static/favicon.ico
+  Alias /robots.txt <%=@params[:docroot]%>/static/robots.txt
+  Alias /favicon.ico <%=@params[:docroot]%>/static/favicon.ico
 
-  AliasMatch ^/([^/]*\.css) /<%= @docroot %>/static/css/$1
+  AliasMatch ^/([^/]*\.css) <%=@params[:docroot]%>/static/css/$1
 
-  Alias /media/ /<%= @docroot %>/media/
-  Alias /static/ /<%= @docroot %>/static/
+  Alias /media/ <%=@params[:docroot]%>/media/
+  Alias /static/ <%=@params[:docroot]%>/static/
 
-  <Directory /<%= @docroot %>/static>
+  <Directory "<%=@params[:docroot]%>/static">
     Order deny,allow
     Allow from all
   </Directory>
 
-  <Directory /<%= @docroot %>/media>
+  <Directory "<%=@params[:docroot]%>/media">
     Order deny,allow
     Allow from all
   </Directory>
@@ -39,9 +39,9 @@
         LoadModule wsgi_module modules/mod_wsgi.so
     </IfModule>
 
-  WSGIScriptAlias / /<%= @docroot %>/wsgi.py
+  WSGIScriptAlias / <%=@params[:docroot]%>/wsgi.py
 
-  <Directory /<%= @docroot %>>
+  <Directory "<%=@params[:docroot]%>">
     <Files wsgi.py>
       Order allow,deny
       Allow from all
