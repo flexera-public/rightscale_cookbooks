@@ -95,7 +95,7 @@ action :add_vhost do
     advanced_configs false
   end
 
-  action_advanced_configs
+  #action_advanced_configs
 
   # (Re)generate the haproxy config file.
   execute "/etc/haproxy/haproxy-cat.sh" do
@@ -162,7 +162,7 @@ action :attach do
   end
 
 
-  action_advanced_configs
+  #action_advanced_configs
 
 
 
