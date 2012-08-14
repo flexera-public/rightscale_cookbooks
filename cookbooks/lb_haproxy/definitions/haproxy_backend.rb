@@ -5,15 +5,9 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-# Adds a port to the apache listen ports.conf file and node attribute
-# The node[:apache][:listen_ports] is an array of strings for the webserver to listen on.
-# Update this array with the provided port unless it already exists in the array.
-# Then update the apache port.conf file. If the ports are already configured correctly
-# nothing happens.
-
 define :lb_haproxy_backend, :pool_name => "", :advanced_configs=> false do
 
-  backend_name = params[:pool_name].gsub(".", "_") + "_backend"
+  backend_name = params[:pool_name] + "_backend"
   stats_uri = "stats uri #{node[:lb][:stats_uri]}" unless "#{node[:lb][:stats_uri]}".empty?
   stats_auth = "stats auth #{node[:lb][:stats_user]}:#{node[:lb][:stats_password]}" unless \
               "#{node[:lb][:stats_user]}".empty? || "#{node[:lb][:stats_password]}".empty?

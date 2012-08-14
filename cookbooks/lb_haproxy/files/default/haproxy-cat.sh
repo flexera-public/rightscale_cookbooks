@@ -15,31 +15,31 @@ cat /etc/haproxy/haproxy.cfg.head > ${CONF_FILE}
 
 echo "frontend all_requests 127.0.0.1:85" >> ${CONF_FILE}
 
-vhosts=""
+pools=""
 
 for dir in /etc/haproxy/lb_haproxy.d/*
 do
   if [ -d ${dir} ]; then
-    vhosts=${vhosts}" "`basename ${dir}`
+    pools=${pools}" "`basename ${dir}`
   fi
 done
 
 echo "" >> ${CONF_FILE}
 
-for single_vhost in ${vhosts}
+for single_pool in ${pools}
 do
-  if [ -e /etc/haproxy/lb_haproxy.d/acl_${single_vhost}.conf ]; then
-    cat "/etc/haproxy/lb_haproxy.d/acl_${single_vhost}.conf" >> ${CONF_FILE}
+  if [ -e /etc/haproxy/lb_haproxy.d/acl_${single_pool}.conf ]; then
+    cat "/etc/haproxy/lb_haproxy.d/acl_${single_pool}.conf" >> ${CONF_FILE}
   fi
 done
 
 echo "" >> ${CONF_FILE}
 
-for single_vhost in ${vhosts}
+for single_pool in ${pools}
 do
   # this will add advanced use_backend statements to config file
-  if [ -r  /etc/haproxy/lb_haproxy.d/use_backend_${single_vhost}.conf ]; then
-    cat /etc/haproxy/lb_haproxy.d/use_backend_${single_vhost}.conf>> ${CONF_FILE}
+  if [ -r  /etc/haproxy/lb_haproxy.d/use_backend_${single_pool}.conf ]; then
+    cat /etc/haproxy/lb_haproxy.d/use_backend_${single_pool}.conf>> ${CONF_FILE}
   fi
 done
 
@@ -49,21 +49,21 @@ cat /etc/haproxy/haproxy.cfg.default_backend >> ${CONF_FILE}
 
 echo "" >> ${CONF_FILE}
 
-for single_vhost in ${vhosts}
+for single_pool in ${pools}
 do
-  if [ -r  /etc/haproxy/lb_haproxy.d/userlist_backend_${single_vhost}.conf ]; then
-    cat /etc/haproxy/lb_haproxy.d/userlist_backend_${single_vhost}.conf>> ${CONF_FILE}
+  if [ -r  /etc/haproxy/lb_haproxy.d/userlist_backend_${single_pool}.conf ]; then
+    cat /etc/haproxy/lb_haproxy.d/userlist_backend_${single_pool}.conf>> ${CONF_FILE}
   fi
 done
 
 echo "" >> ${CONF_FILE}
 
-for single_vhost in ${vhosts}
+for single_pool in ${pools}
 do
-  cat /etc/haproxy/lb_haproxy.d/${single_vhost}.cfg >> ${CONF_FILE}
+  cat /etc/haproxy/lb_haproxy.d/${single_pool}.cfg >> ${CONF_FILE}
 
-  if [ $(ls -1A /etc/haproxy/lb_haproxy.d/${single_vhost} | wc -l) -gt 0 ]; then
-    cat /etc/haproxy/lb_haproxy.d/${single_vhost}/* >> ${CONF_FILE}
+  if [ $(ls -1A /etc/haproxy/lb_haproxy.d/${single_pool} | wc -l) -gt 0 ]; then
+    cat /etc/haproxy/lb_haproxy.d/${single_pool}/* >> ${CONF_FILE}
   fi
 
   echo "" >> ${CONF_FILE}

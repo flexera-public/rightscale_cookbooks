@@ -34,4 +34,26 @@ if node[:lb][:advanced_config][:backend_authorized_users]
   end
 end
 
+
+if node[:lb][:advanced_config][:backend_authorized_users]
+  base_string = node[:lb][:advanced_config][:backend_authorized_users]
+  entry_items = base_string.gsub(/\s+/, "").split(";")
+
+  entry_items.each do |record|
+    # example: "/serverid{admin:password, admin2:password2}
+    record =~ (/^(.+)\{(.+)\}/)
+    # users_array = [ "admin:password", "admin2:password2" ]
+    users_array = $2.split(",")
+    # backend_short_name = "_serverid"
+    backend_short_name = $1.gsub(/[\/]/, '_')
+
+    lb backend_short_name do
+      backend_authorized_users users_array
+      action :advanced_configs
+    end
+
+  end
+end
+
+
 rightscale_marker :end

@@ -103,6 +103,10 @@ add_action :restart
 #
 add_action :setup_monitoring
 
+# Advanced Configs
+# Perform advanced configuration for load balancer.
+#
+#add support for complicated acls and authorization process
 add_action :advanced_configs
 
 actions @action_list

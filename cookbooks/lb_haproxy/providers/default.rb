@@ -63,7 +63,7 @@ action :install do
     mode "0400"
     backup false
     variables(
-       :default_backend_line => "#{new_resource.pool_name}_backend"
+      :default_backend_line => "#{new_resource.pool_name}_backend"
     )
   end
 
@@ -124,7 +124,7 @@ action :attach do
     action :nothing
   end
 
-    # Create the directory for vhost server files.
+  # Create the directory for vhost server files.
   directory "/etc/haproxy/#{node[:lb][:service][:provider]}.d/#{pool_name}" do
     owner "haproxy"
     group "haproxy"
