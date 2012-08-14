@@ -10,6 +10,7 @@ rightscale_marker :begin
 log "  Setting provider specific settings for Django."
 node[:app][:provider] = "app_django"
 
+# Ubutu 12.04 supprot https://wiki.ubuntu.com/Python
 case node[:platform]
   when "ubuntu","debian"
     node[:app][:packages] = [
@@ -21,6 +22,7 @@ case node[:platform]
       "python2.6-dev",
       "python-setuptools",
       "libapache2-mod-wsgi",
+      "python-simplejson",
       "python-pip"
      ]
     node[:app][:user] = "www-data"
@@ -37,6 +39,10 @@ case node[:platform]
       "apr-util-devel",
       "readline-devel",
       "mod_wsgi",
+      "python-libs",
+      "python-devel",
+      "python-setuptools",
+      "python-simplejson",
       "python-pip"
      ]
     node[:app][:user] = "apache"
