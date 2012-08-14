@@ -6,4 +6,9 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 rightscale_marker :begin
+
+logging "default" do
+  action :configure_server
+end
+
 rightscale_marker :end

@@ -7,9 +7,9 @@
 
 rightscale_marker :begin
 
-log "  Restarting logging server"
+log "  Reloading logging server"
 logging "default" do
-  action :restart
+  action :reload
 end
 
 rightscale_marker :end
