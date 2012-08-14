@@ -26,8 +26,6 @@ else
   raise "Unrecognized distro #{node[:platform]}, exiting "
 end
 
-# Path to Ruby gem directory
-set[:app_passenger][:ruby_gem_base_dir] = "/usr/lib64/ruby/gems/1.8"
 # Path to Ruby gem executable
 set[:app_passenger][:gem_bin] = "/usr/bin/gem"
 # Path to Ruby ruby executable
@@ -38,4 +36,3 @@ set_unless[:app_passenger][:project][:environment] = "development"
 set_unless[:app_passenger][:project][:gem_list] = ""
 # List of rake commands required for rails application initialization
 set_unless[:app_passenger][:project][:custom_cmd] = ""
-
