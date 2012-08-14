@@ -10,9 +10,10 @@
 * Requires "app" Lightweight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
   or your own implementation of the "app" resource. See "app" cookbook README for details.
 * Requires a VM launched from a RightScale managed RightImage
-* Tested on CentOS 5.6 RightImage
-* Tested on Ubuntu 10.04 RightImage
-* Tested on RedHat 5.8 RightImage
+Tested on following RightImages:
+* CentOS 5.6, 5.8
+* Ubuntu 10.04, 12.04
+* RedHat 5.8
 
 == COOKBOOKS DEPENDENCIES:
 

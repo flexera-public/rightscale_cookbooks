@@ -45,7 +45,7 @@ node[:app_passenger][:passenger_bin_dir] = value_for_platform(
     "12.04" => "/usr/local/bin/",
     "default" => "/usr/bin/"
   },
-    "default" => "/usr/bin/"
+  "default" => "/usr/bin/"
 )
 
 # Setting app LWRP attribute

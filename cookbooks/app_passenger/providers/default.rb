@@ -14,7 +14,6 @@ action :stop do
   end
 end
 
-
 # Start apache/passenger
 action :start do
   log "  Running start sequence"
@@ -23,7 +22,6 @@ action :start do
     persist false
   end
 end
-
 
 # Reload apache/passenger
 action :reload do
@@ -34,7 +32,6 @@ action :reload do
   end
 end
 
-
 # Restart apache/passenger
 action :restart do
   log "  Running restart sequence"
@@ -42,7 +39,6 @@ action :restart do
   sleep 5
   action_start
 end
-
 
 # Installing required packages to system
 action :install do
@@ -64,6 +60,7 @@ action :install do
   log "  Installing apache passenger module"
   execute "Install apache passenger module" do
     command "#{node[:app_passenger][:passenger_bin_dir]}passenger-install-apache2-module --auto"
+    not_if "test -e #{node[:app_passenger][:ruby_gem_base_dir].chomp}/gems/passenger*/ext/apache2/mod_passenger.so"
   end
 
 end
@@ -78,7 +75,7 @@ action :setup_vhost do
   file "/etc/httpd/conf.d/ssl.conf" do
     action :delete
     backup false
-    only_if do ::File.exists?("/etc/httpd/conf.d/ssl.conf")  end
+    only_if { ::File.exists?("/etc/httpd/conf.d/ssl.conf") }
   end
 
   # Enabling required apache modules
@@ -104,22 +101,22 @@ action :setup_vhost do
   log "  Generating new apache vhost"
   project_root = new_resource.root
   web_app "http-#{port}-#{node[:web_apache][:server_name]}.vhost" do
-    template "basic_vhost.erb"
-    cookbook 'app_passenger'
-    docroot project_root
-    vhost_port port.to_s
-    server_name node[:web_apache][:server_name]
-    rails_env node[:app_passenger][:project][:environment]
-    apache_install_dir node[:app_passenger][:apache][:install_dir]
-    apache_log_dir node[:app_passenger][:apache][:log_dir]
-    ruby_bin node[:app_passenger][:ruby_bin]
-    ruby_base_dir node[:app_passenger][:ruby_gem_base_dir]
-    rails_spawn_method node[:app_passenger][:rails_spawn_method]
-    destination node[:app][:destination]
-    apache_maintenance_page node[:app_passenger][:apache][:maintenance_page]
-    apache_serve_local_files node[:app_passenger][:apache][:serve_local_files]
-    passenger_user node[:app][:user]
-    passenger_group node[:app][:group]
+    template                   "basic_vhost.erb"
+    cookbook                   'app_passenger'
+    docroot                    project_root
+    vhost_port                 port.to_s
+    server_name                node[:web_apache][:server_name]
+    rails_env                  node[:app_passenger][:project][:environment]
+    apache_install_dir         node[:app_passenger][:apache][:install_dir]
+    apache_log_dir             node[:app_passenger][:apache][:log_dir]
+    ruby_bin                   node[:app_passenger][:ruby_bin]
+    ruby_base_dir              node[:app_passenger][:ruby_gem_base_dir]
+    rails_spawn_method         node[:app_passenger][:rails_spawn_method]
+    destination                node[:app][:destination]
+    apache_maintenance_page    node[:app_passenger][:apache][:maintenance_page]
+    apache_serve_local_files   node[:app_passenger][:apache][:serve_local_files]
+    passenger_user             node[:app][:user]
+    passenger_group            node[:app][:group]
   end
 
 end
@@ -136,11 +133,11 @@ action :setup_db_connection do
 
   # Tell Database to fill in our connection template
   db_connect_app "#{deploy_dir.chomp}/config/database.yml" do
-    template "database.yml.erb"
-    cookbook "app_passenger"
-    owner node[:app][:user]
-    group node[:app][:group]
-    database db_name
+    template      "database.yml.erb"
+    cookbook      "app_passenger"
+    owner         node[:app][:user]
+    group         node[:app][:group]
+    database      db_name
   end
 
   # Defining $RAILS_ENV
@@ -149,9 +146,9 @@ action :setup_db_connection do
   # Creating bash file for manual $RAILS_ENV setup
   log "  Creating bash file for manual $RAILS_ENV setup"
   template "/etc/profile.d/rails_env.sh" do
-    mode '0744'
-    source "rails_env.erb"
-    cookbook 'app_passenger'
+    mode         '0744'
+    source       "rails_env.erb"
+    cookbook     'app_passenger'
     variables(
       :environment => node[:app_passenger][:project][:environment]
     )
@@ -223,7 +220,7 @@ action :setup_monitoring do
 
   directory "#{node[:rightscale][:collectd_lib]}/plugins/" do
     recursive true
-     not_if do ::File.exists?("#{node[:rightscale][:collectd_lib]}/plugins/")  end
+    not_if { ::File.exists?("#{node[:rightscale][:collectd_lib]}/plugins/") }
    end
 
   # Installing collectd plugin for passenger monitoring
@@ -235,7 +232,8 @@ action :setup_monitoring do
     variables(
       :apache_binary => node[:apache][:binary],
       :passenger_memory_stats => "#{node[:app_passenger][:passenger_bin_dir]}passenger-memory-stats",
-      :passenger_status => "#{node[:app_passenger][:passenger_bin_dir]}passenger-status")
+      :passenger_status => "#{node[:app_passenger][:passenger_bin_dir]}passenger-status"
+    )
   end
 
   # Removing previous passenger.conf in case of stop-start
@@ -250,8 +248,9 @@ action :setup_monitoring do
     source "collectd_passenger.conf.erb"
     variables(
       :apache_executable => node[:apache][:config_subdir],
-        :apache_user => node[:app][:user],
-        :plugin_path => plugin_path)
+      :apache_user => node[:app][:user],
+      :plugin_path => plugin_path
+    )
   end
 
   # Collectd exec cannot run scripts under root user, so we need to give ability to use sudo to "apache" user
@@ -265,15 +264,15 @@ action :setup_monitoring do
 
   ruby_block "sudo setup" do
     block do
-      ::File.open('/etc/sudoers', 'a') { |file|
+      ::File.open('/etc/sudoers', 'a') do |file|
         sudo_string.each do |string|
           file.puts
           file.write string
           file.puts
         end
-      }
+      end
     end
-    not_if do ::File.open('/etc/sudoers', 'r') { |f| f.read }.include? "#{sudo_string[0]}" end
+    not_if { ::File.open('/etc/sudoers', 'r') { |f| f.read }.include? "#{sudo_string[0]}" }
     notifies :start, resources(:service => "collectd")
   end
 
