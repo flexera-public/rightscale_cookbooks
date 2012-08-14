@@ -16,7 +16,7 @@ import os
 PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
-DEBUG = <%=@params[:debug]%>
+DEBUG = <%= @debug %>
 TEMPLATE_DEBUG = DEBUG
 
 DATABASES = {
@@ -30,7 +30,7 @@ DATABASES = {
         'NAME': '<%= @database %>',                      # Or path to database file if using sqlite3.
         <%  when "sqlite3","sqlite"%>
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': os.path.join(PROJECT_DIR, '<%= @database %>'),                      # Or path to database file if using sqlite3.
+        'NAME': os.path.join(PROJECT_DIR, '/<%= @database %>'),                      # Or path to database file if using sqlite3.
         <%end%>
         'USER': '<%= @user %>',                      # Not used with sqlite3.
         'PASSWORD': '<%= @password %>',                  # Not used with sqlite3.
