@@ -194,7 +194,7 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
     directory ephemeral_mount_point do
       recursive false
       action :delete
-      only_if cloud == 'azure'
+      only_if {cloud == 'azure'}
     end
   end
 else
