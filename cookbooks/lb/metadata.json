@@ -206,7 +206,7 @@
       "description": "A semi-colon separated list of usernames/passwords which will be used to setup authorization process to selected pools. The format is: pool_name1{username1:password1, username2:password2,..., usernameN:passwordN}; ... pool_nameN{username1:password1, username2:password2,..., usernameN:passwordN}  Note http-request auth feature, supported only from haproxy v 1.4. Example: /serverid{admin:adminpass1, admin2:adminpass2}; /appserver{user1:usernpass1}",
       "required": "optional",
       "recipes": [
-        "lb::setup_advanced_config"
+        "lb::setup_advanced_configuration"
       ],
       "choice": [
 
