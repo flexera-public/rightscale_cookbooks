@@ -10,6 +10,6 @@
 #
 
 # Allowing apache user to access passenger monitoring resources
-Defaults:<% @user %> !requiretty
-Defaults:<% @user %> !env_reset
-apache ALL = NOPASSWD: <% @passenger_bin_dir %>passenger-status, <% @passenger_bin_dir %>passenger-memory-stats
+Defaults:<%= @user %> !requiretty
+Defaults:<%= @user %> !env_reset
+<%= @user %> ALL = NOPASSWD: <%= @passenger_bin_dir %>passenger-status, <%= @passenger_bin_dir %>passenger-memory-stats
