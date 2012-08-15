@@ -268,7 +268,7 @@ action :setup_monitoring do
 
   template "/etc/sudoers.d/passenger-status" do
     cookbook "app_passenger"
-    source "passenger-status"
+    source "passenger-status.erb"
     mode "0440"
     variables(
       :user => node[:app][:user],
