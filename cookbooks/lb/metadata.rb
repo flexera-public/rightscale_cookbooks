@@ -16,18 +16,24 @@ depends "apache2"
 depends "app", ">= 1.0"
 
 recipe "lb::default", "This loads the required load balancer resources."
-recipe "lb::setup_load_balancer", "Installs the load balancer and adds the loadbalancer:<vhost_name>=lb tags to your server, which identifies it as a load balancer for a given listener pool. This tag is used by application servers to request connection/disconnection."
+recipe "lb::setup_load_balancer", "Installs the load balancer and adds the loadbalancer:<pool_name>=lb tags to your server, which identifies it as a load balancer for a given listener pool. This tag is used by application servers to request connection/disconnection."
 recipe "lb::handle_attach", "Remote recipe executed by do_attach_request. DO NOT RUN."
 recipe "lb::handle_detach", "Remote recipe executed by do_detach_request. DO NOT RUN."
-recipe "lb::do_attach_all", "Registers all running application servers with the loadbalancer:<vhost_name>=app tags. This should be run on a load balancer to connect all application servers in a deployment."
-recipe "lb::do_attach_request", "Sends request to all servers with loadbalancer:<vhost_name>=lb tag to attach the current server to the listener pool. This should be run by a new application server that is ready to accept connections."
-recipe "lb::do_detach_request", "Sends request to all servers with loadbalancer:<vhost_name>=lb tag to detach the current server from the listener pool. This should be run by an application server at decommission."
+recipe "lb::do_attach_all", "Registers all running application servers with the loadbalancer:<pool_name>=app tags. This should be run on a load balancer to connect all application servers in a deployment."
+recipe "lb::do_attach_request", "Sends request to all servers with loadbalancer:<pool_name>=lb tag to attach the current server to the listener pool. This should be run by a new application server that is ready to accept connections."
+recipe "lb::do_detach_request", "Sends request to all servers with loadbalancer:<pool_name>=lb tag to detach the current server from the listener pool. This should be run by an application server at decommission."
 recipe "lb::setup_reverse_proxy_config", "Configures Apache reverse proxy."
 recipe "lb::setup_monitoring", "Installs the load balancer collectd plugin for monitoring support."
+recipe "lb::setup_advanced_configuration", "recipe for advanced load balancer configuration"
 
-attribute "lb/vhost_names",
-  :display_name => "Virtual Host Names",
-  :description => "Comma-separated list of host names for which the load balancer will answer website requests. First entry will be the default backend and will answer for all host names not listed here. A single entry of any name, e.g. 'default' or 'applistener', will mimic basic behavior of one load balancer with one pool of application servers. This will be used for naming server pool backends. Application servers must only provide 1 host name and will join server pool backends using this name. Example: www.mysite.com, api.mysite.com, default.mysite.com",
+attribute "lb/pools",
+  :display_name => "Load Balance Pools",
+  :description => "Comma-separated list of URIs or FQDNs for which the load balancer will create server pools to answer website requests.
+First entry will be the default backend and will answer for all URIs and FQDNs not listed here.
+A single entry of any name, e.g. 'default', 'www.mysite.com' or '/appserver', will mimic basic behavior of one load balancer with one pool of application servers.
+This will be used for naming server pool backends.
+Application servers can provide any numbers of URIs or FQDNs to join corresponding server pool backends.
+Example: www.mysite.com, api.mysite.com, /serverid, default",
   :required => "recommended",
   :default => "default",
   :recipes => [
@@ -139,4 +145,12 @@ attribute "lb/service/account_secret",
     "lb::default",
     "lb::do_attach_request",
     "lb::do_detach_request"
+  ]
+
+attribute "lb/advanced_config/backend_authorized_users",
+  :display_name => "Backend authorized users",
+  :description => "A semi-colon separated list of usernames/passwords which will be used to setup authorization process to selected pools. The format is: pool_name1{username1:password1, username2:password2,..., usernameN:passwordN}; ... pool_nameN{username1:password1, username2:password2,..., usernameN:passwordN}  Note http-request auth feature, supported only from haproxy v 1.4. Example: /serverid{admin:adminpass1, admin2:adminpass2}; /appserver{user1:usernpass1}",
+  :required => "optional",
+  :recipes => [
+    "lb::setup_advanced_configuration"
   ]
