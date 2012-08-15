@@ -62,7 +62,6 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
       device = node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
       device = '/dev/' + device if device !~ /^\/dev\//
       device = @api.unmap_device_for_ec2(device) if cloud == 'ec2'
-      device = '/dev/sdb1' if cloud == 'azure'
       # for HVM: /dev/xvdb is symlinked to /dev/sda, though it shows up as
       # /dev/xvdb in /proc/partitions.  unmap function returns that
       device = Pathname.new(device).realpath.to_s if File.exists?(device)
