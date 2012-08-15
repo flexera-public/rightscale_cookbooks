@@ -95,8 +95,6 @@ action :add_vhost do
     advanced_configs false
   end
 
-  action_advanced_configs
-
   # (Re)generate the haproxy config file.
   execute "/etc/haproxy/haproxy-cat.sh" do
     user "haproxy"
@@ -240,6 +238,7 @@ action :advanced_configs do
     end
 
     # recreate backend section of haproxy config, to add authorization rules for each backend
+    # RESULT EXAMPLE
     # acl Auth__appserver http_auth(UsersFor__appserver)
     # http-request auth realm _appserver if !Auth__appserver
     lb_haproxy_backend  "create main backend section" do
