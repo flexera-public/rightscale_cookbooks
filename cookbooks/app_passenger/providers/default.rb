@@ -256,23 +256,25 @@ action :setup_monitoring do
   # Collectd exec cannot run scripts under root user, so we need to give ability to use sudo to "apache" user
   # passenger monitoring resources have strict restrictions, only for root can gather full stat info
   # we gave permissions to apache user to access passenger monitoring resources
-  sudo_string = ["# Allowing apache user to access passenger monitoring resources", \
-    "Defaults:#{node[:app][:user]} !requiretty", \
-    "Defaults:#{node[:app][:user]} !env_reset", \
-    "#{node[:app][:user]} ALL = NOPASSWD: #{node[:app_passenger][:passenger_bin_dir]}passenger-status, \
-     #{node[:app_passenger][:passenger_bin_dir]}passenger-memory-stats"]
-
   ruby_block "sudo setup" do
-    block do
-      ::File.open('/etc/sudoers', 'a') do |file|
-        sudo_string.each do |string|
-          file.puts
-          file.write string
-          file.puts
-        end
-      end
-    end
-    not_if { ::File.open('/etc/sudoers', 'r') { |f| f.read }.include? "#{sudo_string[0]}" }
+    block { ::File.open('/etc/sudoers', 'a') { |file| file.puts "#includedir /etc/sudoers.d\n"} }
+    not_if { ::File.readlines("/etc/sudoers").grep(/sudoers.d/).any? }
+  end
+
+  directory "/etc/sudoers.d/" do
+    recursive true
+    not_if { ::File.exists?("/etc/sudoers.d/") }
+  end
+
+  template "/etc/sudoers.d/passenger-status" do
+    cookbook "app_passenger"
+    source "passenger-status"
+    mode "0440"
+    variables(
+      :user => node[:app][:user],
+      :passenger_bin_dir => node[:app_passenger][:passenger_bin_dir]
+    )
+    not_if { ::File.exists?("/etc/sudoers.d/passenger-status") }
     notifies :start, resources(:service => "collectd")
   end
 
