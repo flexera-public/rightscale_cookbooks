@@ -221,7 +221,7 @@ action :setup_monitoring do
   directory "#{node[:rightscale][:collectd_lib]}/plugins/" do
     recursive true
     not_if { ::File.exists?("#{node[:rightscale][:collectd_lib]}/plugins/") }
-   end
+  end
 
   # Installing collectd plugin for passenger monitoring
   template "#{plugin_path}" do
