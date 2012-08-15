@@ -14,8 +14,10 @@
 # Load mod_jk module
 LoadModule    jk_module  modules/mod_jk.so
 
+<% unless node[:platform_version] == "12.04" %>
 # Where to find workers.properties
-JkWorkersFile /etc/<%= @tomcat_name %>/workers.properties
+JkWorkersFile <%= @jkworkersfile %>
+<% end %>
 # Where to put jk shared memory
 JkShmFile     <%= @apache_log_dir %>/mod_jk.shm
 # Where to put jk logs
