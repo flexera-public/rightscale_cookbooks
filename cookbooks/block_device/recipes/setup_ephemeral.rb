@@ -23,6 +23,13 @@ cloud = node[:cloud][:provider]
 mount_point = "/mnt/ephemeral"
 lvm_device = "lvol0"
 
+# The default mount point for ephemeral device in image
+if cloud == 'azure'
+  ephemeral_mount_point = '/mnt/resource'
+else
+  ephemeral_mount_point = '/mnt'
+end
+
 # Ubuntu systems using upstart require the 'bootwait' option, otherwise
 # upstart will try to boot without waiting for the LVM volume to be mounted.
 options = "defaults,noatime"
@@ -39,11 +46,11 @@ end
 
 root_device = `mount`.find {|dev| dev.include? " on / "}.split[0]
 
-current_mnt_device = `mount`.find {|dev| dev.include? " on /mnt "}
+current_mnt_device = `mount`.find {|dev| dev.include? " on #{ephemeral_mount_point} "}
 current_mnt_device = current_mnt_device ? current_mnt_device.split[0] : nil
 
 # Only EC2 and openstack is currently supported
-if cloud == 'ec2' || cloud == 'openstack'
+if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
 
   # Get a list of ephemeral devices
   # Make sure to skip EBS volumes attached on boot
@@ -55,6 +62,7 @@ if cloud == 'ec2' || cloud == 'openstack'
       device = node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
       device = '/dev/' + device if device !~ /^\/dev\//
       device = @api.unmap_device_for_ec2(device) if cloud == 'ec2'
+      device = '/dev/sdb1' if cloud == 'azure'
       # for HVM: /dev/xvdb is symlinked to /dev/sda, though it shows up as
       # /dev/xvdb in /proc/partitions.  unmap function returns that
       device = Pathname.new(device).realpath.to_s if File.exists?(device)
@@ -68,6 +76,17 @@ if cloud == 'ec2' || cloud == 'openstack'
       break
     end
     dev_index += 1
+  end if cloud != 'azure'
+
+  # Azure doesn't have block_device_mapping in the node so the device is hard-coded at the moment
+  if cloud == 'azure'
+    device = 'dev/sdb1'
+    device = Pathname.new(device).realpath.to_s if File.exists?(device)
+    if ( File.exists?(device) && File.ftype(device) == "blockSpecial" )
+      my_devices << device
+    else
+      log "  WARNING: Cannot use device #{device} - skipping"
+    end
   end
 
   # Check if /mnt is actually on a seperate device.
@@ -111,7 +130,7 @@ if cloud == 'ec2' || cloud == 'openstack'
     # so it can be used in the LVM.
     # ignore_failure set because /mnt may not be mounted, such as stop/start on HVM images.
 
-    mount "/mnt" do
+    mount ephemeral_mount_point do
       ignore_failure true
       device mnt_device
       fstype "ext3"
@@ -169,6 +188,13 @@ if cloud == 'ec2' || cloud == 'openstack'
         end
       end
       not_if { ( File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$") ) && ( File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " ) ) }
+    end
+
+    # Delete /mnt/resource directory on azure
+    directory ephemeral_mount_point do
+      recursive false
+      action :delete
+      only_if cloud == 'azure'
     end
   end
 else
