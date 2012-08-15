@@ -149,42 +149,20 @@ action :post_restore_cleanup do
     raise "FATAL: unknown log file size"
   end
 
-  # if sizes do not match, must re-create my.cnf, start mysqld, stop, then delete files
+  # if sizes do not match, must update my.cnf to match
   if ::File.stat("/var/lib/mysql/ib_logfile0").size == innodb_log_file_size_to_bytes
-    Chef::Log.info "  innodb log file sizes the same...keeping file(s)"
+    Chef::Log.info "  innodb log file sizes the same... OK."
   else
-    # recreate my.cnf
+
+    Chef::Log.warn " innodb log file size does not match."
+    Chef::Log.warn " Updating my.cnf to match log file from snapshot."
+    Chef::Log.warn " Discovered size:#{::File.stat("/var/lib/mysql/ib_logfile0").size}"
+    Chef::Log.warn " Expected size: #{innodb_log_file_size_to_bytes}"
+
     db_mysql_set_mycnf "setup_mycnf" do
       server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
       relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
       innodb_log_file_size ::File.stat("/var/lib/mysql/ib_logfile0").size
-    end
-
-    Chef::Log.info "  Temp Starting MySQL"
-    db node[:db][:data_dir] do
-      action :start
-      persist false
-    end
-
-    Chef::Log.info "  Stop MySQL"
-    db node[:db][:data_dir] do
-      action :stop
-      persist false
-    end
-
-    ruby_block "delete innodb logfiles" do
-      block do
-        require 'fileutils'
-        remove_files = ::Dir.glob(::File.join(node[:db_mysql][:datadir], 'ib_logfile*')) + ::Dir.glob(::File.join(node[:db_mysql][:datadir], 'ibdata*'))
-        FileUtils.rm_rf(remove_files)
-      end
-    end
-
-    # set mycnf back
-    db_mysql_set_mycnf "setup_mycnf" do
-      server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
-      relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
-      innodb_log_file_size node[:db_mysql][:tunable][:innodb_log_file_size]
     end
   end
 
