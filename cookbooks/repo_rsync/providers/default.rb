@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: repo_ros
+# Cookbook Name:: repo_rsync
 #
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
@@ -7,18 +7,9 @@
 
 action :setup_attributes do
 
-  # Checking ros_util presence it is required for repo_ros correct operations
-  ruby_block "Checking for ros_util presence" do
-    block do
-      raise "  Error: ROS gem missing, please add rightscale::install_tool recipe to runlist." unless ::File.exists?("/opt/rightscale/sandbox/bin/ros_util")
-    end
-  end
-
-  # Checking inputs required for getting source from ROS
-  raise "  Storage Provider input is unset" unless new_resource.storage_account_provider
-  raise "  Storage account provider ID input is unset" unless new_resource.account
-  raise "  Storage account secret input is unset" unless new_resource.credential
-  raise "  Repo container name input is unset." unless new_resource.repository
+  # Checking inputs required for getting source with RSync
+  raise "  RSync username input is unset" unless new_resource.account
+  raise "  RSync SSH Key input is unset" unless new_resource.credential
 
 end
 
@@ -27,47 +18,46 @@ action :pull do
   # Checking attributes
   action_setup_attributes
 
-  log "  Trying to get ros repo from: #{new_resource.storage_account_provider}, bucket: #{new_resource.repository}"
+  log "  Trying to get data from #{new_resource.repository}"
+
+  # Add ssh key and exec script
+  ruby_block "Before deploy" do
+    block do
+      RightScale::Repo::SshKey.new.create(new_resource.credential)
+    end
+  end
 
   # Backup project directory if it is not empty
   ruby_block "Backup of existing project directory" do
-     block do
-       ::File.rename("#{new_resource.destination}", "#{new_resource.destination}_" + ::Time.now.gmtime.strftime("%Y%m%d%H%M"))
-     end
-     not_if { ::Dir["#{new_resource.destination}/*"].empty? }
+    block do
+      ::File.rename("#{new_resource.destination}", "#{new_resource.destination}_" + ::Time.now.gmtime.strftime("%Y%m%d%H%M"))
+    end
+    not_if { ::Dir["#{new_resource.destination}/*"].empty? }
   end
 
   # Ensure that destination directory exists after all backups.
   directory "#{new_resource.destination}"
 
-  # "true" we just put downloaded file into "destination" folder
-  # "false" we put downloaded file into /tmp and unpack it into "destination" folder
-  if (new_resource.unpack_source == true)
-    tmp_repo_path = "/tmp/downloaded_ros_archive.tar.gz"
-  else
-    tmp_repo_path = "#{new_resource.destination}/downloaded_ros_archive.tar.gz"
-  end
-  log "  Downloaded file will be available in #{tmp_repo_path}"
-
-  # Obtain the source from ROS
-  execute "Download #{new_resource.repository} from Remote Object Store" do
-    command "/opt/rightscale/sandbox/bin/ros_util get --cloud #{new_resource.storage_account_provider} --container #{new_resource.repository} --dest #{tmp_repo_path} --source #{new_resource.prefix} --latest"
-    environment ({
-      'STORAGE_ACCOUNT_ID' => new_resource.account,
-      'STORAGE_ACCOUNT_SECRET' => new_resource.credential
-    })
+  # Get the data with RSync
+  # -c, --checksum              skip based on checksum, not mod-time & size
+  # -a, --archive               archive mode
+  # -v, --verbose               increase verbosity
+  # -z, --compress              compress file data during the transfer
+  # -P                          keep partially transferred files; show progress during transfer
+  # -e, --rsh=COMMAND           specify the remote shell to use
+  # --stats                     give some file-transfer stats
+  execute "Downloading data with RSync" do
+    command "rsync -cavzP -e 'ssh -o StrictHostKeyChecking=no -i /tmp/ssh.key' --stats #{new_resource.account}@#{new_resource.repository}/* #{new_resource.destination}"
   end
 
-
-  bash "Unpack #{tmp_repo_path} to #{new_resource.destination}" do
-    cwd "/tmp"
-    code <<-EOH
-      tar xzf #{tmp_repo_path} -C #{new_resource.destination}
-    EOH
-    only_if { (new_resource.unpack_source == true) }
+  # Delete SSH key
+  ruby_block "After fetch" do
+    block do
+      RightScale::Repo::SshKey.new.delete
+    end
   end
 
-  log "  ROS repo pull action - finished successfully!"
+  log "  Data fetch finished successfully!"
 end
 
 
@@ -107,20 +97,19 @@ action :capistrano_pull do
   # Ensure that destination directory exists after all backups and cleanups
   directory "#{new_resource.destination}"
 
-  log "  Pulling source from ROS"
+  log "  Fetching data..."
   action_pull
 
   # The embedded chef capistrano resource can work only with git or svn repositories
-  # After code download from ROS storage, we will transform this code repository to git type
+  # After code download with RSync, we will transform this code repository to git type
   # Then we will apply capistrano chef provider
   # After that we will remove all git information from new repo (.git folders)
 
-  # Moving dir with downloaded and unpacked ROS source to temp folder
-  # to prepare source for capistrano actions
-  bash "Moving #{new_resource.destination} to #{repo_dir}/ros_repo/" do
+  # Moving dir with downloaded data to temp folder to prepare source for capistrano actions
+  bash "Moving #{new_resource.destination} to #{repo_dir}/repo/" do
     cwd "#{repo_dir}"
     code <<-EOH
-       mv #{new_resource.destination} #{repo_dir}/ros_repo/
+       mv #{new_resource.destination} #{repo_dir}/repo/
     EOH
   end
 
@@ -134,14 +123,14 @@ action :capistrano_pull do
   scm_provider = new_resource.provider
 
   log "  Preparing git transformation"
-  directory "#{repo_dir}/ros_repo/.git" do
+  directory "#{repo_dir}/repo/.git" do
     recursive true
     action :delete
   end
 
   #initialisation of new git repo with initial commit
   bash "Git init in project folder" do
-    cwd "#{repo_dir}/ros_repo"
+    cwd "#{repo_dir}/repo"
     code <<-EOH
       git init
       git add .
@@ -149,12 +138,12 @@ action :capistrano_pull do
     EOH
   end
 
-  log "  Deploying new local git project repo from #{repo_dir}/ros_repo/ to #{destination}. New owner #{app_user}"
+  log "  Deploying new local git project repo from #{repo_dir}/repo/ to #{destination}. New owner #{app_user}"
   log "  Deploy provider #{scm_provider}"
 
   # Applying capistrano style deployment
   repo_capistranize "Source repo" do
-    repository "#{repo_dir}/ros_repo/"
+    repository "#{repo_dir}/repo/"
     destination destination
     app_user app_user
     purge_before_symlink purge_before_symlink
@@ -165,7 +154,7 @@ action :capistrano_pull do
   end
 
   log "  Cleaning transformation temp files"
-  directory "#{repo_dir}/ros_repo/" do
+  directory "#{repo_dir}/repo/" do
     recursive true
     action :delete
   end
@@ -176,5 +165,5 @@ action :capistrano_pull do
     action :delete
   end
 
-  log "  Capistrano ROS deployment action - finished successfully!"
+  log "  Capistrano deployment action - finished successfully!"
 end
