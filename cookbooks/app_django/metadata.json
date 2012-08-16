@@ -11,6 +11,20 @@
   "name": "app_django",
   "maintainer_email": "support@rightscale.com",
   "attributes": {
+    "app_django/app/static_dir": {
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+
+      ],
+      "default": "static",
+      "type": "string",
+      "recipes": [
+        "app_django::default"
+      ],
+      "display_name": "static files path for app",
+      "description": "The path to the static files relative to project repo under root directory. Example: appname/static"
+    },
     "app_django/project/custom_cmd": {
       "required": "optional",
       "calculated": false,
@@ -53,20 +67,6 @@
       ],
       "display_name": "Custom Python Package list",
       "description": "A space-separated list of optional python package(s), along with their versions in the Format:  py-pkg1==version  py-pkg2==version py-pkg3==version. Example: simplejson==1.7.1, Markdown==2.0.3"
-    },
-    "app_django/apache/maintenance_page": {
-      "required": "optional",
-      "calculated": false,
-      "choice": [
-
-      ],
-      "default": "",
-      "type": "string",
-      "recipes": [
-        "app_django::default"
-      ],
-      "display_name": "Apache maintenance page",
-      "description": "Maintenance URI to show if the page exists (based on document root). If this file exists, your site will show a \"Under Maintenance\" page and your site will not be available. Example: /system/maintenance.html"
     },
     "app_django/apache/serve_local_files": {
       "required": "optional",
