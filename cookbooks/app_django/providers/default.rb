@@ -208,19 +208,19 @@ action :code_update do
     persist false
   end
 
-  # Installing python packages using requirement.txt
+  # Installing python packages using requirements.txt
   #
-  # If the checked application contains a requirement.txt, then we can install all
+  # If the checked application contains a requirements.txt, then we can install all
   # the required python packages using "pip install" command.
   #
-  log "  pip will install python packages from requirement.txt"
-  # Installing python packages from /requirement.txt if it exists
+  log "  pip will install python packages from requirements.txt"
+  # Installing python packages from /requirements.txt if it exists
   bash "Bundle python packages install" do
     flags "-ex"
     code <<-EOH
-      #{node[:app_django][:pip_bin].chomp} install --requirement=#{deploy_dir}/requirement.txt
+      #{node[:app_django][:pip_bin].chomp} install --requirement=#{deploy_dir}/requirements.txt
     EOH
-    only_if { ::File.exists?("#{node[:app][:destination]}/requirement.txt") }
+    only_if { ::File.exists?("#{deploy_dir}/requirements.txt") }
   end
 
   # Restarting apache
