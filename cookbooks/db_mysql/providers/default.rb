@@ -462,6 +462,7 @@ action :promote do
   db_mysql_set_mycnf "setup_mycnf" do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
+    innodb_log_file_size ::File.stat("/var/lib/mysql/ib_logfile0").size
   end
 
   db node[:db][:data_dir] do
@@ -600,6 +601,7 @@ action :enable_replication do
     db_mysql_set_mycnf "setup_mycnf" do
       server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
       relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
+      innodb_log_file_size ::File.stat("/var/lib/mysql/ib_logfile0").size
     end
   end
 
