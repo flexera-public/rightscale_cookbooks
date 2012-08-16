@@ -44,12 +44,12 @@ end
 
 action :move_data_dir do
   @db = init(new_resource)
-  @db.move_datadir(node[:db][:data_dir], node[:db_mysql][:datadir])
+  @db.move_datadir(new_resource.name, node[:db_mysql][:datadir])
 end
 
 action :reset do
   @db = init(new_resource)
-  @db.reset(node[:db][:data_dir], node[:db_mysql][:datadir])
+  @db.reset(new_resource.name, node[:db_mysql][:datadir])
 end
 
 action :firewall_update_request do
@@ -124,7 +124,7 @@ action :post_restore_cleanup do
       raise "FATAL: Attempting to restore #{snap_provider} #{snap_version} snapshot to #{current_provider} #{current_version} with :restore_version_check enabled."
     end
   else
-    Chef::Log.info "  Skipping #{provider} restore version check"
+    Chef::Log.info "  Skipping #{snap_provider} restore version check"
   end
 
   # create symlink from package default mysql datadir to restored datadir
