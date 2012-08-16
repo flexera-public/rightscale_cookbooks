@@ -12,6 +12,9 @@ set[:app_django][:version] = "1.4"
 # Recommended attributes
 set_unless[:app_django][:app][:static_dir] = "static"
 
+# Django application debug mode
+set_unless[:app_django][:app][:debug_mode] = "False"
+
 # By default django uses MySQL as the DB adapter
 set_unless[:app][:db_adapter] = "mysql"
 # By default apache will serve any existing local files directly (except actionable ones)
@@ -38,5 +41,3 @@ set[:app_django][:python_bin]="/usr/bin/python"
 set_unless[:app_django][:project][:opt_pip_list]=""
 # List of python commands required for django application initialization
 set_unless[:app_django][:project][:custom_cmd]=""
-# Django application debug mode
-set_unless[:app_django][:debug_mode]="False"

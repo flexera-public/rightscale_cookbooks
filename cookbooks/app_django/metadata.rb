@@ -20,7 +20,7 @@ recipe  "app_django::default", "Installs the Django application server."
 recipe  "app_django::run_custom_django_commands", "Run specific user defined commands. Commands will be executed in the app directory."
 
 
-attribute "app_django/debug_mode",
+attribute "app_django/app/debug_mode",
   :display_name => "Django App Debug Mode",
   :description => "Creates a Django application debug environment variable. Example: False",
   :choice => ["True", "False"],

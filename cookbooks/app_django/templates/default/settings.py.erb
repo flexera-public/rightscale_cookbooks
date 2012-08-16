@@ -16,7 +16,7 @@ import os
 PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
-DEBUG = <%= @debug %>
+DEBUG = <%= @node[:app_django][:app][:debug_mode] %>
 TEMPLATE_DEBUG = DEBUG
 
 DATABASES = {

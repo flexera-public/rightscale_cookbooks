@@ -165,7 +165,6 @@ action :setup_db_connection do
   project_root = new_resource.destination
   db_name = new_resource.database_name
   db_adapter = node[:app][:db_adapter]
-  debug_mode = node[:app_django][:debug_mode]
 
   # moves django default settings file to settings_default and create settings.py from django template
   settingsfile = ::File.expand_path(::File.join(project_root, "settings.py"))
@@ -186,7 +185,6 @@ action :setup_db_connection do
     owner         node[:app][:user]
     group         node[:app][:group]
     database      db_name
-    debug         debug_mode
     cookbook      "app_django"
   end
 
