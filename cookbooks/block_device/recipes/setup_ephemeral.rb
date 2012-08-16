@@ -23,7 +23,9 @@ cloud = node[:cloud][:provider]
 mount_point = "/mnt/ephemeral"
 lvm_device = "lvol0"
 
-# The default mount point for ephemeral device in image
+# The default mount point for ephemeral device in image.
+# Azure mounts the ephemeral drive at '/mnt/resource' while EC2 and openstack mount the ephemeral drive at
+# '/mnt' by default.
 if cloud == 'azure'
   ephemeral_mount_point = '/mnt/resource'
 else
@@ -49,7 +51,7 @@ root_device = `mount`.find {|dev| dev.include? " on / "}.split[0]
 current_mnt_device = `mount`.find {|dev| dev.include? " on #{ephemeral_mount_point} "}
 current_mnt_device = current_mnt_device ? current_mnt_device.split[0] : nil
 
-# Only EC2 and openstack is currently supported
+# Only EC2, Azure, and openstack clouds are currently supported
 if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
 
   # Get a list of ephemeral devices
@@ -79,7 +81,7 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
 
   # Azure doesn't have block_device_mapping in the node so the device is hard-coded at the moment
   if cloud == 'azure'
-    device = 'dev/sdb1'
+    device = '/dev/sdb1'
     device = Pathname.new(device).realpath.to_s if File.exists?(device)
     if ( File.exists?(device) && File.ftype(device) == "blockSpecial" )
       my_devices << device
