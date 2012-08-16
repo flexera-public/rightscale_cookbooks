@@ -22,6 +22,15 @@ action :install do
     action :enable
   end
 
+  # Install haproxy file depending on OS/platform.
+  template "/etc/default/haproxy" do
+    only_if { node[:platform] == "ubuntu" }
+    source "default_haproxy.erb"
+    cookbook "lb_haproxy"
+    owner "root"
+    notifies :restart, resources(:service => "haproxy")
+  end
+
   # Create /etc/haproxy directory.
   directory "/etc/haproxy/#{node[:lb][:service][:provider]}.d" do
     owner "haproxy"
