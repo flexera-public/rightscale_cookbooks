@@ -8,9 +8,6 @@
 # Default setting for DB FQDN
 set_unless[:db][:dns][:master][:fqdn] = "localhost"
 
-# Initial setting for data directory location
-set_unless[:db][:data_dir] = "/mnt/storage"
-
 # DB Provider, type of database which will be initialized
 # can be db_mysql or db_postgres, for more info please refer to corresponding cookbooks
 set_unless[:db][:provider] = "db_mysql"

@@ -41,7 +41,7 @@ end
 
 action :reset do
   @db = init(new_resource)
-  @db.reset
+  @db.reset(new_resource.name, node[:db_postgres][:datadir])
 end
 
 action :firewall_update_request do
