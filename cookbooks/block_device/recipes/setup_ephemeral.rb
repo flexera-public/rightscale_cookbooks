@@ -7,6 +7,14 @@
 
 rightscale_marker :begin
 
+class Chef::Recipe
+  include RightScale::BlockDeviceHelper
+end
+
+class Chef::Resource::BlockDevice
+  include RightScale::BlockDeviceHelper
+end
+
 require 'fileutils'
 require 'rightscale_tools'
 require 'pathname'
@@ -136,7 +144,7 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
       device mnt_device
       fstype "ext3"
       action [:umount, :disable]
-      not_if { ( File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$") ) && ( File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " ) ) }
+      not_if { ephemeral_fstab_and_mtab_checks(fstab_entry, mount_point, filesystem_type) }
     end
 
     # Create the mount point
@@ -145,7 +153,7 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
       group 'root'
       mode 0755
       recursive true
-      not_if { ( File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$") ) && ( File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " ) ) }
+      not_if { ephemeral_fstab_and_mtab_checks(fstab_entry, mount_point, filesystem_type) }
     end
 
     # Setup the LVM across all ephemeral devices
@@ -188,7 +196,7 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
           Chef::Log.info "Done setting up LVM on ephemeral drives"
         end
       end
-      not_if { ( File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$") ) && ( File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " ) ) }
+      not_if { ephemeral_fstab_and_mtab_checks(fstab_entry, mount_point, filesystem_type) }
     end
 
     # Delete /mnt/resource directory on azure
