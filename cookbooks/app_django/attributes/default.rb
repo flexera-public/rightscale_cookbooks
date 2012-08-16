@@ -9,10 +9,11 @@
 # Setting Django version
 set[:app_django][:version] = "1.4"
 
+# Recommended attributes
+set_unless[:app_django][:app][:static_dir] = "static"
+
 # By default django uses MySQL as the DB adapter
 set_unless[:app][:db_adapter] = "mysql"
-# Path to html maintenance page, which will be displayed, when main application is unavailable
-set_unless[:app_django][:apache][:maintenance_page]=""
 # By default apache will serve any existing local files directly (except actionable ones)
 set_unless[:app_django][:apache][:serve_local_files]="true"
 # List of required apache modules

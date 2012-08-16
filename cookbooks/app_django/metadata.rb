@@ -28,11 +28,11 @@ attribute "app_django/debug_mode",
   :default => "False",
   :recipes => ["app_django::default"]
 
-attribute "app_django/apache/maintenance_page",
-  :display_name => "Apache maintenance page",
-  :description => "Maintenance URI to show if the page exists (based on document root). If this file exists, your site will show a \"Under Maintenance\" page and your site will not be available. Example: /system/maintenance.html",
+attribute "app_django/app/static_dir",
+  :display_name => "static files path for app",
+  :description => "The path to the static files relative to project repo under root directory. Example: appname/static",
   :required => "optional",
-  :default => "",
+  :default => "static",
   :recipes => ["app_django::default"]
 
 attribute "app_django/apache/serve_local_files",
