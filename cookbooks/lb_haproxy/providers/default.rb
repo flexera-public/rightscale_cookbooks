@@ -24,7 +24,7 @@ action :install do
 
   # Install haproxy file depending on OS/platform.
   template "/etc/default/haproxy" do
-    only_if { node[:platform] == "debian" || node[:platform] == "ubuntu" }
+    only_if { node[:platform] == "ubuntu" }
     source "default_haproxy.erb"
     cookbook "lb_haproxy"
     owner "root"
