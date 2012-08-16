@@ -16,7 +16,7 @@ set_unless[:app_django][:app][:static_dir] = "static"
 set_unless[:app_django][:app][:debug_mode] = "False"
 
 # By default django uses MySQL as the DB adapter
-set_unless[:app][:db_adapter] = "sqlite"
+set_unless[:app][:db_adapter] = "mysql"
 # By default apache will serve any existing local files directly (except actionable ones)
 set_unless[:app_django][:apache][:serve_local_files]="true"
 # List of required apache modules
