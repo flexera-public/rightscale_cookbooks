@@ -7,11 +7,15 @@
 
 rightscale_marker :begin
 
-class Chef::Recipe
+class Chef::Resource::Mount
   include RightScale::BlockDeviceHelper
 end
 
-class Chef::Resource::BlockDevice
+class Chef::Resource::Directory
+  include RightScale::BlockDeviceHelper
+end
+
+class Chef::Resource::RubyBlock
   include RightScale::BlockDeviceHelper
 end
 
