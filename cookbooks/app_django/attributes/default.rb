@@ -12,7 +12,7 @@ set[:app_django][:version] = "1.4"
 # Recommended attributes
 set_unless[:app_django][:app][:static_dir] = "static"
 
-# Django application debug mode
+# Django application debug mode - https://docs.djangoproject.com/en/dev/ref/settings/#debug
 set_unless[:app_django][:app][:debug_mode] = "False"
 
 # By default django uses MySQL as the DB adapter

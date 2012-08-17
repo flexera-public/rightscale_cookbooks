@@ -49,6 +49,11 @@ action :install do
     package p
   end
 
+  ## Link python-pip to default pip in system bin path - required by app server
+  execute "ln -s /usr/bin/pip-python /usr/bin/pip" do
+    not_if "test -f /usr/bin/pip"
+  end
+
   # Installing python modules dependencies
   log "  Module dependencies which will be installed: #{node[:app][:module_dependencies]}"
   node[:app][:module_dependencies].each do |mod|
