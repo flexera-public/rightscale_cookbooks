@@ -166,7 +166,7 @@ module RightScale
     # @param fstab_entry [String] fstab entry
     # @param mount_point [String] mount point of the ephemeral drive
     # @param filesystem_type [String] filesystem type
-    def self.ephemeral_fstab_and_mtab_checks(fstab_entry, mount_point, filesystem_type)
+    def ephemeral_fstab_and_mtab_checks(fstab_entry, mount_point, filesystem_type)
       fstab_exists = File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$")
       mtab_exists = File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " )
       fstab_exists && mtab_exists
