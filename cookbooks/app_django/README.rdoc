@@ -95,6 +95,8 @@ Note: Only "internal" cookbook attributes are described here. Descriptions of at
 
 * <tt>apache_mod_wsgi_vhost.erb</tt> - Configuration for apache vhost file used in the <tt>app::setup_vhost</tt> recipe
   and defined in <tt>:setup_vhost</tt> action of the <tt>app_django</tt> LWRP.
+* <tt>wsgi.py.erb</tt> - Configuration for Apache-Django WSGI config file used in the <tt>app::setup_vhost</tt> recipe
+  and defined in <tt>:setup_vhost</tt> action of the <tt>app_django</tt> LWRP.
 * <tt>settings.py.erb</tt> - Rename django "settings.py" file under app root to "settings_default.py", configure new "settings.py" file
   for project database connection used in the <tt>app::setup_db_connection</tt> recipe
   and defined in <tt>:setup_db_connection</tt> action of the <tt>app_django</tt> LWRP.
@@ -120,11 +122,11 @@ none
 
 * <tt>:restart</tt>
 
+* <tt>:reload</tt>
+
 * <tt>:code_update</tt>
 
 * <tt>:setup_db_connection</tt>
-
-* <tt>:setup_monitoring</tt>
 
 For more info about these actions, please see the <tt>app</tt> cookbook README.
 
@@ -140,13 +142,13 @@ For normal operations it requires "app" resource which will act as the interface
 
 * <tt>:stop</tt> - Stop sequence for Django application server.
 
+* <tt>:reload</tt> - Reload sequence for Django application server.
+
 * <tt>:restart</tt> - Restart sequence for Django application server.
 
 * <tt>:code_update</tt> - Perform project source code update/download using user selected "repo" LWRP. Set up logrotate configuration.
 
 * <tt>:setup_db_connection</tt> - Perform project settings.py database connection configuration.
-
-* <tt>:setup_monitoring</tt> - Install and set up of required monitoring software.
 
 ===== Usage Example:
 
