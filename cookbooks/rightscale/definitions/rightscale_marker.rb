@@ -20,7 +20,12 @@ define :rightscale_marker do
 
   if location =~ /^start|end$/
     # We use Chef::Log.info here to get clear output
-    Chef::Log.info "======== #{recipe_name} : #{location.upcase} ========"
+    ruby_block "log marker" do
+      block do
+       Chef::Log.info "======== #{recipe_name} : #{location.upcase} ========"
+      end
+    end
+
   else
     log "unknown marker"
   end
