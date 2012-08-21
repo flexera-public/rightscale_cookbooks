@@ -10,8 +10,8 @@
 * Requires "app" Lightweight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
   or your own implementation of the "app" resource. See "app" cookbook README for details.
 * Requires a VM launched from a RightScale managed RightImage
-* Tested on CentOS 5.6 RightImage
-* Tested on Ubuntu 10.04 RightImage
+* Tested on CentOS 5.8 and CentOS 6.2 RightImages
+* Tested on Ubuntu 10.04 and Ubuntu 12.04 RightImages
 * Tested on RedHat 5.8 RightImage
 
 == COOKBOOKS DEPENDENCIES:
@@ -21,7 +21,6 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 * <tt>rightscale</tt>
 * <tt>web_apache</tt>
 * <tt>repo</tt>
-* <tt>logrotate</tt>
 * <tt>app</tt>
 * <tt>db</tt>
 
@@ -47,13 +46,11 @@ The <tt>app_passenger</tt> cookbook will install and set up an Apache + Phusion 
 
 Server version: Apache/2.2.3
 
-Server built: Feb 8 2012 08:19:50
+Server built: Jun 6 2012 10:00:42
 
 <b>Phusion Passenger</b>
 
-Phusion Passenger version 3.0.9
-
-ruby 1.8.7 (2011-02-18 patchlevel 334) (x86_64-linux), MBARI 0x6770, Ruby Enterprise Edition 2011.03
+Phusion Passenger version 3.0.12
 
 also:
 * <tt>Rails spawn method input</tt>
@@ -63,9 +60,10 @@ also:
 * <tt>Application code installation from remote git, svn or Remote Object Store (ROS) location</tt>
 * <tt>MySQL or Postgres database connection file configuration</tt>
 * <tt>Automatic application vhost file configuration</tt>
-* <tt>Automatic logrotate file configuration for passenger logs</tt>
 
-For more info see: http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/2012-01-05#Apache-Rails-Passenger_App_Server_-_Beta
+For more info see: {Release Notes}[http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current] (Section 'Apache-Rails-Passenger App Server' under ServerTemplates)
+
+Please checkout the tutorial: {Apache-Rails-Passenger App Server}[http://support.rightscale.com/03-Tutorials/Apache-Rails-Passenger_App_Server]
 
 ServerTemplate built on this cookbook can be combined in two modes:
 
@@ -77,11 +75,6 @@ ServerTemplate built on this cookbook can be combined in two modes:
 
 Mix these recipes in any way to satisfy project requirements.
 
-Note: RubyEE packages coming from official RubyEE project page
-http://code.google.com/p/rubyenterpriseedition/downloads/detail?name=ruby-enterprise-1.8.7-2011.03.tar.gz&can=2&q=
-configured and packed for Ubuntu CentOS and RHEL.
-
-
 === Attributes:
 These are settings used in recipes and templates. Default values are noted.
 
@@ -92,10 +85,10 @@ Note: Only "internal" cookbook attributes are described here. Descriptions of at
 * <tt>node[:app_passenger][:apache][:maintenance_page]</tt> - Path to html maintenance page, which will be displayed, when main application is unavailable.
 * <tt>node[:app_passenger][:apache][:serve_local_files]</tt> - Used to enable/disable the serve of any existing local files.
 * <tt>node[:app_passenger][:deploy_dir]</tt> - Path in the specified repository where application code will be pulled from.
-* <tt>node[:app_passenger][:ruby_gem_base_dir]</tt> - Path to RubyEE gem directory.
-* <tt>node[:app_passenger][:gem_bin]</tt> - Path to RubyEE gem bin directory.
-* <tt>node[:app_passenger][:ruby_bin]</tt> - Path to RubyEE bin directory.
-* <tt>node[:app_passenger][:apache_psr_install_module]</tt> - Path to RubyEE passenger executable.
+* <tt>node[:app_passenger][:ruby_gem_base_dir]</tt> - Path to Ruby gem directory.
+* <tt>node[:app_passenger][:gem_bin]</tt> - Path to Ruby gem bin directory.
+* <tt>node[:app_passenger][:ruby_bin]</tt> - Path to Ruby bin directory.
+* <tt>node[:app_passenger][:apache_psr_install_module]</tt> - Path to Ruby passenger executable.
 * <tt>node[:app_passenger][:project][:environment]</tt> - The environment of the rails application.
 * <tt>node[:app_passenger][:project][:gem_list]</tt> - A list of additional gems required for rails application.
 * <tt>node[:app_passenger][:project][:custom_cmd]</tt> - A list of rake commands required for rails application initialization.

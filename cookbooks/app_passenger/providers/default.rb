@@ -133,7 +133,7 @@ action :setup_db_connection do
   db_adapter = node[:app][:db_adapter]
 
   log "  Generating database.yml"
-  
+
   # Tell Database to fill in our connection template
   db_connect_app "#{deploy_dir.chomp}/config/database.yml" do
     template      "database.yml.erb"
@@ -210,10 +210,65 @@ action :code_update do
 
 end
 
-
-# Set monitoring tools for Passenger application. Not Implemented.
+# Setup monitoring tools for passenger
 action :setup_monitoring do
-  raise 'Using "default" application provider. Action is not implemented'
+   plugin_path = "#{node[:rightscale][:collectd_lib]}/plugins/passenger"
+
+   log "  Stopping collectd service"
+   service "collectd" do
+     action :stop
+   end
+
+   directory "#{node[:rightscale][:collectd_lib]}/plugins/" do
+     recursive true
+     not_if do ::File.exists?("#{node[:rightscale][:collectd_lib]}/plugins/")  end
+   end
+
+  # Installing collectd plugin for passenger monitoring
+  cookbook_file "#{plugin_path}" do
+    source "collectd_passenger"
+    mode "0755"
+    backup false
+    cookbook 'app_passenger'
+  end
+
+   # Removing previous passenger.conf in case of stop-start
+   file "#{node[:rightscale][:collectd_plugin_dir]}/passenger.conf" do
+     backup false
+     action :delete
+   end
+
+  # Installing collectd config for passenger plugin
+  template "#{node[:rightscale][:collectd_plugin_dir]}/passenger.conf" do
+    cookbook "app_passenger"
+    source "collectd_passenger.conf.erb"
+    variables(
+      :apache_executable => node[:apache][:config_subdir],
+      :apache_user => node[:app_passenger][:apache][:user],
+      :plugin_path => plugin_path)
+  end
+
+  # Collectd exec cannot run scripts under root user, so we need to give ability to use sudo to "apache" user
+  # passenger monitoring resources have strict restrictions, only for root can gather full stat info
+  # we gave permissions to apache user to access passenger monitoring resources
+  sudo_string = ["# Allowing apache user to access passenger monitoring resources",\
+    "Defaults:#{node[:app_passenger][:apache][:user]} !requiretty",\
+    "Defaults:#{node[:app_passenger][:apache][:user]} !env_reset",\
+    "#{node[:app_passenger][:apache][:user]} ALL = NOPASSWD: /usr/bin/passenger-status, \
+    /usr/bin/passenger-memory-stats" ]
+
+  ruby_block "sudo setup" do
+    block do
+      ::File.open('/etc/sudoers', 'a'){ |file|
+        sudo_string.each do |string|
+          file.puts
+          file.write string
+          file.puts
+        end
+      }
+    end
+    not_if do ::File.open('/etc/sudoers', 'r') { |f| f.read }.include? "#{sudo_string[0]}" end
+    notifies :start, resources(:service => "collectd")
+  end
+
 end
-
-

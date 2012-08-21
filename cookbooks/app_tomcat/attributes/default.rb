@@ -29,14 +29,14 @@ set_unless[:app_tomcat][:java][:xms] = "512m"
 # Calculated attributes
 # Defining apache user, java alternatives and database adapter parameters depending on platform.
 case node[:platform]
-when "ubuntu", "debian"
+when "ubuntu"
   set[:app_tomcat][:alternatives_cmd] = "update-alternatives --auto java"
   if app[:db_adapter] == "mysql"
     set[:app_tomcat][:datasource_name] = "jdbc/MYSQLDB"
   elsif app[:db_adapter] == "postgresql"
     set[:app_tomcat][:datasource_name] = "jdbc/postgres"
   end
-when "centos", "fedora", "suse", "redhat", "redhatenterpriseserver"
+when "centos", "redhat"
   set[:app_tomcat][:alternatives_cmd] = "alternatives --auto java"
   if app[:db_adapter] == "mysql"
     set[:app_tomcat][:datasource_name] = "jdbc/MYSQLDB"
