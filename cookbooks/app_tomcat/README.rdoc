@@ -37,6 +37,8 @@ There are no known limitations.
 
 For more info see: {Release Notes}[http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current] (Section ‘Tomcat App Server’ under ServerTemplates)
 
+Please checkout the tutorial: {Tomcat App Server}[http://support.rightscale.com/03-Tutorials/Tomcat_App_Server]
+
 == DETAILS:
 === General
 

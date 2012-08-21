@@ -38,6 +38,8 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 For more info see: {Release Notes}[http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current] (Section ‘PHP App Server’ under ServerTemplates)
 
+Please checkout the tutorial: {PHP App Server}[http://support.rightscale.com/03-Tutorials/PHP_Application_Server_Setup]
+
 == DETAILS:
 === General
 The <tt>app_php</tt> cookbook will help you to install and set up an Apache + Zend Engine PHP application server, which can connect to a MySQL or Postgres database server.
