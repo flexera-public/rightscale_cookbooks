@@ -63,6 +63,8 @@ also:
 
 For more info see: {Release Notes}[http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current] (Section 'Apache-Rails-Passenger App Server' under ServerTemplates)
 
+Please checkout the tutorial: {Apache-Rails-Passenger App Server}[http://support.rightscale.com/03-Tutorials/Apache-Rails-Passenger_App_Server]
+
 ServerTemplate built on this cookbook can be combined in two modes:
 
 1 - For apps with bundler support, add the "install_required app gems" recipe, and
