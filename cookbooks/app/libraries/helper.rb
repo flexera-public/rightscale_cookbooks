@@ -43,7 +43,7 @@ module RightScale
       #
       # @return [Array<String>] Array of pools Example: ["/serverid", "/appsever", "default"]
       def pool_names(pool_list)
-        pool_norm_name = pool_list.gsub(/[\/]/, '_').split(",").uniq
+        pool_norm_name = pool_list.gsub(/\s+/, "").gsub(/[\/]/, "_").split(",").uniq
       end
 
     end
