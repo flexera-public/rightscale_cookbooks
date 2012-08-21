@@ -41,7 +41,7 @@ module RightScale
       #
       # @param pool_list [String] Comma separated list of URIs or FQDNs to create HAProxy pools for. Example: "/serverid, /appsever, default"
       #
-      # @return [Array<String>] Array of pools Example: ["/serverid", "/appsever", "default"]
+      # @return [Array<String>] Array of pools Example: ["_serverid", "_appsever", "default"]
       def pool_names(pool_list)
         pool_norm_name = pool_list.gsub(/\s+/, "").gsub(/[\/]/, "_").split(",").uniq
       end
