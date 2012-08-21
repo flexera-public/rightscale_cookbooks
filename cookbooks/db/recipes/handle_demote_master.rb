@@ -20,4 +20,9 @@ db_state_set "Set slave state" do
   master_ip node[:remote_recipe][:new_master_ip]
 end
 
+# Add server tag to visually show a slave
+db_register_slave "tagging slave" do
+  action :only_tag
+end
+
 rightscale_marker :end
