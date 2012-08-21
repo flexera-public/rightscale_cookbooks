@@ -64,8 +64,8 @@ action :install do
   #include_recipe "python"
 
   # install Django 1.4
-  python_pip "django==#{dversion}" do
-    #version "#{dversion}"
+  python_pip "django" do
+    version "#{dversion}"
     action :install
   end
 
@@ -94,9 +94,7 @@ action :install do
           end
         end
         raise "Error installing #{name} python packages!" unless
-        python_pip "#{name}" do
-          action :install
-        end
+        system("#{node[:app_django][:pip_bin].chomp} install #{name}")
       end
 
     end

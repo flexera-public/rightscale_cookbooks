@@ -73,7 +73,8 @@ ServerTemplate built on this cookbook can be combined in two modes:
 2 - For apps without bundler support, provide package(s) name as user input while server launch, and
 "run_custom_python_commands" for migration commands
 
-Note: If wants to install custom python packages for django app server, one need to re-run the app::default boot recipe in operational mode.
+Note: In operational mode to install additional python packages for Django app server, provide package(s) name as user input
+and re-run the <tt>app::default</tt> boot recipe.
 
 Mix these recipes in any way to satisfy project requirements.
 
@@ -86,6 +87,8 @@ Note: Only "internal" cookbook attributes are described here. Descriptions of at
 * <tt>node[:app_django][:module_dependencies]</tt> - Modules required for Apache.
 * <tt>node[:app_django][:apache][:serve_local_files]</tt> - Used to enable/disable the serve of any existing local files.
 * <tt>node[:app_django][:deploy_dir]</tt> - Path in the specified repository where application code will be pulled from.
+* <tt>node[:app_django][:pip_bin]</tt> - Path to Python pip bin directory.
+* <tt>node[:app_django][:python_bin]</tt> - Path to Python bin directory.
 * <tt>node[:app_django][:project][:opt_pip_list]</tt> - A list of additional python packages, required for django application
 * <tt>node[:app_django][:project][:custom_cmd]</tt> - A list of python commands required for django application initialization.
 
