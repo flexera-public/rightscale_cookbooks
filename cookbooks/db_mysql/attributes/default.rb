@@ -24,7 +24,6 @@ set_unless[:db_mysql][:log_bin] = "/mnt/ephemeral/mysql-binlogs/mysql-bin"
 set_unless[:db_mysql][:binlog_format] = "MIXED"
 set_unless[:db_mysql][:tmpdir] = "/mnt/ephemeral/tmp"
 set_unless[:db_mysql][:datadir] = "/var/lib/mysql"
-set_unless[:db_mysql][:datadir_relocate] = "/mnt/storage"
 # Always set to support stop/start
 set[:db_mysql][:bind_address] = cloud[:private_ips][0]
 
@@ -40,11 +39,9 @@ set_unless[:db_mysql][:kill_bug_mysqld_safe] = true
 
 case platform
 when "redhat","centos"
-  set[:db][:socket] = "/var/lib/mysql/mysql.sock"
   set_unless[:db_mysql][:log] = ""
   set_unless[:db_mysql][:log_error] = "" 
 when "ubuntu"
-  set[:db][:socket] = "/var/run/mysqld/mysqld.sock"
   set_unless[:db_mysql][:log] = "log = /var/log/mysql.log"
   set_unless[:db_mysql][:log_error] = "log_error = /var/log/mysql.err" 
 else

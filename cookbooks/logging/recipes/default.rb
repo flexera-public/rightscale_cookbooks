@@ -10,13 +10,9 @@ rightscale_marker :begin
 # Determine if syslog-ng or rsyslog is installed.
 # Note: The desired package must be installed either as part of the base image or
 # via a recipe prior to calling this recipe
-`which syslog-ng`
-syslog_ng_installed = $?.exitstatus == 0 ? true : false
-`which rsyslogd`
-rsyslog_installed = $?.exitstatus == 0 ?  true : false
-raise "ERROR: Both or neither syslog-ng or rsyslog is installed!" unless syslog_ng_installed ^ rsyslog_installed
+raise "ERROR: Both or neither syslog-ng or rsyslog is installed!" unless system("which syslog-ng") ^ system("which rsyslogd")
 
-log_provider = rsyslog_installed ? "logging_rsyslog" : "logging_syslog_ng"
+log_provider = system("which rsyslogd") ? "logging_rsyslog" : "logging_syslog_ng"
 remote_server = node[:logging][:remote_server]
 log_str = remote_server == "" ? "DISABLED" : remote_server
 log "  Logging provider: #{log_provider}"

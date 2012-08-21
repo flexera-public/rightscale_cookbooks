@@ -31,6 +31,14 @@ block_device NICKNAME do
   action :create
 end
 
+log "  Creating mysql directory in the block device..."
+directory DATA_DIR do
+  owner "mysql"
+  group "mysql"
+  mode  "0755"
+  action :create
+end
+
 log "  Moving database to block device and starting database..."
 db DATA_DIR do
   action [ :move_data_dir, :start ]
@@ -50,10 +58,8 @@ end
 log "  Adding replication privileges for this master database..."
 include_recipe "db::setup_replication_privileges"
 
-log "  Forcing a backup so slaves can init from this master..."
-db_request_backup "do force backup" do
-  force true
-end
+log "  Perform a backup so slaves can init from this master..."
+db_request_backup "do backup"
 
 log "  Setting up cron to do scheduled backups..."
 include_recipe "db::do_primary_backup_schedule_enable"

@@ -81,7 +81,7 @@ action :setup_vhost do
   end
 
   # Enabling required apache modules
-  node[:app_passenger][:module_dependencies].each do |mod|
+  node[:app][:module_dependencies].each do |mod|
     apache_module mod
   end
 
@@ -117,8 +117,8 @@ action :setup_vhost do
     destination                node[:app][:destination]
     apache_maintenance_page    node[:app_passenger][:apache][:maintenance_page]
     apache_serve_local_files   node[:app_passenger][:apache][:serve_local_files]
-    passenger_user             node[:app_passenger][:apache][:user]
-    passenger_group            node[:app_passenger][:apache][:group]
+    passenger_user             node[:app][:user]
+    passenger_group            node[:app][:group]
   end
 
 
@@ -130,15 +130,16 @@ action :setup_db_connection do
 
   deploy_dir = new_resource.destination
   db_name = new_resource.database_name
-  db_adapter = node[:app_passenger][:project][:db][:adapter]
+  db_adapter = node[:app][:db_adapter]
 
   log "  Generating database.yml"
+
   # Tell Database to fill in our connection template
   db_connect_app "#{deploy_dir.chomp}/config/database.yml" do
     template      "database.yml.erb"
     cookbook      "app_passenger"
-    owner         node[:app_passenger][:apache][:user]
-    group         node[:app_passenger][:apache][:group]
+    owner         node[:app][:user]
+    group         node[:app][:group]
     database      db_name
   end
 
@@ -170,7 +171,7 @@ action :code_update do
   repo "default" do
     destination deploy_dir
     action node[:repo][:default][:perform_action].to_sym
-    app_user node[:app_passenger][:apache][:user]
+    app_user node[:app][:user]
     environment "RAILS_ENV" => "#{node[:app_passenger][:project][:environment]}"
     repository node[:repo][:default][:repository]
     persist false
@@ -186,7 +187,7 @@ action :code_update do
 
   # Creating new rails application log  directory on ephemeral volume
   directory "/mnt/ephemeral/log/rails/#{node[:web_apache][:application_name]}" do
-    owner node[:app_passenger][:apache][:user]
+    owner node[:app][:user]
     mode "0755"
     action :create
     recursive true
@@ -204,7 +205,70 @@ action :code_update do
     path ["#{deploy_dir}/log/*.log" ]
     frequency "size 10M"
     rotate 4
-    create "660 #{node[:app_passenger][:apache][:user]} #{node[:app_passenger][:apache][:group]}"
+    create "660 #{node[:app][:user]} #{node[:app][:group]}"
+  end
+
+end
+
+# Setup monitoring tools for passenger
+action :setup_monitoring do
+   plugin_path = "#{node[:rightscale][:collectd_lib]}/plugins/passenger"
+
+   log "  Stopping collectd service"
+   service "collectd" do
+     action :stop
+   end
+
+   directory "#{node[:rightscale][:collectd_lib]}/plugins/" do
+     recursive true
+     not_if do ::File.exists?("#{node[:rightscale][:collectd_lib]}/plugins/")  end
+   end
+
+  # Installing collectd plugin for passenger monitoring
+  cookbook_file "#{plugin_path}" do
+    source "collectd_passenger"
+    mode "0755"
+    backup false
+    cookbook 'app_passenger'
+  end
+
+   # Removing previous passenger.conf in case of stop-start
+   file "#{node[:rightscale][:collectd_plugin_dir]}/passenger.conf" do
+     backup false
+     action :delete
+   end
+
+  # Installing collectd config for passenger plugin
+  template "#{node[:rightscale][:collectd_plugin_dir]}/passenger.conf" do
+    cookbook "app_passenger"
+    source "collectd_passenger.conf.erb"
+    variables(
+      :apache_executable => node[:apache][:config_subdir],
+      :apache_user => node[:app_passenger][:apache][:user],
+      :plugin_path => plugin_path)
+  end
+
+  # Collectd exec cannot run scripts under root user, so we need to give ability to use sudo to "apache" user
+  # passenger monitoring resources have strict restrictions, only for root can gather full stat info
+  # we gave permissions to apache user to access passenger monitoring resources
+  sudo_string = ["# Allowing apache user to access passenger monitoring resources",\
+    "Defaults:#{node[:app_passenger][:apache][:user]} !requiretty",\
+    "Defaults:#{node[:app_passenger][:apache][:user]} !env_reset",\
+    "#{node[:app_passenger][:apache][:user]} ALL = NOPASSWD: /usr/bin/passenger-status, \
+    /usr/bin/passenger-memory-stats" ]
+
+  ruby_block "sudo setup" do
+    block do
+      ::File.open('/etc/sudoers', 'a'){ |file|
+        sudo_string.each do |string|
+          file.puts
+          file.write string
+          file.puts
+        end
+      }
+    end
+    not_if do ::File.open('/etc/sudoers', 'r') { |f| f.read }.include? "#{sudo_string[0]}" end
+    notifies :start, resources(:service => "collectd")
   end
 
 end

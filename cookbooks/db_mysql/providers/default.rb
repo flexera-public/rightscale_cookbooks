@@ -29,7 +29,7 @@ end
 action :status do
   @db = init(new_resource)
   status = @db.status
-  log "  Database Status:\n#{status}"
+  Chef::Log.info "  Database Status:\n#{status}"
 end
 
 action :lock do
@@ -44,18 +44,18 @@ end
 
 action :move_data_dir do
   @db = init(new_resource)
-  @db.move_datadir
+  @db.move_datadir(new_resource.name, node[:db_mysql][:datadir])
 end
 
 action :reset do
   @db = init(new_resource)
-  @db.reset
+  @db.reset(new_resource.name, node[:db_mysql][:datadir])
 end
 
 action :firewall_update_request do
   sys_firewall "Sending request to open port 3306 (MySQL) allowing this server to connect" do
     machine_tag new_resource.machine_tag
-    port 3306 
+    port 3306
     enable new_resource.enable
     ip_addr new_resource.ip_addr
     action :update_request
@@ -65,7 +65,7 @@ end
 action :firewall_update do
   sys_firewall "Opening port 3306 (MySQL) for tagged '#{new_resource.machine_tag}' to connect" do
     machine_tag new_resource.machine_tag
-    port 3306 
+    port 3306
     enable new_resource.enable
     action :update
   end
@@ -81,9 +81,9 @@ action :write_backup_info do
   slavestatus = RightScale::Database::MySQL::Helper.do_query(node, 'SHOW SLAVE STATUS')
   slavestatus ||= Hash.new
   if node[:db][:this_is_master]
-    log "  Backing up Master info"
+    Chef::Log.info "  Backing up Master info"
   else
-    log "  Backing up slave replication status"
+    Chef::Log.info "  Backing up slave replication status"
     masterstatus['File'] = slavestatus['Relay_Master_Log_File']
     masterstatus['Position'] = slavestatus['Exec_Master_Log_Pos']
   end
@@ -91,11 +91,11 @@ action :write_backup_info do
   # Save the db provider (MySQL) and version number as set in the node
   version=node[:db_mysql][:version]
   provider=node[:db][:provider]
-  log "  Saving #{provider} version #{version} in master info file"
+  Chef::Log.info "  Saving #{provider} version #{version} in master info file"
   masterstatus['DB_Provider']=provider
   masterstatus['DB_Version']=version
 
-  log "  Saving master info...:\n#{masterstatus.to_yaml}"
+  Chef::Log.info "  Saving master info...:\n#{masterstatus.to_yaml}"
   ::File.open(::File.join(node[:db][:data_dir], RightScale::Database::MySQL::Helper::SNAPSHOT_POSITION_FILENAME), ::File::CREAT|::File::TRUNC|::File::RDWR) do |out|
     YAML.dump(masterstatus, out)
   end
@@ -108,28 +108,65 @@ end
 
 action :post_restore_cleanup do
   # Performs checks for snapshot compatibility with current server
-  ruby_block "validate_backup" do
-    block do
-      master_info = RightScale::Database::MySQL::Helper.load_replication_info(node)
-      # Check version matches
-      # Not all 11H2 snapshots (prior to 5.5 release) saved provider or version.  
-      # Assume MySQL 5.1 if nil
-      snap_version=master_info['DB_Version']||='5.1'
-      snap_provider=master_info['DB_Provider']||='db_mysql'
-      current_version= node[:db_mysql][:version]
-      current_provider=master_info['DB_Provider']||=node[:db][:provider]
-      Chef::Log.info "  Snapshot from #{snap_provider} version #{snap_version}"
-      # skip check if restore version check is false
-      if node[:db][:backup][:restore_version_check] == "true"
-        raise "FATAL: Attempting to restore #{snap_provider} #{snap_version} snapshot to #{current_provider} #{current_version} with :restore_version_check enabled." unless ( snap_version == current_version ) && ( snap_provider == current_provider )
-      else
-        Chef::Log.info "  Skipping #{provider} restore version check"
-      end
+
+  master_info = RightScale::Database::MySQL::Helper.load_replication_info(node)
+  # Check version matches
+  # Not all 11H2 snapshots (prior to 5.5 release) saved provider or version.
+  # Assume MySQL 5.1 if nil
+  snap_version=master_info['DB_Version']||='5.1'
+  snap_provider=master_info['DB_Provider']||='db_mysql'
+  current_version= node[:db_mysql][:version]
+  current_provider=master_info['DB_Provider']||=node[:db][:provider]
+  Chef::Log.info "  Snapshot from #{snap_provider} version #{snap_version}"
+  # skip check if restore version check is false
+  if node[:db][:backup][:restore_version_check] == "true"
+    unless (snap_version == current_version) && (snap_provider == current_provider)
+      raise "FATAL: Attempting to restore #{snap_provider} #{snap_version} snapshot to #{current_provider} #{current_version} with :restore_version_check enabled."
+    end
+  else
+    Chef::Log.info "  Skipping #{snap_provider} restore version check"
+  end
+
+  # create symlink from package default mysql datadir to restored datadir
+  default_datadir = "/var/lib/mysql"
+  unless ::File.symlink?(default_datadir)
+    FileUtils.rm_rf(default_datadir)
+    ::File.symlink(node[:db][:data_dir], default_datadir)
+  end
+
+  # compare size of node[:db_mysql][:tunable][:innodb_log_file_size] to
+  # actual size of restored /var/lib/mysql/ib_logfile0 (symlink)
+  innodb_log_file_size_to_bytes = case node[:db_mysql][:tunable][:innodb_log_file_size]
+  when /^(\d+)[Kk]$/
+    $1.to_i * 1024
+  when /^(\d+)[Mm]$/
+    $1.to_i * 1024**2
+  when /^(\d+)[Gg]$/
+    $1.to_i * 1024**3
+  when /^(\d+)$/
+    $1
+  else
+    raise "FATAL: unknown log file size"
+  end
+
+  # if sizes do not match, must update my.cnf to match
+  if ::File.stat("/var/lib/mysql/ib_logfile0").size == innodb_log_file_size_to_bytes
+    Chef::Log.info "  innodb log file sizes the same... OK."
+  else
+
+    Chef::Log.warn " innodb log file size does not match."
+    Chef::Log.warn " Updating my.cnf to match log file from snapshot."
+    Chef::Log.warn " Discovered size:#{::File.stat("/var/lib/mysql/ib_logfile0").size}"
+    Chef::Log.warn " Expected size: #{innodb_log_file_size_to_bytes}"
+
+    db_mysql_set_mycnf "setup_mycnf" do
+      server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
+      relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
+      innodb_log_file_size ::File.stat("/var/lib/mysql/ib_logfile0").size
     end
   end
 
   @db = init(new_resource)
-  @db.symlink_datadir("/var/lib/mysql", node[:db][:data_dir])
   @db.post_restore_cleanup
 end
 
@@ -156,7 +193,26 @@ action :set_privileges do
   end
 end
 
+action :remove_anonymous do
+  require 'mysql'
+  con = Mysql.new('localhost', 'root')
+  host=`hostname`.strip
+  con.query("DELETE FROM mysql.user WHERE user='' AND host='#{host}'")
+
+  con.close
+end
+
 action :install_client do
+
+  # Uninstall specified client packages
+  packages = node[:db_mysql][:client_packages_uninstall]
+  log "  Packages to uninstall: #{packages.join(",")}" unless packages == ""
+  packages.each do |p|
+    r = package p do
+      action :nothing
+    end
+    r.run_action(:remove)
+  end
 
   # Install MySQL client packages
   # Must install during the compile stage because mysql gem build depends on the libs
@@ -167,7 +223,7 @@ action :install_client do
   end
 
   packages = node[:db_mysql][:client_packages_install]
-  log "  Packages to install: #{packages.join(",")}" unless packages == ""
+  Chef::Log.info "  Packages to install: #{packages.join(",")}" unless packages == ""
   packages.each do |p|
     r = package p do
       action :nothing
@@ -189,7 +245,7 @@ action :install_client do
       Gem.clear_paths
     end
   end
-  log "  Gem reload forced with Gem.clear_paths"
+  Chef::Log.info "  Gem reload forced with Gem.clear_paths"
 end
 
 action :install_server do
@@ -199,9 +255,9 @@ action :install_server do
   # MySQL server depends on MySQL client
   action_install_client
 
-  # Uninstall other packages we don't
-  packages = node[:db_mysql][:packages_uninstall]
-  log "  Packages to uninstall: #{packages.join(",")}" unless packages == ""
+  # Uninstall specified server packages
+  packages = node[:db_mysql][:server_packages_uninstall]
+  Chef::Log.info "  Packages to uninstall: #{packages.join(",")}" unless packages == ""
   packages.each do |p|
      package p do
        action :remove
@@ -294,8 +350,8 @@ action :install_server do
   # Timeouts enabled.
   # Ubuntu's init script does not support configurable startup timeout
   #
-  log_msg = ( platform =~ /redhat|centos/ ) ?  "  Setting mysql startup timeout" : "  Skipping mysql startup timeout setting for Ubuntu" 
-  log log_msg
+  log_msg = ( platform =~ /redhat|centos/ ) ?  "  Setting mysql startup timeout" : "  Skipping mysql startup timeout setting for Ubuntu"
+  Chef::Log.info log_msg
   template "/etc/sysconfig/#{node[:db_mysql][:service_name]}" do
     source "sysconfig-mysqld.erb"
     mode "0755"
@@ -333,7 +389,7 @@ action :install_server do
   end
 
   # Start MySQL
-  log "  Server installed.  Starting MySQL"
+  Chef::Log.info "  Server installed.  Starting MySQL"
   db node[:db][:data_dir] do
     action :start
     persist false
@@ -371,10 +427,12 @@ action :setup_monitoring do
   end
 
   platform = node[:platform]
+  collectd_version = node[:rightscale][:collectd_packages_version]
   # Centos specific items
+  collectd_version = node[:rightscale][:collectd_packages_version]
   package "collectd-mysql" do
     action :install
-    version "4.10.0-4.el5"
+    version "#{collectd_version}" unless collectd_version == "latest"
     only_if { platform =~ /redhat|centos/ }
   end
 
@@ -426,7 +484,7 @@ action :promote do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
   end
-  
+
   db node[:db][:data_dir] do
     action :start
     persist false
@@ -591,7 +649,7 @@ action :enable_replication do
       master_info = RightScale::Database::MySQL::Helper.load_replication_info(node)
       newmaster_host = master_info['Master_IP']
       newmaster_logfile = master_info['File']
-      newmaster_position = master_info['Position'] 
+      newmaster_position = master_info['Position']
       RightScale::Database::MySQL::Helper.reconfigure_replication(node, 'localhost', newmaster_host, newmaster_logfile, newmaster_position)
     end
   end
@@ -603,7 +661,7 @@ action :enable_replication do
       master_info = RightScale::Database::MySQL::Helper.load_master_info_file(node)
       newmaster_host = node[:db][:current_master_ip]
       newmaster_logfile = master_info['File']
-      newmaster_position = master_info['Position'] 
+      newmaster_position = master_info['Position']
       RightScale::Database::MySQL::Helper.reconfigure_replication(node, 'localhost', newmaster_host, newmaster_logfile, newmaster_position)
     end
   end
@@ -631,12 +689,12 @@ action :generate_dump_file do
 end
 
 action :restore_from_dump_file do
- 
+
   db_name   = new_resource.db_name
   dumpfile  = new_resource.dumpfile
   db_check  = `mysql -e "SHOW DATABASES LIKE '#{db_name}'"`
 
-  log "  Check if DB already exists"
+  Chef::Log.info "  Check if DB already exists"
   ruby_block "checking existing db" do
     block do
       if ! db_check.empty?
@@ -644,18 +702,18 @@ action :restore_from_dump_file do
       end
     end
   end
-  
+
   bash "Import MySQL dump file: #{dumpfile}" do
     only_if { db_check.empty? }
     user "root"
     flags "-ex"
     code <<-EOH
-      if [ ! -f #{dumpfile} ] 
-      then 
-        echo "ERROR: MySQL dumpfile not found! File: '#{dumpfile}'" 
+      if [ ! -f #{dumpfile} ]
+      then
+        echo "ERROR: MySQL dumpfile not found! File: '#{dumpfile}'"
         exit 1
-      fi 
-      mysqladmin -u root create #{db_name} 
+      fi
+      mysqladmin -u root create #{db_name}
       gunzip < #{dumpfile} | mysql -u root -b #{db_name}
     EOH
   end

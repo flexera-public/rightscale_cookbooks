@@ -5,9 +5,10 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-define :db_mysql_set_mycnf, :server_id => nil, :relay_log => nil do
+define :db_mysql_set_mycnf, :server_id => nil, :relay_log => nil, :innodb_log_file_size => nil do
 
-  log "  Installing my.cnf with server_id = #{params[:server_id]}, relay_log = #{params[:relay_log]}" 
+  log "  Installing my.cnf with server_id = #{params[:server_id]}, relay_log = #{params[:relay_log]}"
+
   template value_for_platform("default" => "/etc/mysql/conf.d/my.cnf") do
     source "my.cnf.erb"
     owner "root"
@@ -15,9 +16,24 @@ define :db_mysql_set_mycnf, :server_id => nil, :relay_log => nil do
     mode "0644"
     variables(
       :server_id => params[:server_id],
-      :relay_log => params[:relay_log]
+      :relay_log => params[:relay_log],
+      :innodb_log_file_size => params[:innodb_log_file_size] || node[:db_mysql][:tunable][:innodb_log_file_size]
     )
     cookbook "db_mysql"
   end
 
+  cookbook_file "/etc/mysql/setup-my-cnf.sh" do
+    owner "root"
+    group "root"
+    mode 0755
+    source "setup_my_cnf.sh"
+    cookbook "db_mysql"
+  end
+
+  execute "/etc/mysql/setup-my-cnf.sh" do
+    user "root"
+    group "root"
+    umask 0022
+    action :run
+  end
 end

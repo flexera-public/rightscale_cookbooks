@@ -19,7 +19,8 @@ define :rightscale_marker do
   location = "end" if location =~ /^stop$/
 
   if location =~ /^start|end$/
-    log "======== #{recipe_name} : #{location.upcase} ========"
+    # We use Chef::Log.info here to get clear output
+    Chef::Log.info "======== #{recipe_name} : #{location.upcase} ========"
   else
     log "unknown marker"
   end

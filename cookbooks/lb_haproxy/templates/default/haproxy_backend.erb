@@ -1,4 +1,10 @@
 backend <%= @backend_name_line %>
+
+<%  if @userlist_pool_name != "" %>
+        acl Auth_<%=@userlist_pool_name%> http_auth(UsersFor_<%=@userlist_pool_name%>)
+        http-request auth realm Please_enter_your_credentials if !Auth_<%=@userlist_pool_name%>
+<%  end %>
+
         mode http
         balance roundrobin
 

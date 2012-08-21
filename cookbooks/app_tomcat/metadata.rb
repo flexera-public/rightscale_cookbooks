@@ -5,9 +5,9 @@ description      "Installs the tomcat application server."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "12.1.0"
 
-supports "centos", "~> 5.8"
-supports "redhat", "~> 5.8"
-supports "ubuntu", "~> 10.04.0"
+# supports "centos", "~> 5.8", "~> 6.2"
+# supports "redhat", "~> 5.8"
+# supports "ubuntu", "~> 10.04", "~> 12.04"
 
 depends "app"
 depends "db_mysql"
@@ -16,14 +16,6 @@ depends "repo"
 depends "rightscale"
 
 recipe  "app_tomcat::default", "Installs the Tomcat application server."
-
-# optional attributes
-attribute "app_tomcat/db_name",
-  :display_name => "Database Schema Name",
-  :description => "Enter the name of the MySQL database to use. Example: mydatabase",
-  :required => "required",
-  :recipes => ["app_tomcat::default"]
-
 
 #Code repo attributes
 attribute "app_tomcat/code/root_war",
@@ -74,13 +66,6 @@ attribute "app_tomcat/java/maxnewsize",
   :description => "The java MaxNewSize argument. Example: 256m",
   :required => "optional",
   :default => "256m",
-  :recipes => ["app_tomcat::default"]
-
-attribute "app_tomcat/db_adapter",
-  :display_name => "Database adapter for application",
-  :description => "Enter database adapter which will be used to connect to the database. Example: mysql",
-  :default => "mysql",
-  :choice => [ "mysql", "postgresql" ],
   :recipes => ["app_tomcat::default"]
 
 attribute "app_tomcat/datasource_name",

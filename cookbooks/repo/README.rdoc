@@ -75,26 +75,17 @@ attributes</b> which are used internally in recipes.
 * <tt>node[:repo][:default][:perform_action]</tt> - The type pull action which
   will be performed, 'pull'- standard repo pull, 'capistrano_pull' standard pull
   and then capistrano deployment style will be applied. Default is: "pull".
+* <tt>node[:repo][:default][:account]</tt> - The account name (i.e. username, ID)
+  that is required to access files in the specified location.
+* <tt>node[:repo][:default][:credential]</tt> - A valid credential (i.e. password, SSH key, account secret)
+  to access files in the specified location.
 
-===== SVN attributes
-
-* <tt>node[:repo][:default][:svn_username]</tt> - Username for SVN repository.
-* <tt>node[:repo][:default][:svn_password]</tt> - Password for SVN repository.
-
-===== GIT attributes
-
-* <tt>node[:repo][:default][:git_ssh_key]</tt> - The private SSH key of the git
-  repository.
 
 ===== ROS attributes
 
 * <tt>node[:repo][:default][:storage_account_provider]</tt> - Location where the
   source file is saved. Used by recipes to upload to Amazon S3 or Rackspace
   Cloud Files. Default is: "S3".
-* <tt>node[:repo][:default][:storage_account_id]</tt> - Cloud storage account ID
-  required to access specified cloud storage location.
-* <tt>node[:repo][:default][:storage_account_secret]</tt> - Cloud storage
-  account secret required to access specified cloud storage location.
 * <tt>node[:repo][:default][:container]</tt> - The cloud storage location where
   source project repo is located. For Amazon S3, use the bucket name. For
   Rackspace Cloud Files, use the container name.
@@ -136,10 +127,10 @@ See example below.
   <tt>node[:repo][:default][:revision]</tt> in attributes section of this
   README.
 * <tt>:svn_username</tt> - Receive value of corresponding attribute. See
-  <tt>node[:repo][:default][:svn_username]</tt> in attributes section of this
+  <tt>node[:repo][:default][:account]</tt> in attributes section of this
   README.
 * <tt>:svn_password</tt> - Receive value of corresponding attribute. See
-  <tt>node[:repo][:default][:svn_password]</tt> in attributes section of this
+  <tt>node[:repo][:default][:credential]</tt> in attributes section of this
   README.
 * <tt>:app_user</tt> - User that will be owner of created project deployment.
 * <tt>:environment</tt> - Receive value of corresponding attribute. See
@@ -200,13 +191,11 @@ Perform standard pull and then capistrano deployment style will be applied.
 
 * <tt>revision</tt> - Remote repo Branch or revision
 
-* <tt>svn_username</tt> - Subversion username
+* <tt>account</tt> - Account name
 
-* <tt>svn_password</tt> - Subversion password
+* <tt>credential</tt> - Account credential
 
 * <tt>svn_arguments</tt> - Extra arguments passed to the subversion command
-
-* <tt>ssh_key</tt> - Git ssh key
 
 * <tt>app_user</tt> - System user to run the deploy as
 
@@ -230,18 +219,6 @@ Perform standard pull and then capistrano deployment style will be applied.
 * <tt>container</tt> - The cloud storage location where the dump file will be
   restored from. For Amazon S3, use the bucket name. For Rackspace Cloud Files,
   use the container name.
-
-* <tt>storage_account_id</tt> - In order to read/write the container file to the
-  specified cloud storage location, you need to provide cloud authentication
-  credentials. For Amazon S3, use your Amazon access key ID (e.g.,
-  cred:AWS_ACCESS_KEY_ID). For Rackspace Cloud Files, use your Rackspace login
-  username (e.g., cred:RACKSPACE_USERNAME).
-
-* <tt>storage_account_secret</tt> - In order to read/write the container file to
-  the specified cloud storage location, you will need to provide cloud
-  authentication credentials. For Amazon S3, use your AWS secret access key
-  (e.g., cred:AWS_SECRET_ACCESS_KEY). For Rackspace Cloud Files, use your
-  Rackspace account API key (e.g., cred:RACKSPACE_AUTH_KEY).
 
 * <tt>unpack_source</tt> - Unpack downloaded source or not Source file must be
   kind of tar archive Default: false
