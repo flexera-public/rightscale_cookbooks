@@ -73,6 +73,8 @@ ServerTemplate built on this cookbook can be combined in two modes:
 2 - For apps without bundler support, provide package(s) name as user input while server launch, and
 "run_custom_python_commands" for migration commands
 
+Note: If wants to install custom python packages for django app server, one need to re-run the app::default boot recipe in operational mode.
+
 Mix these recipes in any way to satisfy project requirements.
 
 === Attributes:
