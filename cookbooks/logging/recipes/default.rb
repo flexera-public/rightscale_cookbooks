@@ -10,8 +10,8 @@ rightscale_marker :begin
 # Determine if syslog-ng or rsyslog is installed.
 # Note: The desired package must be installed either as part of the base image or
 # via a recipe prior to calling this recipe
-rsyslog_installed = system("which rsyslogd &> /dev/null")
-syslog_ng_installed = system("which syslog-ng &> /dev/null")
+rsyslog_installed = system("which rsyslogd > /dev/null 2>&1")
+syslog_ng_installed = system("which syslog-ng > /dev/null 2>&1")
 
 raise "ERROR: Both or neither syslog-ng or rsyslog is installed!" unless rsyslog_installed ^ syslog_ng_installed
 
