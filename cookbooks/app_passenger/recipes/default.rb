@@ -11,33 +11,33 @@ log "  Setting provider specific settings for rails-passenger."
 node[:app][:provider] = "app_passenger"
 
 case node[:platform]
-  when "ubuntu"
-    node[:app][:packages] = [
-      "libopenssl-ruby",
-      "libcurl4-openssl-dev",
-      "apache2-mpm-prefork",
-      "apache2-prefork-dev",
-      "libapr1-dev",
-      "libcurl4-openssl-dev"
-     ]
-    node[:app][:user] = "www-data"
-    node[:app][:group] = "www-data"
-  when "centos","redhat"
-    node[:app][:packages] = [
-      "zlib-devel",
-      "openssl-devel",
-      "readline-devel",
-      "curl-devel",
-      "httpd-devel",
-      "apr-devel",
-      "apr-util-devel",
-      "readline-devel"
-     ]
-    node[:app][:user] = "apache"
-    node[:app][:group] = "apache"
-  else
-    raise "Unrecognized distro #{node[:platform]}, exiting "
-  end
+when "ubuntu"
+  node[:app][:packages] = [
+    "libopenssl-ruby",
+    "libcurl4-openssl-dev",
+    "apache2-mpm-prefork",
+    "apache2-prefork-dev",
+    "libapr1-dev",
+    "libcurl4-openssl-dev"
+   ]
+  node[:app][:user] = "www-data"
+  node[:app][:group] = "www-data"
+when "centos","redhat"
+  node[:app][:packages] = [
+    "zlib-devel",
+    "openssl-devel",
+    "readline-devel",
+    "curl-devel",
+    "httpd-devel",
+    "apr-devel",
+    "apr-util-devel",
+    "readline-devel"
+   ]
+  node[:app][:user] = "apache"
+  node[:app][:group] = "apache"
+else
+  raise "Unrecognized distro #{node[:platform]}, exiting "
+end
 
 # Setting passenger binary directory
 node[:app_passenger][:passenger_bin_dir] = value_for_platform(
