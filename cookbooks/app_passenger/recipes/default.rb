@@ -42,19 +42,19 @@ case node[:platform]
 # Setting passenger binary directory
 node[:app_passenger][:passenger_bin_dir] = value_for_platform(
   "ubuntu" => {
-    "12.04" => "/usr/local/bin/",
-    "default" => "/usr/bin/"
+    "12.04" => "/usr/local/bin",
+    "default" => "/usr/bin"
   },
-  "default" => "/usr/bin/"
+  "default" => "/usr/bin"
 )
 
 # Path to Ruby gem directory
 node[:app_passenger][:ruby_gem_base_dir] = value_for_platform(
   "ubuntu" => {
-    "12.04" => "/var/lib/gems/1.8/",
+    "12.04" => "/var/lib/gems/1.8",
     "default" => "/usr/lib64/ruby/gems/1.8"
   },
-    "default" => "/usr/lib64/ruby/gems/1.8"
+  "default" => "/usr/lib64/ruby/gems/1.8"
 )
 
 # Setting app LWRP attribute

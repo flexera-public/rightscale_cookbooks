@@ -59,8 +59,8 @@ action :install do
 
   log "  Installing apache passenger module"
   execute "Install apache passenger module" do
-    command "#{node[:app_passenger][:passenger_bin_dir]}passenger-install-apache2-module --auto"
-    not_if "test -e #{node[:app_passenger][:ruby_gem_base_dir].chomp}/gems/passenger*/ext/apache2/mod_passenger.so"
+    command "#{node[:app_passenger][:passenger_bin_dir]}/passenger-install-apache2-module --auto"
+    not_if { ::File.exists?("#{node[:app_passenger][:ruby_gem_base_dir].chomp}/gems/passenger*/ext/apache2/mod_passenger.so") }
   end
 
 end
@@ -231,8 +231,8 @@ action :setup_monitoring do
     cookbook "app_passenger"
     variables(
       :apache_binary => node[:apache][:binary],
-      :passenger_memory_stats => "#{node[:app_passenger][:passenger_bin_dir]}passenger-memory-stats",
-      :passenger_status => "#{node[:app_passenger][:passenger_bin_dir]}passenger-status"
+      :passenger_memory_stats => "#{node[:app_passenger][:passenger_bin_dir]}/passenger-memory-stats",
+      :passenger_status => "#{node[:app_passenger][:passenger_bin_dir]}/passenger-status"
     )
   end
 
@@ -258,12 +258,11 @@ action :setup_monitoring do
   # we gave permissions to apache user to access passenger monitoring resources
   ruby_block "sudo setup" do
     block { ::File.open('/etc/sudoers', 'a') { |file| file.puts "#includedir /etc/sudoers.d\n"} }
-    not_if { ::File.readlines("/etc/sudoers").grep(/sudoers.d/).any? }
+    not_if { ::File.readlines("/etc/sudoers").grep(/^\s*#includedir\s+\/etc\/sudoers.d/).any? }
   end
 
   directory "/etc/sudoers.d/" do
     recursive true
-    not_if { ::File.exists?("/etc/sudoers.d/") }
   end
 
   template "/etc/sudoers.d/passenger-status" do
