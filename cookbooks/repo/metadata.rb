@@ -42,14 +42,14 @@ attribute "repo/default/revision",
 
 attribute "repo/default/account",
   :display_name => "Account name",
-  :description => "The account name (i.e. username, ID) that is required to access files in the specified location. Example: cred:RACKSPACE_USERNAME",
-  :required => "optional",
+  :description => "The account name (i.e. username, ID) that is required to access files in the specified location. This input is optional and may not be required. Example: cred:RACKSPACE_USERNAME",
+  :required => "recommended",
   :recipes => ["repo::default"]
 
 attribute "repo/default/credential",
   :display_name => "Account credential",
-  :description => "A valid credential (i.e. password, SSH key, account secret) to access files in the specified location. Example: cred:RACKSPACE_AUTH_KEY",
-  :required => "optional",
+  :description => "A valid credential (i.e. password, SSH key, account secret) to access files in the specified location. This input is always required for Git and Rsync but may be optional for other providers. Example: cred:RACKSPACE_AUTH_KEY",
+  :required => "recommended",
   :recipes => ["repo::default"]
 
 attribute "repo/default/perform_action",
