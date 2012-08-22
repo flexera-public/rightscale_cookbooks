@@ -277,7 +277,7 @@ action :setup_vhost do
     log "  mod_jk already installed, skipping the recipe"
   end
 
-# Removing preinstalled apache ssl.conf on RHEL images as it conflicts with ports.conf of web_apache
+  # Removing preinstalled apache ssl.conf on RHEL images as it conflicts with ports.conf of web_apache
   log "  Removing ssl.conf"
   file "/etc/httpd/conf.d/ssl.conf" do
     action :delete
