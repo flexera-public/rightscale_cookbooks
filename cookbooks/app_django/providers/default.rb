@@ -49,7 +49,7 @@ action :install do
     package p
   end
 
-  ## Link python-pip to default pip in system bin path - required by app server
+  # Link python-pip to default pip in system bin path - required by app server
   execute "ln -s /usr/bin/pip-python /usr/bin/pip" do
     not_if "test -f /usr/bin/pip"
   end
@@ -59,9 +59,6 @@ action :install do
   node[:app][:module_dependencies].each do |mod|
     apache_module mod
   end
-
-  # Include the public recipe for basic installation
-  #include_recipe "python"
 
   # install Django 1.4
   python_pip "django" do
@@ -86,15 +83,8 @@ action :install do
       pip_list = pip_list.split
       # Installing python packages
       pip_list.each do |pip_name|
-        begin
-          if pip_name =~ /(.+)==([\d\.]{2,})/
-            name = "#{$1}==#{$2}"
-          else
-            name = pip_name
-          end
-        end
-        raise "Error installing #{name} python packages!" unless
-        system("#{node[:app_django][:pip_bin].chomp} install #{name}")
+	raise "Error installing #{pip_name} python package!" unless
+        system("#{node[:app_django][:pip_bin].chomp} install #{pip_name}")
       end
 
     end
@@ -153,7 +143,7 @@ action :setup_vhost do
   template "#{project_root}/wsgi.py" do
     action :create
     source "wsgi.py.erb"
-    group  "root"
+    group  "#{node[:app][:group]}"
     owner  "#{node[:app][:user]}"
     cookbook 'app_django'
     variables(
@@ -231,4 +221,9 @@ action :code_update do
   # Restarting apache
   action_restart
 
+end
+
+# Set monitoring tools for Django application. Not implemented.
+action :setup_monitoring do
+  log "Monitoring resource is not implemented in django framework yet. Use apache monitoring instead."
 end

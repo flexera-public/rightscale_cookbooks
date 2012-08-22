@@ -63,7 +63,9 @@ also:
 * <tt>Automatic application vhost file configuration</tt>
 * <tt>Automatic logrotate file configuration for Apache logs</tt>
 
-For more info see: http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/2012-01-05#Apache-Django_App_Server_-_Beta
+For more info see: {Release Notes}[http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current] (Section 'Django App Server' under ServerTemplates)
+
+Please checkout the tutorial: {Django App Server}[http://support.rightscale.com/03-Tutorials/Django_App_Server_Beta]
 
 ServerTemplate built on this cookbook can be combined in two modes:
 
@@ -93,7 +95,7 @@ Note: Only "internal" cookbook attributes are described here. Descriptions of at
 * <tt>node[:app_django][:project][:custom_cmd]</tt> - A list of python commands required for django application initialization.
 
 ====== Platform dependent
-* <tt>node[:app][:user]</tt> -  Apache user. Required for changing owner of created project dirs.
+* <tt>node[:app][:user]</tt> -  Application user. Required for changing owner of created project dirs.
 * <tt>node[:app_django][:apache][:log_dir]</tt> - Path to apache log directory.
 
 === Templates:

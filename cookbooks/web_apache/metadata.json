@@ -137,9 +137,6 @@
   "suggestions": {
   },
   "platforms": {
-    "centos": "~> 6.2",
-    "ubuntu": "~> 10.04.0",
-    "redhat": "~> 5.8"
   },
   "maintainer": "RightScale, Inc.",
   "long_description": "",

@@ -12,7 +12,7 @@ node[:app][:provider] = "app_django"
 
 # Ubutu 12.04 supprot https://wiki.ubuntu.com/Python
 case node[:platform]
-  when "ubuntu","debian"
+  when "ubuntu"
     node[:app][:packages] = [
       "libcurl4-openssl-dev",
       "apache2-mpm-prefork",
@@ -27,7 +27,7 @@ case node[:platform]
      ]
     node[:app][:user] = "www-data"
     node[:app][:group] = "www-data"
-  when "centos","redhat","redhatenterpriseserver","fedora","suse"
+  when "centos"
     node[:app][:packages] = [
       "zlib-devel",
       "openssl-devel",
@@ -52,12 +52,9 @@ case node[:platform]
 end
 
 # Setting app LWRP attribute
-node[:app][:root] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
-# Django shares the same doc root with the application destination
-node[:app][:destination] = "#{node[:app][:root]}"
+node[:app][:destination] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
 
-directory "#{node[:app][:destination]}" do
-  recursive true
-end
+# Django shares the same doc root with the application destination
+node[:app][:root] = "#{node[:app][:destination]}"
 
 rightscale_marker :end

@@ -41,11 +41,6 @@ node[:db_mysql][:client_packages_install] = value_for_platform(
       "MySQL-devel-community",
       "MySQL-client-community"
     ],
-    "6.2"=> [
-      "mysql-devel",
-      "mysql-libs",
-      "mysql"
-    ] ,
     "default" => [
       "mysql-devel",
       "mysql-libs",
@@ -74,7 +69,6 @@ node[:db_mysql][:client_packages_install] = value_for_platform(
 node[:db_mysql][:server_packages_install] = value_for_platform(
   "centos" => {
     "5.8" => [ "MySQL-server-community" ],
-    "6.2" => [ "mysql-server" ],
     "default" => [ "mysql-server" ]
   },
   "redhat" => {
