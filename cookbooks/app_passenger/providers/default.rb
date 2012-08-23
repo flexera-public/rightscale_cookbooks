@@ -60,7 +60,7 @@ action :install do
   log "  Installing apache passenger module"
   execute "Install apache passenger module" do
     command "#{node[:app_passenger][:passenger_bin_dir]}/passenger-install-apache2-module --auto"
-    not_if { ::File.exists?("#{node[:app_passenger][:ruby_gem_base_dir].chomp}/gems/passenger*/ext/apache2/mod_passenger.so") }
+    not_if { ::Dir.glob("#{node[:app_passenger][:ruby_gem_base_dir]}/gems/**/ext/apache2/mod_passenger.so").any? }
   end
 
 end
