@@ -91,6 +91,9 @@ action :install do
     # Link postgresql-connector plugin to Tomcat6 lib
     link "/usr/share/tomcat#{version}/lib/postgresql-9.1-901.jdbc4.jar" do
       to "/usr/share/java/postgresql-9.1-901.jdbc4.jar"
+    end
+
+    file "/usr/share/tomcat#{version}/lib/postgresql-9.1-901.jdbc4.jar" do
       owner node[:app][:user]
       group node[:app][:group]
     end
