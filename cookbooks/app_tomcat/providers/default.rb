@@ -91,6 +91,8 @@ action :install do
     # Link postgresql-connector plugin to Tomcat6 lib
     link "/usr/share/tomcat#{version}/lib/postgresql-9.1-901.jdbc4.jar" do
       to "/usr/share/java/postgresql-9.1-901.jdbc4.jar"
+      owner node[:app][:user]
+      group "root"
     end
   else
     raise "Unrecognized database adapter #{db_adapter}, exiting"
