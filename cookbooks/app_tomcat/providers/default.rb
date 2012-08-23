@@ -82,20 +82,11 @@ action :install do
     end
   elsif db_adapter == "postgresql"
     # Copy to /usr/share/java/postgresql-9.1-901.jdbc4.jar
-    cookbook_file "/usr/share/java/postgresql-9.1-901.jdbc4.jar" do
+    cookbook_file "/usr/share/tomcat#{version}/lib/postgresql-9.1-901.jdbc4.jar" do
       source "postgresql-9.1-901.jdbc4.jar"
-      owner "root"
+      owner node[:app][:user]
       group "root"
       cookbook 'app_tomcat'
-    end
-    # Link postgresql-connector plugin to Tomcat6 lib
-    link "/usr/share/tomcat#{version}/lib/postgresql-9.1-901.jdbc4.jar" do
-      to "/usr/share/java/postgresql-9.1-901.jdbc4.jar"
-    end
-
-    file "/usr/share/tomcat#{version}/lib/postgresql-9.1-901.jdbc4.jar" do
-      owner node[:app][:user]
-      group node[:app][:group]
     end
   else
     raise "Unrecognized database adapter #{db_adapter}, exiting"
