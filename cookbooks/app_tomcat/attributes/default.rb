@@ -36,14 +36,14 @@ when "ubuntu"
   if app[:db_adapter] == "mysql"
     set[:app_tomcat][:datasource_name] = "jdbc/MYSQLDB"
   elsif app[:db_adapter] == "postgresql"
-    set[:app_tomcat][:datasource_name] = "jdbc/postgres"
+    set[:app_tomcat][:datasource_name] = "jdbc/ConnDB"
   end
 when "centos", "redhat"
   set[:app_tomcat][:alternatives_cmd] = "alternatives --auto java"
   if app[:db_adapter] == "mysql"
     set[:app_tomcat][:datasource_name] = "jdbc/MYSQLDB"
   elsif app[:db_adapter] == "postgresql"
-    set[:app_tomcat][:datasource_name] = "jdbc/postgres"
+    set[:app_tomcat][:datasource_name] = "jdbc/ConnDB"
   end
 else
   raise "Unrecognized distro #{node[:platform]}, exiting "
