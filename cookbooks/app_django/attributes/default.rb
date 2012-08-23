@@ -25,12 +25,12 @@ set[:app][:module_dependencies] = ["proxy", "proxy_http"]
 
 # Defining apache user, group and log directory path depending on platform.
 case node[:platform]
-  when "ubuntu"
-    set[:app_django][:apache][:log_dir] = "/var/log/apache2"
-  when "centos"
-    set[:app_django][:apache][:log_dir] = "/var/log/httpd"
-  else
-    raise "Unrecognized distro #{node[:platform]}, exiting "
+when "ubuntu"
+  set[:app_django][:apache][:log_dir] = "/var/log/apache2"
+when "centos"
+  set[:app_django][:apache][:log_dir] = "/var/log/httpd"
+else
+  raise "Unrecognized distro #{node[:platform]}, exiting "
 end
 
 # Path to PIP executable

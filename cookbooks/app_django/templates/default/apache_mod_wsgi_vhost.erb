@@ -35,9 +35,9 @@
     Allow from all
   </Directory>
 
-    <IfModule !wsgi_module>
-        LoadModule wsgi_module modules/mod_wsgi.so
-    </IfModule>
+  <IfModule !wsgi_module>
+      LoadModule wsgi_module modules/mod_wsgi.so
+  </IfModule>
 
   WSGIScriptAlias / <%=@params[:docroot]%>/wsgi.py
 

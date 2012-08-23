@@ -10,7 +10,7 @@ rightscale_marker :begin
 log "  Setting provider specific settings for Django."
 node[:app][:provider] = "app_django"
 
-# Ubutu 12.04 supprot https://wiki.ubuntu.com/Python
+# Ubuntu 12.04 support https://wiki.ubuntu.com/Python
 case node[:platform]
   when "ubuntu"
     node[:app][:packages] = [

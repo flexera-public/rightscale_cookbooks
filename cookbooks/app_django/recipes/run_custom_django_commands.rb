@@ -28,7 +28,7 @@ bash "run commands" do
       #{node[:app_django][:python_bin].chomp} $tmp
     done
   EOH
-  only_if do (node[:app_django][:project][:custom_cmd]!="") end
+  only_if { node[:app_django][:project][:custom_cmd] != "" }
 end
 
 rightscale_marker :end
