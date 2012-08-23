@@ -19,11 +19,11 @@ if node[:lb][:advanced_config][:backend_authorized_users]
 
   entry_items.each do |record|
     # example: "/serverid{admin:password, admin2:password2}
-    record =~ (/^(.+)\{(.+)\}/)
+    auth_array=record.match(/^(.+)\{(.+)\}/)
     # users_array = [ "admin:password", "admin2:password2" ]
-    users_array = $2.split(",")
+    users_array = auth_array[2].split(",")
     # backend_short_name = "_serverid"
-    backend_short_name = $1.gsub(/[\/]/, '_')
+    backend_short_name = auth_array[1].gsub(/[\/]/, '_')
 
     lb backend_short_name do
       backend_authorized_users users_array
