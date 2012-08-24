@@ -140,9 +140,6 @@ action :setup_db_connection do
     database      db_name
   end
 
-  # Defining $RAILS_ENV
-  ENV['RAILS_ENV'] = node[:app_passenger][:project][:environment]
-
   # Creating bash file for manual $RAILS_ENV setup
   log "  Creating bash file for manual $RAILS_ENV setup"
   template "/etc/profile.d/rails_env.sh" do
