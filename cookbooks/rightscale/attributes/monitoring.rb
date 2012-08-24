@@ -15,7 +15,7 @@ when "ubuntu"
   when /^12\..+/
     set_unless[:rightscale][:collectd_packages_version] = "latest"
   else
-    set_unless[:rightscale][:collectd_packages_version] = "4.10.1-2"
+    set_unless[:rightscale][:collectd_packages_version] = "4.10.1-2.1ubuntu7"
   end
   set_unless[:rightscale][:collectd_config] = "/etc/collectd/collectd.conf"
   set_unless[:rightscale][:collectd_plugin_dir] = "/etc/collectd/conf"
