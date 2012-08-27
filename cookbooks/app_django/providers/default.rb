@@ -76,7 +76,6 @@ action :install do
   #
   log "  Installing user specified python packages:"
   pip_list = node[:app_django][:project][:opt_pip_list]
-  Chef::Log.info "  Packages to install: #{pip_list.join(",")}" unless pip_list == ""
   # Split pip_list into an array
   pip_list = pip_list.split
   # Installing python packages
