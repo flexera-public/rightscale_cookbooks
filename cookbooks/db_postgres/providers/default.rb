@@ -105,7 +105,7 @@ end
 
 action :set_privileges do
   if ::File.exist?("#{node[:db_postgres][:datadir]}/recovery.conf")
-    Chef::Log.info("no need to rerun on reboot for slave")
+    log "  No need to rerun on reboot for slave"
   else
     priv = new_resource.privilege
     priv_username = new_resource.privilege_username
@@ -144,12 +144,13 @@ action :install_client do
     raise "ERROR:: Unrecognized distro #{node[:platform]}, exiting "
   end
 
-  ## Link postgresql pg_config to default system bin path - required by app servers
-  execute "ln -s /usr/pgsql-#{node[:db_postgres][:version]}/bin/pg_config /usr/bin/" do
-    not_if "test -f /usr/bin/pg_config"
+  # Link postgresql pg_config to default system bin path - required by app servers
+  link "/usr/bin/pg_config" do
+    to "/usr/pgsql-#{node[:db_postgres][:version]}/bin/pg_config"
+    not_if { ::File.exists?("/usr/bin/pg_config") }
   end
 
-  # == Install PostgreSQL client gem
+  # Install PostgreSQL client gem
   gem_package("pg") do
     gem_binary("/opt/rightscale/sandbox/bin/gem")
     options("-- --with-pg-config=#{node[:db_postgres][:bindir]}/pg_config")
@@ -311,14 +312,8 @@ action :enable_replication do
       master_info = RightScale::Database::PostgreSQL::Helper.load_replication_info(node)
 
       # Check that the snapshot is from the current master or a slave associated with the current master
-      if master_info['Master_instance_uuid']
-        if master_info['Master_instance_uuid'] != node[:db][:current_master_uuid]
-          raise "FATAL: snapshot was taken from a different master! snap_master was:#{master_info['Master_instance_uuid']} != current master: #{node[:db][:current_master_uuid]}"
-        end
-      # File not found or does not contain info
-      else
-        raise "Position and file not saved!"
-      end
+      raise "Position and file not saved or it does not contain info!" unless master_info['Master_instance_uuid']
+      raise "FATAL: snapshot was taken from a different master! snap_master was:#{master_info['Master_instance_uuid']} != current master: #{node[:db][:current_master_uuid]}" unless master_info['Master_instance_uuid'] == node[:db][:current_master_uuid]
     end
   end
 
@@ -347,9 +342,12 @@ action :enable_replication do
   ruby_block "wipe_existing_runtime_config" do
     not_if { current_restore_process == :no_restore }
     block do
-      Chef::Log.info "Wiping existing runtime config files"
-      runtime_config_file = Dir.glob("#{node[:db_postgres][:datadir]}/pg_xlog/*")
-      FileUtils.rm_rf(runtime_config_file)
+      Chef::Log.info "  Wiping existing runtime config files"
+      Dir.glob("#{node[:db_postgres][:datadir]}/pg_xlog/*").each do |item|
+        file item do
+          action :delete
+        end
+      end
     end
   end
 
@@ -358,9 +356,9 @@ action :enable_replication do
   # has to run the start command again.
   ruby_block "Start Postgresql service" do
     block do
-      5.times do
-        action_start
-      end
+      retries 5
+      retry_delay 2
+      action_start
     end
   end
 
