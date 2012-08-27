@@ -50,9 +50,9 @@ action :install do
   end
 
   # Link python-pip to default pip in system bin path - required by app server
-  link "#{node[:app_django][:pip_bin].chomp}" do
+  link "#{node[:app_django][:pip_bin]}" do
     to "/usr/bin/pip-python"
-    not_if { ::File.exists?("#{node[:app_django][:pip_bin].chomp}") }
+    not_if { ::File.exists?("#{node[:app_django][:pip_bin]}") }
   end
 
   # Installing python modules dependencies
@@ -76,6 +76,7 @@ action :install do
   #
   log "  Installing user specified python packages:"
   pip_list = node[:app_django][:project][:opt_pip_list]
+  Chef::Log.info "  Packages to install: #{pip_list.join(",")}" unless pip_list == ""
   # Split pip_list into an array
   pip_list = pip_list.split
   # Installing python packages
@@ -143,7 +144,7 @@ action :setup_vhost do
     variables(
       :docroot => project_root,
       :project => node[:web_apache][:application_name]
-      )
+    )
   end
 
 end
@@ -204,7 +205,7 @@ action :code_update do
   #
   log "  pip will install python packages from requirements.txt"
   # Installing python packages from /requirements.txt if it exists
-  execute "#{node[:app_django][:pip_bin].chomp} install --requirement=#{deploy_dir}/requirements.txt" do
+  execute "#{node[:app_django][:pip_bin]} install --requirement=#{deploy_dir}/requirements.txt" do
     only_if { ::File.exists?("#{deploy_dir}/requirements.txt") }
   end
 

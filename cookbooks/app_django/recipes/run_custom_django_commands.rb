@@ -25,7 +25,7 @@ bash "run commands" do
     for i in "${ARRAY1[@]}"
     do
       tmp=`echo $i | sed 's/^[ \t]*//'`
-      #{node[:app_django][:python_bin].chomp} $tmp
+      #{node[:app_django][:python_bin]} $tmp
     done
   EOH
   only_if { node[:app_django][:project][:custom_cmd] != "" }

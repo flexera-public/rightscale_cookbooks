@@ -23,10 +23,10 @@ recipe  "app_django::run_custom_django_commands", "Run specific user defined com
 
 attribute "app_django/app/debug_mode",
   :display_name => "Django App Debug Mode",
-  :description => "Creates a Django application debug environment variable. Example: False",
-  :choice => ["True", "False"],
+  :description => "Creates a Django application debug environment variable, e.g. should be true for dev and false for prod environment. Example: false",
+  :choice => ["true", "false"],
   :required => "optional",
-  :default => "False",
+  :default => "false",
   :recipes => ["app_django::default"]
 
 attribute "app_django/app/static_dir",

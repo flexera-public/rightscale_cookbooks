@@ -51,6 +51,10 @@ case node[:platform]
     raise "Unrecognized distro #{node[:platform]}, exiting "
 end
 
+# Set debug mode django style (https://docs.djangoproject.com/en/dev/ref/settings/#debug)
+node[:app_django][:app][:debug_mode] = "False" if node[:app_django][:app][:debug_mode] == "false"
+node[:app_django][:app][:debug_mode] = "True" if node[:app_django][:app][:debug_mode] == "true"
+
 # Setting app LWRP attribute
 node[:app][:destination] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
 

@@ -87,6 +87,7 @@ Note: Only "internal" cookbook attributes are described here. Descriptions of at
 
 ====== General attributes
 * <tt>node[:app_django][:module_dependencies]</tt> - Modules required for Apache.
+* <tt>node[:app_django][:app][:debug_mode]</tt> - Django application debug mode.
 * <tt>node[:app_django][:apache][:serve_local_files]</tt> - Used to enable/disable the serve of any existing local files.
 * <tt>node[:app_django][:deploy_dir]</tt> - Path in the specified repository where application code will be pulled from.
 * <tt>node[:app_django][:pip_bin]</tt> - Path to Python pip bin directory.
@@ -95,7 +96,6 @@ Note: Only "internal" cookbook attributes are described here. Descriptions of at
 * <tt>node[:app_django][:project][:custom_cmd]</tt> - A list of python commands required for django application initialization.
 
 ====== Platform dependent
-* <tt>node[:app][:user]</tt> -  Application user. Required for changing owner of created project dirs.
 * <tt>node[:app_django][:apache][:log_dir]</tt> - Path to apache log directory.
 
 === Templates:
