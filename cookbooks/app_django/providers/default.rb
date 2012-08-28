@@ -127,7 +127,6 @@ action :setup_vhost do
     server_name node[:web_apache][:server_name]
     debug node[:app_django][:debug_mode]
     apache_log_dir node[:app_django][:apache][:log_dir]
-    static_dir node[:app_django][:app][:static_dir]
     apache_serve_local_files node[:app_django][:apache][:serve_local_files]
     cookbook "app_django"
   end

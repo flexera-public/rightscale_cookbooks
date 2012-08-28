@@ -17,15 +17,16 @@
     Deny from all
   </DirectoryMatch>
 
-  Alias /robots.txt <%=@params[:docroot]%>/<%=@params[:static_dir]%>/robots.txt
-  Alias /favicon.ico <%=@params[:docroot]%>/<%=@params[:static_dir]%>/favicon.ico
+  # See more details at https://docs.djangoproject.com/en/1.4/howto/deployment/wsgi/modwsgi/#serving-files
+  Alias /robots.txt <%=@params[:docroot]%>/static/robots.txt
+  Alias /favicon.ico <%=@params[:docroot]%>/static/favicon.ico
 
-  AliasMatch ^/([^/]*\.css) <%=@params[:docroot]%>/<%=@params[:static_dir]%>/css/$1
+  AliasMatch ^/([^/]*\.css) <%=@params[:docroot]%>/static/css/$1
 
   Alias /media/ <%=@params[:docroot]%>/media/
-  Alias /static/ <%=@params[:docroot]%>/<%=@params[:static_dir]%>/
+  Alias /static/ <%=@params[:docroot]%>/static/
 
-  <Directory "<%=@params[:docroot]%>/<%=@params[:static_dir]%>">
+  <Directory "<%=@params[:docroot]%>/static">
     Order deny,allow
     Allow from all
   </Directory>

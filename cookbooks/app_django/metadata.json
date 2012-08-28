@@ -11,20 +11,6 @@
   "name": "app_django",
   "maintainer_email": "support@rightscale.com",
   "attributes": {
-    "app_django/app/static_dir": {
-      "required": "optional",
-      "calculated": false,
-      "choice": [
-
-      ],
-      "default": "static",
-      "type": "string",
-      "recipes": [
-        "app_django::default"
-      ],
-      "display_name": "static files path for app",
-      "description": "The path to the static files relative to project repo under root directory. Example: appname/static"
-    },
     "app_django/project/custom_cmd": {
       "required": "optional",
       "calculated": false,

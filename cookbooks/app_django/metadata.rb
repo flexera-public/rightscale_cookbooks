@@ -29,13 +29,6 @@ attribute "app_django/app/debug_mode",
   :default => "false",
   :recipes => ["app_django::default"]
 
-attribute "app_django/app/static_dir",
-  :display_name => "static files path for app",
-  :description => "The path to the static files relative to project repo under root directory. Example: appname/static",
-  :required => "optional",
-  :default => "static",
-  :recipes => ["app_django::default"]
-
 attribute "app_django/apache/serve_local_files",
   :display_name => "Apache serve local Files",
   :description => "This option tells Apache whether it should serve the (static) content itself. Currently, it will omit PHP and TomCat dynamic content, such as *.php, *.action, *.jsp, and *.do  Example: true",
