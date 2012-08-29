@@ -3,9 +3,9 @@
 
 INTERVAL="${COLLECTD_INTERVAL:-10}"
 PLUGIN_NAME="passenger"
-HTTPD="/usr/sbin/httpd"
-MEMORY="sudo -u root HTTPD="$2" /usr/bin/passenger-memory-stats"
-STATUS="sudo -u root /usr/bin/passenger-status"
+HTTPD=<%= @apache_binary %>
+MEMORY="sudo -u root HTTPD="$2" <%= @passenger_memory_stats %>"
+STATUS="sudo -u root <%= @passenger_status %>"
 SERVER=$1
 
 while sleep "$INTERVAL"
