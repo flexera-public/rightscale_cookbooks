@@ -27,22 +27,22 @@ case node[:app][:db_adapter]
 when "mysql"
   node[:app][:packages] = value_for_platform(
     "centos" => {
-      "6.2" => [
-        "ecj", 
-        "tomcat6",
-        "tomcat6-admin-webapps",
-        "tomcat6-webapps",
-        "tomcat-native",
-        "mysql-connector-java"
-      ],  
-      "default" => [
+      "5.8" => [
         "eclipse-ecj",
         "tomcat6",
         "tomcat6-admin-webapps",
         "tomcat6-webapps",
         "tomcat-native",
         "mysql-connector-java"
-      ]   
+      ],
+     "default" => [
+        "ecj",
+        "tomcat6",
+        "tomcat6-admin-webapps",
+        "tomcat6-webapps",
+        "tomcat-native",
+        "mysql-connector-java"
+      ]
     }, 
     "ubuntu" => {
       "default"  => [
@@ -70,15 +70,15 @@ when "mysql"
 when "postgresql"
   node[:app][:packages] = value_for_platform(
     "centos" => {
-      "6.2" => [
-        "ecj",
+      "5.8" => [
+        "eclipse-ecj",
         "tomcat6",
         "tomcat6-admin-webapps",
         "tomcat6-webapps",
         "tomcat-native"
       ],
       "default" => [
-        "eclipse-ecj",
+        "ecj",
         "tomcat6",
         "tomcat6-admin-webapps",
         "tomcat6-webapps",
