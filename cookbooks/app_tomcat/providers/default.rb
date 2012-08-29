@@ -244,7 +244,7 @@ action :setup_vhost do
     end
 
     # Configure workers.properties for mod_jk
-    template "/etc/tomcat6/workers.properties" do
+    template node[:app_tomcat][:jkworkersfile] do
       action :create
       source "tomcat_workers.properties.erb"
       variables(
@@ -260,7 +260,7 @@ action :setup_vhost do
       backup false
       source "mod_jk.conf.erb"
       variables(
-        :tomcat_name => "tomcat6",
+        :jkworkersfile => node[:app_tomcat][:jkworkersfile],
         :apache_log_dir => node[:apache][:log_dir]
       )
       cookbook 'app_tomcat'
