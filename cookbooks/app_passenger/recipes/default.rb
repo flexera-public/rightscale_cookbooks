@@ -42,8 +42,8 @@ end
 # Setting passenger binary directory
 node[:app_passenger][:passenger_bin_dir] = value_for_platform(
   "ubuntu" => {
-    "12.04" => "/usr/local/bin",
-    "default" => "/usr/bin"
+    "10.04" => "/usr/bin",
+    "default" => "/usr/local/bin"
   },
   "default" => "/usr/bin"
 )
@@ -51,8 +51,8 @@ node[:app_passenger][:passenger_bin_dir] = value_for_platform(
 # Path to Ruby gem directory
 node[:app_passenger][:ruby_gem_base_dir] = value_for_platform(
   "ubuntu" => {
-    "12.04" => "/var/lib/gems/1.8",
-    "default" => "/usr/lib64/ruby/gems/1.8"
+    "10.04" => "/usr/lib64/ruby/gems/1.8",
+    "default" => "/var/lib/gems/1.8"
   },
   "default" => "/usr/lib64/ruby/gems/1.8"
 )
