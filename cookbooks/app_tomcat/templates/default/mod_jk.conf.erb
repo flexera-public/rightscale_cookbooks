@@ -14,7 +14,7 @@
 # Load mod_jk module
 LoadModule    jk_module  modules/mod_jk.so
 
-<% unless node[:platform_version] == "12.04" %>
+<% if node[:platform_version] == "10.04" %>
 # Where to find workers.properties
 JkWorkersFile <%= @jkworkersfile %>
 <% end %>
