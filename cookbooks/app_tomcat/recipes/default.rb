@@ -12,10 +12,10 @@ node[:app][:provider] = "app_tomcat"
 
 # Defining app user and group attributes
 case node[:platform]
-when "ubuntu", "debian"
+when "ubuntu"
   node[:app][:user] = "tomcat6"
   node[:app][:group] = "tomcat6"
-when "centos", "fedora", "suse", "redhat", "redhatenterpriseserver"
+when "centos", "redhat"
   node[:app][:user] = "tomcat"
   node[:app][:group] = "tomcat"
 else
