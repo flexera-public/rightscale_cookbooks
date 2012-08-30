@@ -104,15 +104,13 @@ action :post_backup_cleanup do
 end
 
 action :set_privileges do
-  priv = new_resource.privilege
-  priv_username = new_resource.privilege_username
-  priv_password = new_resource.privilege_password
-  priv_database = new_resource.privilege_database
-  # This is a check to verify node is master server
-  slave_state = RightScale::Database::PostgreSQL::Helper.detect_if_slave(node)
-  if ( slave_state == "true")
-    log "  No need to re-run the recipe on slave"
+  if ::File.exist?("#{node[:db_postgres][:datadir]}/recovery.conf")
+    log "  No need to rerun on reboot for slave"
   else
+    priv = new_resource.privilege
+    priv_username = new_resource.privilege_username
+    priv_password = new_resource.privilege_password
+    priv_database = new_resource.privilege_database
     db_postgres_set_privileges "setup db privileges" do
       preset priv
       username priv_username
@@ -146,7 +144,13 @@ action :install_client do
     raise "ERROR:: Unrecognized distro #{node[:platform]}, exiting "
   end
 
-  # == Install PostgreSQL client gem
+  # Link postgresql pg_config to default system bin path - required by app servers
+  link "/usr/bin/pg_config" do
+    to "/usr/pgsql-#{node[:db_postgres][:version]}/bin/pg_config"
+    not_if { ::File.exists?("/usr/bin/pg_config") }
+  end
+
+  # Install PostgreSQL client gem
   gem_package("pg") do
     gem_binary("/opt/rightscale/sandbox/bin/gem")
     options("-- --with-pg-config=#{node[:db_postgres][:bindir]}/pg_config")
@@ -291,59 +295,72 @@ action :grant_replication_slave do
   conn.finish
 end
 
+
 action :enable_replication do
   db_state_get node
+  current_restore_process = new_resource.restore_process
 
   newmaster_host = node[:db][:current_master_ip]
   rep_user = node[:db][:replication][:user]
   rep_pass = node[:db][:replication][:password]
   app_name = node[:rightscale][:instance_uuid]
 
-  master_info = RightScale::Database::PostgreSQL::Helper.load_replication_info(node)
-
-  # Set slave state
-  log "  Setting up slave state..."
-  ruby_block "set slave state" do
+  # Check the volume before performing any actions.  If invalid raise error and exit.
+  ruby_block "validate_master" do
+    not_if { current_restore_process == :no_restore }
     block do
-      node[:db][:this_is_master] = false
+      master_info = RightScale::Database::PostgreSQL::Helper.load_replication_info(node)
+
+      # Check that the snapshot is from the current master or a slave associated with the current master
+      raise "Position and file not saved or it does not contain info!" unless master_info['Master_instance_uuid']
+      raise "FATAL: snapshot was taken from a different master! snap_master was:#{master_info['Master_instance_uuid']} != current master: #{node[:db][:current_master_uuid]}" unless master_info['Master_instance_uuid'] == node[:db][:current_master_uuid]
     end
   end
 
   # Stopping Postgresql service
-  action_stop
+  service "postgresql-#{node[:db_postgres][:version]}" do
+    not_if { current_restore_process == :no_restore }
+    action :stop
+  end
 
-  # Sync to Master data
-  RightScale::Database::PostgreSQL::Helper.rsync_db(newmaster_host, rep_user)
+  ruby_block "Sync to Master data" do
+    not_if { current_restore_process == :no_restore }
+    block do
+      RightScale::Database::PostgreSQL::Helper.rsync_db(newmaster_host, rep_user)
+    end
+  end
 
-  # Setup recovery conf
-  RightScale::Database::PostgreSQL::Helper.reconfigure_replication_info(newmaster_host, rep_user, rep_pass, app_name)
+  ruby_block "configure_replication" do
+    not_if { current_restore_process == :no_restore }
+    block do
+      master_info = RightScale::Database::PostgreSQL::Helper.load_replication_info(node)
+      newmaster_host = master_info['Master_IP']
+      RightScale::Database::PostgreSQL::Helper.reconfigure_replication_info(newmaster_host, rep_user, rep_pass, app_name)
+    end
+  end
 
-  log "  Wiping existing runtime config files"
-  `rm -rf "#{node[:db][:datadir]}/pg_xlog/*"`
+  bash "wipe_existing_runtime_config" do
+    not_if { current_restore_process == :no_restore }
+    flags "-ex"
+     code <<-EOH
+       rm -rf #{node[:db_postgres][:datadir]}/pg_xlog/*
+     EOH
+  end
 
   # Ensure that database started
   # service provider uses the status command to decide if it
   # has to run the start command again.
-  5.times do
-      action_start
-  end
-
-  ruby_block "validate_backup" do
+  ruby_block "Start Postgresql service" do
     block do
-      master_info = RightScale::Database::PostgreSQL::Helper.load_replication_info(node)
-      raise "Position and file not saved!" unless master_info['Master_instance_uuid']
-      # Check that the snapshot is from the current master or a slave associated with the current master
-      if master_info['Master_instance_uuid'] != node[:db][:current_master_uuid]
-        raise "FATAL: snapshot was taken from a different master! snap_master was:#{master_info['Master_instance_uuid']} != current master: #{node[:db][:current_master_uuid]}"
-      end
+      retries 5
+      retry_delay 2
+      action_start
     end
   end
 
   # Setup slave monitoring
   action_setup_slave_monitoring
-
-end
-
+end  
 
 action :promote do
   db_state_get node
