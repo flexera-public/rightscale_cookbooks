@@ -22,7 +22,7 @@ define :db_postgres_set_privileges, :preset => "administrator", :username => nil
       sleep 20
       conn = PGconn.open("localhost", nil, nil, nil, nil, "postgres", nil)
 
-      # Now that we have a Postgresql object, let's sanitize our inputs. These will get pass for log and comparision.
+      # Now that we have a Postgresql object, let's sanitize our inputs. These will get pass for log and comparison.
       username_esc = conn.escape_string(username)
       password_esc = conn.escape_string(password)
       # Following Username and password will get to pass for creation of user.
