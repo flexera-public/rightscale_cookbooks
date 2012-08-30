@@ -101,8 +101,9 @@ action :add_vhost do
 
   lb_haproxy_backend  "create main backend section" do
     pool_name  pool_name
-    advanced_configs false
   end
+
+  action_advanced_configs
 
   # (Re)generate the haproxy config file.
   execute "/etc/haproxy/haproxy-cat.sh" do
@@ -167,12 +168,6 @@ action :attach do
     )
     notifies :run, resources(:execute => "/etc/haproxy/haproxy-cat.sh")
   end
-
-
-  action_advanced_configs
-
-
-
 end
 
 action :advanced_configs do
@@ -185,7 +180,6 @@ action :advanced_configs do
 
   pool_name = new_resource.pool_name
   pool_name_full =  new_resource.pool_name_full
-  backend_authorized_users = new_resource.backend_authorized_users
   log "  Current pool name is #{pool_name}"
   log "  Current FULL pool name is #{pool_name_full}"
 
@@ -220,50 +214,6 @@ action :advanced_configs do
       :pool_name => pool_name,
       :pool_name_full => pool_name_full
     )
-  end
-
-  # http-request auth section, supported only from haproxy v 1.4
-  if backend_authorized_users
-
-    ha_version = %x{/usr/sbin/haproxy -v | grep "version"}
-    if ha_version.include?("1.3")
-      raise "http-request auth is not available in ths version of HA proxy: #{ha_version}"
-    end
-
-    # RESULT EXAMPLE
-    # userlist UsersFor__appserver
-    # user user1 insecure-password 678
-    template "/etc/haproxy/#{node[:lb][:service][:provider]}.d/userlist_backend_#{pool_name}.conf" do
-         source "haproxy_backend_userlist.erb"
-         owner "haproxy"
-         group "haproxy"
-         mode 0600
-         backup false
-         cookbook "lb_haproxy"
-         variables(
-           :pool_name => pool_name,
-           :user_credentials => backend_authorized_users
-         )
-    end
-
-    # recreate backend section of haproxy config, to add authorization rules for each backend
-    # RESULT EXAMPLE
-    # acl Auth__appserver http_auth(UsersFor__appserver)
-    # http-request auth realm _appserver if !Auth__appserver
-    lb_haproxy_backend  "create main backend section" do
-      pool_name  pool_name
-      advanced_configs true
-    end
-
-    # (Re)generate the haproxy config file.
-    execute "/etc/haproxy/haproxy-cat.sh" do
-      user "haproxy"
-      group "haproxy"
-      umask 0077
-      action :run
-      notifies :reload, resources(:service => "haproxy")
-    end
-
   end
 
 end
