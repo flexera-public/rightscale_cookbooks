@@ -89,11 +89,6 @@ action :configure do
       package "rsyslog-relp"
       package "stunnel"
 
-      service "stunnel4" do
-        supports :reload => true, :restart => true, :start => true, :stop => true
-        action :nothing
-      end
-
       template "/etc/stunnel/stunnel.conf" do
         action :create
         source "stunnel.conf.erb"
@@ -113,7 +108,12 @@ action :configure do
         code <<-EOH
           ruby -pi -e "gsub(/ENABLED=0/,'ENABLED=1')" /etc/default/stunnel4
         EOH
-        notifies :restart, resources(:service => "stunnel4")
+        only_if { node[:platform] == "ubuntu" }
+      end
+
+      service "stunnel4" do
+        supports :reload => true, :restart => true, :start => true, :stop => true
+        action [ :enable, :restart ]
       end
 
     end
@@ -208,11 +208,6 @@ action :configure_server do
       not_if { node[:logging][:tls_certificate] }
     end
 
-    service "stunnel4" do
-      supports :reload => true, :restart => true, :start => true, :stop => true
-      action :nothing
-    end
-
     template "/etc/stunnel/stunnel.conf" do
       action :create
       source "stunnel.conf.erb"
@@ -232,7 +227,12 @@ action :configure_server do
       code <<-EOH
         ruby -pi -e "gsub(/ENABLED=0/,'ENABLED=1')" /etc/default/stunnel4
       EOH
-      notifies :restart, resources(:service => "stunnel4")
+      only_if { node[:platform] == "ubuntu" }
+    end
+
+    service "stunnel4" do
+      supports :reload => true, :restart => true, :start => true, :stop => true
+      action [ :enable, :restart ]
     end
 
   end
