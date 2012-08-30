@@ -61,6 +61,7 @@ Here is the list of db recipes that can be used without the premium
 rightscale_tools gem:
 
 * db::default
+* db::default_9_1
 * db::install_client
 * db::install_server
 * db::setup_monitoring
