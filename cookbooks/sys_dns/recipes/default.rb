@@ -19,8 +19,12 @@ package value_for_platform(
 )
 
 package value_for_platform(
-  "ubuntu" => { "default" => "libdigest-hmac-perl" },
-  [ "centos", "redhat" ] => { "default" => "perl-Digest-HMAC" }
+  "ubuntu" => {
+    "default" => "libdigest-hmac-perl"
+  },
+  [ "centos", "redhat" ] => {
+    "default" => "perl-Digest-HMAC"
+  }
 )
 
 # Creating dns directory for further use

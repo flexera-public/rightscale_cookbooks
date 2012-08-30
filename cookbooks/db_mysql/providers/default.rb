@@ -44,12 +44,12 @@ end
 
 action :move_data_dir do
   @db = init(new_resource)
-  @db.move_datadir
+  @db.move_datadir(new_resource.name, node[:db_mysql][:datadir])
 end
 
 action :reset do
   @db = init(new_resource)
-  @db.reset
+  @db.reset(new_resource.name, node[:db_mysql][:datadir])
 end
 
 action :firewall_update_request do
@@ -124,7 +124,7 @@ action :post_restore_cleanup do
       raise "FATAL: Attempting to restore #{snap_provider} #{snap_version} snapshot to #{current_provider} #{current_version} with :restore_version_check enabled."
     end
   else
-    Chef::Log.info "  Skipping #{provider} restore version check"
+    Chef::Log.info "  Skipping #{snap_provider} restore version check"
   end
 
   # create symlink from package default mysql datadir to restored datadir
@@ -149,43 +149,21 @@ action :post_restore_cleanup do
     raise "FATAL: unknown log file size"
   end
 
-  # if sizes do not match, must re-create my.cnf, start mysqld, stop, then delete files
+  # warn if sizes do not match
   if ::File.stat("/var/lib/mysql/ib_logfile0").size == innodb_log_file_size_to_bytes
-    Chef::Log.info "  innodb log file sizes the same...keeping file(s)"
+    Chef::Log.info "  innodb log file sizes the same... OK."
   else
-    # recreate my.cnf
-    db_mysql_set_mycnf "setup_mycnf" do
-      server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
-      relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
-      innodb_log_file_size ::File.stat("/var/lib/mysql/ib_logfile0").size
-    end
+    Chef::Log.warn "  innodb log file size does not match."
+    Chef::Log.warn "  Updating my.cnf to match log file from snapshot."
+    Chef::Log.warn "  Discovered size: #{::File.stat("/var/lib/mysql/ib_logfile0").size}"
+    Chef::Log.warn "  Expected size: #{innodb_log_file_size_to_bytes}"
+  end
 
-    Chef::Log.info "  Temp Starting MySQL"
-    db node[:db][:data_dir] do
-      action :start
-      persist false
-    end
-
-    Chef::Log.info "  Stop MySQL"
-    db node[:db][:data_dir] do
-      action :stop
-      persist false
-    end
-
-    ruby_block "delete innodb logfiles" do
-      block do
-        require 'fileutils'
-        remove_files = ::Dir.glob(::File.join(node[:db_mysql][:datadir], 'ib_logfile*')) + ::Dir.glob(::File.join(node[:db_mysql][:datadir], 'ibdata*'))
-        FileUtils.rm_rf(remove_files)
-      end
-    end
-
-    # set mycnf back
-    db_mysql_set_mycnf "setup_mycnf" do
-      server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
-      relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
-      innodb_log_file_size node[:db_mysql][:tunable][:innodb_log_file_size]
-    end
+  # always update the my.cnf file on a restore
+  db_mysql_set_mycnf "setup_mycnf" do
+    server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
+    relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
+    innodb_log_file_size ::File.stat("/var/lib/mysql/ib_logfile0").size
   end
 
   @db = init(new_resource)
@@ -467,7 +445,7 @@ action :setup_monitoring do
   end
 
   # Send warning if not centos/redhat or ubuntu
-  Chef::Log.info "  WARNING: attempting to install collectd-mysql on unsupported platform #{platform}, continuing.." do
+  log "  WARNING: attempting to install collectd-mysql on unsupported platform #{platform}, continuing.." do
     not_if { platform =~ /centos|redhat|ubuntu/ }
     level :warn
   end
@@ -505,6 +483,7 @@ action :promote do
   db_mysql_set_mycnf "setup_mycnf" do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
+    innodb_log_file_size ::File.stat("/var/lib/mysql/ib_logfile0").size
   end
 
   db node[:db][:data_dir] do
@@ -643,6 +622,7 @@ action :enable_replication do
     db_mysql_set_mycnf "setup_mycnf" do
       server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
       relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
+      innodb_log_file_size ::File.stat("/var/lib/mysql/ib_logfile0").size
     end
   end
 

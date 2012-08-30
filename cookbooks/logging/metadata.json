@@ -6,9 +6,6 @@
   "maintainer_email": "support@rightscale.com",
   "license": "Copyright RightScale, Inc. All rights reserved.",
   "platforms": {
-    "centos": "~> 5.8",
-    "redhat": "~> 5.8",
-    "ubuntu": "~> 10.04.0"
   },
   "dependencies": {
     "rightscale": ">= 0.0.0",
@@ -50,84 +47,6 @@
       ],
       "calculated": false,
       "type": "string"
-    },
-    "logging/service_action": {
-      "display_name": "Logging Service Control Action",
-      "description": "Action to be done with logging service.",
-      "required": "optional",
-      "choice": [
-        "start",
-        "stop",
-        "restart",
-        "reload"
-      ],
-      "recipes": [
-        "logging::service_control"
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "logging/protocol": {
-      "display_name": "Logging Protocol",
-      "description": "Protocol used to send logging messages from client to server.",
-      "required": "optional",
-      "choice": [
-        "udp",
-        "tcp",
-        "tcp+tls",
-        "relp",
-        "relp+stunnel"
-      ],
-      "default": "udp",
-      "recipes": [
-        "logging::default",
-        "logging::install_server"
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "logging/tls_ca_certificate": {
-      "display_name": "TLS CA Certificate",
-      "description": "The name of your CA TLS Certificate. Example: cred:TLS_CA_CERT",
-      "required": "optional",
-      "default": "",
-      "recipes": [
-        "logging::default",
-        "logging::install_server"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "logging/tls_certificate": {
-      "display_name": "TLS Certificate",
-      "description": "Your TLS Certificate. Example: cred:TLS_CERT",
-      "required": "optional",
-      "default": "",
-      "recipes": [
-        "logging::install_server"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "logging/tls_key": {
-      "display_name": "TLS Certificate Key",
-      "description": "Your TLS Certificate Key. Example: cred:TLS_KEY",
-      "required": "optional",
-      "default": "",
-      "recipes": [
-        "logging::install_server"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
     }
   },
   "groupings": {
@@ -135,7 +54,10 @@
   "recipes": {
     "logging::default": "Configures a native logging provider.",
     "logging::install_server": "Configures a syslog server.",
-    "logging::service_control": "Starts/Stops/Restarts/Reloads syslog server depending on user input."
+    "logging::do_server_start": "Starts syslog server.",
+    "logging::do_server_stop": "Stops syslog server.",
+    "logging::do_server_restart": "Restarts syslog server.",
+    "logging::do_server_reload": "Reloads syslog server."
   },
   "version": "12.1.0"
 }

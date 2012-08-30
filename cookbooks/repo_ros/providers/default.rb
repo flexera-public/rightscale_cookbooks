@@ -16,9 +16,9 @@ action :setup_attributes do
 
   # Checking inputs required for getting source from ROS
   raise "  Storage Provider input is unset" unless new_resource.storage_account_provider
-  raise "  Storage account provider ID input is unset" unless new_resource.storage_account_id
-  raise "  Storage account secret input is unset" unless new_resource.storage_account_secret
-  raise "  Repo container name input is unset." unless new_resource.container
+  raise "  Storage account provider ID input is unset" unless new_resource.account
+  raise "  Storage account secret input is unset" unless new_resource.credential
+  raise "  Repo container name input is unset." unless new_resource.repository
 
 end
 
@@ -27,7 +27,7 @@ action :pull do
   # Checking attributes
   action_setup_attributes
 
-  log "  Trying to get ros repo from: #{new_resource.storage_account_provider}, bucket: #{new_resource.container}"
+  log "  Trying to get ros repo from: #{new_resource.storage_account_provider}, bucket: #{new_resource.repository}"
 
   # Backup project directory if it is not empty
   ruby_block "Backup of existing project directory" do
@@ -50,11 +50,11 @@ action :pull do
   log "  Downloaded file will be available in #{tmp_repo_path}"
 
   # Obtain the source from ROS
-  execute "Download #{new_resource.container} from Remote Object Store" do
-    command "/opt/rightscale/sandbox/bin/ros_util get --cloud #{new_resource.storage_account_provider} --container #{new_resource.container} --dest #{tmp_repo_path} --source #{new_resource.prefix} --latest"
+  execute "Download #{new_resource.repository} from Remote Object Store" do
+    command "/opt/rightscale/sandbox/bin/ros_util get --cloud #{new_resource.storage_account_provider} --container #{new_resource.repository} --dest #{tmp_repo_path} --source #{new_resource.prefix} --latest"
     environment ({
-      'STORAGE_ACCOUNT_ID' => new_resource.storage_account_id,
-      'STORAGE_ACCOUNT_SECRET' => new_resource.storage_account_secret
+      'STORAGE_ACCOUNT_ID' => new_resource.account,
+      'STORAGE_ACCOUNT_SECRET' => new_resource.credential
     })
   end
 

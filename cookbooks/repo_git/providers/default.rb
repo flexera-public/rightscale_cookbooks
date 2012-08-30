@@ -33,7 +33,7 @@ action :pull do
         ::File.rename("#{new_resource.destination}", "#{capistrano_dir}/releases/capistrano_old_"+::Time.now.strftime("%Y%m%d%H%M"))
       end
       # Add ssh key and exec script
-      RightScale::Repo::Ssh_key.new.create(new_resource.git_ssh_key)
+      RightScale::Repo::GitSshKey.new.create(new_resource.credential)
     end
   end
 
@@ -70,7 +70,7 @@ action :pull do
   # Delete SSH key & clear GIT_SSH
   ruby_block "After pull" do
     block do
-      RightScale::Repo::Ssh_key.new.delete
+      RightScale::Repo::GitSshKey.new.delete
     end
   end
 
@@ -83,7 +83,7 @@ action :capistrano_pull do
   # Add ssh key and exec script
   ruby_block "Before deploy" do
     block do
-       RightScale::Repo::Ssh_key.new.create(new_resource.git_ssh_key)
+       RightScale::Repo::GitSshKey.new.create(new_resource.credential)
     end
   end
 
@@ -120,7 +120,7 @@ action :capistrano_pull do
   # Delete SSH key & clear GIT_SSH
   ruby_block "After deploy" do
     block do
-      RightScale::Repo::Ssh_key.new.delete
+      RightScale::Repo::GitSshKey.new.delete
     end
   end
 

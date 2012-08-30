@@ -18,7 +18,7 @@ end
 # Below are the attributes defined by the LB resource interface.
 #
 
-attribute :vhost_name, :kind_of => String, :name_attribute => true
+attribute :pool_name, :kind_of => String, :name_attribute => true
 
 # Attaching/Detaching options
 attribute :backend_id, :kind_of => String, :default => ""
@@ -33,6 +33,7 @@ attribute :service_lb_name, :kind_of => String, :default => ""
 attribute :service_account_id, :kind_of => String, :default => ""
 attribute :service_account_secret, :kind_of => String, :default => ""
 
+attribute :pool_name_full, :kind_of => String, :default => ""
 
 # General LoadBalance Actions
 #
@@ -100,5 +101,11 @@ add_action :restart
 # load balancer on the RightScale dashboard.
 #
 add_action :setup_monitoring
+
+# Advanced Configs
+# Perform advanced configuration for load balancer.
+#
+#add support for complicated acls and authorization process
+add_action :advanced_configs
 
 actions @action_list
