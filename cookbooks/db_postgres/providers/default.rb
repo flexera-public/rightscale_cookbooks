@@ -339,13 +339,12 @@ action :enable_replication do
     end
   end
 
-  ruby_block "wipe_existing_runtime_config" do
+  bash "wipe_existing_runtime_config" do
     not_if { current_restore_process == :no_restore }
-    block do
-      Chef::Log.info "  Wiping existing runtime config files"
-      runtime_config_file = Dir.glob("#{node[:db_postgres][:datadir]}/pg_xlog/*")
-      FileUtils.rm_rf(runtime_config_file)
-    end
+    flags "-ex"
+     code <<-EOH
+       rm -rf #{node[:db_postgres][:datadir]}/pg_xlog/*
+     EOH
   end
 
   # Ensure that database started
