@@ -12,22 +12,11 @@ rightscale_marker :begin
 node[:db][:provider] = "db_postgres"
 version="#{node[:db_postgres][:version]}"
 
-log "  Setting DB provider to #{node[:db][:provider]} and PostgreSQL version to #{version}"
-
-db node[:db][:data_dir] do
-  persist true
-  provider node[:db][:provider]
-  action :nothing
-end
-
-platform = node[:platform]
-case platform
-when "centos"
-  node[:db][:socket] = "/var/run/postgresql"
-  node[:db_postgres][:client_packages_install] = ["postgresql91-libs", "postgresql91", "postgresql91-devel" ] 
-  node[:db_postgres][:server_packages_install] = ["postgresql91-libs", "postgresql91", "postgresql91-devel", "postgresql91-server", "postgresql91-contrib" ]
+case version
+when '9.1'
+  include_recipe "db_postgres::default_#{version.gsub('.', '_')}"
 else
-  raise "Unsupported platform #{platform} for PostgreSQL Version #{version}"
+  raise "  Unsupported PostgreSQL version: #{version}"
 end
 
 rightscale_marker :end
