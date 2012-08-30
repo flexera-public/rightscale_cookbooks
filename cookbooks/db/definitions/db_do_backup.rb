@@ -76,7 +76,7 @@ define :db_do_backup, :backup_type => "primary" do
 
     # Secondary arguments
     secondary_cloud get_device_or_default(node, :device1, :backup, :secondary, :cloud)
-    secondary_endpoint get_device_or_default(node, :device1, :backup, :secondary, :endpoint)
+    secondary_endpoint get_device_or_default(node, :device1, :backup, :secondary, :endpoint) || ""
     secondary_container get_device_or_default(node, :device1, :backup, :secondary, :container)
     secondary_user get_device_or_default(node, :device1, :backup, :secondary, :cred, :user)
     secondary_secret get_device_or_default(node, :device1, :backup, :secondary, :cred, :secret)

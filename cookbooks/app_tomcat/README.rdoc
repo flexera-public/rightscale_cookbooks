@@ -10,9 +10,10 @@
   or your own implementation of "app" resource. See the "app" cookbook README for
   details.
 * Requires a VM launched from a RightScale managed RightImage
-* Tested on CentOS 5.6 RightImage
-* Tested on Ubuntu 10.04 RightImage
-* Tested on RedHat 5.8 RightImage
+* Tested on the following RightImages:
+  * CentOS 5.8, 6.2
+  * Ubuntu 10.04, 12.04
+  * RedHat 5.8
 
 == COOKBOOKS DEPENDENCIES:
 Please see the <tt>metadata.rb</tt> file for the latest dependencies.
@@ -92,16 +93,20 @@ Note: Only "internal" cookbook attributes are described here. Descriptions of
 attributes that are inputs are in the <tt>metadata.rb</tt> cookbook file.
 
 ====== General attributes
-* <tt>node[:tomcat][:docroot]</tt> - Path to the directory which will contain
-  the application.
-* <tt>node[:tomcat][:module_dependencies]</tt> - Additional modules required
-  for Tomcat.
+* <tt>node[:app_tomcat][:code][:root_war]</tt> - Path to the directory which will contain the application for Tomcat.
+
+====== Java heap tuning attributes
+* <tt>node[:app_tomcat][:java][:permsize]</tt> - The initial value of the permanent generation space size.
+* <tt>node[:app_tomcat][:java][:maxpermsize]</tt> - The maximum value of the permanent generation space size.
+* <tt>node[:app_tomcat][:java][:newsize]</tt> - The initial size of new space generation.
+* <tt>node[:app_tomcat][:java][:maxnewsize]</tt> - The maximum size of new space generation.
+* <tt>node[:app_tomcat][:java][:xmx]</tt> - The maximum size of the heap used by the JVM.
+* <tt>node[:app_tomcat][:java][:xms]</tt> - The initial size of the heap used by the JVM.
 
 ====== Platform dependent
-* <tt>node[:tomcat][:app_user]</tt> - Username. Required for changing the owner
+* <tt>node[:app][:user]</tt> - Username. Required for changing the owner
   of created project dirs.
-* <tt>node[:tomcat][:alternatives_cmd]</tt> - Java alternatives command list.
-* <tt>node[:tomcat][:db_adapter]</tt> - Type of database adapter. MySQL or Postgres.
+* <tt>node[:app_tomcat][:alternatives_cmd]</tt> - Java alternatives command list.
 
 === Templates:
 
@@ -112,8 +117,6 @@ attributes that are inputs are in the <tt>metadata.rb</tt> cookbook file.
 * <tt>server_xml.erb</tt> - Tomcat server.xml configuration template.
 * <tt>tomcat6_conf.erb</tt> - Tomcat6.conf configuration template used in the
   <tt>app::setup_vhost</tt> recipe.
-* <tt>tomcat6_logrotate.conf.erb</tt> - Logrotate for configuration template for
-  Tomcat.
 * <tt>tomcat_workers.properties.erb</tt> - Tomcat worker configuration template.
 
 ==== Defined in <tt>:setup_db_connection</tt> LWRP action for the <tt>app::setup_db_connection</tt> recipe.
@@ -134,6 +137,8 @@ attributes that are inputs are in the <tt>metadata.rb</tt> cookbook file.
 * <tt>:start</tt>
 
 * <tt>:stop</tt>
+
+* <tt>:reload</tt>
 
 * <tt>:restart</tt>
 
@@ -159,6 +164,8 @@ interface to all <tt>app_tomcat</tt> provider logic.
 * <tt>:start</tt> - Start sequence for Tomcat application server.
 
 * <tt>:stop</tt> - Stop sequence for Tomcat application server.
+
+* <tt>:reload</tt> - Reload sequence for Tomcat application server.
 
 * <tt>:restart</tt> - Restart sequence for Tomcat application server.
 

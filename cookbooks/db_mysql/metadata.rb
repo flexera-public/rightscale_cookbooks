@@ -5,9 +5,9 @@ description      "Installs/configures a MySQL database client and server."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "12.1.0"
 
-supports "centos", "~> 5.8"
-supports "redhat", "~> 5.8"
-supports "ubuntu", "~> 10.04.0"
+# supports "centos", "~> 5.8", "~> 6.2"
+# supports "redhat", "~> 5.8"
+# supports "ubuntu", "~> 10.04", "~> 12.04"
 
 depends "db"
 depends "block_device"
@@ -77,11 +77,11 @@ attribute "db_mysql/tmpdir",
 
 attribute "db_mysql/init_timeout",
   :display_name => "MySQL Init Timeout",
-  :description => "Defines timeout to wait for a MySQL socket connection before a READ LOCK. Default: 60",
+  :description => "Defines timeout to wait for a MySQL socket connection before a READ LOCK. Default: 600",
   :recipes => [
     "db_mysql::default_5_1",
     "db_mysql::default_5_5"
   ],
   :required => "optional",
-  :default => "60"
+  :default => "600"
 

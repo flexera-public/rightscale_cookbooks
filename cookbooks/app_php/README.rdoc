@@ -9,9 +9,10 @@
 * Requires "app" Light Weight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
   or your own implementation of "app" resource. See "app" cookbook README for details.
 * Requires a VM launched from a RightScale managed RightImage
-* Tested on CentOS 5.8 RightImage
-* Tested on Ubuntu 10.04 RightImage
-* Tested on RedHat 5.8 RightImage
+* Tested on the following RightImages:
+  * CentOS 5.8, 6.2
+  * Ubuntu 10.04, 12.04
+  * RedHat 5.8
 
 == COOKBOOKS DEPENDENCIES:
 Please see <tt>metadata.rb</tt> file for the latest dependencies.
@@ -64,17 +65,14 @@ The input type should be set to Array only.
 === Attributes:
 These are settings used in recipes and templates. Default values are noted.
 
-Note: Only "internal" cookbook attributes are described here. Descriptions of attributes which have inputs can be found in the metadata.rb cookbook file.
+Note: Only "internal" cookbook attributes are described here. Descriptions of attributes which have inputs can be found in the metadata.rb cookbook file. For generic app attributes, refer to the app cookbook readme.
 
-====== Platform dependent
-* <tt>node[:php][:module_dependencies]</tt> - Additional packages required for a php server installation.
-* <tt>node[:php][:app_user]</tt> - Apache user. Required for changing owner of created project dirs.
-* <tt>node[:php][:db_adapter]</tt> - Type of database adapter. MySQL or Postgres.
+====== General attributes
+* <tt>node[:app_php][:modules_list]</tt> - List of additional php modules.
 
 === Templates:
 
-* <tt>db.php.erb</tt> - Configuration for project database connection config file used in the <tt>app::setup_db_connection</tt> recipe
-  and defined in the <tt>:setup_db_connection</tt> action of the <tt>app_php</tt> LWRP.
+* <tt>db.php.erb</tt> - Configuration for project database connection config file used in the <tt>app::setup_db_connection</tt> recipe and defined in the <tt>:setup_db_connection</tt> action of the <tt>app_php</tt> LWRP.
 
 === Definitions:
 none
@@ -94,13 +92,13 @@ none
 
 * <tt>:stop</tt>
 
+* <tt>:reload</tt>
+
 * <tt>:restart</tt>
 
 * <tt>:code_update</tt>
 
 * <tt>:setup_db_connection</tt>
-
-* <tt>:setup_monitoring</tt>
 
 For more info about these actions please see the <tt>app</tt> cookbook's README.
 
@@ -116,13 +114,13 @@ For normal operations it requires the "app" resource which will act as the inter
 
 * <tt>:stop</tt> - Stop sequence for PHP application server.
 
+* <tt>:reload</tt> - Reload sequence for PHP application server.
+
 * <tt>:restart</tt> - Restart sequence for PHP application server.
 
 * <tt>:code_update</tt> - Perform project source code update/download using user selected "repo" LWRP.
 
 * <tt>:setup_db_connection</tt> - Perform project config/db.php database connection configuration
-
-* <tt>:setup_monitoring</tt> - Empty action. Monitoring for php is not implemented yet.
 
 ===== Usage Example:
 

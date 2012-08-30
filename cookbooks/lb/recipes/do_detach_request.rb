@@ -11,14 +11,14 @@ class Chef::Recipe
   include RightScale::App::Helper
 end
 
-vhosts(node[:lb][:vhost_names]).each do |vhost_name|
-  log "  Remove the load balancing tags, so we will not be re-attached. - #{vhost_name}"
-  lb_tag vhost_name do
+pool_names(node[:lb][:pools]).each do |pool_name|
+  log "  Remove the load balancing tags, so we will not be re-attached. - #{pool_name}"
+  lb_tag pool_name do
     action :remove
   end
 
   log "  Sending remote detach request..."
-  lb vhost_name do
+  lb pool_name do
     backend_id node[:rightscale][:instance_uuid]
     backend_ip node[:app][:ip]
     backend_port node[:app][:port].to_i

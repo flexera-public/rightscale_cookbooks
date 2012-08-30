@@ -5,9 +5,9 @@ description      "Installs/Configures block device storage."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "12.1.0"
 
-supports "centos", "~> 5.8"
-supports "redhat", "~> 5.8"
-supports "ubuntu", "~> 10.04.0"
+# supports "centos", "~> 5.8", "~> 6.2"
+# supports "redhat", "~> 5.8"
+# supports "ubuntu", "~> 10.04", "~> 12.04"
 
 depends "rightscale"
 
@@ -56,6 +56,8 @@ ros_clouds = [
   "s3",
   "cloudfiles",
   "cloudfilesuk",
+  "google",
+  "azure",
   "swift",
   "SoftLayer_Dallas",
   "SoftLayer_Singapore",
@@ -189,7 +191,7 @@ end.each do |device, number|
 
   attribute "block_device/devices/#{device}/backup/timestamp_override",
     :display_name => "Backup Restore Timestamp Override (#{number})",
-    :description => "Another optional variable to restore from a specific timestamp. Specify a string matching the timestamp tags on the volume snapshot set. You will need to specify the timestamp that's defined by the snapshot's tag (not name). This is only used with AWS. For example, if the snapshot's tag is 'rs_backup:timestamp=1303613371' you would specify '1303613371' for this input.",
+    :description => "Another optional variable to restore from a specific timestamp. Specify a string matching the timestamp tags on the volume snapshot set. You will need to specify the timestamp that's defined by the snapshot's tag (not name). For example, if the snapshot's tag is 'rs_backup:timestamp=1303613371' you would specify '1303613371' for this input.",
     :required => "optional",
     :default => "",
     :recipes => restore_recipes

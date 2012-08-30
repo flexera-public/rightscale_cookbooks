@@ -23,20 +23,20 @@ module RightScale
     def init(new_resource)
       # Setup options
       options = {
-        :hypervisor => new_resource.hypervisor,
-        :primary_endpoint => new_resource.primary_endpoint,
-        :secondary_endpoint => new_resource.secondary_endpoint
+        :hypervisor => new_resource.hypervisor
       }
       options[:rackspace_use_snet] = new_resource.rackspace_snet if new_resource.rackspace_snet
 
       # Primary ROS options
       options[:primary_storage_cloud] = new_resource.primary_cloud if new_resource.primary_cloud
+      options[:primary_endpoint] = new_resource.primary_endpoint unless !new_resource.primary_endpoint || new_resource.primary_endpoint.empty?
       options[:primary_storage_key] = new_resource.primary_user if new_resource.primary_user
       options[:primary_storage_secret] = new_resource.primary_secret if new_resource.primary_secret
       options[:primary_storage_container] = new_resource.lineage
 
       # Secondary ROS options
       options[:secondary_storage_cloud] = new_resource.secondary_cloud if new_resource.secondary_cloud
+      options[:secondary_endpoint] = new_resource.secondary_endpoint unless !new_resource.secondary_endpoint || new_resource.secondary_endpoint.empty?
       options[:secondary_storage_key] = new_resource.secondary_user if new_resource.secondary_user
       options[:secondary_storage_secret] = new_resource.secondary_secret if new_resource.secondary_secret
       options[:secondary_storage_container] = new_resource.secondary_container if new_resource.secondary_container
@@ -161,5 +161,15 @@ module RightScale
       value
     end
 
+    # Returns true if fstab and mtab entry exists for ephemeral mount point
+    #
+    # @param fstab_entry [String] fstab entry
+    # @param mount_point [String] mount point of the ephemeral drive
+    # @param filesystem_type [String] filesystem type
+    def ephemeral_fstab_and_mtab_checks(fstab_entry, mount_point, filesystem_type)
+      fstab_exists = File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$")
+      mtab_exists = File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " )
+      fstab_exists && mtab_exists
+    end
   end
 end

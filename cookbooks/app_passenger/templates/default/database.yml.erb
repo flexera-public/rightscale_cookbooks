@@ -11,10 +11,10 @@
 # DB Config file
 #
 
-<%  case node[:app_passenger][:project][:db][:adapter]
+<%  case node[:app][:db_adapter]
     when "mysql" %>
 <%= node[:app_passenger][:project][:environment] %>:
-  adapter: <%= node[:app_passenger][:project][:db][:adapter] %>
+  adapter: <%= node[:app][:db_adapter] %>
   database: <%= @database %>
   username: <%= @user %>
   password: <%= @password %>
@@ -25,21 +25,21 @@
 # SQLite version 3.x
 <%= node[:app_passenger][:project][:environment] %>:
   host: <%= @fqdn %>
-  adapter: <%= node[:app_passenger][:project][:db][:adapter] %>
+  adapter: <%= node[:app][:db_adapter] %>
   database: <%= @database %>
   pool: 5
   timeout: 5000
 <%  when "postgresql"%>
 <%= node[:app_passenger][:project][:environment] %>:
   host: <%= @fqdn %>
-  adapter: <%= node[:app_passenger][:project][:db][:adapter] %>
+  adapter: <%= node[:app][:db_adapter] %>
   database: <%= @database %>
   username: <%= @user %>
   password: <%= @password %>
 <%  else%>
 <%= node[:app_passenger][:project][:environment] %>:
   host: <%= @sever %>
-  adapter: <%= node[:app_passenger][:project][:db][:adapter] %>
+  adapter: <%= node[:app][:db_adapter] %>
   database: <%= @database %>
 
 <%end%>
