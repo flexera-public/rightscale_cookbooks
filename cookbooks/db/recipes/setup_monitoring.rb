@@ -12,26 +12,30 @@ db node[:db][:data_dir] do
 end
 
 # Creating a db backup info file
-file "/mnt/storage/db_sys_info.log" do
+info_file = "/mnt/storage/db_sys_info.log"
+
+file info_file do
   owner "root"
   group "root"
   mode "0755"
   action :create
 end
 
-execute "uname" do
-  command "echo \"System information:\n\" > /mnt/storage/db_sys_info.log && uname -a >> /mnt/storage/db_sys_info.log"
-  action :run
+bash "write system and mysql information" do
+  flags "-ex"
+  code <<-EOH
+    echo \"# Managed by RightScale\n# DO NOT EDIT BY HAND\n#\n\nSystem information:\" > "#{info_file}"
+    uname -a >> "#{info_file}"
+    lsb_release -a >> "#{info_file}" 2>&1
+    echo \"\nMySQL information:\" >> "#{info_file}"
+    mysql -V >> "#{info_file}"
+  EOH
 end
 
-execute "lsb_release" do
-  command "lsb_release -a >> /mnt/storage/db_sys_info.log"
-  action :run
-end
-
-execute "mysql" do
-  command "echo \"\nMySQL information:\n\" >> /mnt/storage/db_sys_info.log && mysql -V >> /mnt/storage/db_sys_info.log"
-  action :run
+ruby_block "append hypervisor information" do
+  block do
+    open(info_file, 'a') { |file|  file.puts "\nHypervisor is #{node[:virtualization][:system]}" }
+  end
 end
 
 rightscale_marker :end
