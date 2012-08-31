@@ -19,7 +19,6 @@ case node[:platform]
       "apache2-prefork-dev",
       "libapr1-dev",
       "libcurl4-openssl-dev",
-      "python2.6-dev",
       "python-setuptools",
       "libapache2-mod-wsgi",
       "python-simplejson",
