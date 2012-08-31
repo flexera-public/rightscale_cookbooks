@@ -78,7 +78,7 @@ db DATA_DIR do
 end
 
 # Restoring admin and application user privileges
-cred = [["admin", [node[:db][:admin][:user], node[:db][:admin][:password]]],\
+cred = [["administrator", [node[:db][:admin][:user], node[:db][:admin][:password]]],\
         ["user", [node[:db][:application][:user], node[:db][:application][:password]]]]
 
 cred.each do |role, role_cred_values|
