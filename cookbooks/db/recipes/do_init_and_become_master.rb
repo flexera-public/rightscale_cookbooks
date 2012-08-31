@@ -33,8 +33,6 @@ end
 
 log "  Creating mysql directory in the block device..."
 directory DATA_DIR do
-  owner "mysql"
-  group "mysql"
   mode  "0755"
   action :create
 end
