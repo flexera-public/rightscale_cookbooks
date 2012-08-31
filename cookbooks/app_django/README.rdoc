@@ -11,6 +11,7 @@
   or your own implementation of the "app" resource. See "app" cookbook README for details.
 * Requires a VM launched from a RightScale managed RightImage
 * Tested on CentOS 6.2 RightImage
+* Tested on Ubuntu 12.04 RightImage
 
 == COOKBOOKS DEPENDENCIES:
 
