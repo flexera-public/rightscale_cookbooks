@@ -26,9 +26,11 @@ ruby_block "db backup info file" do
       "uname -a",
       "lsb_release -a",
       "mysql -V",
+      "df -k",
       "cat /etc/mysql/conf.d/my.cnf",
       "cat /etc/rightscale.d/*",
-      "export"
+      "export",
+      "gem list"
     ]
 
     # Array of values
