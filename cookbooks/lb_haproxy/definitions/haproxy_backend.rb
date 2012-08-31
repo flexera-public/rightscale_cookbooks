@@ -5,7 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-define :lb_haproxy_backend, :pool_name => "", :advanced_configs=> false do
+define :lb_haproxy_backend, :pool_name => "" do
 
   backend_name = params[:pool_name] + "_backend"
   stats_uri = "stats uri #{node[:lb][:stats_uri]}" unless "#{node[:lb][:stats_uri]}".empty?
@@ -13,8 +13,6 @@ define :lb_haproxy_backend, :pool_name => "", :advanced_configs=> false do
               "#{node[:lb][:stats_user]}".empty? || "#{node[:lb][:stats_password]}".empty?
   health_uri = "option httpchk GET #{node[:lb][:health_check_uri]}" unless "#{node[:lb][:health_check_uri]}".empty?
   health_chk = "http-check disable-on-404" unless "#{node[:lb][:health_check_uri]}".empty?
-
-  userlist_pool_name = params[:advanced_configs] ? "#{params[:pool_name]}" : ""
 
   # Create backend haproxy files for vhost it will answer for.
   template ::File.join("/etc/haproxy/#{node[:lb][:service][:provider]}.d", "#{params[:pool_name]}.cfg") do
@@ -25,7 +23,6 @@ define :lb_haproxy_backend, :pool_name => "", :advanced_configs=> false do
     mode "0400"
     backup false
     variables(
-      :userlist_pool_name => userlist_pool_name,
       :backend_name_line => backend_name,
       :stats_uri_line => stats_uri,
       :stats_auth_line => stats_auth,

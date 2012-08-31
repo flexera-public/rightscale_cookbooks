@@ -149,21 +149,21 @@ action :post_restore_cleanup do
     raise "FATAL: unknown log file size"
   end
 
-  # if sizes do not match, must update my.cnf to match
+  # warn if sizes do not match
   if ::File.stat("/var/lib/mysql/ib_logfile0").size == innodb_log_file_size_to_bytes
     Chef::Log.info "  innodb log file sizes the same... OK."
   else
+    Chef::Log.warn "  innodb log file size does not match."
+    Chef::Log.warn "  Updating my.cnf to match log file from snapshot."
+    Chef::Log.warn "  Discovered size: #{::File.stat("/var/lib/mysql/ib_logfile0").size}"
+    Chef::Log.warn "  Expected size: #{innodb_log_file_size_to_bytes}"
+  end
 
-    Chef::Log.warn " innodb log file size does not match."
-    Chef::Log.warn " Updating my.cnf to match log file from snapshot."
-    Chef::Log.warn " Discovered size:#{::File.stat("/var/lib/mysql/ib_logfile0").size}"
-    Chef::Log.warn " Expected size: #{innodb_log_file_size_to_bytes}"
-
-    db_mysql_set_mycnf "setup_mycnf" do
-      server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
-      relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
-      innodb_log_file_size ::File.stat("/var/lib/mysql/ib_logfile0").size
-    end
+  # always update the my.cnf file on a restore
+  db_mysql_set_mycnf "setup_mycnf" do
+    server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
+    relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
+    innodb_log_file_size ::File.stat("/var/lib/mysql/ib_logfile0").size
   end
 
   @db = init(new_resource)
