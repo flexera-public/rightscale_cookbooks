@@ -118,7 +118,7 @@ action :backup_schedule_enable do
     minute "#{minute}" unless minute.empty?
     hour "#{hour}" unless hour.empty?
     user "root"
-    command "rs_run_recipe -n \"#{recipe}\" 2>&1 > /var/log/rightscale_tools_cron_backup.log"
+    command "rs_run_recipe --policy #{recipe} --name \"#{recipe}\" 2>&1 >> /var/log/rightscale_tools_cron_backup.log"
     action :create
   end
 

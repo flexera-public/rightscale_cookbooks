@@ -31,7 +31,7 @@ do_for_block_devices node[:block_device] do |device|
     minute cron_minute unless cron_minute.empty?
     hour cron_hour unless cron_hour.empty?
     user "root"
-    command "rs_run_recipe -j '#{block_device_json}' -n 'block_device::do_primary_backup' 2>&1 > /var/log/rightscale_tools_cron_backup_block_device_#{device}.log"
+    command "rs_run_recipe --json '#{block_device_json}' --policy 'block_device::do_primary_backup' --name 'block_device::do_primary_backup' 2>&1 >> /var/log/rightscale_tools_cron_backup_block_device_#{device}.log"
     action :create
   end
 end
