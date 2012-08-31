@@ -10,9 +10,10 @@
 * Requires "app" Lightweight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
   or your own implementation of the "app" resource. See "app" cookbook README for details.
 * Requires a VM launched from a RightScale managed RightImage
-* Tested on CentOS 5.8 and CentOS 6.2 RightImages
-* Tested on Ubuntu 10.04 and Ubuntu 12.04 RightImages
-* Tested on RedHat 5.8 RightImage
+* Tested on the following RightImages:
+  * CentOS 5.8, 6.2
+  * Ubuntu 10.04, 12.04
+  * RedHat 5.8
 
 == COOKBOOKS DEPENDENCIES:
 
@@ -88,7 +89,6 @@ Note: Only "internal" cookbook attributes are described here. Descriptions of at
 * <tt>node[:app_passenger][:ruby_gem_base_dir]</tt> - Path to Ruby gem directory.
 * <tt>node[:app_passenger][:gem_bin]</tt> - Path to Ruby gem bin directory.
 * <tt>node[:app_passenger][:ruby_bin]</tt> - Path to Ruby bin directory.
-* <tt>node[:app_passenger][:apache_psr_install_module]</tt> - Path to Ruby passenger executable.
 * <tt>node[:app_passenger][:project][:environment]</tt> - The environment of the rails application.
 * <tt>node[:app_passenger][:project][:gem_list]</tt> - A list of additional gems required for rails application.
 * <tt>node[:app_passenger][:project][:custom_cmd]</tt> - A list of rake commands required for rails application initialization.

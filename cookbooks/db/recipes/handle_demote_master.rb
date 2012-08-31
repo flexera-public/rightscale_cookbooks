@@ -14,26 +14,15 @@ right_link_tag master_instance_uuid_tag do
   action :remove
 end
 
-# Populating server_collection node
-server_collection "#{node[:rightscale][:instance_uuid]}" do
-  tags "server:uuid=#{node[:rightscale][:instance_uuid]}"
-end
-
-master_active_tag = node[:server_collection][:"#{node[:rightscale][:instance_uuid]}"].values.first.find { |tag| tag[/^rs_dbrepl:master_active=/] }
-log "  Clearing tag #{master_active_tag}"
-right_link_tag master_active_tag do
-  action :remove
-end
-
-# Setting slave tag
-slave_instance_uuid_tag = "rs_dbrepl:slave_instance_uuid=#{node[:rightscale][:instance_uuid]}"
-log "  Setting tag #{slave_instance_uuid_tag}"
-right_link_tag slave_instance_uuid_tag
-
 # Set master node variables
 db_state_set "Set slave state" do
   master_uuid node[:remote_recipe][:new_master_uuid]
   master_ip node[:remote_recipe][:new_master_ip]
+end
+
+# Add server tag to visually show a slave
+db_register_slave "tagging slave" do
+  action :only_tag
 end
 
 rightscale_marker :end

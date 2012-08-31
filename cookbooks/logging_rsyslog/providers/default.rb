@@ -49,29 +49,33 @@ end
 
 
 action :configure do
-  remote_server = new_resource.remote_server
-  # Keep the default configuration (local file only logging) unless a remote server is defined.
-  if remote_server != ""
 
-    # Writing configuration template.
-    template value_for_platform(
-               ["ubuntu"] => {"default" => "/etc/rsyslog.d/client.conf"},
-               ["centos", "redhat"] => {"5.8" => "/etc/rsyslog.conf", "default" => "/etc/rsyslog.d/client.conf"}
-             ) do
-      action :create
-      source "client.conf.erb"
-      owner "root"
-      group "root"
-      mode "0644"
-      cookbook "logging_rsyslog"
-      variables(
-        :remote_server => remote_server
-      )
-    end
+  service "rsyslog" do
+    supports :reload => true, :restart => true, :status => true, :start => true, :stop => true
+    action :nothing
   end
 
-  # Restarting service in order to apply new settings.
-  action_restart
+  remote_server = new_resource.remote_server || ""
+
+  # Keep the default configuration (local file only logging) unless a remote server is defined.
+  # will restart syslog only if the the conf file changes
+  template value_for_platform(
+             ["ubuntu"] => {"default" => "/etc/rsyslog.d/client.conf"},
+             ["centos", "redhat"] => {"5.8" => "/etc/rsyslog.conf", "default" => "/etc/rsyslog.d/client.conf"}
+           ) do
+    action :create
+    source "client.conf.erb"
+    owner "root"
+    group "root"
+    mode "0644"
+    cookbook "logging_rsyslog"
+    not_if { remote_server.empty? }
+    variables(
+      :remote_server => remote_server
+    )
+    notifies :reload, resources(:service => "rsyslog")
+  end
+
 end
 
 

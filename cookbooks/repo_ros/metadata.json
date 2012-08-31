@@ -6,9 +6,6 @@
   "maintainer_email": "support@rightscale.com",
   "license": "Copyright RightScale, Inc. All rights reserved.",
   "platforms": {
-    "centos": "~> 5.8",
-    "redhat": "~> 5.8",
-    "ubuntu": "~> 10.04.0"
   },
   "dependencies": {
     "repo": ">= 0.0.0"
