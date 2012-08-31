@@ -59,6 +59,10 @@ node[:db_mysql][:client_packages_install] = value_for_platform(
     "default" => [
       "libmysqlclient-dev",
       "mysql-client-5.1"
+    ],
+  "default" => [
+      "libmysqlclient-dev",
+      "mysql-client"
     ]
   },
   "default" => [ ] 
