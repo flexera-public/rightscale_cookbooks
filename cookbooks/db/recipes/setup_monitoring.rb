@@ -16,7 +16,7 @@ ruby_block "db backup info file" do
   block do
 
     # File path
-    info_file = "/mnt/storage/db_sys_info.log"
+    info_file = "/mnt/db_sys_info.log"
 
     # Create new file and write a header
     `echo '# Managed by RightScale\n# DO NOT EDIT BY HAND\n#' > #{info_file}`
