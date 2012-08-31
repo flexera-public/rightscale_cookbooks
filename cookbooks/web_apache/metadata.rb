@@ -4,7 +4,7 @@ license          "Copyright RightScale, Inc. All rights reserved."
 description      "Installs/configures the apache2 webserver"
 version          "12.1.0"
 
-# supports "centos", "~> 5.8", "~> 6.2", "~> 6.3"
+# supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"
 # supports "ubuntu", "~> 10.04", "~> 12.04"
 
