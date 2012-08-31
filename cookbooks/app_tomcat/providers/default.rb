@@ -78,8 +78,9 @@ action :install do
     # Copy to /usr/share/java/postgresql-9.1-901.jdbc4.jar
     cookbook_file "/usr/share/java/postgresql-9.1-901.jdbc4.jar" do
       source "postgresql-9.1-901.jdbc4.jar"
-      owner "root"
+      owner node[:app][:user]
       group "root"
+      mode "0660"
       cookbook 'app_tomcat'
     end
     # Link postgresql-connector plugin to Tomcat6 lib
@@ -144,8 +145,8 @@ action :setup_vhost do
   template "/etc/tomcat6/tomcat6.conf" do
     action :create
     source "tomcat6_conf.erb"
+    owner node[:app][:user]
     group "root"
-    owner "root"
     mode "0644"
     cookbook 'app_tomcat'
     variables(
