@@ -266,9 +266,18 @@ action :grant_replication_slave do
   Gem.clear_paths
   require 'pg'
 
-  log "  GRANT REPLICATION SLAVE to user #{node[:db][:replication][:user]}"
+
+
   # Opening connection for pg operation
   conn = PGconn.open("localhost", nil, nil, nil, nil, "postgres", nil)
+
+  # Now that we have a Postgresql object, let's sanitize our inputs. These will get pass for log and comparison.
+  username_esc = conn.escape_string(node[:db][:replication][:user])
+  password_esc = conn.escape_string(node[:db][:replication][:password])
+  # Following Username and password will get to pass for creation of user.
+  username = conn.quote_ident(username_esc)
+  password = conn.quote_ident(password_esc)
+  log "  GRANT REPLICATION SLAVE to user #{username}"
 
   # Enable admin/replication user
   # Check if server is in read_only mode, if found skip this...
@@ -276,14 +285,14 @@ action :grant_replication_slave do
   slavestatus = res.getvalue(0,0)
   if ( slavestatus == 'off' )
     log "  Detected Master server."
-    result = conn.exec("SELECT COUNT(*) FROM pg_user WHERE usename='#{node[:db][:replication][:user]}'")
+    result = conn.exec("SELECT COUNT(*) FROM pg_user WHERE usename='#{username}'")
     userstat = result.getvalue(0,0)
     if ( userstat == '1' )
-      log "  User #{node[:db][:replication][:user]} already exists, updating user using current inputs"
-      conn.exec("ALTER USER #{node[:db][:replication][:user]} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{node[:db][:replication][:password]}'")
+      log "  User #{username} already exists, updating user using current inputs"
+      conn.exec("ALTER USER #{username} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password}'")
     else
-      log "  Creating replication user #{node[:db][:replication][:user]}"
-      conn.exec("CREATE USER #{node[:db][:replication][:user]} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{node[:db][:replication][:password]}'")
+      log "  Creating replication user #{username}"
+      conn.exec("CREATE USER #{username} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password}'")
       # Setup pg_hba.conf for replication user allow
       RightScale::Database::PostgreSQL::Helper.configure_pg_hba(node)
       # Reload postgresql to read new updated pg_hba.conf
