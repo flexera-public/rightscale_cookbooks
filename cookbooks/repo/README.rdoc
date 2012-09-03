@@ -88,7 +88,8 @@ attributes</b> which are used internally in recipes.
 ===== ROS attributes
 
 * <tt>node[:repo][:default][:storage_account_provider]</tt> - Location where the
-  source file is saved. Used by recipes to upload to Amazon S3 or Rackspace
+  source file is saved. Used by recipes to download from Amazon S3, Rackspace, Google,
+  Azure and  SoftLayer.
   Cloud Files. Default is: "S3".
 * <tt>node[:repo][:default][:prefix]</tt> - Filename of required source
   repository archive. Example: "source.tar.gz".
