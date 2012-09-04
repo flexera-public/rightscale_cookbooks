@@ -17,11 +17,8 @@ echo "frontend all_requests 127.0.0.1:85" >> ${CONF_FILE}
 
 pools=""
 
-for dir in /etc/haproxy/lb_haproxy.d/*
-do
-  if [ -d ${dir} ]; then
-    pools=${pools}" "`basename ${dir}`
-  fi
+for line in $(cat "/etc/haproxy/lb_haproxy.d/pool_list.conf"); do
+        pools=${pools}" "${line}
 done
 
 echo "" >> ${CONF_FILE}
