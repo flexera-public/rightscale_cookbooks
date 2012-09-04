@@ -25,18 +25,6 @@ action :snapshot do
   device.snapshot
 end
 
-# Acquire the backup lock
-action :backup_lock_take do
-  device = init(new_resource)
-  device.backup_lock_take(new_resource.force)
-end
-
-# Remove the backup lock
-action :backup_lock_give do
-  device = init(new_resource)
-  device.backup_lock_give
-end
-
 # Prepare device for primary backup
 action :primary_backup do
   device = init(new_resource)
@@ -130,7 +118,7 @@ action :backup_schedule_enable do
     minute "#{minute}" unless minute.empty?
     hour "#{hour}" unless hour.empty?
     user "root"
-    command "rs_run_recipe -n \"#{recipe}\" 2>&1 > /var/log/rightscale_tools_cron_backup.log"
+    command "rs_run_recipe --policy '#{recipe}' --name '#{recipe}' 2>&1 >> /var/log/rightscale_tools_cron_backup.log"
     action :create
   end
 

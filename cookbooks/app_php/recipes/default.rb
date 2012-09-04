@@ -28,12 +28,12 @@ package "php5" do
       "5.6" => "php53u",
       "5.7" => "php53u",
       "5.8" => "php53u",
-      "default" => "php" # CentOS 6+ 
+      "default" => "php"
     },
     "ubuntu" => {
       "default" => "php5"
     },
-    "default" => [ ]
+    "default" => ""
   )
   action :install
 end
@@ -45,10 +45,12 @@ package "php-pear" do
       "5.6" => "php53u-pear",
       "5.7" => "php53u-pear",
       "5.8" => "php53u-pear",
-      "default" => "php-pear" # CentOS 6+ 
+      "default" => "php-pear"
     },
-    "ubuntu" => { :default => "php-pear" },
-    "default" => 'php-pear'
+    "ubuntu" => {
+      "default" => "php-pear"
+    },
+    "default" => "php-pear"
   )
   action :install
 end
@@ -60,10 +62,12 @@ package "php apache integration" do
       "5.6" => "php53u-zts",
       "5.7" => "php53u-zts",
       "5.8" => "php53u-zts",
-      "default" => "php-zts" # CentOS 6+ 
+      "default" => "php-zts"
     },
-    "ubuntu" => { :default => "libapache2-mod-php5" },
-    "default" => 'php-zts'
+    "ubuntu" => {
+      "default" => "libapache2-mod-php5"
+    },
+    "default" => "php-zts"
   )
   action :install
 end
@@ -76,10 +80,12 @@ if node[:app][:db_adapter] == "mysql"
         "5.6" => "php53u-mysql",
         "5.7" => "php53u-mysql",
         "5.8" => "php53u-mysql",
-        "default" => "php-mysql" # CentOS 6+ 
+        "default" => "php-mysql"
       },
-      "ubuntu" => { :default => "php5-mysql" },
-      "default" => 'php-mysql'
+      "ubuntu" => {
+        "default" => "php5-mysql"
+      },
+      "default" => "php-mysql"
     )
     action :install
   end
@@ -91,10 +97,12 @@ elsif node[:app][:db_adapter] == "postgresql"
         "5.6" => "php53u-pgsql",
         "5.7" => "php53u-pgsql",
         "5.8" => "php53u-pgsql",
-        "default" => "php5-pgsql" # CentOS 6+ 
+        "default" => "php5-pgsql"
       },
-      "ubuntu" => { :default => "php5-pgsql" },
-      "default" => 'php5-pgsql'
+      "ubuntu" => {
+        "default" => "php5-pgsql"
+      },
+      "default" => "php5-pgsql"
     )
     action :install
   end

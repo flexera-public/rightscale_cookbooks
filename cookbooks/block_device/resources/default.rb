@@ -26,9 +26,8 @@ attribute :nickname, :kind_of => String, :name_attribute => true
 attribute :cloud, :required => true
 attribute :hypervisor, :kind_of => String
 attribute :mount_point, :kind_of => String, :required => true
-attribute :force, :equal_to => [ true, false ], :default => false
 attribute :is_master, :equal_to => [ true, false ], :default => false
-
+attribute :force, :equal_to => [ true, false ], :default => false
 
 # == Backup/Restore options
 attribute :lineage, :kind_of => String
@@ -47,7 +46,6 @@ attribute :keep_daily, :kind_of => String
 attribute :keep_weekly, :kind_of => String
 attribute :keep_monthly, :kind_of => String
 attribute :keep_yearly, :kind_of => String
-attribute :force, :equal_to => [ true, false ], :default => false # Used by backup_lock_take action
 
 
 # == Options for volume block devices
@@ -143,17 +141,5 @@ add_action :backup_schedule_enable
 # Disable cron-based scheduled backups
 #
 add_action :backup_schedule_disable
-
-
-# == Backup Lock Take
-# Acquire the backup lock
-#
-add_action :backup_lock_take
-
-
-# == Backup Lock Give
-# Create the backup lock
-#
-add_action :backup_lock_give
 
 actions @action_list

@@ -4,7 +4,7 @@ license          "Copyright RightScale, Inc. All rights reserved."
 description      "Installs/configures the apache2 webserver"
 version          "12.1.0"
 
-# supports "centos", "~> 5.8", "~> 6.2"
+# supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"
 # supports "ubuntu", "~> 10.04", "~> 12.04"
 
@@ -18,6 +18,8 @@ recipe "web_apache::setup_frontend", "Frontend apache vhost. Select ssl_enabled 
 recipe "web_apache::setup_frontend_ssl_vhost", "Frontend apache vhost with SSL enabled."
 recipe "web_apache::setup_frontend_http_vhost", "Frontend apache vhost with SSL enabled."
 recipe "web_apache::setup_monitoring", "Installs the collectd-apache plugin for monitoring support."
+recipe "web_apache::do_enable_maintenance_mode", "Enable maintenance mode for Apache2 webserver"
+recipe "web_apache::do_disable_maintenance_mode", "Disable maintenance mode for Apache2 webserver"
 
 
 all_recipes = [
@@ -107,3 +109,10 @@ attribute "web_apache/application_name",
     "web_apache::setup_frontend",
     "web_apache::default"
   ]
+
+attribute "web_apache/maintenance_file",
+  :display_name => "Path to maintenance.html",
+  :description => "Optional system-root related path to maintenance html page which will be used if maintenance mode is enabled  Example: /home/webapp/maintenance.html",
+  :required => "optional",
+  :default =>  "",
+  :recipes => ["web_apache::do_enable_maintenance_mode"]

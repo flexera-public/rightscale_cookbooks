@@ -137,9 +137,8 @@ action :code_update do
 
 end
 
-
-# Set monitoring tools for PHP application. Not implemented.
 action :setup_monitoring do
-  raise 'Using "default" application provider. Action is not implemented'
-end
 
+  log "  Monitoring resource is not implemented in php framework yet. Use apache monitoring instead."
+
+end

@@ -76,8 +76,12 @@ end
 
 # Writing settings to memcached configuration template.
 template value_for_platform(
-  "ubuntu" => {"default" => "/etc/memcached.conf"},
-  ["centos", "redhat"] => {"default" => "/etc/sysconfig/memcached"}
+  "ubuntu" => {
+    "default" => "/etc/memcached.conf"
+  },
+  ["centos", "redhat"] => {
+    "default" => "/etc/sysconfig/memcached"
+  }
 ) do
   source "memcached.conf.erb"
   variables(

@@ -1,0 +1,15 @@
+#
+# Cookbook Name:: app_passenger
+#
+# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
+# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
+# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+#
+# Managed by RightScale
+# DO NOT EDIT BY HAND
+#
+
+# Allowing apache user to access passenger monitoring resources
+Defaults:<%= @user %> !requiretty
+Defaults:<%= @user %> !env_reset
+<%= @user %> ALL = NOPASSWD: <%= @passenger_bin_dir %>/passenger-status, <%= @passenger_bin_dir %>/passenger-memory-stats

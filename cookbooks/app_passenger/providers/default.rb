@@ -58,15 +58,13 @@ action :install do
   end
 
   log "  Installing apache passenger module"
-  bash "Install apache passenger module" do
-    flags "-ex"
-    code <<-EOH
-      /usr/bin/passenger-install-apache2-module --auto
-    EOH
-    not_if "test -e #{node[:app_passenger][:ruby_gem_base_dir].chomp}/gems/passenger*/ext/apache2/mod_passenger.so"
+  execute "Install apache passenger module" do
+    command "#{node[:app_passenger][:passenger_bin_dir]}/passenger-install-apache2-module --auto"
+    not_if { ::Dir.glob("#{node[:app_passenger][:ruby_gem_base_dir]}/gems/**/ext/apache2/mod_passenger.so").any? }
   end
 
 end
+
 
 # Setup apache/passenger virtual host
 action :setup_vhost do
@@ -77,7 +75,7 @@ action :setup_vhost do
   file "/etc/httpd/conf.d/ssl.conf" do
     action :delete
     backup false
-    only_if do ::File.exists?("/etc/httpd/conf.d/ssl.conf")  end
+    only_if { ::File.exists?("/etc/httpd/conf.d/ssl.conf") }
   end
 
   # Enabling required apache modules
@@ -121,7 +119,6 @@ action :setup_vhost do
     passenger_group            node[:app][:group]
   end
 
-
 end
 
 
@@ -133,7 +130,7 @@ action :setup_db_connection do
   db_adapter = node[:app][:db_adapter]
 
   log "  Generating database.yml"
-  
+
   # Tell Database to fill in our connection template
   db_connect_app "#{deploy_dir.chomp}/config/database.yml" do
     template      "database.yml.erb"
@@ -143,9 +140,6 @@ action :setup_db_connection do
     database      db_name
   end
 
-  # Defining $RAILS_ENV
-  ENV['RAILS_ENV'] = node[:app_passenger][:project][:environment]
-
   # Creating bash file for manual $RAILS_ENV setup
   log "  Creating bash file for manual $RAILS_ENV setup"
   template "/etc/profile.d/rails_env.sh" do
@@ -153,11 +147,12 @@ action :setup_db_connection do
     source       "rails_env.erb"
     cookbook     'app_passenger'
     variables(
-        :environment => node[:app_passenger][:project][:environment]
-      )
+      :environment => node[:app_passenger][:project][:environment]
+    )
   end
 
 end
+
 
 # Download/Update application repository
 action :code_update do
@@ -202,7 +197,7 @@ action :code_update do
   rightscale_logrotate_app "rails" do
     cookbook "rightscale"
     template "logrotate.erb"
-    path ["#{deploy_dir}/log/*.log" ]
+    path ["#{deploy_dir}/log/*.log"]
     frequency "size 10M"
     rotate 4
     create "660 #{node[:app][:user]} #{node[:app][:group]}"
@@ -211,9 +206,72 @@ action :code_update do
 end
 
 
-# Set monitoring tools for Passenger application. Not Implemented.
+# Setup monitoring tools for passenger
 action :setup_monitoring do
-  raise 'Using "default" application provider. Action is not implemented'
+  plugin_path = "#{node[:rightscale][:collectd_lib]}/plugins/passenger"
+
+  log "  Stopping collectd service"
+  service "collectd" do
+    action :stop
+  end
+
+  directory "#{node[:rightscale][:collectd_lib]}/plugins/" do
+    recursive true
+    not_if { ::File.exists?("#{node[:rightscale][:collectd_lib]}/plugins/") }
+  end
+
+  # Installing collectd plugin for passenger monitoring
+  template "#{plugin_path}" do
+    source "collectd_passenger.erb"
+    mode "0755"
+    backup false
+    cookbook "app_passenger"
+    variables(
+      :apache_binary => node[:apache][:binary],
+      :passenger_memory_stats => "#{node[:app_passenger][:passenger_bin_dir]}/passenger-memory-stats",
+      :passenger_status => "#{node[:app_passenger][:passenger_bin_dir]}/passenger-status"
+    )
+  end
+
+  # Removing previous passenger.conf in case of stop-start
+  file "#{node[:rightscale][:collectd_plugin_dir]}/passenger.conf" do
+    backup false
+    action :delete
+  end
+
+  # Installing collectd config for passenger plugin
+  template "#{node[:rightscale][:collectd_plugin_dir]}/passenger.conf" do
+    cookbook "app_passenger"
+    source "collectd_passenger.conf.erb"
+    variables(
+      :apache_executable => node[:apache][:config_subdir],
+      :apache_user => node[:app][:user],
+      :plugin_path => plugin_path
+    )
+  end
+
+  # Collectd exec cannot run scripts under root user, so we need to give ability to use sudo to "apache" user
+  # passenger monitoring resources have strict restrictions, only for root can gather full stat info
+  # we gave permissions to apache user to access passenger monitoring resources
+  ruby_block "sudo setup" do
+    block { ::File.open('/etc/sudoers', 'a') { |file| file.puts "#includedir /etc/sudoers.d\n"} }
+    not_if { ::File.readlines("/etc/sudoers").grep(/^\s*#includedir\s+\/etc\/sudoers.d/).any? }
+  end
+
+  directory "/etc/sudoers.d/" do
+    recursive true
+  end
+
+  template "/etc/sudoers.d/passenger-status" do
+    cookbook "app_passenger"
+    source "passenger-status.erb"
+    mode "0440"
+    variables(
+      :user => node[:app][:user],
+      :passenger_bin_dir => node[:app_passenger][:passenger_bin_dir]
+    )
+    not_if { ::File.exists?("/etc/sudoers.d/passenger-status") }
+    notifies :start, resources(:service => "collectd")
+  end
+
 end
-
-

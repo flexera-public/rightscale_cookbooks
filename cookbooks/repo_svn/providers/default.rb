@@ -34,8 +34,8 @@ action :pull do
   repository_url = new_resource.repository
   branch_tag = new_resource.revision
   app_user = new_resource.app_user
-  svn_password = new_resource.svn_password
-  svn_user = new_resource.svn_username
+  svn_password = new_resource.credential
+  svn_user = new_resource.account
   params = "--no-auth-cache --non-interactive"
 
 
@@ -79,8 +79,8 @@ action :capistrano_pull do
   destination = new_resource.destination
   repository = new_resource.repository
   revision = new_resource.revision
-  svn_username = new_resource.svn_username
-  svn_password = new_resource.svn_password
+  svn_username = new_resource.account
+  svn_password = new_resource.credential
   app_user = new_resource.app_user
   purge_before_symlink = new_resource.purge_before_symlink
   create_dirs_before_symlink = new_resource.create_dirs_before_symlink

@@ -1,61 +1,63 @@
 {
-  "dependencies": {
-    "logging_rsyslog": ">= 0.0.0",
-    "logging_syslog_ng": ">= 0.0.0",
-    "rightscale": ">= 0.0.0"
-  },
   "name": "logging",
-  "maintainer_email": "support@rightscale.com",
-  "attributes": {
-    "logging/remote_server": {
-      "required": "optional",
-      "calculated": false,
-      "choice": [
-
-      ],
-      "type": "string",
-      "recipes": [
-        "logging::default"
-      ],
-      "display_name": "Remote Server",
-      "description": "Configures an instance to forward its log data to a remote server. Specify either the remote server's FQDN or IP address. Example: syslog.example.com or 192.168.0.1"
-    },
-    "logging": {
-      "required": "optional",
-      "calculated": false,
-      "choice": [
-
-      ],
-      "type": "hash",
-      "recipes": [
-
-      ],
-      "display_name": "Log Service Settings"
-    }
-  },
-  "license": "Copyright RightScale, Inc. All rights reserved.",
-  "suggestions": {
-  },
-  "platforms": {
-    "centos": "~> 5.8",
-    "ubuntu": "~> 10.04.0",
-    "redhat": "~> 5.8"
-  },
-  "maintainer": "RightScale, Inc.",
+  "description": "Enable instance Monitoring in the RightScale dashboard.",
   "long_description": "= RightScale Logging\n\n== DESCRIPTION:\n\nThis cookbook provides a set of recipes used by the RightScale\nServerTemplates to configure the logging service provider.\n\nThis cookbook configures the default logging provider installed on the image.\nIf a remote server is defined it will configure an instance to send its \nlog messages to the specified remote server based on its FQDN or IP address.\nIf a remote server is not defined, the default configuration is used, which\nsaves the log files locally on the instance.\n\n== REQUIREMENTS:\n\n* Must be used with a 'logging' provider in the cookbook path\n* Requires a virtual machine launched from a RightScale-managed RightImage.\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n== KNOWN LIMITATIONS:\n\n* Currently only supports the logging provider installed on the image. (rsyslog/syslog-ng)\n* Currently only supports client configuration for a single remote server using\n  UDP without encryption or authentication.\n* Requires customer maintained remote server for remote logging.\n\n== SETUP:\n\n* Place <tt>logging::default</tt> recipe into your runlist to setup the logging resource. When\n  using a RightScale ServerTemplate, this will also automatically configure\n  logging service provider (rsyslog/syslog-ng)\n\n* The default recipe will determine the logging provider installed (rsyslog/syslog-ng)\n  and configure it for remote logging.\n\n== USAGE:\n\n* Local Logging - Set the 'logging/remote_server' input to 'ignore' to use \n  the default configuration installed.\n\n* Remote Logging - Set the 'logging/remote_server' input to the FQDN or IP of the\n  designated remote logging server to use the default configuration with the remote\n  logging configuration appended.\n\n== DETAILS:\n\n=== General\n\nThe 'logging' interface is defined by a Lightweight Resource, which can be found in\nthe <tt>resources/default.rb</tt> file.\n\nThis cookbook is intended as a framework for logging providers. The current\nimplementation supports the minimum configuration for rsyslog and syslog-ng.\n\nNote: This cookbook does not modify the installed logging provider.\n\n=== Providers:\n\nThe current implementation does not support providers other than rsyslog and syslog-ng.\n\n=== Custom Configuration:\n\nBy using an override cookbook the default configuration can be customized by replacing\nthe default configuration file template for the provider. For more information, \nplease see: {Override Chef Cookbooks}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Override_Chef_Cookbooks].\n\n= LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to\nthe RightScale Terms of Service available at http://www.rightscale.com/terms.php\nand, if applicable, other agreements such as a RightScale Master Subscription\nAgreement.\n",
-  "version": "12.1.0",
+  "maintainer": "RightScale, Inc.",
+  "maintainer_email": "support@rightscale.com",
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "platforms": {
+  },
+  "dependencies": {
+    "rightscale": ">= 0.0.0",
+    "logging_rsyslog": ">= 0.0.0",
+    "logging_syslog_ng": ">= 0.0.0"
+  },
   "recommendations": {
   },
-  "recipes": {
-    "logging::default": "Configures a native logging provider."
-  },
-  "groupings": {
+  "suggestions": {
   },
   "conflicting": {
   },
+  "providing": {
+  },
   "replacing": {
   },
-  "description": "Enable instance Monitoring in the RightScale dashboard.",
-  "providing": {
-  }
+  "attributes": {
+    "logging": {
+      "display_name": "Log Service Settings",
+      "type": "hash",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "required": "optional",
+      "recipes": [
+
+      ]
+    },
+    "logging/remote_server": {
+      "display_name": "Remote Server",
+      "description": "Configures an instance to forward its log data to a remote server. Specify either the remote server's FQDN or IP address. Example: syslog.example.com or 192.168.0.1",
+      "required": "optional",
+      "recipes": [
+        "logging::default"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    }
+  },
+  "groupings": {
+  },
+  "recipes": {
+    "logging::default": "Configures a native logging provider.",
+    "logging::install_server": "Configures a syslog server.",
+    "logging::do_server_start": "Starts syslog server.",
+    "logging::do_server_stop": "Stops syslog server.",
+    "logging::do_server_restart": "Restarts syslog server.",
+    "logging::do_server_reload": "Reloads syslog server."
+  },
+  "version": "12.1.0"
 }

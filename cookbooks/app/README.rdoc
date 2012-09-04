@@ -55,6 +55,8 @@ Recommended:
   node[:app][:database_sever_fqdn]
   node[:app][:db_adapter]
   node[:app][:module_dependencies]
+  node[:app][:user]
+  node[:app][:group]
 
 More detailed descriptions of these attribute variables is located in the resource
 file's description.
@@ -96,8 +98,8 @@ For more info please see: {Load Balancer Setups}[http://support.rightscale.com/0
 * <tt>node[:app][:provider]</tt> - Set a default provider.
 * <tt>node[:app][:port]</tt> - Set a default port to listen on. Default: 8000
 * <tt>node[:app][:ip]</tt> - IP to listen on. Default: First private IP
-* <tt>node[:app][:user]</tt> - Apache user. Required for changing owner of created project dirs.
-* <tt>node[:app][:group]</tt> - Apache group. Required for changing owner of created project dirs.
+* <tt>node[:app][:user]</tt> - Application server user. Required for changing owner of created project dirs.
+* <tt>node[:app][:group]</tt> - Application server group. Required for changing owner of created project dirs.
 
 === Definitions:
 
@@ -191,6 +193,9 @@ application server setup operations.
 * <tt>:restart</tt> - Action designed to set up a user defined restart sequence for
   the application server.
 
+* <tt>:reload</tt> - Action designed to set up a user defined reload sequence for
+  the application server.
+
 * <tt>:code_update</tt> - Action designed to perform project source code
   update/download.
 
@@ -211,7 +216,8 @@ application server setup operations.
 * <tt>database_user</tt> - Database user
 * <tt>database_password</tt> - Database password
 * <tt>database_sever_fqdn</tt> - Database server's fully qualified domain name (FQDN)
-
+* <tt>user</tt> - App user
+* <tt>group</tt> - Group the app user belongs to
 
 ===== Usage Examples:
 Below are a few basic examples. More detailed examples of this resource use can be

@@ -22,7 +22,11 @@ To review information about Lightweight Resources and Providers (LWRPs), see {Li
 
 == REQUIREMENTS:
 
- * Requires a virtual machine launched from a RightScale-managed RightImage.
+* Requires a virtual machine launched from a RightScale-managed RightImage.
+* Tested on the following RightImages:
+  * CentOS 5.8, 6.2, 6.3
+  * Ubuntu 10.04, 12.04
+  * RedHat 5.8
 
 == SETUP:
 
