@@ -63,15 +63,6 @@ node[:app][:destination] = "#{node[:repo][:default][:destination]}/#{node[:web_a
 # tomcat shares the same doc root with the application destination
 node[:app][:root] = "#{node[:app][:destination]}"
 
-  # Adding custiomized repo for tomcat7 rpm, later when these rpm are part of the mirror, it should be removed
-  template "/etc/yum.repos.d/tomcat7.repo" do
-    source "tomcat7.repo.erb"
-    owner "root"
-    group "root"
-    mode "0644"
-    cookbook "app_tomcat"
-  end
-
 directory "#{node[:app][:destination]}" do
   recursive true
 end
