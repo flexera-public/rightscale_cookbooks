@@ -41,7 +41,7 @@ end
 
 action :reset do
   @db = init(new_resource)
-  @db.reset
+  @db.reset(new_resource.name, node[:db_postgres][:datadir])
 end
 
 action :firewall_update_request do
@@ -206,7 +206,7 @@ action :install_server do
   # Setup postgresql.conf
   # template_source = "postgresql.conf.erb"
   configfile = ::File.expand_path "~/.postgresql_config.done"
-  template value_for_platform([ "centos", "redhat" ] => {"default" => "#{node[:db_postgres][:confdir]}/postgresql.conf"}, "default" => "#{node[:db_postgres][:confdir]}/postgresql.conf") do
+  template "#{node[:db_postgres][:confdir]}/postgresql.conf" do
     source "postgresql.conf.erb"
     owner "postgres"
     group "postgres"

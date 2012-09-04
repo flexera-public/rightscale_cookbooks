@@ -28,7 +28,7 @@ JASPER_HOME="/usr/share/tomcat<%=@version%>"
 CATALINA_TMPDIR="/var/tmp/tomcat<%=@version%>"
 
 <% if @platform == "centos" %>
-  <% if @platform_ver == "6.2" %>
+  <% if @platform_ver == "6.2" || @platform_ver == "6.3" %>
 # Cannot resolve user database reference - naming-factory-dbcp
 # the real problem is a cnfe that is avoided by configuring
 # the -Djavax.sql.DataSource.Factory. This fixes the rpm install.

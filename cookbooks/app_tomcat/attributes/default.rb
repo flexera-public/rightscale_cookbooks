@@ -10,7 +10,7 @@ set_unless[:app_tomcat][:version] = '6'
 # By default tomcat uses MySQL as the DB adapter
 set_unless[:app][:db_adapter] = "mysql"
 # List of required apache modules
-set[:app][:module_dependencies] = [ "proxy", "proxy_http", "deflate", "rewrite" ]
+set[:app][:module_dependencies] = ["proxy", "proxy_http", "deflate", "rewrite"]
 
 # Recommended attributes
 set_unless[:app_tomcat][:code][:root_war] = ""
@@ -32,6 +32,11 @@ set_unless[:app_tomcat][:java][:xms] = "512m"
 # Defining apache user, java alternatives and database adapter parameters depending on platform.
 case node[:platform]
 when "ubuntu"
+  if node[:platform_version] == "10.04"
+    set[:app_tomcat][:jkworkersfile] = "/etc/tomcat#{app_tomcat[:version]}/workers.properties"
+  else
+    set[:app_tomcat][:jkworkersfile] = "/etc/libapache2-mod-jk/workers.properties"
+  end
   set[:app_tomcat][:alternatives_cmd] = "update-alternatives --auto java"
   if app[:db_adapter] == "mysql"
     set[:app_tomcat][:datasource_name] = "jdbc/MYSQLDB"
@@ -39,6 +44,7 @@ when "ubuntu"
     set[:app_tomcat][:datasource_name] = "jdbc/ConnDB"
   end
 when "centos", "redhat"
+  set[:app_tomcat][:jkworkersfile] = "/etc/tomcat#{app_tomcat[:version]}/workers.properties"
   set[:app_tomcat][:alternatives_cmd] = "alternatives --auto java"
   if app[:db_adapter] == "mysql"
     set[:app_tomcat][:datasource_name] = "jdbc/MYSQLDB"
