@@ -20,12 +20,15 @@ db node[:db][:data_dir] do
   action :nothing
 end
 
+node[:db][:socket] = "/var/run/postgresql"
 platform = node[:platform]
 case platform
 when "centos"
-  node[:db][:socket] = "/var/run/postgresql"
   node[:db_postgres][:client_packages_install] = ["postgresql91-libs", "postgresql91", "postgresql91-devel" ] 
   node[:db_postgres][:server_packages_install] = ["postgresql91-libs", "postgresql91", "postgresql91-devel", "postgresql91-server", "postgresql91-contrib" ]
+when "ubuntu"
+  node[:db_postgres][:client_packages_install] = ["postgresql-9.1", "postgresql-client-9.1"]
+  node[:db_postgres][:server_packages_install] = ["postgresql-9.1", "postgresql-server-dev-9.1"]
 else
   raise "Unsupported platform #{platform} for PostgreSQL Version #{version}"
 end
