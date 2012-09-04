@@ -17,8 +17,9 @@ echo "frontend all_requests 127.0.0.1:85" >> ${CONF_FILE}
 
 pools=""
 
-for line in $(cat "/etc/haproxy/lb_haproxy.d/pool_list.conf"); do
-        pools=${pools}" "${line}
+for line in $(cat "/etc/haproxy/lb_haproxy.d/pool_list.conf");
+do
+  pools=${pools}" "${line}
 done
 
 echo "" >> ${CONF_FILE}
@@ -48,16 +49,7 @@ echo "" >> ${CONF_FILE}
 
 for single_pool in ${pools}
 do
-  if [ -r  /etc/haproxy/lb_haproxy.d/userlist_backend_${single_pool}.conf ]; then
-    cat /etc/haproxy/lb_haproxy.d/userlist_backend_${single_pool}.conf>> ${CONF_FILE}
-  fi
-done
-
-echo "" >> ${CONF_FILE}
-
-for single_pool in ${pools}
-do
-  cat /etc/haproxy/lb_haproxy.d/${single_pool}.cfg >> ${CONF_FILE}
+  cat /etc/haproxy/lb_haproxy.d/backend_${single_pool}.cfg >> ${CONF_FILE}
 
   if [ $(ls -1A /etc/haproxy/lb_haproxy.d/${single_pool} | wc -l) -gt 0 ]; then
     cat /etc/haproxy/lb_haproxy.d/${single_pool}/* >> ${CONF_FILE}
