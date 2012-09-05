@@ -16,6 +16,7 @@ action :create do
     :vg_data_percentage => new_resource.vg_data_percentage,
     :force => new_resource.force
   }
+  create_options[:iops] = new_resource.iops if new_resource.iops && !new_resource.iops.empty?
   device.create(create_options)
 end
 
@@ -61,6 +62,7 @@ action :primary_restore do
     :storage_key => new_resource.primary_user,
     :storage_secret => new_resource.primary_secret
   }
+  restore_args[:iops] = new_resource.iops if new_resource.iops && !new_resource.iops.empty?
 
   device.primary_restore(new_resource.lineage, restore_args)
 end
@@ -84,6 +86,7 @@ action :secondary_restore do
     :stripe_count => new_resource.stripe_count,
     :vg_data_percentage => new_resource.vg_data_percentage
   }
+  restore_args[:iops] = new_resource.iops if new_resource.iops && !new_resource.iops.empty?
 
   device.secondary_restore(new_resource.lineage, restore_args)
 end
