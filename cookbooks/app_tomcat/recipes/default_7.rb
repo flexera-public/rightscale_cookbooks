@@ -19,6 +19,9 @@ case node[:platform]
 when "centos", "redhat"
   node[:app][:user] = "tomcat"
   node[:app][:group] = "tomcat"
+when "ubuntu"
+  node[:app][:user] = "tomcat7"
+  node[:app][:group] = "tomcat7" 
 else
   raise "Unrecognized distro #{node[:platform]} for tomcat#{version}, exiting "
 end
@@ -37,6 +40,17 @@ when "mysql"
         "tomcat-native",
         "mysql-connector-java"
       ]
+    },
+    "ubuntu" => {
+      "default" => [
+        "ecj-gcj",
+        "tomcat7",
+        "tomcat7-admin",
+        "tomcat7-common",
+        "tomcat7-user",
+        "libmysql-java",
+        "libtcnative-1"
+      ]
     }
   )
 when "postgresql"
@@ -49,6 +63,16 @@ when "postgresql"
         "tomcat7-admin-webapps",
         "tomcat7-webapps",
         "tomcat-native"
+      ]
+    },
+    "ubuntu" => {
+      "default" => [
+        "ecj-gcj",
+        "tomcat7",
+        "tomcat7-admin",
+        "tomcat7-common",
+        "tomcat7-user",
+        "libtcnative-1"
       ]
     }
   )
