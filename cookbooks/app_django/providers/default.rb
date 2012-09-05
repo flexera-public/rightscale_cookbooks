@@ -83,7 +83,7 @@ action :install do
     python_pip pip_name do
       action :install
     end
-  end unless pip_list == ""
+  end unless pip_list.empty?
 
   # Installing database adapter for Django
   log "Installing python packages for database support"
@@ -131,7 +131,7 @@ action :setup_vhost do
     cookbook "app_django"
   end
 
-  # Define internal port for tomcat. It must be different than apache ports
+  # Configure apache wsgi for Django.
   log "  Creating wsgi.py"
   template "#{project_root}/wsgi.py" do
     action :create
@@ -202,7 +202,7 @@ action :code_update do
   # the required python packages using "pip install" command.
   #
   log "  pip will install python packages from requirements.txt"
-  # Installing python packages from /requirements.txt if it exists
+  # Installing python packages from {deploy_dir}/requirements.txt if it exists
   execute "#{node[:app_django][:pip_bin]} install --requirement=#{deploy_dir}/requirements.txt" do
     only_if { ::File.exists?("#{deploy_dir}/requirements.txt") }
   end

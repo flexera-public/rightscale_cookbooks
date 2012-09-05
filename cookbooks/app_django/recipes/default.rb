@@ -12,43 +12,43 @@ node[:app][:provider] = "app_django"
 
 # Ubuntu 12.04 support https://wiki.ubuntu.com/Python
 case node[:platform]
-  when "ubuntu"
-    node[:app][:packages] = [
-      "libcurl4-openssl-dev",
-      "apache2-mpm-prefork",
-      "apache2-prefork-dev",
-      "libapr1-dev",
-      "libcurl4-openssl-dev",
-      "python-dev",
-      "python-setuptools",
-      "libapache2-mod-wsgi",
-      "python-simplejson",
-      "python-pip"
-     ]
-    node[:app][:user] = "www-data"
-    node[:app][:group] = "www-data"
-  when "centos"
-    node[:app][:packages] = [
-      "zlib-devel",
-      "openssl-devel",
-      "readline-devel",
-      "curl-devel",
-      "openssl-devel",
-      "httpd-devel",
-      "apr-devel",
-      "apr-util-devel",
-      "readline-devel",
-      "mod_wsgi",
-      "python-libs",
-      "python-devel",
-      "python-setuptools",
-      "python-simplejson",
-      "python-pip"
-     ]
-    node[:app][:user] = "apache"
-    node[:app][:group] = "apache"
-  else
-    raise "Unrecognized distro #{node[:platform]}, exiting "
+when "ubuntu"
+  node[:app][:packages] = [
+    "libcurl4-openssl-dev",
+    "apache2-mpm-prefork",
+    "apache2-prefork-dev",
+    "libapr1-dev",
+    "libcurl4-openssl-dev",
+    "python-dev",
+    "python-setuptools",
+    "libapache2-mod-wsgi",
+    "python-simplejson",
+    "python-pip"
+   ]
+  node[:app][:user] = "www-data"
+  node[:app][:group] = "www-data"
+when "centos"
+  node[:app][:packages] = [
+    "zlib-devel",
+    "openssl-devel",
+    "readline-devel",
+    "curl-devel",
+    "openssl-devel",
+    "httpd-devel",
+    "apr-devel",
+    "apr-util-devel",
+    "readline-devel",
+    "mod_wsgi",
+    "python-libs",
+    "python-devel",
+    "python-setuptools",
+    "python-simplejson",
+    "python-pip"
+   ]
+  node[:app][:user] = "apache"
+  node[:app][:group] = "apache"
+else
+  raise "Unrecognized distro #{node[:platform]}, exiting "
 end
 
 # Set debug mode django style (https://docs.djangoproject.com/en/dev/ref/settings/#debug)
