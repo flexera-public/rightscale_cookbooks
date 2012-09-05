@@ -266,6 +266,13 @@ end.each do |device, number|
     :choice => ["50", "60", "70", "80", "90", "100"],
     :default => "90",
     :recipes => [ "block_device::setup_block_device", "block_device::default" ]
+
+  attribute "block_device/devices/#{device}/iops",
+    :display_name => "I/O Operations per Second",
+    :description => "The input/output operations per second (IOPS) that the volue can support. IOPS is currently only supported on Amazon EC2. Example: 500",
+    :type => "string",
+    :required => "optional",
+    :recipes => [ "block_device::setup_block_device", "block_device::default" ]
 end
 
 attribute "block_device/terminate_safety",
