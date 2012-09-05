@@ -20,26 +20,31 @@ module RightScale
     # @param new_resource [Object] Resource which will be initialized
     #
     # @return [BlockDevice] BlockDevice object
-    def init(new_resource)
+    def init(new_resource, backup_type = :primary)
       # Setup options
       options = {
         :hypervisor => new_resource.hypervisor
       }
       options[:rackspace_use_snet] = new_resource.rackspace_snet if new_resource.rackspace_snet
 
-      # Primary ROS options
-      options[:primary_storage_cloud] = new_resource.primary_cloud if new_resource.primary_cloud
-      options[:primary_endpoint] = new_resource.primary_endpoint unless !new_resource.primary_endpoint || new_resource.primary_endpoint.empty?
-      options[:primary_storage_key] = new_resource.primary_user if new_resource.primary_user
-      options[:primary_storage_secret] = new_resource.primary_secret if new_resource.primary_secret
-      options[:primary_storage_container] = new_resource.lineage
-
-      # Secondary ROS options
-      options[:secondary_storage_cloud] = new_resource.secondary_cloud if new_resource.secondary_cloud
-      options[:secondary_endpoint] = new_resource.secondary_endpoint unless !new_resource.secondary_endpoint || new_resource.secondary_endpoint.empty?
-      options[:secondary_storage_key] = new_resource.secondary_user if new_resource.secondary_user
-      options[:secondary_storage_secret] = new_resource.secondary_secret if new_resource.secondary_secret
-      options[:secondary_storage_container] = new_resource.secondary_container if new_resource.secondary_container
+      case backup_type
+      when :primary
+        # Primary ROS options
+        options[:primary_storage_cloud] = new_resource.primary_cloud if new_resource.primary_cloud
+        options[:primary_endpoint] = new_resource.primary_endpoint unless !new_resource.primary_endpoint || new_resource.primary_endpoint.empty?
+        options[:primary_storage_key] = new_resource.primary_user if new_resource.primary_user
+        options[:primary_storage_secret] = new_resource.primary_secret if new_resource.primary_secret
+        options[:primary_storage_container] = new_resource.lineage
+      when :secondary
+        # Secondary ROS options
+        options[:secondary_storage_cloud] = new_resource.secondary_cloud if new_resource.secondary_cloud
+        options[:secondary_endpoint] = new_resource.secondary_endpoint unless !new_resource.secondary_endpoint || new_resource.secondary_endpoint.empty?
+        options[:secondary_storage_key] = new_resource.secondary_user if new_resource.secondary_user
+        options[:secondary_storage_secret] = new_resource.secondary_secret if new_resource.secondary_secret
+        options[:secondary_storage_container] = new_resource.secondary_container if new_resource.secondary_container
+      else
+        raise "#{backup_type} is not a valid backup type"
+      end
 
       # Create and return BlockDevice object
       ::RightScale::Tools::BlockDevice.factory(
