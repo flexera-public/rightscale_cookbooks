@@ -102,9 +102,9 @@ action :add_vhost do
   file "/etc/haproxy/lb_haproxy.d/pool_list.conf"
 
   # Adding current pool to pool_list conf to preserve lb/pools order
-  ruby_block "add to new pool to pool list.conf" do
-    block { ::File.open('/etc/haproxy/lb_haproxy.d/pool_list.conf', 'a') { |file| file.puts "#{pool_name}"} }
-    not_if { ::File.readlines('/etc/haproxy/lb_haproxy.d/pool_list.conf').grep(/^#{pool_name}/).any? }
+  ruby_block "add current pool to the pool|_list.conf" do
+    block { ::File.open("/etc/haproxy/#{node[:lb][:service][:provider]}.d/pool_list.conf", 'a') { |file| file.puts "#{pool_name}"} }
+    not_if { ::File.readlines("/etc/haproxy/#{node[:lb][:service][:provider]}.d/pool_list.conf").grep(/^#{pool_name}/).any? }
   end
 
   lb_haproxy_backend  "create main backend section" do
