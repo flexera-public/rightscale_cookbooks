@@ -74,7 +74,7 @@ end
 
 # we do not care about version number here.
 # need only the type of database adaptor
-node[:app][:db_adapter] = node[:db][:database_adapter].match(/^db_[a-z]+/)[0]
+node[:app][:db_adapter] = node[:db][:database_adapter].match(/^db_([a-z]+)/)[1]
 
 if node[:app][:db_adapter] == "mysql"
   log "  Install PHP mysql support"
