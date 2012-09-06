@@ -37,51 +37,9 @@ node[:db_mysql][:service_name] = value_for_platform(
   },
   "default" => "mysqld"
 )
-=begin
-node[:db_mysql][:client_packages_uninstall] = value_for_platform(
-  "centos"  => {
-    "5.8" => [],
-    "default" => [
-      "postfix",
-      "mysql-libs"
-    ]
-  },
-  "default" => []
-)
-=end
+
 node[:db_mysql][:server_packages_uninstall] = []
-=begin
-node[:db_mysql][:client_packages_install] = value_for_platform(
-  "centos" => {
-    "5.8" => [
-      "mysql55-devel",
-      "mysql55-libs",
-      "mysql55"
-    ],
-    "default" => [
-      "mysql55-devel",
-      "mysql55-libs",
-      "mysql55",
-      "postfix" 
-    ]
-  },
-  "ubuntu" => {
-    "10.04" => [],
-    "default" => [
-      "libmysqlclient-dev",
-      "mysql-client-5.5"
-    ]
-  },
-  "redhat" => {
-    "default" => [
-      "mysql55-devel",
-      "mysql55-libs",
-      "mysql55"
-    ]
-  },
-  "default" => []
-)
-=end
+
 node[:db_mysql][:server_packages_install] = value_for_platform(
   "ubuntu" => {
     "10.04" => [],
@@ -89,8 +47,6 @@ node[:db_mysql][:server_packages_install] = value_for_platform(
   },
   "default" => [ "mysql55-server" ]
 )
-
-raise "Platform not supported for MySQL #{version}" if node[:db_mysql][:client_packages_install].empty?
 
 log "  Using MySQL service name: #{node[:db_mysql][:version]}"
 

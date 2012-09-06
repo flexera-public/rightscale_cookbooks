@@ -207,7 +207,7 @@ action :install_client do
   node[:db_mysql][:client_packages_uninstall] = []
   node[:db_mysql][:client_packages_install] = []
 
-  #socket value
+  # Socket value
   node[:db][:socket] = value_for_platform(
     "ubuntu"  => {
       "default" => "/var/run/mysqld/mysqld.sock"
@@ -255,6 +255,8 @@ action :install_client do
         },
         "default" => []
       )
+    else
+      raise "Platform not supported for MySQL #{database_version}"
   end
 
   # Uninstall specified client packages

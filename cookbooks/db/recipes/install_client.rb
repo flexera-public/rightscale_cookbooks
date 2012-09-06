@@ -10,11 +10,15 @@ database_type = node[:db][:database_adapter].match(/(^[a-z]+)_(\d.\d)/)
 
 # Database provider type Ex: db_mysql
 # need this conditional to avoid database type collisions on DBMGR
-if node[:db][:provider] == ""
-  node[:db][:provider] = "db_#{database_type[0]}"
-end
+node[:db][:provider] = "db_#{database_type[1]}" if node[:db][:provider].empty?
 # Database version number Ex: 5.1
-database_version = database_type[1]
+database_version = database_type[2]
+
+# If block_device is used, set that to be node[:db][:data_dir]
+mount_point = node[:block_device][:devices][:device1][:mount_point] if node[:block_device][:devices].include?(:device1)
+if !mount_point.nil? && !mount_point.empty?
+  node[:db][:data_dir] = mount_point
+end
 
 db node[:db][:data_dir] do
   db_version database_version
