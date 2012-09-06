@@ -502,7 +502,7 @@ action :generate_dump_file do
   bash "Write the postgres DB backup file" do
       user 'postgres'
       code <<-EOH
-      pg_dump -U postgres -h /var/run/postgresql #{db_name} | gzip -c > #{dumpfile}
+        pg_dump -U postgres -h /var/run/postgresql #{db_name} | gzip -c > #{dumpfile}
       EOH
   end
 
