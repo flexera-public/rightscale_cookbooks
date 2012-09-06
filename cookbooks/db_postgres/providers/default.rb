@@ -285,7 +285,7 @@ action :grant_replication_slave do
   slavestatus = res.getvalue(0,0)
   if ( slavestatus == 'off' )
     log "  Detected Master server."
-    result = conn.exec("SELECT COUNT(*) FROM pg_user WHERE usename='#{username}'")
+    result = conn.exec("SELECT COUNT(*) FROM pg_user WHERE usename='#{username_esc}'")
     userstat = result.getvalue(0,0)
     if ( userstat == '1' )
       log "  User #{username} already exists, updating user using current inputs"
