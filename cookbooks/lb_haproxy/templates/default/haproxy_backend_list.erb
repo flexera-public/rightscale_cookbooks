@@ -1,0 +1,4 @@
+<% pool_names=@pool_list.gsub(/\s+/, "").gsub(/[\/]/, "_").split(",").uniq %>
+<% pool_names.each do |pool_name| %>
+<%= pool_name %>
+<% end %>
