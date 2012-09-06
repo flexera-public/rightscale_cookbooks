@@ -162,6 +162,14 @@ attribute "db/dns/ttl",
   :choice => [ "60", "300" ],
   :recipes => [ "db::install_server" ]
 
+attribute "db/database_adapter",
+  :display_name => "Database adapter",
+  :description => "Database adapter type, to use on client side",
+  :required => "recommended",
+  :default => "mysql_5.1",
+  :choice => [ "mysql_5.1", "mysql_5.5", "postgresql_9.1" ],
+  :recipes => [ "db::install_client" ]
+
 # == Backup/Restore
 #
 attribute "db/backup/lineage",

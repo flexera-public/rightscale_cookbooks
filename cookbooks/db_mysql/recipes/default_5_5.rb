@@ -37,7 +37,7 @@ node[:db_mysql][:service_name] = value_for_platform(
   },
   "default" => "mysqld"
 )
-
+=begin
 node[:db_mysql][:client_packages_uninstall] = value_for_platform(
   "centos"  => {
     "5.8" => [],
@@ -48,8 +48,9 @@ node[:db_mysql][:client_packages_uninstall] = value_for_platform(
   },
   "default" => []
 )
+=end
 node[:db_mysql][:server_packages_uninstall] = []
-
+=begin
 node[:db_mysql][:client_packages_install] = value_for_platform(
   "centos" => {
     "5.8" => [
@@ -80,7 +81,7 @@ node[:db_mysql][:client_packages_install] = value_for_platform(
   },
   "default" => []
 )
-
+=end
 node[:db_mysql][:server_packages_install] = value_for_platform(
   "ubuntu" => {
     "10.04" => [],

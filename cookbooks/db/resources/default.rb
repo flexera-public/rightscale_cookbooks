@@ -44,7 +44,7 @@ attribute :machine_tag, :kind_of => String, :regex => /^([^:]+):(.+)=.+/
 # == Import/Export options
 attribute :dumpfile, :kind_of => String
 attribute :db_name, :kind_of => String
-
+attribute :db_version, :kind_of => String
 
 # = General Database Actions
 #
