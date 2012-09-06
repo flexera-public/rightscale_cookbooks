@@ -49,10 +49,12 @@ echo "" >> ${CONF_FILE}
 
 for single_pool in ${pools}
 do
-  cat /etc/haproxy/lb_haproxy.d/backend_${single_pool}.cfg >> ${CONF_FILE}
+  if [ -e /etc/haproxy/lb_haproxy.d/backend_${single_pool}.conf ]; then
+    cat /etc/haproxy/lb_haproxy.d/backend_${single_pool}.conf >> ${CONF_FILE}
 
-  if [ $(ls -1A /etc/haproxy/lb_haproxy.d/${single_pool} | wc -l) -gt 0 ]; then
-    cat /etc/haproxy/lb_haproxy.d/${single_pool}/* >> ${CONF_FILE}
+    if [ $(ls -1A /etc/haproxy/lb_haproxy.d/${single_pool} | wc -l) -gt 0 ]; then
+      cat /etc/haproxy/lb_haproxy.d/${single_pool}/* >> ${CONF_FILE}
+    fi
   fi
 
   echo "" >> ${CONF_FILE}
