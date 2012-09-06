@@ -29,4 +29,6 @@ else
   raise "  Unsupported platform #{platform} for PostgreSQL Version #{version}"
 end
 
+node[:db][:init_timeout]= "60"
+
 rightscale_marker :end
