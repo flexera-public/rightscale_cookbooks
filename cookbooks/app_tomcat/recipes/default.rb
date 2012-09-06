@@ -22,6 +22,10 @@ else
   raise "Unrecognized distro #{node[:platform]}, exiting "
 end
 
+# we do not care about version number here.
+# need only the type of database adaptor
+node[:app][:db_adapter] = node[:db][:database_adapter].match(/^[a-z]+/)[0]
+
 # Preparing list of database adapter packages depending on platform and database adapter
 case node[:app][:db_adapter]
 when "mysql"

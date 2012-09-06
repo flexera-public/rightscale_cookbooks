@@ -61,4 +61,8 @@ node[:app_passenger][:ruby_gem_base_dir] = value_for_platform(
 node[:app][:destination] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
 node[:app][:root] = node[:app][:destination] + "/public"
 
+# we do not care about version number here.
+# need only the type of database adaptor
+node[:app][:db_adapter] = node[:db][:database_adapter].match(/^[a-z]+/)[0]
+
 rightscale_marker :end

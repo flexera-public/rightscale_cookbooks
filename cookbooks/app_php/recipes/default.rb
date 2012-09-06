@@ -72,6 +72,10 @@ package "php apache integration" do
   action :install
 end
 
+# we do not care about version number here.
+# need only the type of database adaptor
+node[:app][:db_adapter] = node[:db][:database_adapter].match(/^[a-z]+/)[0]
+
 if node[:app][:db_adapter] == "mysql"
   log "  Install PHP mysql support"
   package "php mysql integration" do

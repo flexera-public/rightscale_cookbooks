@@ -58,11 +58,3 @@ attribute "app/database_name",
   :description => "Enter the name of the database schema to which applications will connect to. The database schema should have been created when the initial database was first set up. This input will be used to set the application server's database configuration file so that applications can connect to the correct schema within the database.  This input is also used for database dump backups in order to determine which schema will be backed up.  Example: mydbschema",
   :required => "required",
   :recipes => ["app::setup_db_connection"]
-
-attribute "app/db_adapter",
-  :display_name => "Database adapter for application",
-  :description => "Enter the database adapter which will be used to connect to the database. Example: mysql",
-  :default => "mysql",
-  :choice => [ "mysql", "postgresql" ],
-  :recipes => ["app::default"]
-
