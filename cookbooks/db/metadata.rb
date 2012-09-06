@@ -86,7 +86,7 @@ attribute "db/dns/master/fqdn",
   :display_name => "Database Master FQDN",
   :description => "The fully qualified domain name for the master database server.  Example: db-master.example.com",
   :required => "required",
-  :recipes => [ "db::default" ]
+  :recipes => [ "db::default", "db::install_client" ]
 
 attribute "db/dns/master/id",
   :display_name => "Database Master DNS Record ID",
@@ -139,13 +139,13 @@ attribute "db/application/user",
   :display_name => "Database Application Username",
   :description => "The username of the database user that has 'user' privileges (e.g., cred:DBAPPLICATION_USER).",
   :required => "required",
-  :recipes => [ "db::default", "db::setup_privileges_application" ]
+  :recipes => [ "db::default", "db::setup_privileges_application", "db::install_client" ]
 
 attribute "db/application/password",
   :display_name => "Database Application Password",
   :description => "The password of the database user that has 'user' privileges (e.g., cred:DBAPPLICATION_PASSWORD).",
   :required => "required",
-  :recipes => [ "db::default", "db::setup_privileges_application" ]
+  :recipes => [ "db::default", "db::setup_privileges_application", "db::install_client" ]
 
 attribute "db/init_slave_at_boot",
   :display_name => "Init Slave at Boot",
@@ -162,12 +162,12 @@ attribute "db/dns/ttl",
   :choice => [ "60", "300" ],
   :recipes => [ "db::install_server" ]
 
-attribute "db/database_adapter",
-  :display_name => "Database adapter",
-  :description => "Database adapter type, to use on client side",
+attribute "db/provider_type",
+  :display_name => "Database Provider type",
+  :description => "Database provider type to use on client side.  This must be a string containing the provider cookbook name and (optionally) the version of the database. For example:  db_mydatabase_1.0",
   :required => "recommended",
-  :default => "mysql_5.1",
-  :choice => [ "mysql_5.1", "mysql_5.5", "postgresql_9.1" ],
+  :default => "db_mysql_5.1",
+  :choice => [ "db_mysql_5.1", "db_mysql_5.5", "db_postgresql_9.1" ],
   :recipes => [ "db::install_client" ]
 
 # == Backup/Restore

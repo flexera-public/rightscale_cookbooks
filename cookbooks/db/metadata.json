@@ -42,7 +42,8 @@
       "description": "The fully qualified domain name for the master database server.  Example: db-master.example.com",
       "required": "required",
       "recipes": [
-        "db::default"
+        "db::default",
+        "db::install_client"
       ],
       "choice": [
 
@@ -166,7 +167,8 @@
       "required": "required",
       "recipes": [
         "db::default",
-        "db::setup_privileges_application"
+        "db::setup_privileges_application",
+        "db::install_client"
       ],
       "choice": [
 
@@ -180,7 +182,8 @@
       "required": "required",
       "recipes": [
         "db::default",
-        "db::setup_privileges_application"
+        "db::setup_privileges_application",
+        "db::install_client"
       ],
       "choice": [
 
@@ -218,15 +221,15 @@
       "calculated": false,
       "type": "string"
     },
-    "db/database_adapter": {
-      "display_name": "Database adapter",
-      "description": "Database adapter type, to use on client side",
+    "db/provider_type": {
+      "display_name": "Database Provider type",
+      "description": "Database provider type to use on client side.  This must be a string containing the provider cookbook name and (optionally) the version of the database. For example:  db_mydatabase_1.0",
       "required": "recommended",
-      "default": "mysql_5.1",
+      "default": "db_mysql_5.1",
       "choice": [
-        "mysql_5.1",
-        "mysql_5.5",
-        "postgresql_9.1"
+        "db_mysql_5.1",
+        "db_mysql_5.5",
+        "db_postgresql_9.1"
       ],
       "recipes": [
         "db::install_client"

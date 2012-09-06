@@ -63,6 +63,6 @@ node[:app][:root] = node[:app][:destination] + "/public"
 
 # we do not care about version number here.
 # need only the type of database adaptor
-node[:app][:db_adapter] = node[:db][:database_adapter].match(/^[a-z]+/)[0]
+node[:app][:db_adapter] = node[:db][:database_adapter].match(/^db_([a-z]+)/)[1]
 
 rightscale_marker :end
