@@ -203,7 +203,8 @@ action :remove_anonymous do
 end
 
 action :install_client do
-  database_version = new_resource.db_version
+  # Using node[:db_mysql][:version] to avoid misconfiguration during the run on Database Managers
+  node[:db_mysql][:version] = new_resource.db_version if node[:db_mysql][:version].nil?
   node[:db_mysql][:client_packages_uninstall] = []
   node[:db_mysql][:client_packages_install] = []
 
@@ -215,7 +216,7 @@ action :install_client do
     "default" => "/var/lib/mysql/mysql.sock"
   )
 
-  case database_version
+  case node[:db_mysql][:version]
     when "5.1"
       node[:db_mysql][:client_packages_install] = value_for_platform(
         "centos" => {
