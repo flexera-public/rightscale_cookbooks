@@ -10,7 +10,7 @@ database_type = node[:db][:database_adapter].match(/(^[a-z]+)_(\d.\d)/)
 
 # Database provider type Ex: db_mysql
 # need this conditional to avoid database type collisions on DBMGR
-node[:db][:provider] = "db_#{database_type[1]}" if node[:db][:provider].nil? && node[:db][:provider].empty?
+node[:db][:provider] = "db_#{database_type[1]}" if node[:db][:provider].nil?
 # Database version number Ex: 5.1
 database_version = database_type[2]
 
