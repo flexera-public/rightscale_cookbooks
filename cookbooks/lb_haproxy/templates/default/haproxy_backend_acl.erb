@@ -1,11 +1,9 @@
 <%if @pool_name_full.include? "/" %>
-
   <%if @pool_name_full=~ /(^.+\..+)\/(.+)/%>
-    acl acl_<%=@pool_name %> url_reg <%=$1%>\/<%=$2%>
+  acl acl_<%=@pool_name %> url_reg <%=$1%>\/<%=$2%>
   <% else %>
-     acl acl_<%=@pool_name %> path_beg <%=@pool_name_full %>
+  acl acl_<%=@pool_name %> path_beg <%=@pool_name_full %>
   <%  end %>
-
 <% else %>
   acl acl_<%=@pool_name %> hdr_dom(host) <%=@pool_name_full %>
 <% end %>
