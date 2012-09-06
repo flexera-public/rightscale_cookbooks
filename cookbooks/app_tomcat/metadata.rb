@@ -10,8 +10,6 @@ version          "12.1.0"
 # supports "ubuntu", "~> 10.04", "~> 12.04"
 
 depends "app"
-depends "db_mysql"
-depends "db_postgres"
 depends "repo"
 depends "rightscale"
 
