@@ -15,8 +15,9 @@ POOL_NAMES = node[:lb][:pools]
 
 log "  Install load balancer"
 
-# Install haproxy and create main config files
-# Using last item from lb/pools as default backend
+# Install haproxy and create main config files.
+# Name passed in :install action will be used as default backend.
+# Currently, using last item from lb/pools as default backend.
 lb pool_names(POOL_NAMES).last do
   action :install
 end
