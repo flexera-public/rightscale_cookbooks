@@ -15,9 +15,9 @@ POOL_NAMES = node[:lb][:pools]
 
 log "  Install load balancer"
 
-# In the 'install' action, the name is not used, but the provider from default recipe is needed.
-# Any vhost name set with provider can be used. Using first one in list to make it simple.
-lb pool_names(POOL_NAMES).first do
+# Install haproxy and create main config files
+# Using last item from lb/pools as default backend
+lb pool_names(POOL_NAMES).last do
   action :install
 end
 
