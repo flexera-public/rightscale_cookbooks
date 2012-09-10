@@ -377,7 +377,7 @@
         "block_device::default"
       ],
       "display_name": "Nickname (1)",
-      "description": "The nickname displayed in the dashboard for the volume. It is not required, but can be used to uniquely identify volumes."
+      "description": "The name displayed in the dashboard for volumes and to uniquely identify LVM volume groups."
     },
     "block_device/devices/device1/volume_size": {
       "required": "recommended",
@@ -457,7 +457,7 @@
         "block_device::default"
       ],
       "display_name": "Nickname (2)",
-      "description": "The nickname displayed in the dashboard for the volume. It is not required, but can be used to uniquely identify volumes."
+      "description": "The name displayed in the dashboard for volumes and to uniquely identify LVM volume groups."
     },
     "block_device/devices/device2/volume_size": {
       "required": "optional",

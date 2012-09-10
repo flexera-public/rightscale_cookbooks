@@ -177,7 +177,7 @@ end.each do |device, number|
 
   attribute "block_device/devices/#{device}/nickname",
     :display_name => "Nickname (#{number})",
-    :description => "The nickname displayed in the dashboard for the volume. It is not required, but can be used to uniquely identify volumes.",
+    :description => "The name displayed in the dashboard for volumes and to uniquely identify LVM volume groups.",
     :required => device != 'device2' ? 'recommended' : 'optional',
     :default => "data_storage#{number}",
     :recipes => [ "block_device::default" ]
