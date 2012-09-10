@@ -257,16 +257,17 @@ action :install_client do
         "default" => []
       )
     else
-      raise "Platform not supported for MySQL #{database_version}"
+      raise "MySQL version: #{node[:db_mysql][:version]} not supported yet"
   end
 
   # Uninstall specified client packages
   packages = node[:db_mysql][:client_packages_uninstall]
   log "  Packages to uninstall: #{packages.join(",")}" unless packages == ""
   packages.each do |p|
-    package p do
-      action :remove
+    r = package p do
+      action :nothing
     end
+    r.run_action(:remove)
   end
 
   # Install MySQL client packages
@@ -280,7 +281,10 @@ action :install_client do
   packages = node[:db_mysql][:client_packages_install]
   log "  Packages to install: #{packages.join(",")}" unless packages == ""
   packages.each do |p|
-    package p
+    r = package p do
+      action :nothing
+    end
+    r.run_action(:install)
   end
 
   # Install MySQL client gem
