@@ -83,9 +83,8 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
    will connect to. (e.g. 5.1, 5.5, 9.1). This affects what connector package to install.
    Syntax for this input is <cookbook>_<version> (i.e. db_mydatabase_1.0)
 
-2. Fill all required "db" inputs which are necessary to connect client to Database Manager
-
-
+2. Fill <tt>db/application/password</tt> , <tt>db/application/user</tt> and
+<tt>db/dns/master/fqdn</tt> inputs which are necessary to connect client to Database Manager.
 
 == DETAILS:
 
