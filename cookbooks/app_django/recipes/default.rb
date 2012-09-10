@@ -52,8 +52,7 @@ else
 end
 
 # Set debug mode django style (https://docs.djangoproject.com/en/dev/ref/settings/#debug)
-node[:app_django][:app][:debug_mode] = "False" if node[:app_django][:app][:debug_mode] == "false"
-node[:app_django][:app][:debug_mode] = "True" if node[:app_django][:app][:debug_mode] == "true"
+node[:app_django][:app][:debug_mode].gsub!(/^./) {|a| a.upcase}
 
 # Setting app LWRP attribute
 node[:app][:destination] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
