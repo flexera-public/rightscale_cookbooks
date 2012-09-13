@@ -91,6 +91,8 @@ node[:db_mysql][:server_packages_install] = value_for_platform(
 
 raise "Platform not supported for MySQL #{version}" if node[:db_mysql][:client_packages_install].empty?
 
+node[:db][:init_timeout]= node[:db_mysql][:init_timeout]
+
 log "  Using MySQL service name: #{node[:db_mysql][:version]}"
 
 rightscale_marker :end
