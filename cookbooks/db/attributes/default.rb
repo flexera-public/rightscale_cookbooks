@@ -63,3 +63,4 @@ set_unless[:db][:backup][:primary][:slave][:cron][:minute] = cron_min + 30
 
 # DB manager type specific commands array for db_sys_info.log file
 set_unless[:db][:info_file_options] = []
+set_unless[:db][:info_file_location] = "/etc"

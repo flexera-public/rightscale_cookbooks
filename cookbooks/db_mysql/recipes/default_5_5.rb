@@ -95,6 +95,7 @@ node[:db][:init_timeout]= node[:db_mysql][:init_timeout]
 
 # Mysql specific commands for db_sys_info.log file
 node[:db][:info_file_options] = ["mysql -V", "cat /etc/mysql/conf.d/my.cnf"]
+node[:db][:info_file_location] = "/etc/mysql"
 
 log "  Using MySQL service name: #{node[:db_mysql][:version]}"
 

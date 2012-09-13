@@ -12,7 +12,7 @@ db node[:db][:data_dir] do
 end
 
 # File path
-info_file = "#{node[:db][:datadir]}/db_sys_info.log"
+info_file = "#{node[:db][:info_file_location]}/db_sys_info.log"
 
 # Creating a db backup info file
 file info_file do
