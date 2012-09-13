@@ -31,4 +31,7 @@ end
 
 node[:db][:init_timeout]= "60"
 
+# PostgreSQL specific commands for db_sys_info.log file
+node[:db][:info_file_options] = ["pg_config --version", "cat #{node[:db_postgres][:datadir]}/postgresql.conf"]
+
 rightscale_marker :end

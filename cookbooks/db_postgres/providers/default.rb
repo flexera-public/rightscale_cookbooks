@@ -395,6 +395,9 @@ end
 action :setup_monitoring do
   db_state_get node
 
+  priv_username = new_resource.privilege_username
+  priv_password = new_resource.privilege_password
+
   service "collectd" do
     action :nothing
   end
@@ -409,6 +412,10 @@ action :setup_monitoring do
     template ::File.join(node[:rightscale][:collectd_plugin_dir], 'postgresql.conf') do
       backup false
       source "postgresql_collectd_plugin.conf.erb"
+      variables(
+        :database_owner =>  priv_password,
+        :database_owner_pass => priv_username
+      )
       notifies :restart, resources(:service => "collectd")
       cookbook 'db_postgres'
     end

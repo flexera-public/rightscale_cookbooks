@@ -12,7 +12,7 @@ db node[:db][:data_dir] do
 end
 
 # File path
-info_file = "#{node[:db_mysql][:datadir]}/db_sys_info.log"
+info_file = "#{node[:db][:datadir]}/db_sys_info.log"
 
 # Creating a db backup info file
 file info_file do
@@ -33,12 +33,12 @@ ruby_block "db backup info file" do
     commands = [
       "uname -a",
       "lsb_release -a",
-      "mysql -V",
       "df -k",
-      "cat /etc/mysql/conf.d/my.cnf",
       "cat /etc/rightscale.d/*",
       "gem list"
     ]
+    # Add Database specific commands
+    commands.concat(node[:db][:info_file_options])
 
     # Array of values
     nodes = [
