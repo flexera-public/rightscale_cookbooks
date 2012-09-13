@@ -63,7 +63,7 @@ loop do
     threads += line.to_i
   end
 
-  print "PUTVAL #{hostname}/processes-postgresql/ps_count_pg interval=#{sample_interval} #{now.to_i}:#{processes}:#{threads}\n"
+  print "PUTVAL #{hostname}/processes-postgresql/ps_count interval=#{sample_interval} #{now.to_i}:#{processes}:#{threads}\n"
 
   STDOUT.flush
   sleep sample_interval

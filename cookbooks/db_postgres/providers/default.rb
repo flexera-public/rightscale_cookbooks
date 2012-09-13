@@ -402,15 +402,6 @@ action :setup_monitoring do
     action :nothing
   end
 
-  rightscale_monitor_process "postgresql"
-
-  template ::File.join(node[:rightscale][:collectd_plugin_dir], 'processes.conf') do
-    backup false
-    source "processes.conf.erb"
-    notifies :restart, resources(:service => "collectd")
-    cookbook 'rightscale'
-  end
-
   if node[:platform] == 'centos'
 
     package "collectd-postgresql" do
