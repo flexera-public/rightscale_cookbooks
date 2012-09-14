@@ -122,6 +122,7 @@ end
 
 action :install_client do
 
+  node[:db_postgres][:client_packages_install] = ["postgresql91-libs", "postgresql91", "postgresql91-devel" ]
   # Install PostgreSQL 9.1.1 package(s)
   if node[:platform] == "centos"
     arch = node[:kernel][:machine]
@@ -132,7 +133,7 @@ action :install_client do
     end
 
     packages = node[:db_postgres][:client_packages_install]
-    log  "Packages to install: #{packages.join(",")}"
+    log  "Packages to install: #{packages.join(", ")}"
     packages.each do |p|
       package p do
         action :install

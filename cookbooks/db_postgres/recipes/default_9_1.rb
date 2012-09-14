@@ -23,8 +23,7 @@ platform = node[:platform]
 case platform
   when "centos"
   node[:db][:socket] = "/var/run/postgresql"
-  node[:db_postgres][:client_packages_install] = ["postgresql91-libs", "postgresql91", "postgresql91-devel" ]
-  node[:db_postgres][:server_packages_install] = ["postgresql91-libs", "postgresql91", "postgresql91-devel", "postgresql91-server", "postgresql91-contrib" ]
+    node[:db_postgres][:server_packages_install] = ["postgresql91-libs", "postgresql91", "postgresql91-devel", "postgresql91-server", "postgresql91-contrib" ]
 else
   raise "  Unsupported platform #{platform} for PostgreSQL Version #{version}"
 end

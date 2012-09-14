@@ -166,6 +166,7 @@ attribute "db/provider_type",
   :display_name => "Database Provider type",
   :description => "Database provider type to use on client side.  This must be a string containing the provider cookbook name and (optionally) the version of the database. For example: db_mydatabase_1.0, db_mysql_5.1, db_mysql_5.5, db_postgresql_9.1",
   :required => "required",
+  :choice => [ "db_mysql_5.1", "db_mysql_5.5", "db_postgresql_9.1"],
   :recipes => [ "db::install_client" ]
 
 # == Backup/Restore
