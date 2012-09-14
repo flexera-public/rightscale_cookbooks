@@ -228,7 +228,7 @@
       "choice": [
         "db_mysql_5.1",
         "db_mysql_5.5",
-        "db_postgresql_9.1"
+        "db_postgres_9.1"
       ],
       "recipes": [
         "db::install_client"
