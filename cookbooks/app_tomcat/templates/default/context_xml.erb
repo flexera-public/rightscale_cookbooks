@@ -31,7 +31,7 @@
              <% if node[:app][:db_adapter] == "mysql" -%>
                username="<%= @user %>" password="<%= @password %>" driverClassName="com.mysql.jdbc.Driver"
                url="jdbc:mysql://<%= @fqdn %>:3306/<%= @database %>"/>
-             <% elsif node[:app][:db_adapter] == "postgresql"-%>
+             <% elsif node[:app][:db_adapter] == "postgres"-%>
                username="<%= @user %>" password="<%= @password %>" driverClassName="org.postgresql.Driver"
                url="jdbc:postgresql://<%= @fqdn %>:5432/<%= @database %>"/>
              <% end -%>

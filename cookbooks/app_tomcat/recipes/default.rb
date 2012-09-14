@@ -71,7 +71,7 @@ when "mysql"
     },
     "default" => []
   )
-when "postgresql"
+when "postgres"
   node[:app][:packages] = value_for_platform(
     "centos" => {
       "5.8" => [
