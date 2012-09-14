@@ -1,0 +1,91 @@
+#
+# Cookbook Name:: app_django
+#
+# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
+# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
+# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+#
+# Managed by RightScale
+# DO NOT EDIT BY HAND
+#
+# HTTP-only virtual host template with mod_wsgi
+#
+<VirtualHost *:<%=@params[:vhost_port]%>>
+  ServerName <%=@params[:server_name] %>
+  UseCanonicalName On
+  <DirectoryMatch  /\.git/|/\.svn/ >
+    Deny from all
+  </DirectoryMatch>
+
+  # See more details at https://docs.djangoproject.com/en/1.4/howto/deployment/wsgi/modwsgi/#serving-files
+  Alias /robots.txt <%=@params[:docroot]%>/static/robots.txt
+  Alias /favicon.ico <%=@params[:docroot]%>/static/favicon.ico
+
+  AliasMatch ^/([^/]*\.css) <%=@params[:docroot]%>/static/css/$1
+
+  Alias /media/ <%=@params[:docroot]%>/media/
+  Alias /static/ <%=@params[:docroot]%>/static/
+
+  <Directory "<%=@params[:docroot]%>/static">
+    Order deny,allow
+    Allow from all
+  </Directory>
+
+  <Directory "<%=@params[:docroot]%>/media">
+    Order deny,allow
+    Allow from all
+  </Directory>
+
+  <IfModule !wsgi_module>
+      LoadModule wsgi_module modules/mod_wsgi.so
+  </IfModule>
+
+  WSGIScriptAlias / <%=@params[:docroot]%>/wsgi.py
+
+  <Directory "<%=@params[:docroot]%>">
+    <Files wsgi.py>
+      Order allow,deny
+      Allow from all
+    </Files>
+  </Directory>
+
+  # Enable status page for monitoring purposes
+  RewriteCond %{REMOTE_ADDR} ^(127.0.0.1)
+  RewriteRule ^(/server-status) $1 [H=server-status,L]
+
+
+  # Redirects to a maintenance page if the specified file below exists
+  # ...but it still allows images to be served
+  RewriteCond %{DOCUMENT_ROOT}/system/maintenance.html -f
+  RewriteCond %{SCRIPT_FILENAME} !/system/maintenance.html
+  RewriteCond %{SCRIPT_FILENAME} !^(.+).(gif|png|jpg|css|js|swf)$
+  RewriteRule ^.*$ /system/maintenance.html [L]
+
+
+  <% if (@params[:apache_serve_local_files]=="true") %>
+  # Serve any existing local files directly (except actionable ones)
+  RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} -f
+  RewriteCond %{REQUEST_FILENAME} !\.php|\.jsp|\.do|\.action$ [NC]
+  RewriteRule ^/(.*)$ /$1 [QSA,L]
+
+  RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} -d
+  RewriteRule ^/(.*)$ /$1 [QSA,L]
+  <% end %>
+
+
+  # Setup the logs in the appropriate directory
+  CustomLog <%= @params[:apache_log_dir]%>/<%=@params[:server_name]%>-access.log combined
+  ErrorLog  <%= @params[:apache_log_dir]%>/<%=@params[:server_name]%>-error.log
+  LogLevel warn
+
+
+  # Deflate
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml application/xml application/xhtml+xml text/javascript text/css application/x-javascript
+  BrowserMatch ^Mozilla/4 gzip-only-text/html
+  BrowserMatch ^Mozilla/4.0[678] no-gzip
+  BrowserMatch bMSIE !no-gzip !gzip-only-text/html
+
+  SetEnvIf User-Agent ".*MSIE.*" nokeepalive ssl-unclean-shutdown downgrade-1.0 force-response-1.0
+
+  
+</VirtualHost>

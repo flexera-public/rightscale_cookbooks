@@ -7,7 +7,7 @@ RightScale's cookbook for application server management.
 This is an abstract cookbook that defines the recipes and interface to
 application provider cookbooks.  It is not a standalone cookbook and must be
 used in conjunction with an application provider cookbook (i.e.
-<tt>app_php</tt>, app_tomcat, app_passenger or a user created application
+<tt>app_php</tt>, app_tomcat, app_passenger, app_django or a user created application
 provider).
 
 More detailed information can be found in the descriptions for each recipe in the cookbook. <tt>app::*</tt>.
@@ -26,6 +26,7 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 * <tt>app_php</tt>
 * <tt>app_passenger</tt>
 * <tt>app_tomcat</tt>
+* <tt>app_django</tt>
 
 == KNOWN LIMITATIONS:
 
@@ -34,7 +35,7 @@ There are no known limitations.
 == SETUP:
 
 In order to use App resource, you must create corresponding providers in your
-app server cookbook. For examples, see <tt>app_passenger</tt>, <tt>app_php</tt> or
+app server cookbook. For examples, see <tt>app_passenger</tt>, <tt>app_php</tt>, <tt>app_django</tt> or
 <tt>app_tomcat</tt> cookbooks.
 
 You must define app attributes which will be used in the initialized
@@ -163,7 +164,7 @@ Created to convert vhost names into an array from a comma-separated list.
 This cookbook provides the abstract <tt>app</tt> resource, which will act as
 an "interface" for corresponding Lightweight app_* providers.
 
-This includes <tt>app_php</tt>, <tt>app_tomcat</tt> and <tt>app_passenger</tt>
+This includes <tt>app_php</tt>, <tt>app_tomcat</tt>, <tt>app_passenger</tt> and <tt>app_django</tt>
 cookbooks. Each of them contains an implementation of the corresponding app__*
 Lightweight Provider which can be called using this resource.
 
