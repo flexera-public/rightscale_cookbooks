@@ -93,7 +93,7 @@ action :install do
       version "1.2.3"
       action :install
     end
-  when "postgresql"
+  when "postgres"
     python_pip "psycopg2" do
       version "2.4.5"
       action :install
