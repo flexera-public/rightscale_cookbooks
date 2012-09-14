@@ -24,7 +24,7 @@ end
 
 # we do not care about version number here.
 # need only the type of database adaptor
-node[:app][:db_adapter] = node[:db][:database_adapter].match(/^db_([a-z]+)/)[1]
+node[:app][:db_adapter] = node[:db][:provider_type].match(/^db_([a-z]+)/)[1]
 
 # Preparing list of database adapter packages depending on platform and database adapter
 case node[:app][:db_adapter]
