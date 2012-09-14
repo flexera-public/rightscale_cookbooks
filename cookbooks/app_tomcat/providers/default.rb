@@ -74,7 +74,7 @@ action :install do
     link "/usr/share/tomcat6/lib/mysql-connector-java.jar" do
       to "/usr/share/java/mysql-connector-java.jar"
     end
-  elsif db_adapter == "postgresql"
+  elsif db_adapter == "postgres"
     # Copy to /usr/share/java/postgresql-9.1-901.jdbc4.jar
     cookbook_file "/usr/share/java/postgresql-9.1-901.jdbc4.jar" do
       source "postgresql-9.1-901.jdbc4.jar"
