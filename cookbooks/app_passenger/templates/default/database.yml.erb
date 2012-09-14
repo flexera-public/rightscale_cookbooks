@@ -29,10 +29,10 @@
   database: <%= @database %>
   pool: 5
   timeout: 5000
-<%  when "postgresql"%>
+<%  when "postgres"%>
 <%= node[:app_passenger][:project][:environment] %>:
   host: <%= @fqdn %>
-  adapter: <%= node[:app][:db_adapter] %>
+  adapter: postgresql
   database: <%= @database %>
   username: <%= @user %>
   password: <%= @password %>
