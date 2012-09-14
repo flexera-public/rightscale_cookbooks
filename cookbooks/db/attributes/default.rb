@@ -11,7 +11,7 @@ set_unless[:db][:dns][:master][:fqdn] = "localhost"
 # Initial settings for db::install client correct operations
 # on application servers
 set_unless[:db][:data_dir] = "/mnt/storage"
-set_unless[:db][:database_adapter] = "db_mysql_5.1"
+set_unless[:db][:provider_type] = "db_mysql_5.1"
 
 # Default settings for database administrator user and password
 set_unless[:db][:admin][:user] = "root"

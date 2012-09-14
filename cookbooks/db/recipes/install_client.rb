@@ -6,7 +6,7 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 rightscale_marker :begin
-database_type = node[:db][:database_adapter].match(/^db_([a-z]+)_(\d.\d)/)
+database_type = node[:db][:provider_type].match(/^db_([a-z]+)_(\d.\d)/)
 
 # Database provider type Ex: db_mysql
 # need this conditional to avoid database type collisions on DBMGR
