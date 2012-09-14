@@ -93,7 +93,7 @@ if node[:app][:db_adapter] == "mysql"
     )
     action :install
   end
-elsif node[:app][:db_adapter] == "postgresql"
+elsif node[:app][:db_adapter] == "postgres"
   log "  Install PHP postgres support"
   package "php postgres integration" do
     package_name value_for_platform(
