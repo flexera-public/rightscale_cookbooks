@@ -160,9 +160,6 @@ end
 
 action :install_server do
 
-  # PostgreSQL server depends on PostgreSQL client
-  action_install_client
-
   arch = node[:kernel][:machine]
   raise "Unsupported platform detected!" unless arch == "x86_64"
 
