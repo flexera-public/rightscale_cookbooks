@@ -1,7 +1,10 @@
 backend <%= @backend_name_line %>
 
         mode http
-        balance roundrobin
+        <%= @algorithm_line %>
+        
+        # Timeout
+        <%= @timeout_server_line %>
 
         # Haproxy status page
         <%= @stats_uri_line %>

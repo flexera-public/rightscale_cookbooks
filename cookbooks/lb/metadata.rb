@@ -93,6 +93,34 @@ attribute "lb/health_check_uri",
     "lb::handle_attach"
   ]
 
+attribute "lb/algorithm",
+  :display_name => "Load Balancing Algorithm",
+  :description => "The algorithm that the load balancer will use to direct traffic. This is supported only by the HAProxy provider.",
+  :required => "optional",
+  :default => "roundrobin",
+  :choice => ["roundrobin", "leastconn", "source"],
+  :recipes => [
+    "lb::setup_load_balancer"
+  ]
+
+attribute "lb/timeout_server",
+  :display_name => "Server Timeout",
+  :description => "Set the maximum inactivity time on the server side. This is supported only by the HAProxy provider.",
+  :required => "optional",
+  :default => "60000",
+  :recipes => [
+    "lb::setup_load_balancer"
+  ]
+
+attribute "lb/timeout_client",
+  :display_name => "Client Timeout",
+  :description => "Set the maximum inactivity time on the client side. This is supported only by the HAProxy provider.",
+  :required => "optional",
+  :default => "60000",
+  :recipes => [
+    "lb::setup_load_balancer"
+  ]
+
 attribute "lb/service/provider",
   :display_name => "Load Balance Provider",
   :description => "Specify the load balance provider to use: either 'lb_haproxy' for HAProxy, 'lb_elb' for AWS Load Balancing, or 'lb_clb' for Rackspace Cloud Load Balancing. Example: lb_haproxy",
