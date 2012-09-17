@@ -51,7 +51,7 @@ action :install do
 
 
   # Install the haproxy config head which is the part of the haproxy config that doesn't change.
-  timeout_client = "timeout client #{node[:lb][:timeout_client]}"
+  timeout_client = "timeout client #{node[:lb_haproxy][:timeout_client]}"
 
   template "/etc/haproxy/haproxy.cfg.head" do
     source "haproxy.cfg.head.erb"
