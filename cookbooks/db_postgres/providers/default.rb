@@ -122,7 +122,7 @@ end
 
 action :install_client do
 
-  # Install PostgreSQL 9.1.1 package(s)
+  # Install PostgreSQL package(s)
   if node[:platform] == "centos"
     arch = node[:kernel][:machine]
     raise "Unsupported platform detected!" unless arch == "x86_64"
@@ -136,7 +136,7 @@ action :install_client do
     packages.each do |p|
       package p do
         action :install
-        version "9.1.1-1PGDG.rhel5"
+        version "9.1.5-3PGDG"
       end
     end
   else
@@ -174,7 +174,7 @@ action :install_server do
   packages.each do |p|
     package p do
       action :install
-      version "9.1.1-1PGDG.rhel5"
+      version "9.1.5-3PGDG"
     end
   end
 
