@@ -7,7 +7,8 @@
 
 rightscale_marker :begin
 
-version="6"
+version = "6"
+npde[:app_tomcat][:version] = version
 log "  Setting tomcat version to #{version}"
 
 log "  Setting provider specific settings for tomcat#{version}"
