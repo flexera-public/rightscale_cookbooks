@@ -1,9 +1,7 @@
 {
   "dependencies": {
     "repo": ">= 0.0.0",
-    "db_mysql": ">= 0.0.0",
     "app": ">= 0.0.0",
-    "db_postgres": ">= 0.0.0",
     "rightscale": ">= 0.0.0"
   },
   "name": "app_tomcat",
@@ -69,19 +67,19 @@
       "description": "The path to the war file relative to project repo root directory. Will be renamed to ROOT.war. Example: /dist/app_test.war"
     },
     "app_tomcat/datasource_name": {
-      "required": "optional",
+      "required": "required",
       "calculated": false,
       "choice": [
-
+        "jdbc/MYSQLDB",
+        "jdbc/postgres"
       ],
-      "default": "jdbc/ConnDB",
       "type": "string",
       "recipes": [
         "app_tomcat::default_6",
         "app_tomcat::default_7"
       ],
       "display_name": "Container datasource name",
-      "description": "This name is used to set up the database connection with the application server. You should set the attribute if your application is compiled to use a different datasource name.  Example: jdbc/MyConnDB"
+      "description": "This name is used to set up the database connection with the application server. You should set the attribute if your application is compiled to use a different datasource name. To set custom datasource you must override input value.  Example: jdbc/MyConnDB"
     },
     "app_tomcat/java/xmx": {
       "required": "optional",

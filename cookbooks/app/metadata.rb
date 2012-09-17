@@ -15,6 +15,8 @@ depends "repo"
 depends "app_php"
 depends "app_passenger"
 depends "app_tomcat"
+depends "db"
+depends "app_django"
 
 recipe "app::default", "Adds the appserver:active=true, appserver:listen_ip=<ip> and appserver:listen_port=<port> tags to your server which identifies it as an application server and tells the load balancer what IP address and port to connect to. For example, a 'master' database server will update its firewall port permissions to accept incoming requests from application servers with this tag."
 
@@ -58,11 +60,3 @@ attribute "app/database_name",
   :description => "Enter the name of the database schema to which applications will connect to. The database schema should have been created when the initial database was first set up. This input will be used to set the application server's database configuration file so that applications can connect to the correct schema within the database.  This input is also used for database dump backups in order to determine which schema will be backed up.  Example: mydbschema",
   :required => "required",
   :recipes => ["app::setup_db_connection"]
-
-attribute "app/db_adapter",
-  :display_name => "Database adapter for application",
-  :description => "Enter the database adapter which will be used to connect to the database. Example: mysql",
-  :default => "mysql",
-  :choice => [ "mysql", "postgresql" ],
-  :recipes => ["app::default"]
-

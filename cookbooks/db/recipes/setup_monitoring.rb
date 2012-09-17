@@ -11,27 +11,34 @@ db node[:db][:data_dir] do
   action :setup_monitoring
 end
 
+# File path
+info_file = "#{node[:db][:info_file_location]}/db_sys_info.log"
+
 # Creating a db backup info file
+file info_file do
+  owner "root"
+  group "root"
+  mode "0400"
+  action :create
+end
+
+# Write system info to file
 ruby_block "db backup info file" do
   block do
 
-    # File path
-    info_file = "/mnt/db_sys_info.log"
-
-    # Create new file and write a header
+    # Write RS header
     `echo '# Managed by RightScale\n# DO NOT EDIT BY HAND\n#' > #{info_file}`
 
     # Array of bash commands the outputs of which will be written to the info file
     commands = [
       "uname -a",
       "lsb_release -a",
-      "mysql -V",
       "df -k",
-      "cat /etc/mysql/conf.d/my.cnf",
       "cat /etc/rightscale.d/*",
-      "export",
       "gem list"
     ]
+    # Add Database specific commands
+    commands.concat(node[:db][:info_file_options])
 
     # Array of values
     nodes = [

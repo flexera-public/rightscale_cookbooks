@@ -31,38 +31,8 @@ node[:db][:socket] = value_for_platform(
   "default" => "/var/lib/mysql/mysql.sock"
 )
 
-node[:db_mysql][:client_packages_uninstall] = []
-node[:db_mysql][:server_packages_uninstall] = []
 
-node[:db_mysql][:client_packages_install] = value_for_platform(
-  "centos" => {
-    "5.8"=> [
-      "MySQL-shared-compat",
-      "MySQL-devel-community",
-      "MySQL-client-community"
-    ],
-    "default" => [
-      "mysql-devel",
-      "mysql-libs",
-      "mysql"
-    ]
-  },
-  "redhat" => {
-    "default" => [
-      "MySQL-shared-compat",
-      "MySQL-devel-community",
-      "MySQL-client-community"
-    ]
-  },
-  "ubuntu" => {
-    "10.04" => [
-      "libmysqlclient-dev",
-      "mysql-client-5.1"
-    ],
-    "default" => []
-  },
-  "default" => []
-)
+node[:db_mysql][:server_packages_uninstall] = []
 
 # Ubuntu 12.04 doesn't support MySQL 5.1 server
 
@@ -81,8 +51,11 @@ node[:db_mysql][:server_packages_install] = value_for_platform(
   "default" => []
 )
 
-raise "Platform not supported for MySQL #{version}" if node[:db_mysql][:client_packages_install].empty?
+node[:db][:init_timeout]= node[:db_mysql][:init_timeout]
 
+# Mysql specific commands for db_sys_info.log file
+node[:db][:info_file_options] = ["mysql -V", "cat /etc/mysql/conf.d/my.cnf"]
+node[:db][:info_file_location] = "/etc/mysql"
 log "  Using MySQL service name: #{node[:db_mysql][:version]}"
 
 rightscale_marker :end

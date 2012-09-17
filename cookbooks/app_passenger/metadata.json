@@ -8,12 +8,10 @@
   "platforms": {
   },
   "dependencies": {
-    "rightscale": ">= 0.0.0",
-    "web_apache": ">= 0.0.0",
-    "repo": ">= 0.0.0",
-    "logrotate": ">= 0.0.0",
     "app": ">= 0.0.0",
-    "db": ">= 0.0.0"
+    "repo": ">= 0.0.0",
+    "rightscale": ">= 0.0.0",
+    "logrotate": ">= 0.0.0"
   },
   "recommendations": {
   },

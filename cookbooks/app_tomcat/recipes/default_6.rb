@@ -25,28 +25,32 @@ else
   raise "Unrecognized distro #{node[:platform]} for tomcat#{version}, exiting "
 end
 
+# we do not care about version number here.
+# need only the type of database adapter
+node[:app][:db_adapter] = node[:db][:provider_type].match(/^db_([a-z]+)/)[1]
+
 # Preparing list of database adapter packages depending on platform and database adapter
 case node[:app][:db_adapter]
 when "mysql"
   node[:app][:packages] = value_for_platform(
     "centos" => {
-      "6.2" => [
-        "ecj", 
-        "tomcat6",
-        "tomcat6-admin-webapps",
-        "tomcat6-webapps",
-        "tomcat-native",
-        "mysql-connector-java"
-      ],  
-      "default" => [
+      "5.8" => [
         "eclipse-ecj",
         "tomcat6",
         "tomcat6-admin-webapps",
         "tomcat6-webapps",
         "tomcat-native",
         "mysql-connector-java"
-      ]
-    }, 
+      ],  
+     "default" => [
+        "ecj",
+        "tomcat6",
+        "tomcat6-admin-webapps",
+        "tomcat6-webapps",
+        "tomcat-native",
+        "mysql-connector-java"
+      ]   
+    },
     "ubuntu" => {
       "default"  => [
         "ecj-gcj",
@@ -56,8 +60,8 @@ when "mysql"
         "tomcat6-user",
         "libmysql-java",
         "libtcnative-1"
-      ]   
-    }, 
+      ]
+    },
     "redhat" => {
       "default" => [
         "eclipse-ecj",
@@ -70,18 +74,18 @@ when "mysql"
     },
     "default" => []
   )
-when "postgresql"
+when "postgres"
   node[:app][:packages] = value_for_platform(
     "centos" => {
-      "6.2" => [
-        "ecj",
+      "5.8" => [
+        "eclipse-ecj",
         "tomcat6",
         "tomcat6-admin-webapps",
         "tomcat6-webapps",
         "tomcat-native"
       ],
       "default" => [
-        "eclipse-ecj",
+        "ecj",
         "tomcat6",
         "tomcat6-admin-webapps",
         "tomcat6-webapps",

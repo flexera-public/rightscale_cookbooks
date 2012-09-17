@@ -68,14 +68,14 @@ end
 # Prepare device for secondary backup
 action :secondary_backup do
   secondary_checks(new_resource)
-  device = init(new_resource)
+  device = init(new_resource, :secondary)
   device.secondary_backup(new_resource.lineage)
 end
 
 # Prepare device for secondary restore
 action :secondary_restore do
   secondary_checks(new_resource)
-  device = init(new_resource)
+  device = init(new_resource, :secondary)
   restore_args = {
     :timestamp => new_resource.timestamp_override == "" ? nil : new_resource.timestamp_override,
     :force => new_resource.force,
