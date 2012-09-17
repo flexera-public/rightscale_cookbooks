@@ -67,12 +67,12 @@
       "description": "The path to the war file relative to project repo root directory. Will be renamed to ROOT.war. Example: /dist/app_test.war"
     },
     "app_tomcat/datasource_name": {
-      "required": "required",
+      "required": "optional",
       "calculated": false,
       "choice": [
-        "jdbc/MYSQLDB",
-        "jdbc/postgres"
+
       ],
+      "default": "jdbc/ConnDB",
       "type": "string",
       "recipes": [
         "app_tomcat::default_6",

@@ -101,8 +101,8 @@ attribute "app_tomcat/java/maxnewsize",
 attribute "app_tomcat/datasource_name",
   :display_name => "Container datasource name",
   :description => "This name is used to set up the database connection with the application server. You should set the attribute if your application is compiled to use a different datasource name. To set custom datasource you must override input value.  Example: jdbc/MyConnDB",
-  :required => "required",
-  :choice => [ "jdbc/MYSQLDB", "jdbc/postgres" ],
+  :required => "optional",
+  :default => "jdbc/ConnDB",
   :recipes => [
     "app_tomcat::default_6",
     "app_tomcat::default_7"
