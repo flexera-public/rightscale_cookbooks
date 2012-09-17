@@ -5,10 +5,6 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-# Default tomcat version is 6
-set_unless[:app_tomcat][:version] = '6'
-# By default tomcat uses MySQL as the DB adapter
-set_unless[:app][:db_adapter] = "mysql"
 # List of required apache modules
 set[:app][:module_dependencies] = ["proxy", "proxy_http", "deflate", "rewrite"]
 
@@ -38,19 +34,9 @@ when "ubuntu"
     set[:app_tomcat][:jkworkersfile] = "/etc/libapache2-mod-jk/workers.properties"
   end
   set[:app_tomcat][:alternatives_cmd] = "update-alternatives --auto java"
-  if app[:db_adapter] == "mysql"
-    set_unless[:app_tomcat][:datasource_name] = "jdbc/MYSQLDB"
-  elsif app[:db_adapter] == "postgres"
-    set_unless[:app_tomcat][:datasource_name] = "jdbc/postgres"
-  end
 when "centos", "redhat"
   set[:app_tomcat][:jkworkersfile] = "/etc/tomcat#{app_tomcat[:version]}/workers.properties"
   set[:app_tomcat][:alternatives_cmd] = "alternatives --auto java"
-  if app[:db_adapter] == "mysql"
-    set_unless[:app_tomcat][:datasource_name] = "jdbc/MYSQLDB"
-  elsif app[:db_adapter] == "postgres"
-    set_unless[:app_tomcat][:datasource_name] = "jdbc/postgres"
-  end
 else
   raise "Unrecognized distro #{node[:platform]}, exiting "
 end
