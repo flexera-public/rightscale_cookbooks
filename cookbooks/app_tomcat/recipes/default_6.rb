@@ -11,14 +11,19 @@ version = "6"
 npde[:app_tomcat][:version] = version
 log "  Setting tomcat version to #{version}"
 
-# Defining app user and group attributes
+# Defining database adapter parameter, app user and group attributes depending on platform
 case node[:platform]
 when "ubuntu"
   node[:app][:user] = "tomcat6"
   node[:app][:group] = "tomcat6"
+  if node[:platform_version] == "10.04"
+    node[:app_tomcat][:jkworkersfile] = "/etc/tomcat#{version}/workers.properties"
+  else
+    node[:app_tomcat][:jkworkersfile] = "/etc/libapache2-mod-jk/workers.properties"
 when "centos", "redhat"
   node[:app][:user] = "tomcat"
   node[:app][:group] = "tomcat"
+  node[:app_tomcat][:jkworkersfile] = "/etc/tomcat#{version}/workers.properties"
 else
   raise "Unrecognized distro #{node[:platform]} for tomcat#{version}, exiting "
 end

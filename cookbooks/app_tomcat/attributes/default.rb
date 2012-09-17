@@ -25,17 +25,11 @@ set_unless[:app_tomcat][:java][:xmx] = "512m"
 set_unless[:app_tomcat][:java][:xms] = "512m"
 
 # Calculated attributes
-# Defining apache user, java alternatives and database adapter parameters depending on platform.
+# Defining java alternatives parameter depending on platform.
 case node[:platform]
 when "ubuntu"
-  if node[:platform_version] == "10.04"
-    set[:app_tomcat][:jkworkersfile] = "/etc/tomcat#{app_tomcat[:version]}/workers.properties"
-  else
-    set[:app_tomcat][:jkworkersfile] = "/etc/libapache2-mod-jk/workers.properties"
-  end
   set[:app_tomcat][:alternatives_cmd] = "update-alternatives --auto java"
 when "centos", "redhat"
-  set[:app_tomcat][:jkworkersfile] = "/etc/tomcat#{app_tomcat[:version]}/workers.properties"
   set[:app_tomcat][:alternatives_cmd] = "alternatives --auto java"
 else
   raise "Unrecognized distro #{node[:platform]}, exiting "
