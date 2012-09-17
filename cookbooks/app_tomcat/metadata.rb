@@ -19,13 +19,6 @@ recipe  "app_tomcat::default_7", "set version 7 and node variables specific to t
 
 # == Default attributes
 #
-attribute "app_tomcat/version",
-  :display_name => "Tomcat Version",
-  :description => "Specify the Tomcat version that matches that of the Tomcat App Server ServerTemplate version in use. Note: Tomcat 7 is not supported on Ubuntu 10.04.",
-  :recipes => ["app_tomcat::default"],
-  :choice => ['6', '7'],
-  :required => 'required'
-
 #Code repo attributes
 attribute "app_tomcat/code/root_war",
   :display_name => "War file for ROOT",

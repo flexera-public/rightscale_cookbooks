@@ -7,20 +7,6 @@
   "name": "app_tomcat",
   "maintainer_email": "support@rightscale.com",
   "attributes": {
-    "app_tomcat/version": {
-      "required": "required",
-      "calculated": false,
-      "choice": [
-        "6",
-        "7"
-      ],
-      "type": "string",
-      "recipes": [
-        "app_tomcat::default"
-      ],
-      "display_name": "Tomcat Version",
-      "description": "Specify the Tomcat version that matches that of the Tomcat App Server ServerTemplate version in use. Note: Tomcat 7 is not supported on Ubuntu 10.04."
-    },
     "app_tomcat/java/newsize": {
       "required": "optional",
       "calculated": false,
