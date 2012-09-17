@@ -122,7 +122,7 @@ end
 
 action :install_client do
 
-  # Install PostgreSQL 9.1.1 package(s)
+  # Install PostgreSQL package(s)
   if node[:platform] == "centos"
     arch = node[:kernel][:machine]
     raise "Unsupported platform detected!" unless arch == "x86_64"
@@ -136,7 +136,7 @@ action :install_client do
     packages.each do |p|
       package p do
         action :install
-        version "9.1.1-1PGDG.rhel5"
+        version node[:db_postgres][:packages_version]
       end
     end
   else
@@ -174,7 +174,7 @@ action :install_server do
   packages.each do |p|
     package p do
       action :install
-      version "9.1.1-1PGDG.rhel5"
+      version node[:db_postgres][:packages_version]
     end
   end
 
@@ -404,9 +404,10 @@ action :setup_monitoring do
 
   if node[:platform] == 'centos'
 
+    collectd_version = node[:rightscale][:collectd_packages_version]
     package "collectd-postgresql" do
       action :install
-      version "4.10.0-4.el5"
+      version "#{collectd_version}" unless collectd_version == "latest"
     end
 
     template ::File.join(node[:rightscale][:collectd_plugin_dir], 'postgresql.conf') do
