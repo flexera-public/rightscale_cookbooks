@@ -17,7 +17,7 @@ define :lb_haproxy_backend, :pool_name => "" do
   timeout_server = "timeout server #{node[:lb_haproxy][:timeout_server]}"
 
   # Create backend haproxy files for vhost it will answer for.
-  template ::File.join("/etc/haproxy/#{node[:lb][:service][:provider]}.d", "#{params[:pool_name]}.cfg") do
+  template ::File.join("/etc/haproxy/#{node[:lb][:service][:provider]}.d", "backend_#{params[:pool_name]}.conf") do
     source "haproxy_backend.erb"
     cookbook 'lb_haproxy'
     owner "haproxy"

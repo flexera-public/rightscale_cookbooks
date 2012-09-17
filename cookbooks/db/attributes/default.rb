@@ -60,3 +60,7 @@ set_unless[:db][:backup][:primary][:master][:cron][:minute] = cron_min
 # Slave backup every hour at a random minute 30 minutes offset from the master.
 set_unless[:db][:backup][:primary][:slave][:cron][:hour] = "*" # every hour
 set_unless[:db][:backup][:primary][:slave][:cron][:minute] = cron_min + 30
+
+# DB manager type specific commands array for db_sys_info.log file
+set_unless[:db][:info_file_options] = []
+set_unless[:db][:info_file_location] = "/etc"

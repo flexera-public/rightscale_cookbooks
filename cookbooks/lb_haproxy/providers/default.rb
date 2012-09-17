@@ -103,6 +103,19 @@ action :add_vhost do
     action :create
   end
 
+  # Adding current pool to pool_list conf to preserve lb/pools order
+  template "/etc/haproxy/#{node[:lb][:service][:provider]}.d/pool_list.conf" do
+     source "haproxy_backend_list.erb"
+     owner "haproxy"
+     group "haproxy"
+     mode 0600
+     backup false
+     cookbook "lb_haproxy"
+     variables(
+       :pool_list => node[:lb][:pools]
+     )
+  end
+
   lb_haproxy_backend  "create main backend section" do
     pool_name  pool_name
   end

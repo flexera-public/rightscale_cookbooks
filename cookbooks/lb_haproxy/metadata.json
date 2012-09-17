@@ -1,77 +1,77 @@
 {
   "attributes": {
-    "lb/algorithm": {
-      "calculated": false,
-      "required": "optional",
-      "description": "The algorithm that the load balancer will use to direct traffic.",
-      "default": "roundrobin",
+    "lb_haproxy/algorithm": {
       "recipes": [
         "lb_haproxy::default"
       ],
-      "type": "string",
+      "description": "The algorithm that the load balancer will use to direct traffic.",
       "choice": [
         "roundrobin",
         "leastconn",
         "source"
       ],
-      "display_name": "Load Balancing Algorithm"
-    },
-    "lb/timeout_server": {
-      "calculated": false,
       "required": "optional",
-      "description": "Set the maximum inactivity time on the server side in milliseconds.",
-      "default": "60000",
+      "default": "roundrobin",
+      "calculated": false,
+      "display_name": "Load Balancing Algorithm",
+      "type": "string"
+    },
+    "lb_haproxy/timeout_client": {
       "recipes": [
         "lb_haproxy::default"
       ],
-      "type": "string",
-      "choice": [
-
-      ],
-      "display_name": "Server Timeout"
-    },
-    "lb/timeout_client": {
-      "calculated": false,
-      "required": "optional",
       "description": "Set the maximum inactivity time on the client side milliseconds.",
-      "default": "60000",
-      "recipes": [
-        "lb_haproxy::default"
-      ],
-      "type": "string",
       "choice": [
 
       ],
-      "display_name": "Client Timeout"
+      "required": "optional",
+      "default": "60000",
+      "calculated": false,
+      "display_name": "Client Timeout",
+      "type": "string"
+    },
+    "lb_haproxy/timeout_server": {
+      "recipes": [
+        "lb_haproxy::default"
+      ],
+      "description": "Set the maximum inactivity time on the server side in milliseconds.",
+      "choice": [
+
+      ],
+      "required": "optional",
+      "default": "60000",
+      "calculated": false,
+      "display_name": "Server Timeout",
+      "type": "string"
     }
   },
   "dependencies": {
-    "lb": ">= 0.0.0",
+    "app": ">= 0.0.0",
     "rightscale": ">= 0.0.0",
-    "app": ">= 0.0.0"
+    "lb": ">= 0.0.0"
   },
-  "name": "lb_haproxy",
-  "groupings": {
+  "recipes": {
+    "lb_haproxy::default": "This loads the required 'lb' resource using the HAProxy provider."
+  },
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "description": "Installs/Configures lb_haproxy",
+  "providing": {
   },
   "conflicting": {
   },
   "maintainer": "RightScale, Inc.",
-  "description": "Installs/Configures lb_haproxy",
-  "license": "Copyright RightScale, Inc. All rights reserved.",
-  "long_description": "= RightScale Apache/HAProxy Load Balancer Cookbook \n\n== DESCRIPTION:\n\nThis is RightScale's load balancer cookbook for Apache/HAProxy. \n\nThis cookbook provides recipes for setting up and running an Apache/HAProxy load\nbalancer server as well as recipes for attaching and detaching application\nservers to and from load balancers. There is also support for automatically\ndetecting and reconfiguring when an application server has disappeared or\nreappeared without attaching itself.\n\n== DETAILS:\n\nThe load balancer and application server attach/detach recipes are designed so\nthe servers can locate each other using RightScale machine tags. The load\nbalancer servers have tags of the form \"loadbalancer:lb=APPLISTENER_NAME\" where\nAPPLISTENER_NAME is the name of the application that the application servers are\nserving; the application server attach and detach recipes use this machine tag\nto request that corresponding handler recipes are run on the matching load\nbalancers when they need to attach or detach. The application servers have tags\nof the form \"loadbalancer:app=APPLISTENER_NAME\", \"server:uuid=UUID\", and\n\"loadbalancer:backend_ip=IP_ADDRESS\" where APPLISTENER is the same application\nname, UUID is a unique string that identifies the server, and IP_ADDRESS is the\nIP address of the server; the automatic detection recipe for the load balancer\nservers use these tags to find which application servers are currently\navailable. This mechanism was chosen to support machines in multiple\navailability zones where in the case of failures, load balancers and application \nservers may start while some machines, including RightScale, are not reachable \nand thus the configuration cannot be fully determined. For this reason, the automatic \ndetection recipe is configured to run every 15 minutes by default.\n\n== REQUIREMENTS:\n\n * Requires a virtual machine launched from a RightScale managed RightImage\n\n== SETUP:\n\nBy default load balancer has only one pool called \"default\", which act as a default pool for\nall application servers which has \"loadbalancer::app=default\" tag.\nTo setup multiple pools configuration, lb/pools input value must be overridden with\ncomma-separated list of URIs or FQDNs for which the load balancer will create server \npools to answer website requests.\nFirst entry will be the default backend and will answer for all URIs and FQDNs\nnot listed in lb/pools input.\nAny combination of URIs or FQDNs or web root relative path can be entered.\n\nApplication servers can provide any numbers of URIs or FQDNs to join corresponding \nserver pool backends.\n\n== USAGE:\n\n=== Application Server Attach\n\n==== do_attach_request\n\nThis recipe is used by application servers to request that load balancer servers\nconfigure themselves to attach to the application server. It requests that\nservers with the \"loadbalancer:lb=APPLISTENER_NAME\" tag run the corresponding\n'handle_attach' recipe. The recipe sends the server's IP address and instance UUID\nas parameters to the remote recipe.\n\n==== handle_attach recipes\n\nThis recipe is used by the load balancer servers to reconfigure HAProxy and\nreload it, if necessary, when an application server requests to be attached. It\nuses the IP address and instance UUID parameters it receives from the\n'do_attach_request' recipe called on the application server to construct an\nindividual configuration file in the haproxy.d directory with the instance UUID\nas the file name. If the file didn't exist before or if its contents change, the\nmain HAProxy configuration information and all of the files in the haproxy.d\ndirectory are concatenated into the HAProxy configuration file and HAProxy is\nrestarted.\n\n=== Application Server Detach\n\n==== do_detach_request\n\nThis recipe is used by application servers to request that load balancer servers\nconfigure themselves to detach from the application server. It request that\nservers with the \"loadbalancer:lb=APPLISTENER_NAME\" tag run the corresponding\n'handle_detach' recipe. The recipe sends the server's IP address and instance UUID\nas parameters to the remote recipe.\n\n==== handle_detach recipes\n\nThis recipe is used by the load balancer servers to reconfigure HAProxy and\nreload it, if necessary, when an application server requests to be detached. It\nuses the instance UUID parameter it receives from the 'do_attach_request' recipe\ncalled on the application server to delete the corresponding file from the\nhaproxy.d directory which has the instance UUID as its file name. If the file\nwas deleted, the main HAProxy configuration information and all of the remaining\nfiles in the haproxy.d directory are concatenated into the HAProxy configuration\nfile and HAProxy is restarted.\n\n=== Automatic Server Detection\n\n==== do_attach_all recipe\n\nThis recipe is used by the load balancer to automatically detect if application\nservers have disappeared or reappeared without detaching or reattaching using the\nother recipes. This recipe is set to run in the periodic reconverge which\ndefaults to a period of 15 minutes between runs. It uses the\n\"loadbalancer:app=APPLISTENER_NAME\", \"server:uuid=UUID\", and\n\"loadbalancer:backend_ip=IP_ADDRESS\" tags to get a list of all of the\napplication servers that are currently available and uses the list to create,\nupdate, or delete individual server configuration files in the haproxy.d\ndirectory depending on their current status. If any of the files in the\nhaproxy.d directory have been created, changed, or deleted, the main HAProxy\nconfiguration and the new set of files in the haproxy.d directory are\nconcatenated into the HAProxy configuration file and HAProxy is restarted.\n\n== KNOWN LIMITATIONS:\n\n= LICENSE\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to the\nRightScale Terms of Service available at http://www.rightscale.com/terms.php and,\nif applicable, other agreements such as a RightScale Master Subscription Agreement.\n",
-  "recipes": {
-    "lb_haproxy::default": "This loads the required 'lb' resource using the HAProxy provider."
-  },
-  "suggestions": {
-  },
-  "providing": {
+  "long_description": "= RightScale Apache/HAProxy Load Balancer Cookbook \n\n== DESCRIPTION:\n\nThis is RightScale's load balancer cookbook for Apache/HAProxy. \n\nThis cookbook provides recipes for setting up and running an Apache/HAProxy load\nbalancer server as well as recipes for attaching and detaching application\nservers to and from load balancers. There is also support for automatically\ndetecting and reconfiguring when an application server has disappeared or\nreappeared without attaching itself.\n\n== DETAILS:\n\nThe load balancer and application server attach/detach recipes are designed so\nthe servers can locate each other using RightScale machine tags. The load\nbalancer servers have tags of the form \"loadbalancer:lb=APPLISTENER_NAME\" where\nAPPLISTENER_NAME is the name of the application that the application servers are\nserving; the application server attach and detach recipes use this machine tag\nto request that corresponding handler recipes are run on the matching load\nbalancers when they need to attach or detach. The application servers have tags\nof the form \"loadbalancer:app=APPLISTENER_NAME\", \"server:uuid=UUID\", and\n\"loadbalancer:backend_ip=IP_ADDRESS\" where APPLISTENER is the same application\nname, UUID is a unique string that identifies the server, and IP_ADDRESS is the\nIP address of the server; the automatic detection recipe for the load balancer\nservers use these tags to find which application servers are currently\navailable. This mechanism was chosen to support machines in multiple\navailability zones where in the case of failures, load balancers and application \nservers may start while some machines, including RightScale, are not reachable \nand thus the configuration cannot be fully determined. For this reason, the automatic \ndetection recipe is configured to run every 15 minutes by default.\n\n== REQUIREMENTS:\n\n * Requires a virtual machine launched from a RightScale managed RightImage\n\n== SETUP:\n\nBy default load balancer has only one pool called \"default\", which act as a default pool for\nall application servers which has \"loadbalancer::app=default\" tag.\nTo setup multiple pools configuration, lb/pools input value must be overridden with\ncomma-separated list of URIs or FQDNs for which the load balancer will create server \npools to answer website requests.\nLast entry will be the default backend and will answer for all URIs and FQDNs\nnot listed in lb/pools input.\nAny combination of URIs or FQDNs or web root relative path can be entered.\n\nApplication servers can provide any numbers of URIs or FQDNs to join corresponding \nserver pool backends.\n\n== USAGE:\n\n=== Application Server Attach\n\n==== do_attach_request\n\nThis recipe is used by application servers to request that load balancer servers\nconfigure themselves to attach to the application server. It requests that\nservers with the \"loadbalancer:lb=APPLISTENER_NAME\" tag run the corresponding\n'handle_attach' recipe. The recipe sends the server's IP address and instance UUID\nas parameters to the remote recipe.\n\n==== handle_attach recipes\n\nThis recipe is used by the load balancer servers to reconfigure HAProxy and\nreload it, if necessary, when an application server requests to be attached. It\nuses the IP address and instance UUID parameters it receives from the\n'do_attach_request' recipe called on the application server to construct an\nindividual configuration file in the haproxy.d directory with the instance UUID\nas the file name. If the file didn't exist before or if its contents change, the\nmain HAProxy configuration information and all of the files in the haproxy.d\ndirectory are concatenated into the HAProxy configuration file and HAProxy is\nrestarted.\n\n=== Application Server Detach\n\n==== do_detach_request\n\nThis recipe is used by application servers to request that load balancer servers\nconfigure themselves to detach from the application server. It request that\nservers with the \"loadbalancer:lb=APPLISTENER_NAME\" tag run the corresponding\n'handle_detach' recipe. The recipe sends the server's IP address and instance UUID\nas parameters to the remote recipe.\n\n==== handle_detach recipes\n\nThis recipe is used by the load balancer servers to reconfigure HAProxy and\nreload it, if necessary, when an application server requests to be detached. It\nuses the instance UUID parameter it receives from the 'do_attach_request' recipe\ncalled on the application server to delete the corresponding file from the\nhaproxy.d directory which has the instance UUID as its file name. If the file\nwas deleted, the main HAProxy configuration information and all of the remaining\nfiles in the haproxy.d directory are concatenated into the HAProxy configuration\nfile and HAProxy is restarted.\n\n=== Automatic Server Detection\n\n==== do_attach_all recipe\n\nThis recipe is used by the load balancer to automatically detect if application\nservers have disappeared or reappeared without detaching or reattaching using the\nother recipes. This recipe is set to run in the periodic reconverge which\ndefaults to a period of 15 minutes between runs. It uses the\n\"loadbalancer:app=APPLISTENER_NAME\", \"server:uuid=UUID\", and\n\"loadbalancer:backend_ip=IP_ADDRESS\" tags to get a list of all of the\napplication servers that are currently available and uses the list to create,\nupdate, or delete individual server configuration files in the haproxy.d\ndirectory depending on their current status. If any of the files in the\nhaproxy.d directory have been created, changed, or deleted, the main HAProxy\nconfiguration and the new set of files in the haproxy.d directory are\nconcatenated into the HAProxy configuration file and HAProxy is restarted.\n\n== KNOWN LIMITATIONS:\n\n= LICENSE\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to the\nRightScale Terms of Service available at http://www.rightscale.com/terms.php and,\nif applicable, other agreements such as a RightScale Master Subscription Agreement.\n",
+  "replacing": {
   },
   "maintainer_email": "support@rightscale.com",
   "version": "12.1.0",
-  "replacing": {
+  "name": "lb_haproxy",
+  "platforms": {
+  },
+  "groupings": {
+  },
+  "suggestions": {
   },
   "recommendations": {
-  },
-  "platforms": {
   }
 }
