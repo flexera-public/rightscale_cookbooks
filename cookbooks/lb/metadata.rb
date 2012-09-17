@@ -105,7 +105,7 @@ attribute "lb/algorithm",
 
 attribute "lb/timeout_server",
   :display_name => "Server Timeout",
-  :description => "Set the maximum inactivity time on the server side. This is supported only by the HAProxy provider.",
+  :description => "Set the maximum inactivity time on the server side in milliseconds. This is supported only by the HAProxy provider.",
   :required => "optional",
   :default => "60000",
   :recipes => [
@@ -114,7 +114,7 @@ attribute "lb/timeout_server",
 
 attribute "lb/timeout_client",
   :display_name => "Client Timeout",
-  :description => "Set the maximum inactivity time on the client side. This is supported only by the HAProxy provider.",
+  :description => "Set the maximum inactivity time on the client side milliseconds. This is supported only by the HAProxy provider.",
   :required => "optional",
   :default => "60000",
   :recipes => [
