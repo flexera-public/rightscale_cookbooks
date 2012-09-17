@@ -1,35 +1,150 @@
 {
-  "name": "lb",
-  "description": "RighScale LB Manager",
-  "long_description": "= RightScale Load Balancer Cookbook \n\n== DESCRIPTION:\n\nThis cookbook provides a set of load balancer recipes used by RightScale's\nLoad Balancer ServerTemplates.\n\nThis cookbook does not contain a specific load balancer implementation; rather,\nit provides an interface for general load balancer actions and parameters.\n\n== DETAILS:\n\n=== General\nThe 'lb' interface is defined by a Lightweight Resource, which can be found in\nthe <tt>resources/default.rb</tt> file.\n\nThis cookbook is intended to be used in conjunction with cookbooks that contain\nLightweight Providers that implement the 'lb' interface. See the RightScale\n<tt>lb_haproxy</tt> cookbook for an example.\n\nTo review information about Lightweight Resources and Providers (LWRPs), see {Lightweight Resources and Providers}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)].\n\n== REQUIREMENTS:\n\n* Requires a virtual machine launched from a RightScale-managed RightImage.\n* Tested on the following RightImages:\n  * CentOS 5.8, 6.2, 6.3\n  * Ubuntu 10.04, 12.04\n  * RedHat 5.8\n\n== SETUP:\n\n== USAGE:\n\n=== Application Server Attach\n\n==== do_attach_request\n\nThis recipe is used by application servers to request that load balancer servers\nconfigure themselves to attach to the application server.\n\n==== handle_attach recipes\n\nThis recipe is used by a load balancer server to add an application server to\nits configuration when the application server requests it, and restart, if necessary.\n\n=== Application Server Detach\n\n==== do_detach_request\n\nThis recipe is used by application servers to request that load balancer servers\nconfigure themselves to detach from the application server.\n\n==== handle_detach recipes\n\nThis recipe is used by a load balancer server to remove an application server\nfrom its configuration when the application server requests it, and restart, if necessary.\n\n=== Automatic Server Detection\n\n==== do_attach_all recipe\n\nThis recipe is used by the load balancer to automatically detect whether application\nservers have disappeared or reappeared, without detaching or reattaching using the\nother recipes. This recipe is set to run in a periodic reconverge, which, by default, runs every 15 minutes.\n\n== KNOWN LIMITATIONS:\n\n= LICENSE\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to the\nRightScale Terms of Service available at http://www.rightscale.com/terms.php and,\nif applicable, other agreements such as a RightScale Master Subscription Agreement.\n",
+  "version": "12.1.0",
+  "groupings": {
+  },
   "maintainer": "RightScale, Inc.",
-  "maintainer_email": "support@rightscale.com",
   "license": "Copyright RightScale, Inc. All rights reserved.",
-  "platforms": {
-  },
-  "dependencies": {
-    "lb_haproxy": ">= 0.0.0",
-    "lb_clb": ">= 0.0.0",
-    "lb_elb": ">= 0.0.0",
-    "apache2": ">= 0.0.0",
-    "app": ">= 1.0"
-  },
-  "recommendations": {
-  },
   "suggestions": {
   },
-  "conflicting": {
-  },
-  "providing": {
+  "dependencies": {
+    "apache2": ">= 0.0.0",
+    "lb_elb": ">= 0.0.0",
+    "app": ">= 1.0",
+    "lb_haproxy": ">= 0.0.0",
+    "lb_clb": ">= 0.0.0"
   },
   "replacing": {
   },
+  "maintainer_email": "support@rightscale.com",
+  "long_description": "= RightScale Load Balancer Cookbook \n\n== DESCRIPTION:\n\nThis cookbook provides a set of load balancer recipes used by RightScale's\nLoad Balancer ServerTemplates.\n\nThis cookbook does not contain a specific load balancer implementation; rather,\nit provides an interface for general load balancer actions and parameters.\n\n== DETAILS:\n\n=== General\nThe 'lb' interface is defined by a Lightweight Resource, which can be found in\nthe <tt>resources/default.rb</tt> file.\n\nThis cookbook is intended to be used in conjunction with cookbooks that contain\nLightweight Providers that implement the 'lb' interface. See the RightScale\n<tt>lb_haproxy</tt> cookbook for an example.\n\nTo review information about Lightweight Resources and Providers (LWRPs), see {Lightweight Resources and Providers}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)].\n\n== REQUIREMENTS:\n\n* Requires a virtual machine launched from a RightScale-managed RightImage.\n* Tested on the following RightImages:\n  * CentOS 5.8, 6.2, 6.3\n  * Ubuntu 10.04, 12.04\n  * RedHat 5.8\n\n== SETUP:\n\n== USAGE:\n\n=== Application Server Attach\n\n==== do_attach_request\n\nThis recipe is used by application servers to request that load balancer servers\nconfigure themselves to attach to the application server.\n\n==== handle_attach recipes\n\nThis recipe is used by a load balancer server to add an application server to\nits configuration when the application server requests it, and restart, if necessary.\n\n=== Application Server Detach\n\n==== do_detach_request\n\nThis recipe is used by application servers to request that load balancer servers\nconfigure themselves to detach from the application server.\n\n==== handle_detach recipes\n\nThis recipe is used by a load balancer server to remove an application server\nfrom its configuration when the application server requests it, and restart, if necessary.\n\n=== Automatic Server Detection\n\n==== do_attach_all recipe\n\nThis recipe is used by the load balancer to automatically detect whether application\nservers have disappeared or reappeared, without detaching or reattaching using the\nother recipes. This recipe is set to run in a periodic reconverge, which, by default, runs every 15 minutes.\n\n== KNOWN LIMITATIONS:\n\n= LICENSE\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to the\nRightScale Terms of Service available at http://www.rightscale.com/terms.php and,\nif applicable, other agreements such as a RightScale Master Subscription Agreement.\n",
+  "description": "RighScale LB Manager",
+  "providing": {
+  },
+  "conflicting": {
+  },
+  "recommendations": {
+  },
+  "platforms": {
+  },
   "attributes": {
-    "lb/pools": {
-      "display_name": "Load Balance Pools",
-      "description": "Comma-separated list of URIs or FQDNs for which the load balancer will create server pools to answer website requests.\nFirst entry will be the default backend and will answer for all URIs and FQDNs not listed here.\nA single entry of any name, e.g. 'default', 'www.mysite.com' or '/appserver', will mimic basic behavior of one load balancer with one pool of application servers.\nThis will be used for naming server pool backends.\nApplication servers can provide any numbers of URIs or FQDNs to join corresponding server pool backends.\nExample: www.mysite.com, api.mysite.com, /serverid, default",
+    "lb/session_stickiness": {
+      "default": "true",
+      "required": "optional",
+      "type": "string",
+      "description": "Determines session stickiness. Set to 'True' to use session stickiness, where the load balancer will reconnect a session to the last server it was connected to (via a cookie). Set to 'False' if you do not want to use sticky sessions; the load balancer will establish a connection with the next available server. Example: true",
+      "calculated": false,
+      "choice": [
+        "true",
+        "false"
+      ],
+      "display_name": "Use Session Stickiness",
+      "recipes": [
+        "lb::handle_attach"
+      ]
+    },
+    "lb/stats_user": {
+      "default": "",
+      "required": "optional",
+      "type": "string",
+      "description": "The username that is required to access the load balancer statistics report page.  Example: cred:STATS_USER",
+      "calculated": false,
+      "choice": [
+
+      ],
+      "display_name": "Status Page Username",
+      "recipes": [
+        "lb::setup_load_balancer"
+      ]
+    },
+    "lb/service/account_id": {
+      "required": "optional",
+      "type": "string",
+      "description": "If you are using Rackspace's Cloud Load Balancing service, specify the Rackspace username to use for authentication. Example: cred:RACKSPACE_USERNAME",
+      "calculated": false,
+      "choice": [
+
+      ],
+      "display_name": "Load Balance Service ID",
+      "recipes": [
+        "lb::default",
+        "lb::do_attach_request",
+        "lb::do_detach_request"
+      ]
+    },
+    "lb/service/region": {
+      "default": "ORD (Chicago)",
+      "required": "optional",
+      "type": "string",
+      "description": "If you are using Rackspace's Cloud Load Balancing service, specify the cloud region or data center being used for this service. Example: ORD (Chicago)",
+      "calculated": false,
+      "choice": [
+        "ORD (Chicago)",
+        "DFW (Dallas/Ft. Worth)",
+        "LON (London)"
+      ],
+      "display_name": "Load Balance Service Region",
+      "recipes": [
+        "lb::default",
+        "lb::do_attach_request",
+        "lb::do_detach_request"
+      ]
+    },
+    "lb/timeout_client": {
+      "default": "60000",
+      "required": "optional",
+      "type": "string",
+      "description": "Set the maximum inactivity time on the client side. This is supported only by the HAProxy provider.",
+      "calculated": false,
+      "choice": [
+
+      ],
+      "display_name": "Client Timeout",
+      "recipes": [
+        "lb::setup_load_balancer"
+      ]
+    },
+    "lb/stats_password": {
+      "default": "",
+      "required": "optional",
+      "type": "string",
+      "description": "The password that is required to access the load balancer statistics report page.  Example: cred:STATS_PASSWORD",
+      "calculated": false,
+      "choice": [
+
+      ],
+      "display_name": "Status Page Password",
+      "recipes": [
+        "lb::setup_load_balancer"
+      ]
+    },
+    "lb/service/provider": {
+      "default": "lb_haproxy",
       "required": "recommended",
+      "type": "string",
+      "description": "Specify the load balance provider to use: either 'lb_haproxy' for HAProxy, 'lb_elb' for AWS Load Balancing, or 'lb_clb' for Rackspace Cloud Load Balancing. Example: lb_haproxy",
+      "calculated": false,
+      "choice": [
+        "lb_haproxy",
+        "lb_clb",
+        "lb_elb"
+      ],
+      "display_name": "Load Balance Provider",
+      "recipes": [
+        "lb::default",
+        "lb::do_attach_request",
+        "lb::do_detach_request"
+      ]
+    },
+    "lb/pools": {
       "default": "default",
+      "required": "recommended",
+      "type": "string",
+      "description": "Comma-separated list of URIs or FQDNs for which the load balancer will create server pools to answer website requests.\nFirst entry will be the default backend and will answer for all URIs and FQDNs not listed here.\nA single entry of any name, e.g. 'default', 'www.mysite.com' or '/appserver', will mimic basic behavior of one load balancer with one pool of application servers.\nThis will be used for naming server pool backends.\nApplication servers can provide any numbers of URIs or FQDNs to join corresponding server pool backends.\nExample: www.mysite.com, api.mysite.com, /serverid, default",
+      "calculated": false,
+      "choice": [
+
+      ],
+      "display_name": "Load Balance Pools",
       "recipes": [
         "lb::default",
         "lb::do_attach_request",
@@ -38,180 +153,109 @@
         "lb::handle_detach",
         "lb::setup_load_balancer",
         "lb::do_attach_all"
-      ],
+      ]
+    },
+    "lb/timeout_server": {
+      "default": "60000",
+      "required": "optional",
+      "type": "string",
+      "description": "Set the maximum inactivity time on the server side. This is supported only by the HAProxy provider.",
+      "calculated": false,
       "choice": [
 
       ],
-      "calculated": false,
-      "type": "string"
+      "display_name": "Server Timeout",
+      "recipes": [
+        "lb::setup_load_balancer"
+      ]
     },
     "lb/stats_uri": {
-      "display_name": "Status URI",
-      "description": "The URI for the load balancer statistics report page. This page lists the current session, queued session, response error, health check error, server status, etc. for each load balancer group. Example: /haproxy-status",
-      "required": "optional",
       "default": "/haproxy-status",
-      "recipes": [
-        "lb::setup_load_balancer"
-      ],
+      "required": "optional",
+      "type": "string",
+      "description": "The URI for the load balancer statistics report page. This page lists the current session, queued session, response error, health check error, server status, etc. for each load balancer group. Example: /haproxy-status",
+      "calculated": false,
       "choice": [
 
       ],
-      "calculated": false,
-      "type": "string"
-    },
-    "lb/stats_user": {
-      "display_name": "Status Page Username",
-      "description": "The username that is required to access the load balancer statistics report page.  Example: cred:STATS_USER",
-      "required": "optional",
-      "default": "",
+      "display_name": "Status URI",
       "recipes": [
         "lb::setup_load_balancer"
-      ],
+      ]
+    },
+    "lb/service/lb_name": {
+      "required": "optional",
+      "type": "string",
+      "description": "Name of the Cloud Load Balancer or Elastic Load Balancer device. Example: mylb",
+      "calculated": false,
       "choice": [
 
       ],
-      "calculated": false,
-      "type": "string"
+      "display_name": "Load Balance Service Name",
+      "recipes": [
+        "lb::default",
+        "lb::do_attach_request",
+        "lb::do_detach_request"
+      ]
     },
-    "lb/stats_password": {
-      "display_name": "Status Page Password",
-      "description": "The password that is required to access the load balancer statistics report page.  Example: cred:STATS_PASSWORD",
+    "lb/algorithm": {
+      "default": "roundrobin",
       "required": "optional",
-      "default": "",
+      "type": "string",
+      "description": "The algorithm that the load balancer will use to direct traffic. This is supported only by the HAProxy provider.",
+      "calculated": false,
+      "choice": [
+        "roundrobin",
+        "leastconn",
+        "source"
+      ],
+      "display_name": "Load Balancing Algorithm",
       "recipes": [
         "lb::setup_load_balancer"
-      ],
+      ]
+    },
+    "lb/service/account_secret": {
+      "required": "optional",
+      "type": "string",
+      "description": "If you are using Rackspace's Cloud Load Balancing service, specify the Rackspace API key to use for authentication. Example: cred:RACKSPACE_AUTH_KEY",
+      "calculated": false,
       "choice": [
 
       ],
-      "calculated": false,
-      "type": "string"
-    },
-    "lb/session_stickiness": {
-      "display_name": "Use Session Stickiness",
-      "description": "Determines session stickiness. Set to 'True' to use session stickiness, where the load balancer will reconnect a session to the last server it was connected to (via a cookie). Set to 'False' if you do not want to use sticky sessions; the load balancer will establish a connection with the next available server. Example: true",
-      "required": "optional",
-      "choice": [
-        "true",
-        "false"
-      ],
-      "default": "true",
+      "display_name": "Load Balance Service Secret",
       "recipes": [
-        "lb::handle_attach"
-      ],
-      "calculated": false,
-      "type": "string"
+        "lb::default",
+        "lb::do_attach_request",
+        "lb::do_detach_request"
+      ]
     },
     "lb/health_check_uri": {
-      "display_name": "Health Check URI",
-      "description": "The URI that the load balancer will use to check the health of a server. It is only used for HTTP (not HTTPS) requests. Example: /",
-      "required": "optional",
       "default": "/",
+      "required": "optional",
+      "type": "string",
+      "description": "The URI that the load balancer will use to check the health of a server. It is only used for HTTP (not HTTPS) requests. Example: /",
+      "calculated": false,
+      "choice": [
+
+      ],
+      "display_name": "Health Check URI",
       "recipes": [
         "lb::setup_load_balancer",
         "lb::handle_attach"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "lb/service/provider": {
-      "display_name": "Load Balance Provider",
-      "description": "Specify the load balance provider to use: either 'lb_haproxy' for HAProxy, 'lb_elb' for AWS Load Balancing, or 'lb_clb' for Rackspace Cloud Load Balancing. Example: lb_haproxy",
-      "required": "recommended",
-      "default": "lb_haproxy",
-      "choice": [
-        "lb_haproxy",
-        "lb_clb",
-        "lb_elb"
-      ],
-      "recipes": [
-        "lb::default",
-        "lb::do_attach_request",
-        "lb::do_detach_request"
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "lb/service/region": {
-      "display_name": "Load Balance Service Region",
-      "description": "If you are using Rackspace's Cloud Load Balancing service, specify the cloud region or data center being used for this service. Example: ORD (Chicago)",
-      "required": "optional",
-      "default": "ORD (Chicago)",
-      "choice": [
-        "ORD (Chicago)",
-        "DFW (Dallas/Ft. Worth)",
-        "LON (London)"
-      ],
-      "recipes": [
-        "lb::default",
-        "lb::do_attach_request",
-        "lb::do_detach_request"
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "lb/service/lb_name": {
-      "display_name": "Load Balance Service Name",
-      "description": "Name of the Cloud Load Balancer or Elastic Load Balancer device. Example: mylb",
-      "required": "optional",
-      "recipes": [
-        "lb::default",
-        "lb::do_attach_request",
-        "lb::do_detach_request"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "lb/service/account_id": {
-      "display_name": "Load Balance Service ID",
-      "description": "If you are using Rackspace's Cloud Load Balancing service, specify the Rackspace username to use for authentication. Example: cred:RACKSPACE_USERNAME",
-      "required": "optional",
-      "recipes": [
-        "lb::default",
-        "lb::do_attach_request",
-        "lb::do_detach_request"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "lb/service/account_secret": {
-      "display_name": "Load Balance Service Secret",
-      "description": "If you are using Rackspace's Cloud Load Balancing service, specify the Rackspace API key to use for authentication. Example: cred:RACKSPACE_AUTH_KEY",
-      "required": "optional",
-      "recipes": [
-        "lb::default",
-        "lb::do_attach_request",
-        "lb::do_detach_request"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
+      ]
     }
   },
-  "groupings": {
-  },
+  "name": "lb",
   "recipes": {
-    "lb::default": "This loads the required load balancer resources.",
-    "lb::setup_load_balancer": "Installs the load balancer and adds the loadbalancer:<pool_name>=lb tags to your server, which identifies it as a load balancer for a given listener pool. This tag is used by application servers to request connection/disconnection.",
-    "lb::handle_attach": "Remote recipe executed by do_attach_request. DO NOT RUN.",
+    "lb::setup_monitoring": "Installs the load balancer collectd plugin for monitoring support.",
     "lb::handle_detach": "Remote recipe executed by do_detach_request. DO NOT RUN.",
+    "lb::handle_attach": "Remote recipe executed by do_attach_request. DO NOT RUN.",
+    "lb::setup_reverse_proxy_config": "Configures Apache reverse proxy.",
+    "lb::do_detach_request": "Sends request to all servers with loadbalancer:<pool_name>=lb tag to detach the current server from the listener pool. This should be run by an application server at decommission.",
     "lb::do_attach_all": "Registers all running application servers with the loadbalancer:<pool_name>=app tags. This should be run on a load balancer to connect all application servers in a deployment.",
     "lb::do_attach_request": "Sends request to all servers with loadbalancer:<pool_name>=lb tag to attach the current server to the listener pool. This should be run by a new application server that is ready to accept connections.",
-    "lb::do_detach_request": "Sends request to all servers with loadbalancer:<pool_name>=lb tag to detach the current server from the listener pool. This should be run by an application server at decommission.",
-    "lb::setup_reverse_proxy_config": "Configures Apache reverse proxy.",
-    "lb::setup_monitoring": "Installs the load balancer collectd plugin for monitoring support.",
-    "lb::setup_advanced_configuration": "recipe for advanced load balancer configuration"
-  },
-  "version": "12.1.0"
+    "lb::setup_advanced_configuration": "recipe for advanced load balancer configuration",
+    "lb::default": "This loads the required load balancer resources.",
+    "lb::setup_load_balancer": "Installs the load balancer and adds the loadbalancer:<pool_name>=lb tags to your server, which identifies it as a load balancer for a given listener pool. This tag is used by application servers to request connection/disconnection."
+  }
 }
