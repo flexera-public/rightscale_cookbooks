@@ -8,11 +8,8 @@
 rightscale_marker :begin
 
 version="7"
-log "  Setting Tomcat version to #{version}"
-
-log "  Setting provider specific settings for tomcat#{version}"
-node[:app][:provider] = "app_tomcat"
 node[:app_tomcat][:version] = version
+log "  Setting Tomcat version to #{version}"
 
 #Defining app user and group attributes
 case node[:platform]
@@ -25,10 +22,6 @@ when "ubuntu"
 else
   raise "Unrecognized distro #{node[:platform]} for tomcat#{version}, exiting "
 end
-
-# we do not care about version number here.
-# need only the type of database adapter
-node[:app][:db_adapter] = node[:db][:provider_type].match(/^db_([a-z]+)/)[1]
 
 # Preparing list of database adapter packages depending on platform and database adapter
 case node[:app][:db_adapter]
@@ -86,13 +79,4 @@ end
 
 raise "Unrecognized distro #{node[:platform]} for tomcat#{version}, exiting " if node[:app][:packages].empty?
         
-# Setting app LWRP attribute
-node[:app][:destination] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
-# tomcat shares the same doc root with the application destination
-node[:app][:root] = "#{node[:app][:destination]}"
-
-directory "#{node[:app][:destination]}" do
-  recursive true
-end
-
 rightscale_marker :end

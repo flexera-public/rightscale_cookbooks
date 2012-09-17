@@ -7,13 +7,17 @@
 
 rightscale_marker :begin
 
-version = node[:app_tomcat][:version]
+log "  Setting provider specific settings for tomcat"
+node[:app][:provider] = "app_tomcat"
 
-case version
-when '6', '7'
-  include_recipe "app_tomcat::default_#{version.gsub('.', '_')}"
-else
-  raise "Unsupported Tomcat version: #{version}"
-end
+# we do not care about version number here.
+# need only the type of database adapter
+node[:app][:db_adapter] = node[:db][:provider_type].match(/^db_([a-z]+)/)[1]
+
+# Setting app LWRP attribute
+node[:app][:destination] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
+
+# tomcat shares the same doc root with the application destination
+node[:app][:root]="#{node[:app][:destination]}"
 
 rightscale_marker :end

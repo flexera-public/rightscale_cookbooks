@@ -11,9 +11,6 @@ version = "6"
 npde[:app_tomcat][:version] = version
 log "  Setting tomcat version to #{version}"
 
-log "  Setting provider specific settings for tomcat#{version}"
-node[:app][:provider] = "app_tomcat"
-
 # Defining app user and group attributes
 case node[:platform]
 when "ubuntu"
@@ -25,10 +22,6 @@ when "centos", "redhat"
 else
   raise "Unrecognized distro #{node[:platform]} for tomcat#{version}, exiting "
 end
-
-# we do not care about version number here.
-# need only the type of database adapter
-node[:app][:db_adapter] = node[:db][:provider_type].match(/^db_([a-z]+)/)[1]
 
 # Preparing list of database adapter packages depending on platform and database adapter
 case node[:app][:db_adapter]
@@ -119,11 +112,5 @@ else
 end
 
 raise "Unrecognized distro #{node[:platform]} for tomcat#{version}, exiting " if node[:app][:packages].empty?
-
-# Setting app LWRP attribute
-node[:app][:destination] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
-
-# tomcat shares the same doc root with the application destination
-node[:app][:root]="#{node[:app][:destination]}"
 
 rightscale_marker :end
