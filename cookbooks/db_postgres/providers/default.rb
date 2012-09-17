@@ -136,7 +136,7 @@ action :install_client do
     packages.each do |p|
       package p do
         action :install
-        version "9.1.5-3PGDG"
+        version node[:db_postgres][:packages_version]
       end
     end
   else
@@ -174,7 +174,7 @@ action :install_server do
   packages.each do |p|
     package p do
       action :install
-      version "9.1.5-3PGDG"
+      version node[:db_postgres][:packages_version]
     end
   end
 
