@@ -404,9 +404,10 @@ action :setup_monitoring do
 
   if node[:platform] == 'centos'
 
+    collectd_version = node[:rightscale][:collectd_packages_version]
     package "collectd-postgresql" do
       action :install
-      version "4.10.0-4.el5"
+      version "#{collectd_version}" unless collectd_version == "latest"
     end
 
     template ::File.join(node[:rightscale][:collectd_plugin_dir], 'postgresql.conf') do
