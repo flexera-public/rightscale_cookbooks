@@ -161,10 +161,6 @@ action :install_client do
       action :install
     end
 
-    package "pgdg-centos91" do
-      action :install
-    end
-
     packages = node[:db_postgres][:client_packages_install]
     log  "Packages to install: #{packages.join(", ")}"
     packages.each do |p|
