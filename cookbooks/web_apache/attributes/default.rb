@@ -52,3 +52,6 @@ set[:web_apache][:server_name] = "localhost"
 
 # Maintenance mode attributes
 set_unless[:web_apache][:maintenance_file] = ""
+
+# AllowOverride directive
+set_unless[:web_apache][:allow_override] = "None"

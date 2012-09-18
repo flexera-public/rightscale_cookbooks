@@ -116,3 +116,14 @@ attribute "web_apache/maintenance_file",
   :required => "optional",
   :default =>  "",
   :recipes => ["web_apache::do_enable_maintenance_mode"]
+
+attribute "web_apache/allow_override",
+  :display_name => "AllowOverride Directive",
+  :description => "When the server finds an .htaccess file (as specified by AccessFileName) it needs to know which directives declared in that file can override earlier configuration directives. Can be None (default), All, or any directive-type as specified in Apache documentation.",
+  :required => "optional",
+  :default =>  "None",
+  :recipes => [
+    "web_apache::setup_frontend_ssl_vhost",
+    "web_apache::setup_frontend_http_vhost",
+    "web_apache::setup_frontend"
+  ]
