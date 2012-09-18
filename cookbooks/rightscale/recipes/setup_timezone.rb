@@ -14,6 +14,18 @@ if node[:rightscale][:timezone]
     to "/usr/share/zoneinfo/#{node[:rightscale][:timezone]}"
   end
   log "  Timezone set to #{node[:rightscale][:timezone]}"
+  
+  # Restart cron after setting timezone
+  service "crond" do
+    case node['platform']
+    when "redhat", "centos", "scientific", "fedora", "amazon"
+      service_name "crond"
+    when "debian", "ubuntu", "suse"
+      service_name "cron"
+    end
+    action :restart
+  end
+
 else
 
   # If this attribute is not set leave unchanged and use localtime.
