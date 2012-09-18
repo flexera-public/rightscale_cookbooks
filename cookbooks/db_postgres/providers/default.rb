@@ -123,8 +123,36 @@ end
 action :install_client do
 
   # Install PostgreSQL package(s)
-  node[:db_postgres][:client_packages_install] = ["postgresql91-libs", "postgresql91", "postgresql91-devel" ]
-  # Install PostgreSQL 9.1.1 package(s)
+
+  node[:db][:socket] = value_for_platform(
+    "centos" => {
+      "default" => "/var/run/postgresql"
+    },
+    "default" => ""
+  )
+
+  node[:db_postgres][:client_packages_install] = value_for_platform(
+    "centos" => {
+      "default" => [
+        "postgresql91-libs",
+        "postgresql91",
+        "postgresql91-devel"
+      ]
+    },
+    "default" => []
+  )
+
+  node[:db_postgres][:packages_version] = value_for_platform(
+    "centos" => {
+      "5.8" => "9.1.5-3PGDG.rhel5",
+      "default" => "9.1.5-3PGDG.rhel6"
+    },
+    "default" => ""
+  )
+
+  raise "Platform not supported for PostgreSQL #{version}" if node[:db_postgres][:client_packages_install].empty?
+
+  # Install PostgreSQL package(s)
   if node[:platform] == "centos"
     arch = node[:kernel][:machine]
     raise "Unsupported platform detected!" unless arch == "x86_64"
