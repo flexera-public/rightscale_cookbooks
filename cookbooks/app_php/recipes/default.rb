@@ -101,7 +101,7 @@ elsif node[:app][:db_adapter] == "postgres"
         "5.6" => "php53u-pgsql",
         "5.7" => "php53u-pgsql",
         "5.8" => "php53u-pgsql",
-        "default" => "php5-pgsql"
+        "default" => "php-pgsql"
       },
       "ubuntu" => {
         "default" => "php5-pgsql"
