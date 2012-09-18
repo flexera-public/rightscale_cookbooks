@@ -26,7 +26,8 @@ define :rightscale_marker do
         Chef::Log.info "*RS>  Running recipe #{recipe_name}   ****"
       end
     end
-
+  elsif location =~ /^end$/
+    # Do nothing
   else
     log "unknown marker"
   end
