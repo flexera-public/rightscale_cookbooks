@@ -18,25 +18,7 @@ log "  Setting DB PostgreSQL version to #{version}"
 #
 node[:db_postgres][:version] = version
 
-platform = node[:platform]
 
-node[:db][:socket] = value_for_platform(
-  "centos" => {
-    "default" => "/var/run/postgresql"
-  },
-  "default" => ""
-)
-
-node[:db_postgres][:client_packages_install] = value_for_platform(
-  "centos" => {
-    "default" => [
-      "postgresql91-libs",
-      "postgresql91",
-      "postgresql91-devel"
-    ]
-  },
-  "default" => []
-)
 
 node[:db_postgres][:server_packages_install] = value_for_platform(
   "centos" => {
@@ -50,16 +32,6 @@ node[:db_postgres][:server_packages_install] = value_for_platform(
   },
   "default" => []
 )
-
-node[:db_postgres][:packages_version] = value_for_platform(
-  "centos" => {
-    "5.8" => "9.1.5-3PGDG.rhel5",
-    "default" => "9.1.5-3PGDG.rhel6"
-  },
-  "default" => ""
-)
-
-raise "Platform not supported for PostgreSQL #{version}" if node[:db_postgres][:client_packages_install].empty?
 
 node[:db][:init_timeout]= "60"
 

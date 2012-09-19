@@ -60,4 +60,9 @@ node[:app][:destination] = "#{node[:repo][:default][:destination]}/#{node[:web_a
 # Django shares the same doc root with the application destination
 node[:app][:root] = "#{node[:app][:destination]}"
 
+# We do not care about version number here.
+# need only the type of database adaptor
+node[:app][:db_adapter] = node[:db][:provider_type].match(/^db_([a-z]+)/)[1]
+
+
 rightscale_marker :end

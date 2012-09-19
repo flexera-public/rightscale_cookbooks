@@ -97,6 +97,20 @@
       "display_name": "Secondary Backup User (default)",
       "description": "Secondary cloud authentication credentials. For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME). For Amazon S3, use your Amazon key ID (e.g., cred:AWS_ACCESS_KEY_ID)."
     },
+    "block_device/devices/device2/iops": {
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+
+      ],
+      "type": "string",
+      "recipes": [
+        "block_device::setup_block_device",
+        "block_device::default"
+      ],
+      "display_name": "I/O Operations per Second",
+      "description": "The input/output operations per second (IOPS) that the volue can support. IOPS is currently only supported on Amazon EC2. Example: 500"
+    },
     "block_device/devices/device2/mount_point": {
       "required": "optional",
       "calculated": false,
@@ -171,6 +185,20 @@
       ],
       "display_name": "Primary Backup Storage Cloud Endpoint URL (default)",
       "description": "The endpoint URL for the primary backup storage cloud. This is used to override the default endpoint or for generic storage clouds such as Swift."
+    },
+    "block_device/devices/device1/iops": {
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+
+      ],
+      "type": "string",
+      "recipes": [
+        "block_device::setup_block_device",
+        "block_device::default"
+      ],
+      "display_name": "I/O Operations per Second",
+      "description": "The input/output operations per second (IOPS) that the volue can support. IOPS is currently only supported on Amazon EC2. Example: 500"
     },
     "block_device/devices/device1/backup/lineage": {
       "required": "required",

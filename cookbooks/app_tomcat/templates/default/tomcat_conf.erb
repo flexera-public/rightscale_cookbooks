@@ -8,24 +8,24 @@
 # Managed by RightScale
 # DO NOT EDIT BY HAND
 #
-# System-wide configuration file for tomcat6 services
-# This will be sourced by tomcat6 and any secondary service
+# System-wide configuration file for tomcat<%=@version%> services
+# This will be sourced by tomcat<%=@version%> and any secondary service
 # Values will be overridden by service-specific configuration
 # files in /etc/sysconfig
 #
 # Use this one to change default values for all services
 # Change the service specific ones to affect only one service
-# (see, for instance, /etc/sysconfig/tomcat6)
+# (see, for instance, /etc/sysconfig/tomcat<%=@version%>)
 #
 
 # Where your java installation lives
 JAVA_HOME="/usr/lib/jvm/java"
 
 # Where your tomcat installation lives
-CATALINA_BASE="/usr/share/tomcat6"
-CATALINA_HOME="/usr/share/tomcat6"
-JASPER_HOME="/usr/share/tomcat6"
-CATALINA_TMPDIR="/var/tmp/tomcat6"
+CATALINA_BASE="/usr/share/tomcat<%=@version%>"
+CATALINA_HOME="/usr/share/tomcat<%=@version%>"
+JASPER_HOME="/usr/share/tomcat<%=@version%>"
+CATALINA_TMPDIR="/var/tmp/tomcat<%=@version%>"
 
 <% if @platform == "centos" %>
   <% if @platform_ver == "6.2" || @platform_ver == "6.3" %>
@@ -58,9 +58,9 @@ SHUTDOWN_WAIT="30"
 SHUTDOWN_VERBOSE="false"
 
 # Set the TOMCAT_PID location
-CATALINA_PID="/var/run/tomcat6.pid"
+CATALINA_PID="/var/run/tomcat<%=@version%>.pid"
 
-# Connector port is 8080 for this tomcat6 instance
+# Connector port is 8080 for this tomcat<%=@version%> instance
 #CONNECTOR_PORT="8080"
 
 # If you wish to further customize your tomcat environment,

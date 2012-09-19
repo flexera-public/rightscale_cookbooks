@@ -1,7 +1,7 @@
 {
   "name": "db",
   "description": "RightScale Database Manager",
-  "long_description": "= RightScale Database Manager\n\n== DESCRIPTION:\n\nThis cookbook provides a set of database recipes used by the RightScale\nDatabase Manager ServerTemplates.\n\nThis cookbook does not contain a specific database implementation, rather\nit provides an interface for general database actions and parameters.\n\n== REQUIREMENTS:\n\n* Must be used with a 'db' provider in the cookbook path.\n* Depends on a <tt>block_device</tt> resource for backup and restore recipes.\n* Requires a virtual machine launched from a RightScale-managed RightImage.\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n== KNOWN LIMITATIONS:\n\n* Only one db provider should be present in your cookbook path.\n\n== SETUP:\n\n* Place <tt>db::default</tt> recipe into your runlist to set up the db resource. When\n  using a RightScale ServerTemplate, this will also automatically add the common\n  database attributes to your ServerTemplate's inputs.\n\n* The default recipe for the cookbook that contains the db provider must also be\n  added to your runlist. For example:\n\n    db_mysql::default\n\n  This will load your provider and pull in any database specific attributes as\n  inputs.\n\n== USAGE:\n\n=== Initialize a master database:\n\n1. Once your server is operational, run the:\n\n    \"db::setup_block_device\"\n\n   recipe, which initializes your database onto a block device\n   that supports backup and restore operations.\n2. Initialize your database from previous dump file or other source.\n3. Register your database with a DNS provider that supports dynamic DNS using:\n\n    \"sys_dns::do_set_private\"\n\n   to allow your application servers to start making connections.\n4. Backup your database using:\n\n    \"db:do_backup\"\n\n   so that you can restore the master database in the event \n   of a failure or planned termination.\n\n=== Restore a master database:\n\n1. Once your server is operational, run the:\n\n    \"db::do_restore\"\n\n   recipe, which restores your database from a backup previously saved to\n   persistent cloud storage.\n3. Register your database with a DNS provider that supports dynamic DNS using:\n\n    \"sys_dns::do_set_private\"\n\n   to allow your application servers to start making connections.\n\n== DETAILS:\n\n=== General\n\nThe 'db' interface is defined by a Lightweight Resource, which can be found in\nthe 'resources/default.rb' file.\n\nThis cookbook is intended to be used in conjunction with cookbooks that contain\nLightweight Providers which implement the 'db' interface. See RightScale's\n'db_mysql' cookbook for an example.\n\nFor more information about Lightweight Resources and Providers (LWRPs), please see: {Lightweight Resources and Providers}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)]\n\n=== Backup/Restore\n\nThis cookbook depends on the block_device LWRP for backup and restore actions.\nSee <tt>db::do_backup</tt> and <tt>db::do_restore</tt> recipes for examples. The\n'block_device' cookbook provides primary and secondary persistence solutions for\nmultiple clouds.\n\nHowever, using LWRPs one can provide their own block device implementation\ninstead.\n\nPlease see the 'block_device' cookbook for the list of available actions,\nattributes and usage.\n\n=== Providers:\n\nWhen writing your own database Lightweight Provider:\n\n* The database provider to use is defined by the node[:db][:provider] attribute. You\n  will need to override this attribute by adding the following code in the \n  attributes file of your provider cookbook.\n\n    set[:db][:provider] = \"db_myprovider\"\n\n\n* Any database-specific attributes that you wish to make into user-configurable\n  inputs should be added to the cookbook metadata with the default recipe included in\n  the attribute's 'recipes' array. For more about Chef metadata, please see: {Chef Metadata}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-RightScale_Support_of_Chef/Chef_Metadata]\n\n* Your provider cookbook metadata should depend on this cookbook by adding a\n  'depends' line to its metadata. For example:\n\n    depends \"db\"\n\n= LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to\nthe RightScale Terms of Service available at http://www.rightscale.com/terms.php\nand, if applicable, other agreements such as a RightScale Master Subscription\nAgreement.\n",
+  "long_description": "= RightScale Database Manager\n\n== DESCRIPTION:\n\nThis cookbook provides a set of database recipes used by the RightScale\nDatabase Manager ServerTemplates.\n\nThis cookbook does not contain a specific database implementation, rather\nit provides an interface for general database actions and parameters.\n\n== REQUIREMENTS:\n\n* Must be used with a 'db' provider in the cookbook path.\n* Depends on a <tt>block_device</tt> resource for backup and restore recipes.\n* Requires a virtual machine launched from a RightScale-managed RightImage.\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n== KNOWN LIMITATIONS:\n\n* Only one db provider should be present in your cookbook path.\n\n== SETUP:\n\n* Place <tt>db::default</tt> recipe into your runlist to set up the db resource. When\n  using a RightScale ServerTemplate, this will also automatically add the common\n  database attributes to your ServerTemplate's inputs.\n\n* The default recipe for the cookbook that contains the db provider must also be\n  added to your runlist. For example:\n\n    db_mysql::default\n\n  This will load your provider and pull in any database specific attributes as\n  inputs.\n\n== USAGE:\n\n=== Initialize a master database:\n\n1. Once your server is operational, run the:\n\n    \"db::setup_block_device\"\n\n   recipe, which initializes your database onto a block device\n   that supports backup and restore operations.\n2. Initialize your database from previous dump file or other source.\n3. Register your database with a DNS provider that supports dynamic DNS using:\n\n    \"sys_dns::do_set_private\"\n\n   to allow your application servers to start making connections.\n4. Backup your database using:\n\n    \"db:do_backup\"\n\n   so that you can restore the master database in the event \n   of a failure or planned termination.\n\n=== Restore a master database:\n\n1. Once your server is operational, run the:\n\n    \"db::do_restore\"\n\n   recipe, which restores your database from a backup previously saved to\n   persistent cloud storage.\n3. Register your database with a DNS provider that supports dynamic DNS using:\n\n    \"sys_dns::do_set_private\"\n\n   to allow your application servers to start making connections.\n\n=== Setup database client:\n\n1. Put \"db::install_client\" into database client ServerTemplate runlist.\n   Use db/provider_type input to select from existing clients or override this\n   input to add custom type of database client\n   db/provider_type Input selects your database provider cookbook\n   (e.g. db_mysql, db_postgres, db_oracle, etc.) and what database version the client\n   will connect to. (e.g. 5.1, 5.5, 9.1). This affects what connector package to install.\n   Syntax for this input is <cookbook>_<version> (i.e. db_mydatabase_1.0)\n\n2. Fill <tt>db/application/password</tt> , <tt>db/application/user</tt> and\n<tt>db/dns/master/fqdn</tt> inputs which are necessary to connect client to Database Manager.\n\n== DETAILS:\n\n=== General\n\nThe 'db' interface is defined by a Lightweight Resource, which can be found in\nthe 'resources/default.rb' file.\n\nThis cookbook is intended to be used in conjunction with cookbooks that contain\nLightweight Providers which implement the 'db' interface. See RightScale's\n'db_mysql' cookbook for an example.\n\nFor more information about Lightweight Resources and Providers (LWRPs), please see: {Lightweight Resources and Providers}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)]\n\n=== Backup/Restore\n\nThis cookbook depends on the block_device LWRP for backup and restore actions.\nSee <tt>db::do_backup</tt> and <tt>db::do_restore</tt> recipes for examples. The\n'block_device' cookbook provides primary and secondary persistence solutions for\nmultiple clouds.\n\nHowever, using LWRPs one can provide their own block device implementation\ninstead.\n\nPlease see the 'block_device' cookbook for the list of available actions,\nattributes and usage.\n\n=== Providers:\n\nWhen writing your own database Lightweight Provider:\n\n* The database provider to use is defined by the node[:db][:provider] attribute. You\n  will need to override this attribute by adding the following code in the \n  attributes file of your provider cookbook.\n\n    set[:db][:provider] = \"db_myprovider\"\n\n\n* Any database-specific attributes that you wish to make into user-configurable\n  inputs should be added to the cookbook metadata with the default recipe included in\n  the attribute's 'recipes' array. For more about Chef metadata, please see: {Chef Metadata}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-RightScale_Support_of_Chef/Chef_Metadata]\n\n* Your provider cookbook metadata should depend on this cookbook by adding a\n  'depends' line to its metadata. For example:\n\n    depends \"db\"\n\n= LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to\nthe RightScale Terms of Service available at http://www.rightscale.com/terms.php\nand, if applicable, other agreements such as a RightScale Master Subscription\nAgreement.\n",
   "maintainer": "RightScale, Inc.",
   "maintainer_email": "support@rightscale.com",
   "license": "Copyright RightScale, Inc. All rights reserved.",
@@ -42,7 +42,8 @@
       "description": "The fully qualified domain name for the master database server.  Example: db-master.example.com",
       "required": "required",
       "recipes": [
-        "db::default"
+        "db::default",
+        "db::install_client"
       ],
       "choice": [
 
@@ -166,7 +167,8 @@
       "required": "required",
       "recipes": [
         "db::default",
-        "db::setup_privileges_application"
+        "db::setup_privileges_application",
+        "db::install_client"
       ],
       "choice": [
 
@@ -180,7 +182,8 @@
       "required": "required",
       "recipes": [
         "db::default",
-        "db::setup_privileges_application"
+        "db::setup_privileges_application",
+        "db::install_client"
       ],
       "choice": [
 
@@ -214,6 +217,21 @@
       ],
       "recipes": [
         "db::install_server"
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "db/provider_type": {
+      "display_name": "Database Provider type",
+      "description": "Database provider type to use on client side.  This must be a string containing the provider cookbook name and (optionally) the version of the database. For example: db_mydatabase_1.0, db_mysql_5.1, db_mysql_5.5, db_postgresql_9.1",
+      "required": "required",
+      "choice": [
+        "db_mysql_5.1",
+        "db_mysql_5.5",
+        "db_postgres_9.1"
+      ],
+      "recipes": [
+        "db::install_client"
       ],
       "calculated": false,
       "type": "string"

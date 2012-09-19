@@ -10,11 +10,9 @@ version          "12.1.0"
 # supports "ubuntu", "~> 10.04", "~> 12.04"
 
 depends "app"
-depends "web_apache"
-depends "db_mysql"
-depends "db_postgres"
 depends "repo"
 depends "rightscale"
+depends "web_apache"
 
 recipe  "app_php::default", "Installs the php application server."
 

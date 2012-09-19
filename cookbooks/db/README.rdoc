@@ -73,6 +73,19 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
    to allow your application servers to start making connections.
 
+=== Setup database client:
+
+1. Put "db::install_client" into database client ServerTemplate runlist.
+   Use db/provider_type input to select from existing clients or override this
+   input to add custom type of database client
+   db/provider_type Input selects your database provider cookbook
+   (e.g. db_mysql, db_postgres, db_oracle, etc.) and what database version the client
+   will connect to. (e.g. 5.1, 5.5, 9.1). This affects what connector package to install.
+   Syntax for this input is <cookbook>_<version> (i.e. db_mydatabase_1.0)
+
+2. Fill <tt>db/application/password</tt> , <tt>db/application/user</tt> and
+<tt>db/dns/master/fqdn</tt> inputs which are necessary to connect client to Database Manager.
+
 == DETAILS:
 
 === General
