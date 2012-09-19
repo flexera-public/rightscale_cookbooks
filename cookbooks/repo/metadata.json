@@ -96,7 +96,7 @@
         "repo::default"
       ],
       "display_name": "Project App root",
-      "description": "The destination location where the application code will be placed on the local instance. If you want the application code to be placed in the root directory, use a forward slash (/) otherwise you will need to specify the full path (e.g. /path/to/code). If set to 'ignore' the default location (/home/webapp) will be used. The 'Application Name' input is used to name the destination folder into which the application code will be placed. Apache and PHP will look for the application in the specified path. Example: /home/webapps"
+      "description": "The destination location where the application code will be placed on the local instance. If you want the application code to be placed in the root directory, use a forward slash (/) otherwise you will need to specify the full path (e.g. /path/to/code). The 'Application Name' input is used to name the destination folder into which the application code will be placed in the specified path. Apache and PHP will look for the application in the specified path. Example: /home/webapps"
     },
     "repo/default/credential": {
       "required": "recommended",
