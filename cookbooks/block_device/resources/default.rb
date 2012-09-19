@@ -43,6 +43,7 @@ attribute :keep_yearly, :kind_of => String
 attribute :volume_size, :kind_of => String
 attribute :stripe_count, :kind_of => String
 attribute :vg_data_percentage, :kind_of => String
+attribute :iops, :kind_of => String
 
 # == Callbacks for ROS endpoint validation
 endpoint_callbacks = {
