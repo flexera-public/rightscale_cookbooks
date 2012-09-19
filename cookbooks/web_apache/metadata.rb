@@ -126,5 +126,6 @@ attribute "web_apache/allow_override",
   :recipes => [
     "web_apache::setup_frontend_ssl_vhost",
     "web_apache::setup_frontend_http_vhost",
-    "web_apache::setup_frontend"
+    "web_apache::setup_frontend",
+    "web_apache::default"
   ]
