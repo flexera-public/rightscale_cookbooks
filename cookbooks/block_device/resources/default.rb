@@ -7,15 +7,6 @@
 
 require 'uri'
 
-# Add actions to @action_list array.
-# Used to allow comments between entries.
-def self.add_action(sym)
-  @action_list ||= Array.new
-  @action_list << sym unless @action_list.include?(sym)
-  @action_list
-end
-
-
 # = Block_device Attributes
 # 
 # Below are the attributes defined by the block_device resource interface.
@@ -92,54 +83,52 @@ attribute :rackspace_snet, :equal_to => [ true, false ], :default => true
 # == Create
 # This utility creates a new block device.
 #
-add_action :create
+actions :create
 
 
 # == Snapshot
 # This action will create a snapshot of a block device previously created
 #
-add_action :snapshot
+actions :snapshot
 
 
 # == Primary Backup
 # Prepare device for primary backup
 #
-add_action :primary_backup
+actions :primary_backup
 
 
 # == Primary Restore
 # Prepare device for primary restore
 #
-add_action :primary_restore
+actions :primary_restore
 
 
 # == Secondary Backup
 # Prepare device for secondary backup
 #
-add_action :secondary_backup
+actions :secondary_backup
 
 
 # == Secondary Restore
 # Prepare device for secondary restore
 #
-add_action :secondary_restore
+actions :secondary_restore
 
 
 # == Reset
 # Unmount and delete the attached block device(s)
 #
-add_action :reset
+actions :reset
 
 
 # == Backup Schedule Enable
 # Enable cron-based scheduled backups
 #
-add_action :backup_schedule_enable
+actions :backup_schedule_enable
 
 
 # == Backup Schedule Disable
 # Disable cron-based scheduled backups
 #
-add_action :backup_schedule_disable
-
-actions @action_list
+actions :backup_schedule_disable
