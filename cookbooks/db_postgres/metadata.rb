@@ -3,7 +3,7 @@ maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "Installs/configures a PostgreSQL database server with automated backups."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "13.0.0"
+version          "13.2.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"
