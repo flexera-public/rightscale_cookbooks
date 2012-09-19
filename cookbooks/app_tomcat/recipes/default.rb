@@ -22,6 +22,10 @@ else
   raise "Unrecognized distro #{node[:platform]}, exiting "
 end
 
+# we do not care about version number here.
+# need only the type of database adaptor
+node[:app][:db_adapter] = node[:db][:provider_type].match(/^db_([a-z]+)/)[1]
+
 # Preparing list of database adapter packages depending on platform and database adapter
 case node[:app][:db_adapter]
 when "mysql"
@@ -67,7 +71,7 @@ when "mysql"
     },
     "default" => []
   )
-when "postgresql"
+when "postgres"
   node[:app][:packages] = value_for_platform(
     "centos" => {
       "5.8" => [

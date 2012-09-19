@@ -28,6 +28,8 @@ package "php5" do
       "5.6" => "php53u",
       "5.7" => "php53u",
       "5.8" => "php53u",
+      "6.2" => "php53u",
+      "6.3" => "php53u",
       "default" => "php"
     },
     "ubuntu" => {
@@ -45,6 +47,8 @@ package "php-pear" do
       "5.6" => "php53u-pear",
       "5.7" => "php53u-pear",
       "5.8" => "php53u-pear",
+      "6.2" => "php53u-pear",
+      "6.3" => "php53u-pear",
       "default" => "php-pear"
     },
     "ubuntu" => {
@@ -62,6 +66,8 @@ package "php apache integration" do
       "5.6" => "php53u-zts",
       "5.7" => "php53u-zts",
       "5.8" => "php53u-zts",
+      "6.2" => "php53u-zts",
+      "6.3" => "php53u-zts",
       "default" => "php-zts"
     },
     "ubuntu" => {
@@ -72,6 +78,10 @@ package "php apache integration" do
   action :install
 end
 
+# We do not care about version number here.
+# need only the type of database adaptor
+node[:app][:db_adapter] = node[:db][:provider_type].match(/^db_([a-z]+)/)[1]
+
 if node[:app][:db_adapter] == "mysql"
   log "  Install PHP mysql support"
   package "php mysql integration" do
@@ -80,6 +90,8 @@ if node[:app][:db_adapter] == "mysql"
         "5.6" => "php53u-mysql",
         "5.7" => "php53u-mysql",
         "5.8" => "php53u-mysql",
+        "6.2" => "php53u-mysql",
+        "6.3" => "php53u-mysql",
         "default" => "php-mysql"
       },
       "ubuntu" => {
@@ -89,7 +101,7 @@ if node[:app][:db_adapter] == "mysql"
     )
     action :install
   end
-elsif node[:app][:db_adapter] == "postgresql"
+elsif node[:app][:db_adapter] == "postgres"
   log "  Install PHP postgres support"
   package "php postgres integration" do
     package_name value_for_platform(
@@ -97,7 +109,9 @@ elsif node[:app][:db_adapter] == "postgresql"
         "5.6" => "php53u-pgsql",
         "5.7" => "php53u-pgsql",
         "5.8" => "php53u-pgsql",
-        "default" => "php5-pgsql"
+        "6.2" => "php53u-pgsql",
+        "6.3" => "php53u-pgsql",
+        "default" => "php-pgsql"
       },
       "ubuntu" => {
         "default" => "php5-pgsql"

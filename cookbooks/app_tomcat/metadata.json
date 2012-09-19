@@ -9,8 +9,6 @@
   },
   "dependencies": {
     "app": ">= 0.0.0",
-    "db_mysql": ">= 0.0.0",
-    "db_postgres": ">= 0.0.0",
     "repo": ">= 0.0.0",
     "rightscale": ">= 0.0.0"
   },

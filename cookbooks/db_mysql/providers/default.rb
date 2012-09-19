@@ -203,6 +203,62 @@ action :remove_anonymous do
 end
 
 action :install_client do
+  # Using node[:db_mysql][:version] to avoid misconfiguration during the run on Database Managers
+  node[:db_mysql][:version] = new_resource.db_version if node[:db_mysql][:version].nil?
+  node[:db_mysql][:client_packages_uninstall] = []
+  node[:db_mysql][:client_packages_install] = []
+
+  # Socket value
+  node[:db][:socket] = value_for_platform(
+    "ubuntu"  => {
+      "default" => "/var/run/mysqld/mysqld.sock"
+    },
+    "default" => "/var/lib/mysql/mysql.sock"
+  )
+
+  case node[:db_mysql][:version]
+    when "5.1"
+      node[:db_mysql][:client_packages_install] = value_for_platform(
+        "centos" => {
+          "5.8"=> [ "MySQL-shared-compat", "MySQL-devel-community", "MySQL-client-community" ],
+          "default" => [ "mysql-devel", "mysql-libs", "mysql" ]
+        },
+        "redhat" => {
+          "default" => [ "MySQL-shared-compat", "MySQL-devel-community", "MySQL-client-community"]
+        },
+        "ubuntu" => {
+          "10.04" => [ "libmysqlclient-dev", "mysql-client-5.1"],
+          "default" => []
+        },
+        "default" => []
+      )
+
+    when "5.5"
+      node[:db_mysql][:client_packages_uninstall] = value_for_platform(
+        "centos"  => {
+          "5.8" => [],
+          "default" => [ "postfix", "mysql-libs" ]
+        },
+        "default" => []
+      )
+
+      node[:db_mysql][:client_packages_install] = value_for_platform(
+        "centos" => {
+          "5.8" => [ "mysql55-devel", "mysql55-libs", "mysql55" ],
+          "default" => [ "mysql55-devel", "mysql55-libs", "mysql55", "postfix" ]
+        },
+        "ubuntu" => {
+          "10.04" => [],
+          "default" => [ "libmysqlclient-dev", "mysql-client-5.5" ]
+        },
+        "redhat" => {
+          "default" => [ "mysql55-devel", "mysql55-libs", "mysql55" ]
+        },
+        "default" => []
+      )
+    else
+      raise "MySQL version: #{node[:db_mysql][:version]} not supported yet"
+  end
 
   # Uninstall specified client packages
   packages = node[:db_mysql][:client_packages_uninstall]
@@ -223,7 +279,7 @@ action :install_client do
   end
 
   packages = node[:db_mysql][:client_packages_install]
-  Chef::Log.info "  Packages to install: #{packages.join(",")}" unless packages == ""
+  log "  Packages to install: #{packages.join(",")}" unless packages == ""
   packages.each do |p|
     r = package p do
       action :nothing
@@ -245,7 +301,7 @@ action :install_client do
       Gem.clear_paths
     end
   end
-  Chef::Log.info "  Gem reload forced with Gem.clear_paths"
+  log "  Gem reload forced with Gem.clear_paths"
 end
 
 action :install_server do
