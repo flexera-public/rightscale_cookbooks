@@ -8,7 +8,7 @@
 rightscale_marker :begin
 
 version = "6"
-npde[:app_tomcat][:version] = version
+node[:app_tomcat][:version] = version
 log "  Setting tomcat version to #{version}"
 
 # Defining database adapter parameter, app user and group attributes depending on platform
