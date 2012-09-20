@@ -27,7 +27,7 @@ when "ubuntu"
    ]
   node[:app][:user] = "www-data"
   node[:app][:group] = "www-data"
-when "centos"
+when "centos", "redhat"
   node[:app][:packages] = [
     "zlib-devel",
     "openssl-devel",
