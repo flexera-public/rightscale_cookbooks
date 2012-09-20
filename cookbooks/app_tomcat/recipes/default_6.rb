@@ -20,6 +20,7 @@ when "ubuntu"
     node[:app_tomcat][:jkworkersfile] = "/etc/tomcat#{version}/workers.properties"
   else
     node[:app_tomcat][:jkworkersfile] = "/etc/libapache2-mod-jk/workers.properties"
+  end
 when "centos", "redhat"
   node[:app][:user] = "tomcat"
   node[:app][:group] = "tomcat"
