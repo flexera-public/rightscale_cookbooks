@@ -24,7 +24,7 @@ set[:app][:module_dependencies] = ["proxy", "proxy_http"]
 case node[:platform]
 when "ubuntu"
   set[:app_django][:apache][:log_dir] = "/var/log/apache2"
-when "centos"
+when "centos", "redhat"
   set[:app_django][:apache][:log_dir] = "/var/log/httpd"
 end
 
