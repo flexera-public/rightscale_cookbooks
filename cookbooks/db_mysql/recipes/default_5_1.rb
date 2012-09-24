@@ -17,7 +17,7 @@ log "  Setting DB MySQL version to #{version}"
 node[:db_mysql][:version] = version
 
 node[:db_mysql][:service_name] = value_for_platform(
-  "centos" => {
+  ["centos", "redhat"] => {
     "5.8"     => "mysql",
     "default" => "mysqld"
   },
@@ -37,12 +37,9 @@ node[:db_mysql][:server_packages_uninstall] = []
 # Ubuntu 12.04 doesn't support MySQL 5.1 server
 
 node[:db_mysql][:server_packages_install] = value_for_platform(
-  "centos" => {
+  ["centos", "redhat"] => {
     "5.8" => [ "MySQL-server-community" ],
     "default" => [ "mysql-server" ]
-  },
-  "redhat" => {
-    "default" => [ "MySQL-server-community" ]
   },
   "ubuntu" => {
     "10.04" => [ "mysql-server-5.1" ],

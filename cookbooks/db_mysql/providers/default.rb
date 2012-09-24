@@ -219,12 +219,9 @@ action :install_client do
   case node[:db_mysql][:version]
     when "5.1"
       node[:db_mysql][:client_packages_install] = value_for_platform(
-        "centos" => {
+        ["centos", "redhat"] => {
           "5.8"=> [ "MySQL-shared-compat", "MySQL-devel-community", "MySQL-client-community" ],
           "default" => [ "mysql-devel", "mysql-libs", "mysql" ]
-        },
-        "redhat" => {
-          "default" => [ "MySQL-shared-compat", "MySQL-devel-community", "MySQL-client-community"]
         },
         "ubuntu" => {
           "10.04" => [ "libmysqlclient-dev", "mysql-client-5.1"],
@@ -235,7 +232,7 @@ action :install_client do
 
     when "5.5"
       node[:db_mysql][:client_packages_uninstall] = value_for_platform(
-        "centos"  => {
+        ["centos", "redhat"] => {
           "5.8" => [],
           "default" => [ "postfix", "mysql-libs" ]
         },
@@ -243,7 +240,7 @@ action :install_client do
       )
 
       node[:db_mysql][:client_packages_install] = value_for_platform(
-        "centos" => {
+        ["centos", "redhat"] => {
           "5.8" => [ "mysql55-devel", "mysql55-libs", "mysql55" ],
           "default" => [ "mysql55-devel", "mysql55-libs", "mysql55", "postfix" ]
         },
@@ -251,21 +248,22 @@ action :install_client do
           "10.04" => [],
           "default" => [ "libmysqlclient-dev", "mysql-client-5.5" ]
         },
-        "redhat" => {
-          "default" => [ "mysql55-devel", "mysql55-libs", "mysql55" ]
-        },
         "default" => []
       )
+
     else
       raise "MySQL version: #{node[:db_mysql][:version]} not supported yet"
   end
 
   # Uninstall specified client packages
   packages = node[:db_mysql][:client_packages_uninstall]
-  log "  Packages to uninstall: #{packages.join(",")}" unless packages == ""
+  log "  Packages to uninstall: #{packages.join(",")}" unless packages.empty?
   packages.each do |p|
+    (node[:db_mysql][:version] == "5.5" and node[:platform] =~ /redhat/ and node[:platform_version].to_i == 6 and package == "postfix") ? use_rpm = true : use_rpm = false
     r = package p do
       action :nothing
+      options = "--nodeps" if use_rpm
+      provider Chef::Provider::Package::Rpm if use_rpm
     end
     r.run_action(:remove)
   end
