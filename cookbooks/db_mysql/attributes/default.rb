@@ -7,6 +7,9 @@
 
 # Required attributes
 
+set_unless[:db_mysql][:version] = '5.5'
+
+
 # Recommended attributes
 
 set_unless[:db_mysql][:collectd_master_slave_mode] = ""
