@@ -219,12 +219,9 @@ action :install_client do
   case node[:db_mysql][:version]
     when "5.1"
       node[:db_mysql][:client_packages_install] = value_for_platform(
-        "centos" => {
+        ["centos", "redhat"] => {
           "5.8"=> [ "MySQL-shared-compat", "MySQL-devel-community", "MySQL-client-community" ],
           "default" => [ "mysql-devel", "mysql-libs", "mysql" ]
-        },
-        "redhat" => {
-          "default" => [ "MySQL-shared-compat", "MySQL-devel-community", "MySQL-client-community"]
         },
         "ubuntu" => {
           "10.04" => [ "libmysqlclient-dev", "mysql-client-5.1"],
@@ -235,7 +232,7 @@ action :install_client do
 
     when "5.5"
       node[:db_mysql][:client_packages_uninstall] = value_for_platform(
-        "centos"  => {
+        ["centos", "redhat"]  => {
           "5.8" => [],
           "default" => [ "postfix", "mysql-libs" ]
         },
@@ -243,16 +240,13 @@ action :install_client do
       )
 
       node[:db_mysql][:client_packages_install] = value_for_platform(
-        "centos" => {
+        ["centos", "redhat"] => {
           "5.8" => [ "mysql55-devel", "mysql55-libs", "mysql55" ],
           "default" => [ "mysql55-devel", "mysql55-libs", "mysql55", "postfix" ]
         },
         "ubuntu" => {
           "10.04" => [],
           "default" => [ "libmysqlclient-dev", "mysql-client-5.5" ]
-        },
-        "redhat" => {
-          "default" => [ "mysql55-devel", "mysql55-libs", "mysql55" ]
         },
         "default" => []
       )

@@ -21,7 +21,7 @@ node[:db_postgres][:version] = version
 
 
 node[:db_postgres][:server_packages_install] = value_for_platform(
-  "centos" => {
+  ["centos", "redhat"] => {
     "default" => [
       "postgresql91-libs",
       "postgresql91",

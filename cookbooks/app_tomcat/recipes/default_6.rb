@@ -33,7 +33,7 @@ end
 case node[:app][:db_adapter]
 when "mysql"
   node[:app][:packages] = value_for_platform(
-    "centos" => {
+    ["centos", "redhat"] => {
       "5.8" => [
         "eclipse-ecj",
         "tomcat6",
@@ -62,21 +62,11 @@ when "mysql"
         "libtcnative-1"
       ]
     },
-    "redhat" => {
-      "default" => [
-        "eclipse-ecj",
-        "tomcat6",
-        "tomcat6-admin-webapps",
-        "tomcat6-webapps",
-        "tomcat-native",
-        "mysql-connector-java"
-      ]
-    },
     "default" => []
   )
 when "postgres"
   node[:app][:packages] = value_for_platform(
-    "centos" => {
+    ["centos", "redhat"] => {
       "5.8" => [
         "eclipse-ecj",
         "tomcat6",
@@ -100,15 +90,6 @@ when "postgres"
         "tomcat6-common",
         "tomcat6-user",
         "libtcnative-1"
-      ]
-    },
-    "redhat" => {
-      "default" => [
-        "eclipse-ecj",
-        "tomcat6",
-        "tomcat6-admin-webapps",
-        "tomcat6-webapps",
-        "tomcat-native"
       ]
     },
     "default" => []

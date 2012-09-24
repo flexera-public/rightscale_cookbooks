@@ -29,7 +29,7 @@ end
 case node[:app][:db_adapter]
 when "mysql"
   node[:app][:packages] = value_for_platform(
-    "centos" => {
+    ["centos", "redhat"] => {
       "default" => [
         "eclipse-ecj",
         "ecj3",
@@ -54,7 +54,7 @@ when "mysql"
   )
 when "postgresql"
   node[:app][:packages] = value_for_platform(
-    "centos" => {
+    ["centos", "redhat"] => {
       "default" => [
         "eclipse-ecj",
         "ecj3",
