@@ -232,13 +232,9 @@ action :install_client do
 
     when "5.5"
       node[:db_mysql][:client_packages_uninstall] = value_for_platform(
-        "centos" => {
+        ["centos", "redhat"] => {
           "5.8" => [],
           "default" => [ "postfix", "mysql-libs" ]
-        },
-        "redhat"  => {
-          "5.8" => [],
-          "default" => [ "mysql-libs" ]
         },
         "default" => []
       )
@@ -254,13 +250,6 @@ action :install_client do
         },
         "default" => []
       )
-
-      m = package "postfix" do
-        action :nothing
-        options "--nodeps"
-        provider Chef::Provider::Package::Rpm
-      end
-      m.run_action(:remove) if node[:platform] == "redhat" and node[:platform_version].to_i == 6
 
     else
       raise "MySQL version: #{node[:db_mysql][:version]} not supported yet"
