@@ -268,10 +268,13 @@ action :install_client do
 
   # Uninstall specified client packages
   packages = node[:db_mysql][:client_packages_uninstall]
-  log "  Packages to uninstall: #{packages.join(",")}" unless packages == ""
+  log "  Packages to uninstall: #{packages.join(",")}" unless packages.empty?
   packages.each do |p|
+    (node[:db_mysql][:version] == "5.5" and node[:platform] =~ /redhat/ and node[:platform_version].to_i == 6 and package == "postfix") ? use_rpm = true : use_rpm = false
     r = package p do
       action :nothing
+      options = "--nodeps" if use_rpm
+      provider Chef::Provider::Package::Rpm if use_rpm
     end
     r.run_action(:remove)
   end
