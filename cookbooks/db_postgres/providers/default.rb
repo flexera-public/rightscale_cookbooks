@@ -125,14 +125,14 @@ action :install_client do
   # Install PostgreSQL package(s)
 
   node[:db][:socket] = value_for_platform(
-    "centos" => {
+    ["centos", "redhat"] => {
       "default" => "/var/run/postgresql"
     },
     "default" => ""
   )
 
   node[:db_postgres][:client_packages_install] = value_for_platform(
-    "centos" => {
+    ["centos", "redhat"] => {
       "default" => [
         "postgresql91-libs",
         "postgresql91",
@@ -143,7 +143,7 @@ action :install_client do
   )
 
   node[:db_postgres][:packages_version] = value_for_platform(
-    "centos" => {
+    ["centos", "redhat"] => {
       "5.8" => "9.1.5-3PGDG.rhel5",
       "default" => "9.1.5-3PGDG.rhel6"
     },
@@ -153,7 +153,7 @@ action :install_client do
   raise "Platform not supported for PostgreSQL #{version}" if node[:db_postgres][:client_packages_install].empty?
 
   # Install PostgreSQL package(s)
-  if node[:platform] == "centos"
+  if node[:platform] =~ /redhat|centos/
     arch = node[:kernel][:machine]
     raise "Unsupported platform detected!" unless arch == "x86_64"
 
@@ -429,7 +429,7 @@ action :setup_monitoring do
     action :nothing
   end
 
-  if node[:platform] == 'centos'
+  if node[:platform] =~ /redhat|centos/
 
     collectd_version = node[:rightscale][:collectd_packages_version]
     package "collectd-postgresql" do
