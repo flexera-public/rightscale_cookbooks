@@ -73,8 +73,11 @@ action :configure do
     variables(
       :remote_server => remote_server
     )
-    notifies :reload, resources(:service => "rsyslog")
+#    notifies :reload, resources(:service => "rsyslog")
   end
+
+  # Restarting service in order to apply new settings.
+  action_restart
 
 end
 
