@@ -34,10 +34,7 @@ end
 
 # Reload rsyslog
 action :reload do
-  service "rsyslog" do
-    action :reload
-    persist false
-  end
+  raise "reload not supported in rsyslog"
 end
 
 
