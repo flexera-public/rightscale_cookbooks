@@ -259,7 +259,7 @@ action :install_client do
   packages = node[:db_mysql][:client_packages_uninstall]
   log "  Packages to uninstall: #{packages.join(",")}" unless packages.empty?
   packages.each do |p|
-    (node[:db_mysql][:version] == "5.5" and node[:platform] =~ /redhat/ and node[:platform_version].to_i == 6 and package == "postfix") ? use_rpm = true : use_rpm = false
+    (node[:db_mysql][:version] == "5.5" and node[:platform] =~ /redhat/ and node[:platform_version].to_i == 6 and p == "postfix") ? use_rpm = true : use_rpm = false
     r = package p do
       action :nothing
       options = "--nodeps" if use_rpm
