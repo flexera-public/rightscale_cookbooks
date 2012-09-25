@@ -51,7 +51,7 @@ end
 action :configure do
 
   service "rsyslog" do
-    supports :reload => true, :restart => true, :status => true, :start => true, :stop => true
+    supports :restart => true, :status => true, :start => true, :stop => true
     action :nothing
   end
 
@@ -73,12 +73,8 @@ action :configure do
     variables(
       :remote_server => remote_server
     )
-#    notifies :reload, resources(:service => "rsyslog")
+    notifies :restart, resources(:service => "rsyslog"), :immediately
   end
-
-  # Restarting service in order to apply new settings.
-  action_restart
-
 end
 
 
