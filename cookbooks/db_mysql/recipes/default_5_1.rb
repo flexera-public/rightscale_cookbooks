@@ -12,9 +12,11 @@ node[:db][:provider] = "db_mysql"
 
 log "  Setting DB MySQL version to #{version}"
 
+# Required for db::install client correct execution on Database Managers
+node[:db][:version] = version
+
 # Set MySQL 5.1 specific node variables in this recipe.
 #
-node[:db_mysql][:version] = version
 
 node[:db_mysql][:service_name] = value_for_platform(
   ["centos", "redhat"] => {
