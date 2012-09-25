@@ -122,6 +122,8 @@ end
 
 action :install_client do
 
+  node[:db_postgres][:version] = new_resource.db_version
+
   # Install PostgreSQL package(s)
 
   node[:db][:socket] = value_for_platform(
@@ -150,7 +152,7 @@ action :install_client do
     "default" => ""
   )
 
-  raise "Platform not supported for PostgreSQL #{version}" if node[:db_postgres][:client_packages_install].empty?
+  raise "Platform not supported for PostgreSQL #{node[:db_postgres][:version]}" if node[:db_postgres][:client_packages_install].empty?
 
   # Install PostgreSQL package(s)
   if node[:platform] =~ /redhat|centos/
@@ -191,7 +193,7 @@ action :install_server do
 
   arch = node[:kernel][:machine]
   raise "Unsupported platform detected!" unless arch == "x86_64"
-
+  node[:db_postgres][:version] = new_resource.db_version
   package "uuid" do
     action :install
   end
@@ -335,7 +337,7 @@ end
 action :enable_replication do
   db_state_get node
   current_restore_process = new_resource.restore_process
-
+  node[:db_postgres][:version] = new_resource.db_version
   newmaster_host = node[:db][:current_master_ip]
   rep_user = node[:db][:replication][:user]
   rep_pass = node[:db][:replication][:password]

@@ -10,8 +10,9 @@ version="5.5"
 node[:db][:provider] = "db_mysql"
 
 log "  Setting DB MySQL version to #{version}"
-node[:db_mysql][:version] = version
-platform = node[:platform]
+
+# Required for db::install client correct execution on Database Managers
+node[:db][:version] = version
 
 # Set MySQL 5.5 specific node variables in this recipe.
 #
