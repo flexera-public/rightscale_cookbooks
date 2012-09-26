@@ -12,7 +12,7 @@ database_type = node[:db][:provider_type].match(/^db_([a-z]+)_(\d.\d)/)
 # we assume that db::install_client is executed on Database Manager
 # and using values from db_*::default_* recipe (ex: db_mysql::default_5_1)
 #
-# If node[:db][:provider] and node[:db][:version]  have no values
+# If node[:db][:provider] and node[:db][:version] have no values
 # we assume that db::install_client is executed on Application Server
 # and setup their values using db/provider_type input.
 #
