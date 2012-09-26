@@ -87,7 +87,7 @@ action :write_backup_info do
     masterstatus['File'] = slavestatus['Relay_Master_Log_File']
     masterstatus['Position'] = slavestatus['Exec_Master_Log_Pos']
   end
-
+  node[:db_mysql][:version] = new_resource.db_version
   # Save the db provider (MySQL) and version number as set in the node
   version=node[:db_mysql][:version]
   provider=node[:db][:provider]
@@ -108,7 +108,7 @@ end
 
 action :post_restore_cleanup do
   # Performs checks for snapshot compatibility with current server
-
+  node[:db_mysql][:version] = new_resource.db_version
   master_info = RightScale::Database::MySQL::Helper.load_replication_info(node)
   # Check version matches
   # Not all 11H2 snapshots (prior to 5.5 release) saved provider or version.
@@ -204,7 +204,7 @@ end
 
 action :install_client do
   # Using node[:db_mysql][:version] to avoid misconfiguration during the run on Database Managers
-  node[:db_mysql][:version] = new_resource.db_version if node[:db_mysql][:version].nil?
+  node[:db_mysql][:version] = new_resource.db_version
   node[:db_mysql][:client_packages_uninstall] = []
   node[:db_mysql][:client_packages_install] = []
 
@@ -231,6 +231,8 @@ action :install_client do
       )
 
     when "5.5"
+      # centos/redhat 6 by default has mysql-libs 5.1 installed as requirement for postfix.
+      # Will uninstall postfix, install mysql55-lib then reinstall postfix to use new lib.
       node[:db_mysql][:client_packages_uninstall] = value_for_platform(
         ["centos", "redhat"] => {
           "5.8" => [],
