@@ -34,7 +34,8 @@ end
 
 # Reload rsyslog
 action :reload do
-  raise "reload not supported in rsyslog"
+  log("WARNING: reload not supported in rsyslog - doing restart") { level :warn }
+  action_restart
 end
 
 
