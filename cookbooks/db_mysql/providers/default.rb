@@ -262,7 +262,7 @@ action :install_client do
     (node[:db_mysql][:version] == "5.5" and node[:platform] =~ /redhat/ and node[:platform_version].to_i == 6 and p == "postfix") ? use_rpm = true : use_rpm = false
     r = package p do
       action :nothing
-      options = "--nodeps" if use_rpm
+      options "--nodeps" if use_rpm
       provider Chef::Provider::Package::Rpm if use_rpm
     end
     r.run_action(:remove)
