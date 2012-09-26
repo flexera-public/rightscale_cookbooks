@@ -265,6 +265,7 @@ action :install_client do
     r = package p do
       action :nothing
       options "--nodeps" if use_rpm
+      ignore_failure true if use_rpm
       provider Chef::Provider::Package::Rpm if use_rpm
     end
     r.run_action(:remove)
