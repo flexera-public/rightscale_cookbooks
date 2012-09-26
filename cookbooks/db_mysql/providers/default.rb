@@ -231,6 +231,8 @@ action :install_client do
       )
 
     when "5.5"
+      # centos/redhat 6 by default has mysql-libs 5.1 installed as requirement for postfix.
+      # Will uninstall postfix, install mysql55-lib then reinstall postfix to use new lib.
       node[:db_mysql][:client_packages_uninstall] = value_for_platform(
         ["centos", "redhat"] => {
           "5.8" => [],

@@ -7,12 +7,10 @@
 
 rightscale_marker :begin
 version="5.5"
+node[:db][:version] = version
 node[:db][:provider] = "db_mysql"
 
 log "  Setting DB MySQL version to #{version}"
-
-# Required for db::install client correct execution on Database Managers
-node[:db][:version] = version
 
 # Set MySQL 5.5 specific node variables in this recipe.
 #
@@ -27,9 +25,6 @@ node[:db][:socket] = value_for_platform(
 # For Red Hat and similar distributions, the MySQL distribution is divided into a
 # number of separate packages, mysql for the client tools, mysql-server for the
 # server and associated tools, and mysql-libs for the libraries.
-
-# centos 6.2 by default has mysql-libs 5.1 installed as requirement for postfix.
-# Will uninstall postfix, install mysql55-lib then reinstall postfix to use new lib.
 
 node[:db_mysql][:service_name] = value_for_platform(
   "ubuntu" => {
@@ -55,6 +50,6 @@ node[:db][:init_timeout]= node[:db_mysql][:init_timeout]
 node[:db][:info_file_options] = ["mysql -V", "cat /etc/mysql/conf.d/my.cnf"]
 node[:db][:info_file_location] = "/etc/mysql"
 
-log "  Using MySQL service name: #{node[:db_mysql][:version]}"
+log "  Using MySQL service name: #{node[:db_mysql][:service_name]}"
 
 rightscale_marker :end

@@ -10,10 +10,10 @@
 rightscale_marker :begin
 
 version="9.1"
+node[:db][:version] = version
 node[:db][:provider] = "db_postgres"
 
 log "  Setting DB PostgreSQL version to #{version}"
-node[:db][:version] = version
 
 # Set PostgreSQL 9.1 specific node variables in this recipe.
 #
