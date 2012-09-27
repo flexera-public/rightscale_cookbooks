@@ -180,7 +180,7 @@ action :setup_vhost do
       :java_newsize => node[:app_tomcat][:java][:newsize],
       :java_maxnewsize => node[:app_tomcat][:java][:maxnewsize]
     )
-    only_if { node[:platform] =~ /ubuntu/ }
+    only_if {node[:platform] == "ubuntu"}
   end
 
   # Define internal port for tomcat. It must be different than apache ports
@@ -409,7 +409,7 @@ action :setup_monitoring do
 
   # The debian way to edit the settings is to edit CATALINA_OPTS/JAVA_OPTS in /etc/default/tomcatX.X.
   node[:platform] == "ubuntu" ?
-   target_config = "/etc/default/tomcat#{version}.conf" :
+   target_config = "/etc/default/tomcat#{version}" :
    target_config = "/etc/tomcat#{version}/tomcat#{version}.conf"
 
   # Add collectd support to tomcat.conf
