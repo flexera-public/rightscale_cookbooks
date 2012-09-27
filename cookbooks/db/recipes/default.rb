@@ -12,7 +12,7 @@ class Chef::Recipe
 end
 
 # If block_device is used, set that to be node[:db][:data_dir]
-mount_point get_device_or_default(node, node[:block_device][:devices][:device1][:mount_point])
+mount_point = get_device_or_default(node, node[:block_device][:devices][:device1][:mount_point])
 if !mount_point.nil? && !mount_point.empty?
   node[:db][:data_dir] = mount_point
 end
