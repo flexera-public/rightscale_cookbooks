@@ -165,6 +165,24 @@ action :setup_vhost do
     )
   end
 
+  # Updating /etc/default/tomcatX with Java tuning options on ubuntu
+  template "/etc/default/tomcat#{version}" do
+    action :create
+    source "tomcat_default.erb"
+    group "root"
+    mode "0644"
+    cookbook 'app_tomcat'
+    variables(
+      :java_xms => node[:app_tomcat][:java][:xms],
+      :java_xmx => node[:app_tomcat][:java][:xmx],
+      :java_permsize => node[:app_tomcat][:java][:permsize],
+      :java_maxpermsize => node[:app_tomcat][:java][:maxpermsize],
+      :java_newsize => node[:app_tomcat][:java][:newsize],
+      :java_maxnewsize => node[:app_tomcat][:java][:maxnewsize],
+    )
+    only_if { node[:platform] =~ /ubuntu/ }
+  end
+
   # Define internal port for tomcat. It must be different than apache ports
   tomcat_port = port + 1
   log "  Creating server.xml"
@@ -389,11 +407,16 @@ action :setup_monitoring do
     not_if { !::File.exists?("/usr/share/java/collectd.jar") }
   end
 
+  # The debian way to edit the settings is to edit CATALINA_OPTS/JAVA_OPTS in /etc/default/tomcatX.X.
+  node[:platform] == "ubuntu" ?
+   target_config = "/etc/default/tomcat#{version}.conf" :
+   target_config = "/etc/tomcat#{version}/tomcat#{version}.conf"
+
   # Add collectd support to tomcat.conf
   bash "Add collectd to tomcat.conf" do
     flags "-ex"
     code <<-EOH
-      cat <<'EOF'>>"/etc/tomcat#{version}/tomcat#{version}.conf"
+      cat <<'EOF'>>"#{target_config}"
 CATALINA_OPTS="\$CATALINA_OPTS -Djcd.host=#{node[:rightscale][:instance_uuid]} -Djcd.instance=tomcat#{version} -Djcd.dest=udp://#{node[:rightscale][:servers][:sketchy][:hostname]}:3011 -Djcd.tmpl=javalang,tomcat -javaagent:/usr/share/tomcat#{version}/lib/collectd.jar"
     EOH
   end

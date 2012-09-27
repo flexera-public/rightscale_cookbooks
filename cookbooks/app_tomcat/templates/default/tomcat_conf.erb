@@ -63,6 +63,7 @@ CATALINA_PID="/var/run/tomcat<%=@version%>.pid"
 # Connector port is 8080 for this tomcat<%=@version%> instance
 #CONNECTOR_PORT="8080"
 
+<% if @platform =~ /redhat|centos/ %>
 # If you wish to further customize your tomcat environment,
 # put your own definitions here
 # (i.e. LD_LIBRARY_PATH for some jdbc drivers)
@@ -81,3 +82,7 @@ CATALINA_OPTS="$CATALINA_OPTS -XX:NewSize=<%=@java_newsize%> -XX:MaxNewSize=<%=@
 
 #Collectd
 
+<% else %>
+# If you wish to further customize your tomcat environment,
+# put your definitions in /etc/default/tomcatX
+<% end %>
