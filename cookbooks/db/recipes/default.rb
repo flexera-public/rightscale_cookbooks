@@ -5,9 +5,11 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-include RightScale::BlockDeviceHelper
-
 rightscale_marker :begin
+
+class Chef::Recipe
+  include RightScale::BlockDeviceHelper
+end
 
 # If block_device is used, set that to be node[:db][:data_dir]
 mount_point get_device_or_default(node, node[:block_device][:devices][:device1][:mount_point])
