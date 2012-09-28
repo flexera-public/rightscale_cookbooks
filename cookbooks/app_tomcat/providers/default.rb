@@ -173,6 +173,7 @@ action :setup_vhost do
     mode "0644"
     cookbook 'app_tomcat'
     variables(
+      :version => version,
       :java_xms => node[:app_tomcat][:java][:xms],
       :java_xmx => node[:app_tomcat][:java][:xmx],
       :java_permsize => node[:app_tomcat][:java][:permsize],
@@ -407,10 +408,8 @@ action :setup_monitoring do
     not_if { !::File.exists?("/usr/share/java/collectd.jar") }
   end
 
-  # The debian way to edit the settings is to edit CATALINA_OPTS/JAVA_OPTS in /etc/default/tomcatX.X.
-  node[:platform] == "ubuntu" ?
-   target_config = "/etc/default/tomcat#{version}" :
-   target_config = "/etc/tomcat#{version}/tomcat#{version}.conf"
+  # The debian way to edit the settings is to edit CATALINA_OPTS/JAVA_OPTS in /etc/default/tomcatX
+  node[:platform] == "ubuntu" ? target_config = "/etc/default/tomcat#{version}" : target_config = "/etc/tomcat#{version}/tomcat#{version}.conf"
 
   # Add collectd support to tomcat.conf
   bash "Add collectd to tomcat.conf" do
