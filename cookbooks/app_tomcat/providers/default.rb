@@ -144,7 +144,8 @@ action :setup_vhost do
   app_root = new_resource.root
   version = node[:app_tomcat][:version].to_i
 
-  log "  Creating tomcat#{version}.conf"
+  log "  Creating tomcat#{version} configuration file"
+  # Create configuration file for CentOS/RedHat
   template "/etc/tomcat#{version}/tomcat#{version}.conf" do
     action :create
     source "tomcat_conf.erb"
@@ -163,9 +164,10 @@ action :setup_vhost do
       :platform => node[:platform],
       :platform_ver => node[:platform_version].to_i
     )
+    only_if {node[:platform] =~ /redhat|centos/}
   end
 
-  # Updating /etc/default/tomcatX with Java tuning options on ubuntu
+  # Create configuration file for ubuntu
   template "/etc/default/tomcat#{version}" do
     action :create
     source "tomcat_default.erb"
