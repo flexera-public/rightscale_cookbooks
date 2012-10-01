@@ -145,8 +145,7 @@ action :setup_vhost do
   version = node[:app_tomcat][:version].to_i
 
   log "  Creating tomcat#{version} configuration file"
-  # Create configuration file for CentOS/RedHat
-  template "/etc/tomcat#{version}/tomcat#{version}.conf" do
+  template "#{node[:app_tomcat][:configuration_file_path]}" do
     action :create
     source "tomcat_conf.erb"
     group "root"
@@ -164,26 +163,6 @@ action :setup_vhost do
       :platform => node[:platform],
       :platform_ver => node[:platform_version].to_i
     )
-    only_if {node[:platform] =~ /redhat|centos/}
-  end
-
-  # Create configuration file for ubuntu
-  template "/etc/default/tomcat#{version}" do
-    action :create
-    source "tomcat_default.erb"
-    group "root"
-    mode "0644"
-    cookbook 'app_tomcat'
-    variables(
-      :version => version,
-      :java_xms => node[:app_tomcat][:java][:xms],
-      :java_xmx => node[:app_tomcat][:java][:xmx],
-      :java_permsize => node[:app_tomcat][:java][:permsize],
-      :java_maxpermsize => node[:app_tomcat][:java][:maxpermsize],
-      :java_newsize => node[:app_tomcat][:java][:newsize],
-      :java_maxnewsize => node[:app_tomcat][:java][:maxnewsize]
-    )
-    only_if {node[:platform] == "ubuntu"}
   end
 
   # Define internal port for tomcat. It must be different than apache ports
@@ -410,14 +389,11 @@ action :setup_monitoring do
     not_if { !::File.exists?("/usr/share/java/collectd.jar") }
   end
 
-  # The debian way to edit the settings is to edit CATALINA_OPTS/JAVA_OPTS in /etc/default/tomcatX
-  node[:platform] == "ubuntu" ? target_config = "/etc/default/tomcat#{version}" : target_config = "/etc/tomcat#{version}/tomcat#{version}.conf"
-
   # Add collectd support to tomcat.conf
-  bash "Add collectd to tomcat.conf" do
+  bash "Add collectd to tomcat configuration file" do
     flags "-ex"
     code <<-EOH
-      cat <<'EOF'>>"#{target_config}"
+      cat <<'EOF'>>"#{node[:app_tomcat][:configuration_file_path]}"
 CATALINA_OPTS="\$CATALINA_OPTS -Djcd.host=#{node[:rightscale][:instance_uuid]} -Djcd.instance=tomcat#{version} -Djcd.dest=udp://#{node[:rightscale][:servers][:sketchy][:hostname]}:3011 -Djcd.tmpl=javalang,tomcat -javaagent:/usr/share/tomcat#{version}/lib/collectd.jar"
     EOH
   end
