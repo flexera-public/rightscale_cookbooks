@@ -40,7 +40,6 @@ attribute "logging/remote_server",
   :required => "optional",
   :recipes => [ "logging::default" ]
 
-
 attribute "logging/service_action",
   :display_name => "Logging Service Control Action",
   :description => "Action to be done with logging service.",
@@ -52,33 +51,9 @@ attribute "logging/protocol",
   :display_name => "Logging Protocol",
   :description => "Protocol used to send logging messages from client to server.",
   :required => "optional",
-  :choice => [ "udp", "tcp", "tcp+tls", "relp", "relp+stunnel" ],
+  :choice => [ "udp", "tcp", "relp", "relp+stunnel" ],
   :default =>  "udp",
   :recipes => [
     "logging::default",
     "logging::install_server"
   ]
-
-attribute "logging/tls_ca_certificate",
-  :display_name => "TLS CA Certificate",
-  :description => "The name of your CA TLS Certificate. Example: cred:TLS_CA_CERT",
-  :required => "optional",
-  :default =>  "",
-  :recipes => [
-    "logging::default",
-    "logging::install_server"
-  ]
-
-attribute "logging/tls_certificate",
-  :display_name => "TLS Certificate",
-  :description => "Your TLS Certificate. Example: cred:TLS_CERT",
-  :required => "optional",
-  :default =>  "",
-  :recipes => [ "logging::install_server" ]
-
-attribute "logging/tls_key",
-  :display_name => "TLS Certificate Key",
-  :description => "Your TLS Certificate Key. Example: cred:TLS_KEY",
-  :required => "optional",
-  :default =>  "",
-  :recipes => [ "logging::install_server" ]

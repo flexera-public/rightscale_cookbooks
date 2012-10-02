@@ -7,13 +7,13 @@
 
 set_unless[:logging][:remote_server] = ""
 
-set[:logging][:cert_dir] = "/etc/tls/"
+set[:logging][:cert_dir] = "/etc/tls"
 
-set[:logging][:stunnel_service] = value_for_platform(
-  ["centos", "redhat"] => {
-    "default" => "stunnel"
-  },
-  ["ubuntu"] => {
-    "default" => "stunnel4"
-  }
-)
+case node[:platform]
+when "ubuntu"
+  set[:logging][:stunnel_service] = "stunnel4"
+when "centos", "redhat"
+  set[:logging][:stunnel_service] = "stunnel"
+else
+  raise "Unrecognized distro #{node[:platform]}, exiting "
+end

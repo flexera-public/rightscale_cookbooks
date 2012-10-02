@@ -16,54 +16,10 @@ $UDPServerRun 514
 <% when "tcp" %>
 $ModLoad imtcp
 $InputTCPServerRun 514
-<% when "tcp+tls" %>
-# Make gtls driver the default
-$DefaultNetstreamDriver gtls
-
-# Certificate files
-$DefaultNetstreamDriverCAFile <%= node[:logging][:cert_dir] %>ca.pem
-$DefaultNetstreamDriverCertFile <%= node[:logging][:cert_dir] %>cert.pem
-$DefaultNetstreamDriverKeyFile <%= node[:logging][:cert_dir] %>key.pem
-
-$ModLoad imtcp # Load TCP listener
-
-$InputTCPServerStreamDriverMode 1 # Run driver in TLS-only mode
-$InputTCPServerStreamDriverAuthMode anon # Client is NOT authenticated # For Authentication enable: x509/name
-$InputTCPServerRun 514 # Start up listener
 <% when "relp" %>
 $ModLoad imrelp
 $InputRELPServerRun 514
 <% when "relp+stunnel" %>
 $ModLoad imrelp
-$InputRELPServerRun 515 # Listening to STunnel
+$InputRELPServerRun 515 # Listening to stunnel
 <% end %>
-
-<% if node[:platform_version] =~ /^5\..+/ %>
-# Use traditional timestamp format
-$ActionFileDefaultTemplate RSYSLOG_TraditionalFileFormat
-
-# Provides kernel logging support (previously done by rklogd)
-$ModLoad imklog
-# Provides support for local system logging (e.g. via logger command)
-$ModLoad imuxsock
-
-# Log all kernel messages to the console.
-# Logging much else clutters up the screen.
-#kern.*                                                 /dev/console
-# Log anything (except mail) of level info or higher.
-# Don't log private authentication messages!
-*.info;mail.none;authpriv.none;cron.none                /var/log/messages
-# The authpriv file has restricted access.
-authpriv.*                                              /var/log/secure
-# Log all the mail messages in one place.
-mail.*                                                  -/var/log/maillog
-# Log cron stuff
-cron.*                                                  /var/log/cron
-# Everybody gets emergency messages
-*.emerg                                                 *
-# Save news errors of level crit and higher in a special file.
-uucp,news.crit                                          /var/log/spooler
-# Save boot messages also to boot.log
-local7.*                                                /var/log/boot.log
-<% end %>
-

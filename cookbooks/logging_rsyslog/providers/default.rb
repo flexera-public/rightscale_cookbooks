@@ -34,10 +34,8 @@ end
 
 # Reload rsyslog
 action :reload do
-  service "rsyslog" do
-    action :reload
-    persist false
-  end
+  log("WARNING: reload not supported in rsyslog - doing restart") { level :warn }
+  action_restart
 end
 
 
@@ -51,7 +49,7 @@ end
 action :configure do
 
   service "rsyslog" do
-    supports :reload => true, :restart => true, :status => true, :start => true, :stop => true
+    supports :restart => true, :status => true, :start => true, :stop => true
     action :nothing
   end
 
@@ -62,27 +60,6 @@ action :configure do
   if remote_server != ""
 
     package "rsyslog-relp" if node[:logging][:protocol] == "relp"
-
-    # Pull the credentials from the inputs into local files for TLS configuration.
-    if node[:logging][:protocol] == "tcp+tls"
-
-      package "rsyslog-gnutls"
-
-      # Creating directory where certificate files will be stored
-      directory node[:logging][:cert_dir] do
-        mode "0700"
-        recursive true
-      end
-
-      tls_ca_certificate = ::File.join(node[:logging][:cert_dir], "ca.pem")
-
-      template tls_ca_certificate do
-        mode "0400"
-        cookbook "logging"
-        source "tls_ca_certificate.erb"
-      end
-
-    end
 
     if node[:logging][:protocol] == "relp+stunnel"
 
@@ -103,17 +80,24 @@ action :configure do
         )
       end
 
-      bash "Apply new settings to STunnel" do
-        flags "-ex"
-        code <<-EOH
-          ruby -pi -e "gsub(/ENABLED=0/,'ENABLED=1')" /etc/default/stunnel4
-        EOH
+      execute "Enabling stunnel" do
+        command "ruby -pi -e \"gsub(/ENABLED=0/,'ENABLED=1')\" /etc/default/stunnel4"
         only_if { node[:platform] == "ubuntu" }
       end
 
-      service "stunnel4" do
+      cookbook_file "/etc/init.d/stunnel" do
+        source "stunnel.sh"
+        cookbook "logging_rsyslog"
+        owner "root"
+        group "root"
+        mode "0755"
+        backup false
+        not_if { node[:platform] == "ubuntu" }
+      end
+
+      service [:logging][:stunnel_service] do
         supports :reload => true, :restart => true, :start => true, :stop => true
-        action [ :enable, :restart ]
+        action [:enable, :restart]
       end
 
     end
@@ -128,11 +112,10 @@ action :configure do
       group "root"
       mode "0644"
       cookbook "logging_rsyslog"
-      not_if { remote_server.empty? }
       variables(
         :remote_server => remote_server
       )
-      notifies :reload, resources(:service => "rsyslog")
+    notifies :restart, resources(:service => "rsyslog"), :immediately
     end
 
   end
@@ -144,41 +127,6 @@ action :configure_server do
   # This action would configure an rsyslog logging server.
 
   package "rsyslog-relp" if node[:logging][:protocol] == "relp"
-
-  # Pull the credentials from the inputs into local files for TLS configuration.
-  if node[:logging][:protocol] == "tcp+tls"
-
-    package "rsyslog-gnutls"
-
-    # Creating directory where certificate files will be stored
-    directory node[:logging][:cert_dir] do
-      mode "0700"
-      recursive true
-    end
-
-    tls_ca_certificate = ::File.join(node[:logging][:cert_dir], "ca.pem")
-    tls_certificate = ::File.join(node[:logging][:cert_dir], "cert.pem")
-    tls_key = ::File.join(node[:logging][:cert_dir], "key.pem")
-
-    template tls_ca_certificate do
-      mode "0400"
-      cookbook "logging"
-      source "tls_ca_certificate.erb"
-    end
-
-    template tls_certificate do
-      mode "0400"
-      cookbook "logging"
-      source "tls_certificate.erb"
-    end
-
-    template tls_key do
-      mode "0400"
-      cookbook "logging"
-      source "tls_key.erb"
-    end
-
-  end
 
   if node[:logging][:protocol] == "relp+stunnel"
 
@@ -193,19 +141,8 @@ action :configure_server do
 
     certificate = ::File.join(node[:logging][:cert_dir], "stunnel.pem")
 
-    template certificate do
-      mode "0400"
-      cookbook "logging"
-      source "tls_certificate.erb"
-    end
-
-    # If the user doesn't input a certificate we can generate a self-signed one and use it
-    bash "Generate key for STunnel" do
-      flags "-ex"
-      code <<-EOH
-        rm #{certificate} && openssl req -new -x509 -days 3650 -nodes -out #{certificate} -keyout #{certificate} -subj "/C=US/ST=CA/L=SB/O=Rightscale/OU=Rightscale/CN=Rightscale/emailAddress=support@rightscale.com"
-      EOH
-      not_if { node[:logging][:tls_certificate] }
+    execute "Generating a self-signed certificate for stunnel" do
+      command "rm #{certificate} && openssl req -new -x509 -days 3650 -nodes -out #{certificate} -keyout #{certificate} -subj \"/C=US/ST=CA/L=SB/O=Rightscale/OU=Rightscale/CN=Rightscale/emailAddress=support@rightscale.com\""
     end
 
     template "/etc/stunnel/stunnel.conf" do
@@ -222,17 +159,24 @@ action :configure_server do
       )
     end
 
-    bash "Apply new settings to STunnel" do
-      flags "-ex"
-      code <<-EOH
-        ruby -pi -e "gsub(/ENABLED=0/,'ENABLED=1')" /etc/default/stunnel4
-      EOH
+    execute "Enabling stunnel" do
+      command "ruby -pi -e \"gsub(/ENABLED=0/,'ENABLED=1')\" /etc/default/stunnel4"
       only_if { node[:platform] == "ubuntu" }
     end
 
-    service "stunnel4" do
+    cookbook_file "/etc/init.d/stunnel" do
+      source "stunnel.sh"
+      cookbook "logging_rsyslog"
+      owner "root"
+      group "root"
+      mode "0755"
+      backup false
+      not_if { node[:platform] == "ubuntu" }
+    end
+
+    service [:logging][:stunnel_service] do
       supports :reload => true, :restart => true, :start => true, :stop => true
-      action [ :enable, :restart ]
+      action [:enable, :restart]
     end
 
   end
@@ -256,10 +200,9 @@ action :configure_server do
     group "root"
     mode "0644"
     cookbook "logging_rsyslog"
+    notifies :restart, resources(:service => "rsyslog"), :immediately
   end
 
-  # Restarting service in order to apply new settings.
-  action_restart
 end
 
 
