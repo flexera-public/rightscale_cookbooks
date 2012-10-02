@@ -244,7 +244,7 @@ action :install_client do
       node[:db_mysql][:client_packages_install] = value_for_platform(
         ["centos", "redhat"] => {
           "5.8" => [ "mysql55-devel", "mysql55-libs", "mysql55" ],
-          "default" => [ "mysql55-devel", "mysql55-libs", "mysql55", "postfix" ]
+          "default" => [ "mysql55-devel", "mysql55-libs", "mysql55" ]
         },
         "ubuntu" => {
           "10.04" => [],
