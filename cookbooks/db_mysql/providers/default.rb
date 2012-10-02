@@ -232,11 +232,11 @@ action :install_client do
 
     when "5.5"
       # centos/redhat 6 by default has mysql-libs 5.1 installed as requirement for postfix.
-      # Will uninstall postfix, install mysql55-lib then reinstall postfix to use new lib.
+      # Will uninstall mysql-libs, install mysql55-lib
       node[:db_mysql][:client_packages_uninstall] = value_for_platform(
         ["centos", "redhat"] => {
           "5.8" => [],
-          "default" => [ "postfix", "mysql-libs" ]
+          "default" => [ "mysql-libs" ]
         },
         "default" => []
       )
@@ -244,7 +244,7 @@ action :install_client do
       node[:db_mysql][:client_packages_install] = value_for_platform(
         ["centos", "redhat"] => {
           "5.8" => [ "mysql55-devel", "mysql55-libs", "mysql55" ],
-          "default" => [ "mysql55-devel", "mysql55-libs", "mysql55", "postfix" ]
+          "default" => [ "mysql55-devel", "mysql55-libs", "mysql55" ]
         },
         "ubuntu" => {
           "10.04" => [],
@@ -261,7 +261,7 @@ action :install_client do
   packages = node[:db_mysql][:client_packages_uninstall]
   log "  Packages to uninstall: #{packages.join(",")}" unless packages.empty?
   packages.each do |p|
-    (node[:db_mysql][:version] == "5.5" and node[:platform] =~ /redhat/ and node[:platform_version].to_i == 6 and p == "postfix") ? use_rpm = true : use_rpm = false
+    use_rpm = node[:db_mysql][:version] == "5.5" && node[:platform] =~ /redhat|centos/ && node[:platform_version].to_i == 6 && p == "mysql-libs"
     r = package p do
       action :nothing
       options "--nodeps" if use_rpm
