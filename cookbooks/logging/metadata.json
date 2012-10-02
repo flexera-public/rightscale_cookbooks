@@ -71,7 +71,6 @@
       "choice": [
         "udp",
         "tcp",
-        "tcp+tls",
         "relp",
         "relp+stunnel"
       ],
@@ -79,49 +78,6 @@
       "recipes": [
         "logging::default",
         "logging::install_server"
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "logging/tls_ca_certificate": {
-      "display_name": "TLS CA Certificate",
-      "description": "The name of your CA TLS Certificate. Example: cred:TLS_CA_CERT",
-      "required": "optional",
-      "default": "",
-      "recipes": [
-        "logging::default",
-        "logging::install_server"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "logging/tls_certificate": {
-      "display_name": "TLS Certificate",
-      "description": "Your TLS Certificate. Example: cred:TLS_CERT",
-      "required": "optional",
-      "default": "",
-      "recipes": [
-        "logging::install_server"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "logging/tls_key": {
-      "display_name": "TLS Certificate Key",
-      "description": "Your TLS Certificate Key. Example: cred:TLS_KEY",
-      "required": "optional",
-      "default": "",
-      "recipes": [
-        "logging::install_server"
-      ],
-      "choice": [
-
       ],
       "calculated": false,
       "type": "string"
