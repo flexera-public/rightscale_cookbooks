@@ -50,6 +50,12 @@ action :install do
     package p
   end
 
+  # Installing ruby-devel required for passenger gem on centos/redhat
+  log "  Installing ruby-devel"
+  package "ruby-devel" do
+    only_if { node[:platform] =~ /centos|redhat/ }
+  end
+
   # Installing passenger module
   log "  Installing passenger gem"
   gem_package "passenger" do
