@@ -107,7 +107,7 @@ For more info please see: {Load Balancer Setups}[http://support.rightscale.com/0
 <b>app_add_listen_port</b>
 Adds a port to the apache listen 'ports.conf' file and node attribute.
 
-Create node[:apache][:listen_ports] - array of strings for the web server to listen on.
+Create <tt>node[:apache][:listen_ports]</tt> - array of strings for the web server to listen on.
 
 This definition created specifically for the <tt>apache2</tt> cookbook at this time.
 

@@ -116,7 +116,7 @@ attributes and usage.
 
 When writing your own database Lightweight Provider:
 
-* The database provider to use is defined by the node[:db][:provider] attribute. You
+* The database provider to use is defined by the <tt>node[:db][:provider]</tt> attribute. You
   will need to override this attribute by adding the following code in the 
   attributes file of your provider cookbook.
 

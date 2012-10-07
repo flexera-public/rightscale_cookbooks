@@ -35,7 +35,7 @@ volumes, and remote object storage providers.
 
 * Accepts only one parameter "name" which is the name of the collectd plugin to
   enable.
-* The plugin name is added to node[:rightscale][:plugin_list_array] which is used
+* The plugin name is added to <tt>node[:rightscale][:plugin_list_array]</tt> which is used
   to create the list of plugins in the <tt>/etc/collectd/collectd.conf</tt>
   file.
 * The <tt>node[:rightscale][:plugin_list_array]</tt> will have any plugins listed
