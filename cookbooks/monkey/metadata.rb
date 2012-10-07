@@ -18,8 +18,9 @@ depends "logrotate"
 recipe "monkey::default", "Default recipe for monkey setup."
 recipe "monkey::setup_git", "Setting up Git for monkey."
 recipe "monkey::setup_rest_connection", "Setting up rest_connection for monkey."
-recipe "monkey::setup_virtualmonkey", "Setting up virtualmonkey"
-recipe "monkey::test_virtualmonkey_api_connection", "Testing API connectivity for virtualmonkey"
+recipe "monkey::setup_virtualmonkey", "Setting up virtualmonkey."
+recipe "monkey::test_virtualmonkey_api_connection", "Testing API connectivity for virtualmonkey."
+recipe "monkey::setup_rightcloud_private_api", "Setting up rightcloud_private_api gem."
 
 #attribute "memcached/tcp_port",
 #  :display_name => "Memcached TCP Port",
