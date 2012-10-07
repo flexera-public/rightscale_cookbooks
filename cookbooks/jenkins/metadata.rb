@@ -1,7 +1,7 @@
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
-description      "Installs/Configures a memcached server"
+description      "Installs/Configures Jenkins"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "13.2.0"
 
@@ -15,13 +15,13 @@ depends "sys_firewall"
 depends "logrotate"
 
 
-recipe "memcached::default", "Default recipe for memcached setup."
+recipe "jenkins::default", "Default recipe for jenkins setup."
+recipe "jenkins::install_jenkins", "Installing jenkins."
 
-
-attribute "memcached/tcp_port",
-  :display_name => "Memcached TCP Port",
-  :description => "The TCP port to use for connections. Default : 11211",
-  :required => "recommended",
-  :default => "11211",
-  :recipes => ["memcached::install_server", "memcached::default"]
+#attribute "memcached/tcp_port",
+#  :display_name => "Memcached TCP Port",
+#  :description => "The TCP port to use for connections. Default : 11211",
+#  :required => "recommended",
+#  :default => "11211",
+#  :recipes => ["memcached::install_server", "memcached::default"]
 

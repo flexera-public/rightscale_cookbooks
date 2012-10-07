@@ -1,5 +1,5 @@
 #
-# Cookbook Name::monkey
+# Cookbook Name::jenkins
 #
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
@@ -7,4 +7,3 @@
 
 # Recommended attributes
 #
-set_unless[:memcached][:tcp_port] = "11211"
