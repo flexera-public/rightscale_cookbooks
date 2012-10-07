@@ -30,8 +30,9 @@
     "monkey::default": "Default recipe for monkey setup.",
     "monkey::setup_git": "Setting up Git for monkey.",
     "monkey::setup_rest_connection": "Setting up rest_connection for monkey.",
-    "monkey::setup_virtualmonkey": "Setting up virtualmonkey",
-    "monkey::test_virtualmonkey_api_connection": "Testing API connectivity for virtualmonkey"
+    "monkey::setup_virtualmonkey": "Setting up virtualmonkey.",
+    "monkey::test_virtualmonkey_api_connection": "Testing API connectivity for virtualmonkey.",
+    "monkey::setup_rightcloud_private_api": "Setting up rightcloud_private_api gem."
   },
   "version": "13.2.0"
 }
