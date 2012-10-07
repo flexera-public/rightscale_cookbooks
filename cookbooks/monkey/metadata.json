@@ -1,0 +1,37 @@
+{
+  "name": "monkey",
+  "description": "Installs/Configures Virtual Monkey",
+  "long_description": "\n",
+  "maintainer": "RightScale, Inc.",
+  "maintainer_email": "support@rightscale.com",
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "platforms": {
+  },
+  "dependencies": {
+    "rightscale": ">= 0.0.0",
+    "sys_firewall": ">= 0.0.0",
+    "logrotate": ">= 0.0.0"
+  },
+  "recommendations": {
+  },
+  "suggestions": {
+  },
+  "conflicting": {
+  },
+  "providing": {
+  },
+  "replacing": {
+  },
+  "attributes": {
+  },
+  "groupings": {
+  },
+  "recipes": {
+    "monkey::default": "Default recipe for monkey setup.",
+    "monkey::setup_git": "Setting up Git for monkey.",
+    "monkey::setup_rest_connection": "Setting up rest_connection for monkey.",
+    "monkey::setup_virtualmonkey": "Setting up virtualmonkey",
+    "monkey::test_virtualmonkey_api_connection": "Testing API connectivity for virtualmonkey"
+  },
+  "version": "13.2.0"
+}

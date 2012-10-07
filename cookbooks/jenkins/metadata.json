@@ -1,0 +1,34 @@
+{
+  "name": "jenkins",
+  "description": "Installs/Configures Jenkins",
+  "long_description": "\n",
+  "maintainer": "RightScale, Inc.",
+  "maintainer_email": "support@rightscale.com",
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "platforms": {
+  },
+  "dependencies": {
+    "rightscale": ">= 0.0.0",
+    "sys_firewall": ">= 0.0.0",
+    "logrotate": ">= 0.0.0"
+  },
+  "recommendations": {
+  },
+  "suggestions": {
+  },
+  "conflicting": {
+  },
+  "providing": {
+  },
+  "replacing": {
+  },
+  "attributes": {
+  },
+  "groupings": {
+  },
+  "recipes": {
+    "jenkins::default": "Default recipe for jenkins setup.",
+    "jenkins::install_jenkins": "Installing jenkins."
+  },
+  "version": "13.2.0"
+}
