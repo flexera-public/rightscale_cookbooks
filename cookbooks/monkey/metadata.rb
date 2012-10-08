@@ -59,7 +59,7 @@ attribute "monkey/rest/right_acct_id",
   :display_name => "RightScale account ID",
   :description => "RightScale account ID used to connect to the API",
   :required => "required",
-  :recipes => ["monkey::setup_git"]
+  :recipes => ["monkey::setup_rest_connection"]
 
 attribute "monkey/rest/ssh_key",
   :display_name => "API user key",

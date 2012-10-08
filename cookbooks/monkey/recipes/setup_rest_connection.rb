@@ -25,7 +25,10 @@ packages.each do |pkg|
 end unless packages.empty?
 
 bash "Update Rubygems" do
-  `gem update --system --no-rdoc --no-ri`
+  flags "-ex"
+  code <<-EOH
+    gem update --system --no-rdoc --no-ri
+  EOH
 end
 
 # Installing gem dependencies
