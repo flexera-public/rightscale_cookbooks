@@ -1,0 +1,20 @@
+# ssh configuration
+#
+# Managed by RightScale
+# DO NOT EDIT BY HAND
+#
+# ssh git configuration for root user
+#
+
+Host *
+ForwardX11 yes
+ForwardAgent yes
+StrictHostKeyChecking no
+
+Host "<%=@git_hostname%>"
+  User git
+  Port 22
+  Hostname "<%=@git_hostname%>"
+  IdentityFile "<%=@keyfile%>"
+  TCPKeepAlive yes
+  IdentitiesOnly yes
