@@ -12,8 +12,7 @@ version          "13.2.0"
 
 depends "rightscale"
 depends "sys_firewall"
-depends "logrotate"
-
+depends "repo"
 
 recipe "monkey::default", "Default recipe for monkey setup."
 recipe "monkey::setup_git", "Setting up Git for monkey."
@@ -22,10 +21,15 @@ recipe "monkey::setup_virtualmonkey", "Setting up virtualmonkey."
 recipe "monkey::test_virtualmonkey_api_connection", "Testing API connectivity for virtualmonkey."
 recipe "monkey::setup_rightcloud_private_api", "Setting up rightcloud_private_api gem."
 
-#attribute "memcached/tcp_port",
-#  :display_name => "Memcached TCP Port",
-#  :description => "The TCP port to use for connections. Default : 11211",
-#  :required => "recommended",
-#  :default => "11211",
-#  :recipes => ["memcached::install_server", "memcached::default"]
-#
+attribute "monkey/git/user",
+  :display_name => "Git Username",
+  :description => "Git Username to be used with github",
+  :required => "required",
+  :recipes => ["monkey::setup_git"]
+
+attribute "monkey/git/email",
+  :display_name => "Git Email",
+  :description => "Git email address to be used with github",
+  :required => "required",
+  :recipes => ["monkey::setup_git"]
+
