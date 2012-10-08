@@ -43,8 +43,8 @@ gems.each do |gem|
 end unless gems.empty?
 
 git "/root/rest_connection" do
-  repository 'git@github.com:rightscale/rest_connection.git'
-  reference 'master'
+  repository node[:monkey][:rest][:repo_url]
+  reference node[:monkey][:rest][:repo_branch]
   action :sync
 end
 
@@ -56,8 +56,8 @@ bash "Building rest_connection gem" do
 end
 
 ruby "Obtaining the version of built rest_connection gem" do
-  node[:monkey][:rest][:version]=`cat /root/rest_connection/VERSION`
-  node[:monkey][:rest][:version].chomp!
+  require 'fileutils'
+  node[:monkey][:rest][:version] = ::File.open("/root/rest_connection/VERSION", "r").read.chomp
 end
 
 log "  Installing rest_connection version #{node[:monkey][:rest][:version]}"

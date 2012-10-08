@@ -68,7 +68,7 @@ end unless gems.empty?
 log "  Checking out VirtualMonkey repository from: #{node[:monkey][:virtualmonkey][:monkey_repo_url]}"
 git "/root/virtualmonkey" do
   repository node[:monkey][:virtualmonkey][:monkey_repo_url]
-  reference 'master'
+  reference node[:monkey][:virtualmonkey][:monkey_repo_branch]
   action :sync
 end
 
@@ -87,8 +87,8 @@ end
 
 log "  Obtaining the built version of VirtualMonkey gem"
 ruby "Obtaining the version of built virtualmonkey gem" do
-  node[:monkey][:virtualmonkey][:version] = `cat /root/virtualmonkey/VERSION`
-  node[:monkey][:virtualmonkey][:version].chomp!
+  require 'fileutils'
+  node[:monkey][:virtualmonkey][:version] = ::File.open("/root/virtualmonkey/VERSION", "r").read.chomp
 end
 
 # Installing the VirtualMonkey gem
@@ -121,5 +121,11 @@ bash "Checkout virtualmonkey collateral project" do
     bin/monkey collateral clone "#{node[:monkey][:virtualmonkey][:collateral_repo_url]}" $collat_name
   EOH
 end
+
+#git "/root/virtualmonkey/collateral/servertemplate_tests" do
+#  repository node[:monkey][:virtualmonkey][:collateral_repo_url]
+#  reference node[:monkey][:virtualmonkey][:collateral_repo_branch]
+#  action :sync
+#end
 
 rightscale_marker :end
