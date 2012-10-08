@@ -16,11 +16,17 @@ node[:monkey][:virtualmonkey][:packages] = value_for_platform(
   }
 )
 
+# Installing packages required by VirtualMonkey
+
+log "  Installing packages required by VirtualMonkey"
 packages = node[:monkey][:virtualmonkey][:packages]
 packages.each do |pkg|
   package pkg
 end unless packages.empty?
 
+# Creating rubyforge configuration directory
+
+log "  Creating rubyforge configutation directory"
 directory "/root/.rubyforge" do
   owner "root"
   group "root"
@@ -28,11 +34,17 @@ directory "/root/.rubyforge" do
   action :create
 end
 
+# Creating rubyforge configuration file from template
+
+log "  Creating rubyforge config file from template"
 template "/root/.rubyforge/user-config.yml" do
   source "rubyforge_user_config.erb"
   cookbook "monkey"
 end
 
+# Updating rubygems
+
+log "  Updating rubygems"
 bash "Update Rubygems" do
   flags "-ex"
   code <<-EOH
@@ -40,6 +52,9 @@ bash "Update Rubygems" do
   EOH
 end
 
+# Installing gems required by VirtualMonkey
+
+log "  Installing gems required by VirtualMonkey"
 gems = node[:monkey][:virtualmonkey][:gem_packages]
 gems.each do |gem|
   gem_package gem do
@@ -48,12 +63,18 @@ gems.each do |gem|
   end
 end unless gems.empty?
 
+# Checking out VirtualMonkey repository
+
+log "  Checking out VirtualMonkey repository from: #{node[:monkey][:virtualmonkey][:monkey_repo_url]}"
 git "/root/virtualmonkey" do
-  repository 'git@github.com:rightscale/virtualmonkey.git'
+  repository node[:monkey][:virtualmonkey][:monkey_repo_url]
   reference 'master'
   action :sync
 end
 
+# Building VirtualMonkey gem
+
+log "  Building VirtualMonkey gem"
 bash "Building virtualmonkey gem" do
   flags "-ex"
   code <<-EOH
@@ -62,23 +83,36 @@ bash "Building virtualmonkey gem" do
   EOH
 end
 
+# Obtaining the built version of VirtualMonkey gem
+
+log "  Obtaining the built version of VirtualMonkey gem"
 ruby "Obtaining the version of built virtualmonkey gem" do
   node[:monkey][:virtualmonkey][:version] = `cat /root/virtualmonkey/VERSION`
   node[:monkey][:virtualmonkey][:version].chomp!
 end
 
+# Installing the VirtualMonkey gem
+
+log "  Installing the VirtualMonkey gem version #{node[:monkey][:virtualmonkey][:version]}"
 gem_package "virtualmonkey" do
   gem_binary "/usr/bin/gem"
   source "/root/virtualmonkey/pkg/virtualmonkey-#{node[:monkey][:virtualmonkey][:version]}.gem"
   action :install
 end
 
+# Installing right_cloud_api gem from the template file found in rightscale cookbook
+# The rightscale::install_tools installs this gem in sandbox ruby and I want it in system ruby
+
+log "  Installing the right_cloud_api gem"
 gem_package "right_cloud_api" do
   gem_binary "/usr/bin/gem"
   source ::File.join(::File.dirname(__FILE__), "..", "..", "rightscale", "files", "default", "right_cloud_api-0.0.0.gem")
   action :install
 end
 
+# Checking out VirtualMonkey collateral repo and setting up
+
+log "  Checking out VirtualMonkey collateral repo from #{node[:monkey][:virtualmonkey][:collateral_repo_url]} and setting up"
 bash "Checkout virtualmonkey collateral project" do
   flags "-ex"
   code <<-EOH
