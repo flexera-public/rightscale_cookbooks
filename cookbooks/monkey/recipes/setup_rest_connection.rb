@@ -39,13 +39,6 @@ gems.each do |gem|
   end
 end unless gems.empty?
 
-#repo "default" do
-#  destination '/root/rest_connection'
-#  action 'pull'
-#  repository 'git@github.com:rightscale/rest_connection.git'
-#  persist false
-#end
-
 git "/root/rest_connection" do
   repository 'git@github.com:rightscale/rest_connection.git'
   reference 'master'
