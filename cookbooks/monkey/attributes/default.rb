@@ -18,7 +18,6 @@ set[:monkey][:rest][:gem_packages] = [
   "diff-lcs",
   "rspec"
 ]
-set[:monkey][:rest][:version] = ""
 
 set[:monkey][:virtualmonkey][:packages] = []
 set[:monkey][:virtualmonkey][:gem_packages] = [
@@ -36,4 +35,3 @@ set[:monkey][:virtualmonkey][:gem_packages] = [
   "right_http_connection",
   "right_aws"
 ]
-set[:monkey][:virtualmonkey][:version] = ""
