@@ -149,6 +149,7 @@ action :detach_request do
   log "  Detach request for #{new_resource.backend_ip}"
 
   lb "Detaching from CLB" do
+    provider "lb_clb"
     backend_ip new_resource.backend_ip
     backend_port new_resource.backend_port
     service_region new_resource.service_region
