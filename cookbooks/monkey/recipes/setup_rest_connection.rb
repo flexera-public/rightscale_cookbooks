@@ -48,26 +48,12 @@ git "/root/rest_connection" do
   action :sync
 end
 
-bash "Building rest_connection gem" do
+bash "Building and installing rest_connection gem" do
   code <<-EOH
     cd /root/rest_connection
     rake build
+    gem install pkg/rest_connection-*.gem
   EOH
-end
-
-ruby_block "Obtaining the version of built rest_connection gem" do
-  block do
-    node[:monkey][:rest][:version] = File.open("/root/rest_connection/VERSION", "r").read.chomp
-    Chef::Log.info "rest_connection version is: #{node[:monkey][:rest][:version]}"
-  end
-  only_if { ::File.exists?("/root/rest_connection/VERSION") }
-end
-
-log "  Installing rest_connection version #{node[:monkey][:rest][:version]}"
-gem_package "rest_connection" do
-  gem_binary "/usr/bin/gem"
-  source "/root/rest_connection/pkg/rest_connection-#{node[:monkey][:rest][:version]}.gem"
-  action :install
 end
 
 log "  Creating rest_connection configuration directory"

@@ -80,27 +80,8 @@ bash "Building virtualmonkey gem" do
   code <<-EOH
     cd /root/virtualmonkey
     rake build
+    gem install pkg/virtualmonkey-*.gem
   EOH
-end
-
-# Obtaining the built version of VirtualMonkey gem
-
-log "  Obtaining the built version of VirtualMonkey gem"
-ruby_block "Obtaining the version of built virtualmonkey gem" do
-  block do
-    node[:monkey][:virtualmonkey][:version] = File.open("/root/virtualmonkey/VERSION", "r").read.chomp
-    Chef::Log.info "virtualmonkey version is: #{node[:monkey][:virtualmonkey][:version]}"
-  end
-  only_if { ::File.exists?("/root/rest_connection/VERSION") }
-end 
-
-# Installing the VirtualMonkey gem
-
-log "  Installing the VirtualMonkey gem version #{node[:monkey][:virtualmonkey][:version]}"
-gem_package "virtualmonkey" do
-  gem_binary "/usr/bin/gem"
-  source "/root/virtualmonkey/pkg/virtualmonkey-#{node[:monkey][:virtualmonkey][:version]}.gem"
-  action :install
 end
 
 # Installing right_cloud_api gem from the template file found in rightscale cookbook
