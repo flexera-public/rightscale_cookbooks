@@ -226,7 +226,6 @@ found in the <tt>do_*</tt> and <tt>setup_*</tt> recipes in the cookbook.
 
  app "default" do
    persist true
-end
    provider node[:app][:provider]
    packages node[:app][:packages]
    action :install

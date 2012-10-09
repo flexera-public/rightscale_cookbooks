@@ -32,7 +32,7 @@ detection recipe is configured to run every 15 minutes by default.
 
 == REQUIREMENTS:
 
- * Requires a virtual machine launched from a RightScale managed RightImage
+* Requires a virtual machine launched from a RightScale managed RightImage
 
 == SETUP:
 
