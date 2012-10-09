@@ -52,7 +52,7 @@ bash "Building and installing rest_connection gem" do
   code <<-EOH
     cd /root/rest_connection
     rake build
-    gem install pkg/rest_connection-*.gem
+    gem install pkg/rest_connection-*.gem --no-rdoc --no-ri
   EOH
 end
 
