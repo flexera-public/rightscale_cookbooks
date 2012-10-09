@@ -67,18 +67,6 @@ attribute "monkey/fog/rackspace_uk_username_test",
   :required => "required",
   :recipes => ["monkey::update_fog_credentials"]
 
-attribute "monkey/fog/aws_publish_key",
-  :display_name => "AWS_PUBLISH_KEY",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/aws_publish_secret_key",
-  :display_name => "AWS_PUBLISH_SECRET_KEY",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
 attribute "monkey/fog/aws_access_key_id_rstemp",
   :display_name => "AWS_ACCESS_KEY_ID_RSTEMP",
   :description => "",
@@ -111,6 +99,12 @@ attribute "monkey/fog/rackspace_managed_auth_key",
 
 attribute "monkey/fog/rackspace_managed_username",
   :display_name => "RACKSPACE_MANAGED_USERNAME_US_TEST",
+  :description => "",
+  :required => "required",
+  :recipes => ["monkey::update_fog_credentials"]
+
+attribute "monkey/fog/rackspace_auth_url_uk_test",
+  :display_name => "RACKSPACE_AUTH_URL_UK_TEST",
   :description => "",
   :required => "required",
   :recipes => ["monkey::update_fog_credentials"]
