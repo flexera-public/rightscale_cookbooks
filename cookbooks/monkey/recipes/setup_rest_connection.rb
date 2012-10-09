@@ -55,9 +55,12 @@ bash "Building rest_connection gem" do
   EOH
 end
 
-ruby "Obtaining the version of built rest_connection gem" do
-  require 'fileutils'
-  node[:monkey][:rest][:version] = ::File.open("/root/rest_connection/VERSION", "r").read.chomp
+ruby_block "Obtaining the version of built rest_connection gem" do
+  block do
+    node[:monkey][:rest][:version] = File.open("/root/rest_connection/VERSION", "r").read.chomp
+    Chef::Log.info "rest_connection version is: #{node[:monkey][:rest][:version]}"
+  end
+  only_if { ::File.exists?("/root/rest_connection/VERSION") }
 end
 
 log "  Installing rest_connection version #{node[:monkey][:rest][:version]}"
