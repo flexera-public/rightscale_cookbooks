@@ -86,10 +86,13 @@ end
 # Obtaining the built version of VirtualMonkey gem
 
 log "  Obtaining the built version of VirtualMonkey gem"
-ruby "Obtaining the version of built virtualmonkey gem" do
-  require 'fileutils'
-  node[:monkey][:virtualmonkey][:version] = ::File.open("/root/virtualmonkey/VERSION", "r").read.chomp
-end
+ruby_block "Obtaining the version of built virtualmonkey gem" do
+  block do
+    node[:monkey][:virtualmonkey][:version] = File.open("/root/virtualmonkey/VERSION", "r").read.chomp
+    Chef::Log.info "virtualmonkey version is: #{node[:monkey][:virtualmonkey][:version]}"
+  end
+  only_if { ::File.exists?("/root/rest_connection/VERSION") }
+end 
 
 # Installing the VirtualMonkey gem
 
