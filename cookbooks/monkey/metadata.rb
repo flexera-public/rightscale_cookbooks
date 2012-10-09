@@ -19,127 +19,127 @@ recipe "monkey::setup_virtualmonkey", "Setting up virtualmonkey."
 recipe "monkey::update_fog_credentials", "Setting up or updating existing credentials for fog configuration."
 recipe "monkey::test_virtualmonkey_api_connection", "Testing API connectivity for virtualmonkey."
 
-attribute "monkey/fog/aws_access_key_id"
+attribute "monkey/fog/aws_access_key_id",
   :display_name => "AWS_ACCESS_KEY_ID",
   :description => "",
   :required => "required",
   :recipes => ["monkey::update_fog_credentials"]
 
-attribute "monkey/fog/aws_secret_access_key"
+attribute "monkey/fog/aws_secret_access_key",
   :display_name => "AWS_SECRET_ACCESS_KEY",
   :description => "",
   :required => "required",
   :recipes => ["monkey::update_fog_credentials"]
 
-attribute "monkey/fog/aws_access_key_id_test"
+attribute "monkey/fog/aws_access_key_id_test",
   :display_name => "AWS_ACCESS_KEY_ID_TEST_ACCT",
   :description => "",
   :required => "required",
   :recipes => ["monkey::update_fog_credentials"]
 
-attribute "monkey/fog/aws_secret_access_key_test"
+attribute "monkey/fog/aws_secret_access_key_test",
   :display_name => "AWS_SECRET_ACCESS_KEY_TEST_ACCT",
   :description => "",
   :required => "required",
   :recipes => ["monkey::update_fog_credentials"]
 
-attribute "monkey/fog/rackspace_api_key"
+attribute "monkey/fog/rackspace_api_key",
   :display_name => "RACKSPACE_API_KEY",
   :description => "",
   :required => "required",
   :recipes => ["monkey::update_fog_credentials"]
 
-attribute "monkey/fog/rackspace_username"
+attribute "monkey/fog/rackspace_username",
   :display_name => "RACKSPACE_USERNAME",
   :description => "",
   :required => "required",
   :recipes => ["monkey::update_fog_credentials"]
 
-attribute "monkey/fog/rackspace_api_uk_key_test"
+attribute "monkey/fog/rackspace_api_uk_key_test",
   :display_name => "RACKSPACE_API_UK_KEY_TEST",
   :description => "",
   :required => "required",
   :recipes => ["monkey::update_fog_credentials"]
 
-attribute "monkey/fog/rackspace_uk_username_test"
+attribute "monkey/fog/rackspace_uk_username_test",
   :display_name => "RACKSPACE_UK_USERNAME_TEST",
   :description => "",
   :required => "required",
   :recipes => ["monkey::update_fog_credentials"]
 
-attribute "monkey/fog/aws_publish_key"
+attribute "monkey/fog/aws_publish_key",
   :display_name => "AWS_PUBLISH_KEY",
   :description => "",
   :required => "required",
   :recipes => ["monkey::update_fog_credentials"]
 
-attribute "monkey/fog/aws_publish_secret_key"
+attribute "monkey/fog/aws_publish_secret_key",
   :display_name => "AWS_PUBLISH_SECRET_KEY",
   :description => "",
   :required => "required",
   :recipes => ["monkey::update_fog_credentials"]
 
-attribute "monkey/fog/aws_access_key_id_rstemp"
+attribute "monkey/fog/aws_access_key_id_rstemp",
   :display_name => "AWS_ACCESS_KEY_ID_RSTEMP",
   :description => "",
   :required => "required",
   :recipes => ["monkey::update_fog_credentials"]
 
-attribute "monkey/fog/aws_secret_access_key_rstemp"
+attribute "monkey/fog/aws_secret_access_key_rstemp",
   :display_name => "AWS_SECRET_ACCESS_KEY_RSTEMP",
   :description => "",
   :required => "required",
   :recipes => ["monkey::update_fog_credentials"]
 
-attribute "monkey/fog/softlayer_api_key"
+attribute "monkey/fog/softlayer_api_key",
   :display_name => "SOFTLAYER_SECRET_ACCESS_KEY",
   :description => "",
   :required => "required",
   :recipes => ["monkey::update_fog_credentials"]
 
-attribute "monkey/fog/softlayer_username"
+attribute "monkey/fog/softlayer_username",
   :display_name => "SOFTLAYER_ACCESS_KEY_ID",
   :description => "",
   :required => "required",
   :recipes => ["monkey::update_fog_credentials"]
 
-attribute "monkey/fog/rackspace_managed_auth_key"
+attribute "monkey/fog/rackspace_managed_auth_key",
   :display_name => "RACKSPACE_MANAGED_AUTH_KEY_US_TEST",
   :description => "",
   :required => "required",
   :recipes => ["monkey::update_fog_credentials"]
 
-attribute "monkey/fog/rackspace_managed_username"
+attribute "monkey/fog/rackspace_managed_username",
   :display_name => "RACKSPACE_MANAGED_USERNAME_US_TEST",
   :description => "",
   :required => "required",
   :recipes => ["monkey::update_fog_credentials"]
 
-attribute "monkey/fog/google_access_key_id"
+attribute "monkey/fog/google_access_key_id",
   :display_name => "GC_ACCESS_KEY_ID",
   :description => "",
   :required => "required",
   :recipes => ["monkey::update_fog_credentials"]
 
-attribute "monkey/fog/google_secret_access_key"
+attribute "monkey/fog/google_secret_access_key",
   :display_name => "GC_SECRET_ACCESS_KEY",
   :description => "",
   :required => "required",
   :recipes => ["monkey::update_fog_credentials"]
 
-attribute "monkey/fog/azure_access_key_id"
+attribute "monkey/fog/azure_access_key_id",
   :display_name => "AZURE_ACCESS_KEY_ID",
   :description => "",
   :required => "required",
   :recipes => ["monkey::update_fog_credentials"]
 
-attribute "monkey/fog/azure_secret_access_key"
+attribute "monkey/fog/azure_secret_access_key",
   :display_name => "AZURE_SECRET_ACCESS_KEY",
   :description => "",
   :required => "required",
   :recipes => ["monkey::update_fog_credentials"]
 
-attribute "monkey/fog/s3_bucket"
+attribute "monkey/fog/s3_bucket",
   :display_name => "S3_BUCKET_NAME",
   :description => "",
   :required => "required",
