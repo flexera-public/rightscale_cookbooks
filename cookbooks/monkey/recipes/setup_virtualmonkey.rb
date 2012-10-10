@@ -96,20 +96,24 @@ end
 
 # Checking out VirtualMonkey collateral repo and setting up
 
-log "  Checking out VirtualMonkey collateral repo from #{node[:monkey][:virtualmonkey][:collateral_repo_url]} and setting up"
-bash "Checkout virtualmonkey collateral project" do
-  flags "-ex"
-  code <<-EOH
-    collat_name=`basename "#{node[:monkey][:virtualmonkey][:collateral_repo_url]}" ".git"`
-    cd /root/virtualmonkey
-    bin/monkey collateral clone "#{node[:monkey][:virtualmonkey][:collateral_repo_url]}" $collat_name
-  EOH
+log "  Creating collateral directory"
+directory "/root/virtualmonkey/collateral" do
+  user "root"
+  group "root"
+  mode "0755"
+  action :create
 end
 
-#git "/root/virtualmonkey/collateral/servertemplate_tests" do
-#  repository node[:monkey][:virtualmonkey][:collateral_repo_url]
-#  reference node[:monkey][:virtualmonkey][:collateral_repo_branch]
-#  action :sync
-#end
+log "  Obtaining collateral project name from repo URL"
+ruby "Obtaining Collateral Project name" do
+  node[:monkey][:virtualmonkey][:collateral_name] = `basename "#{node[:monkey][:virtualmonkey][:collateral_repo_url]}" ".git"`.chomp
+end
+
+log "  Checking out collateral repo to #{node[:monkey][:virtualmonkey][:collateral_name]}"
+git "/root/virtualmonkey/collateral/#{node[:monkey][:virtualmonkey][:collateral_name]}" do
+  repository node[:monkey][:virtualmonkey][:collateral_repo_url]
+  reference node[:monkey][:virtualmonkey][:collateral_repo_branch]
+  action :sync
+end
 
 rightscale_marker :end
