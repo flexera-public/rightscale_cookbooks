@@ -9,9 +9,6 @@
 * Requires "app" Light Weight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
   or your own implementation of "app" resource. See "app" cookbook README for details.
 * Requires a VM launched from a RightScale managed RightImage
-* Tested on CentOS 5.8, CentOS 6.2, and CentOS 6.3 RightImages
-* Tested on Ubuntu 10.04 and Ubuntu 12.04 RightImages
-* Tested on RedHat 5.8 RightImage
 
 == COOKBOOKS DEPENDENCIES:
 Please see <tt>metadata.rb</tt> file for the latest dependencies.
@@ -25,8 +22,8 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 * <tt>db</tt>
 
 == KNOWN LIMITATIONS:
- Currently apache uses a static configuration and makes no tuning changes for resources available on larger instances.
- However, configuration can be overwritten using cookbook override techniques. See {Override Chef Cookbooks}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Override_Chef_Cookbooks]
+* Currently apache uses a static configuration and makes no tuning changes for resources available on larger instances.
+  However, configuration can be overwritten using cookbook override techniques. See {Override Chef Cookbooks}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Override_Chef_Cookbooks]
 
 == SETUP/USAGE:
 
@@ -126,7 +123,7 @@ For normal operations it requires the "app" resource which will act as the inter
 
 For usage examples please see corresponding section in the <tt>app</tt> cookbook's README.
 
-= LICENSE:
+== LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 RightScale Terms of Service available at http://www.rightscale.com/terms.php and,

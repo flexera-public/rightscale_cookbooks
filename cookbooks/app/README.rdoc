@@ -77,7 +77,7 @@ file's description.
 == DETAILS:
 
 === General
-This cookbook is can only be used in conjunction with cookbooks that contain
+This cookbook can only be used in conjunction with cookbooks that contain
 Lightweight Providers which implement the 'app' interface. See the RightScale
 <tt>app_php</tt> cookbook for an example.
 
@@ -107,7 +107,7 @@ For more info please see: {Load Balancer Setups}[http://support.rightscale.com/0
 <b>app_add_listen_port</b>
 Adds a port to the apache listen 'ports.conf' file and node attribute.
 
-Create node[:apache][:listen_ports] - array of strings for the web server to listen on.
+Create <tt>node[:apache][:listen_ports]</tt> - array of strings for the web server to listen on.
 
 This definition created specifically for the <tt>apache2</tt> cookbook at this time.
 
@@ -226,7 +226,6 @@ found in the <tt>do_*</tt> and <tt>setup_*</tt> recipes in the cookbook.
 
  app "default" do
    persist true
-end
    provider node[:app][:provider]
    packages node[:app][:packages]
    action :install
@@ -247,7 +246,7 @@ end
  end
 
 
-= LICENSE:
+== LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 RightScale Terms of Service available at http://www.rightscale.com/terms.php and,

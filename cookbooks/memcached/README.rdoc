@@ -50,7 +50,7 @@ These are the settings used in recipes and templates. Default values are noted.
 
 * <tt>memcached_collectd.conf.erb</tt> - Memcached collectd plugin template. Used is the <tt>memcached::install_server</tt> recipe.
 
-= LICENSE:
+== LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to
 the RightScale Terms of Service available at http://www.rightscale.com/terms.php
