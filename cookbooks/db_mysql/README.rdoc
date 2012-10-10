@@ -46,7 +46,7 @@ override repository please see: {Override Chef Cookbooks}[http://support.rightsc
 The 'db' implementation is defined by a Lightweight Provider, which can be
 found in the <tt>providers/default.rb</tt> file.
 
-= LICENSE:
+== LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to
 the RightScale Terms of Service available at http://www.rightscale.com/terms.php

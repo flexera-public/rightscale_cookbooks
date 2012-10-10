@@ -28,10 +28,10 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
   using a RightScale ServerTemplate, this will also automatically add the common
   database attributes to your ServerTemplate's inputs.
 
-* The default recipe for the cookbook that contains the db provider must also be
+* The default_version recipe for the cookbook that contains the db provider must also be
   added to your runlist. For example:
 
-    db_mysql::default
+    db_mysql::default_5_5
 
   This will load your provider and pull in any database specific attributes as
   inputs.
@@ -132,7 +132,7 @@ When writing your own database Lightweight Provider:
 
     depends "db"
 
-= LICENSE:
+== LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to
 the RightScale Terms of Service available at http://www.rightscale.com/terms.php

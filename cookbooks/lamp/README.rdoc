@@ -28,7 +28,7 @@ The <tt>lamp::default</tt> sets up attributes for the <tt>app</tt> and
 <tt>db_mysql</tt> cookbooks: it sets the app server to listen on port 80, and it
 sets the database server to listen only on <tt>localhost</tt>.
 
-= LICENSE:
+== LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to
 the RightScale Terms of Service available at http://www.rightscale.com/terms.php

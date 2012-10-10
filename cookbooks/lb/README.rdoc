@@ -62,7 +62,9 @@ other recipes. This recipe is set to run in a periodic reconverge, which, by def
 
 == KNOWN LIMITATIONS:
 
-= LICENSE
+There are no known limitations.
+
+== LICENSE
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
