@@ -12,7 +12,7 @@ node[:monkey][:virtualmonkey][:packages] = value_for_platform(
     "default" => [ "libxml2-devel", "libxslt-devel", "file" ]
   },
   "ubuntu" => {
-    "default" => [ "libxml2-dev", "libxml-ruby", "libxslt-ruby", "libxslt1-dev", "libmagic-dev" ]
+    "default" => [ "libxml2-dev", "libxml-ruby", "libxslt1-dev", "libmagic-dev" ]
   }
 )
 
