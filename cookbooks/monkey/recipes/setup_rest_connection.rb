@@ -29,6 +29,7 @@ bash "Update Rubygems" do
   code <<-EOH
     gem update --system --no-rdoc --no-ri
   EOH
+  not_if { node[:platform] == "ubuntu"  }
 end
 
 # Installing gem dependencies
