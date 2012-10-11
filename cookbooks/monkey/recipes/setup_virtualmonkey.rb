@@ -73,6 +73,15 @@ git "/root/virtualmonkey" do
   action :sync
 end
 
+# By default chef changes the checked out branch to a branch named 'deploy' locally
+# To make sure we can pull/push changes, let's checkout the correct branch again!
+
+log "  Making super sure that we're on the right branch"
+execute "git checkout" do
+  cwd "/root/virtualmonkey"
+  command "git checkout #{node[:monkey][:virtualmonkey][:monkey_repo_branch]}"
+end
+
 # Building VirtualMonkey gem
 
 log "  Building VirtualMonkey gem"
@@ -115,6 +124,12 @@ git "/root/virtualmonkey/collateral/#{node[:monkey][:virtualmonkey][:collateral_
   repository node[:monkey][:virtualmonkey][:collateral_repo_url]
   reference node[:monkey][:virtualmonkey][:collateral_repo_branch]
   action :sync
+end
+
+log "  Making super sure that we're on the right branch"
+execute "git checkout" do
+  cwd "/root/virtualmonkey/collateral/#{node[:monkey][:virtualmonkey][:collateral_name]}"
+  command "git checkout #{node[:monkey][:virtualmonkey][:collateral_repo_branch]}"
 end
 
 rightscale_marker :end
