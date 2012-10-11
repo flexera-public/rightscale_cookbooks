@@ -49,6 +49,15 @@ git "/root/rest_connection" do
   action :sync
 end
 
+# By default chef changes the checked out branch to a branch named 'deploy' locally
+# To make sure we can pull/push changes, let's checkout the correct branch again!
+
+log "  Making super sure that we're on the right branch"
+execute "git checkout" do
+   cwd "/root/rest_connection"
+   command "git checkout #{node[:monkey][:rest][:repo_branch]}"
+end
+
 bash "Building and installing rest_connection gem" do
   code <<-EOH
     cd /root/rest_connection
