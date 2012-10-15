@@ -6,6 +6,7 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 rightscale_marker :begin
+
 version="5.5"
 node[:db][:version] = version
 node[:db][:provider] = "db_mysql"

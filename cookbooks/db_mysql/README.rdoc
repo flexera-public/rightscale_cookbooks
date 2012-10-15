@@ -19,13 +19,22 @@ There are no known limitations.
 
 == SETUP:
 
-* Place the <tt>db_mysql::default</tt> recipe into your runlist to load the
-  MySQL provider, tuning parameters, as well as other MySQL-specific attributes
+* Place the <tt>db_mysql::setup_server_<version></tt> recipe into your runlist to
+  load the MySQL provider, tuning parameters, as well as other MySQL-specific attributes
   into the node as inputs.
 
-* Place the <tt>db::default</tt> recipe into your runlist to set up the 'db' resource.
-  When using a RightScale ServerTemplate, this will also automatically add the
-  common database attributes to your ServerTemplate's inputs.
+* Place the <tt>db::install_server</tt> recipe after setup_server_<version> recipe in
+  provider cookbooks to setup generic server and client inputs. This will also include
+  <tt>db::default</tt> recipe to apply all client inputs and install client. For example:
+
+    db_mysql::setup_server_5_5
+    db::install_server
+
+  This will set up and install MySQL 5.5 client and server.
+
+* Place the <tt>db::default</tt> recipe into your runlist to pull in generic client inputs,
+  provide provider selection input and install client. Set db/provider_type input in
+  RightScale ServerTemplate to set provider and version for 'db' resource.
 
 == USAGE:
 

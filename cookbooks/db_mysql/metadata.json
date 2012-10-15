@@ -31,8 +31,8 @@
       "default": "MIXED",
       "type": "string",
       "recipes": [
-        "db_mysql::default_5_1",
-        "db_mysql::default_5_5"
+        "db_mysql::setup_server_5_1",
+        "db_mysql::setup_server_5_5"
       ],
       "display_name": "MySQL Binlog Format",
       "description": "Defines the format of your MySQL stored binlog files. Sets the 'binlog_format' option in the MySQL config file. Accepted options: STATEMENT, ROW, and MIXED"
@@ -46,8 +46,8 @@
       "default": "600",
       "type": "string",
       "recipes": [
-        "db_mysql::default_5_1",
-        "db_mysql::default_5_5"
+        "db_mysql::setup_server_5_1",
+        "db_mysql::setup_server_5_5"
       ],
       "display_name": "MySQL Init Timeout",
       "description": "Defines timeout to wait for a MySQL socket connection before a READ LOCK. Default: 600"
@@ -61,8 +61,8 @@
       "default": "/mnt/ephemeral/mysqltmp",
       "type": "string",
       "recipes": [
-        "db_mysql::default_5_1",
-        "db_mysql::default_5_5"
+        "db_mysql::setup_server_5_1",
+        "db_mysql::setup_server_5_5"
       ],
       "display_name": "MySQL Temp Directory Destination",
       "description": "Defines the location of your MySQL temp directory. Sets the 'tmpdir' variable in the MySQL config file. Example: /tmp"
@@ -76,8 +76,8 @@
       "default": "/mnt/ephemeral/mysql-binlogs/mysql-bin",
       "type": "string",
       "recipes": [
-        "db_mysql::default_5_1",
-        "db_mysql::default_5_5"
+        "db_mysql::setup_server_5_1",
+        "db_mysql::setup_server_5_5"
       ],
       "display_name": "MySQL Binlog Destination",
       "description": "Defines the filename and location of your MySQL stored binlog files. Sets the 'log-bin' variable in the MySQL config file. Example: /mnt/mysql-binlogs/mysql-bin"
@@ -92,8 +92,8 @@
       "default": "shared",
       "type": "string",
       "recipes": [
-        "db_mysql::default_5_1",
-        "db_mysql::default_5_5"
+        "db_mysql::setup_server_5_1",
+        "db_mysql::setup_server_5_5"
       ],
       "display_name": "Server Usage",
       "description": "When set to 'dedicated' all server resources are allocated to MySQL. When set to 'shared' less resources are allocated for MySQL so that it can be run concurrently with other apps like Apache and Rails for example.  Example: shared"
@@ -107,7 +107,8 @@
       ],
       "type": "string",
       "recipes": [
-        "db_mysql::default"
+        "db_mysql::setup_server_5_1",
+        "db_mysql::setup_server_5_5"
       ],
       "display_name": "MySQL Version",
       "description": "Specify the MySQL version that matches the ServerTemplate's specified MySQL version. Note: MySQL 5.5 is not supported on Ubuntu 10.04. Example: 5.5"
@@ -119,14 +120,13 @@
   "platforms": {
   },
   "maintainer": "RightScale, Inc.",
-  "long_description": "= RightScale MySQL Database Cookbook\n\n== DESCRIPTION:\n\nProvides the MySQL implementation of the 'db' resource to install and manage\nMySQL database stand-alone servers and clients.\n\n== REQUIREMENTS:\n\n* Requires a server launched from a RightScale managed RightImage.\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n== KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n== SETUP:\n\n* Place the <tt>db_mysql::default</tt> recipe into your runlist to load the\n  MySQL provider, tuning parameters, as well as other MySQL-specific attributes\n  into the node as inputs.\n\n* Place the <tt>db::default</tt> recipe into your runlist to set up the 'db' resource.\n  When using a RightScale ServerTemplate, this will also automatically add the\n  common database attributes to your ServerTemplate's inputs.\n\n== USAGE:\n\n=== Basic usage\n\nOnce setup, use the recipes in the 'db' cookbook to install and manage your\nMySQL database servers and clients. See the <tt>db/README.rdoc</tt> for usage\ndetails.\n\n=== MySQL Tuning and my.cnf\n\nCustom tuning parameters can be applied by overriding the\n<tt>mysql_tuning.rb</tt> attributes file. For more information and an example\noverride repository please see: {Override Chef Cookbooks}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Override_Chef_Cookbooks].\n\n== DETAILS:\n\nThe 'db' implementation is defined by a Lightweight Provider, which can be\nfound in the <tt>providers/default.rb</tt> file.\n\n= LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to\nthe RightScale Terms of Service available at http://www.rightscale.com/terms.php\nand, if applicable, other agreements such as a RightScale Master Subscription\nAgreement.\n",
+  "long_description": "= RightScale MySQL Database Cookbook\n\n== DESCRIPTION:\n\nProvides the MySQL implementation of the 'db' resource to install and manage\nMySQL database stand-alone servers and clients.\n\n== REQUIREMENTS:\n\n* Requires a server launched from a RightScale managed RightImage.\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n== KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n== SETUP:\n\n* Place the <tt>db_mysql::setup_server_<version></tt> recipe into your runlist to\n  load the MySQL provider, tuning parameters, as well as other MySQL-specific attributes\n  into the node as inputs.\n\n* Place the <tt>db::install_server</tt> recipe after setup_server_<version> recipe in\n  provider cookbooks to setup generic server and client inputs. This will also include\n  <tt>db::default</tt> recipe to apply all client inputs and install client. For example:\n\n    db_mysql::setup_server_5_5\n    db::install_server\n\n  This will set up and install MySQL 5.5 client and server.\n\n* Place the <tt>db::default</tt> recipe into your runlist to pull in generic client inputs,\n  provide provider selection input and install client. Set db/provider_type input in\n  RightScale ServerTemplate to set provider and version for 'db' resource.\n\n== USAGE:\n\n=== Basic usage\n\nOnce setup, use the recipes in the 'db' cookbook to install and manage your\nMySQL database servers and clients. See the <tt>db/README.rdoc</tt> for usage\ndetails.\n\n=== MySQL Tuning and my.cnf\n\nCustom tuning parameters can be applied by overriding the\n<tt>mysql_tuning.rb</tt> attributes file. For more information and an example\noverride repository please see: {Override Chef Cookbooks}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Override_Chef_Cookbooks].\n\n== DETAILS:\n\nThe 'db' implementation is defined by a Lightweight Provider, which can be\nfound in the <tt>providers/default.rb</tt> file.\n\n= LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to\nthe RightScale Terms of Service available at http://www.rightscale.com/terms.php\nand, if applicable, other agreements such as a RightScale Master Subscription\nAgreement.\n",
   "version": "13.2.0",
   "recommendations": {
   },
   "recipes": {
-    "db_mysql::default_5_1": "Set the DB MySQL provider. Sets version 5.1 and node variables specific to MySQL 5.1.",
-    "db_mysql::default": "Set the DB MySQL provider. Sets version and node variables specific to the chosen MySQL version.",
-    "db_mysql::default_5_5": "Set the DB MySQL provider. Sets version 5.5 and node variables specific to MySQL 5.5."
+    "db_mysql::setup_server_5_1": "Set the DB MySQL provider. Sets version 5.1 and node variables specific to MySQL 5.1.",
+    "db_mysql::setup_server_5_5": "Set the DB MySQL provider. Sets version 5.5 and node variables specific to MySQL 5.5."
   },
   "groupings": {
   },
