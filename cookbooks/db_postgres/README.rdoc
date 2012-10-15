@@ -16,8 +16,6 @@ found in the providers/default.rb file.
 
 * Requires a VM launched from a RightScale managed RightImage
 
-* Tested on CentOS 5.6 RightImage
-
 * Supports PostgreSQL 9.1
 
 * Needs RightScale ServerTemplate tools gem installed on system.
@@ -34,21 +32,30 @@ There are no known limitations.
 
 == SETUP:
 
-* Place the <tt>db::default</tt> recipe into your runlist to set up the db resource.
-  When using a RightScale ServerTemplate, it will automatically add the
-  common database attributes to your ServerTemplate's inputs.
+* Place the <tt>db_postgres::setup_server_<version></tt> recipe into your runlist to
+  load the PostgreSQL provider, tuning parameters, as well as other PostgreSQL-specific
+  attributes into the node as inputs.
 
-* Also, place the <tt>db_postgres::default</tt> recipe into your runlist to load the
-  PostgreSQL provider, tuning parameters, as well as other PostgreSQL-specific
-  attributes in as inputs.
+* Place the <tt>db::install_server</tt> recipe after setup_server_<version> recipe in
+  provider cookbooks to setup generic server and client inputs. This will also include
+  <tt>db::default</tt> recipe to apply all client inputs and install client. For example:
+
+    db_postgres::setup_server_9_1
+    db::install_server
+
+  This will set up and install PostgreSQL 9.1 client and server.
+
+* Place the <tt>db::default</tt> recipe into your runlist to pull in generic client inputs,
+  provide provider selection input and install client. Set db/provider_type input in
+  RightScale ServerTemplate to set provider and version for 'db' resource.
 
 == USAGE:
 
 === Basic usage
+
 Once setup, use the recipes in the 'db' cookbook to install and manage your
 PostgreSQL database servers and clients.  See the <tt>db/README.rdoc</tt> for usage
 details.
-
 
 === PostgreSQL Tuning and postgresql.conf and pg_hba.conf
 

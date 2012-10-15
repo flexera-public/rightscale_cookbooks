@@ -14,7 +14,6 @@ depends "db"
 depends "rightscale"
 depends "block_device"
 
-recipe  "db_postgres::default", "Set the DB PostgreSQL provider. Sets version and node variables specific to the chosen PostgresSQL version."
 recipe  "db_postgres::default_9_1", "Set the DB PostgresSQL provider. Sets version 9.1 and node variables specific to PostgresSQL 9.1."
 recipe  "db_postgres::do_set_slave_sync_mode", "Set master to do sync based replication with slave. PostgreSQL streaming replication is asynchronous by default. If the primary server crashes then some transactions that were committed may not have been replicated to the standby server, causing data loss. The amount of data loss is proportional to the replication delay at the time of failover.
 Synchronous replication offers the ability to confirm that all changes made by a transaction have been transferred to one synchronous standby server. This extends the standard level of durability offered by a transaction commit. This level of protection is referred to as 2-safe replication in computer science theory.
@@ -31,9 +30,7 @@ attribute "db_postgres",
 attribute "db_postgres/server_usage",
   :display_name => "Server Usage",
   :description => "Use 'dedicated' if the postgresql config file allocates all existing resources of the machine.  Use 'shared' if the PostgreSQL config file is configured to use less resources so that it can be run concurrently with other apps like Apache and Rails for example.",
-  :recipes => [
-    "db_postgres::default_9_1"
-  ],
+  :recipes => ["db_postgres::setup_server_9_1"],
   :choice => ["shared", "dedicated"],
   :default => "dedicated"
 
@@ -41,4 +38,4 @@ attribute "db_postgres/database_name",
   :display_name => "Database Name",
   :description => "Enter the name of the PostgreSQL database for setting up postgresql database monitoring. Ex: mydbname",
   :required => true,
-  :recipes => [ "db_postgres::default_9_1"]
+  :recipes => ["db_postgres::setup_server_9_1"]
