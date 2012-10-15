@@ -16,6 +16,7 @@ case node[:platform]
 when "ubuntu"
   node[:app][:user] = "tomcat6"
   node[:app][:group] = "tomcat6"
+  node[:app_tomcat][:configuration_file_path] = "/etc/default/tomcat#{version}"
   if node[:platform_version] == "10.04"
     node[:app_tomcat][:jkworkersfile] = "/etc/tomcat#{version}/workers.properties"
   else
@@ -24,6 +25,7 @@ when "ubuntu"
 when "centos", "redhat"
   node[:app][:user] = "tomcat"
   node[:app][:group] = "tomcat"
+  node[:app_tomcat][:configuration_file_path] = "/etc/tomcat#{version}/tomcat#{version}.conf"
   node[:app_tomcat][:jkworkersfile] = "/etc/tomcat#{version}/workers.properties"
 else
   raise "Unrecognized distro #{node[:platform]} for tomcat#{version}, exiting "

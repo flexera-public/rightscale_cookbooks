@@ -48,7 +48,7 @@ interface as well.
   detached. This appears to be by design, as attempting to do this manually from
   the Rackspace web interface also fails.
 
-= LICENSE:
+== LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to
 the RightScale Terms of Service available at http://www.rightscale.com/terms.php

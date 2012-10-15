@@ -10,13 +10,6 @@
   or your own implementation of "app" resource. See the "app" cookbook README for
   details.
 * Requires a VM launched from a RightScale managed RightImage
-* Tested on the following RightImages:
-  * Version 6
-    * CentOS 5.8, 6.2, 6.3
-    * Ubuntu 10.04, 12.04
-    * RedHat 5.8
-  * Version 7
-    * Ubuntu 12.04
 
 == COOKBOOKS DEPENDENCIES:
 Please see the <tt>metadata.rb</tt> file for the latest dependencies.
@@ -211,7 +204,7 @@ interface to all <tt>app_tomcat</tt> provider logic.
 
 For usage examples, please see corresponding section in <tt>app</tt> cookbook README.
 
-= LICENSE:
+== LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
