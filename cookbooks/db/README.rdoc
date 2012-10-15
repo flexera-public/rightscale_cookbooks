@@ -119,7 +119,7 @@ attributes and usage.
 
 When writing your own database Lightweight Provider:
 
-* The database provider to use is defined by the node[:db][:provider] attribute. You
+* The database provider to use is defined by the <tt>node[:db][:provider]</tt> attribute. You
   will need to override this attribute by adding the following code in the 
   attributes file of your provider cookbook.
 
@@ -135,7 +135,7 @@ When writing your own database Lightweight Provider:
 
     depends "db"
 
-= LICENSE:
+== LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to
 the RightScale Terms of Service available at http://www.rightscale.com/terms.php

@@ -16,10 +16,7 @@ found in the providers/default.rb file.
 
 * Requires a VM launched from a RightScale managed RightImage
 
-* Supports PostgreSQL 9.1
-
 * Needs RightScale ServerTemplate tools gem installed on system.
-
 
 == COOKBOOKS DEPENDENCIES:
 
@@ -68,7 +65,7 @@ please see: {Override Chef Cookbooks}[http://support.rightscale.com/12-Guides/Ch
 The 'db' implementation is defined by a Lightweight Provider, which can be
 found in the <tt>providers/default.rb</tt> file.
 
-= LICENSE:
+== LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to
 the RightScale Terms of Service available at http://www.rightscale.com/terms.php

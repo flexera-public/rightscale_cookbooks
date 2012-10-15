@@ -80,6 +80,7 @@ attribute "lb/session_stickiness",
   :choice => ["true", "false"],
   :default => "true",
   :recipes => [
+    "lb::do_attach_all",
     "lb::handle_attach"
   ]
 

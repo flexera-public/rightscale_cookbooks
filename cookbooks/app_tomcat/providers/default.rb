@@ -144,8 +144,8 @@ action :setup_vhost do
   app_root = new_resource.root
   version = node[:app_tomcat][:version].to_i
 
-  log "  Creating tomcat#{version}.conf"
-  template "/etc/tomcat#{version}/tomcat#{version}.conf" do
+  log "  Creating tomcat#{version} configuration file"
+  template "#{node[:app_tomcat][:configuration_file_path]}" do
     action :create
     source "tomcat_conf.erb"
     group "root"
@@ -390,10 +390,10 @@ action :setup_monitoring do
   end
 
   # Add collectd support to tomcat.conf
-  bash "Add collectd to tomcat.conf" do
+  bash "Add collectd to tomcat configuration file" do
     flags "-ex"
     code <<-EOH
-      cat <<'EOF'>>"/etc/tomcat#{version}/tomcat#{version}.conf"
+      cat <<'EOF'>>"#{node[:app_tomcat][:configuration_file_path]}"
 CATALINA_OPTS="\$CATALINA_OPTS -Djcd.host=#{node[:rightscale][:instance_uuid]} -Djcd.instance=tomcat#{version} -Djcd.dest=udp://#{node[:rightscale][:servers][:sketchy][:hostname]}:3011 -Djcd.tmpl=javalang,tomcat -javaagent:/usr/share/tomcat#{version}/lib/collectd.jar"
     EOH
   end

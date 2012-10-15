@@ -74,7 +74,7 @@ Performs a standard repository pull plus a capistrano deployment style is applie
 
 For usage examples, please see the corresponding section in <tt>repo</tt> cookbook's README.
 
-= LICENSE:
+== LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
