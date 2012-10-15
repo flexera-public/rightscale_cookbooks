@@ -23,6 +23,9 @@ rightscale_marker :begin
 # Verify that database provider has been setup
 raise "ERROR: Provider for 'db' resource not set. Please run 'setup_server_<version> recipe from provider cookbook before running this recipe." unless node[:db][:provider] and node[:db][:version]
 
+# Install the database client
+include_recipe "db::default"
+
 MASTER_DB_DNSNAME = node[:db][:dns][:master][:fqdn]
 IS_FQDN_LOCALHOST = ( MASTER_DB_DNSNAME == "localhost" )
 
