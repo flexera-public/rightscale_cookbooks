@@ -21,15 +21,6 @@ attribute "db_mysql",
   :display_name => "General Database Options",
   :type => "hash"
 
-# == Default attributes
-#
-attribute "db_mysql/version",
-  :display_name => "MySQL Version",
-  :description => "Specify the MySQL version that matches the ServerTemplate's specified MySQL version. Note: MySQL 5.5 is not supported on Ubuntu 10.04. Example: 5.5",
-  :recipes => ["db_mysql::setup_server_5_1", "db_mysql::setup_server_5_5"],
-  :choice => ["5.1", "5.5"],
-  :required => "required"
-
 # == Default server attributes
 #
 attribute "db_mysql/server_usage",

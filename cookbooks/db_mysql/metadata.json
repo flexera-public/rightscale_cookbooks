@@ -97,21 +97,6 @@
       ],
       "display_name": "Server Usage",
       "description": "When set to 'dedicated' all server resources are allocated to MySQL. When set to 'shared' less resources are allocated for MySQL so that it can be run concurrently with other apps like Apache and Rails for example.  Example: shared"
-    },
-    "db_mysql/version": {
-      "required": "required",
-      "calculated": false,
-      "choice": [
-        "5.1",
-        "5.5"
-      ],
-      "type": "string",
-      "recipes": [
-        "db_mysql::setup_server_5_1",
-        "db_mysql::setup_server_5_5"
-      ],
-      "display_name": "MySQL Version",
-      "description": "Specify the MySQL version that matches the ServerTemplate's specified MySQL version. Note: MySQL 5.5 is not supported on Ubuntu 10.04. Example: 5.5"
     }
   },
   "license": "Copyright RightScale, Inc. All rights reserved.",
