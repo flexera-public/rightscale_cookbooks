@@ -71,18 +71,9 @@ elsif node[:db][:this_is_master] == false && node[:db][:init_status].to_sym == :
 end
 
 # Setting admin and application user privileges
-cred = [["administrator", [node[:db][:admin][:user], node[:db][:admin][:password]]],\
-        ["user", [node[:db][:application][:user], node[:db][:application][:password]]]]
-
-cred.each do |role, role_cred_values|
-  log "  Restoring #{role} privileges."
-  db node[:db][:data_dir] do
-    privilege role
-    privilege_username role_cred_values[0]
-    privilege_password role_cred_values[1]
-    privilege_database "*.*"
-    action :set_privileges
-  end
-end
+db_set_privileges [
+  ["administrator", [node[:db][:admin][:user], node[:db][:admin][:password]]],
+  ["user", [node[:db][:application][:user], node[:db][:application][:password]]]
+]
 
 rightscale_marker :end

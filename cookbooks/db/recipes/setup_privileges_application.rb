@@ -7,17 +7,8 @@
 
 rightscale_marker :begin
 
-DATA_DIR = node[:db][:data_dir]
+log "  Adding #{node[:db][:application][:user]} with CRUD privileges for ALL databases."
 
-user = node[:db][:application][:user]
-log "  Adding #{user} with CRUD privileges for ALL databases."
-
-db DATA_DIR do
-  privilege "user"
-  privilege_username user
-  privilege_password node[:db][:application][:password]
-  privilege_database "*.*"
-  action :set_privileges
-end
+db_set_privileges [["user", [node[:db][:application][:user], node[:db][:application][:password]]]]
 
 rightscale_marker :end

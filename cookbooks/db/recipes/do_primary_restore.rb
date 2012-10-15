@@ -78,18 +78,9 @@ db DATA_DIR do
 end
 
 # Restoring admin and application user privileges
-cred = [["administrator", [node[:db][:admin][:user], node[:db][:admin][:password]]],\
-        ["user", [node[:db][:application][:user], node[:db][:application][:password]]]]
-
-cred.each do |role, role_cred_values|
-  log "  Restoring #{role} privileges."
-  db DATA_DIR do
-    privilege role
-    privilege_username role_cred_values[0]
-    privilege_password role_cred_values[1]
-    privilege_database "*.*"
-    action :set_privileges
-  end
-end
+db_set_privileges [
+  ["administrator", [node[:db][:admin][:user], node[:db][:admin][:password]]],
+  ["user", [node[:db][:application][:user], node[:db][:application][:password]]]
+]
 
 rightscale_marker :end
