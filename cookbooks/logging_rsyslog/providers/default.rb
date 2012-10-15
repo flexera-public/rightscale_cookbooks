@@ -95,7 +95,7 @@ action :configure do
         not_if { node[:platform] == "ubuntu" }
       end
 
-      service [:logging][:stunnel_service] do
+      service node[:logging][:stunnel_service] do
         supports :reload => true, :restart => true, :start => true, :stop => true
         action [:enable, :restart]
       end
@@ -115,7 +115,7 @@ action :configure do
       variables(
         :remote_server => remote_server
       )
-    notifies :restart, resources(:service => "rsyslog"), :immediately
+      notifies :restart, resources(:service => "rsyslog"), :immediately
     end
 
   end
@@ -142,7 +142,14 @@ action :configure_server do
     certificate = ::File.join(node[:logging][:cert_dir], "stunnel.pem")
 
     execute "Generating a self-signed certificate for stunnel" do
-      command "rm #{certificate} && openssl req -new -x509 -days 3650 -nodes -out #{certificate} -keyout #{certificate} -subj \"/C=US/ST=CA/L=SB/O=Rightscale/OU=Rightscale/CN=Rightscale/emailAddress=support@rightscale.com\""
+      command "openssl req -new -x509 -days 3650 -nodes -out #{certificate} -keyout #{certificate} -subj \"/C=US/ST=CA/L=SB/O=Rightscale/OU=Rightscale/CN=Rightscale/emailAddress=support@rightscale.com\""
+    end
+
+    file certificate do
+      owner "nobody"
+      group "nobody"
+      mode "0400"
+      action :touch
     end
 
     template "/etc/stunnel/stunnel.conf" do
@@ -174,7 +181,7 @@ action :configure_server do
       not_if { node[:platform] == "ubuntu" }
     end
 
-    service [:logging][:stunnel_service] do
+    service node[:logging][:stunnel_service] do
       supports :reload => true, :restart => true, :start => true, :stop => true
       action [:enable, :restart]
     end
