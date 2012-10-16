@@ -26,7 +26,7 @@ end
 # In that case, use this value to setup provider for 'db' resource and database version.
 #
 provider_type = node[:db][:provider_type]
-if not provider_type
+if not provider_type.nil?
   database_type = provider_type.match(/^db_([a-z]+)_(\d.\d)/)
   # Database provider type Ex: db_mysql
   node[:db][:provider] = "db_#{database_type[1]}"
@@ -38,7 +38,7 @@ end
 db node[:db][:data_dir] do
   persist true
   provider node[:db][:provider]
-  version node[:db][:version]
+  db_version node[:db][:version]
   action :install_client
 end
 
