@@ -122,7 +122,7 @@ end
 
 action :install_client do
 
-  node[:db_postgres][:version] = new_resource.db_version
+  version = node[:db][:version]
 
   # Install PostgreSQL package(s)
 
@@ -152,7 +152,7 @@ action :install_client do
     "default" => ""
   )
 
-  raise "Platform not supported for PostgreSQL #{node[:db_postgres][:version]}" if node[:db_postgres][:client_packages_install].empty?
+  raise "Platform not supported for PostgreSQL #{version}" if node[:db_postgres][:client_packages_install].empty?
 
   # Install PostgreSQL package(s)
   if node[:platform] =~ /redhat|centos/
@@ -178,11 +178,12 @@ action :install_client do
 
   # Link postgresql pg_config to default system bin path - required by app servers
   link "/usr/bin/pg_config" do
-    to "/usr/pgsql-#{node[:db_postgres][:version]}/bin/pg_config"
+    to "/usr/pgsql-#{version}/bin/pg_config"
     not_if { ::File.exists?("/usr/bin/pg_config") }
   end
 
   # Install PostgreSQL client gem
+  node[:db_postgres][:bindir] = "/usr/pgsql-#{version}/bin"
   gem_package("pg") do
     gem_binary("/opt/rightscale/sandbox/bin/gem")
     options("-- --with-pg-config=#{node[:db_postgres][:bindir]}/pg_config")
@@ -193,7 +194,7 @@ action :install_server do
 
   arch = node[:kernel][:machine]
   raise "Unsupported platform detected!" unless arch == "x86_64"
-  node[:db_postgres][:version] = new_resource.db_version
+  version = node[:db][:version]
   package "uuid" do
     action :install
   end
@@ -207,14 +208,14 @@ action :install_server do
     end
   end
 
-  service "postgresql-#{node[:db_postgres][:version]}" do
+  service "postgresql-#{version}" do
     supports :status => true, :restart => true, :reload => true
     action :stop
   end
 
   # Initialize PostgreSQL server and create system tables
   touchfile = ::File.expand_path "~/.postgresql_installed"
-  execute "/etc/init.d/postgresql-#{node[:db_postgres][:version]} initdb ; touch #{touchfile}" do
+  execute "/etc/init.d/postgresql-#{version} initdb ; touch #{touchfile}" do
     creates touchfile
     not_if "test -f #{touchfile}"
   end
@@ -222,7 +223,7 @@ action :install_server do
   # Configure system for PostgreSQL
   #
   # Stop PostgreSQL
-  service "postgresql-#{node[:db_postgres][:version]}" do
+  service "postgresql-#{version}" do
     action :stop
   end
 
@@ -284,7 +285,7 @@ action :install_server do
   execute "ulimit -n #{postgres_file_ulimit}"
 
   # Start PostgreSQL
-  service "postgresql-#{node[:db_postgres][:version]}" do
+  service "postgresql-#{version}" do
     action :start
   end
 
@@ -294,8 +295,6 @@ action :grant_replication_slave do
   require 'rubygems'
   Gem.clear_paths
   require 'pg'
-
-
 
   # Opening connection for pg operation
   conn = PGconn.open("localhost", nil, nil, nil, nil, "postgres", nil)
@@ -333,11 +332,10 @@ action :grant_replication_slave do
   conn.finish
 end
 
-
 action :enable_replication do
   db_state_get node
   current_restore_process = new_resource.restore_process
-  node[:db_postgres][:version] = new_resource.db_version
+  version = node[:db][:version]
   newmaster_host = node[:db][:current_master_ip]
   rep_user = node[:db][:replication][:user]
   rep_pass = node[:db][:replication][:password]
@@ -356,7 +354,7 @@ action :enable_replication do
   end
 
   # Stopping Postgresql service
-  service "postgresql-#{node[:db_postgres][:version]}" do
+  service "postgresql-#{version}" do
     not_if { current_restore_process == :no_restore }
     action :stop
   end
