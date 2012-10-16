@@ -21,8 +21,8 @@ include_recipe "db::setup_replication_privileges"
 
 # Setting admin and application user privileges
 db_set_privileges [
-  ["administrator", [node[:db][:admin][:user], node[:db][:admin][:password]]],
-  ["user", [node[:db][:application][:user], node[:db][:application][:password]]]
+  {:role => "administrator", :user => node[:db][:admin][:user], :password => node[:db][:admin][:password]},
+  {:role => "user", :user => node[:db][:application][:user], :password => node[:db][:application][:password]}
 ]
 
 # Perform first backup so that slaves can init from this master

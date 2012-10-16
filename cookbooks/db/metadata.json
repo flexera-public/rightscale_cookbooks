@@ -99,7 +99,11 @@
       "required": "required",
       "recipes": [
         "db::install_server",
-        "db::setup_privileges_admin"
+        "db::setup_privileges_admin",
+        "do_primary_restore",
+        "do_primary_restore_and_become_master",
+        "do_secondary_restore",
+        "do_secondary_restore_and_become_master"
       ],
       "choice": [
 
@@ -113,7 +117,11 @@
       "required": "required",
       "recipes": [
         "db::install_server",
-        "db::setup_privileges_admin"
+        "db::setup_privileges_admin",
+        "do_primary_restore",
+        "do_primary_restore_and_become_master",
+        "do_secondary_restore",
+        "do_secondary_restore_and_become_master"
       ],
       "choice": [
 
@@ -168,7 +176,12 @@
       "recipes": [
         "db::default",
         "db::setup_privileges_application",
-        "db::install_client"
+        "db::install_client",
+        "db::install_server",
+        "do_primary_restore",
+        "do_primary_restore_and_become_master",
+        "do_secondary_restore",
+        "do_secondary_restore_and_become_master"
       ],
       "choice": [
 
@@ -183,7 +196,12 @@
       "recipes": [
         "db::default",
         "db::setup_privileges_application",
-        "db::install_client"
+        "db::install_client",
+        "db::install_server",
+        "do_primary_restore",
+        "do_primary_restore_and_become_master",
+        "do_secondary_restore",
+        "do_secondary_restore_and_become_master"
       ],
       "choice": [
 

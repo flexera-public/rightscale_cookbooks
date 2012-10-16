@@ -115,13 +115,13 @@ attribute "db/admin/user",
   :display_name => "Database Admin Username",
   :description => "The username of the database user with 'admin' privileges (e.g., cred:DBADMIN_USER).",
   :required => "required",
-  :recipes => [ "db::install_server", "db::setup_privileges_admin" ]
+  :recipes => [ "db::install_server", "db::setup_privileges_admin", "do_primary_restore", "do_primary_restore_and_become_master", "do_secondary_restore", "do_secondary_restore_and_become_master" ]
 
 attribute "db/admin/password",
   :display_name => "Database Admin Password",
   :description => "The password of the database user with 'admin' privileges (e.g., cred:DBADMIN_PASSWORD).",
   :required => "required",
-  :recipes => [ "db::install_server", "db::setup_privileges_admin" ]
+  :recipes => [ "db::install_server", "db::setup_privileges_admin", "do_primary_restore", "do_primary_restore_and_become_master", "do_secondary_restore", "do_secondary_restore_and_become_master" ]
 
 attribute "db/replication/user",
   :display_name => "Database Replication Username",
@@ -139,13 +139,13 @@ attribute "db/application/user",
   :display_name => "Database Application Username",
   :description => "The username of the database user that has 'user' privileges (e.g., cred:DBAPPLICATION_USER).",
   :required => "required",
-  :recipes => [ "db::default", "db::setup_privileges_application", "db::install_client" ]
+  :recipes => [ "db::default", "db::setup_privileges_application", "db::install_client", "db::install_server", "do_primary_restore", "do_primary_restore_and_become_master", "do_secondary_restore", "do_secondary_restore_and_become_master" ]
 
 attribute "db/application/password",
   :display_name => "Database Application Password",
   :description => "The password of the database user that has 'user' privileges (e.g., cred:DBAPPLICATION_PASSWORD).",
   :required => "required",
-  :recipes => [ "db::default", "db::setup_privileges_application", "db::install_client" ]
+  :recipes => [ "db::default", "db::setup_privileges_application", "db::install_client", "db::install_server", "do_primary_restore", "do_primary_restore_and_become_master", "do_secondary_restore", "do_secondary_restore_and_become_master" ]
 
 attribute "db/init_slave_at_boot",
   :display_name => "Init Slave at Boot",

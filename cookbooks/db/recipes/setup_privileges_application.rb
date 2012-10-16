@@ -9,6 +9,6 @@ rightscale_marker :begin
 
 log "  Adding #{node[:db][:application][:user]} with CRUD privileges for ALL databases."
 
-db_set_privileges [["user", [node[:db][:application][:user], node[:db][:application][:password]]]]
+db_set_privileges [{:role => "user", :user => node[:db][:application][:user], :password => node[:db][:application][:password]}]
 
 rightscale_marker :end

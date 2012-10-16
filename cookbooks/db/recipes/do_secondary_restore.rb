@@ -83,8 +83,8 @@ end
 
 # Restoring admin and application user privileges
 db_set_privileges [
-  ["administrator", [node[:db][:admin][:user], node[:db][:admin][:password]]],
-  ["user", [node[:db][:application][:user], node[:db][:application][:password]]]
+  {:role => "administrator", :user => node[:db][:admin][:user], :password => node[:db][:admin][:password]},
+  {:role => "user", :user => node[:db][:application][:user], :password => node[:db][:application][:password]}
 ]
 
 
