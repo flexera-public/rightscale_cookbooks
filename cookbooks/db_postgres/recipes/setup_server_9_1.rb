@@ -32,7 +32,7 @@ node[:db_postgres][:server_packages_install] = value_for_platform(
 )
 
 # Platform specific attributes
-case platform
+case node[:platform]
 when "centos", "redhat"
   node[:db_postgres][:basedir] = "/var/lib/pgsql/#{version}"
   node[:db_postgres][:confdir] = "/var/lib/pgsql/#{version}/data"
