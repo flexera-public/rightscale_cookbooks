@@ -13,6 +13,7 @@ db_init_status :check do
   error_message "Database already restored.  To over write existing database run do_force_reset before this recipe"
 end
 
+log "  Authentication information provided by inputs is ignored for slave servers"
 db_register_slave "restore from primary" do
   action :primary_restore
 end
