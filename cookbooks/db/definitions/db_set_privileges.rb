@@ -11,7 +11,7 @@ define :db_set_privileges, :database => "*.*" do
     log "  Setting #{user[:role]} privileges."
     db node[:db][:data_dir] do
       privilege user[:role]
-      privilege_username user[:name]
+      privilege_username user[:username]
       privilege_password user[:password]
       privilege_database params[:database]
       action :set_privileges

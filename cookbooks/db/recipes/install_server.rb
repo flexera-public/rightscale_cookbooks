@@ -72,8 +72,8 @@ end
 
 # Setting admin and application user privileges
 db_set_privileges [
-  {:role => "administrator", :user => node[:db][:admin][:user], :password => node[:db][:admin][:password]},
-  {:role => "user", :user => node[:db][:application][:user], :password => node[:db][:application][:password]}
+  {:role => "administrator", :username => node[:db][:admin][:user], :password => node[:db][:admin][:password]},
+  {:role => "user", :username => node[:db][:application][:user], :password => node[:db][:application][:password]}
 ]
 
 rightscale_marker :end
