@@ -85,3 +85,13 @@ attribute "db_mysql/init_timeout",
   :required => "optional",
   :default => "600"
 
+attribute "db_mysql/tunable/expire_logs_days",
+  :display_name => "MySQL Expire Logs Days",
+  :description => "Defines number of days to wait until the log expires. Default: 2",
+  :recipes => [
+    "db_mysql::default_5_1",
+    "db_mysql::default_5_5",
+  ],
+  :required => "optional",
+  :default => "2"
+
