@@ -87,7 +87,7 @@ max_binlog_size         = 100M
 # * InnoDB
 #
 
-<% if node[:db_mysql][:version] == '5.1' %>
+<% if node[:db][:version] == '5.1' %>
   # On MySQL 5.1, load the innodb plugin
   ignore-builtin-innodb
   plugin-load=innodb=ha_innodb_plugin.so
@@ -97,7 +97,7 @@ innodb_data_home_dir = /var/lib/mysql/
 innodb_data_file_path = ibdata1:10M:autoextend
 innodb_log_group_home_dir = /var/lib/mysql
 
-<% if node[:db_mysql][:version] == '5.5' %>
+<% if node[:db][:version] == '5.5' %>
 # some MySQL 5.5 specific config
 <% end %>
 
@@ -123,7 +123,7 @@ max_allowed_packet      = 16M
 
 [mysql]
 
-<% if node[:db_mysql][:version] == '5.1' %>
+<% if node[:db][:version] == '5.1' %>
 # isam dropped after version 5.1
 [isamchk]
 key_buffer        = <%= node[:db_mysql][:tunable][:isamchk][:key_buffer] %>
