@@ -16,11 +16,9 @@ depends "db_mysql"
 depends "db_postgres"
 
 
-recipe "db::default", "Adds the database:active=true tag to your server, which identifies it as a database server. The tag is used by application servers to identify active databases. It also loads the required 'db' resources."
+recipe "db::default", "Selects and installs database client. It also sets up the provider and version for 'db' resource."
 
-recipe "db::install_client", "Installs the database client onto the virtual machine so that it can connect to a running server. This should be run on all database servers and servers intended to connect to the servers."
-
-recipe "db::install_server", "Installs and sets up the packages that are required for database servers."
+recipe "db::install_server", "Installs and sets up the packages that are required for database servers. Adds the database:active=true tag to your server, which identifies it as a database server. The tag is used by application servers to identify active databases."
 
 recipe "db::setup_monitoring", "Installs the collectd plugin for database monitoring support, which is required to enable monitoring and alerting functionality for your servers."
 
@@ -86,88 +84,136 @@ attribute "db/dns/master/fqdn",
   :display_name => "Database Master FQDN",
   :description => "The fully qualified domain name for the master database server.  Example: db-master.example.com",
   :required => "required",
-  :recipes => [ "db::default", "db::install_client" ]
+  :recipes => ["db::install_server"]
 
 attribute "db/dns/master/id",
   :display_name => "Database Master DNS Record ID",
   :description => "The unique identifier that is associated with the DNS A record of the master database server. The unique identifier is assigned by the DNS provider when you create a dynamic DNS A record. This ID is used to update the associated A record with the private IP address of the master server when this recipe is run. If you are using DNS Made Easy as your DNS provider, a 7-digit number is used (e.g., 4403234).",
   :required => "required",
   :recipes => [
-                "db::do_primary_restore_and_become_master",
-                "db::do_secondary_restore_and_become_master",
-                "db::do_init_and_become_master",
-                "db::do_promote_to_master"
-                ]
+    "db::do_primary_restore_and_become_master",
+    "db::do_secondary_restore_and_become_master",
+    "db::do_init_and_become_master",
+    "db::do_promote_to_master"
+  ]
 
 attribute "db/dns/slave/fqdn",
   :display_name => "Database Slave FQDN",
   :description => "The fully qualified domain name for a slave database server. Example: db-slave.example.com",
   :required => "optional",
-  :recipes => [ "db::do_set_dns_slave_private_ip" ]
+  :recipes => ["db::do_set_dns_slave_private_ip"]
 
 attribute "db/dns/slave/id",
   :display_name => "Database Slave DNS Record ID",
   :description => "The unique identifier that is associated with the DNS A record of a slave server.  The unique identifier is assigned by the DNS provider when you create a dynamic DNS A record. This ID is used to update the associated A record with the private IP address of a slave server when this recipe is run.  If you are using DNS Made Easy as your DNS provider, a 7-digit number is used (e.g., 4403234).",
   :required => "required",
-  :recipes => [ "db::do_set_dns_slave_private_ip" ]
+  :recipes => ["db::do_set_dns_slave_private_ip"]
 
 attribute "db/admin/user",
   :display_name => "Database Admin Username",
   :description => "The username of the database user with 'admin' privileges (e.g., cred:DBADMIN_USER).",
   :required => "required",
-  :recipes => [ "db::install_server", "db::setup_privileges_admin", "do_primary_restore", "do_primary_restore_and_become_master", "do_secondary_restore", "do_secondary_restore_and_become_master" ]
+  :recipes => [
+    "db::install_server",
+    "db::setup_privileges_admin",
+    "do_primary_restore",
+    "do_primary_restore_and_become_master",
+    "do_secondary_restore",
+    "do_secondary_restore_and_become_master"
+  ]
 
 attribute "db/admin/password",
   :display_name => "Database Admin Password",
   :description => "The password of the database user with 'admin' privileges (e.g., cred:DBADMIN_PASSWORD).",
   :required => "required",
-  :recipes => [ "db::install_server", "db::setup_privileges_admin", "do_primary_restore", "do_primary_restore_and_become_master", "do_secondary_restore", "do_secondary_restore_and_become_master" ]
+  :recipes => [
+    "db::install_server",
+    "db::setup_privileges_admin",
+    "do_primary_restore",
+    "do_primary_restore_and_become_master",
+    "do_secondary_restore",
+    "do_secondary_restore_and_become_master"
+  ]
 
 attribute "db/replication/user",
   :display_name => "Database Replication Username",
   :description => "The username of the database user that has 'replication' privileges (e.g., cred:DBREPLICATION_USER).",
   :required => "required",
-  :recipes => [ "db::setup_replication_privileges", "db::do_primary_restore_and_become_master", "db::do_secondary_restore_and_become_master", "db::do_init_and_become_master", "db::do_promote_to_master", "db::do_primary_init_slave", "db::do_secondary_init_slave", "db::do_init_slave_at_boot" ]
+  :recipes => [
+    "db::setup_replication_privileges",
+    "db::do_primary_restore_and_become_master",
+    "db::do_secondary_restore_and_become_master",
+    "db::do_init_and_become_master",
+    "db::do_promote_to_master",
+    "db::do_primary_init_slave",
+    "db::do_secondary_init_slave",
+    "db::do_init_slave_at_boot"
+  ]
 
 attribute "db/replication/password",
   :display_name => "Database Replication Password",
   :description => "The password of the database user that has 'replication' privileges (e.g., cred:DBREPLICATION_PASSWORD).",
   :required => "required",
-  :recipes => [ "db::setup_replication_privileges", "db::do_primary_restore_and_become_master", "db::do_secondary_restore_and_become_master", "db::do_init_and_become_master", "db::do_promote_to_master", "db::do_primary_init_slave", "db::do_secondary_init_slave", "db::do_init_slave_at_boot" ]
+  :recipes => [
+    "db::setup_replication_privileges",
+    "db::do_primary_restore_and_become_master",
+    "db::do_secondary_restore_and_become_master",
+    "db::do_init_and_become_master",
+    "db::do_promote_to_master",
+    "db::do_primary_init_slave",
+    "db::do_secondary_init_slave",
+    "db::do_init_slave_at_boot"
+  ]
 
 attribute "db/application/user",
   :display_name => "Database Application Username",
   :description => "The username of the database user that has 'user' privileges (e.g., cred:DBAPPLICATION_USER).",
   :required => "required",
-  :recipes => [ "db::default", "db::setup_privileges_application", "db::install_client", "db::install_server", "do_primary_restore", "do_primary_restore_and_become_master", "do_secondary_restore", "do_secondary_restore_and_become_master" ]
+  :recipes => [
+    "db::default",
+    "db::setup_privileges_application",
+    "db::install_server",
+    "do_primary_restore",
+    "do_primary_restore_and_become_master",
+    "do_secondary_restore",
+    "do_secondary_restore_and_become_master"
+  ]
 
 attribute "db/application/password",
   :display_name => "Database Application Password",
   :description => "The password of the database user that has 'user' privileges (e.g., cred:DBAPPLICATION_PASSWORD).",
   :required => "required",
-  :recipes => [ "db::default", "db::setup_privileges_application", "db::install_client", "db::install_server", "do_primary_restore", "do_primary_restore_and_become_master", "do_secondary_restore", "do_secondary_restore_and_become_master" ]
+  :recipes => [
+    "db::default",
+    "db::setup_privileges_application",
+    "db::install_server",
+    "do_primary_restore",
+    "do_primary_restore_and_become_master",
+    "do_secondary_restore",
+    "do_secondary_restore_and_become_master"
+  ]
 
 attribute "db/init_slave_at_boot",
   :display_name => "Init Slave at Boot",
   :description => "Set to 'True' to have the instance initialize the database server as a slave on boot. Set to 'False' if there is no master database server running.",
   :default => "false",
-  :choice => [ "true", "false" ],
-  :recipes => [ "db::do_init_slave_at_boot" ]
+  :choice => ["true", "false"],
+  :recipes => ["db::do_init_slave_at_boot"]
 
 attribute "db/dns/ttl",
   :display_name => "Database DNS TTL Limit",
   :description => "The upper limit for the TTL of the master DB DNS record in seconds. This value should be kept low in the event of Master DB failure so that the DNS record updates in a timely manner. When installing the DB server, this value is checked in the DNS records. Input should be set for 300 when using CloudDNS.",
   :required => "optional",
   :default => "60",
-  :choice => [ "60", "300" ],
-  :recipes => [ "db::install_server" ]
+  :choice => ["60", "300"],
+  :recipes => ["db::install_server"]
 
 attribute "db/provider_type",
   :display_name => "Database Provider type",
   :description => "Database provider type to use on client side.  This must be a string containing the provider cookbook name and (optionally) the version of the database. For example: db_mydatabase_1.0, db_mysql_5.1, db_mysql_5.5, db_postgres_9.1",
   :required => "required",
-  :choice => [ "db_mysql_5.1", "db_mysql_5.5", "db_postgres_9.1"],
-  :recipes => [ "db::install_client" ]
+  :choice => ["db_mysql_5.1", "db_mysql_5.5", "db_postgres_9.1"],
+  :recipes => ["db::default"]
 
 # == Backup/Restore
 #
@@ -223,7 +269,7 @@ attribute "db/backup/restore_version_check",
   :display_name => "Backup restore version check",
   :description => "A variable for allowing the restoration of a database from a backup that was performed on a different version of the DB software. Make sure you fully understand the implications of cross-version restoration.  Set to 'False' to skip version checking.",
   :required => "optional",
-  :choice => [ "true", "false" ],
+  :choice => ["true", "false"],
   :default => "true",
   :recipes => [
     "db::do_primary_restore",
@@ -239,25 +285,25 @@ attribute "db/backup/primary/master/cron/hour",
   :display_name => "Master Backup Cron Hour",
   :description => "Defines the hour of the day when the primary backup will be taken of the master database. Backups of the master are taken daily. By default, an hour will be randomly chosen at launch time. Otherwise, the time of the backup is defined by 'Master Backup Cron Hour' and 'Master Backup Cron Minute'. Uses standard crontab format (e.g., 23 for 11:00 PM).",
   :required => "optional",
-  :recipes => [ 'db::do_primary_backup_schedule_enable' ]
+  :recipes => ["db::do_primary_backup_schedule_enable"]
 
 attribute "db/backup/primary/slave/cron/hour",
   :display_name => "Slave Backup Cron Hour",
   :description => "By default, primary backups of the slave database are taken hourly. However, if you specify a value in this input (e.g., 23 for 11:00 PM), then backups will occur once per day at the specified hour, rather than hourly.",
   :required => "optional",
-  :recipes => [ 'db::do_primary_backup_schedule_enable' ]
+  :recipes => ["db::do_primary_backup_schedule_enable"]
 
 attribute "db/backup/primary/master/cron/minute",
   :display_name => "Master Backup Cron Minute",
   :description => "Defines the minute of the hour when the backup will be taken of the master database. Backups of the master are taken daily. By default, a minute will be randomly chosen at launch time. Otherwise, the time of the backup is defined by 'Master Backup Cron Hour' and 'Master Backup Cron Minute'. Uses standard crontab format (e.g., 30 for minute 30 of the hour).",
   :required => "optional",
-  :recipes => [ 'db::do_primary_backup_schedule_enable' ]
+  :recipes => ["db::do_primary_backup_schedule_enable"]
 
 attribute "db/backup/primary/slave/cron/minute",
   :display_name => "Slave Backup Cron Minute",
   :description => "Defines the minute of the hour when the backup EBS snapshot will be taken of the slave database. Backups of the slave are taken hourly. By default, a minute will be randomly chosen at launch time. Uses standard crontab format (e.g., 30 for minute 30 of the hour).",
   :required => "optional",
-  :recipes => [ 'db::do_primary_backup_schedule_enable' ]
+  :recipes => ["db::do_primary_backup_schedule_enable"]
 
 
 # == Import/export attributes
@@ -281,37 +327,37 @@ attribute "db/dump/storage_account_provider",
     "SoftLayer_Singapore",
     "SoftLayer_Amsterdam"
   ],
-  :recipes => [ "db::do_dump_import", "db::do_dump_export", "db::do_dump_schedule_enable" ]
+  :recipes => ["db::do_dump_import", "db::do_dump_export", "db::do_dump_schedule_enable"]
 
 attribute "db/dump/storage_account_id",
   :display_name => "Dump Storage Account ID",
   :description => "In order to write the dump file to the specified cloud storage location, you need to provide cloud authentication credentials. For Amazon S3, use your Amazon access key ID (e.g., cred:AWS_ACCESS_KEY_ID). For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME). For Google TBD.  For Azure TBD. For Softlayer TBD",
   :required => "required",
-  :recipes => [ "db::do_dump_import", "db::do_dump_export", "db::do_dump_schedule_enable" ]
+  :recipes => ["db::do_dump_import", "db::do_dump_export", "db::do_dump_schedule_enable"]
 
 attribute "db/dump/storage_account_secret",
   :display_name => "Dump Storage Account Secret",
   :description => "In order to write the dump file to the specified cloud storage location, you will need to provide cloud authentication credentials. For Amazon S3, use your AWS secret access key (e.g., cred:AWS_SECRET_ACCESS_KEY). For Rackspace Cloud Files, use your Rackspace account API key (e.g., cred:RACKSPACE_AUTH_KEY). For Google TBD.  For Azure TBD. For Softlayer TBD",
   :required => "required",
-  :recipes => [ "db::do_dump_import", "db::do_dump_export", "db::do_dump_schedule_enable" ]
+  :recipes => ["db::do_dump_import", "db::do_dump_export", "db::do_dump_schedule_enable"]
 
 attribute "db/dump/container",
   :display_name => "Dump Container",
   :description => "The cloud storage location where the dump file will be saved to or restored from. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name. For Google TBD.  For Azure TBD. For Softlayer TBD",
   :required => "required",
-  :recipes => [ "db::do_dump_import", "db::do_dump_export", "db::do_dump_schedule_enable" ]
+  :recipes => ["db::do_dump_import", "db::do_dump_export", "db::do_dump_schedule_enable"]
 
 attribute "db/dump/prefix",
   :display_name => "Dump Prefix",
   :description => "The prefix that will be used to name/locate the backup of a particular database dump. Defines the prefix of the dump file name that will be used to name the backup database dump file, along with a timestamp.",
   :required => "required",
-  :recipes => [ "db::do_dump_import", "db::do_dump_export", "db::do_dump_schedule_enable" ]
+  :recipes => ["db::do_dump_import", "db::do_dump_export", "db::do_dump_schedule_enable"]
 
 attribute "db/dump/database_name",
   :display_name => "Database Schema Name",
   :description => "Enter the name of the database name/schema to create/restore a dump from/for. Ex: mydbschema",
   :required => "required",
-  :recipes => [ "db::do_dump_import", "db::do_dump_export", "db::do_dump_schedule_enable" ]
+  :recipes => ["db::do_dump_import", "db::do_dump_export", "db::do_dump_schedule_enable"]
 
 attribute "db/terminate_safety",
   :display_name => "Terminate Safety",
@@ -320,7 +366,7 @@ attribute "db/terminate_safety",
   :choice => ["Override the dropdown and set to \"off\" to really run this recipe"],
   :default => "Override the dropdown and set to \"off\" to really run this recipe",
   :required => "optional",
-  :recipes => [ "db::do_delete_volumes_and_terminate_server" ]
+  :recipes => ["db::do_delete_volumes_and_terminate_server"]
 
 attribute "db/force_safety",
   :display_name => "Force Reset Safety",
@@ -329,4 +375,4 @@ attribute "db/force_safety",
   :choice => ["Override the dropdown and set to \"off\" to really run this recipe"],
   :default => "Override the dropdown and set to \"off\" to really run this recipe",
   :required => "optional",
-  :recipes => [ "db::do_force_reset" ]
+  :recipes => ["db::do_force_reset"]

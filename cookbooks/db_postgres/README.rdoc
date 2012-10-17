@@ -15,6 +15,7 @@ found in the providers/default.rb file.
 == REQUIREMENTS:
 
 * Requires a VM launched from a RightScale managed RightImage
+
 * Needs RightScale ServerTemplate tools gem installed on system.
 
 == COOKBOOKS DEPENDENCIES:
@@ -28,21 +29,33 @@ There are no known limitations.
 
 == SETUP:
 
-* Place the <tt>db::default</tt> recipe into your runlist to set up the db resource.
-  When using a RightScale ServerTemplate, it will automatically add the
-  common database attributes to your ServerTemplate's inputs.
+* To setup only the database client, place <tt>db::default</tt> recipe into
+  your runlist. This will pull in generic client inputs, provide
+  provider selection input and install client. Set db/provider_type input in
+  RightScale ServerTemplate to set provider and version for 'db' resource.
 
-* Also, place the <tt>db_postgres::default</tt> recipe into your runlist to load the
-  PostgreSQL provider, tuning parameters, as well as other PostgreSQL-specific
-  attributes in as inputs.
+* To setup a PostgreSQL database client and server, place the following recipes
+  in order to your runlist:
+
+    db_postgres::setup_server_<version>
+      loads the PostgreSQL provider, tuning parameters, as well as other
+      PostgreSQL-specific attributes into the node as inputs.
+    db::install_server
+      sets up generic server and client inputs. This will also include
+      db::default recipe which installs the client.
+
+  For example: To set up and install PostgreSQL 9.1 client and server
+
+    db_postgres::setup_server_9_1
+    db::install_server
 
 == USAGE:
 
 === Basic usage
-Once setup, use the recipes in the 'db' cookbook to install and manage your
-PostgreSQL database servers and clients.  See the <tt>db/README.rdoc</tt> for usage
-details.
 
+Once setup, use the recipes in the 'db' cookbook to install and manage your
+PostgreSQL database servers and clients.  See the <tt>db/README.rdoc</tt> for
+usage details.
 
 === PostgreSQL Tuning and postgresql.conf and pg_hba.conf
 

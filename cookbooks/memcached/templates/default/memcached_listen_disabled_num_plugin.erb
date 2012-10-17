@@ -1,0 +1,60 @@
+#!/usr/bin/ruby
+#
+# Cookbook Name:: memcached
+#
+# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
+# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
+# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+
+require 'socket'
+require 'getoptlong'
+
+def usage
+  puts("#{$0} -h <hostname> [-i <sampling_interval>]")
+  puts("    -h: The hostname of the machine. When using RightLink, use the SERVER UUID.")
+  puts("    -i: The sampling interval of the file check (in seconds).  Default: 10 seconds")
+  exit
+end
+
+opts = GetoptLong.new(
+  [ '--hostname', '-h', GetoptLong::REQUIRED_ARGUMENT ],
+  [ '--sampling-interval', '-i',  GetoptLong::OPTIONAL_ARGUMENT ]
+)
+
+hostname = nil
+sampling_interval = 10
+
+opts.each do |opt, arg|
+  case opt
+  when '--hostname'
+    hostname = arg
+  when '--sampling-interval'
+    sampling_interval = arg.to_i
+  end
+  arg.inspect
+end
+
+usage if !hostname
+
+loop do
+
+  listendisabled = 0
+  time = Time.now.to_i
+
+  socketmem = TCPSocket.new("localhost", <%= @tcp_port %>)
+  socketmem.puts("stats")
+  while line = socketmem.gets
+    if /.+listen_disabled_num (\d)/.match line
+     listendisabled = $1
+     socketmem.puts("quit")
+    elsif /.*END.*/.match line
+     socketmem.puts("quit")
+    end
+  end
+  socketmem.close
+
+  puts "PUTVAL #{hostname}/memcached/gauge-listen_disabled interval=#{sampling_interval} #{time}:#{listendisabled}"
+
+  sleep sampling_interval
+
+end
