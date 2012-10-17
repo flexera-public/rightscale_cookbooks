@@ -66,7 +66,7 @@ define :configure_stunnel, :accept => "514", :connect => "515", :client => nil d
   end
 
   # Enabling stunnel to start on system boot and restarting to apply new settings
-  service [:logging][:stunnel_service] do
+  service node[:logging][:stunnel_service] do
     supports :reload => true, :restart => true, :start => true, :stop => true
     action [:enable, :restart]
   end
