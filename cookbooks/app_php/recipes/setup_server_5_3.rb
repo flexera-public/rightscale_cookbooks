@@ -32,9 +32,17 @@ when "centos", "redhat"
   ]
 end
 
+# Since, we don't have db/provider_type input in LAMP STs
+# node[:db][:provider_type] will be nil.
+# We need this condition to check if node[:db][:provider_type] is set
+# which happens in case of 3-tier setup with Database Managers.
+if not node[:db][:provider_type].nil?
 # We do not care about version number here.
-# need only the type of database adaptor
-node[:app][:db_adapter] = node[:db][:provider_type].match(/^db_([a-z]+)/)[1]
+# need only the type of database adapter
+  node[:app][:db_adapter] = node[:db][:provider_type].match(/^db_([a-z]+)/)[1]
+else
+  node[:app][:db_adapter] = node[:db][:provider].match(/^db_([a-z]+)/)[1]
+end
 
 if node[:app][:db_adapter] == "mysql"
   log "  Install PHP mysql support"
