@@ -7,10 +7,10 @@
 
 rightscale_marker :begin
 
+include_recipe "logging::default"
+
 logging "default" do
   action :configure_server
 end
-
-include_recipe "logging::default"
 
 rightscale_marker :end
