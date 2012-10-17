@@ -7,7 +7,7 @@
 
 set_unless[:logging][:remote_server] = ""
 
-set[:logging][:cert_dir] = "/etc/tls"
+set[:logging][:cert_dir] = "/etc/stunnel/"
 
 case node[:platform]
 when "ubuntu"

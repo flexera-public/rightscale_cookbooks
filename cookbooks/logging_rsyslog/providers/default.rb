@@ -39,13 +39,6 @@ action :reload do
 end
 
 
-action :install do
-  # The replacing syslog-ng with rsyslog requires low level package
-  # manipulation via rpm/dpkg
-  package "rsyslog"
-end
-
-
 action :configure do
 
   service "rsyslog" do
@@ -53,55 +46,22 @@ action :configure do
     action :nothing
   end
 
-  remote_server = new_resource.remote_server || ""
+  remote_server = new_resource.remote_server
 
-  # Keep the default configuration (local file only logging) unless a remote server is defined.
+  # Only configure client server if remote logging server is used.
+  unless remote_server.empty?
 
-  if remote_server != ""
-
-    package "rsyslog-relp" if node[:logging][:protocol] == "relp"
+    package "rsyslog-relp" if node[:logging][:protocol] =~ /relp/
 
     if node[:logging][:protocol] == "relp+stunnel"
-
-      package "rsyslog-relp"
-      package "stunnel"
-
-      template "/etc/stunnel/stunnel.conf" do
-        action :create
-        source "stunnel.conf.erb"
-        owner "root"
-        group "root"
-        mode "0644"
-        cookbook "logging_rsyslog"
-        variables(
-          :accept => "127.0.0.1:515",
-          :connect => "#{remote_server}:514",
-          :client => "client = yes"
-        )
+      configure_stunnel "default" do
+        accept "127.0.0.1:515"
+        connect "#{remote_server}:514"
+        client "client = yes"
       end
-
-      execute "Enabling stunnel" do
-        command "ruby -pi -e \"gsub(/ENABLED=0/,'ENABLED=1')\" /etc/default/stunnel4"
-        only_if { node[:platform] == "ubuntu" }
-      end
-
-      cookbook_file "/etc/init.d/stunnel" do
-        source "stunnel.sh"
-        cookbook "logging_rsyslog"
-        owner "root"
-        group "root"
-        mode "0755"
-        backup false
-        not_if { node[:platform] == "ubuntu" }
-      end
-
-      service node[:logging][:stunnel_service] do
-        supports :reload => true, :restart => true, :start => true, :stop => true
-        action [:enable, :restart]
-      end
-
     end
 
+    # Writing configuration template.
     template value_for_platform(
       ["ubuntu"] => { "default" => "/etc/rsyslog.d/client.conf" },
       ["centos", "redhat"] => { "5.8" => "/etc/rsyslog.conf", "default" => "/etc/rsyslog.d/client.conf" }
@@ -124,69 +84,17 @@ end
 
 
 action :configure_server do
+
   # This action would configure an rsyslog logging server.
 
-  package "rsyslog-relp" if node[:logging][:protocol] == "relp"
-
-  if node[:logging][:protocol] == "relp+stunnel"
-
-    package "rsyslog-relp"
-    package "stunnel"
-
-    # Creating directory where certificate files will be stored
-    directory node[:logging][:cert_dir] do
-      mode "0700"
-      recursive true
-    end
-
-    certificate = ::File.join(node[:logging][:cert_dir], "stunnel.pem")
-
-    execute "Generating a self-signed certificate for stunnel" do
-      command "openssl req -new -x509 -days 3650 -nodes -out #{certificate} -keyout #{certificate} -subj \"/C=US/ST=CA/L=SB/O=Rightscale/OU=Rightscale/CN=Rightscale/emailAddress=support@rightscale.com\""
-    end
-
-    file certificate do
-      owner "nobody"
-      group "nobody"
-      mode "0400"
-      action :touch
-    end
-
-    template "/etc/stunnel/stunnel.conf" do
-      action :create
-      source "stunnel.conf.erb"
-      owner "root"
-      group "root"
-      mode "0644"
-      cookbook "logging_rsyslog"
-      variables(
-        :accept => "514",
-        :connect => "515",
-        :cert => "cert = #{certificate}"
-      )
-    end
-
-    execute "Enabling stunnel" do
-      command "ruby -pi -e \"gsub(/ENABLED=0/,'ENABLED=1')\" /etc/default/stunnel4"
-      only_if { node[:platform] == "ubuntu" }
-    end
-
-    cookbook_file "/etc/init.d/stunnel" do
-      source "stunnel.sh"
-      cookbook "logging_rsyslog"
-      owner "root"
-      group "root"
-      mode "0755"
-      backup false
-      not_if { node[:platform] == "ubuntu" }
-    end
-
-    service node[:logging][:stunnel_service] do
-      supports :reload => true, :restart => true, :start => true, :stop => true
-      action [:enable, :restart]
-    end
-
+  service "rsyslog" do
+    supports :restart => true, :status => true, :start => true, :stop => true
+    action :nothing
   end
+
+  package "rsyslog-relp" if node[:logging][:protocol] =~ /relp/
+
+  configure_stunnel if node[:logging][:protocol] == "relp+stunnel"
 
   # Need to open a listening port on desired protocol.
   sys_firewall "Open logger listening port" do

@@ -84,12 +84,7 @@ case "$1" in
         killdaemons
         echo "$NAME."
         ;;
-  reopen-logs)
-        echo -n "Reopening log files $DESC: "
-        killdaemons USR1
-        echo "$NAME."
-        ;;
-  force-reload|reload)
+  reload)
         echo -n "Reloading configuration $DESC: "
         killdaemons HUP
         echo "$NAME."
@@ -103,7 +98,7 @@ case "$1" in
         ;;
   *)
         N=/etc/init.d/$NAME
-        echo "Usage: $N {start|stop|reload|reopen-logs|restart}" >&2
+        echo "Usage: $N {start|stop|reload|restart}" >&2
         exit 1
         ;;
 esac

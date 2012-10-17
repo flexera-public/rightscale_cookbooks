@@ -42,9 +42,6 @@ local7.*                                                /var/log/boot.log
 <% when "udp" %>
 $ModLoad imudp
 *.* @<%= @remote_server %>:514
-<% when "tcp" %>
-$ModLoad imtcp
-*.* @@<%= @remote_server %>:514
 <% when "relp" %>
 $ModLoad omrelp
 $ActionQueueType LinkedList   # Use asynchronous processing

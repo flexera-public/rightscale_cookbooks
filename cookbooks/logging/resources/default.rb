@@ -67,16 +67,11 @@ actions :add_definition
 #
 actions :add_rotate_policy
 
-# == Install Software
-# Installs logging software
-#
-actions :install
-
 # == Configure
 # Updates the configuration
 #
 actions :configure
-  attribute :remote_server, :kind_of => String
+  attribute :remote_server, :kind_of => String, :default => ""
 
 # == Configure server
 # Configures a logging server
