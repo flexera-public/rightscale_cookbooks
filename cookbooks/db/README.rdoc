@@ -24,6 +24,11 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 == SETUP:
 
+* To setup only the database client, place <tt>db::default</tt> recipe into
+  your runlist. This will pull in generic client inputs, provide provider
+  selection input and install client. Set db/provider_type input in
+  RightScale ServerTemplate to set provider and version for 'db' resource.
+
 * To setup a database client and server, place the following recipes
   in order to your runlist:
 
@@ -39,11 +44,6 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
     db_mysql::setup_server_5_5
     db::install_server
-
-* To setup only the database client, place <tt>db::default</tt> recipe into
-  your runlist. This will pull in generic client inputs, provide provider
-  selection input and install client. Set db/provider_type input in
-  RightScale ServerTemplate to set provider and version for 'db' resource.
 
 == USAGE:
 

@@ -29,6 +29,11 @@ There are no known limitations.
 
 == SETUP:
 
+* To setup only the database client, place <tt>db::default</tt> recipe into
+  your runlist. This will pull in generic client inputs, provide
+  provider selection input and install client. Set db/provider_type input in
+  RightScale ServerTemplate to set provider and version for 'db' resource.
+
 * To setup a PostgreSQL database client and server, place the following recipes
   in order to your runlist:
 
@@ -43,11 +48,6 @@ There are no known limitations.
 
     db_postgres::setup_server_9_1
     db::install_server
-
-* To setup only the database client, place <tt>db::default</tt> recipe into
-  your runlist. This will pull in generic client inputs, provide 
-  provider selection input and install client. Set db/provider_type input in
-  RightScale ServerTemplate to set provider and version for 'db' resource.
 
 == USAGE:
 
