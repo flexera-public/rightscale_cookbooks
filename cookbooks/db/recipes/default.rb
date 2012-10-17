@@ -20,13 +20,26 @@ if device
   end
 end
 
+# If node[:db][:provider_type] has a value
+# we assume that db::default is executed on client server
+# and the value has been setup using db/provider_type input.
+# In that case, use this value to setup provider for 'db' resource and database version.
+#
+provider_type = node[:db][:provider_type]
+if not provider_type.nil?
+  database_type = provider_type.match(/^db_([a-z]+)_(\d.\d)/)
+  # Database provider type Ex: db_mysql
+  node[:db][:provider] = "db_#{database_type[1]}"
+  # Database version number Ex: 5.1
+  node[:db][:version] = database_type[2]
+end
+
 # Setup default values for database resource
 db node[:db][:data_dir] do
   persist true
   provider node[:db][:provider]
-  action :nothing
+  db_version node[:db][:version]
+  action :install_client
 end
-
-include_recipe "db::install_client"
 
 rightscale_marker :end
