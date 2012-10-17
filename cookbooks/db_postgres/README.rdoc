@@ -29,21 +29,24 @@ There are no known limitations.
 
 == SETUP:
 
-* Place the <tt>db_postgres::setup_server_<version></tt> recipe into your runlist to
-  load the PostgreSQL provider, tuning parameters, as well as other PostgreSQL-specific
-  attributes into the node as inputs.
+* To setup a PostgreSQL database client and server, place the following recipes
+  in order to your runlist:
 
-* Place the <tt>db::install_server</tt> recipe after setup_server_<version> recipe in
-  provider cookbooks to setup generic server and client inputs. This will also include
-  <tt>db::default</tt> recipe to apply all client inputs and install client. For example:
+    db_postgres::setup_server_<version>
+      loads the PostgreSQL provider, tuning parameters, as well as other
+      PostgreSQL-specific attributes into the node as inputs.
+    db::install_server
+      sets up generic server and client inputs. This will also include
+      <tt>db::default</tt> recipe which installs the client.
+
+  For example: To set up and install PostgreSQL 9.1 client and server
 
     db_postgres::setup_server_9_1
     db::install_server
 
-  This will set up and install PostgreSQL 9.1 client and server.
-
-* Place the <tt>db::default</tt> recipe into your runlist to pull in generic client inputs,
-  provide provider selection input and install client. Set db/provider_type input in
+* To setup only the database client, place <tt>db::default</tt> recipe into
+  your runlist. This will pull in generic client inputs, provide 
+  provider selection input and install client. Set db/provider_type input in
   RightScale ServerTemplate to set provider and version for 'db' resource.
 
 == USAGE:
@@ -51,8 +54,8 @@ There are no known limitations.
 === Basic usage
 
 Once setup, use the recipes in the 'db' cookbook to install and manage your
-PostgreSQL database servers and clients.  See the <tt>db/README.rdoc</tt> for usage
-details.
+PostgreSQL database servers and clients.  See the <tt>db/README.rdoc</tt> for
+usage details.
 
 === PostgreSQL Tuning and postgresql.conf and pg_hba.conf
 

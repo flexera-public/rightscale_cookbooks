@@ -122,7 +122,7 @@ end
 
 action :install_client do
 
-  version = node[:db][:version]
+  version = new_resource.db_version
 
   # Install PostgreSQL package(s)
 
@@ -194,7 +194,7 @@ action :install_server do
 
   arch = node[:kernel][:machine]
   raise "Unsupported platform detected!" unless arch == "x86_64"
-  version = node[:db][:version]
+  version = new_resource.db_version
   package "uuid" do
     action :install
   end
@@ -335,7 +335,7 @@ end
 action :enable_replication do
   db_state_get node
   current_restore_process = new_resource.restore_process
-  version = node[:db][:version]
+  version = new_resource.db_version
   newmaster_host = node[:db][:current_master_ip]
   rep_user = node[:db][:replication][:user]
   rep_pass = node[:db][:replication][:password]

@@ -90,7 +90,7 @@ action :write_backup_info do
 
   # Save the db provider (MySQL) and version number as set in the node
   provider = node[:db][:provider]
-  version = node[:db][:version]
+  version = new_resource.db_version
   Chef::Log.info "  Saving #{provider} version #{version} in master info file"
   masterstatus['DB_Provider'] = provider
   masterstatus['DB_Version'] = version
@@ -114,7 +114,7 @@ action :post_restore_cleanup do
   # Assume MySQL 5.1 if nil
   snap_version = master_info['DB_Version'] ||= '5.1'
   snap_provider = master_info['DB_Provider'] ||= 'db_mysql'
-  current_version = node[:db][:version]
+  current_version = new_resource.db_version
   current_provider = master_info['DB_Provider'] ||= node[:db][:provider]
   Chef::Log.info "  Snapshot from #{snap_provider} version #{snap_version}"
   # skip check if restore version check is false
@@ -203,7 +203,7 @@ end
 
 action :install_client do
   # Using node[:db][:version] to avoid misconfiguration during the run on Database Managers
-  version = node[:db][:version]
+  version = new_resource.db_version
   node[:db_mysql][:client_packages_uninstall] = []
   node[:db_mysql][:client_packages_install] = []
 
