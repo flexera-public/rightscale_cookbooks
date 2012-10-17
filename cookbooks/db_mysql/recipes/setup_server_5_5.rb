@@ -7,7 +7,7 @@
 
 rightscale_marker :begin
 
-version="5.5"
+version = "5.5"
 node[:db][:version] = version
 node[:db][:provider] = "db_mysql"
 

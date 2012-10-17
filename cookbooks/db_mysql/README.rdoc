@@ -27,13 +27,13 @@ There are no known limitations.
 * To setup a MySQL database client and server, place the following recipes
   in order to your runlist:
 
-    <tt>db_mysql::setup_server_<version></tt>
+    db_mysql::setup_server_<version>
       loads the MySQL provider, tuning parameters, as well as other
       MySQL-specific attributes into the node as inputs.
 
-    <tt>db::install_server</tt>
+    db::install_server
       sets up generic server and client inputs. This will also include
-      <tt>db::default</tt> recipe which installs the client.
+      db::default recipe which installs the client.
 
   For example: To set up and install MySQL 5.5 client and server
 
