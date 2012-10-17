@@ -87,7 +87,7 @@ action :write_backup_info do
     masterstatus['File'] = slavestatus['Relay_Master_Log_File']
     masterstatus['Position'] = slavestatus['Exec_Master_Log_Pos']
   end
-
+  node[:db_mysql][:version] = new_resource.db_version
   # Save the db provider (MySQL) and version number as set in the node
   version=node[:db_mysql][:version]
   provider=node[:db][:provider]
@@ -108,7 +108,7 @@ end
 
 action :post_restore_cleanup do
   # Performs checks for snapshot compatibility with current server
-
+  node[:db_mysql][:version] = new_resource.db_version
   master_info = RightScale::Database::MySQL::Helper.load_replication_info(node)
   # Check version matches
   # Not all 11H2 snapshots (prior to 5.5 release) saved provider or version.
@@ -203,13 +203,70 @@ action :remove_anonymous do
 end
 
 action :install_client do
+  # Using node[:db_mysql][:version] to avoid misconfiguration during the run on Database Managers
+  node[:db_mysql][:version] = new_resource.db_version
+  node[:db_mysql][:client_packages_uninstall] = []
+  node[:db_mysql][:client_packages_install] = []
+
+  # Socket value
+  node[:db][:socket] = value_for_platform(
+    "ubuntu"  => {
+      "default" => "/var/run/mysqld/mysqld.sock"
+    },
+    "default" => "/var/lib/mysql/mysql.sock"
+  )
+
+  case node[:db_mysql][:version]
+    when "5.1"
+      node[:db_mysql][:client_packages_install] = value_for_platform(
+        ["centos", "redhat"] => {
+          "5.8"=> [ "MySQL-shared-compat", "MySQL-devel-community", "MySQL-client-community" ],
+          "default" => [ "mysql-devel", "mysql-libs", "mysql" ]
+        },
+        "ubuntu" => {
+          "10.04" => [ "libmysqlclient-dev", "mysql-client-5.1"],
+          "default" => []
+        },
+        "default" => []
+      )
+
+    when "5.5"
+      # centos/redhat 6 by default has mysql-libs 5.1 installed as requirement for postfix.
+      # Will uninstall mysql-libs, install mysql55-lib
+      node[:db_mysql][:client_packages_uninstall] = value_for_platform(
+        ["centos", "redhat"] => {
+          "5.8" => [],
+          "default" => [ "mysql-libs" ]
+        },
+        "default" => []
+      )
+
+      node[:db_mysql][:client_packages_install] = value_for_platform(
+        ["centos", "redhat"] => {
+          "5.8" => [ "mysql55-devel", "mysql55-libs", "mysql55" ],
+          "default" => [ "mysql55-devel", "mysql55-libs", "mysql55" ]
+        },
+        "ubuntu" => {
+          "10.04" => [],
+          "default" => [ "libmysqlclient-dev", "mysql-client-5.5" ]
+        },
+        "default" => []
+      )
+
+    else
+      raise "MySQL version: #{node[:db_mysql][:version]} not supported yet"
+  end
 
   # Uninstall specified client packages
   packages = node[:db_mysql][:client_packages_uninstall]
-  log "  Packages to uninstall: #{packages.join(",")}" unless packages == ""
+  log "  Packages to uninstall: #{packages.join(",")}" unless packages.empty?
   packages.each do |p|
+    use_rpm = node[:db_mysql][:version] == "5.5" && node[:platform] =~ /redhat|centos/ && node[:platform_version].to_i == 6 && p == "mysql-libs"
     r = package p do
       action :nothing
+      options "--nodeps" if use_rpm
+      ignore_failure true if use_rpm
+      provider Chef::Provider::Package::Rpm if use_rpm
     end
     r.run_action(:remove)
   end
@@ -223,7 +280,7 @@ action :install_client do
   end
 
   packages = node[:db_mysql][:client_packages_install]
-  Chef::Log.info "  Packages to install: #{packages.join(",")}" unless packages == ""
+  log "  Packages to install: #{packages.join(",")}" unless packages == ""
   packages.each do |p|
     r = package p do
       action :nothing
@@ -245,7 +302,7 @@ action :install_client do
       Gem.clear_paths
     end
   end
-  Chef::Log.info "  Gem reload forced with Gem.clear_paths"
+  log "  Gem reload forced with Gem.clear_paths"
 end
 
 action :install_server do

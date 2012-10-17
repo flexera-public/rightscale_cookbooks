@@ -32,9 +32,21 @@ detection recipe is configured to run every 15 minutes by default.
 
 == REQUIREMENTS:
 
- * Requires a virtual machine launched from a RightScale managed RightImage
+* Requires a virtual machine launched from a RightScale managed RightImage
 
 == SETUP:
+
+By default load balancer has only one pool called "default", which act as a default pool for
+all application servers which has "loadbalancer::app=default" tag.
+To setup multiple pools configuration, lb/pools input value must be overridden with
+comma-separated list of URIs or FQDNs for which the load balancer will create server 
+pools to answer website requests.
+Last entry will be the default backend and will answer for all URIs and FQDNs
+not listed in lb/pools input.
+Any combination of URIs or FQDNs or web root relative path can be entered.
+
+Application servers can provide any numbers of URIs or FQDNs to join corresponding 
+server pool backends.
 
 == USAGE:
 
@@ -100,7 +112,7 @@ concatenated into the HAProxy configuration file and HAProxy is restarted.
 
 == KNOWN LIMITATIONS:
 
-= LICENSE
+== LICENSE
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 RightScale Terms of Service available at http://www.rightscale.com/terms.php and,

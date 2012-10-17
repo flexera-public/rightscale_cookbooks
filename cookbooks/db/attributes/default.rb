@@ -8,9 +8,10 @@
 # Default setting for DB FQDN
 set_unless[:db][:dns][:master][:fqdn] = "localhost"
 
-# DB Provider, type of database which will be initialized
-# can be db_mysql or db_postgres, for more info please refer to corresponding cookbooks
-set_unless[:db][:provider] = "db_mysql"
+# Initial settings for db::install client correct operations
+# on application servers
+set_unless[:db][:data_dir] = "/mnt/storage"
+set_unless[:db][:provider_type] = "db_mysql_5.1"
 
 # Default settings for database administrator user and password
 set_unless[:db][:admin][:user] = "root"
@@ -60,3 +61,7 @@ set_unless[:db][:backup][:primary][:master][:cron][:minute] = cron_min
 # Slave backup every hour at a random minute 30 minutes offset from the master.
 set_unless[:db][:backup][:primary][:slave][:cron][:hour] = "*" # every hour
 set_unless[:db][:backup][:primary][:slave][:cron][:minute] = cron_min + 30
+
+# DB manager type specific commands array for db_sys_info.log file
+set_unless[:db][:info_file_options] = []
+set_unless[:db][:info_file_location] = "/etc"

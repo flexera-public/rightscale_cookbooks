@@ -104,15 +104,13 @@ action :post_backup_cleanup do
 end
 
 action :set_privileges do
-  priv = new_resource.privilege
-  priv_username = new_resource.privilege_username
-  priv_password = new_resource.privilege_password
-  priv_database = new_resource.privilege_database
-  # This is a check to verify node is master server
-  slave_state = RightScale::Database::PostgreSQL::Helper.detect_if_slave(node)
-  if ( slave_state == "true")
-    log "  No need to re-run the recipe on slave"
+  if ::File.exist?("#{node[:db_postgres][:datadir]}/recovery.conf")
+    log "  No need to rerun on reboot for slave"
   else
+    priv = new_resource.privilege
+    priv_username = new_resource.privilege_username
+    priv_password = new_resource.privilege_password
+    priv_database = new_resource.privilege_database
     db_postgres_set_privileges "setup db privileges" do
       preset priv
       username priv_username
@@ -124,8 +122,40 @@ end
 
 action :install_client do
 
-  # Install PostgreSQL 9.1.1 package(s)
-  if node[:platform] == "centos"
+  node[:db_postgres][:version] = new_resource.db_version
+
+  # Install PostgreSQL package(s)
+
+  node[:db][:socket] = value_for_platform(
+    ["centos", "redhat"] => {
+      "default" => "/var/run/postgresql"
+    },
+    "default" => ""
+  )
+
+  node[:db_postgres][:client_packages_install] = value_for_platform(
+    ["centos", "redhat"] => {
+      "default" => [
+        "postgresql91-libs",
+        "postgresql91",
+        "postgresql91-devel"
+      ]
+    },
+    "default" => []
+  )
+
+  node[:db_postgres][:packages_version] = value_for_platform(
+    ["centos", "redhat"] => {
+      "5.8" => "9.1.5-3PGDG.rhel5",
+      "default" => "9.1.5-3PGDG.rhel6"
+    },
+    "default" => ""
+  )
+
+  raise "Platform not supported for PostgreSQL #{node[:db_postgres][:version]}" if node[:db_postgres][:client_packages_install].empty?
+
+  # Install PostgreSQL package(s)
+  if node[:platform] =~ /redhat|centos/
     arch = node[:kernel][:machine]
     raise "Unsupported platform detected!" unless arch == "x86_64"
 
@@ -134,11 +164,11 @@ action :install_client do
     end
 
     packages = node[:db_postgres][:client_packages_install]
-    log  "Packages to install: #{packages.join(",")}"
+    log  "Packages to install: #{packages.join(", ")}"
     packages.each do |p|
       package p do
         action :install
-        version "9.1.1-1PGDG.rhel5"
+        version node[:db_postgres][:packages_version]
       end
     end
   else
@@ -146,7 +176,13 @@ action :install_client do
     raise "ERROR:: Unrecognized distro #{node[:platform]}, exiting "
   end
 
-  # == Install PostgreSQL client gem
+  # Link postgresql pg_config to default system bin path - required by app servers
+  link "/usr/bin/pg_config" do
+    to "/usr/pgsql-#{node[:db_postgres][:version]}/bin/pg_config"
+    not_if { ::File.exists?("/usr/bin/pg_config") }
+  end
+
+  # Install PostgreSQL client gem
   gem_package("pg") do
     gem_binary("/opt/rightscale/sandbox/bin/gem")
     options("-- --with-pg-config=#{node[:db_postgres][:bindir]}/pg_config")
@@ -155,12 +191,9 @@ end
 
 action :install_server do
 
-  # PostgreSQL server depends on PostgreSQL client
-  action_install_client
-
   arch = node[:kernel][:machine]
   raise "Unsupported platform detected!" unless arch == "x86_64"
-
+  node[:db_postgres][:version] = new_resource.db_version
   package "uuid" do
     action :install
   end
@@ -170,7 +203,7 @@ action :install_server do
   packages.each do |p|
     package p do
       action :install
-      version "9.1.1-1PGDG.rhel5"
+      version node[:db_postgres][:packages_version]
     end
   end
 
@@ -195,7 +228,7 @@ action :install_server do
 
 
   # Create the Socket directory
-  # directory "/var/run/postgresql" do
+  #directory "/var/run/postgresql" do
   directory "#{node[:db][:socket]}" do
     owner "postgres"
     group "postgres"
@@ -262,9 +295,18 @@ action :grant_replication_slave do
   Gem.clear_paths
   require 'pg'
 
-  log "  GRANT REPLICATION SLAVE to user #{node[:db][:replication][:user]}"
+
+
   # Opening connection for pg operation
   conn = PGconn.open("localhost", nil, nil, nil, nil, "postgres", nil)
+
+  # Now that we have a Postgresql object, let's sanitize our inputs. These will get pass for log and comparison.
+  username_esc = conn.escape_string(node[:db][:replication][:user])
+  password_esc = conn.escape_string(node[:db][:replication][:password])
+  # Following Username and password will get to pass for creation of user.
+  username = conn.quote_ident(username_esc)
+  password = conn.quote_ident(password_esc)
+  log "  GRANT REPLICATION SLAVE to user #{username}"
 
   # Enable admin/replication user
   # Check if server is in read_only mode, if found skip this...
@@ -272,14 +314,14 @@ action :grant_replication_slave do
   slavestatus = res.getvalue(0,0)
   if ( slavestatus == 'off' )
     log "  Detected Master server."
-    result = conn.exec("SELECT COUNT(*) FROM pg_user WHERE usename='#{node[:db][:replication][:user]}'")
+    result = conn.exec("SELECT COUNT(*) FROM pg_user WHERE usename='#{username_esc}'")
     userstat = result.getvalue(0,0)
     if ( userstat == '1' )
-      log "  User #{node[:db][:replication][:user]} already exists, updating user using current inputs"
-      conn.exec("ALTER USER #{node[:db][:replication][:user]} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{node[:db][:replication][:password]}'")
+      log "  User #{username} already exists, updating user using current inputs"
+      conn.exec("ALTER USER #{username} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password}'")
     else
-      log "  Creating replication user #{node[:db][:replication][:user]}"
-      conn.exec("CREATE USER #{node[:db][:replication][:user]} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{node[:db][:replication][:password]}'")
+      log "  Creating replication user #{username}"
+      conn.exec("CREATE USER #{username} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password}'")
       # Setup pg_hba.conf for replication user allow
       RightScale::Database::PostgreSQL::Helper.configure_pg_hba(node)
       # Reload postgresql to read new updated pg_hba.conf
@@ -291,59 +333,72 @@ action :grant_replication_slave do
   conn.finish
 end
 
+
 action :enable_replication do
   db_state_get node
-
+  current_restore_process = new_resource.restore_process
+  node[:db_postgres][:version] = new_resource.db_version
   newmaster_host = node[:db][:current_master_ip]
   rep_user = node[:db][:replication][:user]
   rep_pass = node[:db][:replication][:password]
   app_name = node[:rightscale][:instance_uuid]
 
-  master_info = RightScale::Database::PostgreSQL::Helper.load_replication_info(node)
-
-  # Set slave state
-  log "  Setting up slave state..."
-  ruby_block "set slave state" do
+  # Check the volume before performing any actions.  If invalid raise error and exit.
+  ruby_block "validate_master" do
+    not_if { current_restore_process == :no_restore }
     block do
-      node[:db][:this_is_master] = false
+      master_info = RightScale::Database::PostgreSQL::Helper.load_replication_info(node)
+
+      # Check that the snapshot is from the current master or a slave associated with the current master
+      raise "Position and file not saved or it does not contain info!" unless master_info['Master_instance_uuid']
+      raise "FATAL: snapshot was taken from a different master! snap_master was:#{master_info['Master_instance_uuid']} != current master: #{node[:db][:current_master_uuid]}" unless master_info['Master_instance_uuid'] == node[:db][:current_master_uuid]
     end
   end
 
   # Stopping Postgresql service
-  action_stop
+  service "postgresql-#{node[:db_postgres][:version]}" do
+    not_if { current_restore_process == :no_restore }
+    action :stop
+  end
 
-  # Sync to Master data
-  RightScale::Database::PostgreSQL::Helper.rsync_db(newmaster_host, rep_user)
+  ruby_block "Sync to Master data" do
+    not_if { current_restore_process == :no_restore }
+    block do
+      RightScale::Database::PostgreSQL::Helper.rsync_db(newmaster_host, rep_user)
+    end
+  end
 
-  # Setup recovery conf
-  RightScale::Database::PostgreSQL::Helper.reconfigure_replication_info(newmaster_host, rep_user, rep_pass, app_name)
+  ruby_block "configure_replication" do
+    not_if { current_restore_process == :no_restore }
+    block do
+      master_info = RightScale::Database::PostgreSQL::Helper.load_replication_info(node)
+      newmaster_host = master_info['Master_IP']
+      RightScale::Database::PostgreSQL::Helper.reconfigure_replication_info(newmaster_host, rep_user, rep_pass, app_name)
+    end
+  end
 
-  log "  Wiping existing runtime config files"
-  `rm -rf "#{node[:db][:datadir]}/pg_xlog/*"`
+  bash "wipe_existing_runtime_config" do
+    not_if { current_restore_process == :no_restore }
+    flags "-ex"
+     code <<-EOH
+       rm -rf #{node[:db_postgres][:datadir]}/pg_xlog/*
+     EOH
+  end
 
   # Ensure that database started
   # service provider uses the status command to decide if it
   # has to run the start command again.
-  5.times do
-      action_start
-  end
-
-  ruby_block "validate_backup" do
+  ruby_block "Start Postgresql service" do
     block do
-      master_info = RightScale::Database::PostgreSQL::Helper.load_replication_info(node)
-      raise "Position and file not saved!" unless master_info['Master_instance_uuid']
-      # Check that the snapshot is from the current master or a slave associated with the current master
-      if master_info['Master_instance_uuid'] != node[:db][:current_master_uuid]
-        raise "FATAL: snapshot was taken from a different master! snap_master was:#{master_info['Master_instance_uuid']} != current master: #{node[:db][:current_master_uuid]}"
-      end
+      retries 5
+      retry_delay 2
+      action_start
     end
   end
 
   # Setup slave monitoring
   action_setup_slave_monitoring
-
-end
-
+end  
 
 action :promote do
   db_state_get node
@@ -369,20 +424,28 @@ end
 action :setup_monitoring do
   db_state_get node
 
+  priv_username = new_resource.privilege_username
+  priv_password = new_resource.privilege_password
+
   service "collectd" do
     action :nothing
   end
 
-  if node[:platform] == 'centos'
+  if node[:platform] =~ /redhat|centos/
 
+    collectd_version = node[:rightscale][:collectd_packages_version]
     package "collectd-postgresql" do
       action :install
-      version "4.10.0-4.el5"
+      version "#{collectd_version}" unless collectd_version == "latest"
     end
 
     template ::File.join(node[:rightscale][:collectd_plugin_dir], 'postgresql.conf') do
       backup false
       source "postgresql_collectd_plugin.conf.erb"
+      variables(
+        :database_owner => priv_username,
+        :database_owner_pass => priv_password
+      )
       notifies :restart, resources(:service => "collectd")
       cookbook 'db_postgres'
     end
@@ -476,7 +539,7 @@ action :generate_dump_file do
   bash "Write the postgres DB backup file" do
       user 'postgres'
       code <<-EOH
-      pg_dump -U postgres -h /var/run/postgresql #{db_name} | gzip -c > #{dumpfile}
+        pg_dump -U postgres -h /var/run/postgresql #{db_name} | gzip -c > #{dumpfile}
       EOH
   end
 

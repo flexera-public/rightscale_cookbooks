@@ -16,6 +16,7 @@ action :create do
     :vg_data_percentage => new_resource.vg_data_percentage,
     :force => new_resource.force
   }
+  create_options[:iops] = new_resource.iops if new_resource.iops && !new_resource.iops.empty?
   device.create(create_options)
 end
 
@@ -61,6 +62,7 @@ action :primary_restore do
     :storage_key => new_resource.primary_user,
     :storage_secret => new_resource.primary_secret
   }
+  restore_args[:iops] = new_resource.iops if new_resource.iops && !new_resource.iops.empty?
 
   device.primary_restore(new_resource.lineage, restore_args)
 end
@@ -68,14 +70,14 @@ end
 # Prepare device for secondary backup
 action :secondary_backup do
   secondary_checks(new_resource)
-  device = init(new_resource)
+  device = init(new_resource, :secondary)
   device.secondary_backup(new_resource.lineage)
 end
 
 # Prepare device for secondary restore
 action :secondary_restore do
   secondary_checks(new_resource)
-  device = init(new_resource)
+  device = init(new_resource, :secondary)
   restore_args = {
     :timestamp => new_resource.timestamp_override == "" ? nil : new_resource.timestamp_override,
     :force => new_resource.force,
@@ -84,6 +86,7 @@ action :secondary_restore do
     :stripe_count => new_resource.stripe_count,
     :vg_data_percentage => new_resource.vg_data_percentage
   }
+  restore_args[:iops] = new_resource.iops if new_resource.iops && !new_resource.iops.empty?
 
   device.secondary_restore(new_resource.lineage, restore_args)
 end
@@ -118,7 +121,7 @@ action :backup_schedule_enable do
     minute "#{minute}" unless minute.empty?
     hour "#{hour}" unless hour.empty?
     user "root"
-    command "rs_run_recipe -n \"#{recipe}\" 2>&1 > /var/log/rightscale_tools_cron_backup.log"
+    command "rs_run_recipe --policy '#{recipe}' --name '#{recipe}' 2>&1 >> /var/log/rightscale_tools_cron_backup.log"
     action :create
   end
 

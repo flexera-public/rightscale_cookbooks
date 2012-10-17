@@ -32,7 +32,7 @@ This cookbook only supports the retrieval of code from Amazon S3, Rackspace Clou
 
 To access to Remote Object Store repositories all inputs shown below must be filled.
 * repo/default/storage_account_provider
-* repo/default/container
+* repo/default/repository
 * repo/default/prefix
 * repo/default/account
 * repo/default/credintial
@@ -74,7 +74,7 @@ Performs a standard repository pull plus a capistrano deployment style is applie
 
 For usage examples, please see the corresponding section in <tt>repo</tt> cookbook's README.
 
-= LICENSE:
+== LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 RightScale Terms of Service available at http://www.rightscale.com/terms.php and,

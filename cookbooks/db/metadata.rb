@@ -3,9 +3,9 @@ maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "RightScale Database Manager"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "12.1.0"
+version          "13.2.0"
 
-# supports "centos", "~> 5.8", "~> 6.2"
+# supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"
 # supports "ubuntu", "~> 10.04", "~> 12.04"
 
@@ -63,8 +63,8 @@ recipe "db::request_appserver_deny", "Sends a request to deny connections from t
 recipe "db::do_init_and_become_master", "Initializes the database and tags it as the master database server. Sets DNS. Starts a fresh backup from this master."
 recipe "db::do_primary_restore_and_become_master", "Restores the database and tags it as the master database server. Sets DNS. Starts a fresh backup from this master."
 recipe "db::do_secondary_restore_and_become_master", "Restores the database from a secondary backup location and tags it as the master database server. Sets DNS. Starts a fresh backup from this master."
-recipe "db::do_primary_init_slave", "Initializes the slave server from the primary backup location."
-recipe "db::do_secondary_init_slave", "Initializes the slave server from the secondary backup location."
+recipe "db::do_primary_init_slave", "Initializes the slave server from the primary backup location. Authentication information provided by inputs is ignored for slave servers."
+recipe "db::do_secondary_init_slave", "Initializes the slave server from the secondary backup location. Authentication information provided by inputs is ignored for slave servers."
 recipe "db::do_init_slave_at_boot", "Initializes the slave server at boot."
 recipe "db::do_set_dns_slave_private_ip", "Sets the slave DNS record to the private IP."
 recipe "db::do_promote_to_master", "Promotes a replicating slave to master."
@@ -86,7 +86,7 @@ attribute "db/dns/master/fqdn",
   :display_name => "Database Master FQDN",
   :description => "The fully qualified domain name for the master database server.  Example: db-master.example.com",
   :required => "required",
-  :recipes => [ "db::default" ]
+  :recipes => [ "db::default", "db::install_client" ]
 
 attribute "db/dns/master/id",
   :display_name => "Database Master DNS Record ID",
@@ -115,13 +115,13 @@ attribute "db/admin/user",
   :display_name => "Database Admin Username",
   :description => "The username of the database user with 'admin' privileges (e.g., cred:DBADMIN_USER).",
   :required => "required",
-  :recipes => [ "db::install_server", "db::setup_privileges_admin" ]
+  :recipes => [ "db::install_server", "db::setup_privileges_admin", "do_primary_restore", "do_primary_restore_and_become_master", "do_secondary_restore", "do_secondary_restore_and_become_master" ]
 
 attribute "db/admin/password",
   :display_name => "Database Admin Password",
   :description => "The password of the database user with 'admin' privileges (e.g., cred:DBADMIN_PASSWORD).",
   :required => "required",
-  :recipes => [ "db::install_server", "db::setup_privileges_admin" ]
+  :recipes => [ "db::install_server", "db::setup_privileges_admin", "do_primary_restore", "do_primary_restore_and_become_master", "do_secondary_restore", "do_secondary_restore_and_become_master" ]
 
 attribute "db/replication/user",
   :display_name => "Database Replication Username",
@@ -139,13 +139,13 @@ attribute "db/application/user",
   :display_name => "Database Application Username",
   :description => "The username of the database user that has 'user' privileges (e.g., cred:DBAPPLICATION_USER).",
   :required => "required",
-  :recipes => [ "db::default", "db::setup_privileges_application" ]
+  :recipes => [ "db::default", "db::setup_privileges_application", "db::install_client", "db::install_server", "do_primary_restore", "do_primary_restore_and_become_master", "do_secondary_restore", "do_secondary_restore_and_become_master" ]
 
 attribute "db/application/password",
   :display_name => "Database Application Password",
   :description => "The password of the database user that has 'user' privileges (e.g., cred:DBAPPLICATION_PASSWORD).",
   :required => "required",
-  :recipes => [ "db::default", "db::setup_privileges_application" ]
+  :recipes => [ "db::default", "db::setup_privileges_application", "db::install_client", "db::install_server", "do_primary_restore", "do_primary_restore_and_become_master", "do_secondary_restore", "do_secondary_restore_and_become_master" ]
 
 attribute "db/init_slave_at_boot",
   :display_name => "Init Slave at Boot",
@@ -161,6 +161,13 @@ attribute "db/dns/ttl",
   :default => "60",
   :choice => [ "60", "300" ],
   :recipes => [ "db::install_server" ]
+
+attribute "db/provider_type",
+  :display_name => "Database Provider type",
+  :description => "Database provider type to use on client side.  This must be a string containing the provider cookbook name and (optionally) the version of the database. For example: db_mydatabase_1.0, db_mysql_5.1, db_mysql_5.5, db_postgres_9.1",
+  :required => "required",
+  :choice => [ "db_mysql_5.1", "db_mysql_5.5", "db_postgres_9.1"],
+  :recipes => [ "db::install_client" ]
 
 # == Backup/Restore
 #

@@ -39,7 +39,7 @@ file.
 
 Configuration for the NTP daemon used in the <tt>sys_ntp::default</tt> recipe.
 
-= LICENSE:
+== LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to
 the RightScale Terms of Service available at http://www.rightscale.com/terms.php

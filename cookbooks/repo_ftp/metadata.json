@@ -1,34 +1,34 @@
 {
-  "name": "repo_ftp",
-  "description": "Manages the FTP code download",
-  "long_description": "= RightScale \"repo_ftp\" Provider\n\n== DESCRIPTION:\n\nProvides the FTP implementation of the 'repo' resource to\nmanage source code downloaded from FTP.\n\n== REQUIREMENTS:\n\n* Requires the 'repo' Lightweight Resource cookbook\nhttps://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/repo . See \"repo\" cookbook README for details.\n* Requires a virtual machine launched from a RightScale-managed RightImage.\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n* <tt>rightscale</tt>\n* <tt>repo</tt>\n\n== KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n== SETUP/USAGE:\n\n* Provider will be automatically initialized when you add \"repo:default\" recipe\n  to your ServerTemplate runlist\n\n* Once set up, use the recipes in the 'repo' cookbook to manage downloading from\n  your code repository. See the repo/README.rdoc for usage details.\n\n* Select the 'repo_ftp' option for the repo/default/provider input.\n\n* To perform correct operations, values for the repo/url and others must be provided. FTP username and password\n  inputs are optional - connection may be anonymous.\n\n== DETAILS:\n\n=== General\n\nThe 'repo_ftp' implementation can be called with the help of the Lightweight Resource, which can be\nfound in the <tt>repo</tt> cookbook.\n\nFor more information about Lightweight Resources and Providers (LWRPs), please see\n{Lightweight Resources and Providers}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)].\n\n=== LWRPs:\n\nThe <tt>repo_ftp</tt> provider is defined in the <tt>providers/default.rb</tt> file, which contains source code for <tt>:pull</tt> and <tt>:capistrano_pull</tt> actions.\nFor more info about these actions please see the <tt>repo</tt> cookbook's README.\n\nThe <tt>repo_ftp</tt> provider allows the retrieval of source code from FTP servers.\n\nFor normal operations, it requires the 'repo' resource, which acts as the interface to all <tt>repo_ftp</tt> provider logic.\n\n===== Actions:\n<tt>:pull</tt>\nStandard repository pull. Pull source code from a remote repository by specifying its location with a URL.\n\n<tt>:capistrano_pull</tt>\nPerform standard pull and then a capistrano deployment style will be applied.\n\n===== Usage Example:\n\nFor usage examples, please see the corresponding section in <tt>repo</tt> cookbook's README.\n\n= LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to the\nRightScale Terms of Service available at http://www.rightscale.com/terms.php and,\nif applicable, other agreements such as a RightScale Master Subscription Agreement.\n",
-  "maintainer": "RightScale, Inc.",
-  "maintainer_email": "support@rightscale.com",
-  "license": "Copyright RightScale, Inc. All rights reserved.",
-  "platforms": {
-    "centos": "~> 5.8",
-    "redhat": "~> 5.8",
-    "ubuntu": "~> 10.04.0"
-  },
   "dependencies": {
     "repo": ">= 0.0.0"
   },
-  "recommendations": {
-  },
-  "suggestions": {
-  },
-  "conflicting": {
-  },
-  "providing": {
-  },
-  "replacing": {
-  },
+  "name": "repo_ftp",
+  "maintainer_email": "support@rightscale.com",
   "attributes": {
   },
-  "groupings": {
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "suggestions": {
+  },
+  "platforms": {
+    "centos": "~> 5.8",
+    "ubuntu": "~> 10.04.0",
+    "redhat": "~> 5.8"
+  },
+  "maintainer": "RightScale, Inc.",
+  "long_description": "= RightScale \"repo_ftp\" Provider\n\n== DESCRIPTION:\n\nProvides the FTP implementation of the 'repo' resource to\nmanage source code downloaded from FTP.\n\n== REQUIREMENTS:\n\n* Requires the 'repo' Lightweight Resource cookbook\nhttps://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/repo . See \"repo\" cookbook README for details.\n* Requires a virtual machine launched from a RightScale-managed RightImage.\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n* <tt>rightscale</tt>\n* <tt>repo</tt>\n\n== KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n== SETUP/USAGE:\n\n* Provider will be automatically initialized when you add \"repo:default\" recipe\n  to your ServerTemplate runlist\n\n* Once set up, use the recipes in the 'repo' cookbook to manage downloading from\n  your code repository. See the repo/README.rdoc for usage details.\n\n* Select the 'repo_ftp' option for the repo/default/provider input.\n\n* To perform correct operations, values for the repo/url and others must be provided. FTP username and password\n  inputs are optional - connection may be anonymous.\n\n== DETAILS:\n\n=== General\n\nThe 'repo_ftp' implementation can be called with the help of the Lightweight Resource, which can be\nfound in the <tt>repo</tt> cookbook.\n\nFor more information about Lightweight Resources and Providers (LWRPs), please see\n{Lightweight Resources and Providers}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)].\n\n=== LWRPs:\n\nThe <tt>repo_ftp</tt> provider is defined in the <tt>providers/default.rb</tt> file, which contains source code for <tt>:pull</tt> and <tt>:capistrano_pull</tt> actions.\nFor more info about these actions please see the <tt>repo</tt> cookbook's README.\n\nThe <tt>repo_ftp</tt> provider allows the retrieval of source code from FTP servers.\n\nFor normal operations, it requires the 'repo' resource, which acts as the interface to all <tt>repo_ftp</tt> provider logic.\n\n===== Actions:\n<tt>:pull</tt>\nStandard repository pull. Pull source code from a remote repository by specifying its location with a URL.\n\n<tt>:capistrano_pull</tt>\nPerform standard pull and then a capistrano deployment style will be applied.\n\n===== Usage Example:\n\nFor usage examples, please see the corresponding section in <tt>repo</tt> cookbook's README.\n\n== LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to the\nRightScale Terms of Service available at http://www.rightscale.com/terms.php and,\nif applicable, other agreements such as a RightScale Master Subscription Agreement.\n",
+  "version": "13.2.0",
+  "recommendations": {
   },
   "recipes": {
     "repo_ftp::default": "Default pattern for loading provided packages and resources."
   },
-  "version": "13.1.0"
+  "groupings": {
+  },
+  "conflicting": {
+  },
+  "replacing": {
+  },
+  "description": "Manages the FTP code download",
+  "providing": {
+  }
 }

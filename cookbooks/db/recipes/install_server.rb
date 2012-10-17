@@ -70,4 +70,10 @@ elsif node[:db][:this_is_master] == false && node[:db][:init_status].to_sym == :
   end
 end
 
+# Setting admin and application user privileges
+db_set_privileges [
+  {:role => "administrator", :username => node[:db][:admin][:user], :password => node[:db][:admin][:password]},
+  {:role => "user", :username => node[:db][:application][:user], :password => node[:db][:application][:password]}
+]
+
 rightscale_marker :end

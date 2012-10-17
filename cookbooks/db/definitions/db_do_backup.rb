@@ -45,10 +45,12 @@ define :db_do_backup, :backup_type => "primary" do
   db DATA_DIR do
     action :pre_backup_check
   end
-  
+
+  log "Timeout is #{node[:db][:init_timeout]}"
+
   log "  Performing (#{do_backup_type} backup) lock DB and write backup info file..."
   db DATA_DIR do
-    timeout node[:db_mysql][:init_timeout]
+    timeout node[:db][:init_timeout]
     action [ :lock, :write_backup_info ]
   end
 

@@ -7,7 +7,7 @@ RightScale's cookbook for application server management.
 This is an abstract cookbook that defines the recipes and interface to
 application provider cookbooks.  It is not a standalone cookbook and must be
 used in conjunction with an application provider cookbook (i.e.
-<tt>app_php</tt>, app_tomcat, app_passenger or a user created application
+<tt>app_php</tt>, app_tomcat, app_passenger, app_django or a user created application
 provider).
 
 More detailed information can be found in the descriptions for each recipe in the cookbook. <tt>app::*</tt>.
@@ -26,6 +26,7 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 * <tt>app_php</tt>
 * <tt>app_passenger</tt>
 * <tt>app_tomcat</tt>
+* <tt>app_django</tt>
 
 == KNOWN LIMITATIONS:
 
@@ -34,7 +35,7 @@ There are no known limitations.
 == SETUP:
 
 In order to use App resource, you must create corresponding providers in your
-app server cookbook. For examples, see <tt>app_passenger</tt>, <tt>app_php</tt> or
+app server cookbook. For examples, see <tt>app_passenger</tt>, <tt>app_php</tt>, <tt>app_django</tt> or
 <tt>app_tomcat</tt> cookbooks.
 
 You must define app attributes which will be used in the initialized
@@ -55,6 +56,8 @@ Recommended:
   node[:app][:database_sever_fqdn]
   node[:app][:db_adapter]
   node[:app][:module_dependencies]
+  node[:app][:user]
+  node[:app][:group]
 
 More detailed descriptions of these attribute variables is located in the resource
 file's description.
@@ -74,7 +77,7 @@ file's description.
 == DETAILS:
 
 === General
-This cookbook is can only be used in conjunction with cookbooks that contain
+This cookbook can only be used in conjunction with cookbooks that contain
 Lightweight Providers which implement the 'app' interface. See the RightScale
 <tt>app_php</tt> cookbook for an example.
 
@@ -96,15 +99,15 @@ For more info please see: {Load Balancer Setups}[http://support.rightscale.com/0
 * <tt>node[:app][:provider]</tt> - Set a default provider.
 * <tt>node[:app][:port]</tt> - Set a default port to listen on. Default: 8000
 * <tt>node[:app][:ip]</tt> - IP to listen on. Default: First private IP
-* <tt>node[:app][:user]</tt> - Apache user. Required for changing owner of created project dirs.
-* <tt>node[:app][:group]</tt> - Apache group. Required for changing owner of created project dirs.
+* <tt>node[:app][:user]</tt> - Application server user. Required for changing owner of created project dirs.
+* <tt>node[:app][:group]</tt> - Application server group. Required for changing owner of created project dirs.
 
 === Definitions:
 
 <b>app_add_listen_port</b>
 Adds a port to the apache listen 'ports.conf' file and node attribute.
 
-Create node[:apache][:listen_ports] - array of strings for the web server to listen on.
+Create <tt>node[:apache][:listen_ports]</tt> - array of strings for the web server to listen on.
 
 This definition created specifically for the <tt>apache2</tt> cookbook at this time.
 
@@ -161,7 +164,7 @@ Created to convert vhost names into an array from a comma-separated list.
 This cookbook provides the abstract <tt>app</tt> resource, which will act as
 an "interface" for corresponding Lightweight app_* providers.
 
-This includes <tt>app_php</tt>, <tt>app_tomcat</tt> and <tt>app_passenger</tt>
+This includes <tt>app_php</tt>, <tt>app_tomcat</tt>, <tt>app_passenger</tt> and <tt>app_django</tt>
 cookbooks. Each of them contains an implementation of the corresponding app__*
 Lightweight Provider which can be called using this resource.
 
@@ -191,6 +194,9 @@ application server setup operations.
 * <tt>:restart</tt> - Action designed to set up a user defined restart sequence for
   the application server.
 
+* <tt>:reload</tt> - Action designed to set up a user defined reload sequence for
+  the application server.
+
 * <tt>:code_update</tt> - Action designed to perform project source code
   update/download.
 
@@ -211,7 +217,8 @@ application server setup operations.
 * <tt>database_user</tt> - Database user
 * <tt>database_password</tt> - Database password
 * <tt>database_sever_fqdn</tt> - Database server's fully qualified domain name (FQDN)
-
+* <tt>user</tt> - App user
+* <tt>group</tt> - Group the app user belongs to
 
 ===== Usage Examples:
 Below are a few basic examples. More detailed examples of this resource use can be
@@ -219,7 +226,6 @@ found in the <tt>do_*</tt> and <tt>setup_*</tt> recipes in the cookbook.
 
  app "default" do
    persist true
-end
    provider node[:app][:provider]
    packages node[:app][:packages]
    action :install
@@ -240,7 +246,7 @@ end
  end
 
 
-= LICENSE:
+== LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 RightScale Terms of Service available at http://www.rightscale.com/terms.php and,

@@ -3,9 +3,9 @@ maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "RighScale LB Manager"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "12.1.0"
+version          "13.2.0"
 
-# supports "centos", "~> 5.8", "~> 6.2"
+# supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"
 # supports "ubuntu", "~> 10.04", "~> 12.04"
 
@@ -29,7 +29,7 @@ recipe "lb::setup_advanced_configuration", "recipe for advanced load balancer co
 attribute "lb/pools",
   :display_name => "Load Balance Pools",
   :description => "Comma-separated list of URIs or FQDNs for which the load balancer will create server pools to answer website requests.
-First entry will be the default backend and will answer for all URIs and FQDNs not listed here.
+Last entry will be the default backend and will answer for all URIs and FQDNs not listed here.
 A single entry of any name, e.g. 'default', 'www.mysite.com' or '/appserver', will mimic basic behavior of one load balancer with one pool of application servers.
 This will be used for naming server pool backends.
 Application servers can provide any numbers of URIs or FQDNs to join corresponding server pool backends.
@@ -80,6 +80,7 @@ attribute "lb/session_stickiness",
   :choice => ["true", "false"],
   :default => "true",
   :recipes => [
+    "lb::do_attach_all",
     "lb::handle_attach"
   ]
 

@@ -3,18 +3,16 @@ maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "Installs/Configures Apache Passenger Rails application server"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "12.1.0"
+version          "13.2.0"
 
-# supports "centos", "~> 5.8", "~> 6.2"
+# supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"
 # supports "ubuntu", "~> 10.04", "~> 12.04"
 
-depends "rightscale"
-depends "web_apache"
-depends "repo"
-depends "logrotate"
 depends "app"
-depends "db"
+depends "repo"
+depends "rightscale"
+depends "logrotate"
 
 recipe "app_passenger::default", "Default cookbook recipe which sets provider-specific attributes for rails-passenger."
 recipe "app_passenger::install_custom_gems", "Custom gems to install."

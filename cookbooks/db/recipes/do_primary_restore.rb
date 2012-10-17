@@ -77,4 +77,10 @@ db DATA_DIR do
   action [ :start, :status ]
 end
 
+# Restoring admin and application user privileges
+db_set_privileges [
+  {:role => "administrator", :username => node[:db][:admin][:user], :password => node[:db][:admin][:password]},
+  {:role => "user", :username => node[:db][:application][:user], :password => node[:db][:application][:password]}
+]
+
 rightscale_marker :end

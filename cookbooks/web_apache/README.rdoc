@@ -38,7 +38,7 @@ Detailed cookbook attributes descriptions you can find in attributed/default.rb 
 * <tt>sysconfig_httpd.erb</tt> - Configuration file template for the apache service.
 
 
-= LICENSE
+== LICENSE
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to
 the RightScale Terms of Service available at http://www.rightscale.com/terms.php

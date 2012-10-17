@@ -39,26 +39,25 @@ else
   raise "Unrecognized distro #{node[:platform]}, exiting "
 end
 
+# Determine the gem environment from what is installed
+gemenv = Chef::ShellOut.new("/usr/bin/gem env")
+gemenv.run_command
+gemenv.error!
+
 # Setting passenger binary directory
-node[:app_passenger][:passenger_bin_dir] = value_for_platform(
-  "ubuntu" => {
-    "10.04" => "/usr/bin",
-    "default" => "/usr/local/bin"
-  },
-  "default" => "/usr/bin"
-)
+gemenv.stdout =~ /EXECUTABLE DIRECTORY: (.*)$/
+node[:app_passenger][:passenger_bin_dir] = $1
 
 # Path to Ruby gem directory
-node[:app_passenger][:ruby_gem_base_dir] = value_for_platform(
-  "ubuntu" => {
-    "10.04" => "/usr/lib64/ruby/gems/1.8",
-    "default" => "/var/lib/gems/1.8"
-  },
-  "default" => "/usr/lib64/ruby/gems/1.8"
-)
+gemenv.stdout =~ /INSTALLATION DIRECTORY: (.*)$/
+node[:app_passenger][:ruby_gem_base_dir] = $1
 
 # Setting app LWRP attribute
 node[:app][:destination] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
 node[:app][:root] = node[:app][:destination] + "/public"
+
+# We do not care about version number here.
+# need only the type of database adaptor
+node[:app][:db_adapter] = node[:db][:provider_type].match(/^db_([a-z]+)/)[1]
 
 rightscale_marker :end

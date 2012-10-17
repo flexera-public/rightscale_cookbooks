@@ -9,10 +9,6 @@
 * Requires "app" Light Weight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
   or your own implementation of "app" resource. See "app" cookbook README for details.
 * Requires a VM launched from a RightScale managed RightImage
-* Tested on the following RightImages:
-  * CentOS 5.8, 6.2
-  * Ubuntu 10.04, 12.04
-  * RedHat 5.8
 
 == COOKBOOKS DEPENDENCIES:
 Please see <tt>metadata.rb</tt> file for the latest dependencies.
@@ -26,8 +22,8 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 * <tt>db</tt>
 
 == KNOWN LIMITATIONS:
- Currently apache uses a static configuration and makes no tuning changes for resources available on larger instances.
- However, configuration can be overwritten using cookbook override techniques. See {Override Chef Cookbooks}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Override_Chef_Cookbooks]
+* Currently apache uses a static configuration and makes no tuning changes for resources available on larger instances.
+  However, configuration can be overwritten using cookbook override techniques. See {Override Chef Cookbooks}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Override_Chef_Cookbooks]
 
 == SETUP/USAGE:
 
@@ -37,8 +33,9 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 * When using a RightScale ServerTemplate, this will also automatically add the
   common attributes to your ServerTemplate inputs.
 
-For more info see: http://support.rightscale.com/03-Tutorials/PHP_Application_Server_Setup
+For more info see: {Release Notes}[http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current] (Section ‘PHP App Server’ under ServerTemplates)
 
+Please checkout the tutorial: {PHP App Server}[http://support.rightscale.com/03-Tutorials/PHP_Application_Server_Setup]
 
 == DETAILS:
 === General
@@ -47,7 +44,7 @@ The <tt>app_php</tt> cookbook will help you to install and set up an Apache + Ze
 <b>Apache</b>
 Server version: Apache/2.2.3
 
-Server built: Mar 27 2010 13:52:45
+Server built: Jun 6 2012 10:00:42
 
 <b>PHP</b>
 PHP 5.3.6 (cli) (built: Apr 25 2011 10:45:29)
@@ -126,7 +123,7 @@ For normal operations it requires the "app" resource which will act as the inter
 
 For usage examples please see corresponding section in the <tt>app</tt> cookbook's README.
 
-= LICENSE:
+== LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 RightScale Terms of Service available at http://www.rightscale.com/terms.php and,

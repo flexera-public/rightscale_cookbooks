@@ -5,14 +5,6 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-# Add actions to @action_list array.
-# Used to allow comments between entries.
-def self.add_action(sym)
-  @action_list ||= Array.new
-  @action_list << sym unless @action_list.include?(sym)
-  @action_list
-end
-
 # LB attributes
 #
 # Below are the attributes defined by the LB resource interface.
@@ -45,7 +37,7 @@ attribute :pool_name_full, :kind_of => String, :default => ""
 #
 # Installs software, config files, init files, and sets tags on the instance.
 #
-add_action :install
+actions :install
 
 # Add Vhost
 # Configures load balancer to answer for specified virtual host
@@ -53,7 +45,7 @@ add_action :install
 # Installs configuration files, monitoring, and tags for each vhost the load balancer will
 # answer for.
 #
-add_action :add_vhost
+actions :add_vhost
 
 # Attach
 # Attaches an application server to the local load balancer.
@@ -61,7 +53,7 @@ add_action :add_vhost
 # Attaches (adds to load balancer's running config) an application server to
 # the load balancer.  The attributes are used to specify which application server to attach.
 #
-add_action :attach
+actions :attach
 
 # Attach Request
 # Attach request from an application server.
@@ -69,7 +61,7 @@ add_action :attach
 # This runs on an application server which then runs a remote recipe on the
 # remote load balancer.  The remote recipe eventually runs the 'attach' action.
 #
-add_action :attach_request
+actions :attach_request
 
 # Detach
 # Detaches an application server from the local load balancer.
@@ -77,7 +69,7 @@ add_action :attach_request
 # Detaches (removes from the load balancer's running config) an application server from
 # the local load balancer.  The attributes are used to specify which application server to detach.
 #
-add_action :detach
+actions :detach
 
 # Detach Request
 # Detach request from an application server.
@@ -85,14 +77,14 @@ add_action :detach
 # This runs on an application server which then runs a remote recipe on the
 # remote load balancer.  The remote recipe eventually runs the 'detach' action.
 #
-add_action :detach_request
+actions :detach_request
 
 # Restart
 # Restart the load balancer service.
 #
 # Should use the platform's 'service' method to restart the service.
 #
-add_action :restart
+actions :restart
 
 # Setup Monitoring
 # Install and configure collectd plugins for the server.
@@ -100,12 +92,10 @@ add_action :restart
 # This is used by the RightScale platform to display metrics about the
 # load balancer on the RightScale dashboard.
 #
-add_action :setup_monitoring
+actions :setup_monitoring
 
 # Advanced Configs
 # Perform advanced configuration for load balancer.
 #
 #add support for complicated acls and authorization process
-add_action :advanced_configs
-
-actions @action_list
+actions :advanced_configs

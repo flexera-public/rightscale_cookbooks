@@ -11,23 +11,20 @@ manage PostgreSQL database stand-alone servers and clients.
 The 'db' implementation is defined by a Lightweight Provider, which can be
 found in the providers/default.rb file.
 
-The majority of the functionality of the PostgreSQL provider is encapsulated
-in the premium rightscale_tools gem. However, there are currently a handful
-of recipes that can be used without it. See 'Public Recipes' in the USAGE
-section below.
-
 
 == REQUIREMENTS:
 
 * Requires a VM launched from a RightScale managed RightImage
+* Needs RightScale ServerTemplate tools gem installed on system.
 
-* Tested on CentOS 5.6 RightImage
+== COOKBOOKS DEPENDENCIES:
 
-* Supports PostgreSQL 9.1
+Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
-* Needs RightScale Premium ServerTemplate tools gem installed on system.
-  This gem is only available for paid RightScale customers.
-  Please contact sales@rightscale.com to upgrade you account.
+== KNOWN LIMITATIONS:
+
+There are no known limitations.
+
 
 == SETUP:
 
@@ -51,30 +48,16 @@ details.
 
 Custom tuning parameters can be applied by overriding the <tt>postgres_tuning.rb</tt>
 attributes file. For more information and an example override repository,
-please see:
+please see: {Override Chef Cookbooks}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Override_Chef_Cookbooks].
 
-  https://github.com/ravibhure/cookbooks_public/tree/master/cookbooks/db_postgres
+== DETAILS:
 
+The 'db' implementation is defined by a Lightweight Provider, which can be
+found in the <tt>providers/default.rb</tt> file.
 
-=== Public Recipes
-Here is the list of db recipes that can be used without the premium
-rightscale_tools gem:
+== LICENSE:
 
-* db::default
-* db::install_client
-* db::install_server
-* db::setup_monitoring
-* db::setup_privileges_admin
-* db::setup_privileges_application
-* db::do_appserver_allow
-* db::do_appserver_deny
-* db::request_appserver_allow
-* db::request_appserver_deny
-
-These recipes are used by RightScale's LAMP ServerTemplates.
-
-
-== KNOWN LIMITATIONS
-
-* none
-  
+Copyright RightScale, Inc. All rights reserved.  All access and use subject to
+the RightScale Terms of Service available at http://www.rightscale.com/terms.php
+and, if applicable, other agreements such as a RightScale Master Subscription
+Agreement.
