@@ -87,13 +87,13 @@ action :write_backup_info do
     masterstatus['File'] = slavestatus['Relay_Master_Log_File']
     masterstatus['Position'] = slavestatus['Exec_Master_Log_Pos']
   end
-  node[:db_mysql][:version] = new_resource.db_version
+
   # Save the db provider (MySQL) and version number as set in the node
-  version=node[:db_mysql][:version]
-  provider=node[:db][:provider]
+  provider = node[:db][:provider]
+  version = new_resource.db_version
   Chef::Log.info "  Saving #{provider} version #{version} in master info file"
-  masterstatus['DB_Provider']=provider
-  masterstatus['DB_Version']=version
+  masterstatus['DB_Provider'] = provider
+  masterstatus['DB_Version'] = version
 
   Chef::Log.info "  Saving master info...:\n#{masterstatus.to_yaml}"
   ::File.open(::File.join(node[:db][:data_dir], RightScale::Database::MySQL::Helper::SNAPSHOT_POSITION_FILENAME), ::File::CREAT|::File::TRUNC|::File::RDWR) do |out|
@@ -108,15 +108,14 @@ end
 
 action :post_restore_cleanup do
   # Performs checks for snapshot compatibility with current server
-  node[:db_mysql][:version] = new_resource.db_version
   master_info = RightScale::Database::MySQL::Helper.load_replication_info(node)
   # Check version matches
   # Not all 11H2 snapshots (prior to 5.5 release) saved provider or version.
   # Assume MySQL 5.1 if nil
-  snap_version=master_info['DB_Version']||='5.1'
-  snap_provider=master_info['DB_Provider']||='db_mysql'
-  current_version= node[:db_mysql][:version]
-  current_provider=master_info['DB_Provider']||=node[:db][:provider]
+  snap_version = master_info['DB_Version'] ||= '5.1'
+  snap_provider = master_info['DB_Provider'] ||= 'db_mysql'
+  current_version = new_resource.db_version
+  current_provider = master_info['DB_Provider'] ||= node[:db][:provider]
   Chef::Log.info "  Snapshot from #{snap_provider} version #{snap_version}"
   # skip check if restore version check is false
   if node[:db][:backup][:restore_version_check] == "true"
@@ -203,8 +202,8 @@ action :remove_anonymous do
 end
 
 action :install_client do
-  # Using node[:db_mysql][:version] to avoid misconfiguration during the run on Database Managers
-  node[:db_mysql][:version] = new_resource.db_version
+  # Using node[:db][:version] to avoid misconfiguration during the run on Database Managers
+  version = new_resource.db_version
   node[:db_mysql][:client_packages_uninstall] = []
   node[:db_mysql][:client_packages_install] = []
 
@@ -216,7 +215,7 @@ action :install_client do
     "default" => "/var/lib/mysql/mysql.sock"
   )
 
-  case node[:db_mysql][:version]
+  case version
     when "5.1"
       node[:db_mysql][:client_packages_install] = value_for_platform(
         ["centos", "redhat"] => {
@@ -254,14 +253,14 @@ action :install_client do
       )
 
     else
-      raise "MySQL version: #{node[:db_mysql][:version]} not supported yet"
+      raise "MySQL version: #{version} not supported yet"
   end
 
   # Uninstall specified client packages
   packages = node[:db_mysql][:client_packages_uninstall]
   log "  Packages to uninstall: #{packages.join(",")}" unless packages.empty?
   packages.each do |p|
-    use_rpm = node[:db_mysql][:version] == "5.5" && node[:platform] =~ /redhat|centos/ && node[:platform_version].to_i == 6 && p == "mysql-libs"
+    use_rpm = version == "5.5" && node[:platform] =~ /redhat|centos/ && node[:platform_version].to_i == 6 && p == "mysql-libs"
     r = package p do
       action :nothing
       options "--nodeps" if use_rpm

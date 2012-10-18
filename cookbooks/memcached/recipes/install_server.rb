@@ -147,11 +147,23 @@ log "  Configuring collectd memcached plugin."
 # Writing settings to memcached.conf plugin.
 rightscale_monitor_process "memcached"
 
+template "#{node[:rightscale][:collectd_lib]}/memcached_listener_plugin" do
+  source "memcached_listen_disabled_num_plugin.erb"
+  mode "0755"
+  variables(
+    :tcp_port => node[:memcached][:tcp_port]
+  )
+  cookbook "memcached"
+end
+
 template "#{node[:rightscale][:collectd_plugin_dir]}/memcached.conf" do
   source "memcached_collectd.conf.erb"
   variables(
     :interface => node[:memcached][:interface],
-    :tcp_port => node[:memcached][:tcp_port]
+    :tcp_port => node[:memcached][:tcp_port],
+    :user => node[:memcached][:user],
+    :location => "#{node[:rightscale][:collectd_lib]}/memcached_listener_plugin",
+    :uuid => node[:rightscale][:instance_uuid]
   )
   cookbook "memcached"
   # Need to restart/start after configuration in order for the monitoring to run correctly.
