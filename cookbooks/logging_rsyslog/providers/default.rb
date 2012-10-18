@@ -41,11 +41,28 @@ end
 
 action :configure do
 
-  update_to_rsyslog4 if node[:platform_version] =~ /^5\..+/
-
   service "rsyslog" do
     supports :restart => true, :status => true, :start => true, :stop => true
     action :nothing
+  end
+
+  if node[:platform_version] =~ /^5\..+/
+    # Both CentOS and RedHat 5.8 have rsyslog v3.22 as the latest provided package
+    # the IUS repository carries rsyslog v4.8 for these operating systems.
+    # Update is needed to support RELP and have all the security updates of the new version.
+    # Because YUM cannot remove the rsyslog package without dependencies we use RPM to do that
+    package "rsyslog" do
+      action :remove
+      options "--nodeps"
+      ignore_failure true
+      provider Chef::Provider::Package::Rpm
+    end
+
+    package "rsyslog4" do
+      # Confirming new installation of package has started
+      notifies :start, resources(:service => "rsyslog"), :immediately
+    end
+
   end
 
   remote_server = new_resource.remote_server
@@ -88,8 +105,6 @@ end
 action :configure_server do
 
   # This action would configure an rsyslog logging server.
-
-  update_to_rsyslog4 if node[:platform_version] =~ /^5\..+/
 
   service "rsyslog" do
     supports :restart => true, :status => true, :start => true, :stop => true

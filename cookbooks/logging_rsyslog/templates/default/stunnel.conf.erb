@@ -15,8 +15,13 @@ cert = <%= @certificate %>
 ; Protocol version (all, SSLv2, SSLv3, TLSv1)
 sslVersion = TLSv1
 <% unless @client %>
+<%# Setting up the verification level depending on whether we use a certificate %>
+<%# provided by the user or a self-signed one %>
 <% @level = node[:logging][:certificate].nil? ? "1" : "3" %>
 verify = <%= @level %>
+<% if @level == "3" %>
+CAfile = <%= @certificate %>
+<% end %>
 <% end %>
 
 <% if node[:platform] =~ /centos|redhat/ %>
