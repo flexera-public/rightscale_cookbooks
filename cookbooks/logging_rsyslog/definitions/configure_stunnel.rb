@@ -53,12 +53,11 @@ define :configure_stunnel, :accept => "514", :connect => "515", :client => nil d
 
   # Writing stunnel configuration file
   template "/etc/stunnel/stunnel.conf" do
-    action :create
     source "stunnel.conf.erb"
+    cookbook "logging_rsyslog"
     owner "root"
     group "root"
     mode "0644"
-    cookbook "logging_rsyslog"
     variables(
       :certificate => certificate,
       :client => params[:client],
@@ -77,7 +76,7 @@ define :configure_stunnel, :accept => "514", :connect => "515", :client => nil d
 
   # Adding init script for CentOS and Redhat
   template "/etc/init.d/stunnel" do
-    source "stunnel.sh"
+    source "stunnel.sh.erb"
     cookbook "logging_rsyslog"
     owner "root"
     group "root"
