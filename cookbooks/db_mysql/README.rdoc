@@ -50,7 +50,9 @@ found in the <tt>providers/default.rb</tt> file.
 === Attributes:
 These are settings used in recipes and templates. Default values are noted.
 
-Note: Only "internal" cookbook attributes are described here. Descriptions of attributes which have inputs can be found in the metadata.rb cookbook file. For generic db attributes, refer to the db cookbook readme.
+Note: Only "internal" cookbook attributes are described here. Descriptions of attributes 
+which have inputs can be found in the metadata.rb cookbook file. For generic db attributes, 
+refer to the db cookbook readme.
 
 ===== General attributes
 * <tt>node[:db_mysql][:collectd_master_slave_mode]</tt> - The mode for collectd in MySQL server.
