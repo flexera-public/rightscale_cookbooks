@@ -1,5 +1,7 @@
 #! /bin/sh -e
 ### BEGIN INIT INFO
+# chkconfig: 2345 10 90
+# description: Activates/Deactivates stunnel
 # Provides:          stunnel
 # Required-Start:    $local_fs $remote_fs
 # Required-Stop:     $local_fs $remote_fs

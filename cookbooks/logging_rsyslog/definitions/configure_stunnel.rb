@@ -15,6 +15,7 @@ define :configure_stunnel, :accept => "514", :connect => "515", :client => nil d
   # Saving certificate if provided by user
   template certificate do
     source "stunnel.pem.erb"
+    cookbook "logging_rsyslog"
     not_if { node[:logging][:certificate].nil? }
   end
 
@@ -48,13 +49,7 @@ define :configure_stunnel, :accept => "514", :connect => "515", :client => nil d
     )
   end
 
-  # Enabling stunnel for ubuntu
-  execute "Enabling stunnel" do
-    command "ruby -pi -e \"gsub(/ENABLED=0/,'ENABLED=1')\" /etc/default/stunnel4"
-    only_if { node[:platform] == "ubuntu" }
-  end
-
-  # Adding init script for centOS and Redhat
+  # Adding init script for CentOS and Redhat
   cookbook_file "/etc/init.d/stunnel" do
     source "stunnel.sh"
     cookbook "logging_rsyslog"
@@ -63,6 +58,16 @@ define :configure_stunnel, :accept => "514", :connect => "515", :client => nil d
     mode "0755"
     backup false
     not_if { node[:platform] == "ubuntu" }
+  end
+
+  execute "Enabling stunnel for CentOS and Redhat" do
+    command "/sbin/chkconfig --add stunnel"
+    not_if { node[:platform] == "ubuntu" }
+  end
+
+  execute "Enabling stunnel for Ubuntu" do
+    command "ruby -pi -e \"gsub(/ENABLED=0/,'ENABLED=1')\" /etc/default/stunnel4"
+    only_if { node[:platform] == "ubuntu" }
   end
 
   # Enabling stunnel to start on system boot and restarting to apply new settings
