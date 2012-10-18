@@ -13,7 +13,7 @@
 ### END INIT INFO
 
 DEFAULTPIDFILE="/var/run/stunnel/stunnel.pid"
-DAEMON="/usr/bin/stunnel"
+DAEMON="/usr/sbin/stunnel"
 NAME=stunnel
 DESC="SSL tunnels"
 FILES="/etc/stunnel/stunnel.conf"

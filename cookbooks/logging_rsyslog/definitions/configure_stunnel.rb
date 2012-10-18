@@ -25,13 +25,31 @@ define :configure_stunnel, :accept => "514", :connect => "515", :client => nil d
     only_if { node[:logging][:certificate].nil? }
   end
 
+  owner = value_for_platform(
+    ["ubuntu"] => { "default" => "stunnel4" },
+    ["centos", "redhat"] => { "default" => "nobody" }
+  )
+  group = value_for_platform(
+    ["ubuntu"] => { "default" => "stunnel4" },
+    ["centos", "redhat"] => { "default" => "nobody" }
+  )
+
   # Restricting access to the certificate
   file certificate do
-    owner "nobody"
-    group "nobody"
+    owner owner
+    group group
     mode "0400"
     action :touch
   end
+
+  chroot = value_for_platform(
+    ["ubuntu"] => { "default" => "/var/lib/stunnel4/" },
+    ["centos", "redhat"] => { "default" => "/var/run/stunnel/" }
+  )
+  pid = value_for_platform(
+    ["ubuntu"] => { "default" => "/stunnel4.pid" },
+    ["centos", "redhat"] => { "default" => "/stunnel.pid" }
+  )
 
   # Writing stunnel configuration file
   template "/etc/stunnel/stunnel.conf" do
@@ -44,6 +62,10 @@ define :configure_stunnel, :accept => "514", :connect => "515", :client => nil d
     variables(
       :certificate => certificate,
       :client => params[:client],
+      :chroot => chroot,
+      :owner => owner,
+      :group => group,
+      :pid => pid,
       :accept => params[:accept],
       :connect => params[:connect]
     )
