@@ -71,14 +71,21 @@ define :configure_stunnel, :accept => "514", :connect => "515", :client => nil d
     )
   end
 
+  daemon = value_for_platform(
+    ["centos", "redhat"] => { "5.8" => "\"/usr/sbin/stunnel\"", "default" => "\"/usr/bin/stunnel\"" }
+  )
+
   # Adding init script for CentOS and Redhat
-  cookbook_file "/etc/init.d/stunnel" do
+  template "/etc/init.d/stunnel" do
     source "stunnel.sh"
     cookbook "logging_rsyslog"
     owner "root"
     group "root"
     mode "0755"
     backup false
+    variables(
+      :daemon => daemon
+    )
     not_if { node[:platform] == "ubuntu" }
   end
 

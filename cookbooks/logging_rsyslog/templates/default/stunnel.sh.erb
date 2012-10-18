@@ -2,18 +2,18 @@
 ### BEGIN INIT INFO
 # chkconfig: 2345 10 90
 # description: Activates/Deactivates stunnel
-# Provides:          stunnel
-# Required-Start:    $local_fs $remote_fs
-# Required-Stop:     $local_fs $remote_fs
-# Should-Start:      $syslog
-# Should-Stop:       $syslog
-# Default-Start:     2 3 4 5
-# Default-Stop:      0 1 6
+# Provides: stunnel
+# Required-Start: $local_fs $remote_fs
+# Required-Stop: $local_fs $remote_fs
+# Should-Start: $syslog
+# Should-Stop: $syslog
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
 # Short-Description: Start or stop stunnel 4.x (SSL tunnel for network daemons)
 ### END INIT INFO
 
 DEFAULTPIDFILE="/var/run/stunnel/stunnel.pid"
-DAEMON="/usr/sbin/stunnel"
+DAEMON=<%= @daemon %>
 NAME=stunnel
 DESC="SSL tunnels"
 FILES="/etc/stunnel/stunnel.conf"
