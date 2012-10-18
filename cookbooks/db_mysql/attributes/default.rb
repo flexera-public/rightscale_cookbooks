@@ -35,8 +35,6 @@ set_unless[:db_mysql][:dump][:prefix] = ""
 
 # Platform specific attributes
 
-set_unless[:db_mysql][:kill_bug_mysqld_safe] = true
-
 case platform
 when "redhat","centos"
   set_unless[:db_mysql][:log] = ""
