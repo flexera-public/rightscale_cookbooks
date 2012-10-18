@@ -18,6 +18,4 @@ raise "ERROR: Rsyslog is not installed!" unless system("which rsyslogd > /dev/nu
 
 node[:logging][:provider] = "logging_rsyslog"
 
-update_to_rsyslog4 if node[:platform_version] =~ /^5\..+/
-
 rightscale_marker :end

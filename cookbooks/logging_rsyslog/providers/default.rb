@@ -41,6 +41,8 @@ end
 
 action :configure do
 
+  update_to_rsyslog4 if node[:platform_version] =~ /^5\..+/
+
   service "rsyslog" do
     supports :restart => true, :status => true, :start => true, :stop => true
     action :nothing
@@ -86,6 +88,8 @@ end
 action :configure_server do
 
   # This action would configure an rsyslog logging server.
+
+  update_to_rsyslog4 if node[:platform_version] =~ /^5\..+/
 
   service "rsyslog" do
     supports :restart => true, :status => true, :start => true, :stop => true
