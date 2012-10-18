@@ -8,29 +8,32 @@
 
 action :pull do
 
-  log "  Trying to get data from #{new_resource.repository}"
+  repo_source = new_resource.repository
+  repo_destination = new_resource.destination
+
+  log "  Trying to get data from #{repo_source}"
 
   # Backup project directory if it is not empty
   ruby_block "Backup of existing project directory" do
     block do
-      ::File.rename("#{new_resource.destination}", "#{new_resource.destination}_" + ::Time.now.gmtime.strftime("%Y%m%d%H%M"))
+      ::File.rename("#{repo_destination}", "#{repo_destination}_" + ::Time.now.gmtime.strftime("%Y%m%d%H%M"))
     end
-    not_if { ::Dir["#{new_resource.destination}/*"].empty? }
+    not_if { ::Dir["#{repo_destination}/*"].empty? }
   end
 
   # Ensure that destination directory exists after all backups.
-  directory "#{new_resource.destination}"
+  directory "#{repo_destination}"
 
   # Workaround for wget not to create redundant hierarchy
-  level = new_resource.repository[/^(ftp:\/\/)?(.+)/][$2].split('/').length - 1
+  level = repo_source[/^(ftp:\/\/)?(.+)/][$2].split('/').length - 1
 
   # To make anonymous connection possible
   user = new_resource.account.to_s.strip.length == 0 ? "" : "--ftp-user=#{new_resource.account}"
   password = new_resource.credential.to_s.strip.length == 0 ? "" : "--ftp-password=#{new_resource.credential}"
 
   # Get the data
-  execute "Download #{new_resource.repository}" do
-    command "wget #{new_resource.repository} #{user} #{password} --recursive --no-host-directories --cut-dirs=#{level} --directory-prefix=#{new_resource.destination}"
+  execute "Download #{repo_source}" do
+    command "wget #{repo_source} #{user} #{password} --recursive --no-host-directories --cut-dirs=#{level} --directory-prefix=#{repo_destination}"
   end
 
   log "  Data fetch finished successfully!"
