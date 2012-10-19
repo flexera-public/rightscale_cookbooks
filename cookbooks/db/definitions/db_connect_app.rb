@@ -5,7 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-define :db_connect_app, :template => "db_connection_example.erb", :cookbook => "db", :database => nil do
+define :db_connect_app, :template => "db_connection_example.erb", :cookbook => "db", :database => nil :driver_type => nil, :owner => nil, :group => nil, :vars => {} do
   
   template params[:name] do
     source params[:template]
