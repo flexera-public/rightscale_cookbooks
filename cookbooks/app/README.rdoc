@@ -53,7 +53,7 @@ Recommended:
   node[:app][:database_name]
   node[:app][:database_user]
   node[:app][:database_password]
-  node[:app][:database_sever_fqdn]
+  node[:app][:database_server_fqdn]
   node[:app][:db_adapter]
   node[:app][:module_dependencies]
   node[:app][:user]
@@ -216,7 +216,7 @@ application server setup operations.
 * <tt>database_name</tt> - Name of the required database
 * <tt>database_user</tt> - Database user
 * <tt>database_password</tt> - Database password
-* <tt>database_sever_fqdn</tt> - Database server's fully qualified domain name (FQDN)
+* <tt>database_server_fqdn</tt> - Database server's fully qualified domain name (FQDN)
 * <tt>user</tt> - App user
 * <tt>group</tt> - Group the app user belongs to
 
@@ -235,7 +235,7 @@ found in the <tt>do_*</tt> and <tt>setup_*</tt> recipes in the cookbook.
    database_name node[:app][:database_name]
    database_user node[:app][:database_user]
    database_password node[:app][:database_password]
-   database_sever_fqdn node[:app][:database_sever_fqdn]
+   database_server_fqdn node[:app][:database_server_fqdn]
    action :setup_db_connection
  end
 

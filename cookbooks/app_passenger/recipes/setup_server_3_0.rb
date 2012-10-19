@@ -8,7 +8,9 @@
 rightscale_marker :begin
 
 log "  Setting provider specific settings for rails-passenger."
+version = "3.0"
 node[:app][:provider] = "app_passenger"
+node[:app][:version] = version
 
 case node[:platform]
 when "ubuntu"
@@ -51,10 +53,6 @@ node[:app_passenger][:passenger_bin_dir] = $1
 # Path to Ruby gem directory
 gemenv.stdout =~ /INSTALLATION DIRECTORY: (.*)$/
 node[:app_passenger][:ruby_gem_base_dir] = $1
-
-# Setting app LWRP attribute
-node[:app][:destination] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
-node[:app][:root] = node[:app][:destination] + "/public"
 
 # We do not care about version number here.
 # need only the type of database adaptor

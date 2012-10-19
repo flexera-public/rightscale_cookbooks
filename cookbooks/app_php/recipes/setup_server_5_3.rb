@@ -9,78 +9,40 @@ rightscale_marker :begin
 
 log "  Setting provider specific settings for php application server."
 node[:app][:provider] = "app_php"
+node[:app][:version] = "5.3"
+log "  Setting php application server version to 5.3."
 
 # Setting generic app attributes
-platform = node[:platform]
-case platform
+case node[:platform]
 when "ubuntu"
   node[:app][:user] = "www-data"
   node[:app][:group] = "www-data"
+  node[:app][:packages] = [
+    "php5",
+    "php-pear",
+    "libapache2-mod-php5"
+  ]
 when "centos", "redhat"
   node[:app][:user] = "apache"
   node[:app][:group] = "apache"
+  node[:app][:packages] = [
+    "php53u",
+    "php53u-pear",
+    "php53u-zts"
+  ]
 end
 
-log "  Install PHP"
-package "php5" do
-  package_name value_for_platform(
-    [ "centos", "redhat" ] => {
-      "5.6" => "php53u",
-      "5.7" => "php53u",
-      "5.8" => "php53u",
-      "6.2" => "php53u",
-      "6.3" => "php53u",
-      "default" => "php"
-    },
-    "ubuntu" => {
-      "default" => "php5"
-    },
-    "default" => ""
-  )
-  action :install
-end
-
-log "  Install PHP Pear"
-package "php-pear" do
-  package_name value_for_platform(
-    [ "centos", "redhat" ] => {
-      "5.6" => "php53u-pear",
-      "5.7" => "php53u-pear",
-      "5.8" => "php53u-pear",
-      "6.2" => "php53u-pear",
-      "6.3" => "php53u-pear",
-      "default" => "php-pear"
-    },
-    "ubuntu" => {
-      "default" => "php-pear"
-    },
-    "default" => "php-pear"
-  )
-  action :install
-end
-
-log "  Install PHP apache support"
-package "php apache integration" do
-  package_name value_for_platform(
-    [ "centos", "redhat" ] => {
-      "5.6" => "php53u-zts",
-      "5.7" => "php53u-zts",
-      "5.8" => "php53u-zts",
-      "6.2" => "php53u-zts",
-      "6.3" => "php53u-zts",
-      "default" => "php-zts"
-    },
-    "ubuntu" => {
-      "default" => "libapache2-mod-php5"
-    },
-    "default" => "php-zts"
-  )
-  action :install
-end
-
+# Since, we don't have db/provider_type input in LAMP STs
+# node[:db][:provider_type] will be nil.
+# We need this condition to check if node[:db][:provider_type] is set
+# which happens in case of 3-tier setup with Database Managers.
+if not node[:db][:provider_type].nil?
 # We do not care about version number here.
-# need only the type of database adaptor
-node[:app][:db_adapter] = node[:db][:provider_type].match(/^db_([a-z]+)/)[1]
+# need only the type of database adapter
+  node[:app][:db_adapter] = node[:db][:provider_type].match(/^db_([a-z]+)/)[1]
+else
+  node[:app][:db_adapter] = node[:db][:provider].match(/^db_([a-z]+)/)[1]
+end
 
 if node[:app][:db_adapter] == "mysql"
   log "  Install PHP mysql support"
@@ -123,11 +85,5 @@ elsif node[:app][:db_adapter] == "postgres"
 else
   raise "Unrecognized database adapter #{node[:app][:db_adapter]}, exiting "
 end
-
-# Setting app LWRP attribute
-node[:app][:destination] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
-
-# PHP shares the same doc root with the application destination
-node[:app][:root] = "#{node[:app][:destination]}"
 
 rightscale_marker :end

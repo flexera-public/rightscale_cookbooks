@@ -84,7 +84,7 @@ attribute "db/dns/master/fqdn",
   :display_name => "Database Master FQDN",
   :description => "The fully qualified domain name for the master database server.  Example: db-master.example.com",
   :required => "required",
-  :recipes => ["db::install_server"]
+  :recipes => ["db::default", "db::install_server"]
 
 attribute "db/dns/master/id",
   :display_name => "Database Master DNS Record ID",

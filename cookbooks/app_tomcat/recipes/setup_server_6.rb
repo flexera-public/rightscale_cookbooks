@@ -8,7 +8,9 @@
 rightscale_marker :begin
 
 version = "6"
-node[:app_tomcat][:version] = version
+log "  Setting provider specific settings for tomcat"
+node[:app][:provider] = "app_tomcat"
+node[:app][:version] = version
 log "  Setting tomcat version to #{version}"
 
 # Defining database adapter parameter, app user and group attributes depending on platform
@@ -30,6 +32,10 @@ when "centos", "redhat"
 else
   raise "Unrecognized distro #{node[:platform]} for tomcat#{version}, exiting "
 end
+
+# we do not care about version number here.
+# need only the type of database adapter
+node[:app][:db_adapter] = node[:db][:provider_type].match(/^db_([a-z]+)/)[1]
 
 # Preparing list of database adapter packages depending on platform and database adapter
 case node[:app][:db_adapter]

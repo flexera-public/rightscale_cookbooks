@@ -27,17 +27,20 @@ There are no known limitations.
 
 == SETUP/USAGE:
 
-* Place <tt>app_passenger::default</tt> recipe into your runlist to set up the application
-  server. Since this sets up the app provider, it must be run before the
-  <tt>app::default</tt> recipe, which expects a provider to already be set.
-* When using a RightScale ServerTemplate, this will also automatically add the
-  common attributes to your ServerTemplate inputs.
+* Place <tt>app_passenger::setup_server_3_0</tt> recipe into your runlist
+  to set up the application server specific attributes. This sets up the app
+  provider and version.
+* Place <tt>app::install_server</tt> recipe after setup_server recipe to install
+  the application server.
 
 == DETAILS:
 
 === General:
 
 The <tt>app_passenger</tt> cookbook will install and set up an Apache + Phusion Passenger application server configured to connect with a MySQL or Postgres database server.
+Set db/provider_type input in RightScale ServerTemplate to choose database
+provider. Place <tt>db::default</tt> recipe before application server installation
+to install the database client.
 
 <b>Apache</b>
 

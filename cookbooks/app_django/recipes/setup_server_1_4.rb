@@ -8,7 +8,9 @@
 rightscale_marker :begin
 
 log "  Setting provider specific settings for Django."
+version = "1.4"
 node[:app][:provider] = "app_django"
+node[:app][:version] = version
 
 # Ubuntu 12.04 support https://wiki.ubuntu.com/Python
 case node[:platform]
@@ -54,15 +56,8 @@ end
 # Set debug mode django style (https://docs.djangoproject.com/en/dev/ref/settings/#debug)
 node[:app_django][:app][:debug_mode].gsub!(/^./) {|a| a.upcase}
 
-# Setting app LWRP attribute
-node[:app][:destination] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
-
-# Django shares the same doc root with the application destination
-node[:app][:root] = "#{node[:app][:destination]}"
-
 # We do not care about version number here.
 # need only the type of database adaptor
 node[:app][:db_adapter] = node[:db][:provider_type].match(/^db_([a-z]+)/)[1]
-
 
 rightscale_marker :end

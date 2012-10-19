@@ -11,6 +11,8 @@ log "  Provider is #{node[:app][:provider]}"
 log "  Application IP is #{node[:app][:ip]}"
 log "  Application port is #{node[:app][:port]}"
 
+# Setting app LWRP attribute
+node[:app][:destination] = "#{node[:repo][:default][:destination]}/#{node[:web_apache][:application_name]}"
 
 directory "#{node[:app][:destination]}" do
   recursive true
@@ -25,6 +27,12 @@ app "default" do
   provider node[:app][:provider]
   packages node[:app][:packages]
   action :install
+end
+
+if node[:app][:provider] == "app_passenger"
+  node[:app][:root] = node[:app][:destination] + "/public"
+else
+  node[:app][:root]="#{node[:app][:destination]}"
 end
 
 # Let others know we are an appserver
