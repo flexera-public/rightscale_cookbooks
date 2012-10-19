@@ -13,12 +13,12 @@
 cert = <%= @certificate %>
 
 ; Protocol version (all, SSLv2, SSLv3, TLSv1)
-sslVersion = SSLv3
 <% unless node[:platform_version] =~ /^5\..+/ %>
-<%# Making sure we don't use insecure SSLv2 %>
 <%# Cannot force this option for CentOS/RedHat 5.8 %>
-options = NO_SSLv2
+sslVersion = SSLv3
 <% end %>
+<%# Making sure we don't use insecure SSLv2 %>
+options = NO_SSLv2
 <%# Server specific configuration %>
 <% unless @client %>
 <%# Setting up the verification level depending on whether we use a certificate %>
@@ -37,7 +37,7 @@ CAfile = <%= @certificate %>
 chroot = <%= @chroot %>
 setuid = <%= @owner %>
 setgid = <%= @group %>
-pid =  <%= @pid %>
+pid = <%= @pid %>
 
 <%# TCP options %>
 socket = l:TCP_NODELAY=1
