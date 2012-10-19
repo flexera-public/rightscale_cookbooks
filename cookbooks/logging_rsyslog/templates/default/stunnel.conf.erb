@@ -9,40 +9,46 @@
 ; DO NOT EDIT BY HAND
 ;
 
+<%# Self-signed or user-provided TLS/SSL certificate %>
 cert = <%= @certificate %>
-<%= @client  %>
 
 ; Protocol version (all, SSLv2, SSLv3, TLSv1)
-<% unless @client %>
 sslVersion = SSLv3
+<% unless node[:platform_version] =~ /^5\..+/ %>
+<%# Making sure we don't use insecure SSLv2 %>
+<%# Cannot force this option for CentOS/RedHat 5.8 %>
+options = NO_SSLv2
+<% end %>
+<%# Server specific configuration %>
+<% unless @client %>
 <%# Setting up the verification level depending on whether we use a certificate %>
 <%# provided by the user or a self-signed one. %>
+<%# verify = 3 would require and verify certificates against locally installed certificates. %>
 <% @level = node[:logging][:certificate].nil? ? "1" : "3" %>
 verify = <%= @level %>
   <% if @level == "3" %>
-  <%# verify = 3 would require and verify certificates against locally installed certificates. %>
 CAfile = <%= @certificate %>
   <% end %>
-<% else %>
-<%# Force SSLv3+ for clients. %>
-options = NO_SSLv2
 <% end %>
+<%# Client specific configuration %>
+<%= @client  %>
 
+<%# Configuration for init script to run correctly %>
 chroot = <%= @chroot %>
 setuid = <%= @owner %>
 setgid = <%= @group %>
 pid =  <%= @pid %>
 
-; Some performance tunings
+<%# TCP options %>
 socket = l:TCP_NODELAY=1
 socket = r:TCP_NODELAY=1
 ;compression = zlib
 
-; Some debugging stuff useful for troubleshooting
+<%# Turn on logging: provides useful information for troubleshooting %>
 debug = 7
 output = /var/log/stunnel
 
-; Service-level configuration
+<%# syslog configuration %>
 [syslog]
 accept  = <%= @accept %>
 connect = <%= @connect %>
