@@ -26,9 +26,11 @@ There are no known limitations.
 
 == SETUP/USAGE:
 
-* Place <tt>tomcat::default</tt> and <tt>tomcat::default_6</tt> or <tt>tomcat::default_7</tt> (depending on which application server version to be installed) recipes into your runlist to set up the application server.
-* When using a RightScale ServerTemplate, this will also automatically add the
-  common attributes to your ServerTemplate inputs.
+* Place <tt>app_tomcat::setup_server_6</tt> or <tt>app_tomcat::setup_server_7</tt>
+  (depending on which application server version to be installed) recipes into
+  your runlist to set up the application server specific attributes.
+* Place <tt>app::install_server</tt> after setup_server recipe to install the
+  application server.
 * Set 'jdbc/ConnDB' as your datasource name to set up a database connection with
   the application server.
 
@@ -41,6 +43,10 @@ Please checkout the tutorial: {Tomcat App Server}[http://support.rightscale.com/
 
 The <tt>app_tomcat</tt> cookbook will install and set up the Apache web server with a mod_jk module
 and the Tomcat application server, with support for MySQL or Postgres database servers.
+Set db/provider_type input in RightScale ServerTemplate to choose database
+provider. Place <tt>db::default</tt> recipe before application server installation
+to install the database client.
+
 The Cookbook will create a separate vhost config for the Apache web server, which will allow
 Apache to handle static content, such as images and HTML documents, 
 and forward all requests for dynamic content to Tomcat.
