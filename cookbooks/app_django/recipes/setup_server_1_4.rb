@@ -8,7 +8,7 @@
 rightscale_marker :begin
 
 log "  Setting provider specific settings for Django."
-version = "1"
+version = "1.4"
 node[:app][:provider] = "app_django"
 node[:app][:version] = version
 

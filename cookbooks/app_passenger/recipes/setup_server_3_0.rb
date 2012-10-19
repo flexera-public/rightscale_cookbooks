@@ -8,7 +8,7 @@
 rightscale_marker :begin
 
 log "  Setting provider specific settings for rails-passenger."
-version = "3"
+version = "3.0"
 node[:app][:provider] = "app_passenger"
 node[:app][:version] = version
 
