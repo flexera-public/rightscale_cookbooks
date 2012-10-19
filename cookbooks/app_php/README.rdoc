@@ -27,11 +27,11 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 == SETUP/USAGE:
 
-* Place <tt>app_php::default</tt> recipe into your runlist to set up the application
-  server. Since this sets up the app provider, it must be run before the
-  <tt>app::default</tt> recipe, which expects a provider to already be set.
-* When using a RightScale ServerTemplate, this will also automatically add the
-  common attributes to your ServerTemplate inputs.
+* Place <tt>app_php::setup_server_5_3</tt> recipe into your runlist to set up
+  the application server specific attributes. This sets up the app provider and
+  version.
+* Place <tt>app::install_server</tt> recipe after setup_server recipe to install
+  the application server.
 
 For more info see: {Release Notes}[http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current] (Section ‘PHP App Server’ under ServerTemplates)
 
@@ -39,7 +39,12 @@ Please checkout the tutorial: {PHP App Server}[http://support.rightscale.com/03-
 
 == DETAILS:
 === General
-The <tt>app_php</tt> cookbook will help you to install and set up an Apache + Zend Engine PHP application server, which can connect to a MySQL or Postgres database server.
+The <tt>app_php</tt> cookbook will help you to install and set up an
+Apache + Zend Engine PHP application server, which can connect to a
+MySQL or Postgres database server.
+Set db/provider_type input in RightScale ServerTemplate to choose database
+provider. Place <tt>db::default</tt> recipe before application server installation
+to install the database client.
 
 <b>Apache</b>
 Server version: Apache/2.2.3

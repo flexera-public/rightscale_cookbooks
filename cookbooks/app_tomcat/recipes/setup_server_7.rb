@@ -7,8 +7,10 @@
 
 rightscale_marker :begin
 
-version="7"
-node[:app_tomcat][:version] = version
+log "  Setting provider specific settings for tomcat"
+version = "7"
+node[:app][:provider] = "app_tomcat"
+node[:app][:version] = version
 log "  Setting Tomcat version to #{version}"
 
 #Defining app user and group attributes

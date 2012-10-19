@@ -186,10 +186,11 @@ to specified destination.
 Perform standard pull and then capistrano deployment style will be applied.
 
 ===== Attributes:
+These are settings used in recipes and templates. Default values should be noted.
+
+Note: Only "internal" cookbook attributes are described here. Descriptions of attributes which have inputs can be found in the metadata.rb cookbook file.
 
 * <tt>destination</tt> - Path to where project repo will be pulled
-
-* <tt>repository</tt> - Repository Url
 
 * <tt>revision</tt> - Remote repo Branch or revision
 
@@ -217,10 +218,6 @@ Perform standard pull and then capistrano deployment style will be applied.
 
 * <tt>storage_account_provider</tt> - Location where dump file will be saved.
   Used by dump recipes to back up to Amazon S3 or Rackspace Cloud Files.
-
-* <tt>container</tt> - The cloud storage location where the dump file will be
-  restored from. For Amazon S3, use the bucket name. For Rackspace Cloud Files,
-  use the container name.
 
 * <tt>unpack_source</tt> - Unpack downloaded source or not Source file must be
   kind of tar archive Default: false

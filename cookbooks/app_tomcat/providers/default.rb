@@ -8,7 +8,7 @@
 # Stop tomcat service
 action :stop do
 
-  version = node[:app_tomcat][:version].to_i
+  version = node[:app][:version].to_i
   log "  Running stop sequence"
   service "tomcat#{version}" do
     action :stop
@@ -19,7 +19,7 @@ end
 # Start tomcat service
 action :start do
 
-  version = node[:app_tomcat][:version].to_i
+  version = node[:app][:version].to_i
   log "  Running start sequence"
   service "tomcat#{version}" do
     action :start
@@ -43,7 +43,7 @@ end
 #Installing required packages and prepare system for tomcat
 action :install do
 
-  version = node[:app_tomcat][:version].to_i
+  version = node[:app][:version].to_i
 
   packages = new_resource.packages
   log "  Packages which will be installed: #{packages}"
@@ -142,7 +142,7 @@ action :setup_vhost do
 
   port = new_resource.port
   app_root = new_resource.root
-  version = node[:app_tomcat][:version].to_i
+  version = node[:app][:version].to_i
 
   log "  Creating tomcat#{version} configuration file"
   template "#{node[:app_tomcat][:configuration_file_path]}" do
@@ -325,7 +325,7 @@ action :setup_db_connection do
   db_name = new_resource.database_name
   db_adapter = node[:app][:db_adapter]
   datasource = node[:app_tomcat][:datasource_name]
-  version = node[:app_tomcat][:version].to_i
+  version = node[:app][:version].to_i
 
   log "  Creating context.xml for DB: #{db_name} using adapter #{db_adapter} and datasource #{datasource}"
   db_connect_app "/etc/tomcat#{version}/context.xml" do
@@ -372,7 +372,7 @@ end
 # Setup monitoring tools for tomcat
 action :setup_monitoring do
 
-  version=node[:app_tomcat][:version].to_i
+  version=node[:app][:version].to_i
   log "  Setup of collectd monitoring for tomcat"
   rightscale_enable_collectd_plugin 'exec'
 

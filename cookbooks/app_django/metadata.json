@@ -34,7 +34,7 @@
       "default": "",
       "type": "string",
       "recipes": [
-        "app_django::default"
+        "app_django::setup_server_1_4"
       ],
       "display_name": "Custom Python Package list",
       "description": "A space-separated list of optional python package(s), along with their versions in the Format:  py-pkg1==version  py-pkg2==version py-pkg3==version. Example: simplejson==1.7.1, Markdown==2.0.3"
@@ -49,7 +49,7 @@
       "default": "true",
       "type": "string",
       "recipes": [
-        "app_django::default"
+        "app_django::setup_server_1_4"
       ],
       "display_name": "Apache serve local Files",
       "description": "This option tells Apache whether it should serve the (static) content itself. Currently, it will omit PHP and TomCat dynamic content, such as *.php, *.action, *.jsp, and *.do  Example: true"
@@ -64,7 +64,7 @@
       "default": "false",
       "type": "string",
       "recipes": [
-        "app_django::default"
+        "app_django::setup_server_1_4"
       ],
       "display_name": "Django App Debug Mode",
       "description": "Creates a Django application debug environment variable, e.g. should be true for dev and false for prod environment. Example: false"
@@ -82,7 +82,7 @@
   },
   "recipes": {
     "app_django::run_custom_django_commands": "Run specific user defined commands. Commands will be executed in the app directory.",
-    "app_django::default": "Installs the Django application server."
+    "app_django::setup_server_1_4": "Installs the Django application server."
   },
   "groupings": {
   },

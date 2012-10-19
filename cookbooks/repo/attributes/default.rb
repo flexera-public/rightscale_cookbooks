@@ -16,5 +16,4 @@ set_unless[:repo][:default][:symlinks]= {}
 set_unless[:repo][:default][:purge_before_symlink] = %w{}
 set_unless[:repo][:default][:create_dirs_before_symlink] = %w{}
 set_unless[:repo][:default][:perform_action] = :pull
-set_unless[:repo][:default][:container] = ""
 set_unless[:repo][:default][:prefix] = ""

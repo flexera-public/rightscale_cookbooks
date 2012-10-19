@@ -14,7 +14,7 @@ depends "repo"
 depends "rightscale"
 depends "logrotate"
 
-recipe "app_passenger::default", "Default cookbook recipe which sets provider-specific attributes for rails-passenger."
+recipe "app_passenger::setup_server_3_0", "Default cookbook recipe which sets provider-specific attributes for rails-passenger."
 recipe "app_passenger::install_custom_gems", "Custom gems to install."
 recipe "app_passenger::install_required_app_gems", "Bundler gems install. Gemfile must be present in app directory."
 recipe "app_passenger::run_custom_rails_commands", "Run specific user defined commands. Commands will be executed in the app directory. Command path ../rails/bin/"
@@ -26,7 +26,7 @@ attribute "app_passenger/spawn_method",
   :choice => ["conservative", "smart-lv2", "smart"],
   :required => "recommended",
   :default => "conservative",
-  :recipes => ["app_passenger::default"]
+  :recipes => ["app_passenger::setup_server_3_0"]
 
 attribute "app_passenger/project/environment",
   :display_name => "Rails Environment",
@@ -34,14 +34,14 @@ attribute "app_passenger/project/environment",
   :choice => ["development", "production", "test"],
   :required => "optional",
   :default => "development",
-  :recipes => ["app_passenger::default"]
+  :recipes => ["app_passenger::setup_server_3_0"]
 
 attribute "app_passenger/apache/maintenance_page",
   :display_name => "Apache maintenance page",
   :description => "Maintenance URI to show if the page exists (based on document root). If this file exists, your site will show a \"Under Maintenance\" page and your site will not be available. Example: /system/maintenance.html",
   :required => "optional",
   :default => "",
-  :recipes => ["app_passenger::default"]
+  :recipes => ["app_passenger::setup_server_3_0"]
 
 
 attribute "app_passenger/apache/serve_local_files",
@@ -50,7 +50,7 @@ attribute "app_passenger/apache/serve_local_files",
   :choice => ["true", "false"],
   :required => "optional",
   :default => "true",
-  :recipes => ["app_passenger::default"]
+  :recipes => ["app_passenger::setup_server_3_0"]
 
 attribute "app_passenger/project/gem_list",
   :display_name => "Custom gems list",
@@ -65,4 +65,3 @@ attribute "app_passenger/project/custom_cmd",
   :required => "optional",
   :default => "",
   :recipes => ["app_passenger::run_custom_rails_commands"]
-

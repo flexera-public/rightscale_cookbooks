@@ -50,7 +50,7 @@ actions :setup_db_connection
   # Database password
   attribute :database_password, :kind_of => String
   # Database server fqdn
-  attribute :database_sever_fqdn, :kind_of => String
+  attribute :database_server_fqdn, :kind_of => String
 
 # Action designed to setup APP LWRP with common parameters required for install and configuration of required monitoring software
 actions :setup_monitoring
