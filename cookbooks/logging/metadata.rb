@@ -34,7 +34,7 @@ attribute "logging/protocol",
   :display_name => "Logging Protocol",
   :description => "Protocol used to send logging messages from client to server.",
   :required => "optional",
-  :choice => [ "udp", "relp", "relp+stunnel"],
+  :choice => [ "udp", "relp", "relp-secured"],
   :default =>  "udp",
   :recipes => [
     "logging::default",
@@ -43,9 +43,9 @@ attribute "logging/protocol",
 
 attribute "logging/certificate",
   :display_name => "TLS/SSL Certificate",
-  :description => "Specify the TLS/SSL Certificate to enable authentication with stunnel. Should contain both certificate and key. Certificate should be provided for both the Clients and the Logging Server. Example: cred:STUNNEL_PEM",
+  :description => "Specify the TLS/SSL Certificate to enable authentication with stunnel. Should contain both certificate and key. Certificate should be provided for both the Clients and the Logging Server. Example: cred:LOGGING_SSL_CRED",
   :required => "optional",
-  :default =>  "",
+  :default =>  "cred:LOGGING_SSL_CRED",
   :recipes => [
     "logging::default",
     "logging::install_server"

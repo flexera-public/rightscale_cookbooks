@@ -7,22 +7,17 @@
 
 define :configure_stunnel, :accept => "514", :connect => "515", :client => nil do
 
+  raise "  ERROR: Input SSL Certificate to establish secure connection." if node[:logging][:certificate].nil?
+
   # Installing stunnel
   package "stunnel"
 
-  certificate = ::File.join(node[:logging][:cert_dir], "stunnel.pem")
+  certificate = "/etc/stunnel/stunnel.pem"
 
   # Saving certificate if provided by user
   template certificate do
     source "stunnel.pem.erb"
     cookbook "logging_rsyslog"
-    not_if { node[:logging][:certificate].nil? }
-  end
-
-  # Generating a self-signed certificate for stunnel if user didn't supply one
-  execute "Generating a self-signed certificate for stunnel" do
-    command "openssl req -new -x509 -days 3650 -nodes -out #{certificate} -keyout #{certificate} -subj \"/C=US/ST=CA/L=SB/O=Rightscale/OU=Rightscale/CN=Rightscale/emailAddress=support@rightscale.com\""
-    only_if { node[:logging][:certificate].nil? }
   end
 
   owner = value_for_platform(
@@ -42,15 +37,6 @@ define :configure_stunnel, :accept => "514", :connect => "515", :client => nil d
     action :touch
   end
 
-  chroot = value_for_platform(
-    ["ubuntu"] => { "default" => "/var/lib/stunnel4/" },
-    ["centos", "redhat"] => { "default" => "/var/run/stunnel/" }
-  )
-  pid = value_for_platform(
-    ["ubuntu"] => { "default" => "/stunnel4.pid" },
-    ["centos", "redhat"] => { "default" => "/stunnel.pid" }
-  )
-
   # Writing stunnel configuration file
   template "/etc/stunnel/stunnel.conf" do
     source "stunnel.conf.erb"
@@ -61,18 +47,20 @@ define :configure_stunnel, :accept => "514", :connect => "515", :client => nil d
     variables(
       :certificate => certificate,
       :client => params[:client],
-      :chroot => chroot,
+      :chroot => value_for_platform(
+        ["ubuntu"] => { "default" => "/var/lib/stunnel4/" },
+        ["centos", "redhat"] => { "default" => "/var/run/stunnel/" }
+      ),
       :owner => owner,
       :group => group,
-      :pid => pid,
+      :pid => value_for_platform(
+        ["ubuntu"] => { "default" => "/stunnel4.pid" },
+        ["centos", "redhat"] => { "default" => "/stunnel.pid" }
+      ),
       :accept => params[:accept],
       :connect => params[:connect]
     )
   end
-
-  daemon = value_for_platform(
-    ["centos", "redhat"] => { "5.8" => "\"/usr/sbin/stunnel\"", "default" => "\"/usr/bin/stunnel\"" }
-  )
 
   # Adding init script for CentOS and Redhat
   template "/etc/init.d/stunnel" do
@@ -83,7 +71,9 @@ define :configure_stunnel, :accept => "514", :connect => "515", :client => nil d
     mode "0755"
     backup false
     variables(
-      :daemon => daemon
+      :daemon => value_for_platform(
+        ["centos", "redhat"] => { "5.8" => "\"/usr/sbin/stunnel\"", "default" => "\"/usr/bin/stunnel\"" }
+      )
     )
     not_if { node[:platform] == "ubuntu" }
   end
@@ -99,7 +89,10 @@ define :configure_stunnel, :accept => "514", :connect => "515", :client => nil d
   end
 
   # Enabling stunnel to start on system boot and restarting to apply new settings
-  service node[:logging][:stunnel_service] do
+  service value_for_platform(
+    ["ubuntu"] => { "default" => "stunnel4" },
+    ["centos", "redhat"] => { "default" => "stunnel" }
+  ) do
     supports :reload => true, :restart => true, :start => true, :stop => true
     action [:enable, :restart]
   end

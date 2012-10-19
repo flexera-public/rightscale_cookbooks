@@ -72,7 +72,7 @@ action :configure do
 
     package "rsyslog-relp" if node[:logging][:protocol] =~ /relp/
 
-    if node[:logging][:protocol] == "relp+stunnel"
+    if node[:logging][:protocol] == "relp-secured"
       configure_stunnel "default" do
         accept "127.0.0.1:515"
         connect "#{remote_server}:514"
@@ -85,12 +85,11 @@ action :configure do
       ["ubuntu"] => { "default" => "/etc/rsyslog.d/client.conf" },
       ["centos", "redhat"] => { "5.8" => "/etc/rsyslog.conf", "default" => "/etc/rsyslog.d/client.conf" }
     ) do
-      action :create
       source "client.conf.erb"
+      cookbook "logging_rsyslog"
       owner "root"
       group "root"
       mode "0644"
-      cookbook "logging_rsyslog"
       variables(
         :remote_server => remote_server
       )
@@ -113,7 +112,7 @@ action :configure_server do
 
   package "rsyslog-relp" if node[:logging][:protocol] =~ /relp/
 
-  configure_stunnel if node[:logging][:protocol] == "relp+stunnel"
+  configure_stunnel if node[:logging][:protocol] == "relp-secured"
 
   # Need to open a listening port on desired protocol.
   sys_firewall "Open logger listening port" do
@@ -128,12 +127,11 @@ action :configure_server do
     ["ubuntu"] => { "default" => "/etc/rsyslog.d/10-server.conf" },
     ["centos", "redhat"] => { "5.8" => "/etc/rsyslog.conf", "default" => "/etc/rsyslog.d/10-server.conf" }
   ) do
-    action :create
     source "server.conf.erb"
+    cookbook "logging_rsyslog"
     owner "root"
     group "root"
     mode "0644"
-    cookbook "logging_rsyslog"
     notifies :restart, resources(:service => "rsyslog"), :immediately
   end
 
