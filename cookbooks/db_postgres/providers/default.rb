@@ -316,6 +316,7 @@ action :install_client_driver do
       version "2.4.5"
       action :install
     end
+    node[:app_django][:db_engine] = 'django.db.backends.postgresql_psycopg2'
   else
     raise "Unknown driver type specified: #{type}"
   end

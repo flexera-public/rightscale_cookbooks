@@ -490,6 +490,7 @@ action :install_client_driver do
       version "1.2.3"
       action :install
     end
+    node[:app_django][:db_engine] = 'django.db.backends.mysql'
   else
     raise "Unknown driver type specified: #{type}"
   end
