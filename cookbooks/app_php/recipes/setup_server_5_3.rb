@@ -44,46 +44,4 @@ else
   node[:app][:db_adapter] = node[:db][:provider].match(/^db_([a-z]+)/)[1]
 end
 
-if node[:app][:db_adapter] == "mysql"
-  log "  Install PHP mysql support"
-  package "php mysql integration" do
-    package_name value_for_platform(
-      [ "centos", "redhat" ] => {
-        "5.6" => "php53u-mysql",
-        "5.7" => "php53u-mysql",
-        "5.8" => "php53u-mysql",
-        "6.2" => "php53u-mysql",
-        "6.3" => "php53u-mysql",
-        "default" => "php-mysql"
-      },
-      "ubuntu" => {
-        "default" => "php5-mysql"
-      },
-      "default" => "php-mysql"
-    )
-    action :install
-  end
-elsif node[:app][:db_adapter] == "postgres"
-  log "  Install PHP postgres support"
-  package "php postgres integration" do
-    package_name value_for_platform(
-      [ "centos", "redhat" ] => {
-        "5.6" => "php53u-pgsql",
-        "5.7" => "php53u-pgsql",
-        "5.8" => "php53u-pgsql",
-        "6.2" => "php53u-pgsql",
-        "6.3" => "php53u-pgsql",
-        "default" => "php-pgsql"
-      },
-      "ubuntu" => {
-        "default" => "php5-pgsql"
-      },
-      "default" => "php5-pgsql"
-    )
-    action :install
-  end
-else
-  raise "Unrecognized database adapter #{node[:app][:db_adapter]}, exiting "
-end
-
 rightscale_marker :end

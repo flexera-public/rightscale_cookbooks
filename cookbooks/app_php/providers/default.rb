@@ -111,6 +111,7 @@ action :setup_db_connection do
     database db_name
     owner node[:app][:user]
     group node[:app][:group]
+    driver_type "php"
   end
 end
 
