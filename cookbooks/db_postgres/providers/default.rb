@@ -296,9 +296,9 @@ end
 
 action :install_client_driver do
   type = new_resource.driver_type
+  log "  Installing postgres support for #{type} driver"
   case type
   when /^php$/i
-    log "  Installing postgres support for #{type} driver"
     package "#{type} postgres integration" do
       package_name value_for_platform(
         [ "centos", "redhat" ] => {
@@ -309,6 +309,11 @@ action :install_client_driver do
         },
         "default" => "php5-pgsql"
       )
+      action :install
+    end
+  when /^python$/i
+    python_pip "psycopg2" do
+      version "2.4.5"
       action :install
     end
   else

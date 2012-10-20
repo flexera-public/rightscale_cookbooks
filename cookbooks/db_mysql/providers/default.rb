@@ -485,6 +485,11 @@ action :install_client_driver do
       )
       action :install
     end
+  when /^python$/i
+    python_pip "MySQL-python" do
+      version "1.2.3"
+      action :install
+    end
   else
     raise "Unknown driver type specified: #{type}"
   end
