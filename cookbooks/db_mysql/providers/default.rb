@@ -302,6 +302,9 @@ action :install_client do
     end
   end
   log "  Gem reload forced with Gem.clear_paths"
+
+  log "  Defining attributes required for client driver installation"
+  node[:db][:client_driver] = "mysql"
 end
 
 action :install_server do
@@ -469,7 +472,6 @@ action :install_client_driver do
   type = new_resource.driver_type
   case type
   when /^php$/i
-    node[:db][:client][:driver] = "mysql"
     log "  Installing mysql support for #{type} driver"
     package "#{type} mysql integration" do
       package_name value_for_platform(

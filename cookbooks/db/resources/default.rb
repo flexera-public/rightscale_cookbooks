@@ -199,6 +199,11 @@ actions :install_client
 #
 actions :install_server
 
+# == Install Client Driver
+# Installs the driver packages for applications servers based on their driver type
+#
+actions :install_client_driver
+
 # == Setup Monitoring
 # Install and configure collectd plugins for the server.
 #
