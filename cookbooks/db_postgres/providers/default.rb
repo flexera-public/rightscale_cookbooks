@@ -188,6 +188,9 @@ action :install_client do
     gem_binary("/opt/rightscale/sandbox/bin/gem")
     options("-- --with-pg-config=#{node[:db_postgres][:bindir]}/pg_config")
   end
+
+  log "  Defining attributes required for client driver installation"
+  node[:db][:client_driver] = "postgres"
 end
 
 action :install_server do
@@ -295,7 +298,6 @@ action :install_client_driver do
   type = new_resource.driver_type
   case type
   when /^php$/i
-    node[:db][:client][:driver] = "postgres"
     log "  Installing postgres support for #{type} driver"
     package "#{type} postgres integration" do
       package_name value_for_platform(
