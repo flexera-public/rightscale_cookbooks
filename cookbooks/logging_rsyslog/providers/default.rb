@@ -156,4 +156,3 @@ end
 action :add_rotate_policy do
   raise "Rsyslog action not implemented"
 end
-

@@ -11,7 +11,7 @@
 
 <%# TLS/SSL certificate. %>
 ; Certificate/key is needed in server mode and optional in client mode
-cert = <%= @certificate %>
+cert = /etc/stunnel/stunnel.pem
 
 ; Protocol version (all, SSLv2, SSLv3, TLSv1)
 <% unless node[:platform_version] =~ /^5\..+/ %>
@@ -25,7 +25,7 @@ options = NO_SSLv2
 <% unless @client %>
 <%# verify = 3 would require and verify certificates against locally installed certificates. %>
 verify = 3
-CAfile = <%= @certificate %>
+CAfile = /etc/stunnel/stunnel.pem
 <% end %>
 
 <%# Client specific configuration. %>

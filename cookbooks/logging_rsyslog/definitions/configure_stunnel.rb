@@ -12,14 +12,6 @@ define :configure_stunnel, :accept => "514", :connect => "515", :client => nil d
   # Installing stunnel
   package "stunnel"
 
-  certificate = "/etc/stunnel/stunnel.pem"
-
-  # Saving certificate if provided by user
-  template certificate do
-    source "stunnel.pem.erb"
-    cookbook "logging_rsyslog"
-  end
-
   owner = value_for_platform(
     ["ubuntu"] => { "default" => "stunnel4" },
     ["centos", "redhat"] => { "default" => "nobody" }
@@ -29,12 +21,13 @@ define :configure_stunnel, :accept => "514", :connect => "515", :client => nil d
     ["centos", "redhat"] => { "default" => "nobody" }
   )
 
-  # Restricting access to the certificate
-  file certificate do
+  # Saving certificate if provided by user and restricting access
+  template "/etc/stunnel/stunnel.pem" do
+    source "stunnel.pem.erb"
+    cookbook "logging_rsyslog"
     owner owner
     group group
     mode "0400"
-    action :touch
   end
 
   # Writing stunnel configuration file
@@ -45,7 +38,6 @@ define :configure_stunnel, :accept => "514", :connect => "515", :client => nil d
     group "root"
     mode "0644"
     variables(
-      :certificate => certificate,
       :client => params[:client],
       :chroot => value_for_platform(
         ["ubuntu"] => { "default" => "/var/lib/stunnel4/" },
