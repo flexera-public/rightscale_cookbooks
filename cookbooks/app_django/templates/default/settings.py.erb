@@ -22,6 +22,7 @@ TEMPLATE_DEBUG = DEBUG
 DATABASES = {
   'default': {
     'ENGINE': '<%= @db_engine %>',
+    'NAME': '<%= @database %>',
     'USER': '<%= @user %>',
     'PASSWORD': '<%= @password %>',
     'HOST': '<%= @fqdn %>',
