@@ -470,9 +470,9 @@ end
 
 action :install_client_driver do
   type = new_resource.driver_type
+  log "  Installing mysql support for #{type} driver"
   case type
   when /^php$/i
-    log "  Installing mysql support for #{type} driver"
     package "#{type} mysql integration" do
       package_name value_for_platform(
         [ "centos", "redhat" ] => {
