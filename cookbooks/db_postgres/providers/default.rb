@@ -191,7 +191,7 @@ action :install_client do
 
   log "  Defining attributes required for client driver installation"
   node[:db][:client_driver] = "postgres"
-  node[:db][:python_engine] = 'django.db.backends.postgresql_psycopg2'
+  node[:db][:python_engine] = "django.db.backends.postgresql_psycopg2"
 end
 
 action :install_server do

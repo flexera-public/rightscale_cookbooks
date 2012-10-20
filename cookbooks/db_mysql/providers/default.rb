@@ -305,7 +305,7 @@ action :install_client do
 
   log "  Defining attributes required for client driver installation"
   node[:db][:client_driver] = "mysql"
-  node[:db][:python_engine] = 'django.db.backends.mysql'
+  node[:db][:python_engine] = "django.db.backends.mysql"
 end
 
 action :install_server do
