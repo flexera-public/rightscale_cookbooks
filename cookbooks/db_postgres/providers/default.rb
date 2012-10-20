@@ -291,6 +291,29 @@ action :install_server do
 
 end
 
+action :install_client_driver do
+  type = new_resource.driver_type
+  case type
+  when /^php$/i
+    node[:db][:client][:driver] = "postgres"
+    log "  Installing postgres support for #{type} driver"
+    package "#{type} postgres integration" do
+      package_name value_for_platform(
+        [ "centos", "redhat" ] => {
+          "default" => "php53u-pgsql"
+        },
+        "ubuntu" => {
+          "default" => "php5-pgsql"
+        },
+        "default" => "php5-pgsql"
+      )
+      action :install
+    end
+  else
+    raise "Unknown driver type specified: #{type}"
+  end
+end
+
 action :grant_replication_slave do
   require 'rubygems'
   Gem.clear_paths

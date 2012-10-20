@@ -6,6 +6,11 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 define :db_connect_app, :template => "db_connection_example.erb", :cookbook => "db", :database => nil :driver_type => nil, :owner => nil, :group => nil, :vars => {} do
+
+  db node[:db][:data_dir] do
+    driver_type params[:driver_type]
+    action :install_client_driver
+  end
   
   template params[:name] do
     source params[:template]
@@ -19,6 +24,7 @@ define :db_connect_app, :template => "db_connection_example.erb", :cookbook => "
       :password => node[:db][:application][:password],
       :fqdn => node[:db][:dns][:master][:fqdn],
       :socket => node[:db][:socket],
+      :driver => node[:db][:client][:driver],
       :database => params[:database],
       :datasource => params[:datasource]
     )

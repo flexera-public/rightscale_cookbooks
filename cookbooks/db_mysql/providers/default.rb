@@ -465,6 +465,29 @@ action :install_server do
 
 end
 
+action :install_client_driver do
+  type = new_resource.driver_type
+  case type
+  when /^php$/i
+    node[:db][:client][:driver] = "mysql"
+    log "  Installing mysql support for #{type} driver"
+    package "#{type} mysql integration" do
+      package_name value_for_platform(
+        [ "centos", "redhat" ] => {
+          "default" => "php53u-mysql"
+        },
+        "ubuntu" => {
+          "default" => "php5-mysql"
+        },
+        "default" => "php-mysql"
+      )
+      action :install
+    end
+  else
+    raise "Unknown driver type specified: #{type}"
+  end
+end
+
 action :setup_monitoring do
   db_state_get node
 
