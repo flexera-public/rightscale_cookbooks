@@ -21,7 +21,7 @@ TEMPLATE_DEBUG = DEBUG
 
 DATABASES = {
   'default': {
-    'ENGINE': <% @node[:app_django][:db_engine] %>
+    'ENGINE': <% @db_engine %>
     'USER': '<%= @user %>',
     'PASSWORD': '<%= @password %>',
     'HOST': '<%= @fqdn %>',

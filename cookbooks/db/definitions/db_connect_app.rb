@@ -25,6 +25,7 @@ define :db_connect_app, :template => "db_connection_example.erb", :cookbook => "
       :fqdn => node[:db][:dns][:master][:fqdn],
       :socket => node[:db][:socket],
       :driver => node[:db][:client_driver],
+      :db_engine => node[:db][:python_engine],
       :database => params[:database],
       :datasource => params[:datasource]
     )

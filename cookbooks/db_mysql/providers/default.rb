@@ -305,6 +305,7 @@ action :install_client do
 
   log "  Defining attributes required for client driver installation"
   node[:db][:client_driver] = "mysql"
+  node[:db][:python_engine] = 'django.db.backends.mysql'
 end
 
 action :install_server do
@@ -490,7 +491,6 @@ action :install_client_driver do
       version "1.2.3"
       action :install
     end
-    node[:app_django][:db_engine] = 'django.db.backends.mysql'
   else
     raise "Unknown driver type specified: #{type}"
   end
