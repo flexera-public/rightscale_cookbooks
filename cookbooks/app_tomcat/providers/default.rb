@@ -311,6 +311,7 @@ action :setup_db_connection do
     database      db_name
     datasource    datasource
     cookbook      'app_tomcat'
+    driver_type   "java"
   end
 
   log "  Creating web.xml"
