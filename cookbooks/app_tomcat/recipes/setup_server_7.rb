@@ -29,59 +29,28 @@ else
   raise "Unrecognized distro #{node[:platform]} for tomcat#{version}, exiting "
 end
 
-# Preparing list of database adapter packages depending on platform and database adapter
-case node[:app][:db_adapter]
-when "mysql"
-  node[:app][:packages] = value_for_platform(
-    ["centos", "redhat"] => {
-      "default" => [
-        "eclipse-ecj",
-        "ecj3",
-        "tomcat7",
-        "tomcat7-admin-webapps",
-        "tomcat7-webapps",
-        "tomcat-native",
-        "mysql-connector-java"
-      ]
-    },
-    "ubuntu" => {
-      "default" => [
-        "ecj-gcj",
-        "tomcat7",
-        "tomcat7-admin",
-        "tomcat7-common",
-        "tomcat7-user",
-        "libmysql-java",
-        "libtcnative-1"
-      ]
-    }
-  )
-when "postgresql"
-  node[:app][:packages] = value_for_platform(
-    ["centos", "redhat"] => {
-      "default" => [
-        "eclipse-ecj",
-        "ecj3",
-        "tomcat7",
-        "tomcat7-admin-webapps",
-        "tomcat7-webapps",
-        "tomcat-native"
-      ]
-    },
-    "ubuntu" => {
-      "default" => [
-        "ecj-gcj",
-        "tomcat7",
-        "tomcat7-admin",
-        "tomcat7-common",
-        "tomcat7-user",
-        "libtcnative-1"
-      ]
-    }
-  )
-else
-  raise "Unrecognized database adapter #{node[:app][:db_adapter]}, exiting"
-end
+node[:app][:packages] = value_for_platform(
+  ["centos", "redhat"] => {
+    "default" => [
+      "eclipse-ecj",
+      "ecj3",
+      "tomcat7",
+      "tomcat7-admin-webapps",
+      "tomcat7-webapps",
+      "tomcat-native"
+    ]
+  },
+  "ubuntu" => {
+    "default" => [
+      "ecj-gcj",
+      "tomcat7",
+      "tomcat7-admin",
+      "tomcat7-common",
+      "tomcat7-user",
+      "libtcnative-1"
+    ]
+  }
+)
 
 raise "Unrecognized distro #{node[:platform]} for tomcat#{version}, exiting " if node[:app][:packages].empty?
         
