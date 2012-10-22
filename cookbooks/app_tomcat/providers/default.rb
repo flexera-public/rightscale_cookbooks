@@ -299,11 +299,10 @@ end
 action :setup_db_connection do
 
   db_name = new_resource.database_name
-  db_adapter = node[:app][:db_adapter]
   datasource = node[:app_tomcat][:datasource_name]
   version = node[:app][:version].to_i
 
-  log "  Creating context.xml for DB: #{db_name} using adapter #{db_adapter} and datasource #{datasource}"
+  log "  Creating context.xml for DB: #{db_name} using datasource #{datasource}"
   db_connect_app "/etc/tomcat#{version}/context.xml" do
     template      "context_xml.erb"
     owner         "#{node[:app][:user]}"

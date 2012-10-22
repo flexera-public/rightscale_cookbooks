@@ -13,7 +13,7 @@ node[:app][:provider] = "app_tomcat"
 node[:app][:version] = version
 log "  Setting Tomcat version to #{version}"
 
-#Defining app user and group attributes
+# Defining app user and group attributes
 case node[:platform]
 when "centos", "redhat"
   node[:app][:user] = "tomcat"
@@ -29,6 +29,7 @@ else
   raise "Unrecognized distro #{node[:platform]} for tomcat#{version}, exiting "
 end
 
+# Preparing list of packages depending on platform
 node[:app][:packages] = value_for_platform(
   ["centos", "redhat"] => {
     "default" => [

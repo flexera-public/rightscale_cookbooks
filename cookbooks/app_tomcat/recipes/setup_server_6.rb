@@ -13,7 +13,7 @@ node[:app][:provider] = "app_tomcat"
 node[:app][:version] = version
 log "  Setting tomcat version to #{version}"
 
-# Defining database adapter parameter, app user and group attributes depending on platform
+# Defining app user and group attributes depending on platform
 case node[:platform]
 when "ubuntu"
   node[:app][:user] = "tomcat6"
@@ -33,11 +33,7 @@ else
   raise "Unrecognized distro #{node[:platform]} for tomcat#{version}, exiting "
 end
 
-# we do not care about version number here.
-# need only the type of database adapter
-node[:app][:db_adapter] = node[:db][:provider_type].match(/^db_([a-z]+)/)[1]
-
-# Preparing list of database adapter packages depending on platform and database adapter
+# Preparing list of packages depending on platform
 node[:app][:packages] = value_for_platform(
   ["centos", "redhat"] => {
    "default" => [

@@ -136,7 +136,6 @@ action :setup_db_connection do
 
   project_root = new_resource.destination
   db_name = new_resource.database_name
-  db_adapter = node[:app][:db_adapter]
 
   # Moves django default settings file to settings_default and create settings.py from django template
   settingsfile = ::File.expand_path(::File.join(project_root, "settings.py"))
@@ -150,8 +149,8 @@ action :setup_db_connection do
     end
   end
 
-  # Tells selected db_adapter to fill in it's specific connection template
-  log "  Creating settings.py for DB: #{db_name} using adapter #{db_adapter}"
+  # Tells selected db provider to fill in it's specific connection template
+  log "  Creating settings.py for DB: #{db_name}"
   db_connect_app ::File.join(project_root, "settings.py") do
     template "settings.py.erb"
     owner node[:app][:user]
