@@ -491,7 +491,7 @@ action :install_client_driver do
       action :install
     end
   when /^java$/i
-    node[:db][:client][:driver] = ""
+    node[:db][:client][:driver] = "com.mysql.jdbc.Driver"
     package "#{type} mysql integration" do
       package_name value_for_platform(
         ["centos", "redhat"] => {

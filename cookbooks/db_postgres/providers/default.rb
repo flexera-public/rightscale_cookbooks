@@ -189,9 +189,6 @@ action :install_client do
     options("-- --with-pg-config=#{node[:db_postgres][:bindir]}/pg_config")
   end
 
-  log "  Defining attributes required for client driver installation"
-  node[:db][:client_driver] = "postgres"
-  node[:db][:python_engine] = "django.db.backends.postgresql_psycopg2"
 end
 
 action :install_server do
@@ -300,6 +297,7 @@ action :install_client_driver do
   log "  Installing postgres support for #{type} driver"
   case type
   when /^php$/i
+    node[:db][:client][:driver] = "postgres"
     package "#{type} postgres integration" do
       package_name value_for_platform(
         [ "centos", "redhat" ] => {
@@ -313,9 +311,21 @@ action :install_client_driver do
       action :install
     end
   when /^python$/i
+    node[:db][:client][:driver] = "django.db.backends.postgresql_psycopg2"
     python_pip "psycopg2" do
       version "2.4.5"
       action :install
+    end
+  when /^java$/i
+    node[:db][:client][:driver] = "org.postgresql.Driver"
+    version = node[:app][:version]
+    # Copy to /usr/share/java/postgresql-9.1-901.jdbc4.jar
+    cookbook_file "/usr/share/tomcat#{version}/lib/postgresql-9.1-901.jdbc4.jar" do
+      source "postgresql-9.1-901.jdbc4.jar"
+      owner node[:app][:user]
+      group "root"
+      mode "0660"
+      cookbook 'app_tomcat'
     end
   else
     raise "Unknown driver type specified: #{type}"
