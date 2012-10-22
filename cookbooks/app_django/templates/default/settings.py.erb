@@ -21,7 +21,7 @@ TEMPLATE_DEBUG = DEBUG
 
 DATABASES = {
   'default': {
-    'ENGINE': '<%= @db_engine %>',
+    'ENGINE': '<%= @node[:db][:client][:driver] %>',
     'NAME': '<%= @database %>',
     'USER': '<%= @user %>',
     'PASSWORD': '<%= @password %>',

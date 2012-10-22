@@ -303,9 +303,6 @@ action :install_client do
   end
   log "  Gem reload forced with Gem.clear_paths"
 
-  log "  Defining attributes required for client driver installation"
-  node[:db][:client_driver] = "mysql"
-  node[:db][:python_engine] = "django.db.backends.mysql"
 end
 
 action :install_server do
@@ -474,6 +471,7 @@ action :install_client_driver do
   log "  Installing mysql support for #{type} driver"
   case type
   when /^php$/i
+    node[:db][:client][:driver] = "mysql"
     package "#{type} mysql integration" do
       package_name value_for_platform(
         [ "centos", "redhat" ] => {
@@ -487,9 +485,32 @@ action :install_client_driver do
       action :install
     end
   when /^python$/i
+    node[:db][:client][:driver] = "django.db.backends.mysql"
     python_pip "MySQL-python" do
       version "1.2.3"
       action :install
+    end
+  when /^java$/i
+    node[:db][:client][:driver] = ""
+    package "#{type} mysql integration" do
+      package_name value_for_platform(
+        ["centos", "redhat"] => {
+          "default" => "mysql-connector-java"
+        }
+        "ubuntu" => {
+          "default" => "libmysql-java"
+        }
+      )
+      action :install
+    end
+    version = node[:app][:version].to_i
+    # Removing existing links to database connector
+    file "/usr/share/tomcat#{version}/lib/mysql-connector-java.jar" do
+      action :delete
+    end
+    # Link mysql-connector plugin to Tomcat6 lib
+    link "/usr/share/tomcat#{version}/lib/mysql-connector-java.jar" do
+      to "/usr/share/java/mysql-connector-java.jar"
     end
   else
     raise "Unknown driver type specified: #{type}"

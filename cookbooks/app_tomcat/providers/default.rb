@@ -69,30 +69,6 @@ action :install do
     action :run
   end
 
-  # Installing database adapter for tomcat
-  db_adapter = node[:app][:db_adapter]
-  if db_adapter == "mysql"
-    # Removing existing links to database connector
-    file "/usr/share/tomcat#{version}/lib/mysql-connector-java.jar" do
-      action :delete
-    end
-    # Link mysql-connector plugin to Tomcat6 lib
-    link "/usr/share/tomcat#{version}/lib/mysql-connector-java.jar" do
-      to "/usr/share/java/mysql-connector-java.jar"
-    end
-  elsif db_adapter == "postgres"
-    # Copy to /usr/share/java/postgresql-9.1-901.jdbc4.jar
-    cookbook_file "/usr/share/tomcat#{version}/lib/postgresql-9.1-901.jdbc4.jar" do
-      source "postgresql-9.1-901.jdbc4.jar"
-      owner node[:app][:user]
-      group "root"
-      mode "0660"
-      cookbook 'app_tomcat'
-    end
-  else
-    raise "Unrecognized database adapter #{db_adapter}, exiting"
-  end
-
   # Linking RightImage JAVA_HOME to what Tomcat6 expects to be...
   link "/usr/lib/jvm/java" do
     to "/usr/java/default"
