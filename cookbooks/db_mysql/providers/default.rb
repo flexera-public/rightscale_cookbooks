@@ -508,10 +508,6 @@ action :install_client_driver do
     file "/usr/share/tomcat#{version}/lib/mysql-connector-java.jar" do
       action :delete
     end
-    # Link mysql-connector plugin to Tomcat6 lib
-    link "/usr/share/tomcat#{version}/lib/mysql-connector-java.jar" do
-      to "/usr/share/java/mysql-connector-java.jar"
-    end
   else
     raise "Unknown driver type specified: #{type}"
   end
