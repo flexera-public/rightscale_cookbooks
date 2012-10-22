@@ -496,7 +496,7 @@ action :install_client_driver do
       package_name value_for_platform(
         ["centos", "redhat"] => {
           "default" => "mysql-connector-java"
-        }
+        },
         "ubuntu" => {
           "default" => "libmysql-java"
         }
