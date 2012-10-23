@@ -62,11 +62,11 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
    logging configuration.
 
 3. Transfer protocol - Set the 'logging/protocol' input to one of the listed options:
-   1. UDP: the most generic and common-used option.
+   1. UDP: the most generic and common-used option. UDP is the default logging protocol option.
    2. RELP: RELP stands for Reliable Event Logging Protocol.
-      RELP that no message is lost, not even when connections break and a peer becomes unavailable.
+      RELP ensures that no message is lost, not even when connections break and a peer becomes unavailable.
    3. RELP-secured: while using RELP to ensure a safe and loss-free transmission between two machines
-      the trafic also gets encrypted with an SSL certificate the user should provide with the
+      the traffic also gets encrypted with an SSL certificate the user should provide with the
       'logging/certificate' input. As stunnel is configured with the "verify = 3" option the server
       would require and verify the client certificate against the locally installed certificate
       providing client authentication.
