@@ -326,6 +326,17 @@ action :setup_db_connection do
     cookbook 'app_tomcat'
   end
 
+  # Creating catalina.properties file with /usr/share/java included in the common loader
+  # so tomcat will pick up all jar files available in that directory
+  log "  Creating catalina.properties"
+  template "/etc/tomcat#{version}/catalina.properties" do
+    source "catalina.properties.erb"
+    owner "#{node[:app][:user]}"
+    group "root"
+    mode "0644"
+    cookbook "app_tomcat"
+  end
+
   # Installing JavaServer Pages Standard Tag Library API
   cookbook_file "/usr/share/tomcat#{version}/lib/jstl-api-1.2.jar" do
     source "jstl-api-1.2.jar"
