@@ -108,7 +108,7 @@
         "block_device::setup_block_device",
         "block_device::default"
       ],
-      "display_name": "I/O Operations per Second",
+      "display_name": "I/O Operations per Second (2)",
       "description": "The input/output operations per second (IOPS) that the volue can support. IOPS is currently only supported on Amazon EC2. Example: 500"
     },
     "block_device/devices/device2/mount_point": {
@@ -197,7 +197,7 @@
         "block_device::setup_block_device",
         "block_device::default"
       ],
-      "display_name": "I/O Operations per Second",
+      "display_name": "I/O Operations per Second (1)",
       "description": "The input/output operations per second (IOPS) that the volue can support. IOPS is currently only supported on Amazon EC2. Example: 500"
     },
     "block_device/devices/device1/backup/lineage": {
