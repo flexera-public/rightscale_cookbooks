@@ -64,7 +64,10 @@ define :configure_stunnel, :accept => "514", :connect => "515", :client => nil d
     backup false
     variables(
       :daemon => value_for_platform(
-        ["centos", "redhat"] => { "5.8" => "\"/usr/sbin/stunnel\"", "default" => "\"/usr/bin/stunnel\"" }
+        ["centos", "redhat"] => {
+          "5.8" => "\"/usr/sbin/stunnel\"",
+          "default" => "\"/usr/bin/stunnel\""
+        }
       )
     )
     not_if { node[:platform] == "ubuntu" }

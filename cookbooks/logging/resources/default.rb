@@ -67,6 +67,11 @@ actions :add_definition
 #
 actions :add_rotate_policy
 
+# == Install Software
+# Installs logging software
+#
+actions :install
+
 # == Configure
 # Updates the configuration
 #

@@ -39,6 +39,13 @@ action :reload do
 end
 
 
+action :install do
+  # The replacing syslog-ng with rsyslog requires low level package
+  # manipulation via rpm/dpkg
+  package "rsyslog"
+end
+
+
 action :configure do
 
   service "rsyslog" do
