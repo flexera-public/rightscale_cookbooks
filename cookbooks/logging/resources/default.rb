@@ -76,7 +76,7 @@ actions :install
 # Updates the configuration
 #
 actions :configure
-  attribute :remote_server, :kind_of => String
+  attribute :remote_server, :kind_of => String, :default => ""
 
 # == Configure server
 # Configures a logging server
