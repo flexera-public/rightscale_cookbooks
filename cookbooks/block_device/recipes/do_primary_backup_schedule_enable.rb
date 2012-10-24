@@ -19,7 +19,7 @@ end
 # See block_device/libraries/default.rb for definitions of "do_for_block_devices" and
 # "get_device_or_default" methods.
 #
-do_for_block_devices node[:block_device] do |device|  # see ../libraries/block_device.rb for the definition of do_for_block_devices
+do_for_block_devices node[:block_device] do |device|
   log "  Enabling continuous backups for device #{device} via cron job:#{get_device_or_default(node, device, :backup, :primary, :cron, :minute)} #{get_device_or_default(node, device, :backup, :primary, :cron, :hour)}"
 
   block_device_json = "/var/lib/rightscale_block_device_#{device}.json"
@@ -32,7 +32,7 @@ do_for_block_devices node[:block_device] do |device|  # see ../libraries/block_d
     backup false
   end
 
-  cron_minute = get_device_or_default(node, device, :backup, :primary, :cron, :minute).to_s # see ../libraries/block_device.rb for the definition of get_device_or_default
+  cron_minute = get_device_or_default(node, device, :backup, :primary, :cron, :minute).to_s
   cron_hour = get_device_or_default(node, device, :backup, :primary, :cron, :hour).to_s
 
   cron "RightScale continuous primary backups for device #{device}" do
