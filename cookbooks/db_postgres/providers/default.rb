@@ -328,10 +328,11 @@ action :install_client_driver do
       cookbook 'app_tomcat'
     end
   when /^ruby$/i
+    node[:db][:client][:driver] = "postgres"
     postgres_bin_dir = "/usr/pgsql-#{node[:db][:version]}/bin"
-    gem_package("pg") do
+    gem_package 'pg' do
       gem_binary node[:app_passenger][:gem_bin]
-      options("-- --with-pg-config=#{postgres_bin_dir}/pg_config")
+      options "-- --with-pg-config=#{postgres_bin_dir}/pg_config"
     end
   else
     raise "Unknown driver type specified: #{type}"
