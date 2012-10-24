@@ -328,7 +328,7 @@ action :install_client_driver do
       cookbook 'app_tomcat'
     end
   when /^ruby$/i
-    node[:db][:client][:driver] = "postgres"
+    node[:db][:client][:driver] = "postgresql"
     postgres_bin_dir = "/usr/pgsql-#{node[:db][:version]}/bin"
     gem_package 'pg' do
       gem_binary node[:app_passenger][:gem_bin]
