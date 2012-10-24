@@ -7,8 +7,10 @@
 
 rightscale_marker :begin
 
+# Included recipe would determine the syslog provider and setup the default values for logging resource.
 include_recipe "logging::default"
 
+# Configures a logging server
 logging "default" do
   action :configure_server
 end

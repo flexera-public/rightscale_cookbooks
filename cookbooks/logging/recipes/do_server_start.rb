@@ -8,6 +8,7 @@
 rightscale_marker :begin
 
 log "  Starting logging server"
+# Calls the logging service start command
 logging "default" do
   action :start
 end

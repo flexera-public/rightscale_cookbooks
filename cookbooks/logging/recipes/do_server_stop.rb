@@ -8,6 +8,7 @@
 rightscale_marker :begin
 
 log "  Stopping logging server"
+# Calls the logging service stop command
 logging "default" do
   action :stop
 end

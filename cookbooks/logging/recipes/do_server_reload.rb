@@ -8,6 +8,7 @@
 rightscale_marker :begin
 
 log "  Reloading logging server"
+# Calls the logging service reload command
 logging "default" do
   action :reload
 end
