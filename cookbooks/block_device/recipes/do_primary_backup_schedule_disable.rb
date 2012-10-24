@@ -11,7 +11,13 @@ class Chef::Recipe
   include RightScale::BlockDeviceHelper
 end
 
-do_for_block_devices node[:block_device] do |device|
+# Disable backup schedule.
+# Remove json files /var/lib/rightscale_block_device_#{device}.json which
+# is used by the cron jobs for scheduling backups and delete the cron jobs.
+# See block_device/libraries/block_device.rb for the definition of
+# do_for_block_devices.
+#
+do_for_block_devices node[:block_device] do |device|  # see ../libraries/block_device.rb for the definition of do_for_block_devices
   file "/var/lib/rightscale_block_device_#{device}.json" do
     action :delete
     backup false

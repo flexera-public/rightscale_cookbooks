@@ -15,6 +15,13 @@ class Chef::Resource::BlockDevice
   include RightScale::BlockDeviceHelper
 end
 
+# Similar to primary_restore, we set the lineage and timestamp override tnputs
+# to choose snapshot to be restored. Set up secondary cloud credentials from
+# which the snapshot needs to be retrieved.
+# See block_device/providers/default.rb for secondary_restore action
+# implementation and block_device/libraries/block_device.rb for
+# do_for_block_devices and get_device_or_default
+#
 do_for_block_devices node[:block_device] do |device|
   # Do the restore.
   log "  Creating block device and restoring data from secondary backup for device #{device}..."

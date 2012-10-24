@@ -9,6 +9,8 @@ include RightScale::BlockDeviceHelper
 
 # Will setup new block device
 action :create do
+  # Initialize new device by setting up resource attributes.
+  # See block_device/libraries/block_device.rb for definition of init method.
   device = init(new_resource)
   create_options = {
     :volume_size => new_resource.volume_size,
@@ -22,12 +24,14 @@ end
 
 # Create snapshot of given device
 action :snapshot do
+  # See block_device/libraries/block_device.rb for definition of init method.
   device = init(new_resource)
   device.snapshot
 end
 
 # Prepare device for primary backup
 action :primary_backup do
+  # See block_device/libraries/block_device.rb for definition of init method.
   device = init(new_resource)
   backup_options = {
     :description => "RightScale data backup",
@@ -43,11 +47,14 @@ action :primary_backup do
     :storage_key => new_resource.primary_user,
     :storage_secret => new_resource.primary_secret
   }
+  # See block_device/libraries/block_device.rb for definition of
+  # primary_backup method.
   device.primary_backup(new_resource.lineage, backup_options)
 end
 
 # Prepare device for primary restore
 action :primary_restore do
+  # See block_device/libraries/block_device.rb for definition of init method.
   device = init(new_resource)
   restore_args = {
     :timestamp => new_resource.timestamp_override == "" ? nil : new_resource.timestamp_override,
@@ -64,11 +71,16 @@ action :primary_restore do
   }
   restore_args[:iops] = new_resource.iops if new_resource.iops && !new_resource.iops.empty?
 
+  # See block_device/libraries/block_device.rb for definition of
+  # primary_restore method.
   device.primary_restore(new_resource.lineage, restore_args)
 end
 
 # Prepare device for secondary backup
 action :secondary_backup do
+  # Check if all secondary backup inputs are set up. See
+  # block_device/libraries/block_device.rb for definition of
+  # secondary_checks, init and secondary_backup methods.
   secondary_checks(new_resource)
   device = init(new_resource, :secondary)
   device.secondary_backup(new_resource.lineage)
@@ -76,6 +88,8 @@ end
 
 # Prepare device for secondary restore
 action :secondary_restore do
+  # See block_device/libraries/block_device.rb for secondary_checks and init
+  # methods.
   secondary_checks(new_resource)
   device = init(new_resource, :secondary)
   restore_args = {
@@ -88,11 +102,13 @@ action :secondary_restore do
   }
   restore_args[:iops] = new_resource.iops if new_resource.iops && !new_resource.iops.empty?
 
+  # See block_device/libraries/block_device.rb for secondary_restore method.
   device.secondary_restore(new_resource.lineage, restore_args)
 end
 
 # Unmount and delete the attached block device(s)
 action :reset do
+  # See block_device/libraries/block_device.rb for init and reset methods.
   device = init(new_resource)
   device.reset()
 end

@@ -15,6 +15,12 @@ class Chef::Resource::BlockDevice
   include RightScale::BlockDeviceHelper
 end
 
+# Here, we create a snapshot of the block device mentioned in node[:block_device][:devices_to_use]
+# and back it up to a specific lineage in the cloud specified in primary_cloud attribute.
+# Actions "snapshot" and "primary_backup" are defined in block_device/providers/default.rb.
+# See block_device/libraries/block_device.rb for the definition of "do_for_block_devices" and
+# "get_device_or_default" method.
+#
 do_for_block_devices node[:block_device] do |device|
   log "  Creating snapshot of device #{device}..."
   nickname = get_device_or_default(node, device, :nickname)

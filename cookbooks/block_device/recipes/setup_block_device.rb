@@ -15,8 +15,8 @@ class Chef::Resource::BlockDevice
   include RightScale::BlockDeviceHelper
 end
 
-do_for_block_devices node[:block_device] do |device|
-  block_device get_device_or_default(node, device, :nickname) do
+do_for_block_devices node[:block_device] do |device|  # see ../libraries/block_device.rb for the definition of do_for_block_devices
+  block_device get_device_or_default(node, device, :nickname) do  # see ../libraries/block_device.rb for the definition of get_device_or_default
     mount_point get_device_or_default(node, device, :mount_point)
 
     # Optional cloud variables
@@ -25,7 +25,7 @@ do_for_block_devices node[:block_device] do |device|
     vg_data_percentage get_device_or_default(node, device, :vg_data_percentage)
     iops get_device_or_default(node, device, :iops) || ""
 
-    action :create
+    action :create  # see ../providers/default.rb for "action :create" implementation
   end
 end
 
