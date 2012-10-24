@@ -17,7 +17,7 @@ end
 # See block_device/libraries/block_device.rb for the definition of
 # do_for_block_devices.
 #
-do_for_block_devices node[:block_device] do |device|  # see ../libraries/block_device.rb for the definition of do_for_block_devices
+do_for_block_devices node[:block_device] do |device|
   file "/var/lib/rightscale_block_device_#{device}.json" do
     action :delete
     backup false
