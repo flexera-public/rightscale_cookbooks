@@ -17,10 +17,10 @@ end
 
 # Backs up the block device to a secondary cloud storage provider (ROS based).
 # Specify backup lineage to which the device should be backed up and the
-# secondary cloud credentials. See block_device/providers/default.rb for
-# implementation of snapshot and secondary_backup actions. See
-# block_device/libraries/default.rb for do_for_block_devices and
-# get_device_or_default methods.
+# secondary cloud credentials. See cookbooks/block_device/providers/default.rb
+# for implementation of "snapshot" and "secondary_backup actions". See
+# cookbooks/block_device/libraries/default.rb for "do_for_block_devices" and
+# "get_device_or_default" methods.
 #
 do_for_block_devices node[:block_device] do |device|
   backup_lineage = get_device_or_default(node, device, :backup, :lineage)

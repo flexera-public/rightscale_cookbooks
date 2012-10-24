@@ -20,9 +20,9 @@ end
 # "device/lineage_override" input. If device/timestamp_override input is set,
 # the snapshot from that timestamp in the lineage will be restored. Else
 # the snapshot with the most recent timestamp will be restored.
-# See block_device/providers/default.rb for definition of primary_restore
-# action and block_device/libraries/block_device.rb for definition of
-# do_for_block_devices and get_device_or_default methods.
+# See cookbooks/block_device/providers/default.rb for definition of
+# primary_restore action and cookbooks/block_device/libraries/block_device.rb
+# for definition of do_for_block_devices and get_device_or_default methods.
 #
 do_for_block_devices node[:block_device] do |device|
   # Do the restore.

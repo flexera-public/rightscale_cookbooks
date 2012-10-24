@@ -16,13 +16,14 @@ end
 
 raise "Server force safety not off.  Override block_device/force_safety to run this recipe" unless node[:block_device][:force_safety] == "off"
 
-# If node[:block_device][:devices_to_use] is set to '*', this block will delete all the devices
-# attached to a server instance. Else, it will delete only the device specified in
-# node[:block_device][:devices_to_use]. node[:block_device][:force_safety] attribute to be set
-# to 'off' for the deletion to proceed.
-# Deletion is performed by "action :reset" which is defined in block_device/providers/default.rb
-# See block_device/libraries/block_device.rb for the definition of "do_for_block_devices" and
-# "get_device_or_default" methods.
+# If node[:block_device][:devices_to_use] is set to '*', this block will delete
+# all the devices attached to a server instance. Else, it will delete only the
+# device specified in node[:block_device][:devices_to_use].
+# node[:block_device][:force_safety] attribute to be set to 'off' for the
+# deletion to proceed. Deletion is performed by "action :reset" which is
+# defined in cookbooks/block_device/providers/default.rb.
+# See cookbooks/block_device/libraries/block_device.rb for the definition of
+# "do_for_block_devices" and "get_device_or_default" methods.
 #
 do_for_block_devices node[:block_device] do |device|
   # Clear the overrides so they are not set after a reset is done

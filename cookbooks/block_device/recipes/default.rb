@@ -46,12 +46,13 @@ bash "Load xfs kernel module" do
   only_if { File.exists?("/proc/modules") }
 end
 
-# In this code block, we loop through all block devices listed in node[:block_device][:devices],
-# and set up all block device resource attributes for each device.
-# See, block_device/resources/default.rb for the list of block device resource attributes.
-# We persist the devices at the node level so they can be used in other run lists.
-# See block_device/libraries/block_device.rb for the definition of "do_for_all_block_devices"
-# and "get_device_or_default" methods.
+# In this code block, we loop through all block devices listed in
+# node[:block_device][:devices] and set up all block device resource attributes
+# for each device. See, cookbooks/block_device/resources/default.rb for the
+# list of block device resource attributes. We persist the devices at the node
+# level so they can be used in other run lists.
+# See cookbooks/block_device/libraries/block_device.rb for the definition of
+# "do_for_all_block_devices" and "get_device_or_default" methods.
 #
 do_for_all_block_devices node[:block_device] do |device|
   block_device get_device_or_default(node, device, :nickname) do

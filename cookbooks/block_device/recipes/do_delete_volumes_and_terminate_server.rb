@@ -16,10 +16,11 @@ raise "Server terminate safety not off.  Override block_device/terminate_safety 
 
 log "  Detach and delete volume..."
 
-# In this code block, we delete all block devices listed in node[:block_device][:devices].
-# Deletion is performed by "action :reset" which is defined in block_device/providers/default.rb.
-# See block_device/libraries/block_device.rb for the definition of "do_for_all_block_devices"
-# and "get_device_or_default" methods.
+# In this code block, we delete all block devices listed in
+# node[:block_device][:devices]. Deletion is performed by "action :reset"
+# which is defined in cookbooks/block_device/providers/default.rb.
+# See cookbooks/block_device/libraries/block_device.rb for the definition of
+# "do_for_all_block_devices" and "get_device_or_default" methods.
 #
 do_for_all_block_devices node[:block_device] do |device|
   block_device get_device_or_default(node, device, :nickname) do
