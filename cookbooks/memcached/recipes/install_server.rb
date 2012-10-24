@@ -1,5 +1,5 @@
 #
-# Cookbook Name::memcached
+# Cookbook Name:: memcached
 #
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
@@ -13,9 +13,9 @@ rightscale_marker :begin
 right_link_tag "memcached_server:active=true"
 # The server name so that sorts can be done to get the correct order across app servers.
 right_link_tag "memcached_server:uuid=#{node[:rightscale][:instance_uuid]}"
-# The instance is associated with a cluster
+# The instance is associated with a cluster.
 right_link_tag "memcached_server:cluster=#{node[:memcached][:cluster_id]}"
-# The listening port
+# The listening port.
 right_link_tag "memcached_server:port=#{node[:memcached][:tcp_port]}"
 
 log "  Server tags installed."
@@ -63,7 +63,7 @@ when "any"
   node[:memcached][:interface] = "0.0.0.0"
 end
 
-# Logging output level
+# Logging output level.
 log_level = ""
 case node[:memcached][:log_level]
 when "verbose"
@@ -175,7 +175,7 @@ log "  Collectd configuration done."
 
 # Setting up log rotation: no restarts or anything needed: logrotate is a cron task.
 #
-log "  Generating new logrotatate config for memcached application."
+log "  Generating new logrotate config for memcached application."
 
 rightscale_logrotate_app "memcached" do
   cookbook "rightscale"
