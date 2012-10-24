@@ -508,6 +508,13 @@ action :install_client_driver do
     file "/usr/share/tomcat#{version}/lib/mysql-connector-java.jar" do
       action :delete
     end
+  when /^ruby$/i
+    node[:db][:client][:driver] = "mysql"
+    gem_package 'mysql' do
+      gem_binary node[:app_passenger][:gem_bin]
+      version '2.7'
+      options '-- --build-flags --with-mysql-config'
+    end
   else
     raise "Unknown driver type specified: #{type}"
   end

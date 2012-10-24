@@ -134,7 +134,6 @@ action :setup_db_connection do
 
   deploy_dir = new_resource.destination
   db_name = new_resource.database_name
-  db_adapter = node[:app][:db_adapter]
 
   log "  Generating database.yml"
 
@@ -145,6 +144,7 @@ action :setup_db_connection do
     owner         node[:app][:user]
     group         node[:app][:group]
     database      db_name
+    driver_type   "ruby"
   end
 
   # Creating bash file for manual $RAILS_ENV setup
