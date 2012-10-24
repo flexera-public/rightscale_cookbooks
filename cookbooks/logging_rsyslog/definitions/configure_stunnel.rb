@@ -5,11 +5,12 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-# This definition would configure an stunnel used to pass log messages from a client server
+# This definition configures an stunnel used to pass log messages from a client server
 # to a logging server. This solution provides data encryption with an SSL certificate
 # provided by user input. As stunnel is configured with the "verify = 3" option the server
-# would require and verify the client certificate against the locally installed certificate
+# requires and verifies the client certificate against the locally installed certificate
 # providing client authentication.
+#
 
 define :configure_stunnel, :accept => "514", :connect => "515", :client => nil do
 

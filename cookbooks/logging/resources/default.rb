@@ -8,7 +8,7 @@
 # This lightweight resource only defines the interface for logging providers.  This file
 # defines the actions and attributes that make up the logging interface (or abstraction).
 # Please see the action details found in the lightweight providers of other implementing
-# cookbooks, such as, logging_rsyslog/providers/default.rb
+# cookbooks, such as, cookbooks/logging_rsyslog/providers/default.rb
 
 # = Log Attributes
 #

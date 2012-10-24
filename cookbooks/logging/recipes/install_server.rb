@@ -7,10 +7,12 @@
 
 rightscale_marker :begin
 
-# Included recipe would determine the syslog provider and setup the default values for logging resource.
+# The included recipe determines the syslog provider and sets up the default value for the logging resource.
 include_recipe "logging::default"
 
 # Configures a logging server
+# Please see the :configure_server action details in the logging provider's implementation
+# i.e. cookbooks/logging_<provider>/providers/default.rb
 logging "default" do
   action :configure_server
 end

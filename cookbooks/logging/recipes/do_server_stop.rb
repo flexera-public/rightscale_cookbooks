@@ -9,6 +9,8 @@ rightscale_marker :begin
 
 log "  Stopping logging server"
 # Calls the logging service stop command
+# Please see the :stop action details in the logging provider's implementation
+# i.e. cookbooks/logging_<provider>/providers/default.rb
 logging "default" do
   action :stop
 end
