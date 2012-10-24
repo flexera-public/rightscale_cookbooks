@@ -21,6 +21,7 @@ end
 # definition of "do_for_block_devices" and "get_device_or_default" methods.
 # See cookbooks/block_device/providers/default.rb for "action :create"
 # implementation.
+#
 do_for_block_devices node[:block_device] do |device|
   block_device get_device_or_default(node, device, :nickname) do
     mount_point get_device_or_default(node, device, :mount_point)
