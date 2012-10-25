@@ -10,11 +10,13 @@ define :db_set_privileges, :database => "*.*" do
   params[:name].each do |user|
     log "  Setting #{user[:role]} privileges."
     db node[:db][:data_dir] do
+      # Grants privileges to db accounts using 'roles' to combine
+      # these privileges, eg 'admin' and 'application' roles.
       privilege user[:role]
       privilege_username user[:username]
       privilege_password user[:password]
       privilege_database params[:database]
-      # See cookbooks/db_<provider>/providers/default.rb for implementation of
+      # See cookbooks/db_<provider>/providers/default.rb for
       # "set_privileges" action.
       action :set_privileges
     end

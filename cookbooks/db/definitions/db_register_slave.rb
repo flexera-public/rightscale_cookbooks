@@ -24,7 +24,7 @@ define :db_register_slave, :action => :primary_restore do
 
   # Tag the slave server
   # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RightLinkTag
-  # for right_link_tag resource.
+  # for "right_link_tag" resource.
   right_link_tag "rs_dbrepl:slave_instance_uuid=#{node[:rightscale][:instance_uuid]}"
 
   # if we are only tagging the server, exit
@@ -119,6 +119,7 @@ define :db_register_slave, :action => :primary_restore do
     raise "No master DB found" unless node[:db][:current_master_ip] && node[:db][:current_master_uuid]
 
     # Populate node with master DB info for later reference.
+    # See cookbooks/db/definitions/db_state_set.rb for "db_state_set" definition.
     db_state_set "Set master/slave state" do
       master_uuid node[:db][:current_master_uuid]
       master_ip node[:db][:current_master_ip]
@@ -128,11 +129,13 @@ define :db_register_slave, :action => :primary_restore do
 
     # Set firewall rules to allow slave to connect to master DB.
     # See cookbooks/db/recipes/request_master_allow.rb for
-    # db::request_master_allow recipe.
+    # "db::request_master_allow" recipe.
     include_recipe "db::request_master_allow"
 
     # After slave has been initialized, run the specified backup recipe, primary or secondary.
     # Stop/start or reboot would pass a no_restore action.
+    # See cookbooks/db/recipes/do_primary_restore.rb and do_secondary_restore.rb
+    # for "db::do_primary_restore" and "db::do_secondary_restore" recipes.
     case params[:action]
     when :primary_restore
       include_recipe "db::do_primary_restore"
@@ -167,7 +170,7 @@ define :db_register_slave, :action => :primary_restore do
     end
 
     # See cookbooks/db/recipes/do_primary_backup_schedule_enable.rb for
-    # db::do_primary_backup_schedule_enable recipe.
+    # "db::do_primary_backup_schedule_enable" recipe.
     include_recipe "db::do_primary_backup_schedule_enable"
   end
 

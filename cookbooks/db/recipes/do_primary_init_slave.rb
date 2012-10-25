@@ -18,7 +18,6 @@ end
 log "  Authentication information provided by inputs is ignored for slave servers"
 # See cookbooks/db/definitions/db_register_slave.rb for db_register_slave definition.
 db_register_slave "restore from primary" do
-  # See cookbooks/db_<provider>/providers/default.rb for primary_restore action.
   action :primary_restore
 end
 

@@ -29,7 +29,7 @@ log "   Setting slave #{node[:db][:dns][:slave][:fqdn]} to #{private_ip}"
 sys_dns "default" do
   id node[:db][:dns][:slave][:id]
   address private_ip
-  # See cookbooks/sys_dns/providers/*.rb for set_private action.
+  # See cookbooks/sys_dns/providers/*.rb for "set_private" action.
   action :set_private
 end
 

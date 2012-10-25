@@ -12,7 +12,7 @@ class Chef::Recipe
 end
 
 # If block_device is used, set that to be node[:db][:data_dir]
-# See cookbooks/block_device/libraries/block_device.rb for implementation of
+# See cookbooks/block_device/libraries/block_device.rb for
 # "get_device_or_default" method.
 device = get_device_or_default(node, node[:block_device])
 if device
@@ -25,7 +25,8 @@ end
 # If node[:db][:provider_type] has a value
 # we assume that db::default is executed on client server
 # and the value has been setup using db/provider_type input.
-# In that case, use this value to setup provider for 'db' resource and database version.
+# In that case, use this value to setup provider for 'db' resource and
+# database version.
 #
 provider_type = node[:db][:provider_type]
 if not provider_type.nil?
@@ -41,8 +42,7 @@ db node[:db][:data_dir] do
   persist true
   provider node[:db][:provider]
   db_version node[:db][:version]
-  # See cookbooks/db_<provider>/providers/default.rb for implementation of
-  # "install_client" action.
+  # See cookbooks/db_<provider>/providers/default.rb for "install_client" action.
   action :install_client
 end
 

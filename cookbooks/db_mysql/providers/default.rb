@@ -28,7 +28,7 @@ end
 
 action :status do
   # See cookbooks/db_mysql/libraries/helper.rb for "init" method.
-  # For "status" method, see rightscale_tools gem.
+  # See "rightscale_tools" gem for "status" method.
   @db = init(new_resource)
   status = @db.status
   Chef::Log.info "  Database Status:\n#{status}"
@@ -36,28 +36,28 @@ end
 
 action :lock do
   # See cookbooks/db_mysql/libraries/helper.rb for "init" method.
-  # For "lock" method, see rightscale_tools gem.
+  # See "rightscale_tools" gem for "lock" method.
   @db = init(new_resource)
   @db.lock
 end
 
 action :unlock do
   # See cookbooks/db_mysql/libraries/helper.rb for "init" method.
-  # For "unlock" method, see rightscale_tools gem.
+  # See "rightscale_tools" gem for "unlock" method.
   @db = init(new_resource)
   @db.unlock
 end
 
 action :move_data_dir do
   # See cookbooks/db_mysql/libraries/helper.rb for "init" method.
-  # For "move_datadir" method, see rightscale_tools gem.
+  # See "rightscale_tools" gem for "move_datadir" method.
   @db = init(new_resource)
   @db.move_datadir(new_resource.name, node[:db_mysql][:datadir])
 end
 
 action :reset do
   # See cookbooks/db_mysql/libraries/helper.rb for "init" method.
-  # For "reset" method, see rightscale_tools gem.
+  # See "rightscale_tools" gem for "reset" method.
   @db = init(new_resource)
   @db.reset(new_resource.name, node[:db_mysql][:datadir])
 end
@@ -116,7 +116,7 @@ end
 
 action :pre_restore_check do
   # See cookbooks/db_mysql/libraries/helper.rb for init method.
-  # For pre_restore_sanity_check method, see rightscale_tools gem.
+  # See "rightscale_tools" gem for "pre_restore_sanity_check" method.
   @db = init(new_resource)
   @db.pre_restore_sanity_check
 end
@@ -175,29 +175,29 @@ action :post_restore_cleanup do
 
   # always update the my.cnf file on a restore
   # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for 
-  # db_mysql_set_mycnf definition.
+  # "db_mysql_set_mycnf" definition.
   db_mysql_set_mycnf "setup_mycnf" do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
     innodb_log_file_size ::File.stat("/var/lib/mysql/ib_logfile0").size
   end
 
-  # See cookbooks/db_mysql/libraries/helper.rb for init method.
-  # For post_restore_cleanup method, see rightscale_tools gem.
+  # See cookbooks/db_mysql/libraries/helper.rb for "init" method.
+  # See "rightscale_tools" gem for "post_restore_cleanup" method.
   @db = init(new_resource)
   @db.post_restore_cleanup
 end
 
 action :pre_backup_check do
-  # See cookbooks/db_mysql/libraries/helper.rb for init method.
-  # For pre_backup_check method, see rightscale_tools gem.
+  # See cookbooks/db_mysql/libraries/helper.rb for "init" method.
+  # See "rightscale_tools" gem for "pre_backup_check" method.
   @db = init(new_resource)
   @db.pre_backup_check
 end
 
 action :post_backup_cleanup do
-  # See cookbooks/db_mysql/libraries/helper.rb for init method.
-  # For post_backup_steps method, see rightscale_tools gem.
+  # See cookbooks/db_mysql/libraries/helper.rb for "init" method.
+  # See "rightscale_tools" gem for "post_backup_steps" method.
   @db = init(new_resource)
   @db.post_backup_steps
 end
@@ -208,7 +208,7 @@ action :set_privileges do
   priv_password = new_resource.privilege_password
   priv_database = new_resource.privilege_database
   # See cookbooks/db_mysql/definitions/db_mysql_set_privileges.rb for
-  # db_mysql_set_privileges definition.
+  # "db_mysql_set_privileges" definition.
   db_mysql_set_privileges "setup db privileges" do
     preset priv
     username priv_username
@@ -352,7 +352,7 @@ action :install_server do
   end unless packages == ""
 
   # Stop mysql service
-  # See cookbooks/db_mysql/providers/default.rb for stop action.
+  # See cookbooks/db_mysql/providers/default.rb for "stop" action.
   db node[:db][:data_dir] do
     action :stop
     persist false
@@ -408,7 +408,7 @@ action :install_server do
 
   # Setup my.cnf
   # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for
-  # db_mysql_set_mycnf definition.
+  # "db_mysql_set_mycnf" definition.
   db_mysql_set_mycnf "setup_mycnf" do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
@@ -475,6 +475,7 @@ action :install_server do
   # Start MySQL
   Chef::Log.info "  Server installed.  Starting MySQL"
   db node[:db][:data_dir] do
+    # See cookbooks/db_mysql/providers/default.rb for "start" action.
     action :start
     persist false
   end
@@ -494,7 +495,7 @@ action :install_server do
 end
 
 action :setup_monitoring do
-  # See cookbooks/db/libraries/helper.rb for db_state_get method.
+  # See cookbooks/db/libraries/helper.rb for "db_state_get" method.
   db_state_get node
 
   ruby_block "evaluate db type" do
@@ -548,7 +549,7 @@ action :grant_replication_slave do
 end
 
 action :promote do
-  # See cookbooks/db/libraries/helper.rb for db_state_get method.
+  # See cookbooks/db/libraries/helper.rb for "db_state_get" method.
   db_state_get node
 
   x = node[:db_mysql][:log_bin]
@@ -567,7 +568,7 @@ action :promote do
 
   # Setup my.cnf
   # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for
-  # db_mysql_set_mycnf definition.
+  # "db_mysql_set_mycnf" definition.
   db_mysql_set_mycnf "setup_mycnf" do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
@@ -575,7 +576,7 @@ action :promote do
   end
 
   db node[:db][:data_dir] do
-    # See cookbooks/db_mysql/providers/default.rb for start action.
+    # See cookbooks/db_mysql/providers/default.rb for "start" action.
     action :start
     persist false
     only_if do
@@ -658,7 +659,7 @@ end
 
 
 action :enable_replication do
-  # See cookbooks/db/libraries/helper.rb for db_state_get method.
+  # See cookbooks/db/libraries/helper.rb for "db_state_get" method.
   db_state_get node
   current_restore_process = new_resource.restore_process
 
@@ -710,7 +711,7 @@ action :enable_replication do
   unless current_restore_process == :no_restore
     # Setup my.cnf
     # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for
-    # db_mysql_set_mycnf definition.
+    # "db_mysql_set_mycnf" definition.
     db_mysql_set_mycnf "setup_mycnf" do
       server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
       relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)

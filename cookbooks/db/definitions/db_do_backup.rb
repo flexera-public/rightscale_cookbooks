@@ -40,8 +40,9 @@ define :db_do_backup, :backup_type => "primary" do
   end
 
   # Verify initialized database
-  # Check the node state to verify that we have correctly initialized this server.
-  # See cookbooks/db/defintion/db_state_assert.rb for db_state_assert definition.
+  # Check node state to verify that we have correctly initialized this server.
+  # See cookbooks/db/defintion/db_state_assert.rb for
+  # "db_state_assert" definition.
   db_state_assert :either
 
   log "  Performing pre-backup check..."

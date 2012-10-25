@@ -27,4 +27,3 @@ else
 end
 
 rightscale_marker :end
-
