@@ -469,8 +469,12 @@ end
 action :install_client_driver do
   type = new_resource.driver_type
   log "  Installing mysql support for #{type} driver"
+
+  # Installation of the database client driver for application servers is
+  # done here based on the driver type
   case type
   when /^php$/i
+    # This adapter type is used by php application servers
     node[:db][:client][:driver] = "mysql"
     package "#{type} mysql integration" do
       package_name value_for_platform(
@@ -485,12 +489,14 @@ action :install_client_driver do
       action :install
     end
   when /^python$/i
+    # This adapter type is used by Django application servers
     node[:db][:client][:driver] = "django.db.backends.mysql"
     python_pip "MySQL-python" do
       version "1.2.3"
       action :install
     end
   when /^java$/i
+    # This adapter type is used by tomcat application servers
     node[:db][:client][:driver] = "com.mysql.jdbc.Driver"
     package "#{type} mysql integration" do
       package_name value_for_platform(
@@ -509,6 +515,7 @@ action :install_client_driver do
       action :delete
     end
   when /^ruby$/i
+    # This adapter type is used by Apache Rails Passenger aplication servers
     node[:db][:client][:driver] = "mysql"
     gem_package 'mysql' do
       gem_binary node[:app_passenger][:gem_bin]

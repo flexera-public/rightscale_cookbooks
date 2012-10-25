@@ -28,6 +28,12 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
   your runlist. This will pull in generic client inputs, provide provider
   selection input and install client. Set db/provider_type input in
   RightScale ServerTemplate to set provider and version for 'db' resource.
+  Packages specific to the database for application servers will be installed by
+  the <tt>install_client_driver</tt> action of the db_<provider> based on the type
+  of driver. The driver type should be set by the application servers and
+  passed to the db_<provider> cookbook. This action also sets the
+  <tt>node[:db][:client][:driver]</tt> attribute which is used to perform
+  database specific actions.
 
 * To setup a database client and server, place the following recipes
   in order to your runlist:
