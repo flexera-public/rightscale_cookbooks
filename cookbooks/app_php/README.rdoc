@@ -122,7 +122,10 @@ For normal operations it requires the "app" resource which will act as the inter
 
 * <tt>:code_update</tt> - Perform project source code update/download using user selected "repo" LWRP.
 
-* <tt>:setup_db_connection</tt> - Perform project config/db.php database connection configuration
+* <tt>:setup_db_connection</tt> - Perform project config/db.php database connection configuration.
+  The driver type is specified as 'php' and the db_<provider> cookbook's
+  <tt>install_client_driver</tt> action performs necessary steps to install the
+  database adapter.
 
 ===== Usage Example:
 

@@ -153,6 +153,8 @@ attributes that are inputs are in the <tt>metadata.rb</tt> cookbook file.
 * <tt>web_xml.erb</tt> - Content configuration template for Tomcat.
 * <tt>context_xml.erb</tt> - Configuration for project database connection
   config file.
+* <tt>catalina.properties.erb</tt> - Tomcat catalina properties with updated
+  configuration that loads all java classes from /usr/share/java.
 
 === LWRPs:
 
@@ -202,7 +204,10 @@ interface to all <tt>app_tomcat</tt> provider logic.
   selected "repo" LWRP. Set up logrotate config.
 
 * <tt>:setup_db_connection</tt> - Perform project
-  <tt>/etc/tomcat{6|7}/context.xml</tt> database file configuration.
+  <tt>/etc/tomcat{6|7}/context.xml</tt> database file configuration. The driver
+  type is specified as 'java' and the db_<provider> cookbook's
+  <tt>install_client_driver</tt> action performs necessary steps to install the
+  database adapter.
 
 * <tt>:setup_monitoring</tt> - Install and set up of required monitoring software.
 
