@@ -6,6 +6,7 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 
+# Setup repository URL and other attributes
 action :setup_attributes do
 
   branch = new_resource.revision
@@ -20,13 +21,14 @@ action :setup_attributes do
 
   # Checking repository URL
   raise "  ERROR: repo URL input is unset. Please fill 'Repository URL' input" if repository_url.empty?
-
 end
 
 
+# Pull code from a determined repository to a specified destination.
 action :pull do
 
   # Checking attributes
+  # Call :setup_attributes action defined previously
   action_setup_attributes
 
   # Setting parameters
@@ -67,12 +69,13 @@ action :pull do
   end
 
   log "  SVN repository update/download action - finished successfully!"
-
 end
 
+# Pull code from a determined repository to a specified destination and create a capistrano deployment.
 action :capistrano_pull do
 
   # Checking attributes
+  # Call :setup_attributes action defined previously
   action_setup_attributes
 
   log "  Preparing to capistrano deploy action. Setting parameters for the process..."
@@ -92,6 +95,7 @@ action :capistrano_pull do
   log "  Deploy provider #{scm_provider}"
 
   # Applying capistrano style deployment
+  # See cookbooks/repo/definition/repo_capistranize.rb
   repo_capistranize "Source repo" do
     repository repository
     destination destination

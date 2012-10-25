@@ -11,6 +11,8 @@ rightscale_marker :begin
 raise "  Error: repo URL input is unset. Please fill 'Repository Url' input" if node[:repo][:default][:repository].empty?
 
 # Downloading project repository
+# :perform_action ["pull" or "capistrano_pull"] is passed by user input
+# See cookbooks/repo_<provider>/providers/default.rb for the action method.
 repo "default" do
   destination node[:repo][:default][:destination]
   action node[:repo][:default][:perform_action].to_sym
