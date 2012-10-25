@@ -13,7 +13,7 @@
 #   to the main backup.  If 'secondary' will do a secondary backup using node attributes for
 #   secondary.  Secondary uses 'ROS'.
 #
-# @raises [RuntimeError] If database is not 'initialized'
+# @raise [RuntimeError] If database is not 'initialized'
 define :db_do_backup, :backup_type => "primary" do
 
   class Chef::Recipe
@@ -24,6 +24,9 @@ define :db_do_backup, :backup_type => "primary" do
     include RightScale::BlockDeviceHelper
   end
 
+  # See cookbooks/block_device/libraries/block_device.rb for implementation of
+  # "get_device_or_default" method.
+  #
   NICKNAME = get_device_or_default(node, :device1, :nickname)
   DATA_DIR = node[:db][:data_dir]
 
@@ -43,6 +46,8 @@ define :db_do_backup, :backup_type => "primary" do
 
   log "  Performing pre-backup check..."
   db DATA_DIR do
+    # See cookbooks/db_<provider>/providers/defaul.rb for implementation of
+    # "pre_backup_check" action.
     action :pre_backup_check
   end
 
@@ -51,6 +56,8 @@ define :db_do_backup, :backup_type => "primary" do
   log "  Performing (#{do_backup_type} backup) lock DB and write backup info file..."
   db DATA_DIR do
     timeout node[:db][:init_timeout]
+    # See cookbooks/db_<provider>/providers/defaul.rb for implementation of
+    # "lock" and "write_backup_info" actions.
     action [ :lock, :write_backup_info ]
   end
 
@@ -58,17 +65,23 @@ define :db_do_backup, :backup_type => "primary" do
   # Requires block_device node[:db][:block_device] to be instantiated
   # previously. Make sure block_device::default recipe has been run.
   block_device NICKNAME do
+    # See cookbooks/block_device/providers/default.rb for implementation of
+    # "snapshot" action.
     action :snapshot
   end
 
   log "  Performing unlock DB..."
   db DATA_DIR do
+    # See cookbooks/db_<provider>/providers/defaul.rb for implementation of
+    # "unlock" action.
     action :unlock
   end
 
   log "  Performing (#{do_backup_type}) Backup of lineage #{node[:db][:backup][:lineage]} and post-backup cleanup..."
   block_device NICKNAME do
-    # Backup/Restore arguments
+    # Select the device to backup and set up arguments required for backup.
+    # See cookbooks/block_device/libraries/block_device.rb for implementation of
+    # "get_device_or_default" method.
     lineage node[:db][:backup][:lineage]
     max_snapshots get_device_or_default(node, :device1, :backup, :primary, :keep, :max_snapshots)
     keep_daily get_device_or_default(node, :device1, :backup, :primary, :keep, :keep_daily)
@@ -83,11 +96,15 @@ define :db_do_backup, :backup_type => "primary" do
     secondary_user get_device_or_default(node, :device1, :backup, :secondary, :cred, :user)
     secondary_secret get_device_or_default(node, :device1, :backup, :secondary, :cred, :secret)
 
+    # See cookbooks/block_device/providers/default.rb for implementation of
+    # "primary_backup" and "secondary_backup" actions.
     action do_backup_type == 'primary' ? :primary_backup : :secondary_backup
   end
 
   log "  Performing post backup cleanup..."
   db DATA_DIR do
+    # See cookbooks/db_<provider>/providers/default.rb for implementation of
+    # "post_backup_cleanup" action.
     action :post_backup_cleanup
   end
 end

@@ -7,6 +7,7 @@
 
 rightscale_marker :begin
 
+# Set up all db/dump/* attributes
 dumpfilename = node[:db][:dump][:prefix] + "-" + Time.now.strftime("%Y%m%d%H%M") + ".gz"
 dumpfilepath = "/tmp/#{dumpfilename}"
 
@@ -19,6 +20,8 @@ cloud       = node[:db][:dump][:storage_account_provider]
 db node[:db][:data_dir] do
   dumpfile dumpfilepath
   db_name databasename
+  # See cookbooks/db_<provider>/providers/default.rb for the implementation of
+  # "generate_dump_file" action.
   action :generate_dump_file
 end
 

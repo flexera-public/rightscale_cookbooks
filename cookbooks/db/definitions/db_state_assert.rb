@@ -11,7 +11,7 @@
 #
 # @param name [Symbol] Assert the type of server we thing we are. Can be :slave, :master, :either
 #
-# @raises [RuntimeError] if we are not the server type (:slave or :master) that we expect
+# @raise [RuntimeError] if we are not the server type (:slave or :master) that we expect
 define :db_state_assert do
 
   class Chef::Recipe

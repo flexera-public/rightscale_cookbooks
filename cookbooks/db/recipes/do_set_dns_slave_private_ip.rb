@@ -15,6 +15,8 @@ class Chef::Recipe
   include RightScale::Database::Helper
 end
 
+# See cookbooks/db/libraries/helper.rb for the implementation of db_state_get
+# method.
 db_state_get node
 
 raise "ERROR: Server is a master" if node[:db][:this_is_master]
@@ -28,6 +30,7 @@ log "   Setting slave #{node[:db][:dns][:slave][:fqdn]} to #{private_ip}"
 sys_dns "default" do
   id node[:db][:dns][:slave][:id]
   address private_ip
+  # See cookbooks/sys_dns/providers/*.rb for set_private action.
   action :set_private
 end
 

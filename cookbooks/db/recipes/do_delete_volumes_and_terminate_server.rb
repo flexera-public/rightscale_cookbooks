@@ -15,15 +15,21 @@ class Chef::Recipe
 end
 
 DATA_DIR = node[:db][:data_dir]
+# See cookbooks/block_device/libraries/block_device.rb for the implementation of
+# get_device_or_default method.
 NICKNAME = get_device_or_default(node, :device1, :nickname)
 
 log "  Resetting the database..."
 db DATA_DIR do
+  # See cookbooks/db_<provider>/providers/default.rb for the implementation of
+  # reset action.
   action :reset
 end
 
 log "  Detach and delete volume..."
 block_device NICKNAME do
+  # See cookbooks/block_device/providers/default.rb for the implementation of
+  # reset action.
   action :reset
 end
 

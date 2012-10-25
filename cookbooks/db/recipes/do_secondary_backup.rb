@@ -7,6 +7,8 @@
 
 rightscale_marker :begin
 
+# See cookbooks/db/definitions/db_do_backup.rb for the implementation of
+# db_do_backup definition.
 db_do_backup "do secondary backup" do
   backup_type "secondary"
 end

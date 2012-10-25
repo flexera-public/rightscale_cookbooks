@@ -20,16 +20,22 @@ end
 log "  Brute force tear down of the setup..."
 
 DATA_DIR = node[:db][:data_dir]
+# See cookbooks/block_device/libraries/block_device.rb for the implementation of
+# get_device_or_default method.
 NICKNAME = get_device_or_default(node, :device1, :nickname)
 
 log "  Resetting the database..."
 db DATA_DIR do
+  # See cookbooks/db_<provider>/providers/default.rb for the implementation of
+  # reset action.
   action :reset
 end
 
 log "  Resetting block device..."
 block_device NICKNAME do
   lineage node[:db][:backup][:lineage]
+  # See cookbooks/block_device/providers/default.rb for the implementation of
+  # reset action.
   action :reset
 end
 
@@ -46,10 +52,14 @@ tags_to_remove.each do |each_tag|
   end
 end
 
+# See cookbooks/db/libraries/helper.rb for the implementation of
+# db_state_set method.
 db_state_set "Reset master/slave state"
 
 log "  Resetting database, then starting database..."
 db DATA_DIR do
+  # See cookbooks/db_<provider>/providers/default.rb for the implementation of
+  # reset and start actions.
   action [ :reset, :start ]
 end
 
@@ -59,11 +69,15 @@ db_init_status :reset
 log "  Cleaning cron..."
 block_device NICKNAME do
   cron_backup_recipe "#{self.cookbook_name}::do_primary_backup"
+  # See cookbooks/block_device/providers/default.rb for the implementation of
+  # backup_schedule_disable action.
   action :backup_schedule_disable
 end
 
 log "  Resetting collectd config..."
 db DATA_DIR do
+  # See cookbooks/db_<provider>/providers/default.rb for the implementation of
+  # setup_monitoring action.
   action :setup_monitoring
 end
 

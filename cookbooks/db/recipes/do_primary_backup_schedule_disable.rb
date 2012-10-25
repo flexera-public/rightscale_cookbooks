@@ -11,10 +11,14 @@ class Chef::Recipe
   include RightScale::BlockDeviceHelper
 end
 
+# See cookbooks/block_device/libraries/block_device.rb for the implementation of
+# get_device_or_default method.
 NICKNAME = get_device_or_default(node, :device1, :nickname)
 
 block_device NICKNAME do
   cron_backup_recipe "#{self.cookbook_name}::do_primary_backup"
+  # See cookbooks/block_device/providers/default.rb for the implementation of
+  # backup_schedule_disable action.
   action :backup_schedule_disable
 end
 

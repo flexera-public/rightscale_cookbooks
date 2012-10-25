@@ -14,6 +14,8 @@ define :db_set_privileges, :database => "*.*" do
       privilege_username user[:username]
       privilege_password user[:password]
       privilege_database params[:database]
+      # See cookbooks/db_<provider>/providers/default.rb for implementation of
+      # "set_privileges" action.
       action :set_privileges
     end
   end

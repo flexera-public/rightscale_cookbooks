@@ -11,6 +11,8 @@ log "  Opening database port(s) to all application servers"
 db node[:db][:data_dir] do
   machine_tag "appserver:active=true"
   enable true
+  # See cookbooks/db_<provider>/providers/default.rb for implementation of
+  # "firewall_update" action.
   action :firewall_update
 end
 

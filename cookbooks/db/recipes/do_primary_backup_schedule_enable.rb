@@ -11,10 +11,14 @@ class Chef::Recipe
   include RightScale::BlockDeviceHelper
 end
 
+# See cookbooks/block_device/libraries/block_device.rb for the implementation of
+# get_device_or_default method.
 NICKNAME = get_device_or_default(node, :device1, :nickname)
 
 # Verify initialized database
 # Check the node state to verify that we have correctly initialized this server.
+# See cookbooks/db/definitions/db_state_assert.rb for the implementation of
+# db_state_assert definition.
 db_state_assert :either
 
 snap_lineage = node[:db][:backup][:lineage]
@@ -35,6 +39,8 @@ block_device NICKNAME do
   cron_backup_hour master_hour
   cron_backup_minute master_minute
   persist false
+  # See cookbooks/block_device/providers/default.rb for the implementation of
+  # backup_schedule_enable action.
   action :backup_schedule_enable
 end
 
@@ -49,6 +55,8 @@ block_device NICKNAME do
   cron_backup_hour slave_hour
   cron_backup_minute slave_minute
   persist false
+  # See cookbooks/block_device/providers/default.rb for the implementation of
+  # backup_schedule_enable action.
   action :backup_schedule_enable
 end
 

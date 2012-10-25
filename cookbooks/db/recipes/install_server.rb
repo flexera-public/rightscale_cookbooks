@@ -24,6 +24,7 @@ rightscale_marker :begin
 raise "ERROR: Provider for 'db' resource not set. Please run 'setup_server_<version> recipe from provider cookbook before running this recipe." unless node[:db][:provider] and node[:db][:version]
 
 # Install the database client
+# See cookbooks/db/recipes/default.rb
 include_recipe "db::default"
 
 MASTER_DB_DNSNAME = node[:db][:dns][:master][:fqdn]
@@ -58,6 +59,8 @@ right_link_tag "database:active=true"
 db node[:db][:data_dir] do
   user node[:db][:admin][:user]
   password node[:db][:admin][:password]
+  # See cookbooks/db_<provider>/providers/default.rb for the implementation of
+  # install_server action.
   action :install_server
 end
 
@@ -67,16 +70,22 @@ end
 # If server already a master, reset node attributes and tags.
 if node[:db][:this_is_master] && node[:db][:init_status].to_sym == :initialized
   log "Already set as master and initialized - updating node"
+  # See cookbooks/db/definitions/db_register_master.rb for the implementation of
+  # db_register_master definition.
   db_register_master
 # Else if server is already a slave, update node and config files
 elsif node[:db][:this_is_master] == false && node[:db][:init_status].to_sym == :initialized
   log "Already set as slave and initialized - updating node"
+  # See cookbooks/db/definitions/db_register_slave.rb for the implementation of
+  # db_register_slave definition.
   db_register_slave "Updating slave" do
     action :no_restore
   end
 end
 
 # Setting admin and application user privileges
+# See cookbooks/db/definitions/db_set_privileges.rb for the implementation of
+# db_set_privileges definition.
 db_set_privileges [
   {:role => "administrator", :username => node[:db][:admin][:user], :password => node[:db][:admin][:password]},
   {:role => "user", :username => node[:db][:application][:user], :password => node[:db][:application][:password]}

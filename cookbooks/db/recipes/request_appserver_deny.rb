@@ -12,6 +12,8 @@ db node[:db][:data_dir] do
   machine_tag "database:active=true"
   enable false
   ip_addr node[:cloud][:private_ips][0]
+  # See cookbooks/db_<provider>/providers/default.rb for the implementation of
+  # firewall_update_request action.
   action :firewall_update_request
 end
 

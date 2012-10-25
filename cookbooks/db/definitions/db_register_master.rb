@@ -16,6 +16,8 @@ define :db_register_master do
   sys_dns "default" do
     id node[:db][:dns][:master][:id]
     address private_ip
+    # See cookbooks/sys_dns/providers/*.rb for implementation of "set_private"
+    # action.
     action :set_private
   end
 
