@@ -7,8 +7,9 @@
 
 # Used to set and check node[:db][:init_status].
 # When our database is at a point where it can be used, this is used to set the database
-# as 'initialized'.  Other recipes that require the database to be 'initialized' use this
-# to confirm.  If a check is done and a state is not what is expected, this receipe will
+# as 'initialized'. The presence of "/var/lib/rightscale_db_initialized" file indicates if
+# the database is initialized. Other recipes that require the database to be 'initialized'
+# use this file to confirm. If a check is done and a state is not what is expected, this recipe will
 # error out with raise.
 #
 # @param name [Symbol] set to :set, :reset, or :check.  :set will set node[:db][:init_status] (state)

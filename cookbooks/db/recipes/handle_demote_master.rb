@@ -15,16 +15,14 @@ right_link_tag master_instance_uuid_tag do
 end
 
 # Set master node variables
-# See cookbooks/db/definitions/db_state_set.rb for the implementation of
-# db_state_set definition.
+# See cookbooks/db/definitions/db_state_set.rb for db_state_set definition.
 db_state_set "Set slave state" do
   master_uuid node[:remote_recipe][:new_master_uuid]
   master_ip node[:remote_recipe][:new_master_ip]
 end
 
 # Add server tag to visually show a slave
-# See cookbooks/db/definitions/db_register_slave.rb for the implementation of
-# db_register_slave definition.
+# See cookbooks/db/definitions/db_register_slave.rb for db_register_slave definition.
 db_register_slave "tagging slave" do
   action :only_tag
 end

@@ -16,12 +16,10 @@ class Chef::Resource::BlockDevice
 end
 
 DATA_DIR = node[:db][:data_dir]
-# See cookbooks/block_device/libraries/block_device.rb for the implementation of
-# get_device_or_default method.
+# See cookbooks/block_device/libraries/block_device.rb for get_device_or_default method.
 NICKNAME = get_device_or_default(node, :device1, :nickname)
 
-# See cookbooks/db/definitions/db_init_status.rb for the implementation of
-# db_init_status definition.
+# See cookbooks/db/definitions/db_init_status.rb for db_init_status definition.
 db_init_status :check do
   expected_state :uninitialized
   error_message "Database already restored.  To over write existing database run do_force_reset before this recipe."
@@ -69,8 +67,7 @@ block_device NICKNAME do
   # See cookbooks/block_device/libraries/block_device.rb for the implementation
   # of get_device_or_default method.
   volume_size get_device_or_default(node, :device1, :volume_size)
-  # See cookbooks/block_device/providers/default.rb for the implementation of
-  # primary_restore action.
+  # See cookbooks/block_device/providers/default.rb for primary_restore action.
   action :primary_restore
 end
 
@@ -82,20 +79,17 @@ db DATA_DIR do
 end
 
 log "  Setting state of database to be 'initialized'..."
-# See cookbooks/db/definitions/db_init_status.rb for the implementation of
-# db_init_status definition.
+# See cookbooks/db/definitions/db_init_status.rb for db_init_status definition.
 db_init_status :set
 
 log "  Starting database..."
 db DATA_DIR do
-  # See cookbooks/db_<provider>/providers/default.rb for the implementation of
-  # start and status actions.
+  # See cookbooks/db_<provider>/providers/default.rb for start and status actions.
   action [ :start, :status ]
 end
 
 # Restoring admin and application user privileges
-# See cookbooks/db/definitions/db_set_privileges.rb for the implementation of
-# db_set_privileges definition.
+# See cookbooks/db/definitions/db_set_privileges.rb for db_set_privileges definition.
 db_set_privileges [
   {:role => "administrator", :username => node[:db][:admin][:user], :password => node[:db][:admin][:password]},
   {:role => "user", :username => node[:db][:application][:user], :password => node[:db][:application][:password]}

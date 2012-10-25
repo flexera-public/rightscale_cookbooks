@@ -16,8 +16,7 @@ define :db_register_master do
   sys_dns "default" do
     id node[:db][:dns][:master][:id]
     address private_ip
-    # See cookbooks/sys_dns/providers/*.rb for implementation of "set_private"
-    # action.
+    # See cookbooks/sys_dns/providers/*.rb for "set_private" action.
     action :set_private
   end
 
@@ -26,6 +25,8 @@ define :db_register_master do
   # and rs_dbrepl:master_instance_uuid
 
   begin
+    # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RightLinkTag
+    # for right_link_tag resource.
     right_link_tag "rs_dbrepl:slave_instance_uuid=#{node[:rightscale][:instance_uuid]}" do
       action :remove
     end
@@ -35,13 +36,18 @@ define :db_register_master do
 
   active_tag = "rs_dbrepl:master_active=#{Time.now.strftime("%Y%m%d%H%M%S")}-#{node[:db][:backup][:lineage]}"
   log "  Tagging server with #{active_tag}"
+  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RightLinkTag
+  # for right_link_tag resource.
   right_link_tag active_tag
 
   unique_tag = "rs_dbrepl:master_instance_uuid=#{node[:rightscale][:instance_uuid]}"
   log "  Tagging server with #{unique_tag}"
+  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RightLinkTag
+  # for right_link_tag resource.
   right_link_tag unique_tag
 
   # Set master node variables
+  # See cookbooks/db/definitions/db_state_set.rb for "db_state_set" definition.
   db_state_set "Set master state" do
     master_uuid node[:rightscale][:instance_uuid]
     master_ip node[:cloud][:private_ips][0]

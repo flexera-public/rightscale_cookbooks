@@ -15,7 +15,7 @@ define :db_request_backup, :backup_type => 'primary' do
 
   remote_recipe "Request #{do_backup_type} backup" do
     # See cookbooks/db/recipes/do_primary_backup.rb and do_secondary_backup.rb
-    # for implementation of db::do_primary_backup and db::do_secondary_backup.
+    # for db::do_primary_backup and db::do_secondary_backup.
     recipe "db::do_#{do_backup_type}_backup"
     recipients_tags "server:uuid=#{node[:rightscale][:instance_uuid]}"
   end

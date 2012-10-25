@@ -8,8 +8,7 @@
 rightscale_marker :begin
 
 log "  Checking if state of database is 'uninitialized'..."
-# See cookbooks/db/definitions/db_init_status.rb for the implementation of
-# db_init_status definition.
+# See cookbooks/db/definitions/db_init_status.rb for db_init_status definition.
 db_init_status :check do
   expected_state :uninitialized
   error_message "Database already restored.  To over write existing database run do_force_reset before this recipe"

@@ -23,6 +23,8 @@
 define :db_register_slave, :action => :primary_restore do
 
   # Tag the slave server
+  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RightLinkTag
+  # for right_link_tag resource.
   right_link_tag "rs_dbrepl:slave_instance_uuid=#{node[:rightscale][:instance_uuid]}"
 
   # if we are only tagging the server, exit
@@ -35,8 +37,8 @@ define :db_register_slave, :action => :primary_restore do
       secondary_tags [ 'rs_dbrepl:master_active', 'server:private_ip_0' ]
       action :nothing
     end
-    # See cookbooks/rightscale/providers/server_collection.rb for the
-    # implementation of "load" action.
+    # See cookbooks/rightscale/providers/server_collection.rb for
+    # "load" action.
     r.run_action(:load)
 
     # Finds the master matching lineage and sets the node attribs for
@@ -125,7 +127,7 @@ define :db_register_slave, :action => :primary_restore do
     end
 
     # Set firewall rules to allow slave to connect to master DB.
-    # See cookbooks/db/recipes/request_master_allow.rb for implementation of
+    # See cookbooks/db/recipes/request_master_allow.rb for
     # db::request_master_allow recipe.
     include_recipe "db::request_master_allow"
 
@@ -145,13 +147,13 @@ define :db_register_slave, :action => :primary_restore do
     # Not needed for stop/start since replication has already been enabled.
     db DATA_DIR do
       restore_process params[:action]
-      # See cookbooks/db_<provider>/providers/default.rb for implementation of
+      # See cookbooks/db_<provider>/providers/default.rb for
       # "enable_replication" action.
       action :enable_replication
     end
 
     db DATA_DIR do
-      # See cookbooks/db_<provider>/providers/default.rb for implementation of
+      # See cookbooks/db_<provider>/providers/default.rb for
       # "setup_monitoring" action.
       action :setup_monitoring
     end
@@ -165,7 +167,7 @@ define :db_register_slave, :action => :primary_restore do
     end
 
     # See cookbooks/db/recipes/do_primary_backup_schedule_enable.rb for
-    # implementation of db::do_primary_backup_schedule_enable recipe.
+    # db::do_primary_backup_schedule_enable recipe.
     include_recipe "db::do_primary_backup_schedule_enable"
   end
 

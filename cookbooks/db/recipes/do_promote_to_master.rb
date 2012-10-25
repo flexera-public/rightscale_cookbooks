@@ -11,8 +11,7 @@ DATA_DIR = node[:db][:data_dir]
 
 # Verify initialized database
 # Check the node state to verify that we have correctly initialized this server.
-# See cookbooks/db/definitions/db_state_assert.rb for the implementation of
-# db_state_assert definition.
+# See cookbooks/db/definitions/db_state_assert.rb for db_state_assert definition.
 db_state_assert :slave
 
 # Open port for slave replication by old-master
@@ -58,8 +57,7 @@ end
 
 # Tag as master
 # Changes master status tags and node state
-# See cookbooks/db/definitions/db_register_master.rb for the implementation of
-# db_register_master definition.
+# See cookbooks/db/definitions/db_register_master.rb for db_register_master definition.
 db_register_master
 
 # Setup collected to monitor for a master db
@@ -69,8 +67,7 @@ db DATA_DIR do
 end
 
 # Perform a backup
-# See cookbooks/db/definitions/db_request_backup.rb for the implementation of
-# db_request_backup definition.
+# See cookbooks/db/definitions/db_request_backup.rb for db_request_backup definition.
 db_request_backup "do backup"
 
 # Schedule master backups

@@ -9,51 +9,51 @@ include RightScale::Database::Helper
 include RightScale::Database::PostgreSQL::Helper
 
 action :stop do
-  # See cookbooks/db_postgres/libraries/helper.rb for the implementation of init
-  # method. For the implementation of "stop" method, see rightscale_tools gem.
+  # See cookbooks/db_postgres/libraries/helper.rb for init method.
+  # For "stop" method, see rightscale_tools gem.
   @db = init(new_resource)
   @db.stop
 end
 
 action :start do
-  # See cookbooks/db_postgres/libraries/helper.rb for the implementation of init
-  # method. For the implementation of "start" method, see rightscale_tools gem.
+  # See cookbooks/db_postgres/libraries/helper.rb for init method.
+  # For "start" method, see rightscale_tools gem.
   @db = init(new_resource)
   @db.start
 end
 
 action :status do
-  # See cookbooks/db_postgres/libraries/helper.rb for the implementation of init
-  # method. For the implementation of "status" method, see rightscale_tools gem.
+  # See cookbooks/db_postgres/libraries/helper.rb for init method.
+  # For "status" method, see rightscale_tools gem.
   @db = init(new_resource)
   status = @db.status
   log "Database Status:\n#{status}"
 end
 
 action :lock do
-  # See cookbooks/db_postgres/libraries/helper.rb for the implementation of init
-  # method. For the implementation of "lock" method, see rightscale_tools gem.
+  # See cookbooks/db_postgres/libraries/helper.rb for init method.
+  # For "lock" method, see rightscale_tools gem.
   @db = init(new_resource)
   @db.lock
 end
 
 action :unlock do
-  # See cookbooks/db_postgres/libraries/helper.rb for the implementation of init
-  # method. For the implementation of "unlock" method, see rightscale_tools gem.
+  # See cookbooks/db_postgres/libraries/helper.rb for init method.
+  # For "unlock" method, see rightscale_tools gem.
   @db = init(new_resource)
   @db.unlock
 end
 
 action :move_data_dir do
-  # See cookbooks/db_postgres/libraries/helper.rb for the implementation of init
-  # method. For the implementation of move_datadir method, see rightscale_tools gem.
+  # See cookbooks/db_postgres/libraries/helper.rb for init method.
+  # For move_datadir method, see rightscale_tools gem.
   @db = init(new_resource)
   @db.move_datadir(new_resource.name, node[:db_postgres][:datadir])
 end
 
 action :reset do
-  # See cookbooks/db_postgres/libraries/helper.rb for the implementation of init
-  # method. For the implementation of "reset" method, see rightscale_tools gem.
+  # See cookbooks/db_postgres/libraries/helper.rb for init method.
+  # For "reset" method, see rightscale_tools gem.
   @db = init(new_resource)
   @db.reset(new_resource.name, node[:db_postgres][:datadir])
 end
@@ -80,8 +80,7 @@ action :firewall_update do
 end
 
 action :write_backup_info do
-  # See cookbooks/db/libraries/helper.rb for the implementation of
-  # db_state_get method.
+  # See cookbooks/db/libraries/helper.rb for db_state_get method.
   db_state_get node
   File_position = `#{node[:db_postgres][:bindir]}/pg_controldata #{node[:db_postgres][:datadir]} | grep "Latest checkpoint location:" | awk '{print $NF}'`
   masterstatus = Hash.new
@@ -102,33 +101,29 @@ action :write_backup_info do
 end
 
 action :pre_restore_check do
-  # See cookbooks/db_postgres/libraries/helper.rb for the implementation of init
-  # method. For the implementation of pre_restore_sanity_check method, see
-  # rightscale_tools gem.
+  # See cookbooks/db_postgres/libraries/helper.rb for init method.
+  # For pre_restore_sanity_check method, see rightscale_tools gem.
   @db = init(new_resource)
   @db.pre_restore_sanity_check
 end
 
 action :post_restore_cleanup do
-  # See cookbooks/db_postgres/libraries/helper.rb for the implementation of init
-  # method. For the implementation of restore_snapshot method, see
-  # rightscale_tools gem.
+  # See cookbooks/db_postgres/libraries/helper.rb for init method.
+  # For restore_snapshot method, see rightscale_tools gem.
   @db = init(new_resource)
   @db.restore_snapshot
 end
 
 action :pre_backup_check do
-  # See cookbooks/db_postgres/libraries/helper.rb for the implementation of init
-  # method. For the implementation of pre_backup_check method, see rightscale_tools
-  # gem.
+  # See cookbooks/db_postgres/libraries/helper.rb for init method.
+  # For pre_backup_check method, see rightscale_tools gem.
   @db = init(new_resource)
   @db.pre_backup_check
 end
 
 action :post_backup_cleanup do
-  # See cookbooks/db_postgres/libraries/helper.rb for the implementation of init
-  # method. For the implementation of post_backup_steps method, see rightscale_tools
-  # gem.
+  # See cookbooks/db_postgres/libraries/helper.rb for init method.
+  # For post_backup_steps method, see rightscale_tools gem.
   @db = init(new_resource)
   @db.post_backup_steps
 end
@@ -141,8 +136,8 @@ action :set_privileges do
     priv_username = new_resource.privilege_username
     priv_password = new_resource.privilege_password
     priv_database = new_resource.privilege_database
-    # See cookbooks/db_postgres/definitions/db_postgres_set_privileges.rb for the
-    # implementation of db_postgres_set_privileges definition.
+    # See cookbooks/db_postgres/definitions/db_postgres_set_privileges.rb for
+    # db_postgres_set_privileges definition.
     db_postgres_set_privileges "setup db privileges" do
       preset priv
       username priv_username
@@ -365,8 +360,7 @@ action :grant_replication_slave do
 end
 
 action :enable_replication do
-  # See cookbooks/db/libraries/helper.rb for the implementation of
-  # db_state_get method.
+  # See cookbooks/db/libraries/helper.rb for db_state_get method.
   db_state_get node
   current_restore_process = new_resource.restore_process
   version = new_resource.db_version
@@ -433,8 +427,7 @@ action :enable_replication do
 end  
 
 action :promote do
-  # See cookbooks/db/libraries/helper.rb for the implementation of
-  # db_state_get method.
+  # See cookbooks/db/libraries/helper.rb for db_state_get method.
   db_state_get node
 
   previous_master = node[:db][:current_master_ip]
@@ -456,8 +449,7 @@ action :promote do
 end
 
 action :setup_monitoring do
-  # See cookbooks/db/libraries/helper.rb for the implementation of
-  # db_state_get method.
+  # See cookbooks/db/libraries/helper.rb for db_state_get method.
   db_state_get node
 
   priv_username = new_resource.privilege_username
@@ -517,8 +509,7 @@ action :setup_monitoring do
 end
 
 action :setup_slave_monitoring do
-  # See cookbooks/db/libraries/helper.rb for the implementation of
-  # db_state_get method.
+  # See cookbooks/db/libraries/helper.rb for db_state_get method.
   db_state_get node
 
   service "collectd" do
