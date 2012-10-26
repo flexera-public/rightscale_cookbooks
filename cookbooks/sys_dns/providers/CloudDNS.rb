@@ -8,8 +8,8 @@
 action :set_private do
   log "==================== sys_dns(:set_private) CloudDNS BEGIN ==================== "
 
-  # A new instance for CloudDNS class (found in cookbooks/sys_dns/libraries/helper.rb) is created
-  # and the 'action_set' method is called with proper parameters.
+  # Creates an instance for CloudDNS class (found in cookbooks/sys_dns/libraries/helper.rb)
+  # and calls the 'action_set' method with proper parameters.
   RightScale::DnsTools::CloudDNS.new(Chef::Log).action_set(new_resource.id, new_resource.user, new_resource.password, new_resource.address, :region => new_resource.region )
 
   log "==================== sys_dns(:set_private) CloudDNS   END ==================== "
