@@ -11,8 +11,8 @@ apache_log_dir = node[:apache][:log_dir]
 
 # Symlink Apache log location
 apache_name = node[:apache][:dir].split("/").last
-log " Apache name was #{apache_name}"
-log " Apache log dir was #{apache_log_dir}"
+log "  Apache name was #{apache_name}"
+log "  Apache log dir was #{apache_log_dir}"
 
 # Create physical directory holding the logs
 directory "/mnt/ephemeral/log/#{apache_name}" do
@@ -78,22 +78,22 @@ end
 # Apache Multi-Processing Module configuration
 case node[:platform]
 when "centos","redhat"
-    # RedHat based systems have no mpm change scripts included so we have to configure mpm here.
-    # Configuring "HTTPD" option to insert it to /etc/sysconfig/httpd file
-    binary_to_use = node[:apache][:binary]
-    binary_to_use << ".#{node[:web_apache][:mpm]}" unless node[:web_apache][:mpm] == 'prefork'
+  # RedHat based systems have no mpm change scripts included so we have to configure mpm here.
+  # Configuring "HTTPD" option to insert it to /etc/sysconfig/httpd file
+  binary_to_use = node[:apache][:binary]
+  binary_to_use << ".#{node[:web_apache][:mpm]}" unless node[:web_apache][:mpm] == 'prefork'
 
-    # Updating /etc/sysconfig/httpd  to use required worker
-    template "/etc/sysconfig/httpd" do
-      source "sysconfig_httpd.erb"
-      mode "0644"
-      variables(
-        :sysconfig_httpd => binary_to_use
-      )
-      notifies :reload, resources(:service => "apache2"), :immediately
-    end
+  # Updating /etc/sysconfig/httpd  to use required worker
+  template "/etc/sysconfig/httpd" do
+    source "sysconfig_httpd.erb"
+    mode "0644"
+    variables(
+      :sysconfig_httpd => binary_to_use
+    )
+    notifies :reload, resources(:service => "apache2"), :immediately
+  end
 when "ubuntu"
-    package "apache2-mpm-#{node[:web_apache][:mpm]}"
+  package "apache2-mpm-#{node[:web_apache][:mpm]}"
 end
 
 log "  Started the apache server."

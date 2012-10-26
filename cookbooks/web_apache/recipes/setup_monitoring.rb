@@ -8,6 +8,7 @@
 rightscale_marker :begin
 
 # Add the collectd exec plugin to the set of collectd plugins if it isn't already there
+# See definition at cookbooks/rightscale/definitions/rightscale_enable_collectd_plugin.rb
 rightscale_enable_collectd_plugin 'exec'
 
 # Rebuild the collectd configuration file if necessary
@@ -26,13 +27,16 @@ if node[:platform] =~ /redhat|centos/
   end
 
   if node[:web_apache][:mpm] == "prefork"
+    # See definition at cookbooks/rightscale/definitions/rightscale_monitor_process.rb
     rightscale_monitor_process "httpd"
   else
+    # See definition at cookbooks/rightscale/definitions/rightscale_monitor_process.rb
     rightscale_monitor_process "httpd.worker"
   end
 
 elsif node[:platform] == 'ubuntu'
-   rightscale_monitor_process 'apache2'
+  # See definition at cookbooks/rightscale/definitions/rightscale_monitor_process.rb
+  rightscale_monitor_process 'apache2'
 else
   log "  WARNING: attempting to install collectd-apache on unsupported platform #{node[:platform]}, continuing.."
 end
