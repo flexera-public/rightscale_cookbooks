@@ -64,8 +64,7 @@ action :firewall_update_request do
     port 5432
     enable new_resource.enable
     ip_addr new_resource.ip_addr
-    # See cookbooks/sys_firewall/providers/default.rb for
-    # "update_request" action.
+    # See cookbooks/sys_firewall/providers/default.rb for "update_request" action.
     action :update_request
   end
 end
@@ -137,8 +136,7 @@ action :set_privileges do
     priv_username = new_resource.privilege_username
     priv_password = new_resource.privilege_password
     priv_database = new_resource.privilege_database
-    # See cookbooks/db_postgres/definitions/db_postgres_set_privileges.rb for
-    # "db_postgres_set_privileges" definition.
+    # See cookbooks/db_postgres/definitions/db_postgres_set_privileges.rb for "db_postgres_set_privileges" definition.
     db_postgres_set_privileges "setup db privileges" do
       preset priv
       username priv_username

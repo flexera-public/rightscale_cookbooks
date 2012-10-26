@@ -15,7 +15,7 @@ class Chef::Recipe
   include RightScale::Database::Helper
 end
 
-# See cookbooks/db/libraries/helper.rb for db_state_get method.
+# See cookbooks/db/libraries/helper.rb for "db_state_get" method.
 db_state_get node
 
 raise "ERROR: Server is a master" if node[:db][:this_is_master]

@@ -174,8 +174,7 @@ action :post_restore_cleanup do
   end
 
   # always update the my.cnf file on a restore
-  # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for 
-  # "db_mysql_set_mycnf" definition.
+  # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for "db_mysql_set_mycnf" definition.
   db_mysql_set_mycnf "setup_mycnf" do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
@@ -207,8 +206,7 @@ action :set_privileges do
   priv_username = new_resource.privilege_username
   priv_password = new_resource.privilege_password
   priv_database = new_resource.privilege_database
-  # See cookbooks/db_mysql/definitions/db_mysql_set_privileges.rb for
-  # "db_mysql_set_privileges" definition.
+  # See cookbooks/db_mysql/definitions/db_mysql_set_privileges.rb for "db_mysql_set_privileges" definition.
   db_mysql_set_privileges "setup db privileges" do
     preset priv
     username priv_username
@@ -407,8 +405,7 @@ action :install_server do
   end
 
   # Setup my.cnf
-  # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for
-  # "db_mysql_set_mycnf" definition.
+  # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for "db_mysql_set_mycnf" definition.
   db_mysql_set_mycnf "setup_mycnf" do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
@@ -567,8 +564,7 @@ action :promote do
   node[:db_mysql][:log_bin_enabled] = true
 
   # Setup my.cnf
-  # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for
-  # "db_mysql_set_mycnf" definition.
+  # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for "db_mysql_set_mycnf" definition.
   db_mysql_set_mycnf "setup_mycnf" do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
@@ -710,8 +706,7 @@ action :enable_replication do
   # Setup my.cnf
   unless current_restore_process == :no_restore
     # Setup my.cnf
-    # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for
-    # "db_mysql_set_mycnf" definition.
+    # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for "db_mysql_set_mycnf" definition.
     db_mysql_set_mycnf "setup_mycnf" do
       server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
       relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)

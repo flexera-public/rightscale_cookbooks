@@ -9,8 +9,7 @@ rightscale_marker :begin
 
 log "  Adding #{node[:db][:admin][:user]} user with privileges for ALL databases."
 
-# See cookbooks/db/definitions/db_set_privileges.rb for
-# "db_set_privileges" definition.
+# See cookbooks/db/definitions/db_set_privileges.rb for "db_set_privileges" definition.
 db_set_privileges [{:role => "administrator", :username => node[:db][:admin][:user], :password => node[:db][:admin][:password]}]
 
 rightscale_marker :end

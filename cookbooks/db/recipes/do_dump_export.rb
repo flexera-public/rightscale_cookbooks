@@ -20,8 +20,7 @@ cloud       = node[:db][:dump][:storage_account_provider]
 db node[:db][:data_dir] do
   dumpfile dumpfilepath
   db_name databasename
-  # See cookbooks/db_<provider>/providers/default.rb for
-  # "generate_dump_file" action.
+  # See cookbooks/db_<provider>/providers/default.rb for "generate_dump_file" action.
   action :generate_dump_file
 end
 

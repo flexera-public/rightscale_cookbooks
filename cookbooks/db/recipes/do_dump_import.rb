@@ -41,8 +41,7 @@ else
   db node[:db][:data_dir] do
     dumpfile dumpfilepath
     db_name db_name
-    # See cookbooks/db_<provider>/providers/default.rb for
-    # "restore_from_dump_file" action.
+    # See cookbooks/db_<provider>/providers/default.rb for "restore_from_dump_file" action.
     action :restore_from_dump_file
   end
 

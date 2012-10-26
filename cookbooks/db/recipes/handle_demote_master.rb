@@ -25,8 +25,7 @@ db_state_set "Set slave state" do
 end
 
 # Add server tag to visually show a slave
-# See cookbooks/db/definitions/db_register_slave.rb for
-# "db_register_slave" definition.
+# See cookbooks/db/definitions/db_register_slave.rb for "db_register_slave" definition.
 db_register_slave "tagging slave" do
   action :only_tag
 end

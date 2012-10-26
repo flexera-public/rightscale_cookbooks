@@ -14,6 +14,7 @@ db_init_status :check do
   error_message "Database already restored.  To over write existing database run do_force_reset before this recipe"
 end
 
+# See cookbooks/db/definitions/db_register_slave.rb for "db_register_slave" definition.
 db_register_slave "restore from secondary" do
   action :secondary_restore
 end

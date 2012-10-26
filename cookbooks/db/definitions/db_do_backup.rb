@@ -24,8 +24,7 @@ define :db_do_backup, :backup_type => "primary" do
     include RightScale::BlockDeviceHelper
   end
 
-  # See cookbooks/block_device/libraries/block_device.rb for
-  # "get_device_or_default" method.
+  # See cookbooks/block_device/libraries/block_device.rb for "get_device_or_default" method.
   NICKNAME = get_device_or_default(node, :device1, :nickname)
   DATA_DIR = node[:db][:data_dir]
 
@@ -41,14 +40,12 @@ define :db_do_backup, :backup_type => "primary" do
 
   # Verify initialized database
   # Check node state to verify that we have correctly initialized this server.
-  # See cookbooks/db/defintion/db_state_assert.rb for
-  # "db_state_assert" definition.
+  # See cookbooks/db/defintion/db_state_assert.rb for "db_state_assert" definition.
   db_state_assert :either
 
   log "  Performing pre-backup check..."
   db DATA_DIR do
-    # See cookbooks/db_<provider>/providers/default.rb for
-    # "pre_backup_check" action.
+    # See cookbooks/db_<provider>/providers/default.rb for "pre_backup_check" action.
     action :pre_backup_check
   end
 
@@ -57,8 +54,7 @@ define :db_do_backup, :backup_type => "primary" do
   log "  Performing (#{do_backup_type} backup) lock DB and write backup info file..."
   db DATA_DIR do
     timeout node[:db][:init_timeout]
-    # See cookbooks/db_<provider>/providers/default.rb for 
-    # "lock" and "write_backup_info" actions.
+    # See cookbooks/db_<provider>/providers/default.rb for "lock" and "write_backup_info" actions.
     action [ :lock, :write_backup_info ]
   end
 
@@ -79,8 +75,7 @@ define :db_do_backup, :backup_type => "primary" do
   log "  Performing (#{do_backup_type}) Backup of lineage #{node[:db][:backup][:lineage]} and post-backup cleanup..."
   block_device NICKNAME do
     # Select the device to backup and set up arguments required for backup.
-    # See cookbooks/block_device/libraries/block_device.rb for
-    # "get_device_or_default" method.
+    # See cookbooks/block_device/libraries/block_device.rb for "get_device_or_default" method.
     lineage node[:db][:backup][:lineage]
     max_snapshots get_device_or_default(node, :device1, :backup, :primary, :keep, :max_snapshots)
     keep_daily get_device_or_default(node, :device1, :backup, :primary, :keep, :keep_daily)
@@ -95,15 +90,13 @@ define :db_do_backup, :backup_type => "primary" do
     secondary_user get_device_or_default(node, :device1, :backup, :secondary, :cred, :user)
     secondary_secret get_device_or_default(node, :device1, :backup, :secondary, :cred, :secret)
 
-    # See cookbooks/block_device/providers/default.rb for
-    # "primary_backup" and "secondary_backup" actions.
+    # See cookbooks/block_device/providers/default.rb for "primary_backup" and "secondary_backup" actions.
     action do_backup_type == 'primary' ? :primary_backup : :secondary_backup
   end
 
   log "  Performing post backup cleanup..."
   db DATA_DIR do
-    # See cookbooks/db_<provider>/providers/default.rb for 
-    # "post_backup_cleanup" action.
+    # See cookbooks/db_<provider>/providers/default.rb for "post_backup_cleanup" action.
     action :post_backup_cleanup
   end
 end

@@ -20,8 +20,7 @@ end
 log "  Brute force tear down of the setup..."
 
 DATA_DIR = node[:db][:data_dir]
-# See cookbooks/block_device/libraries/block_device.rb for
-# "get_device_or_default" method.
+# See cookbooks/block_device/libraries/block_device.rb for "get_device_or_default" method.
 NICKNAME = get_device_or_default(node, :device1, :nickname)
 
 log "  Resetting the database..."
@@ -55,28 +54,24 @@ db_state_set "Reset master/slave state"
 
 log "  Resetting database, then starting database..."
 db DATA_DIR do
-  # See cookbooks/db_<provider>/providers/default.rb for
-  # "reset" and "start" actions.
+  # See cookbooks/db_<provider>/providers/default.rb for "reset" and "start" actions.
   action [ :reset, :start ]
 end
 
 log "  Setting database state to 'uninitialized'..."
-# See cookbooks/db/definitions/db_init_status.rb for
-# "db_init_status" definition.
+# See cookbooks/db/definitions/db_init_status.rb for "db_init_status" definition.
 db_init_status :reset
 
 log "  Cleaning cron..."
 block_device NICKNAME do
   cron_backup_recipe "#{self.cookbook_name}::do_primary_backup"
-  # See cookbooks/block_device/providers/default.rb for
-  # "backup_schedule_disable" action.
+  # See cookbooks/block_device/providers/default.rb for "backup_schedule_disable" action.
   action :backup_schedule_disable
 end
 
 log "  Resetting collectd config..."
 db DATA_DIR do
-  # See cookbooks/db_<provider>/providers/default.rb for
-  # "setup_monitoring" action.
+  # See cookbooks/db_<provider>/providers/default.rb for "setup_monitoring" action.
   action :setup_monitoring
 end
 

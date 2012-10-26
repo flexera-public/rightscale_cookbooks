@@ -13,8 +13,7 @@
 define :db_request_backup, :backup_type => 'primary' do
   do_backup_type  = params[:backup_type] == "primary" ? "primary" : "secondary"
 
-  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RemoteRecipe
-  # for "remote_recipe" resource.
+  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RemoteRecipe for "remote_recipe" resource.
   remote_recipe "Request #{do_backup_type} backup" do
     # See cookbooks/db/recipes/do_primary_backup.rb and do_secondary_backup.rb
     # for "db::do_primary_backup" and "db::do_secondary_backup".
