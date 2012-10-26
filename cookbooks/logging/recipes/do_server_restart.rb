@@ -9,7 +9,7 @@ rightscale_marker :begin
 
 log "  Restarting logging server"
 # Calls the logging service restart command
-# Please see the :restart action details in the logging provider's implementation
+# See the :restart action details in the logging provider's implementation
 # i.e. cookbooks/logging_<provider>/providers/default.rb
 logging "default" do
   action :restart
