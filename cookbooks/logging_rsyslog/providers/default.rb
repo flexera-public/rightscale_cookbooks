@@ -120,10 +120,10 @@ action :configure_server do
     action :nothing
   end
 
-  # Installing package to add RELP compatibility for rsyslog
+  # Installs package to add RELP compatibility for rsyslog
   package "rsyslog-relp" if node[:logging][:protocol] =~ /relp/
 
-  # Configuring an stunnel used to pass log messages from a client server to a logging server.
+  # Configures an stunnel used to pass log messages from a client server to a logging server.
   # Please see details in cookbooks/logging_rsyslog/definitions/configure_stunnel.rb
   configure_stunnel if node[:logging][:protocol] == "relp-secured"
 

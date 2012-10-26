@@ -11,7 +11,6 @@
 # requires and verifies the client certificate against the locally installed certificate
 # providing client authentication.
 #
-
 define :configure_stunnel, :accept => "514", :connect => "515", :client => nil do
 
   raise "  ERROR: Input SSL Certificate to establish secure connection." if node[:logging][:certificate].nil?
