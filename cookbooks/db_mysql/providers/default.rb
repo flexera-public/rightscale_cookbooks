@@ -468,12 +468,13 @@ end
 
 action :install_client_driver do
   type = new_resource.driver_type
+  vars = new_resource.vars
   log "  Installing mysql support for #{type} driver"
 
   # Installation of the database client driver for application servers is
   # done here based on the driver type
   case type
-  when /^php$/i
+  when "php"
     # This adapter type is used by php application servers
     node[:db][:client][:driver] = "mysql"
     package "#{type} mysql integration" do
@@ -488,14 +489,14 @@ action :install_client_driver do
       )
       action :install
     end
-  when /^python$/i
+  when "python"
     # This adapter type is used by Django application servers
     node[:db][:client][:driver] = "django.db.backends.mysql"
     python_pip "MySQL-python" do
       version "1.2.3"
       action :install
     end
-  when /^java$/i
+  when "java"
     # This adapter type is used by tomcat application servers
     node[:db][:client][:driver] = "com.mysql.jdbc.Driver"
     package "#{type} mysql integration" do
@@ -509,16 +510,16 @@ action :install_client_driver do
       )
       action :install
     end
-    version = node[:app][:version].to_i
+    version = vars[:app_version].to_i
     # Removing existing links to database connector
     file "/usr/share/tomcat#{version}/lib/mysql-connector-java.jar" do
       action :delete
     end
-  when /^ruby$/i
-    # This adapter type is used by Apache Rails Passenger aplication servers
+  when "ruby"
+    # This adapter type is used by Apache Rails Passenger application servers
     node[:db][:client][:driver] = "mysql"
     gem_package 'mysql' do
-      gem_binary node[:app_passenger][:gem_bin]
+      gem_binary vars[:gem_bin]
       version '2.7'
       options '-- --build-flags --with-mysql-config'
     end

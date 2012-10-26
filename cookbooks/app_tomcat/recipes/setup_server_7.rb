@@ -13,7 +13,7 @@ node[:app][:provider] = "app_tomcat"
 node[:app][:version] = version
 log "  Setting Tomcat version to #{version}"
 
-# Defining app user and group attributes
+# Defining application user and group attributes
 case node[:platform]
 when "centos", "redhat"
   node[:app][:user] = "tomcat"

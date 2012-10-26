@@ -304,14 +304,18 @@ action :setup_db_connection do
 
   log "  Creating context.xml for DB: #{db_name} using datasource #{datasource}"
   db_connect_app "/etc/tomcat#{version}/context.xml" do
-    template      "context_xml.erb"
-    owner         "#{node[:app][:user]}"
-    group         "root"
-    mode          "0644"
-    database      db_name
-    datasource    datasource
-    cookbook      'app_tomcat'
-    driver_type   "java"
+    template "context_xml.erb"
+    owner "#{node[:app][:user]}"
+    group "root"
+    mode "0644"
+    database db_name
+    datasource datasource
+    cookbook "app_tomcat"
+    driver_type "java"
+    vars(
+      :app_version => node[:app][:version],
+      :app_user => node[:app][:user]
+    )
   end
 
   log "  Creating web.xml"

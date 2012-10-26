@@ -299,7 +299,7 @@ action :install_client_driver do
   # Installation of the database client driver for application servers is
   # done here based on the client driver type
   case type
-  when /^php$/i
+  when "php"
     # This adapter type is used by php application servers
     node[:db][:client][:driver] = "postgres"
     package "#{type} postgres integration" do
@@ -314,31 +314,31 @@ action :install_client_driver do
       )
       action :install
     end
-  when /^python$/i
+  when "python"
     # This adapter type is used by Django application servers
     node[:db][:client][:driver] = "django.db.backends.postgresql_psycopg2"
     python_pip "psycopg2" do
       version "2.4.5"
       action :install
     end
-  when /^java$/i
+  when "java"
     # This adapter type is used by tomcat application servers
     node[:db][:client][:driver] = "org.postgresql.Driver"
-    version = node[:app][:version]
+    version = vars[:app_version].to_i
     # Copy to /usr/share/java/postgresql-9.1-901.jdbc4.jar
     cookbook_file "/usr/share/tomcat#{version}/lib/postgresql-9.1-901.jdbc4.jar" do
       source "postgresql-9.1-901.jdbc4.jar"
-      owner node[:app][:user]
+      owner vars[:app_user]
       group "root"
       mode "0660"
       cookbook 'app_tomcat'
     end
-  when /^ruby$/i
-    # This adapter type is used by Apache Rails Passenger aplication servers
+  when "ruby"
+    # This adapter type is used by Apache Rails Passenger application servers
     node[:db][:client][:driver] = "postgresql"
     postgres_bin_dir = "/usr/pgsql-#{node[:db][:version]}/bin"
     gem_package 'pg' do
-      gem_binary node[:app_passenger][:gem_bin]
+      gem_binary vars[:gem_bin]
       options "-- --with-pg-config=#{postgres_bin_dir}/pg_config"
     end
   else
