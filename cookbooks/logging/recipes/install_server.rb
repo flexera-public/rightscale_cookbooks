@@ -11,8 +11,7 @@ rightscale_marker :begin
 include_recipe "logging::default"
 
 # Configures a logging server
-# See the :configure_server action details in the logging provider's implementation
-# i.e. cookbooks/logging_<provider>/providers/default.rb
+# See cookbooks/logging_<provider>/providers/default.rb for the "configure_server" action.
 logging "default" do
   action :configure_server
 end
