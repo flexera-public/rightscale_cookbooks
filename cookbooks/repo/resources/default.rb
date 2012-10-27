@@ -13,9 +13,9 @@
 
 # Pull code from a determined repository to a specified destination.
 actions :pull
-# Pull code from a determined repository to a specified destination and create a capistrano deployment.
+# Pull code from a determined repository to a specified destination and create a capistrano-style deployment.
 actions :capistrano_pull
-# Setup repository URL and other attributes
+# Setup repository URL and other attributes.
 actions :setup_attributes
 
 

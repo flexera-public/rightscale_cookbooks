@@ -41,7 +41,7 @@ action :pull do
 end
 
 
-# Pull code from a determined repository to a specified destination and create a capistrano deployment.
+# Pull code from a determined repository to a specified destination and create a capistrano-style deployment.
 action :capistrano_pull do
 
   log "  Recreating project directory for :pull action"
@@ -79,7 +79,7 @@ action :capistrano_pull do
   directory "#{new_resource.destination}"
 
   log "  Fetching data..."
-  # Call :pull action defined previously
+  # Call the :pull action.
   action_pull
 
   # The embedded chef capistrano resource can work only with git or svn repositories
@@ -110,7 +110,7 @@ action :capistrano_pull do
     action :delete
   end
 
-  # Initialisation of new git repo with initial commit
+  # Initialize new git repo with initial commit.
   bash "Git init in project folder" do
     cwd "#{repo_dir}/repo"
     code <<-EOH
@@ -124,7 +124,7 @@ action :capistrano_pull do
   log "  Deploy provider #{scm_provider}"
 
   # Applying capistrano style deployment
-  # See cookbooks/repo/definition/repo_capistranize.rb
+  # See cookbooks/repo/definition/repo_capistranize.rb for "repo_capistranize" definition.
   repo_capistranize "Source repo" do
     repository "#{repo_dir}/repo/"
     destination destination

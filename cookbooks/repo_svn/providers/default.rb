@@ -28,7 +28,7 @@ end
 action :pull do
 
   # Checking attributes
-  # Call :setup_attributes action defined previously
+  # Call the :setup_attributes action.
   action_setup_attributes
 
   # Setting parameters
@@ -71,11 +71,11 @@ action :pull do
   log "  SVN repository update/download action - finished successfully!"
 end
 
-# Pull code from a determined repository to a specified destination and create a capistrano deployment.
+# Pull code from a determined repository to a specified destination and create a capistrano-style deployment.
 action :capistrano_pull do
 
   # Checking attributes
-  # Call :setup_attributes action defined previously
+  # Call the :setup_attributes action.
   action_setup_attributes
 
   log "  Preparing to capistrano deploy action. Setting parameters for the process..."
@@ -95,7 +95,7 @@ action :capistrano_pull do
   log "  Deploy provider #{scm_provider}"
 
   # Applying capistrano style deployment
-  # See cookbooks/repo/definition/repo_capistranize.rb
+  # See cookbooks/repo/definition/repo_capistranize.rb for "repo_capistranize" definition.
   repo_capistranize "Source repo" do
     repository repository
     destination destination
