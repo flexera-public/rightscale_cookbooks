@@ -8,10 +8,10 @@
 rightscale_marker :begin
 
 log "  Opening database port(s) to all application servers"
+# See cookbooks/db_<provider>/providers/default.rb for "firewall_update" action.
 db node[:db][:data_dir] do
   machine_tag "appserver:active=true"
   enable true
-  # See cookbooks/db_<provider>/providers/default.rb for "firewall_update" action.
   action :firewall_update
 end
 

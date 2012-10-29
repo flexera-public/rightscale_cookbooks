@@ -24,15 +24,17 @@ DATA_DIR = node[:db][:data_dir]
 NICKNAME = get_device_or_default(node, :device1, :nickname)
 
 log "  Resetting the database..."
+
+# See cookbooks/db_<provider>/providers/default.rb for "reset" action.
 db DATA_DIR do
-  # See cookbooks/db_<provider>/providers/default.rb for "reset" action.
   action :reset
 end
 
 log "  Resetting block device..."
+
+# See cookbooks/block_device/providers/default.rb for "reset" action.
 block_device NICKNAME do
   lineage node[:db][:backup][:lineage]
-  # See cookbooks/block_device/providers/default.rb for "reset" action.
   action :reset
 end
 
@@ -53,8 +55,9 @@ end
 db_state_set "Reset master/slave state"
 
 log "  Resetting database, then starting database..."
+
+# See cookbooks/db_<provider>/providers/default.rb for "reset" and "start" action.
 db DATA_DIR do
-  # See cookbooks/db_<provider>/providers/default.rb for "reset" and "start" actions.
   action [ :reset, :start ]
 end
 
@@ -63,15 +66,17 @@ log "  Setting database state to 'uninitialized'..."
 db_init_status :reset
 
 log "  Cleaning cron..."
+
+# See cookbooks/block_device/providers/default.rb for "backup_schedule_disable" action.
 block_device NICKNAME do
   cron_backup_recipe "#{self.cookbook_name}::do_primary_backup"
-  # See cookbooks/block_device/providers/default.rb for "backup_schedule_disable" action.
   action :backup_schedule_disable
 end
 
 log "  Resetting collectd config..."
+
+# See cookbooks/db_<provider>/providers/default.rb for "setup_monitoring" action.
 db DATA_DIR do
-  # See cookbooks/db_<provider>/providers/default.rb for "setup_monitoring" action.
   action :setup_monitoring
 end
 

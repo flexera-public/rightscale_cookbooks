@@ -37,11 +37,11 @@ if not provider_type.nil?
 end
 
 # Setup default values for database resource
+# See cookbooks/db_<provider>/providers/default.rb for "install_client" action.
 db node[:db][:data_dir] do
   persist true
   provider node[:db][:provider]
   db_version node[:db][:version]
-  # See cookbooks/db_<provider>/providers/default.rb for "install_client" action.
   action :install_client
 end
 

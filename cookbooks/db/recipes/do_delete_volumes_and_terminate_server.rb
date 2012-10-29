@@ -19,14 +19,16 @@ DATA_DIR = node[:db][:data_dir]
 NICKNAME = get_device_or_default(node, :device1, :nickname)
 
 log "  Resetting the database..."
+
+# See cookbooks/db_<provider>/providers/default.rb for "reset" action.
 db DATA_DIR do
-  # See cookbooks/db_<provider>/providers/default.rb for "reset" action.
   action :reset
 end
 
 log "  Detach and delete volume..."
+
+# See cookbooks/block_device/providers/default.rb for "reset" action.
 block_device NICKNAME do
-  # See cookbooks/block_device/providers/default.rb for "reset" action.
   action :reset
 end
 

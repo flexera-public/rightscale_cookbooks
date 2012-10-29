@@ -26,59 +26,59 @@ action :restart do
   end
 end
 
+# See cookbooks/db_mysql/libraries/helper.rb for "init" method.
+# See "rightscale_tools" gem for "status" method.
 action :status do
-  # See cookbooks/db_mysql/libraries/helper.rb for "init" method.
-  # See "rightscale_tools" gem for "status" method.
   @db = init(new_resource)
   status = @db.status
   Chef::Log.info "  Database Status:\n#{status}"
 end
 
+# See cookbooks/db_mysql/libraries/helper.rb for "init" method.
+# See "rightscale_tools" gem for "lock" method.
 action :lock do
-  # See cookbooks/db_mysql/libraries/helper.rb for "init" method.
-  # See "rightscale_tools" gem for "lock" method.
   @db = init(new_resource)
   @db.lock
 end
 
+# See cookbooks/db_mysql/libraries/helper.rb for "init" method.
+# See "rightscale_tools" gem for "unlock" method.
 action :unlock do
-  # See cookbooks/db_mysql/libraries/helper.rb for "init" method.
-  # See "rightscale_tools" gem for "unlock" method.
   @db = init(new_resource)
   @db.unlock
 end
 
+# See cookbooks/db_mysql/libraries/helper.rb for "init" method.
+# See "rightscale_tools" gem for "move_datadir" method.
 action :move_data_dir do
-  # See cookbooks/db_mysql/libraries/helper.rb for "init" method.
-  # See "rightscale_tools" gem for "move_datadir" method.
   @db = init(new_resource)
   @db.move_datadir(new_resource.name, node[:db_mysql][:datadir])
 end
 
+# See cookbooks/db_mysql/libraries/helper.rb for "init" method.
+# See "rightscale_tools" gem for "reset" method
 action :reset do
-  # See cookbooks/db_mysql/libraries/helper.rb for "init" method.
-  # See "rightscale_tools" gem for "reset" method.
   @db = init(new_resource)
   @db.reset(new_resource.name, node[:db_mysql][:datadir])
 end
 
 action :firewall_update_request do
+  # See cookbooks/sys_firewall/providers/default.rb for update_request action.
   sys_firewall "Sending request to open port 3306 (MySQL) allowing this server to connect" do
     machine_tag new_resource.machine_tag
     port 3306
     enable new_resource.enable
     ip_addr new_resource.ip_addr
-    # See cookbooks/sys_firewall/providers/default.rb for update_request action.
     action :update_request
   end
 end
 
 action :firewall_update do
+  # See cookbooks/sys_firewall/providers/default.rb for "update" action.
   sys_firewall "Opening port 3306 (MySQL) for tagged '#{new_resource.machine_tag}' to connect" do
     machine_tag new_resource.machine_tag
     port 3306
     enable new_resource.enable
-    # See cookbooks/sys_firewall/providers/default.rb for update action.
     action :update
   end
 end
@@ -114,9 +114,9 @@ action :write_backup_info do
   end
 end
 
+# See cookbooks/db_mysql/libraries/helper.rb for init method.
+# See "rightscale_tools" gem for "pre_restore_sanity_check" method.
 action :pre_restore_check do
-  # See cookbooks/db_mysql/libraries/helper.rb for init method.
-  # See "rightscale_tools" gem for "pre_restore_sanity_check" method.
   @db = init(new_resource)
   @db.pre_restore_sanity_check
 end
@@ -187,16 +187,16 @@ action :post_restore_cleanup do
   @db.post_restore_cleanup
 end
 
+# See cookbooks/db_mysql/libraries/helper.rb for "init" method.
+# See "rightscale_tools" gem for "pre_backup_check" method.
 action :pre_backup_check do
-  # See cookbooks/db_mysql/libraries/helper.rb for "init" method.
-  # See "rightscale_tools" gem for "pre_backup_check" method.
   @db = init(new_resource)
   @db.pre_backup_check
 end
 
+# See cookbooks/db_mysql/libraries/helper.rb for "init" method.
+# See "rightscale_tools" gem for "post_backup_steps" method.
 action :post_backup_cleanup do
-  # See cookbooks/db_mysql/libraries/helper.rb for "init" method.
-  # See "rightscale_tools" gem for "post_backup_steps" method.
   @db = init(new_resource)
   @db.post_backup_steps
 end
@@ -471,8 +471,8 @@ action :install_server do
 
   # Start MySQL
   Chef::Log.info "  Server installed.  Starting MySQL"
+  # See cookbooks/db_mysql/providers/default.rb for "start" action.
   db node[:db][:data_dir] do
-    # See cookbooks/db_mysql/providers/default.rb for "start" action.
     action :start
     persist false
   end
@@ -571,8 +571,8 @@ action :promote do
     innodb_log_file_size ::File.stat("/var/lib/mysql/ib_logfile0").size
   end
 
+  # See cookbooks/db_mysql/providers/default.rb for "start" action.
   db node[:db][:data_dir] do
-    # See cookbooks/db_mysql/providers/default.rb for "start" action.
     action :start
     persist false
     only_if do
@@ -727,8 +727,8 @@ action :enable_replication do
   # service provider uses the status command to decide if it
   # has to run the start command again.
   10.times do
+    # See cookbooks/db_mysql/providers/default.rb for "start" action.
     db node[:db][:data_dir] do
-      # See cookbooks/db_mysql/providers/default.rb for start action.
       action :start
       persist false
     end

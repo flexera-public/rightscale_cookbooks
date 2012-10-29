@@ -53,13 +53,14 @@ end
 
 # Add database tag
 # Let others know we are an active DB
+# See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RightLinkTag for "right_link_tag" resource.
 right_link_tag "database:active=true"
 
 # Install server
 db node[:db][:data_dir] do
   user node[:db][:admin][:user]
   password node[:db][:admin][:password]
-  # See cookbooks/db_<provider>/providers/default.rb for install_server action.
+  # See cookbooks/db_<provider>/providers/default.rb for "install_server" action.
   action :install_server
 end
 

@@ -17,10 +17,10 @@ container   = node[:db][:dump][:container]
 cloud       = node[:db][:dump][:storage_account_provider]
 
 # Execute the command to create the dumpfile
+# See cookbooks/db_<provider>/providers/default.rb for "generate_dump_file" action.
 db node[:db][:data_dir] do
   dumpfile dumpfilepath
   db_name databasename
-  # See cookbooks/db_<provider>/providers/default.rb for "generate_dump_file" action.
   action :generate_dump_file
 end
 

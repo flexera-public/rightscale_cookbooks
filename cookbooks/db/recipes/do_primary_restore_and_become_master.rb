@@ -15,8 +15,8 @@ include_recipe "db::do_primary_restore"
 # See cookbooks/db/definitions/db_register_master.rb for "db_register_master" definition.
 db_register_master
 
+# See cookbooks/db_<provider>/providers/default.rb for "setup_monitoring" action.
 db DATA_DIR do
-  # See cookbooks/db_<provider>/providers/default.rb for "setup_monitoring" action.
   action :setup_monitoring
 end
 

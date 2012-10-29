@@ -18,8 +18,8 @@ rightscale_marker :begin
 DATA_DIR = node[:db][:data_dir]
 log "  Removing anonymous users from database."
 
+# See cookbooks/db_<provider>/providers/default.rb for "remove_anonymous" action.
 db DATA_DIR do
-  # See cookbooks/db_<provider>/providers/default.rb for "remove_anonymous" action.
   action :remove_anonymous
 end
 

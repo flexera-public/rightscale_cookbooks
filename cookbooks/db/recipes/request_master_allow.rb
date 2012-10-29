@@ -13,11 +13,11 @@ rightscale_marker :begin
 db_state_assert :slave
 
 # Request firewall opened
+# See cookbooks/db_<provider>/providers/default.rb for "firewall_update_request" action.
 db node[:db][:data_dir] do
   machine_tag "rs_dbrepl:master_instance_uuid=#{node[:db][:current_master_uuid]}"
   enable true
   ip_addr node[:cloud][:private_ips][0]
-  # See cookbooks/db_<provider>/providers/default.rb for "firewall_update_request" action.
   action :firewall_update_request
 end
 

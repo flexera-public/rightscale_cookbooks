@@ -23,15 +23,16 @@ db_init_status :check do
 end
 
 log "  Stopping database..."
+# See cookbooks/db_<provider>/providers/default.rb for "stop" action.
 db DATA_DIR do
-  # See cookbooks/db_<provider>/providers/default.rb for "stop" action.
   action :stop
 end
 
 log "  Creating block device..."
+
+# See cookbooks/block_device/providers/default.rb for create action.
 block_device NICKNAME do
   lineage node[:db][:backup][:lineage]
-  # See cookbooks/block_device/providers/default.rb for create action.
   action :create
 end
 
@@ -42,8 +43,9 @@ directory DATA_DIR do
 end
 
 log "  Moving database to block device and starting database..."
+
+# See cookbooks/db_<provider>/providers/default.rb for "move-data_dir" and "staart" actions.
 db DATA_DIR do
-  # See cookbooks/db_<provider>/providers/default.rb for "move-data_dir" and "start" actions.
   action [ :move_data_dir, :start ]
 end
 
@@ -56,13 +58,13 @@ log "  Registering as master..."
 db_register_master
 
 log "  Setting up monitoring for master..."
+# See cookbooks/db_<provider>/providers/default.rb for setup_monitoring action.
 db DATA_DIR do
-  # See cookbooks/db_<provider>/providers/default.rb for setup_monitoring action.
   action :setup_monitoring
 end
 
 log "  Adding replication privileges for this master database..."
-# See cookbooks/db/recipes/setup_replication_privileges.rb
+# See cookbooks/db/recipes/setup_replication_privileges.rb for "db::setup_replication_privileges" recipe.
 include_recipe "db::setup_replication_privileges"
 
 log "  Perform a backup so slaves can init from this master..."
@@ -70,7 +72,7 @@ log "  Perform a backup so slaves can init from this master..."
 db_request_backup "do backup"
 
 log "  Setting up cron to do scheduled backups..."
-# See cookbooks/db/recipes/do_primary_backup_schedule_enable.rb
+# See cookbooks/db/recipes/do_primary_backup_schedule_enable.rb for "db::do_primary_backup_schedule_enable" recipe.
 include_recipe "db::do_primary_backup_schedule_enable"
 
 rightscale_marker :end

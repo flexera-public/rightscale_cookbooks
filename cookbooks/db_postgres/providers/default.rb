@@ -8,73 +8,73 @@
 include RightScale::Database::Helper
 include RightScale::Database::PostgreSQL::Helper
 
+# See cookbooks/db_postgres/libraries/helper.rb for init method.
+# See "rightscale_tools" gem for "stop" method.
 action :stop do
-  # See cookbooks/db_postgres/libraries/helper.rb for init method.
-  # See "rightscale_tools" gem for "stop" method.
   @db = init(new_resource)
   @db.stop
 end
 
+# See cookbooks/db_postgres/libraries/helper.rb for init method.
+# See "rightscale_tools" gem for "start" method.
 action :start do
-  # See cookbooks/db_postgres/libraries/helper.rb for init method.
-  # See "rightscale_tools" gem for "start" method.
   @db = init(new_resource)
   @db.start
 end
 
+# See cookbooks/db_postgres/libraries/helper.rb for init method.
+# See "rightscale_tools" gem for "status" method.
 action :status do
-  # See cookbooks/db_postgres/libraries/helper.rb for init method.
-  # See "rightscale_tools" gem for "status" method.
   @db = init(new_resource)
   status = @db.status
   log "Database Status:\n#{status}"
 end
 
+# See cookbooks/db_postgres/libraries/helper.rb for init method.
+# See "rightscale_tools" gem for "lock" method.
 action :lock do
-  # See cookbooks/db_postgres/libraries/helper.rb for init method.
-  # See "rightscale_tools" gem for "lock" method.
   @db = init(new_resource)
   @db.lock
 end
 
+# See cookbooks/db_postgres/libraries/helper.rb for init method.
+# See "rightscale_tools" gem for "unlock" method.
 action :unlock do
-  # See cookbooks/db_postgres/libraries/helper.rb for init method.
-  # See "rightscale_tools" gem for "unlock" method.
   @db = init(new_resource)
   @db.unlock
 end
 
+# See cookbooks/db_postgres/libraries/helper.rb for init method.
+# See "rightscale_tools" gem for "move_datadir" method.
 action :move_data_dir do
-  # See cookbooks/db_postgres/libraries/helper.rb for init method.
-  # See "rightscale_tools" gem for "move_datadir" method.
   @db = init(new_resource)
   @db.move_datadir(new_resource.name, node[:db_postgres][:datadir])
 end
 
+# See cookbooks/db_postgres/libraries/helper.rb for init method.
+# See "rightscale_tools" gem for "reset" method.
 action :reset do
-  # See cookbooks/db_postgres/libraries/helper.rb for init method.
-  # See "rightscale_tools" gem for "reset" method.
   @db = init(new_resource)
   @db.reset(new_resource.name, node[:db_postgres][:datadir])
 end
 
 action :firewall_update_request do
+  # See cookbooks/sys_firewall/providers/default.rb for "update_request" action.
   sys_firewall "Request database open port 5432 (PostgreSQL) to this server" do
     machine_tag new_resource.machine_tag
     port 5432
     enable new_resource.enable
     ip_addr new_resource.ip_addr
-    # See cookbooks/sys_firewall/providers/default.rb for "update_request" action.
     action :update_request
   end
 end
 
 action :firewall_update do
+  # See cookbooks/sys_firewall/providers/default.rb for "update" action.
   sys_firewall "Request database open port 5432 (PostgrSQL) to this server" do
     machine_tag new_resource.machine_tag
     port 5432
     enable new_resource.enable
-    # See cookbooks/sys_firewall/providers/default.rb for "update" action.
     action :update
   end
 end
@@ -100,30 +100,30 @@ action :write_backup_info do
   end
 end
 
+# See cookbooks/db_postgres/libraries/helper.rb for "init" method.
+# See "rightscale_tools" gem for "pre_restore_sanity_check" method.
 action :pre_restore_check do
-  # See cookbooks/db_postgres/libraries/helper.rb for "init" method.
-  # See "rightscale_tools" gem for "pre_restore_sanity_check" method.
   @db = init(new_resource)
   @db.pre_restore_sanity_check
 end
 
+# See cookbooks/db_postgres/libraries/helper.rb for "init" method.
+# See "rightscale_tools" gem for "restore_snapshot" method.
 action :post_restore_cleanup do
-  # See cookbooks/db_postgres/libraries/helper.rb for "init" method.
-  # See "rightscale_tools" gem for "restore_snapshot" method.
   @db = init(new_resource)
   @db.restore_snapshot
 end
 
+# See cookbooks/db_postgres/libraries/helper.rb for "init" method.
+# See "rightscale_tools" gem for "pre_backup_check" method.
 action :pre_backup_check do
-  # See cookbooks/db_postgres/libraries/helper.rb for "init" method.
-  # See "rightscale_tools" gem for "pre_backup_check" method.
   @db = init(new_resource)
   @db.pre_backup_check
 end
 
+# See cookbooks/db_postgres/libraries/helper.rb for init method.
+# See "rightscale_tools" gem for "post_backup_steps" method.
 action :post_backup_cleanup do
-  # See cookbooks/db_postgres/libraries/helper.rb for init method.
-  # See "rightscale_tools" gem for "post_backup_steps" method.
   @db = init(new_resource)
   @db.post_backup_steps
 end

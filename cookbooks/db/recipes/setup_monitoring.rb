@@ -7,8 +7,8 @@
 
 rightscale_marker :begin
 
+# See cookbooks/db_<provider>/providers/default.rb for "setup_monitoring" action.
 db node[:db][:data_dir] do
-  # See cookbooks/db_<provider>/providers/default.rb for "setup_monitoring" action.
   action :setup_monitoring
 end
 

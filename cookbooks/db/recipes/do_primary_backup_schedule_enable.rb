@@ -30,6 +30,8 @@ slave_minute = node[:db][:backup][:primary][:slave][:cron][:minute].to_s
 log "  Setting up Master primary backup cron job to run at hour: #{master_hour} and minute #{master_minute}" do
   only_if { node[:db][:this_is_master] }
 end
+
+# See cookbooks/block_device/providers/default.rb for backup_schedule_enable action.
 block_device NICKNAME do
   only_if { node[:db][:this_is_master] }
   lineage snap_lineage
@@ -37,13 +39,14 @@ block_device NICKNAME do
   cron_backup_hour master_hour
   cron_backup_minute master_minute
   persist false
-  # See cookbooks/block_device/providers/default.rb for backup_schedule_enable action.
   action :backup_schedule_enable
 end
 
 log "  Setting up Slave primary backup cron job to run at hour: #{slave_hour} and minute #{slave_minute}" do
   not_if { node[:db][:this_is_master] }
 end
+
+# See cookbooks/block_device/providers/default.rb for backup_schedule_enable action.
 block_device NICKNAME do
   only_if { true }
   not_if { node[:db][:this_is_master] }
@@ -52,7 +55,6 @@ block_device NICKNAME do
   cron_backup_hour slave_hour
   cron_backup_minute slave_minute
   persist false
-  # See cookbooks/block_device/providers/default.rb for backup_schedule_enable action.
   action :backup_schedule_enable
 end
 

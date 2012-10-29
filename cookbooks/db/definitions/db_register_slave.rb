@@ -31,6 +31,7 @@ define :db_register_slave, :action => :primary_restore do
 
     DATA_DIR = node[:db][:data_dir]
 
+    # See cookbooks/rightscale/providers/server_collection.rb for "load" action.
     r = rightscale_server_collection "master_servers" do
       tags 'rs_dbrepl:master_instance_uuid'
       secondary_tags [ 'rs_dbrepl:master_active', 'server:private_ip_0' ]
@@ -145,18 +146,19 @@ define :db_register_slave, :action => :primary_restore do
     end
 
     # Not needed for stop/start since replication has already been enabled.
+    # See cookbooks/db_<provider>/providers/default.rb for "enable_replication" action.
     db DATA_DIR do
       restore_process params[:action]
-      # See cookbooks/db_<provider>/providers/default.rb for "enable_replication" action.
       action :enable_replication
     end
 
+    # See cookbooks/db_<provider>/providers/default.rb for "setup_monitoring" action.
     db DATA_DIR do
-      # See cookbooks/db_<provider>/providers/default.rb for "setup_monitoring" action.
       action :setup_monitoring
     end
 
     # Force a new backup if this is the initial setup of a slave
+    # See cookbooks/db/definitions/db_request_backup.rb for "db_request_backup" definition.
     case params[:action]
     when :primary_restore, :secondary_restore
       db_request_backup "do backup"
