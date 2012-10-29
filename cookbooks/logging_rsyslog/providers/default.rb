@@ -39,6 +39,7 @@ action :reload do
 end
 
 
+# Install rsyslog package
 action :install do
   # The replacing syslog-ng with rsyslog requires low level package
   # manipulation via rpm/dpkg
@@ -46,6 +47,7 @@ action :install do
 end
 
 
+# Configure logging: client side
 action :configure do
 
   service "rsyslog" do
@@ -80,6 +82,8 @@ action :configure do
     package "rsyslog-relp" if node[:logging][:protocol] =~ /relp/
 
     if node[:logging][:protocol] == "relp-secured"
+      # Configures an stunnel used to pass log messages from a client server to a logging server.
+      # See cookbooks/logging_rsyslog/definitions/configure_stunnel.rb for "configure_stunnel" definition.
       configure_stunnel "default" do
         accept "127.0.0.1:515"
         connect "#{remote_server}:514"
@@ -108,17 +112,19 @@ action :configure do
 end
 
 
+# Configure an rsyslog logging server.
 action :configure_server do
-
-  # This action would configure an rsyslog logging server.
 
   service "rsyslog" do
     supports :restart => true, :status => true, :start => true, :stop => true
     action :nothing
   end
 
+  # Installs package to add RELP compatibility for rsyslog
   package "rsyslog-relp" if node[:logging][:protocol] =~ /relp/
 
+  # Configures an stunnel used to pass log messages from a client server to a logging server.
+  # See cookbooks/logging_rsyslog/definitions/configure_stunnel.rb for "configure_stunnel" definition.
   configure_stunnel if node[:logging][:protocol] == "relp-secured"
 
   # Need to open a listening port on desired protocol.
@@ -145,21 +151,25 @@ action :configure_server do
 end
 
 
+# Call the logging rotate command
 action :rotate do
   raise "Rsyslog action not implemented"
 end
 
 
+# Add a remote logging server
 action :add_remote_server do
   raise "Rsyslog action not implemented"
 end
 
 
+# Add a logging definition
 action :add_definition do
   raise "Rsyslog action not implemented"
 end
 
 
+# Add a logrotate policy
 action :add_rotate_policy do
   raise "Rsyslog action not implemented"
 end

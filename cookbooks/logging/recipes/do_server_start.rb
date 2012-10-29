@@ -8,6 +8,8 @@
 rightscale_marker :begin
 
 log "  Starting logging server"
+# Calls the logging service start command
+# See cookbooks/logging_<provider>/providers/default.rb for the "start" action.
 logging "default" do
   action :start
 end

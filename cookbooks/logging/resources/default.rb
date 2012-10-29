@@ -5,6 +5,11 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+# This lightweight resource only defines the interface for logging providers.  This file
+# defines the actions and attributes that make up the logging interface (or abstraction).
+# See the action details found in the lightweight providers of other implementing
+# cookbooks, such as, cookbooks/logging_rsyslog/providers/default.rb
+
 # = Log Attributes
 #
 # Below are the attributes defined by the Log resource interface.
@@ -39,9 +44,9 @@ actions :start
 actions :restart
 
 # == Reload
-# load the logging service.
+# Reload the logging service.
 #
-# Calls the logging service load command
+# Calls the logging service reload command
 #
 actions :reload
 

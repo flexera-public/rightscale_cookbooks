@@ -20,6 +20,11 @@ remote_server = node[:logging][:remote_server]
 log "  Logging provider: #{log_provider}"
 log "  Remote log server: #{remote_server}" unless remote_server.empty?
 
+# In this code block, we setup the default values for the logging resource.
+# The :configure action is called for the determined syslog provider which configures the
+# client side. If a remote server is specified the client will be configured to
+# send log data to a logging server.
+# See cookbooks/logging_<provider>/providers/default.rb for the "configure" action.
 logging "default" do
   persist true
   provider log_provider
