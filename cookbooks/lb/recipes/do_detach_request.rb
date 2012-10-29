@@ -15,6 +15,7 @@ end
 # Calls the "detach_request" action for all the pools.
 # See cookbooks/lb_<provider>/provider/default.rb for details of this action.
 # See cookbooks/app/libraries/helper.rb for the "pool_names" method.
+# See cookbooks/lb/definitions/lb_tag.rb for the definition of "lb_tag".
 pool_names(node[:lb][:pools]).each do |pool_name|
   log "  Remove the load balancing tags, so we will not be re-attached. - #{pool_name}"
   lb_tag pool_name do

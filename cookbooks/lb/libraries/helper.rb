@@ -31,6 +31,7 @@ module RightScale
       def query_appservers(pool_name)
         app_servers = Hash.new
 
+        # See cookbooks/rightscale/providers/server_collection.rb for the "load" action
         r=rightscale_server_collection 'app_servers' do
           tags ["loadbalancer:#{pool_name}=app"]
           secondary_tags ["server:uuid=*", "appserver:listen_ip=*", "appserver:listen_port=*"]
@@ -38,6 +39,7 @@ module RightScale
         end
         r.run_action(:load)
 
+        # See cookbooks/rightscale/libraries/helper.rb for the "get_tag_value" method.
         node[:server_collection]['app_servers'].to_hash.values.each do |tags|
           uuid = RightScale::Utils::Helper.get_tag_value('server:uuid', tags)
           ip = RightScale::Utils::Helper.get_tag_value('appserver:listen_ip', tags)

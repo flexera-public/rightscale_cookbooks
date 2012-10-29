@@ -36,7 +36,7 @@ set_unless[:lb][:cron_reconverge_minute] = "#{5+rand(50)}"
 # Stores the list of application servers being loadbalanced.
 set_unless[:lb][:appserver_list] = {}
 
-# Web service name based on OS.
+# Sets the web service name based on OS if they are not already set.
 case platform
 when "redhat", "centos"
   set_unless[:lb][:apache_name] = "httpd"
