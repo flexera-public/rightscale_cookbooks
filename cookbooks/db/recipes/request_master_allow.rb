@@ -9,11 +9,11 @@ rightscale_marker :begin
 
 # Verify initialized database
 # Check the node state to verify that we have correctly initialized this server.
-# See cookbooks/db/definitions/db_state_assert.rb for "db_state_assert" definition.
+# See cookbooks/db/definitions/db_state_assert.rb for the "db_state_assert" definition.
 db_state_assert :slave
 
 # Request firewall opened
-# See cookbooks/db_<provider>/providers/default.rb for "firewall_update_request" action.
+# See cookbooks/db_<provider>/providers/default.rb for the "firewall_update_request" action.
 db node[:db][:data_dir] do
   machine_tag "rs_dbrepl:master_instance_uuid=#{node[:db][:current_master_uuid]}"
   enable true

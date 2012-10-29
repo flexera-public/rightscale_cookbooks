@@ -7,7 +7,7 @@
 
 rightscale_marker :begin
 
-# See cookbooks/db_<provider>/providers/default.rb for "grant_replication_slave" action.
+# See cookbooks/db_<provider>/providers/default.rb for the "grant_replication_slave" action.
 db node[:db][:data_dir] do
   action :grant_replication_slave
 end

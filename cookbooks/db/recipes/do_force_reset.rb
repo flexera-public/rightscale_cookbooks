@@ -20,19 +20,19 @@ end
 log "  Brute force tear down of the setup..."
 
 DATA_DIR = node[:db][:data_dir]
-# See cookbooks/block_device/libraries/block_device.rb for "get_device_or_default" method.
+# See cookbooks/block_device/libraries/block_device.rb for the "get_device_or_default" method.
 NICKNAME = get_device_or_default(node, :device1, :nickname)
 
 log "  Resetting the database..."
 
-# See cookbooks/db_<provider>/providers/default.rb for "reset" action.
+# See cookbooks/db_<provider>/providers/default.rb for the "reset" action.
 db DATA_DIR do
   action :reset
 end
 
 log "  Resetting block device..."
 
-# See cookbooks/block_device/providers/default.rb for "reset" action.
+# See cookbooks/block_device/providers/default.rb for the "reset" action.
 block_device NICKNAME do
   lineage node[:db][:backup][:lineage]
   action :reset
@@ -51,23 +51,23 @@ tags_to_remove.each do |each_tag|
   end
 end
 
-# See cookbooks/db/libraries/helper.rb for "db_state_set" method.
+# See cookbooks/db/libraries/helper.rb for the "db_state_set" method.
 db_state_set "Reset master/slave state"
 
 log "  Resetting database, then starting database..."
 
-# See cookbooks/db_<provider>/providers/default.rb for "reset" and "start" action.
+# See cookbooks/db_<provider>/providers/default.rb for the "reset" and "start" action.
 db DATA_DIR do
   action [ :reset, :start ]
 end
 
 log "  Setting database state to 'uninitialized'..."
-# See cookbooks/db/definitions/db_init_status.rb for "db_init_status" definition.
+# See cookbooks/db/definitions/db_init_status.rb for the "db_init_status" definition.
 db_init_status :reset
 
 log "  Cleaning cron..."
 
-# See cookbooks/block_device/providers/default.rb for "backup_schedule_disable" action.
+# See cookbooks/block_device/providers/default.rb for the "backup_schedule_disable" action.
 block_device NICKNAME do
   cron_backup_recipe "#{self.cookbook_name}::do_primary_backup"
   action :backup_schedule_disable
@@ -75,7 +75,7 @@ end
 
 log "  Resetting collectd config..."
 
-# See cookbooks/db_<provider>/providers/default.rb for "setup_monitoring" action.
+# See cookbooks/db_<provider>/providers/default.rb for the "setup_monitoring" action.
 db DATA_DIR do
   action :setup_monitoring
 end

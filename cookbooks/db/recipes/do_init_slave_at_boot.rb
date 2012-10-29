@@ -13,7 +13,7 @@ if node[:db][:init_slave_at_boot] == "true"
     log "  Already initialized perhaps from stop/start"
   else
     log "  Initializing slave at boot..."
-    # See cookbooks/db/recipes/do_primary_init_slave.rb for "db::do_primary_init_slave" recipe.
+    # See cookbooks/db/recipes/do_primary_init_slave.rb for the "db::do_primary_init_slave" recipe.
     include_recipe "db::do_primary_init_slave"
   end
 

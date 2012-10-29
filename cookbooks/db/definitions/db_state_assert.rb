@@ -18,7 +18,7 @@ define :db_state_assert do
     include RightScale::Database::Helper
   end
 
-  # See cookbooks/db/libraries/helper.rb for "db_state_get" method.
+  # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
   db_state_get node
 
   ruby_block "check database node state" do

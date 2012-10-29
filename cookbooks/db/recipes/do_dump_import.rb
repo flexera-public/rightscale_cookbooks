@@ -38,7 +38,7 @@ else
   end
 
   # Restore the dump file to db
-  # See cookbooks/db_<provider>/providers/default.rb for "restore_from_dump_file" action.
+  # See cookbooks/db_<provider>/providers/default.rb for the "restore_from_dump_file" action.
   db node[:db][:data_dir] do
     dumpfile dumpfilepath
     db_name db_name
