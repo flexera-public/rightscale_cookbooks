@@ -8,8 +8,10 @@
 rightscale_marker :begin
 
 # Load the exec plugin in the main config file
+# See cookbooks/rightscale/definitions/rightscale_enable_collectd_plugin.rb for the "rightscale_enable_collectd_plugin" definition.
 rightscale_enable_collectd_plugin "exec"
 
+# See cookbooks/rightscale/recipes/setup_monitoring.rb for the "rightscale::setup_monitoring" recipe.
 include_recipe "rightscale::setup_monitoring"
 
 require 'fileutils'
