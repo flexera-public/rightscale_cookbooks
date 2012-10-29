@@ -14,11 +14,11 @@ skip, reason = true, "Storage Account ID not provided"       if node[:db][:dump]
 skip, reason = true, "Storage Account password not provided" if node[:db][:dump][:storage_account_secret] == ""
 skip, reason = true, "Container not provided"                if node[:db][:dump][:container] == ""
 
-# Set up parameters for creating dump file and export it in any cloud storage
-# Add a cron job for scheduling dump creation and export.
 if skip
   log "  Skipping import: #{reason}"
 else
+  # Set up parameters for creating dump file and export it in any cloud storage
+  # Add a cron job for scheduling dump creation and export.
   cron "db_dump_export" do
     hour "0"
     minute "#{5+rand(50)}"
