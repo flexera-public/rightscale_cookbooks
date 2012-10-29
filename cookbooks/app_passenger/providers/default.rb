@@ -145,9 +145,6 @@ action :setup_db_connection do
     group node[:app][:group]
     database db_name
     driver_type "ruby"
-    vars(
-      :gem_bin => node[:app_passenger][:gem_bin]
-    )
   end
 
   # Creating bash file for manual $RAILS_ENV setup
