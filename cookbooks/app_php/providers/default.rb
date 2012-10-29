@@ -79,6 +79,7 @@ action :setup_vhost do
   end
 
   # Adds php port to list of ports for webserver to listen on
+  # See cookbooks/app/definitions/app_add_listen_port.rb for "app_add_listen_port" definition.
   app_add_listen_port php_port
 
   # Configure apache vhost for PHP
@@ -105,6 +106,7 @@ action :setup_db_connection do
   end
 
   # Tells selected db_adapter to fill in it's specific connection template
+  # See cookbooks/db/definitions/db_connect_app.rb for "db_connect_app" definition.
   db_connect_app ::File.join(project_root, "config", "db.php") do
     template "db.php.erb"
     cookbook "app_php"

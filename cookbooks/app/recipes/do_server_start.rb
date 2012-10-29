@@ -11,6 +11,7 @@
 rightscale_marker :begin
 
 log "  Starting application server now..."
+# See cookbooks/app_<providers>/providers/default.rb for "start" action.
 app "default" do
   action :start
 end

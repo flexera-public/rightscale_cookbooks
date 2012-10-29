@@ -97,6 +97,7 @@ action :setup_vhost do
   end
 
   # Adds php port to list of ports for webserver to listen on
+  # See cookbooks/app/definitions/app_add_listen_port.rb for "app_add_listen_port" definition.
   app_add_listen_port port.to_s
 
   log "  Unlinking default apache vhost"
@@ -139,6 +140,7 @@ action :setup_db_connection do
   log "  Generating database.yml"
 
   # Tell Database to fill in our connection template
+  # See cookbooks/db/definitions/db_connect_app.rb for "db_connect_app" definition.
   db_connect_app "#{deploy_dir.chomp}/config/database.yml" do
     template      "database.yml.erb"
     cookbook      "app_passenger"
@@ -201,6 +203,7 @@ action :code_update do
   end
 
   log "  Generating new logrotate config for rails application"
+  # See cookbooks/rightscale/definitions/rightscale_logrotate_app.rb for "rightscale_logrotate_app" definition.
   rightscale_logrotate_app "rails" do
     cookbook "rightscale"
     template "logrotate.erb"

@@ -12,6 +12,7 @@ class Chef::Recipe
 end
 
 # Adding iptables rule to allow loadbalancers <-> application servers connections
+# See cookbooks/sys_firewall/providers/default.rb for "update" action.
 pool_names(node[:lb][:pools]).each do | pool_name |
   sys_firewall "Open this appserver's ports to all loadbalancers" do
     machine_tag "loadbalancer:#{pool_name}=lb"
