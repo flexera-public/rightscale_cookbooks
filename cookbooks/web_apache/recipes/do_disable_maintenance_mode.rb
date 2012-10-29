@@ -7,7 +7,7 @@
 
 rightscale_marker :begin
 
-# Removing /system/maintenance.html from apache docroot
+# Removes /system/maintenance.html from apache docroot.
 log "  Removing #{node[:web_apache][:docroot]}/system/maintenance.html"
 file "#{node[:web_apache][:docroot]}/system/maintenance.html" do
   action :delete
