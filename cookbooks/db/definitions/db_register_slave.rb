@@ -132,12 +132,12 @@ define :db_register_slave, :action => :primary_restore do
 
     # After slave has been initialized, run the specified backup recipe, primary or secondary.
     # Stop/start or reboot would pass a no_restore action.
-    # See cookbooks/db/recipes/do_primary_restore.rb and do_secondary_restore.rb
-    # for "db::do_primary_restore" and "db::do_secondary_restore" recipes.
     case params[:action]
     when :primary_restore
+      # See cookbooks/db/recipes/do_primary_restore.rb for "db::do_primary_restore" recipe.
       include_recipe "db::do_primary_restore"
     when :secondary_restore
+      # See cookbooks/db/recipes/do_secondary_restore.rb for "db::do_secondary_restore" recipe.
       include_recipe "db::do_secondary_restore"
     when :no_restore
       log "  No restore"

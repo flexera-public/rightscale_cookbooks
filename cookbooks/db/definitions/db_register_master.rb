@@ -13,10 +13,10 @@ define :db_register_master do
   # Do this first so that DNS can propagate while the recipe runs
   private_ip = node[:cloud][:private_ips][0]
   log "  Setting master database #{node[:db][:dns][:master][:fqdn]} to #{private_ip}"
+  # See cookbooks/sys_dns/providers/*.rb for "set_private" action.
   sys_dns "default" do
     id node[:db][:dns][:master][:id]
     address private_ip
-    # See cookbooks/sys_dns/providers/*.rb for "set_private" action.
     action :set_private
   end
 
