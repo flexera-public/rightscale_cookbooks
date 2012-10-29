@@ -299,7 +299,6 @@ end
 action :setup_db_connection do
 
   db_name = new_resource.database_name
-  datasource = node[:app_tomcat][:datasource_name]
   version = node[:app][:version].to_i
 
   log "  Creating context.xml for DB: #{db_name} using datasource #{datasource}"
@@ -309,12 +308,10 @@ action :setup_db_connection do
     group "root"
     mode "0644"
     database db_name
-    datasource datasource
     cookbook "app_tomcat"
     driver_type "java"
     vars(
-      :app_version => node[:app][:version],
-      :app_user => node[:app][:user]
+      :datasource => node[:app_tomcat][:datasource_name]
     )
   end
 

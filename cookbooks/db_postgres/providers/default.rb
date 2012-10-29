@@ -325,13 +325,12 @@ action :install_client_driver do
   when "java"
     # This adapter type is used by tomcat application servers
     node[:db][:client][:driver] = "org.postgresql.Driver"
-    version = vars[:app_version].to_i
     # Copy to /usr/share/java/postgresql-9.1-901.jdbc4.jar
-    cookbook_file "/usr/share/tomcat#{version}/lib/postgresql-9.1-901.jdbc4.jar" do
+    cookbook_file "/usr/share/java/postgresql-9.1-901.jdbc4.jar" do
       source "postgresql-9.1-901.jdbc4.jar"
-      owner vars[:app_user]
+      owner "root"
       group "root"
-      mode "0660"
+      mode "0644"
       cookbook 'app_tomcat'
     end
   when "ruby"
@@ -452,7 +451,7 @@ action :enable_replication do
 
   # Setup slave monitoring
   action_setup_slave_monitoring
-end  
+end
 
 action :promote do
   db_state_get node
