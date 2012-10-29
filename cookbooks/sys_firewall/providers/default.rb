@@ -43,7 +43,7 @@ action :update do
     end
 
     if machine_tag
-      # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#Server_Collection for "rightscale_server_collection" resource
+      # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#Server_Collection for the "rightscale_server_collection" resource.
       rightscale_server_collection collection_name do
         tags machine_tag
         secondary_tags ip_tag
@@ -61,7 +61,7 @@ action :update do
         if machine_tag
           valid_ip_regex = '(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])'
           ip_list = node[:server_collection][collection_name].collect do |_, tags|
-            # See cookbooks/rightscale/libraries/helper.rb for "get_tag_value" definition
+            # See cookbooks/rightscale/libraries/helper.rb for the "get_tag_value" definition.
             RightScale::Utils::Helper.get_tag_value(ip_tag, tags, valid_ip_regex)
           end
         end
@@ -75,7 +75,7 @@ action :update do
           rule << "_#{ip.gsub('/', '_')}_#{protocol}"
 
           # Programatically execute template resource
-          # See cookbooks/sys/libraries/helper.rb for "run_template" definition
+          # See cookbooks/sys/libraries/helper.rb for the "run_template" definition.
           RightScale::System::Helper.run_template(
             "/etc/iptables.d/#{rule}", # target_file
             "iptables_port.erb", # source
@@ -123,7 +123,7 @@ action :update_request do
   attrs[:sys_firewall][:rule][:ip_address] = ip_addr
 
   # Use RightNet to update firewall rules on all tagged servers
-  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RemoteRecipe for "remote_recipe" resource
+  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RemoteRecipe for the "remote_recipe" resource.
   remote_recipe "Request firewall update" do
     recipe "sys_firewall::setup_rule"
     recipients_tags machine_tag
