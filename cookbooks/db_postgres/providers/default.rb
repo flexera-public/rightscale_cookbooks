@@ -294,7 +294,6 @@ end
 
 action :install_client_driver do
   type = new_resource.driver_type
-  vars = new_resource.vars
   log "  Installing postgres support for #{type} driver"
 
   # Installation of the database client driver for application servers is
