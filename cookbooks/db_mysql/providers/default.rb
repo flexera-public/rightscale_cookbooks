@@ -510,17 +510,11 @@ action :install_client_driver do
       )
       action :install
     end
-    version = vars[:app_version].to_i
-    # Removing existing links to database connector
-    file "/usr/share/tomcat#{version}/lib/mysql-connector-java.jar" do
-      action :delete
-    end
   when "ruby"
     # This adapter type is used by Apache Rails Passenger application servers
     node[:db][:client][:driver] = "mysql"
     gem_package 'mysql' do
-      gem_binary vars[:gem_bin]
-      version '2.7'
+      gem_binary "/usr/bin/gem"
       options '-- --build-flags --with-mysql-config'
     end
   else

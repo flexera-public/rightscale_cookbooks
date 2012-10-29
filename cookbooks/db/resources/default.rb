@@ -15,7 +15,6 @@ attribute :user, :kind_of => String, :default => "root"
 attribute :password, :kind_of => String, :default => ""
 attribute :data_dir, :kind_of => String, :default => "/mnt/storage"
 attribute :driver_type, :kind_of => String
-attribute :vars, :kind_of => Hash
 
 # == Backup/Restore options
 attribute :lineage, :kind_of => String

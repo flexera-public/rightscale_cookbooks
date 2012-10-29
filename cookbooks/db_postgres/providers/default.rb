@@ -338,7 +338,7 @@ action :install_client_driver do
     node[:db][:client][:driver] = "postgresql"
     postgres_bin_dir = "/usr/pgsql-#{node[:db][:version]}/bin"
     gem_package 'pg' do
-      gem_binary vars[:gem_bin]
+      gem_binary "/usr/bin/gem"
       options "-- --with-pg-config=#{postgres_bin_dir}/pg_config"
     end
   else
