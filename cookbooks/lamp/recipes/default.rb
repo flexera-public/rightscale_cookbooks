@@ -18,7 +18,7 @@ node[:app][:port] = "80"
 log "  LAMP set Apache to listen on port #{node[:app][:port]}"
 
 # Setup default values for application resource and install required packages.
-# See cookbooks/app_php/providers/default.rb for "install" action.
+# See cookbooks/app_php/providers/default.rb for the "install" action.
 app "default" do
   persist true
   provider node[:app][:provider]
