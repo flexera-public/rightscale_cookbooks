@@ -10,6 +10,7 @@ rightscale_marker :begin
 # Load the mysql plugin in the main config file
 rightscale_enable_collectd_plugin "mysql"
 
+# See cookbooks/rightscale/recipes/setup_monitoring.rb for "rightscale::setup_monitoring" recipe.
 include_recipe "rightscale::setup_monitoring"
 
 log "Installing MySQL collectd plugin"

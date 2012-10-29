@@ -15,6 +15,8 @@ raise "rightscale/servers/sketchy/hostname must be set" unless node[:rightscale]
 log "rightscale/instance_uuid is  #{node[:rightscale][:instance_uuid]}"
 log "rightscale/servers/sketchy/hostname is #{node[:rightscale][:servers][:sketchy][:hostname]}"
 
+# See cookbooks/rightscale/setup_server_tags.rb, setup_timezone.rb and setup_monitoring.rb for
+# "rightscale::setup_server_tags", "rightscale::setup_timezone" and "rightscale::setup_monitoring" recipes.
 include_recipe "rightscale::setup_server_tags"
 include_recipe "rightscale::setup_timezone"
 include_recipe "rightscale::setup_monitoring"

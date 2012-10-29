@@ -33,7 +33,7 @@ cookbook_file(::File.join(node[:rightscale][:collectd_lib], "plugins", 'file-sta
   notifies :restart, resources(:service => "collectd")
 end
 
-# Used in db_mysql::do_backup in cookbooks_premium for backups
+# Used in db_mysql::do_backup in rightscale_cookbooks for backups
 file node[:rightscale][:db_backup_file] do
   action :touch
   owner "nobody"

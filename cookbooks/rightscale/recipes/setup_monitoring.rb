@@ -115,7 +115,8 @@ if node[:platform] =~ /redhat|centos/
 end
 
 # Tag required to enable monitoring
-#
+# See  http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RightLinkTag
+# for right_link_tag resource.
 right_link_tag "rs_monitoring:state=active"
 
 # Start monitoring
