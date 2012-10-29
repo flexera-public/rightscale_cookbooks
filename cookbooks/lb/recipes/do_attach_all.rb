@@ -15,24 +15,26 @@ end
 
 DROP_THRESHOLD = 3
 
-# Iterate through each vhost.
+# Iterates through each vhost.
 pool_names(node[:lb][:pools]).each do |pool_name|
 
   log "Attach all for [#{pool_name}]"
-  # Obtain current list from lb config file.
+  # Obtains current list from lb config file.
   inconfig_servers = get_attached_servers(pool_name)
   log "  Currently attached: #{inconfig_servers.nil? ? 0 : inconfig_servers.count}"
 
-  # Obtain list of app servers in deployment.
+  # Obtains list of app servers in deployment.
   deployment_servers = query_appservers(pool_name)
 
-  # Send warning if no application servers are found.
+  # Sends warning if no application servers are found.
   log "  No application servers found" do
     only_if { deployment_servers.empty? }
     level :warn
   end
 
-  # Add any servers in deployment not in config.
+  # Adds any servers in deployment not in config.
+  # See cookbooks/lb_<provider>/providers/default.rb for more information about
+  # the "attach" action.
   servers_to_attach = Set.new(deployment_servers.keys) - inconfig_servers
   log "  No servers to attach" do
     only_if { servers_to_attach.empty? }
@@ -47,7 +49,7 @@ pool_names(node[:lb][:pools]).each do |pool_name|
     end
   end
 
-  # Increment threshold counter if servers in config not in deployment.
+  # Increments threshold counter if servers in config not in deployment.
   node[:lb][:threshold] ||= Hash.new
   node[:lb][:threshold][pool_name] ||= Hash.new
   servers_missing = inconfig_servers - Set.new(deployment_servers.keys)
@@ -56,8 +58,9 @@ pool_names(node[:lb][:pools]).each do |pool_name|
     log "  Increment threshold counter for #{uuid} = #{node[:lb][:threshold][pool_name][uuid]}"
   end
 
-  # Set threshold counters to nil to those not incremented, thus assuming app server now accessable.
-  # Set to nil since chef does not delete the key, can only alter it.
+  # Sets threshold counters to nil to those not incremented, thus assuming
+  # the app server is now accessable. The threshold is set to nil since
+  # chef does not delete the key so we can only alter it.
   (Set.new(node[:lb][:threshold][pool_name].keys) - servers_missing).each do |uuid|
     if node[:lb][:threshold][pool_name][uuid]
       node[:lb][:threshold][pool_name][uuid] = nil
@@ -65,7 +68,9 @@ pool_names(node[:lb][:pools]).each do |pool_name|
     end
   end
 
-  # Delete servers that hit threshold.
+  # Deletes servers that hit threshold.
+  # See cookbooks/lb_<provider>/providers/default.rb for more information about
+  # the "detach" action.
   app_servers_detached = 0
   node[:lb][:threshold][pool_name].each do |uuid, counter|
     if counter == nil
@@ -76,7 +81,7 @@ pool_names(node[:lb][:pools]).each do |pool_name|
         backend_id uuid
         action :detach
       end
-      node[:lb][:threshold][pool_name][uuid] = nil # Set to nil - chef does not delete the key, can only alter it.
+      node[:lb][:threshold][pool_name][uuid] = nil # Sets to nil since chef does not delete the key so we can only alter it.
       app_servers_detached += 1
     else
       log "  Threshold not reached for #{uuid} : #{node[:lb][:threshold][pool_name][uuid]}"

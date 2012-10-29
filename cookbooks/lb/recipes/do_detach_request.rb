@@ -12,7 +12,7 @@ class Chef::Recipe
   include RightScale::App::Helper
 end
 
-# Calls the detach_request action for all the pools.
+# Calls the "detach_request" action for all the pools.
 # See cookbooks/lb_<provider>/provider/default.rb for details of this action.
 pool_names(node[:lb][:pools]).each do |pool_name|
   log "  Remove the load balancing tags, so we will not be re-attached. - #{pool_name}"

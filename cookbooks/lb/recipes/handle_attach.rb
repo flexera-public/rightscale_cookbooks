@@ -12,7 +12,7 @@ class Chef::Recipe
   include RightScale::App::Helper
 end
 
-# Calls the attach action for all pools.
+# Calls the "attach" action for all pools.
 # See cookbooks/lb_<provider>/providers/default.rb for details on this action.
 log "  Remote recipe executed by do_attach_request"
 pool_names(node[:remote_recipe][:pools]).each do |pool_name|

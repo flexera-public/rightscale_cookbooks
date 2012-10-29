@@ -1,4 +1,4 @@
-# 
+#
 # Cookbook Name:: lb_haproxy
 #
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
@@ -7,10 +7,12 @@
 
 rightscale_marker :begin
 
+# Loads helper from cookbooks/app/libraries/helper.rb
 class Chef::Recipe
   include RightScale::App::Helper
 end
 
+# See cookbooks/lb_<provider>/providers/default.rb for the "advanced_configs" action.
 pool_names(node[:remote_recipe][:pools]).each do |pool_name|
   lb pool_name do
     action :advanced_configs

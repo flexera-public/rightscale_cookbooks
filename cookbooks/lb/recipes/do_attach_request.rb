@@ -12,7 +12,7 @@ class Chef::Recipe
   include RightScale::App::Helper
 end
 
-# Calls the attach_request action for all pools.
+# Calls the "attach_request" action for all pools.
 # See cookbooks/lb_<provider>/providers/default.rb for details of this action.
 pool_names(node[:lb][:pools]).each do |pool_name|
   log "  Adding tag to answer for vhost load balancing - #{pool_name}."

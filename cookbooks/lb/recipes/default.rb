@@ -1,4 +1,4 @@
-# 
+#
 # Cookbook Name:: lb
 #
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
@@ -7,13 +7,14 @@
 
 rightscale_marker :begin
 
+# Loads helper from cookbooks/app/libraries/helper.rb
 class Chef::Recipe
   include RightScale::App::Helper
 end
 
 log "  Setup default load balancer resource."
 
-# Set provider for each pool name.
+# Sets provider for each pool name.
 pool_names(node[:lb][:pools]).each do | pool_name |
   lb pool_name do
     provider node[:lb][:service][:provider]
@@ -29,7 +30,7 @@ r = gem_package "right_aws" do
 end
 r.run_action(:install)
 
-# Reload newly install gem.
+# Reloads newly install gem.
 Gem.clear_paths
 
 rightscale_marker :end

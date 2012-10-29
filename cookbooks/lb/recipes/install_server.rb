@@ -16,13 +16,16 @@ POOL_NAMES = node[:lb][:pools]
 
 log "  Install load balancer"
 
-# Install haproxy and create main config files.
-# Name passed in :install action will be used as default backend.
-# Currently, using last item from lb/pools as default backend.
+# Installs haproxy and creates main config files.
+# Name passed in the "install" action acts as the default backend.
+# Currently, it uses the last item from lb/pools as the default backend.
+# See cookbooks/lb_<provider>/providers/default.rb for more information
+# about this action.
 lb pool_names(POOL_NAMES).last do
   action :install
 end
 
+# See cookbooks/lb_<provider>/providers/default.rb for the "add_vhost" action.
 pool_names(POOL_NAMES).each do |pool_name|
   lb pool_name do
     action :add_vhost

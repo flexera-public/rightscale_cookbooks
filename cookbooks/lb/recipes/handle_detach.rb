@@ -12,7 +12,7 @@ class Chef::Recipe
   include RightScale::App::Helper
 end
 
-# Calls the detach action for all pools.
+# Calls the "detach" action for all pools.
 # See cookbooks/lb_<provider>/providers/default.rb for details of this action.
 log "Remote recipe executed by do_detach_request"
 
