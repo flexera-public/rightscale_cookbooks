@@ -82,7 +82,7 @@ action :configure do
     package "rsyslog-relp" if node[:logging][:protocol] =~ /relp/
 
     if node[:logging][:protocol] == "relp-secured"
-      # Configuring an stunnel used to pass log messages from a client server to a logging server.
+      # Configures an stunnel used to pass log messages from a client server to a logging server.
       # See cookbooks/logging_rsyslog/definitions/configure_stunnel.rb for "configure_stunnel" definition.
       configure_stunnel "default" do
         accept "127.0.0.1:515"
@@ -112,7 +112,7 @@ action :configure do
 end
 
 
-# Configure configure an rsyslog logging server.
+# Configure an rsyslog logging server.
 action :configure_server do
 
   service "rsyslog" do

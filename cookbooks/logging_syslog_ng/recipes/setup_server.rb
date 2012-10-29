@@ -14,7 +14,7 @@ rightscale_marker :begin
 # will be made by the inclusion of the logging*::default recipe
 log "  Setting provider specific settings for syslog-ng server."
 
-raise "ERROR: Rsyslog is not installed!" unless system("which syslog-ng > /dev/null 2>&1")
+raise "ERROR: syslog-ng is not installed!" unless system("which syslog-ng > /dev/null 2>&1")
 
 node[:logging][:provider] = "logging_syslog_ng"
 
