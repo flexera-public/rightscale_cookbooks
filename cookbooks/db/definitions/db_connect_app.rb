@@ -5,6 +5,12 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+
+# Sets up config file to connect application servers with database servers.
+
+# @param [String] template Name of template that sets up the config file.
+# @param [String] cookbook Name of cookbook that called this definition.
+# @param [String] database Name of the database.
 define :db_connect_app, :template => "db_connection_example.erb", :cookbook => "db", :database => nil do
   
   template params[:name] do
