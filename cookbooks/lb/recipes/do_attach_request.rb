@@ -14,6 +14,7 @@ end
 
 # Calls the "attach_request" action for all pools.
 # See cookbooks/lb_<provider>/providers/default.rb for details of this action.
+# See cookbooks/app/libraries/helper.rb for the "pool_names" method.
 pool_names(node[:lb][:pools]).each do |pool_name|
   log "  Adding tag to answer for vhost load balancing - #{pool_name}."
   lb_tag pool_name

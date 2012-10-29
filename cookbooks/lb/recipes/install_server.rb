@@ -21,11 +21,13 @@ log "  Install load balancer"
 # Currently, it uses the last item from lb/pools as the default backend.
 # See cookbooks/lb_<provider>/providers/default.rb for more information
 # about this action.
+# See cookbooks/app/libraries/helper.rb for the "pool_names" method.
 lb pool_names(POOL_NAMES).last do
   action :install
 end
 
 # See cookbooks/lb_<provider>/providers/default.rb for the "add_vhost" action.
+# See cookbooks/app/libraries/helper.rb for the "pool_names" method.
 pool_names(POOL_NAMES).each do |pool_name|
   lb pool_name do
     action :add_vhost

@@ -14,6 +14,7 @@ end
 
 # Calls the "attach" action for all pools.
 # See cookbooks/lb_<provider>/providers/default.rb for details on this action.
+# See cookbooks/app/libraries/helper.rb for the "pool_names" method.
 log "  Remote recipe executed by do_attach_request"
 pool_names(node[:remote_recipe][:pools]).each do |pool_name|
   lb pool_name do

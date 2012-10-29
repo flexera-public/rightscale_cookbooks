@@ -16,14 +16,17 @@ end
 DROP_THRESHOLD = 3
 
 # Iterates through each vhost.
+# See cookbooks/app/libraries/helper.rb for the "pool_names" method.
 pool_names(node[:lb][:pools]).each do |pool_name|
 
   log "Attach all for [#{pool_name}]"
   # Obtains current list from lb config file.
+  # See cookbooks/lb/libraries/helper.rb for the "get_attached_servers" method.
   inconfig_servers = get_attached_servers(pool_name)
   log "  Currently attached: #{inconfig_servers.nil? ? 0 : inconfig_servers.count}"
 
   # Obtains list of app servers in deployment.
+  # See cookbooks/lb/libraries/helper.rb for the "query_appservers" method.
   deployment_servers = query_appservers(pool_name)
 
   # Sends warning if no application servers are found.

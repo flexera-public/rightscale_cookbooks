@@ -27,6 +27,7 @@ directory File.join(node[:rightscale][:collectd_lib], "plugins") do
 end
 
 # See cookbooks/lb_<provider>/providers/default.rb for the "setup_monitoring" action.
+# See cookbooks/app/libraries/helper.rb for the "pool_names" method.
 log "  Setup Monitoring"
 lb pool_names(node[:lb][:pools]).first do
   action :setup_monitoring
