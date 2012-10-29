@@ -1,4 +1,4 @@
-# 
+#
 # Cookbook Name:: lb
 #
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
@@ -7,6 +7,7 @@
 
 rightscale_marker :begin
 
+# Loads helpers from cookbooks/app/libraries/helper.rb and cookbooks/lb/libraries/helper.rb
 class Chef::Recipe
   include RightScale::App::Helper
   include RightScale::LB::Helper
