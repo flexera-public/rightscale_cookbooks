@@ -7,9 +7,10 @@
 
 rightscale_marker :begin
 
-# Disable default vhost
+# Enable default vhost.
 log "  Enabling default vhost"
 
+# See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_site.rb for the "apache_site" definition.
 apache_site "default" do
   enable true
   notifies :reload, resources(:service => "apache2")

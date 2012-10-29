@@ -7,13 +7,15 @@
 
 rightscale_marker :begin
 
-# Add the collectd exec plugin to the set of collectd plugins if it isn't already there
+# Add the collectd exec plugin to the set of collectd plugins if it isn't already there.
+# See cookbooks/rightscale/definitions/rightscale_enable_collectd_plugin.rb for the "rightscale_enable_collectd_plugin" definition.
 rightscale_enable_collectd_plugin 'exec'
 
-# Rebuild the collectd configuration file if necessary
+# Rebuild the collectd configuration file if necessary.
+# Calls the cookbooks/rightscale/recipes/setup_monitoring.rb recipe.
 include_recipe "rightscale::setup_monitoring"
 
-# Additional "httpd/apache2" service definition required for "rightscale_monitor_process"
+# Additional "httpd/apache2" service definition required for "rightscale_monitor_process".
 service "#{node[:apache][:config_subdir]}" do
   action :nothing
 end
@@ -26,31 +28,32 @@ if node[:platform] =~ /redhat|centos/
   end
 
   if node[:web_apache][:mpm] == "prefork"
+    # See cookbooks/rightscale/definitions/rightscale_monitor_process.rb for the "rightscale_monitor_process" definition.
     rightscale_monitor_process "httpd"
   else
     rightscale_monitor_process "httpd.worker"
   end
 
 elsif node[:platform] == 'ubuntu'
-   rightscale_monitor_process 'apache2'
+  rightscale_monitor_process 'apache2'
 else
   log "  WARNING: attempting to install collectd-apache on unsupported platform #{node[:platform]}, continuing.."
 end
 
-# Add Apache configuration for the status URL and restart Apache if necessary
+# Add Apache configuration for the status URL and restart Apache if necessary.
 template File.join(node[:apache][:dir], 'conf.d', 'status.conf') do
   backup false
   source "apache_status.conf.erb"
   notifies :restart, resources(:service => "apache2")
 end
 
-# Create the collectd library plugins directory if necessary
+# Create the collectd library plugins directory if necessary.
 directory ::File.join(node[:rightscale][:collectd_lib], "plugins") do
   action :create
   recursive true
 end
 
-# Install the apache_ps collectd script into the collectd library plugins directory
+# Install the apache_ps collectd script into the collectd library plugins directory.
 cookbook_file(::File.join(node[:rightscale][:collectd_lib], "plugins", 'apache_ps')) do
   source "apache_ps"
   mode "0755"
@@ -60,14 +63,14 @@ end
 
 # Checking node[:apache][:listen_ports]
 # it can be a string if single port is defined
-# or array if multiple ports are defined
+# or array if multiple ports are defined.
 if node[:apache][:listen_ports].kind_of?(Array)
   port = node[:apache][:listen_ports][0]
 else
   port = node[:apache][:listen_ports]
 end
 
-# Add a collectd config file for the Apache collectd plugin and restart collectd if necessary
+# Add a collectd config file for the Apache collectd plugin and restart collectd if necessary.
 template File.join(node[:rightscale][:collectd_plugin_dir], 'apache.conf') do
   backup false
   source "apache_collectd_plugin.conf.erb"
@@ -75,14 +78,14 @@ template File.join(node[:rightscale][:collectd_plugin_dir], 'apache.conf') do
   notifies :restart, resources(:service => "collectd")
 end
 
-# Add a collectd config file for the apache_ps script with the exec plugin and restart collectd if necessary
+# Add a collectd config file for the apache_ps script with the exec plugin and restart collectd if necessary.
 template File.join(node[:rightscale][:collectd_plugin_dir], 'apache_ps.conf') do
   backup false
   source "apache_collectd_exec.erb"
   notifies :restart, resources(:service => "collectd")
 end
 
-# Update the collectd config file for the processes collectd plugin and restart collectd if necessary
+# Update the collectd config file for the processes collectd plugin and restart collectd if necessary.
 template File.join(node[:rightscale][:collectd_plugin_dir], 'processes.conf') do
   backup false
   cookbook "rightscale"
