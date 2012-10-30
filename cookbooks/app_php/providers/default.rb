@@ -104,13 +104,14 @@ action :setup_db_connection do
     group node[:app][:group]
   end
 
-  # Tells selected db_adapter to fill in it's specific connection template
+  # Tells selected db provider to fill in it's specific connection template
   db_connect_app ::File.join(project_root, "config", "db.php") do
     template "db.php.erb"
     cookbook "app_php"
     database db_name
     owner node[:app][:user]
     group node[:app][:group]
+    driver_type "php"
   end
 end
 

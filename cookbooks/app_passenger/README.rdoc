@@ -151,6 +151,9 @@ For normal operations it requires "app" resource which will act as the interface
 * <tt>:code_update</tt> - Perform project source code update/download using user selected "repo" LWRP. Set up logrotate configuration.
 
 * <tt>:setup_db_connection</tt> - Perform project config/database.yml database connection configuration.
+  The driver type is specified as 'ruby' and the db_<provider> cookbook's
+  <tt>install_client_driver</tt> action performs necessary steps to install the
+  database adapter.
 
 ===== Usage Example:
 

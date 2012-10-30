@@ -26,6 +26,8 @@ set_unless[:db][:backup][:lineage_override] = ""
 # TTL limit to verify Master DB DNS TTL
 set_unless[:db][:dns][:ttl] = "60"
 
+# Database driver class to be used based on the type of driver
+set_unless[:db][:client][:driver] = ""
 
 # Server state variables
 #

@@ -134,17 +134,17 @@ action :setup_db_connection do
 
   deploy_dir = new_resource.destination
   db_name = new_resource.database_name
-  db_adapter = node[:app][:db_adapter]
 
   log "  Generating database.yml"
 
   # Tell Database to fill in our connection template
   db_connect_app "#{deploy_dir.chomp}/config/database.yml" do
-    template      "database.yml.erb"
-    cookbook      "app_passenger"
-    owner         node[:app][:user]
-    group         node[:app][:group]
-    database      db_name
+    template "database.yml.erb"
+    cookbook "app_passenger"
+    owner node[:app][:user]
+    group node[:app][:group]
+    database db_name
+    driver_type "ruby"
   end
 
   # Creating bash file for manual $RAILS_ENV setup

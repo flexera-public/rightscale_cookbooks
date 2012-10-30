@@ -5,8 +5,6 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-# By default passenger uses MySQL as the DB adapter
-set_unless[:app][:db_adapter] = "mysql"
 # List of required apache modules
 set[:app][:module_dependencies] = ["proxy", "proxy_ajp"]
 # By default passenger will use "conservative" spawn method for more info see: http://www.modrails.com/documentation/Users%20guide%20Apache.html#PassengerSpawnMethod

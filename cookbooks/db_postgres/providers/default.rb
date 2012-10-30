@@ -215,6 +215,7 @@ action :install_client do
     gem_binary("/opt/rightscale/sandbox/bin/gem")
     options("-- --with-pg-config=#{node[:db_postgres][:bindir]}/pg_config")
   end
+
 end
 
 action :install_server do
@@ -316,6 +317,59 @@ action :install_server do
     action :start
   end
 
+end
+
+action :install_client_driver do
+  type = new_resource.driver_type
+  log "  Installing postgres support for #{type} driver"
+
+  # Installation of the database client driver for application servers is
+  # done here based on the client driver type
+  case type
+  when "php"
+    # This adapter type is used by php application servers
+    node[:db][:client][:driver] = "postgres"
+    package "#{type} postgres integration" do
+      package_name value_for_platform(
+        [ "centos", "redhat" ] => {
+          "default" => "php53u-pgsql"
+        },
+        "ubuntu" => {
+          "default" => "php5-pgsql"
+        },
+        "default" => "php5-pgsql"
+      )
+      action :install
+    end
+  when "python"
+    # This adapter type is used by Django application servers
+    node[:db][:client][:driver] = "django.db.backends.postgresql_psycopg2"
+    python_pip "psycopg2" do
+      version "2.4.5"
+      action :install
+    end
+  when "java"
+    # This adapter type is used by tomcat application servers
+    node[:db][:client][:driver] = "org.postgresql.Driver"
+    # Copy to /usr/share/java/postgresql-9.1-901.jdbc4.jar
+    cookbook_file "/usr/share/java/postgresql-9.1-901.jdbc4.jar" do
+      source "postgresql-9.1-901.jdbc4.jar"
+      owner "root"
+      group "root"
+      mode "0644"
+      cookbook 'app_tomcat'
+    end
+  when "ruby"
+    # This adapter type is used by Apache Rails Passenger application servers
+    node[:db][:client][:driver] = "postgresql"
+    postgres_bin_dir = "/usr/pgsql-#{node[:db][:version]}/bin"
+    gem_package 'pg' do
+      gem_binary "/usr/bin/gem"
+      options "-- --with-pg-config=#{postgres_bin_dir}/pg_config"
+    end
+  else
+    raise "Unknown driver type specified: #{type}"
+  end
 end
 
 action :grant_replication_slave do
@@ -426,7 +480,7 @@ action :enable_replication do
 
   # Setup slave monitoring
   action_setup_slave_monitoring
-end  
+end
 
 action :promote do
   # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.

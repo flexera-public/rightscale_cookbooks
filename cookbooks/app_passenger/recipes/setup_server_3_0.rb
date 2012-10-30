@@ -54,8 +54,4 @@ node[:app_passenger][:passenger_bin_dir] = $1
 gemenv.stdout =~ /INSTALLATION DIRECTORY: (.*)$/
 node[:app_passenger][:ruby_gem_base_dir] = $1
 
-# We do not care about version number here.
-# need only the type of database adaptor
-node[:app][:db_adapter] = node[:db][:provider_type].match(/^db_([a-z]+)/)[1]
-
 rightscale_marker :end

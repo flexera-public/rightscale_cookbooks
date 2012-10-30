@@ -69,30 +69,6 @@ action :install do
     action :run
   end
 
-  # Installing database adapter for tomcat
-  db_adapter = node[:app][:db_adapter]
-  if db_adapter == "mysql"
-    # Removing existing links to database connector
-    file "/usr/share/tomcat#{version}/lib/mysql-connector-java.jar" do
-      action :delete
-    end
-    # Link mysql-connector plugin to Tomcat6 lib
-    link "/usr/share/tomcat#{version}/lib/mysql-connector-java.jar" do
-      to "/usr/share/java/mysql-connector-java.jar"
-    end
-  elsif db_adapter == "postgres"
-    # Copy to /usr/share/java/postgresql-9.1-901.jdbc4.jar
-    cookbook_file "/usr/share/tomcat#{version}/lib/postgresql-9.1-901.jdbc4.jar" do
-      source "postgresql-9.1-901.jdbc4.jar"
-      owner node[:app][:user]
-      group "root"
-      mode "0660"
-      cookbook 'app_tomcat'
-    end
-  else
-    raise "Unrecognized database adapter #{db_adapter}, exiting"
-  end
-
   # Linking RightImage JAVA_HOME to what Tomcat6 expects to be...
   link "/usr/lib/jvm/java" do
     to "/usr/java/default"
@@ -323,19 +299,21 @@ end
 action :setup_db_connection do
 
   db_name = new_resource.database_name
-  db_adapter = node[:app][:db_adapter]
   datasource = node[:app_tomcat][:datasource_name]
   version = node[:app][:version].to_i
 
-  log "  Creating context.xml for DB: #{db_name} using adapter #{db_adapter} and datasource #{datasource}"
+  log "  Creating context.xml for DB: #{db_name} using datasource #{datasource}"
   db_connect_app "/etc/tomcat#{version}/context.xml" do
-    template      "context_xml.erb"
-    owner         "#{node[:app][:user]}"
-    group         "root"
-    mode          "0644"
-    database      db_name
-    datasource    datasource
-    cookbook      'app_tomcat'
+    template "context_xml.erb"
+    owner "#{node[:app][:user]}"
+    group "root"
+    mode "0644"
+    database db_name
+    cookbook "app_tomcat"
+    driver_type "java"
+    vars(
+      :datasource => datasource
+    )
   end
 
   log "  Creating web.xml"
@@ -348,6 +326,17 @@ action :setup_db_connection do
       :datasource => datasource
     )
     cookbook 'app_tomcat'
+  end
+
+  # Creating catalina.properties file with /usr/share/java included in the common loader
+  # so tomcat will pick up all jar files available in that directory
+  log "  Creating catalina.properties"
+  template "/etc/tomcat#{version}/catalina.properties" do
+    source "catalina.properties.erb"
+    owner "#{node[:app][:user]}"
+    group "root"
+    mode "0644"
+    cookbook "app_tomcat"
   end
 
   # Installing JavaServer Pages Standard Tag Library API

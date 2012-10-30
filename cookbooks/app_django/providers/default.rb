@@ -85,22 +85,6 @@ action :install do
     end
   end unless pip_list.empty?
 
-  # Installing database adapter for Django
-  log "Installing python packages for database support"
-  case node[:app][:db_adapter]
-  when "mysql"
-    python_pip "MySQL-python" do
-      version "1.2.3"
-      action :install
-    end
-  when "postgres"
-    python_pip "psycopg2" do
-      version "2.4.5"
-      action :install
-    end
-  else
-    raise "Unrecognized database adapter #{node[:app][:db_adapter]}, exiting"
-  end
 end
 
 # Setup apache PHP virtual host
@@ -152,7 +136,6 @@ action :setup_db_connection do
 
   project_root = new_resource.destination
   db_name = new_resource.database_name
-  db_adapter = node[:app][:db_adapter]
 
   # Moves django default settings file to settings_default and create settings.py from django template
   settingsfile = ::File.expand_path(::File.join(project_root, "settings.py"))
@@ -166,14 +149,15 @@ action :setup_db_connection do
     end
   end
 
-  # Tells selected db_adapter to fill in it's specific connection template
-  log "  Creating settings.py for DB: #{db_name} using adapter #{db_adapter}"
+  # Tells selected db provider to fill in it's specific connection template
+  log "  Creating settings.py for DB: #{db_name}"
   db_connect_app ::File.join(project_root, "settings.py") do
     template "settings.py.erb"
     owner node[:app][:user]
     group node[:app][:group]
     database db_name
     cookbook "app_django"
+    driver_type "python"
   end
 
 end

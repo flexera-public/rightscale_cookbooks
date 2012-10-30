@@ -13,7 +13,7 @@ node[:app][:provider] = "app_tomcat"
 node[:app][:version] = version
 log "  Setting tomcat version to #{version}"
 
-# Defining database adapter parameter, app user and group attributes depending on platform
+# Defining appplication user and group attributes depending on platform
 case node[:platform]
 when "ubuntu"
   node[:app][:user] = "tomcat6"
@@ -33,78 +33,29 @@ else
   raise "Unrecognized distro #{node[:platform]} for tomcat#{version}, exiting "
 end
 
-# we do not care about version number here.
-# need only the type of database adapter
-node[:app][:db_adapter] = node[:db][:provider_type].match(/^db_([a-z]+)/)[1]
-
-# Preparing list of database adapter packages depending on platform and database adapter
-case node[:app][:db_adapter]
-when "mysql"
-  node[:app][:packages] = value_for_platform(
-    ["centos", "redhat"] => {
-      "5.8" => [
-        "eclipse-ecj",
-        "tomcat6",
-        "tomcat6-admin-webapps",
-        "tomcat6-webapps",
-        "tomcat-native",
-        "mysql-connector-java"
-      ],  
-     "default" => [
-        "ecj",
-        "tomcat6",
-        "tomcat6-admin-webapps",
-        "tomcat6-webapps",
-        "tomcat-native",
-        "mysql-connector-java"
-      ]   
-    },
-    "ubuntu" => {
-      "default"  => [
-        "ecj-gcj",
-        "tomcat6",
-        "tomcat6-admin",
-        "tomcat6-common",
-        "tomcat6-user",
-        "libmysql-java",
-        "libtcnative-1"
-      ]
-    },
-    "default" => []
-  )
-when "postgres"
-  node[:app][:packages] = value_for_platform(
-    ["centos", "redhat"] => {
-      "5.8" => [
-        "eclipse-ecj",
-        "tomcat6",
-        "tomcat6-admin-webapps",
-        "tomcat6-webapps",
-        "tomcat-native"
-      ],
-      "default" => [
-        "ecj",
-        "tomcat6",
-        "tomcat6-admin-webapps",
-        "tomcat6-webapps",
-        "tomcat-native"
-      ]
-    },
-    "ubuntu" => {
-      "default" => [
-        "ecj-gcj",
-        "tomcat6",
-        "tomcat6-admin",
-        "tomcat6-common",
-        "tomcat6-user",
-        "libtcnative-1"
-      ]
-    },
-    "default" => []
-  )
-else
-  raise "Unrecognized database adapter #{node[:app][:db_adapter]}, exiting"
-end
+# Preparing list of packages depending on platform
+node[:app][:packages] = value_for_platform(
+  ["centos", "redhat"] => {
+   "default" => [
+      "ecj",
+      "tomcat6",
+      "tomcat6-admin-webapps",
+      "tomcat6-webapps",
+      "tomcat-native"
+    ]
+  },
+  "ubuntu" => {
+    "default"  => [
+      "ecj-gcj",
+      "tomcat6",
+      "tomcat6-admin",
+      "tomcat6-common",
+      "tomcat6-user",
+      "libtcnative-1"
+    ]
+  },
+  "default" => []
+)
 
 raise "Unrecognized distro #{node[:platform]} for tomcat#{version}, exiting " if node[:app][:packages].empty?
 

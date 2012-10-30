@@ -327,6 +327,7 @@ action :install_client do
     end
   end
   log "  Gem reload forced with Gem.clear_paths"
+
 end
 
 action :install_server do
@@ -492,6 +493,61 @@ action :install_server do
     EOH
   end
 
+end
+
+action :install_client_driver do
+  type = new_resource.driver_type
+  log "  Installing mysql support for #{type} driver"
+
+  # Installation of the database client driver for application servers is
+  # done here based on the driver type
+  case type
+  when "php"
+    # This adapter type is used by php application servers
+    node[:db][:client][:driver] = "mysql"
+    package "#{type} mysql integration" do
+      package_name value_for_platform(
+        [ "centos", "redhat" ] => {
+          "default" => "php53u-mysql"
+        },
+        "ubuntu" => {
+          "default" => "php5-mysql"
+        },
+        "default" => "php-mysql"
+      )
+      action :install
+    end
+  when "python"
+    # This adapter type is used by Django application servers
+    node[:db][:client][:driver] = "django.db.backends.mysql"
+    python_pip "MySQL-python" do
+      version "1.2.3"
+      action :install
+    end
+  when "java"
+    # This adapter type is used by tomcat application servers
+    node[:db][:client][:driver] = "com.mysql.jdbc.Driver"
+    package "#{type} mysql integration" do
+      package_name value_for_platform(
+        ["centos", "redhat"] => {
+          "default" => "mysql-connector-java"
+        },
+        "ubuntu" => {
+          "default" => "libmysql-java"
+        }
+      )
+      action :install
+    end
+  when "ruby"
+    # This adapter type is used by Apache Rails Passenger application servers
+    node[:db][:client][:driver] = "mysql"
+    gem_package 'mysql' do
+      gem_binary "/usr/bin/gem"
+      options '-- --build-flags --with-mysql-config'
+    end
+  else
+    raise "Unknown driver type specified: #{type}"
+  end
 end
 
 action :setup_monitoring do

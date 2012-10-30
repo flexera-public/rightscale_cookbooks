@@ -56,8 +56,4 @@ end
 # Set debug mode django style (https://docs.djangoproject.com/en/dev/ref/settings/#debug)
 node[:app_django][:app][:debug_mode].gsub!(/^./) {|a| a.upcase}
 
-# We do not care about version number here.
-# need only the type of database adaptor
-node[:app][:db_adapter] = node[:db][:provider_type].match(/^db_([a-z]+)/)[1]
-
 rightscale_marker :end
