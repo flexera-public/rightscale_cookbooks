@@ -15,7 +15,7 @@ rule_ip = node[:app][:lb_ip]
 port = node[:app][:port]
 
 log "  Adding firewall rules for loadbalancer to connect"
-# See cookbooks/sys_firewall/providers/default.rb for "update" action.
+# See cookbooks/sys_firewall/providers/default.rb for the "update" action.
 sys_firewall port do
   ip_addr rule_ip
   protocol "tcp"
