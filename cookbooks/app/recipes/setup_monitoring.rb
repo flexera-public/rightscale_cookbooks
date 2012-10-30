@@ -8,7 +8,6 @@
 rightscale_marker :begin
 
 log "  Configuring monitoring for app server"
-# See cookbooks/app/resources/default.rb for the "app" resource.
 # See cookbooks/app_<providers>/providers/default.rb for the "setup_monitoring" action.
 app "default" do
   action :setup_monitoring

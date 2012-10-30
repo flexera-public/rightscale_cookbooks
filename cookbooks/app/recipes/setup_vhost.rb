@@ -11,7 +11,6 @@
 rightscale_marker :begin
 
 log "  Configuring vhost file for App server"
-# See cookbooks/app/resources/default.rb for the "app" resource.
 # See cookbooks/app_<providers>/providers/default.rb for the "setup_vhost" action.
 app "default" do
   root node[:app][:root]

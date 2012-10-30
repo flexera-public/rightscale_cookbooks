@@ -35,10 +35,10 @@ end
 # Restart apache/passenger
 action :restart do
   log "  Running restart sequence"
-  # See cookbooks/app_passenger/providers/default.rb for the "stop" action.
+  # Calls the :stop action.
   action_stop
   sleep 5
-  # See cookbooks/app_passenger/providers/default.rb for the "start" action.
+  # Calls the :start action.
   action_start
 end
 

@@ -30,10 +30,10 @@ end
 # Restart tomcat service
 action :restart do
   log "  Running restart sequence"
-  # See cookbooks/app_tomcat/providers/default.rb for the "stop" action.
+  # Calls the :stop action.
   action_stop
   sleep 5
-  # See cookbooks/app_tomcat/providers/default.rb for the "start" action.
+  # Calls the :start action.
   action_start
 end
 
@@ -194,7 +194,7 @@ action :setup_vhost do
   end
 
   # Starting tomcat service
-  # See cookbooks/app_tomcat/providers/default.rb for the "start" action.
+  # Calls the :start action.
   action_start
 
   log "  Setup mod_jk vhost"
@@ -445,7 +445,7 @@ action :code_update do
   end
   # Restarting tomcat service.
   # This will automatically deploy ROOT.war if it is available in application root directory
-  # See cookbooks/app_tomcat/providers/default.rb for the "restart" action.
+  # Calls the :restart action.
   action_restart
 
 end

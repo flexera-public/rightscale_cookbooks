@@ -22,7 +22,6 @@ end
 log "  Installing #{node[:app][:packages]}" if node[:app][:packages]
 
 # Setup default values for application resource and install required packages
-# See cookbooks/app/resource/default.rb for the "app" resource.
 # See cookbooks/app_<providers>/providers/default.rb for the "install" action.
 app "default" do
   persist true

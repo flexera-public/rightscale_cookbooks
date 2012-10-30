@@ -34,10 +34,10 @@ end
 
 # Restart apache
 action :restart do
-  # See cookbooks/app_php/providers/default.rb for the "stop" action.
+  # Calls the :stop action.
   action_stop
   sleep 5
-  # See cookbooks/app_php/providers/default.rb for the "start" action.
+  # Calls the :start action.
   action_start
 end
 
@@ -140,7 +140,7 @@ action :code_update do
   end
 
   # Restarting apache
-  # See cookbooks/app_php/providers/default.rb for the "restart" action.
+  # Calls the :restart action.
   action_restart
 
 end
