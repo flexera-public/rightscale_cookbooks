@@ -35,6 +35,7 @@ action :attach do
   end
 
   # Opens the backend_port.
+  # See cookbooks/sys_firewall/providers/default.rb for the "update" action.
   sys_firewall "Open backend_port to allow ELB to connect" do
     port new_resource.backend_port
     enable true
@@ -83,6 +84,7 @@ action :detach do
   elb.deregister_instances_with_load_balancer(new_resource.service_lb_name, node[:ec2][:instance_id])
 
   # Closes the backend_port.
+  # See cookbooks/sys_firewall/providers/default.rb for the "update" action.
   sys_firewall "Close backend_port allowing ELB to connect" do
     port new_resource.backend_port
     enable false

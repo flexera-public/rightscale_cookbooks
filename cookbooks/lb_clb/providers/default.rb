@@ -27,6 +27,7 @@ action :attach do
   end
 
   # Opens the backend_port.
+  # See cookbooks/sys_firewall/providers/default.rb for the "update" action.
   sys_firewall "Open backend_port to allow CLB to connect" do
     port new_resource.backend_port
     enable true
@@ -135,6 +136,7 @@ action :detach do
   end
 
   # Closes the backend_port.
+  # See cookbooks/sys_firewall/providers/default.rb for the "update" action.
   sys_firewall "Close backend_port allowing CLB to connect" do
     port new_resource.backend_port
     enable false

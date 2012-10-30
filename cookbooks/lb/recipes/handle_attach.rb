@@ -7,16 +7,15 @@
 
 rightscale_marker :begin
 
-# Loads helper from cookbooks/app/libraries/helper.rb
 class Chef::Recipe
   include RightScale::App::Helper
 end
 
 # Calls the "attach" action for all pools.
-# See cookbooks/lb_<provider>/providers/default.rb for details on this action.
-# See cookbooks/app/libraries/helper.rb for the "pool_names" method.
 log "  Remote recipe executed by do_attach_request"
+# See cookbooks/app/libraries/helper.rb for the "pool_names" method.
 pool_names(node[:remote_recipe][:pools]).each do |pool_name|
+  # See cookbooks/lb_<provider>/providers/default.rb for the "attach" action.
   lb pool_name do
     backend_id node[:remote_recipe][:backend_id]
     backend_ip node[:remote_recipe][:backend_ip]

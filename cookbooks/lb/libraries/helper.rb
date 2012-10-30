@@ -39,8 +39,8 @@ module RightScale
         end
         r.run_action(:load)
 
-        # See cookbooks/rightscale/libraries/helper.rb for the "get_tag_value" method.
         node[:server_collection]['app_servers'].to_hash.values.each do |tags|
+          # See cookbooks/rightscale/libraries/helper.rb for the "get_tag_value" method.
           uuid = RightScale::Utils::Helper.get_tag_value('server:uuid', tags)
           ip = RightScale::Utils::Helper.get_tag_value('appserver:listen_ip', tags)
           port = RightScale::Utils::Helper.get_tag_value('appserver:listen_port', tags)
