@@ -15,6 +15,7 @@ rule_ip = node[:app][:lb_ip]
 port = node[:app][:port]
 
 log "  Removing firewall rules used to allow loadbalancer to connect"
+# See cookbooks/sys_firewall/resources/default.rb for the "sys_firewall" resource.
 # See cookbooks/sys_firewall/providers/default.rb for the "update" action.
 sys_firewall port do
   ip_addr rule_ip

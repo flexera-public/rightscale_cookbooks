@@ -30,8 +30,10 @@ end
 # Restart tomcat service
 action :restart do
   log "  Running restart sequence"
+  # See cookbooks/app_tomcat/providers/default.rb for the "stop" action.
   action_stop
   sleep 5
+  # See cookbooks/app_tomcat/providers/default.rb for the "start" action.
   action_start
 end
 
@@ -192,6 +194,7 @@ action :setup_vhost do
   end
 
   # Starting tomcat service
+  # See cookbooks/app_tomcat/providers/default.rb for the "start" action.
   action_start
 
   log "  Setup mod_jk vhost"
@@ -274,6 +277,7 @@ action :setup_vhost do
     log "  Finished configuring mod_jk, creating the application vhost"
 
     # Enabling required apache modules
+    # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_module.rb for the "apache_module" definition.
     node[:app][:module_dependencies].each do |mod|
       apache_module mod
     end
@@ -304,6 +308,7 @@ action :setup_vhost do
   end
 
   log "  Configuring apache vhost for tomcat"
+  # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/web_app.rb for the "web_app" definition.
   web_app "http-#{port}-#{node[:web_apache][:server_name]}.vhost" do
     template        'apache_mod_jk_vhost.erb'
     cookbook        'app_tomcat'
@@ -414,6 +419,7 @@ action :code_update do
 
   log "  Downloading project repo"
   # Calling "repo" LWRP to download remote project repository
+  # See cookbooks/repo/resources/default.rb for the "repo" resource.
   repo "default" do
     destination deploy_dir
     action node[:repo][:default][:perform_action].to_sym
@@ -439,6 +445,7 @@ action :code_update do
   end
   # Restarting tomcat service.
   # This will automatically deploy ROOT.war if it is available in application root directory
+  # See cookbooks/app_tomcat/providers/default.rb for the "restart" action.
   action_restart
 
 end

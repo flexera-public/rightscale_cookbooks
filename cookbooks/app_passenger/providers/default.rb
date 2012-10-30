@@ -35,8 +35,10 @@ end
 # Restart apache/passenger
 action :restart do
   log "  Running restart sequence"
+  # See cookbooks/app_passenger/providers/default.rb for the "stop" action.
   action_stop
   sleep 5
+  # See cookbooks/app_passenger/providers/default.rb for the "start" action.
   action_start
 end
 
@@ -101,6 +103,7 @@ action :setup_vhost do
   app_add_listen_port port.to_s
 
   log "  Unlinking default apache vhost"
+  # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_site.rb for the "apache_site" definition.
   apache_site "000-default" do
     enable false
   end
@@ -108,6 +111,7 @@ action :setup_vhost do
   # Generation of new vhost config, based on user prefs
   log "  Generating new apache vhost"
   project_root = new_resource.root
+  # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/web_app.rb for the "web_app" definition.
   web_app "http-#{port}-#{node[:web_apache][:server_name]}.vhost" do
     template                   "basic_vhost.erb"
     cookbook                   'app_passenger'
@@ -172,6 +176,7 @@ action :code_update do
 
   log "  Starting source code download sequence..."
   # Calling "repo" LWRP to download remote project repository
+  # See cookbooks/repo/resources/default.rb for the "repo" resource.
   repo "default" do
     destination deploy_dir
     action node[:repo][:default][:perform_action].to_sym

@@ -34,8 +34,10 @@ end
 
 # Restart apache
 action :restart do
+  # See cookbooks/app_php/providers/default.rb for the "stop" action.
   action_stop
   sleep 5
+  # See cookbooks/app_php/providers/default.rb for the "start" action.
   action_start
 end
 
@@ -74,6 +76,7 @@ action :setup_vhost do
   php_port = new_resource.port
 
   # Disable default vhost
+  # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_site.rb for the "apache_site" definition.
   apache_site "000-default" do
     enable false
   end
@@ -83,6 +86,7 @@ action :setup_vhost do
   app_add_listen_port php_port
 
   # Configure apache vhost for PHP
+  # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/web_app.rb for the "web_app" definition.
   web_app node[:web_apache][:application_name] do
     template "app_server.erb"
     docroot project_root
@@ -126,6 +130,7 @@ action :code_update do
   log "  Downloading project repo"
 
   # Calling "repo" LWRP to download remote project repository
+  # See cookbooks/repo/resources/default.rb for the "repo" resource.
   repo "default" do
     destination deploy_dir
     action node[:repo][:default][:perform_action].to_sym
@@ -135,6 +140,7 @@ action :code_update do
   end
 
   # Restarting apache
+  # See cookbooks/app_php/providers/default.rb for the "restart" action.
   action_restart
 
 end
