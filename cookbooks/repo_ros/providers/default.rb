@@ -27,7 +27,7 @@ end
 action :pull do
 
   # Checking attributes
-  # Call the :setup_attributes action.
+  # Calls the :setup_attributes action.
   action_setup_attributes
 
   log "  Trying to get ros repo from: #{new_resource.storage_account_provider}, bucket: #{new_resource.repository}"
@@ -112,7 +112,7 @@ action :capistrano_pull do
   directory "#{new_resource.destination}"
 
   log "  Pulling source from ROS"
-  # Call the :action_pull action.
+  # Calls the :action_pull action.
   action_pull
 
   # The embedded chef capistrano resource can work only with git or svn repositories
@@ -158,7 +158,7 @@ action :capistrano_pull do
   log "  Deploy provider #{scm_provider}"
 
   # Applying capistrano style deployment
-  # See cookbooks/repo/definition/repo_capistranize.rb for "repo_capistranize" definition.
+  # See cookbooks/repo/definition/repo_capistranize.rb for the "repo_capistranize" definition.
   repo_capistranize "Source repo" do
     repository "#{repo_dir}/ros_repo/"
     destination destination

@@ -79,7 +79,7 @@ action :capistrano_pull do
   directory "#{new_resource.destination}"
 
   log "  Fetching data..."
-  # Call the :pull action.
+  # Calls the :pull action.
   action_pull
 
   # The embedded chef capistrano resource can work only with git or svn repositories
@@ -124,7 +124,7 @@ action :capistrano_pull do
   log "  Deploy provider #{scm_provider}"
 
   # Applying capistrano style deployment
-  # See cookbooks/repo/definition/repo_capistranize.rb for "repo_capistranize" definition.
+  # See cookbooks/repo/definition/repo_capistranize.rb for the "repo_capistranize" definition.
   repo_capistranize "Source repo" do
     repository "#{repo_dir}/repo/"
     destination destination

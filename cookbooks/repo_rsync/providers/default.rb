@@ -18,15 +18,15 @@ end
 action :pull do
 
   # Checking attributes
-  # Call the :setup_attributes action.
+  # Calls the :setup_attributes action.
   action_setup_attributes
 
   log "  Trying to get data from #{new_resource.repository}"
 
   # Add ssh key and exec script
-  # See cookbooks/repo_rsync/libraries/default.rb for "SshKey" class methods.
   ruby_block "Before deploy" do
     block do
+      # See cookbooks/repo_rsync/libraries/default.rb for the "create" method.
       RightScale::Repo::SshKey.new.create(new_resource.credential)
     end
   end
@@ -55,9 +55,9 @@ action :pull do
   end
 
   # Delete SSH key
-  # See cookbooks/repo_rsync/libraries/default.rb for "SshKey" class methods.
   ruby_block "After fetch" do
     block do
+      # See cookbooks/repo_rsync/libraries/default.rb for the "delete" method.
       RightScale::Repo::SshKey.new.delete
     end
   end
@@ -104,7 +104,7 @@ action :capistrano_pull do
   directory "#{new_resource.destination}"
 
   log "  Fetching data..."
-  # Call the :action_pull action.
+  # Calls the :action_pull action.
   action_pull
 
   # The embedded chef capistrano resource can work only with git or svn repositories
@@ -149,7 +149,7 @@ action :capistrano_pull do
   log "  Deploy provider #{scm_provider}"
 
   # Applying capistrano style deployment
-  # See cookbooks/repo/definition/repo_capistranize.rb for "repo_capistranize" definition.
+  # See cookbooks/repo/definition/repo_capistranize.rb for the "repo_capistranize" definition.
   repo_capistranize "Source repo" do
     repository "#{repo_dir}/repo/"
     destination destination

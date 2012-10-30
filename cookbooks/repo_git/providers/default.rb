@@ -34,13 +34,13 @@ action :pull do
         ::File.rename("#{new_resource.destination}", "#{capistrano_dir}/releases/capistrano_old_"+::Time.now.strftime("%Y%m%d%H%M"))
       end
       # Add ssh key and exec script
-      # See cookbooks/repo_git/libraries/default.rb for "GitSshKey" class methods.
+      # See cookbooks/repo_git/libraries/default.rb for the "create" method.
       RightScale::Repo::GitSshKey.new.create(new_resource.credential)
     end
   end
 
   # Checking attributes
-  # Call the :setup_attributes action.
+  # Calls the :setup_attributes action.
   action_setup_attributes
 
   destination = new_resource.destination
@@ -71,9 +71,9 @@ action :pull do
   end
 
   # Delete SSH key & clear GIT_SSH
-  # See cookbooks/repo_git/libraries/default.rb for "GitSshKey" class methods.
   ruby_block "After pull" do
     block do
+      # See cookbooks/repo_git/libraries/default.rb for the "delete" method.
       RightScale::Repo::GitSshKey.new.delete
     end
   end
@@ -86,15 +86,15 @@ end
 action :capistrano_pull do
 
   # Add ssh key and exec script
-  # See cookbooks/repo_git/libraries/default.rb for "GitSshKey" class methods.
   ruby_block "Before deploy" do
     block do
+      # See cookbooks/repo_git/libraries/default.rb for the "create" method.
        RightScale::Repo::GitSshKey.new.create(new_resource.credential)
     end
   end
 
   # Checking attributes
-  # Call the :setup_attributes action.
+  # Calls the :setup_attributes action.
   action_setup_attributes
 
   log "  Preparing to capistrano deploy action. Setting parameters for the process..."
@@ -112,7 +112,7 @@ action :capistrano_pull do
   log "  Deploy provider #{scm_provider}"
 
   # Applying capistrano style deployment
-  # See cookbooks/repo/definition/repo_capistranize.rb for "repo_capistranize" definition.
+  # See cookbooks/repo/definition/repo_capistranize.rb for the "repo_capistranize" definition.
   repo_capistranize "Source repo" do
     repository                 repository
     revision                   revision
@@ -126,9 +126,9 @@ action :capistrano_pull do
   end
 
   # Delete SSH key & clear GIT_SSH
-  # See cookbooks/repo_git/libraries/default.rb for "GitSshKey" class methods.
   ruby_block "After deploy" do
     block do
+      # See cookbooks/repo_git/libraries/default.rb for the "delete" method.
       RightScale::Repo::GitSshKey.new.delete
     end
   end
