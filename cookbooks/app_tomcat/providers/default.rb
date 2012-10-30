@@ -277,8 +277,8 @@ action :setup_vhost do
     log "  Finished configuring mod_jk, creating the application vhost"
 
     # Enabling required apache modules
-    # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_module.rb for the "apache_module" definition.
     node[:app][:module_dependencies].each do |mod|
+      # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_module.rb for the "apache_module" definition.
       apache_module mod
     end
 
