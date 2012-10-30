@@ -5,7 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-# Setup repository URL and other attributes
+# Setup repository URL and other attributes.
 action :setup_attributes do
 
   branch = new_resource.revision
@@ -26,7 +26,7 @@ end
 # Pull code from a determined repository to a specified destination.
 action :pull do
 
-  capistrano_dir="/home/capistrano_repo"
+  capistrano_dir = "/home/capistrano_repo"
   ruby_block "Before pull" do
     block do
       Chef::Log.info "  Check for previous capistrano repository in case of action change"

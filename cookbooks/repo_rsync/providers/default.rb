@@ -5,7 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-# Setup repository attributes
+# Setup repository attributes.
 action :setup_attributes do
 
   # Checking inputs required for getting source with RSync
