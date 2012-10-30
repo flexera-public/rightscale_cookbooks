@@ -6,7 +6,7 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 
-# Setup repository URL and other attributes
+# Setup repository URL and other attributes.
 action :setup_attributes do
 
   branch = new_resource.revision
@@ -28,7 +28,7 @@ end
 action :pull do
 
   # Checking attributes
-  # Call the :setup_attributes action.
+  # Calls the :setup_attributes action.
   action_setup_attributes
 
   # Setting parameters
@@ -75,7 +75,7 @@ end
 action :capistrano_pull do
 
   # Checking attributes
-  # Call the :setup_attributes action.
+  # Calls the :setup_attributes action.
   action_setup_attributes
 
   log "  Preparing to capistrano deploy action. Setting parameters for the process..."
@@ -95,7 +95,7 @@ action :capistrano_pull do
   log "  Deploy provider #{scm_provider}"
 
   # Applying capistrano style deployment
-  # See cookbooks/repo/definition/repo_capistranize.rb for "repo_capistranize" definition.
+  # See cookbooks/repo/definition/repo_capistranize.rb for the "repo_capistranize" definition.
   repo_capistranize "Source repo" do
     repository repository
     destination destination
