@@ -57,8 +57,9 @@ action :install do
     not_if { ::File.exists?("#{node[:app_django][:pip_bin]}") }
   end
 
-  # Installing python modules dependencies
   log "  Module dependencies which will be installed: #{node[:app][:module_dependencies]}"
+  # Installing python modules dependencies
+  # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_module.rb for the "apache_module" definition.
   node[:app][:module_dependencies].each do |mod|
     apache_module mod
   end
