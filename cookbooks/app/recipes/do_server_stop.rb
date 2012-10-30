@@ -8,7 +8,7 @@
 rightscale_marker :begin
 
 log "  Stopping application server now..."
-# See cookbooks/app_<providers>/providers/default.rb for "stop" action.
+# See cookbooks/app_<providers>/providers/default.rb for the "stop" action.
 app "default" do
   action :stop
 end

@@ -116,7 +116,7 @@ action :setup_vhost do
   end
 
   # Adds django port to list of ports for webserver to listen on
-  # See cookbooks/app/definitions/app_add_listen_port.rb for "app_add_listen_port" definition.
+  # See cookbooks/app/definitions/app_add_listen_port.rb for the "app_add_listen_port" definition.
   app_add_listen_port django_port
 
   # Configure apache vhost for Django
@@ -169,7 +169,7 @@ action :setup_db_connection do
 
   # Tells selected db_adapter to fill in it's specific connection template
   log "  Creating settings.py for DB: #{db_name} using adapter #{db_adapter}"
-  # See cookbooks/db/definitions/db_connect_app.rb for "db_connect_app" definition.
+  # See cookbooks/db/definitions/db_connect_app.rb for the "db_connect_app" definition.
   db_connect_app ::File.join(project_root, "settings.py") do
     template "settings.py.erb"
     owner node[:app][:user]

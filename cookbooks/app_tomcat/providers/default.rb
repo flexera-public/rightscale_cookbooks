@@ -182,7 +182,7 @@ action :setup_vhost do
   end
 
   log "  Setup logrotate for tomcat"
-  # See cookbooks/rightscale/definition/rightscale_logrotate_app.rb for "rightscale_logrotate_app" definition.
+  # See cookbooks/rightscale/definition/rightscale_logrotate_app.rb for the "rightscale_logrotate_app" definition.
   rightscale_logrotate_app "tomcat" do
     cookbook "rightscale"
     template "logrotate.erb"
@@ -291,7 +291,7 @@ action :setup_vhost do
   end
 
   log "  Generating new apache ports.conf"
-  # See cookbooks/app/definitions/app_add_listen_port.rb for "app_add_listen_port" definition.
+  # See cookbooks/app/definitions/app_add_listen_port.rb for the "app_add_listen_port" definition.
   app_add_listen_port port
 
   # Configuring document root for apache
@@ -330,7 +330,7 @@ action :setup_db_connection do
   version = node[:app][:version].to_i
 
   log "  Creating context.xml for DB: #{db_name} using adapter #{db_adapter} and datasource #{datasource}"
-  # See cookbooks/db/definitions/db_connect_app.rb for "db_connect_app" definition.
+  # See cookbooks/db/definitions/db_connect_app.rb for the "db_connect_app" definition.
   db_connect_app "/etc/tomcat#{version}/context.xml" do
     template      "context_xml.erb"
     owner         "#{node[:app][:user]}"
@@ -377,7 +377,7 @@ action :setup_monitoring do
 
   version=node[:app][:version].to_i
   log "  Setup of collectd monitoring for tomcat"
-  # See cookbooks/rightscale/definitions/rightscale_enable_collectd_plugin.rb for "rightscale_enable_collectd_plugin" definition.
+  # See cookbooks/rightscale/definitions/rightscale_enable_collectd_plugin.rb for the "rightscale_enable_collectd_plugin" definition.
   rightscale_enable_collectd_plugin 'exec'
 
   # Installing and configuring collectd for tomcat

@@ -8,7 +8,7 @@
 rightscale_marker :begin
 
 log "  Updating project code repository"
-# See cookbooks/app_<providers>/providers/default.rb for "code_update" action.
+# See cookbooks/app_<providers>/providers/default.rb for the "code_update" action.
 app "default" do
   destination node[:app][:destination]
   action :code_update

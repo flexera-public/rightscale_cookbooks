@@ -8,7 +8,7 @@
 rightscale_marker :begin
 
 log "  Reloading application server now..."
-# See cookbooks/app_<providers>/providers/default.rb for "reload" action.
+# See cookbooks/app_<providers>/providers/default.rb for the "reload" action.
 app "default" do
   action :reload
 end
