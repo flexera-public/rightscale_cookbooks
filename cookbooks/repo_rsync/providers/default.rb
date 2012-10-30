@@ -5,17 +5,20 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+# Setup repository attributes.
 action :setup_attributes do
 
   # Checking inputs required for getting source with RSync
   raise "  RSync username input is unset" unless new_resource.account
   raise "  RSync SSH Key input is unset" unless new_resource.credential
-
 end
 
+
+# Pull code from a determined repository to a specified destination.
 action :pull do
 
   # Checking attributes
+  # Calls the :setup_attributes action.
   action_setup_attributes
 
   log "  Trying to get data from #{new_resource.repository}"
@@ -23,6 +26,7 @@ action :pull do
   # Add ssh key and exec script
   ruby_block "Before deploy" do
     block do
+      # See cookbooks/repo_rsync/libraries/default.rb for the "create" method.
       RightScale::Repo::SshKey.new.create(new_resource.credential)
     end
   end
@@ -53,6 +57,7 @@ action :pull do
   # Delete SSH key
   ruby_block "After fetch" do
     block do
+      # See cookbooks/repo_rsync/libraries/default.rb for the "delete" method.
       RightScale::Repo::SshKey.new.delete
     end
   end
@@ -61,12 +66,13 @@ action :pull do
 end
 
 
+# Pull code from a determined repository to a specified destination and create a capistrano deployment.
 action :capistrano_pull do
 
   log "  Recreating project directory for :pull action"
 
-  repo_dir="/home"
-  capistrano_dir="/home/capistrano_repo"
+  repo_dir = "/home"
+  capistrano_dir = "/home/capistrano_repo"
 
   # Delete if destination is a symlink
   link "#{new_resource.destination}" do
@@ -98,6 +104,7 @@ action :capistrano_pull do
   directory "#{new_resource.destination}"
 
   log "  Fetching data..."
+  # Calls the :action_pull action.
   action_pull
 
   # The embedded chef capistrano resource can work only with git or svn repositories
@@ -128,7 +135,7 @@ action :capistrano_pull do
     action :delete
   end
 
-  #initialisation of new git repo with initial commit
+  # Initialize new git repo with initial commit.
   bash "Git init in project folder" do
     cwd "#{repo_dir}/repo"
     code <<-EOH
@@ -142,6 +149,7 @@ action :capistrano_pull do
   log "  Deploy provider #{scm_provider}"
 
   # Applying capistrano style deployment
+  # See cookbooks/repo/definition/repo_capistranize.rb for the "repo_capistranize" definition.
   repo_capistranize "Source repo" do
     repository "#{repo_dir}/repo/"
     destination destination

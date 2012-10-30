@@ -19,6 +19,7 @@ node[:repo].each do |resource_name, entry|
 
   # Initial setup of "repository" LWRP.
   log "  Registering #{resource_name} prov: #{entry[:provider]}"
+  # See cookbooks/repo/resources/default.rb for the "repo" resource.
   repo resource_name do
     provider entry[:provider]
     repository url
