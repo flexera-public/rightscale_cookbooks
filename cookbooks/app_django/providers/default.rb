@@ -35,8 +35,10 @@ end
 # Restart apache
 action :restart do
   log "  Running restart sequence"
+  # Calls the :stop action.
   action_stop
   sleep 5
+  # Calls the :start action.
   action_start
 end
 
@@ -55,13 +57,15 @@ action :install do
     not_if { ::File.exists?("#{node[:app_django][:pip_bin]}") }
   end
 
-  # Installing python modules dependencies
   log "  Module dependencies which will be installed: #{node[:app][:module_dependencies]}"
+  # Installing python modules dependencies
   node[:app][:module_dependencies].each do |mod|
+    # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_module.rb for the "apache_module" definition.
     apache_module mod
   end
 
   # Install Django 1.4
+  # See https://github.com/rightscale/cookbooks/blob/master/python/resources/pip.rb for the "python_pip" resource.  
   python_pip "django" do
     version "#{node[:app_django][:version]}"
     action :install
@@ -95,15 +99,18 @@ action :setup_vhost do
 
   # Disable default vhost
   log "  Unlinking default apache vhost"
+  # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_site.rb for the "apache_site" definition.
   apache_site "000-default" do
     enable false
   end
 
   # Adds django port to list of ports for webserver to listen on
+  # See cookbooks/app/definitions/app_add_listen_port.rb for the "app_add_listen_port" definition.
   app_add_listen_port django_port
 
   # Configure apache vhost for Django
   log "  Creating apache.vhost"
+  # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/web_app.rb for the "web_app" definition. 
   web_app "http-#{django_port}-#{node[:web_apache][:server_name]}.vhost" do
     template "apache_mod_wsgi_vhost.erb"
     docroot project_root
@@ -149,8 +156,9 @@ action :setup_db_connection do
     end
   end
 
-  # Tells selected db provider to fill in it's specific connection template
+  # Tells selected db_adapter to fill in it's specific connection template
   log "  Creating settings.py for DB: #{db_name}"
+  # See cookbooks/db/definitions/db_connect_app.rb for the "db_connect_app" definition.
   db_connect_app ::File.join(project_root, "settings.py") do
     template "settings.py.erb"
     owner node[:app][:user]
@@ -172,6 +180,7 @@ action :code_update do
   log "  Downloading project repo"
 
   # Calling "repo" LWRP to download remote project repository
+  # See cookbooks/repo/resources/default.rb for the "repo" resource.
   repo "default" do
     destination deploy_dir
     action node[:repo][:default][:perform_action].to_sym
@@ -192,6 +201,7 @@ action :code_update do
   end
 
   # Restarting apache
+  # Calls the :restart action.
   action_restart
 
 end

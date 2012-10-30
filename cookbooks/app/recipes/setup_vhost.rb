@@ -1,5 +1,5 @@
 #
-# Cookbook Name::app
+# Cookbook Name:: app
 #
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
@@ -11,6 +11,7 @@
 rightscale_marker :begin
 
 log "  Configuring vhost file for App server"
+# See cookbooks/app_<providers>/providers/default.rb for the "setup_vhost" action.
 app "default" do
   root node[:app][:root]
   port node[:app][:port].to_i

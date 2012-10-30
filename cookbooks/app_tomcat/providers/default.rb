@@ -30,8 +30,10 @@ end
 # Restart tomcat service
 action :restart do
   log "  Running restart sequence"
+  # Calls the :stop action.
   action_stop
   sleep 5
+  # Calls the :start action.
   action_start
 end
 
@@ -158,6 +160,7 @@ action :setup_vhost do
   end
 
   log "  Setup logrotate for tomcat"
+  # See cookbooks/rightscale/definition/rightscale_logrotate_app.rb for the "rightscale_logrotate_app" definition.
   rightscale_logrotate_app "tomcat" do
     cookbook "rightscale"
     template "logrotate.erb"
@@ -167,6 +170,7 @@ action :setup_vhost do
   end
 
   # Starting tomcat service
+  # Calls the :start action.
   action_start
 
   log "  Setup mod_jk vhost"
@@ -250,6 +254,7 @@ action :setup_vhost do
 
     # Enabling required apache modules
     node[:app][:module_dependencies].each do |mod|
+      # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_module.rb for the "apache_module" definition.
       apache_module mod
     end
 
@@ -266,6 +271,7 @@ action :setup_vhost do
   end
 
   log "  Generating new apache ports.conf"
+  # See cookbooks/app/definitions/app_add_listen_port.rb for the "app_add_listen_port" definition.
   app_add_listen_port port
 
   # Configuring document root for apache
@@ -278,6 +284,7 @@ action :setup_vhost do
   end
 
   log "  Configuring apache vhost for tomcat"
+  # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/web_app.rb for the "web_app" definition.
   web_app "http-#{port}-#{node[:web_apache][:server_name]}.vhost" do
     template        'apache_mod_jk_vhost.erb'
     cookbook        'app_tomcat'
@@ -303,6 +310,7 @@ action :setup_db_connection do
   version = node[:app][:version].to_i
 
   log "  Creating context.xml for DB: #{db_name} using datasource #{datasource}"
+  # See cookbooks/db/definitions/db_connect_app.rb for the "db_connect_app" definition.
   db_connect_app "/etc/tomcat#{version}/context.xml" do
     template "context_xml.erb"
     owner "#{node[:app][:user]}"
@@ -363,6 +371,7 @@ action :setup_monitoring do
 
   version=node[:app][:version].to_i
   log "  Setup of collectd monitoring for tomcat"
+  # See cookbooks/rightscale/definitions/rightscale_enable_collectd_plugin.rb for the "rightscale_enable_collectd_plugin" definition.
   rightscale_enable_collectd_plugin 'exec'
 
   # Installing and configuring collectd for tomcat
@@ -399,6 +408,7 @@ action :code_update do
 
   log "  Downloading project repo"
   # Calling "repo" LWRP to download remote project repository
+  # See cookbooks/repo/resources/default.rb for the "repo" resource.
   repo "default" do
     destination deploy_dir
     action node[:repo][:default][:perform_action].to_sym
@@ -424,6 +434,7 @@ action :code_update do
   end
   # Restarting tomcat service.
   # This will automatically deploy ROOT.war if it is available in application root directory
+  # Calls the :restart action.
   action_restart
 
 end
