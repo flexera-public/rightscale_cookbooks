@@ -12,4 +12,4 @@ version          "13.2.0"
 depends "db_mysql"
 depends "app_php"
 
-recipe "lamp::default", "Installs LAMP specific packages. Sets up LAMP-specific default attributes."
+recipe "lamp::default", "Sets up LAMP-specific default attributes."

@@ -10,6 +10,8 @@ rightscale_marker :begin
 # RightScale unique identifier
 uuid = node[:rightscale][:instance_uuid]
 log "  Adding server tag for UUID #{uuid}"
+
+# See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RightLinkTag for the "right_link_tag" resource.
 right_link_tag "server:uuid=#{uuid}"
 
 i=0
