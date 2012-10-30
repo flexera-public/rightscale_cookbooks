@@ -7,6 +7,7 @@
 
 rightscale_marker :begin
 
+# Loads helper from cookbooks/app/libraries/helper.rb.
 class Chef::Recipe
   include RightScale::App::Helper
 end
@@ -25,7 +26,7 @@ pool_list.each do |pool_name_short, pool_name_full|
   lb pool_name_short do
     provider "lb_haproxy"
     pool_name_full pool_name_full
-    persist true # Store this resource in node between converges.
+    persist true # Stores this resource in node between converges.
     action :nothing
   end
 end
