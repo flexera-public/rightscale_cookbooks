@@ -22,6 +22,7 @@ pool_list.each do |pool_name_short, pool_name_full|
   log "  Setup default load balancer resource for vhost '#{pool_name_short}'."
   log "  load balancer vhost full name is '#{pool_name_full}'."
 
+  # See cookbooks/lb/resources/default.rb for the "lb" resource.
   lb pool_name_short do
     provider "lb_haproxy"
     pool_name_full pool_name_full
