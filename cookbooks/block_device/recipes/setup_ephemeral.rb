@@ -52,8 +52,11 @@ if node[:platform] == "ubuntu"
 end
 
 # RedHat does not support xfs, so set specific item accordingly
+# Centos image seems to be missing it for google compute
 if node[:platform] == "redhat"
   filesystem_type = "ext3"
+elsif node[:platform] == "centos" and cloud == 'google'
+  filesystem_type = "ext4"
 else
   filesystem_type = "xfs"
 end
@@ -71,8 +74,9 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure' || cloud == 'googl
   @api = RightScale::Tools::API.factory('1.0', {:cloud => cloud}) if cloud == 'ec2'
   my_devices = []
   dev_index = 0
+
   loop do
-    if node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
+   if node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
       device = node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
       device = '/dev/' + device if device !~ /^\/dev\//
       device = @api.unmap_device_for_ec2(device) if cloud == 'ec2'
@@ -89,7 +93,7 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure' || cloud == 'googl
       break
     end
     dev_index += 1
-  end if cloud != 'azure'
+  end if cloud != 'azure' and cloud != 'google'
 
   # Azure doesn't have block_device_mapping in the node so the device is hard-coded at the moment
   if cloud == 'azure'
@@ -101,6 +105,26 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure' || cloud == 'googl
       log "  WARNING: Cannot use device #{device} - skipping"
     end
   end
+
+  # GCE also doesn't have block_device_mapping in the node.  We'll have to hard-code.
+  #n1-standard-8-d has /dev/vdb and /dev/vdc, all others just /dev/vdb
+
+ if cloud == 'google'
+    device = '/dev/vdc'
+    device = Pathname.new(device).realpath.to_s if File.exists?(device)
+    if ( File.exists?(device) && File.ftype(device) == "blockSpecial" )
+      my_devices << device
+    else
+      log "  WARNING: Cannot use device #{device} - skipping"
+    end
+    device = '/dev/vdb'
+    device = Pathname.new(device).realpath.to_s if File.exists?(device)
+    if ( File.exists?(device) && File.ftype(device) == "blockSpecial" )
+      my_devices << device
+    else
+      log "  WARNING: Cannot use device #{device} - skipping"
+    end
+ end
 
   # Check if /mnt is actually on a seperate device.
   # ec2 instances and images that do now have ephemeral will be caught by this, eg: t1.micro and HVM
