@@ -7,7 +7,6 @@
 
 rightscale_marker :begin
 
-# Loads helpers from cookbooks/app/libraries/helper.rb and cookbooks/lb/libraries/helper.rb
 class Chef::Recipe
   include RightScale::App::Helper
   include RightScale::LB::Helper
