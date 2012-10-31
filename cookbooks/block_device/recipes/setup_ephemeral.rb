@@ -63,8 +63,8 @@ root_device = `mount`.find {|dev| dev.include? " on / "}.split[0]
 current_mnt_device = `mount`.find {|dev| dev.include? " on #{ephemeral_mount_point} "}
 current_mnt_device = current_mnt_device ? current_mnt_device.split[0] : nil
 
-# Only EC2, Azure, and openstack clouds are currently supported
-if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
+# Only EC2, Azure, Google, and openstack clouds are currently supported
+if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure' || cloud == 'google'
 
   # Get a list of ephemeral devices
   # Make sure to skip EBS volumes attached on boot
