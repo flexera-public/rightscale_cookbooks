@@ -76,7 +76,7 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure' || cloud == 'googl
   dev_index = 0
 
   loop do
-   if node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
+    if node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
       device = node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
       device = '/dev/' + device if device !~ /^\/dev\//
       device = @api.unmap_device_for_ec2(device) if cloud == 'ec2'
