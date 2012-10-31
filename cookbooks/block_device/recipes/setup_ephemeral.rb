@@ -55,7 +55,7 @@ end
 # Centos image seems to be missing it for google compute
 if node[:platform] == "redhat"
   filesystem_type = "ext3"
-elsif node[:platform] == "centos" and cloud == 'google'
+elsif cloud == 'google'
   filesystem_type = "ext4"
 else
   filesystem_type = "xfs"
