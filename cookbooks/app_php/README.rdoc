@@ -53,13 +53,13 @@ to install the database client.
 
 <b>Apache</b>
 
-Server version: Apache/2.2.3
+Server version: Apache/2.2.3 <br>
 Server built: Jun 6 2012 10:00:42
 
 <b>PHP</b>
 
-PHP 5.3.6 (cli) (built: Apr 25 2011 10:45:29)
-Copyright (c) 1997-2011 The PHP Group
+PHP 5.3.6 (cli) (built: Apr 25 2011 10:45:29) <br>
+Copyright (c) 1997-2011 The PHP Group <br>
 Zend Engine v2.3.0, Copyright (c) 1998-2011 Zend Technologies
 
 Note: The 'php/modules_list' contains an array of package names of PHP modules to install.

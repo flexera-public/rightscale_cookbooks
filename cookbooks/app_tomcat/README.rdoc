@@ -56,38 +56,38 @@ and forward all requests for dynamic content to Tomcat.
 
 <b>Apache</b>
 
-Server version: Apache/2.2.3
+Server version: Apache/2.2.3 <br>
 Server built: Jun 6 2012 10:00:42
 
 <b>Apache Tomcat</b>
 
 <b>Version 6</b>
 
-Server.info=Apache Tomcat/6.0.16
-Server.number=6.0.16.0
-Server.built=Feb 8 2008 10:50:49
-Tomcat Native library 1.1.20
+Server.info=Apache Tomcat/6.0.16 <br>
+Server.number=6.0.16.0 <br>
+Server.built=Feb 8 2008 10:50:49 <br>
+Tomcat Native library 1.1.20 <br>
 mod_jk/1.2.32
 
 <b>Version 7</b>
 
-Server.info=Apache Tomcat/7.0.26
-Server.number=7.0.26.0
-Server.built=Jul 19 2012 03:21:30
-Tomcat Native library 1.1.22
+Server.info=Apache Tomcat/7.0.26 <br>
+Server.number=7.0.26.0 <br>
+Server.built=Jul 19 2012 03:21:30 <br>
+Tomcat Native library 1.1.22 <br>
 mod_jk/1.2.32
 
 <b>Java</b>
 
 <b>Tomcat 6</b>
 
-Java version "1.6.0_31"
-Java(TM) SE Runtime Environment (build 1.6.0_31-b04)
+Java version "1.6.0_31" <br>
+Java(TM) SE Runtime Environment (build 1.6.0_31-b04) <br>
 Java HotSpot(TM) 64-Bit Server VM (build 20.6-b01, mixed mode)
 
 <b>Tomcat 7</b>
-Java version "1.6.0_24"
-OpenJDK Runtime Environment (IcedTea6 1.11.4)
+Java version "1.6.0_24" <br>
+OpenJDK Runtime Environment (IcedTea6 1.11.4) <br>
 OpenJDK 64-Bit Server VM (build 20.0-b12, mixed mode)
 
 also:

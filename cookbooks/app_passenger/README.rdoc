@@ -44,7 +44,7 @@ to install the database client.
 
 <b>Apache</b>
 
-Server version: Apache/2.2.3
+Server version: Apache/2.2.3 <br>
 Server built: Jun 6 2012 10:00:42
 
 <b>Phusion Passenger</b>
