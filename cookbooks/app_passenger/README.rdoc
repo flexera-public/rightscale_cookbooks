@@ -76,11 +76,13 @@ ServerTemplate built on this cookbook can be combined in two modes:
 Mix these recipes in any way to satisfy project requirements.
 
 === Attributes:
+
 These are settings used in recipes and templates. Default values are noted.
 
 Note: Only "internal" cookbook attributes are described here. Descriptions of attributes which have inputs you can find in metadata.rb cookbook file.
 
 ====== General attributes
+
 * <tt>node[:app_passenger][:rails_spawn_method]</tt> - The spawn method used by the passenger.
 * <tt>node[:app_passenger][:apache][:maintenance_page]</tt> - Path to html maintenance page, which will be displayed, when main application is unavailable.
 * <tt>node[:app_passenger][:apache][:serve_local_files]</tt> - Used to enable/disable the serve of any existing local files.
@@ -103,31 +105,17 @@ Note: Only "internal" cookbook attributes are described here. Descriptions of at
 * <tt>database.yml.erb</tt> - Configuration for project database connection config file used in the <tt>app::setup_db_connection</tt> recipe and defined in <tt>:setup_db_connection</tt> action of the <tt>app_passenger</tt> LWRP.
 * <tt>rails_env.erb</tt> - Template for bash script which will set up ENV for the rails project used in the <tt>app::setup_db_connection</tt> recipe and defined in <tt>:setup_db_connection</tt> action of the <tt>app_passenger</tt> LWRP.
 
-=== Definitions:
-none
-
-=== Libraries-helpers:
-none
-
-
 === LWRPs:
 
 <tt>app_passenger</tt> Lightweight provider is defined in the providers/default.rb file, it contains source for the following actions:
 
 * <tt>:install</tt>
-
 * <tt>:setup_vhost</tt>
-
 * <tt>:start</tt>
-
 * <tt>:stop</tt>
-
 * <tt>:reload</tt>
-
 * <tt>:restart</tt>
-
 * <tt>:code_update</tt>
-
 * <tt>:setup_db_connection</tt>
 
 For more info about these actions, please see the <tt>app</tt> cookbook README.
@@ -137,19 +125,12 @@ For normal operations it requires "app" resource which will act as the interface
 ===== Actions
 
 * <tt>:install</tt> - Install packages required for application server setup.
-
 * <tt>:setup_vhost</tt> - Set up apache vhost file with passenger module directives included.
-
 * <tt>:start</tt> - Start sequence for Passenger application server.
-
 * <tt>:stop</tt> - Stop sequence for Passenger application server.
-
 * <tt>:reload</tt> - Reload sequence for Passenger application server.
-
 * <tt>:restart</tt> - Restart sequence for Passenger application server.
-
 * <tt>:code_update</tt> - Perform project source code update/download using user selected "repo" LWRP. Set up logrotate configuration.
-
 * <tt>:setup_db_connection</tt> - Perform project config/database.yml database connection configuration.
   The driver type is specified as 'ruby' and the db_<provider> cookbook's
   <tt>install_client_driver</tt> action performs necessary steps to install the

@@ -23,7 +23,6 @@ There are no known limitations.
   your runlist. This will pull in generic client inputs, provide provider
   selection input and install client. Set db/provider_type input in
   RightScale ServerTemplate to set provider and version for 'db' resource.
-
 * To setup a MySQL database client and server, place the following recipes
   in order to your runlist:
 
@@ -57,10 +56,12 @@ override repository please see: {Override Chef Cookbooks}[http://support.rightsc
 == DETAILS:
 
 === General
+
 The 'db' implementation is defined by a Lightweight Provider, which can be
 found in the <tt>providers/default.rb</tt> file.
 
 === Attributes:
+
 These are settings used in recipes and templates. Default values are noted.
 
 Note: Only "internal" cookbook attributes are described here. Descriptions of attributes 
@@ -68,6 +69,7 @@ which have inputs can be found in the metadata.rb cookbook file. For generic db 
 refer to the db cookbook readme.
 
 ===== General attributes
+
 * <tt>node[:db_mysql][:collectd_master_slave_mode]</tt> - The mode for collectd in MySQL server.
 * <tt>node[:db_mysql][:previous_master]</tt> - The previous master of MySQL server.
 * <tt>node[:db_mysql][:port]</tt> - The port on which MySQL server listens.
@@ -81,10 +83,12 @@ refer to the db cookbook readme.
 * <tt>node[:db_mysql][:dump][:prefix]</tt> - The prefix to be used with container name.
 
 ===== System tuning parameters
+
 * <tt>node[:db_mysql][:file_ulimit]</tt> - A tuning parameter to set maximum open files for mysql and root users.
 * <tt>node[:db_mysql][:backup][:slave][:max_allowed_lag]</tt> - Maximum allowed lag time for MySQL slave backup.
 
 ===== Platform dependent
+
 * <tt>node[:db_mysql][:log]</tt> - The log file location for MySQL server.
 * <tt>node[:db_mysql][:log_error]</tt> - The error log file location for MySQL server.
 

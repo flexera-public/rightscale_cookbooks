@@ -5,26 +5,18 @@
 This cookbook provides a set of dynamic DNS recipes used by RightScale ServerTemplates including the Database Manager
 ServerTemplates.
 
--------------
-
 == REQUIREMENTS:
 
 * An account with the desired DNS service provider.
 * DNS A record’s created external to this cookbook.
 
--------------
-
 == COOKBOOKS DEPENDENCIES:
 
 Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
--------------
-
 == KNOWN LIMITATIONS:
 
 Currently only the first private IP address can be set.
-
--------------
 
 == SETUP/USAGE:
 
@@ -34,7 +26,6 @@ This will install the support tools and chef providers for the dynamic DNS provi
 provider attributes to your ServerTemplate inputs. Place <tt>sys_dns::do_set_private</tt> recipe in your runlist 
 to set the DNS record identified by the “DNS Record ID” input to the first private IP address
 of the instance.
--------------
 
 == DETAILS:
 
@@ -45,8 +36,6 @@ A new chef provider can be created to add support for additional dynamic DNS ser
 
 For additional information: {Deployment Prerequisites}[http://support.rightscale.com/03-Tutorials/Deployment_Prerequisites_(Chef)]
 
--------------
-
 === Attributes:
 
 These are settings used in recipes and templates. Default values are noted.
@@ -56,8 +45,6 @@ These are settings used in recipes and templates. Default values are noted.
 * <tt>node[sys_dns][user]</tt> - The username that is used to access and modify your DNS A records.
 * <tt>node[sys_dns][password]</tt> - The password that is used to access and modify your DNS A records.
 * <tt>node[sys_dns][region]</tt> - Region where the A records should be modified. This input only applies to Cloud DNS.
-
--------------
 
 === Libraries-helpers:
 
@@ -90,8 +77,6 @@ Raise:
 
 <tt>Chef::Log::</tt> Error message that may have occurred during the update process.
 
--------------
-
 === LWRPs:
 
 The 'set_private' interface is defined by a Lightweight Resource, which can be found in the resources/default.rb file.
@@ -122,8 +107,6 @@ To update A record with a server's private IP address:
     address private_ip
     action :set_private
   end
-
--------------
 
 == LICENSE:
 

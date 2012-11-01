@@ -5,17 +5,14 @@
 Provides the PostgreSQL implementation of the 'db' resource to install and
 manage PostgreSQL database stand-alone servers and clients.
 
-
 == DETAILS
 
 The 'db' implementation is defined by a Lightweight Provider, which can be
 found in the providers/default.rb file.
 
-
 == REQUIREMENTS:
 
 * Requires a VM launched from a RightScale managed RightImage
-
 * Needs RightScale ServerTemplate tools gem installed on system.
 
 == COOKBOOKS DEPENDENCIES:
@@ -26,14 +23,12 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 There are no known limitations.
 
-
 == SETUP:
 
 * To setup only the database client, place <tt>db::default</tt> recipe into
   your runlist. This will pull in generic client inputs, provide
   provider selection input and install client. Set db/provider_type input in
   RightScale ServerTemplate to set provider and version for 'db' resource.
-
 * To setup a PostgreSQL database client and server, place the following recipes
   in order to your runlist:
 

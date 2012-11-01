@@ -32,19 +32,12 @@ There are no known limitations.
 * Place repo::default recipe into your runlist to setup the repo resource. When
   using a RightScale ServerTemplate, this will also automatically add the
   required attributes to your ServerTemplate inputs.
-
 * Add 'repo' resource call in your recipe and provide all required parameters.
-
 * Add 'destination' and 'action' attributes to your 'repo' resource.
-
 * Set desired action for your 'repo' resource
-
   It can be :pull or :capistrano_pull
-
   :pull - perform basic 'repo' action, just pulling your code from remote repo.
-
   :capistrano_pull - performs pulling and backup of your code.
-
   For code implementation examples look at <b>LWRPs</b> section of this README.
 
 == DETAILS:
@@ -178,6 +171,7 @@ contain implementation of corresponding repo_* Light Weight Provider which can
 be called using this resource.
 
 ===== Actions:
+
 <tt>:pull</tt>
 Standard repo pull. Your source code repository will be pulled from remote url
 to specified destination.
@@ -186,39 +180,28 @@ to specified destination.
 Perform standard pull and then capistrano deployment style will be applied.
 
 ===== Attributes:
+
 These are settings used in recipes and templates. Default values should be noted.
 
 Note: Only "internal" cookbook attributes are described here. Descriptions of attributes which have inputs can be found in the metadata.rb cookbook file.
 
 * <tt>destination</tt> - Path to where project repo will be pulled
-
 * <tt>revision</tt> - Remote repo Branch or revision
-
 * <tt>account</tt> - Account name
-
 * <tt>credential</tt> - Account credential
-
 * <tt>svn_arguments</tt> - Extra arguments passed to the subversion command
-
 * <tt>app_user</tt> - System user to run the deploy as
-
 * <tt>purge_before_symlink</tt> - An array of paths, relative to app root, to be
   removed from a checkout before symlinking
-
 * <tt>create_dirs_before_symlink</tt> - Directories to create before symlinking.
   Runs after purge_before_symlink
-
 * <tt>symlinks</tt> - A hash that maps files in the shared directory to their
   paths in the current release
-
 * <tt>environment</tt> - A hash of the form {"ENV_VARIABLE"=>"VALUE"}
-
 * <tt>prefix</tt> - The prefix that will be used to name/locate the backup of a
   particular code repo.
-
 * <tt>storage_account_provider</tt> - Location where dump file will be saved.
   Used by dump recipes to back up to Amazon S3 or Rackspace Cloud Files.
-
 * <tt>unpack_source</tt> - Unpack downloaded source or not Source file must be
   kind of tar archive Default: false
 

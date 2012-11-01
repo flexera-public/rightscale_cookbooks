@@ -38,7 +38,6 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
   logging service provider (rsyslog/syslog-ng). If a remote server is specified the default
   recipe will determine the logging provider installed (rsyslog/syslog-ng)
   and configure it for remote logging.
-
 * To setup a logging server, place the following recipes in order to your runlist:
 
     logging_<provider>::setup_server
@@ -56,11 +55,9 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 1. Local Logging - Set the 'logging/remote_server' input to 'ignore' to use
    the default configuration installed.
-
 2. Remote Logging - Set the 'logging/remote_server' input to the FQDN or IP of the
    designated remote logging server to adjust the default configuration to the remote
    logging configuration.
-
 3. Transfer protocol - Set the 'logging/protocol' input to one of the listed options:
    1. UDP: the most generic and common-used option. UDP is the default logging protocol option.
    2. RELP: RELP stands for Reliable Event Logging Protocol.

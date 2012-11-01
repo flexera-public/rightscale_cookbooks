@@ -34,7 +34,6 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
   passed to the db_<provider> cookbook. This action also sets the
   <tt>node[:db][:client][:driver]</tt> attribute which is used to perform
   database specific actions.
-
 * To setup a database client and server, place the following recipes
   in order to your runlist:
 
@@ -98,7 +97,6 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
    client will connect to. (e.g. 5.1, 5.5, 9.1). This affects what connector
    package to install. Syntax for this input is
    <cookbook>_<version> (i.e. db_mydatabase_1.0)
-
 2. Fill <tt>db/application/password</tt> , <tt>db/application/user</tt> and
    <tt>db/dns/master/fqdn</tt> inputs which are necessary to connect client to
    Database Manager.
@@ -139,11 +137,9 @@ When writing your own database Lightweight Provider:
 
     set[:db][:provider] = "db_myprovider"
 
-
 * Any database-specific attributes that you wish to make into user-configurable
   inputs should be added to the cookbook metadata with the default recipe included in
   the attribute's 'recipes' array. For more about Chef metadata, please see: {Chef Metadata}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-RightScale_Support_of_Chef/Chef_Metadata]
-
 * Your provider cookbook metadata should depend on this cookbook by adding a
   'depends' line to its metadata. For example:
 

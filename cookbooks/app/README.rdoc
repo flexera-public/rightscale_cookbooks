@@ -77,6 +77,7 @@ file's description.
 == DETAILS:
 
 === General
+
 This cookbook can only be used in conjunction with cookbooks that contain
 Lightweight Providers which implement the 'app' interface. See the RightScale
 <tt>app_php</tt> cookbook for an example.
@@ -115,7 +116,6 @@ This definition created specifically for the <tt>apache2</tt> cookbook at this t
 
  app_add_listen_port php_port
 
-
 === Libraries-helpers:
 
 ===== RightScale::App::Helper.bind_ip(private_ips = [ ], public_ips = [ ])
@@ -136,7 +136,6 @@ on the specified listen ports.
 
 <tt>RuntimeError::</tt> If neither a valid private nor public IP address can be found.
 
-
 ===== RightScale::App::Helper.bind_port()
 
 Return the port that this application server listens on.
@@ -144,7 +143,6 @@ Return the port that this application server listens on.
 <b>Returns</b>
 
 <tt>node[:app][:port](integer)</tt> Port number
-
 
 ===== RightScale::App::Helper.vhosts(vhost_list)
 
@@ -157,7 +155,6 @@ Created to convert vhost names into an array from a comma-separated list.
 <b>Returns</b>
 
 <tt>Array::</tt> Array of vhosts
-
 
 === LWRPs:
 
@@ -174,38 +171,28 @@ cap if there is no other app_ Light Weight Provider implementation.
 For more information about Lightweight Resources and Providers (LWRPs), please
 see: {Lightweight Resources and Providers (LWRP)}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)].
 
-
 ===== App resource actions
 
 All actions declared in this resource are intended to act as templates to typical
 application server setup operations.
 
 * <tt>:install</tt> - Install packages required for application server setup.
-
 * <tt>:setup_vhost</tt> - Action designed to set up APP LWRP with common
   parameters required for apache vhost file.
-
 * <tt>:start</tt> - Action designed to set up a user defined start sequence for
   the application server.
-
 * <tt>:stop</tt> - Action designed to set up a user defined stop sequence for
   the application server.
-
 * <tt>:restart</tt> - Action designed to set up a user defined restart sequence for
   the application server.
-
 * <tt>:reload</tt> - Action designed to set up a user defined reload sequence for
   the application server.
-
 * <tt>:code_update</tt> - Action designed to perform project source code
   update/download.
-
 * <tt>:setup_db_connection</tt> - Action designed to perform database
   configuration file creation.
-
 * <tt>:setup_monitoring</tt> - Action designed to set up and install required
   monitoring software.
-
 
 ===== App resource attributes
 
@@ -244,7 +231,6 @@ found in the <tt>do_*</tt> and <tt>setup_*</tt> recipes in the cookbook.
    port node[:app][:port].to_i
    action :setup_vhost
  end
-
 
 == LICENSE:
 
