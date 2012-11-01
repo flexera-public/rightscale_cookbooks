@@ -8,6 +8,8 @@
 include RightScale::Database::Helper
 include RightScale::Database::MySQL::Helper
 
+require 'timeout'
+
 action :stop do
   service node[:db_mysql][:service_name] do
     action :stop
@@ -15,14 +17,30 @@ action :stop do
 end
 
 action :start do
-  service node[:db_mysql][:service_name] do
-    action :start
+  begin
+    SystemTimer.timeout_after(node[:db_mysql][:init_timeout].to_i) do
+      begin
+        service node[:db_mysql][:service_name] do
+          action :start
+        end
+      end until ::File.exists?(node[:db][:socket])
+    end
+  rescue Timeout::Error => e
+    raise "  Failed to start MySQL."
   end
 end
 
 action :restart do
-  service node[:db_mysql][:service_name] do
-    action :restart
+  begin
+    SystemTimer.timeout_after(node[:db_mysql][:init_timeout].to_i) do
+      begin
+        service node[:db_mysql][:service_name] do
+          action :restart
+        end
+      end until ::File.exists?(node[:db][:socket])
+    end
+  rescue Timeout::Error => e
+    raise "  Failed to restart MySQL."
   end
 end
 
@@ -640,7 +658,7 @@ action :promote do
         Chef::Log.info "  Detected binlogs were disabled, restarting service to enable them for Master takeover."
         true
       else
-      	false
+        false
       end
     end
   end
