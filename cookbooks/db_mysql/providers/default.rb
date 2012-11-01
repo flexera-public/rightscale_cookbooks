@@ -312,9 +312,8 @@ action :install_client do
     r.run_action(:install)
   end
 
-  # Install MySQL client gem
-  #
-  # Also installs in compile phase
+  # Install MySQL client gem in compile phase.
+  # It is required by rightscale_tools gem for mysql operations.
   gem_package 'mysql' do
     gem_binary '/opt/rightscale/sandbox/bin/gem'
     version '2.7'
