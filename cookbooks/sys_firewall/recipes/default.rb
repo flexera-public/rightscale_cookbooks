@@ -8,7 +8,9 @@
 rightscale_marker :begin
 
 if node[:sys_firewall][:enabled] == "enabled"
+  # See https://github.com/rightscale/cookbooks/blob/master/iptables/recipes/default.rb for the "iptables::default" recipe.
   include_recipe "iptables"
+  # See cookbooks/sys_firewall/providers/default.rb for the "update" action.
   sys_firewall "22" # SSH
   sys_firewall "80" # HTTP
   sys_firewall "443" # HTTPS
