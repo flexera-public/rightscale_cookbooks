@@ -21,8 +21,8 @@ action :start do
     SystemTimer.timeout_after(node[:db_mysql][:init_timeout].to_i) do
       begin
         service node[:db_mysql][:service_name] do
-          action :start
-        end
+          action :nothing
+        end.run_action(:start)
       end until ::File.exists?(node[:db][:socket])
     end
   rescue Timeout::Error => e
@@ -35,8 +35,8 @@ action :restart do
     SystemTimer.timeout_after(node[:db_mysql][:init_timeout].to_i) do
       begin
         service node[:db_mysql][:service_name] do
-          action :restart
-        end
+          action :nothing
+        end.run_action(:restart)
       end until ::File.exists?(node[:db][:socket])
     end
   rescue Timeout::Error => e
