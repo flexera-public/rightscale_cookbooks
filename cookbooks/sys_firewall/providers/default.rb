@@ -66,7 +66,6 @@ action :update do
           end
         end
 
-        # Use iptables cookbook to create open/close port for ip list
         ip_list.each do |ip|
 
           Chef::Log.info "  Updating iptables rule for IP Address: #{ip}"
