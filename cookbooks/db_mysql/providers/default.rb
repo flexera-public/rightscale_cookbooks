@@ -8,8 +8,6 @@
 include RightScale::Database::Helper
 include RightScale::Database::MySQL::Helper
 
-require 'timeout'
-
 action :stop do
   service node[:db_mysql][:service_name] do
     action :stop
