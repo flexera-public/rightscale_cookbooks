@@ -25,22 +25,14 @@ action :start do
         end.run_action(:start)
       end until ::File.exists?(node[:db][:socket])
     end
-  rescue Timeout::Error => e
-    raise "  Failed to start MySQL."
+  rescue Timeout::Error
+    raise "  Failed to start MySQL: socket file not found."
   end
 end
 
 action :restart do
-  begin
-    SystemTimer.timeout_after(node[:db_mysql][:init_timeout].to_i) do
-      begin
-        service node[:db_mysql][:service_name] do
-          action :nothing
-        end.run_action(:restart)
-      end until ::File.exists?(node[:db][:socket])
-    end
-  rescue Timeout::Error => e
-    raise "  Failed to restart MySQL."
+  service node[:db_mysql][:service_name] do
+    action :restart
   end
 end
 
@@ -801,15 +793,10 @@ action :enable_replication do
     group 'mysql'
   end
 
-  # ensure_db_started
-  # service provider uses the status command to decide if it
-  # has to run the start command again.
-  10.times do
-    # See cookbooks/db_mysql/providers/default.rb for "start" action.
-    db node[:db][:data_dir] do
-      action :start
-      persist false
-    end
+  # See cookbooks/db_mysql/providers/default.rb for "start" action.
+  db node[:db][:data_dir] do
+    action :start
+    persist false
   end
 
   ruby_block "configure_replication" do
