@@ -306,6 +306,7 @@ end
 action :install_client_driver do
   type = new_resource.driver_type
   log "  Installing postgres support for #{type} driver"
+  app_libpath = new_resource.app_libpath
 
   # Installation of the database client driver for application servers is
   # done here based on the client driver type
@@ -335,14 +336,22 @@ action :install_client_driver do
   when "java"
     # This adapter type is used by tomcat application servers
     node[:db][:client][:driver] = "org.postgresql.Driver"
+    node[:db][:client][:jar_file] = "postgresql-9.1-901.jdbc4.jar"
     # Copy to /usr/share/java/postgresql-9.1-901.jdbc4.jar
-    cookbook_file "/usr/share/java/postgresql-9.1-901.jdbc4.jar" do
-      source "postgresql-9.1-901.jdbc4.jar"
+    cookbook_file "/usr/share/java/#{node[:db][:client][:jar_file]}" do
+      source "#{node[:db][:client][:jar_file]}"
       owner "root"
       group "root"
       mode "0644"
       cookbook 'app_tomcat'
     end
+    # If application needs driver in specific directory,
+    # it needs to pass library path.
+    link "#{app_libpath}/#{node[:db][:client][:jar_file]}" do
+      to "/usr/share/java/#{node[:db][:client][:jar_file]}"
+      only_if { app_libpath }
+    end
+
   when "ruby"
     # This adapter type is used by Apache Rails Passenger application servers
     node[:db][:client][:driver] = "postgresql"

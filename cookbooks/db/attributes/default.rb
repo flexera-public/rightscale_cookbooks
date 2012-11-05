@@ -27,7 +27,7 @@ default[:db][:backup][:lineage_override] = ""
 default[:db][:dns][:ttl] = "60"
 
 # Database driver class to be used based on the type of driver
-default[:db][:client][:driver] = ""
+set_unless[:db][:client][:driver] = ""
 
 # Server state variables
 #

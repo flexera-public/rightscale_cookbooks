@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+  Cookbook Name:: app_jboss
+
+  Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
+  RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
+  if applicable, other agreements such as a RightScale Master Subscription Agreement.
+
+  Managed by RightScale
+  DO NOT EDIT BY HAND
+-->
+<datasources>
+  <local-tx-datasource>
+    <jndi-name><%= @vars[:datasource] %></jndi-name>
+    <connection-url>jdbc:<%= @node[:db][:client][:driver].split(".")[1] %>://<%= @fqdn %>:<%= @node[:"#{node[:db][:provider]}"][:port]  %>/<%= @database %></connection-url>
+    <driver-class><%= @node[:db][:client][:driver] %></driver-class>
+    <user-name><%= @user %></user-name>
+    <password><%= @password %></password>
+    <metadata>
+      <type-mapping><%= @node[:db][:client][:driver].split(".")[1] %></type-mapping>
+    </metadata>
+  </local-tx-datasource>
+</datasources>
