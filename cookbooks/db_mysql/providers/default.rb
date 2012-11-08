@@ -8,6 +8,7 @@
 include RightScale::Database::Helper
 include RightScale::Database::MySQL::Helper
 
+require 'rubygems'
 require 'system_timer'
 
 action :stop do
