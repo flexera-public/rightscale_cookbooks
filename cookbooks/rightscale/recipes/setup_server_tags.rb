@@ -16,6 +16,7 @@ right_link_tag "server:uuid=#{uuid}"
 
 i=0
 # Add a tag for each private IP address
+# See 'cookbooks/rightscale/libraries/helper.rb' for the "is_valid_ip?" method.
 while node[:cloud][:private_ips] && RightScale::Utils::Helper.is_valid_ip?(node[:cloud][:private_ips][i]) do
   ip = node[:cloud][:private_ips][i]
   log "Adding private ip tag for ip address #{ip}"
