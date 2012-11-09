@@ -31,17 +31,21 @@ There are no known limitations.
 
 == SETUP/USAGE:
 
-* Place <tt>app_django::default</tt> recipe into your runlist to set up the application
-  server. Since this sets up the app provider, it must be run before the
-  <tt>app::default</tt> recipe, which expects a provider to already be set.
-* When using a RightScale ServerTemplate, this will also automatically add the
-  common attributes to your ServerTemplate inputs.
+* Place <tt>app_django::setup_server_1_4</tt> recipe into your runlist to set
+  up the application server specific attributes. This sets up the app provider
+  and version.
+* Place <tt>app::install_server</tt> recipe after setup_server recipe to install
+  the application server.
 
 == DETAILS:
 
 === General:
 
-The <tt>app_django</tt> cookbook will install and set up an Apache + Django application server configured to connect with a MySQL or Postgres database server.
+The <tt>app_django</tt> cookbook will install and set up an Apache + Django
+application server configured to connect with a MySQL or Postgres database server.
+Set db/provider_type input in RightScale ServerTemplate to choose database
+provider. Place <tt>db::default</tt> recipe before application server installation
+to install the database client.
 
 <b>Apache</b>
 
@@ -82,11 +86,13 @@ and re-run the <tt>app::default</tt> boot recipe.
 Mix these recipes in any way to satisfy project requirements.
 
 === Attributes:
+
 These are settings used in recipes and templates. Default values are noted.
 
 Note: Only "internal" cookbook attributes are described here. Descriptions of attributes which have inputs you can find in metadata.rb cookbook file.
 
 ====== General attributes
+
 * <tt>node[:app_django][:module_dependencies]</tt> - Modules required for Apache.
 * <tt>node[:app_django][:app][:debug_mode]</tt> - Django application debug mode.
 * <tt>node[:app_django][:apache][:serve_local_files]</tt> - Used to enable/disable the serve of any existing local files.
@@ -97,6 +103,7 @@ Note: Only "internal" cookbook attributes are described here. Descriptions of at
 * <tt>node[:app_django][:project][:custom_cmd]</tt> - A list of python commands required for django application initialization.
 
 ====== Platform dependent
+
 * <tt>node[:app_django][:apache][:log_dir]</tt> - Path to apache log directory.
 
 === Templates:
@@ -109,31 +116,17 @@ Note: Only "internal" cookbook attributes are described here. Descriptions of at
   for project database connection used in the <tt>app::setup_db_connection</tt> recipe
   and defined in <tt>:setup_db_connection</tt> action of the <tt>app_django</tt> LWRP.
 
-=== Definitions:
-none
-
-=== Libraries-helpers:
-none
-
-
 === LWRPs:
 
 <tt>app_django</tt> Lightweight provider is defined in the providers/default.rb file, it contains source for the following actions:
 
 * <tt>:install</tt>
-
 * <tt>:setup_vhost</tt>
-
 * <tt>:start</tt>
-
 * <tt>:stop</tt>
-
 * <tt>:restart</tt>
-
 * <tt>:reload</tt>
-
 * <tt>:code_update</tt>
-
 * <tt>:setup_db_connection</tt>
 
 For more info about these actions, please see the <tt>app</tt> cookbook README.
@@ -143,26 +136,22 @@ For normal operations it requires "app" resource which will act as the interface
 ===== Actions
 
 * <tt>:install</tt> - Install packages required for application server setup.
-
 * <tt>:setup_vhost</tt> - Set up apache vhost file with wsgi module directives included.
-
 * <tt>:start</tt> - Start sequence for Django application server.
-
 * <tt>:stop</tt> - Stop sequence for Django application server.
-
 * <tt>:reload</tt> - Reload sequence for Django application server.
-
 * <tt>:restart</tt> - Restart sequence for Django application server.
-
 * <tt>:code_update</tt> - Perform project source code update/download using user selected "repo" LWRP. Set up logrotate configuration.
-
 * <tt>:setup_db_connection</tt> - Perform project settings.py database connection configuration.
+  The driver type is specified as 'python' and the db_<provider> cookbook's
+  <tt>install_client_driver</tt> action performs necessary steps to install the
+  database adapter.
 
 ===== Usage Example:
 
 For usage examples please see corresponding section in <tt>app</tt> cookbook README.
 
-= LICENSE:
+== LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 RightScale Terms of Service available at http://www.rightscale.com/terms.php and,

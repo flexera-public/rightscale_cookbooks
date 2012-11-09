@@ -11,4 +11,4 @@ version          "13.2.0"
 
 depends "logging"
 
-recipe "logging_rsyslog::default", "Set rsyslog logging provider"
+recipe "logging_rsyslog::setup_server", "Set rsyslog logging provider"

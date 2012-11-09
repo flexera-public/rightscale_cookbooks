@@ -270,8 +270,8 @@ end.each do |device, number|
     :recipes => [ "block_device::setup_block_device", "block_device::default" ]
 
   attribute "block_device/devices/#{device}/iops",
-    :display_name => "I/O Operations per Second",
-    :description => "The input/output operations per second (IOPS) that the volue can support. IOPS is currently only supported on Amazon EC2. Example: 500",
+    :display_name => "I/O Operations per Second (#{number})",
+    :description => "The input/output operations per second (IOPS) that the volume can support. IOPS is currently only supported on Amazon EC2. Example: 500",
     :type => "string",
     :required => "optional",
     :recipes => [ "block_device::setup_block_device", "block_device::default" ]

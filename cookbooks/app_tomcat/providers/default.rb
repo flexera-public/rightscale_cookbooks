@@ -8,7 +8,7 @@
 # Stop tomcat service
 action :stop do
 
-  version = node[:app_tomcat][:version].to_i
+  version = node[:app][:version].to_i
   log "  Running stop sequence"
   service "tomcat#{version}" do
     action :stop
@@ -19,7 +19,7 @@ end
 # Start tomcat service
 action :start do
 
-  version = node[:app_tomcat][:version].to_i
+  version = node[:app][:version].to_i
   log "  Running start sequence"
   service "tomcat#{version}" do
     action :start
@@ -30,8 +30,10 @@ end
 # Restart tomcat service
 action :restart do
   log "  Running restart sequence"
+  # Calls the :stop action.
   action_stop
   sleep 5
+  # Calls the :start action.
   action_start
 end
 
@@ -43,7 +45,7 @@ end
 #Installing required packages and prepare system for tomcat
 action :install do
 
-  version = node[:app_tomcat][:version].to_i
+  version = node[:app][:version].to_i
 
   packages = new_resource.packages
   log "  Packages which will be installed: #{packages}"
@@ -67,30 +69,6 @@ action :install do
   execute "alternatives" do
     command "#{node[:app_tomcat][:alternatives_cmd]}"
     action :run
-  end
-
-  # Installing database adapter for tomcat
-  db_adapter = node[:app][:db_adapter]
-  if db_adapter == "mysql"
-    # Removing existing links to database connector
-    file "/usr/share/tomcat#{version}/lib/mysql-connector-java.jar" do
-      action :delete
-    end
-    # Link mysql-connector plugin to Tomcat6 lib
-    link "/usr/share/tomcat#{version}/lib/mysql-connector-java.jar" do
-      to "/usr/share/java/mysql-connector-java.jar"
-    end
-  elsif db_adapter == "postgres"
-    # Copy to /usr/share/java/postgresql-9.1-901.jdbc4.jar
-    cookbook_file "/usr/share/tomcat#{version}/lib/postgresql-9.1-901.jdbc4.jar" do
-      source "postgresql-9.1-901.jdbc4.jar"
-      owner node[:app][:user]
-      group "root"
-      mode "0660"
-      cookbook 'app_tomcat'
-    end
-  else
-    raise "Unrecognized database adapter #{db_adapter}, exiting"
   end
 
   # Linking RightImage JAVA_HOME to what Tomcat6 expects to be...
@@ -142,10 +120,10 @@ action :setup_vhost do
 
   port = new_resource.port
   app_root = new_resource.root
-  version = node[:app_tomcat][:version].to_i
+  version = node[:app][:version].to_i
 
-  log "  Creating tomcat#{version}.conf"
-  template "/etc/tomcat#{version}/tomcat#{version}.conf" do
+  log "  Creating tomcat#{version} configuration file"
+  template "#{node[:app_tomcat][:configuration_file_path]}" do
     action :create
     source "tomcat_conf.erb"
     group "root"
@@ -161,7 +139,7 @@ action :setup_vhost do
       :java_newsize => node[:app_tomcat][:java][:newsize],
       :java_maxnewsize => node[:app_tomcat][:java][:maxnewsize],
       :platform => node[:platform],
-      :platform_ver => node[:platform_version]
+      :platform_ver => node[:platform_version].to_i
     )
   end
 
@@ -182,6 +160,7 @@ action :setup_vhost do
   end
 
   log "  Setup logrotate for tomcat"
+  # See cookbooks/rightscale/definition/rightscale_logrotate_app.rb for the "rightscale_logrotate_app" definition.
   rightscale_logrotate_app "tomcat" do
     cookbook "rightscale"
     template "logrotate.erb"
@@ -191,6 +170,7 @@ action :setup_vhost do
   end
 
   # Starting tomcat service
+  # Calls the :start action.
   action_start
 
   log "  Setup mod_jk vhost"
@@ -274,6 +254,7 @@ action :setup_vhost do
 
     # Enabling required apache modules
     node[:app][:module_dependencies].each do |mod|
+      # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_module.rb for the "apache_module" definition.
       apache_module mod
     end
 
@@ -290,6 +271,7 @@ action :setup_vhost do
   end
 
   log "  Generating new apache ports.conf"
+  # See cookbooks/app/definitions/app_add_listen_port.rb for the "app_add_listen_port" definition.
   app_add_listen_port port
 
   # Configuring document root for apache
@@ -302,6 +284,7 @@ action :setup_vhost do
   end
 
   log "  Configuring apache vhost for tomcat"
+  # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/web_app.rb for the "web_app" definition.
   web_app "http-#{port}-#{node[:web_apache][:server_name]}.vhost" do
     template        'apache_mod_jk_vhost.erb'
     cookbook        'app_tomcat'
@@ -324,19 +307,22 @@ end
 action :setup_db_connection do
 
   db_name = new_resource.database_name
-  db_adapter = node[:app][:db_adapter]
   datasource = node[:app_tomcat][:datasource_name]
-  version = node[:app_tomcat][:version].to_i
+  version = node[:app][:version].to_i
 
-  log "  Creating context.xml for DB: #{db_name} using adapter #{db_adapter} and datasource #{datasource}"
+  log "  Creating context.xml for DB: #{db_name} using datasource #{datasource}"
+  # See cookbooks/db/definitions/db_connect_app.rb for the "db_connect_app" definition.
   db_connect_app "/etc/tomcat#{version}/context.xml" do
-    template      "context_xml.erb"
-    owner         "#{node[:app][:user]}"
-    group         "root"
-    mode          "0644"
-    database      db_name
-    datasource    datasource
-    cookbook      'app_tomcat'
+    template "context_xml.erb"
+    owner "#{node[:app][:user]}"
+    group "root"
+    mode "0644"
+    database db_name
+    cookbook "app_tomcat"
+    driver_type "java"
+    vars(
+      :datasource => datasource
+    )
   end
 
   log "  Creating web.xml"
@@ -349,6 +335,17 @@ action :setup_db_connection do
       :datasource => datasource
     )
     cookbook 'app_tomcat'
+  end
+
+  # Creating catalina.properties file with /usr/share/java included in the common loader
+  # so tomcat will pick up all jar files available in that directory
+  log "  Creating catalina.properties"
+  template "/etc/tomcat#{version}/catalina.properties" do
+    source "catalina.properties.erb"
+    owner "#{node[:app][:user]}"
+    group "root"
+    mode "0644"
+    cookbook "app_tomcat"
   end
 
   # Installing JavaServer Pages Standard Tag Library API
@@ -373,8 +370,9 @@ end
 # Setup monitoring tools for tomcat
 action :setup_monitoring do
 
-  version=node[:app_tomcat][:version].to_i
+  version=node[:app][:version].to_i
   log "  Setup of collectd monitoring for tomcat"
+  # See cookbooks/rightscale/definitions/rightscale_enable_collectd_plugin.rb for the "rightscale_enable_collectd_plugin" definition.
   rightscale_enable_collectd_plugin 'exec'
 
   # Installing and configuring collectd for tomcat
@@ -391,10 +389,10 @@ action :setup_monitoring do
   end
 
   # Add collectd support to tomcat.conf
-  bash "Add collectd to tomcat.conf" do
+  bash "Add collectd to tomcat configuration file" do
     flags "-ex"
     code <<-EOH
-      cat <<'EOF'>>"/etc/tomcat#{version}/tomcat#{version}.conf"
+      cat <<'EOF'>>"#{node[:app_tomcat][:configuration_file_path]}"
 CATALINA_OPTS="\$CATALINA_OPTS -Djcd.host=#{node[:rightscale][:instance_uuid]} -Djcd.instance=tomcat#{version} -Djcd.dest=udp://#{node[:rightscale][:servers][:sketchy][:hostname]}:3011 -Djcd.tmpl=javalang,tomcat -javaagent:/usr/share/tomcat#{version}/lib/collectd.jar"
     EOH
   end
@@ -411,6 +409,7 @@ action :code_update do
 
   log "  Downloading project repo"
   # Calling "repo" LWRP to download remote project repository
+  # See cookbooks/repo/resources/default.rb for the "repo" resource.
   repo "default" do
     destination deploy_dir
     action node[:repo][:default][:perform_action].to_sym
@@ -436,6 +435,7 @@ action :code_update do
   end
   # Restarting tomcat service.
   # This will automatically deploy ROOT.war if it is available in application root directory
+  # Calls the :restart action.
   action_restart
 
 end

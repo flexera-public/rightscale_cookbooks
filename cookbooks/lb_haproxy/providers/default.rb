@@ -11,18 +11,18 @@ action :install do
 
   log "  Installing haproxy"
 
-  # Install haproxy package.
+  # Installs haproxy package.
   package "haproxy" do
     action :install
   end
 
-  # Create haproxy service.
+  # Creates haproxy service.
   service "haproxy" do
     supports :reload => true, :restart => true, :status => true, :start => true, :stop => true
     action :enable
   end
 
-  # Install haproxy file depending on OS/platform.
+  # Installs haproxy config file depending on platform.
   template "/etc/default/haproxy" do
     only_if { node[:platform] == "ubuntu" }
     source "default_haproxy.erb"
@@ -31,7 +31,7 @@ action :install do
     notifies :restart, resources(:service => "haproxy")
   end
 
-  # Create /etc/haproxy directory.
+  # Creates /etc/haproxy directory.
   directory "/etc/haproxy/#{node[:lb][:service][:provider]}.d" do
     owner "haproxy"
     group "haproxy"
@@ -40,7 +40,8 @@ action :install do
     action :create
   end
 
-  # Install script that concatenates individual server files after the haproxy config head into the haproxy config.
+  # Installs script that concatenates individual server files after the haproxy
+  # config head into the haproxy config.
   cookbook_file "/etc/haproxy/haproxy-cat.sh" do
     owner "haproxy"
     group "haproxy"
@@ -49,7 +50,8 @@ action :install do
     cookbook "lb_haproxy"
   end
 
-  # Install the haproxy config head which is the part of the haproxy config that doesn't change.
+  # Installs the haproxy config head which is the part of the haproxy config
+  # that doesn't change.
   template "/etc/haproxy/haproxy.cfg.head" do
     source "haproxy.cfg.head.erb"
     cookbook "lb_haproxy"
@@ -63,7 +65,8 @@ action :install do
   end
 
 
-  # Install the haproxy config backend which is the part of the haproxy config that doesn't change.
+  # Installs the haproxy config backend which is the part of the haproxy config
+  # that doesn't change.
   template "/etc/haproxy/haproxy.cfg.default_backend" do
     source "haproxy.cfg.default_backend.erb"
     cookbook "lb_haproxy"
@@ -76,7 +79,7 @@ action :install do
     )
   end
 
-  # Generate the haproxy config file.
+  # Generates the haproxy config file.
   execute "/etc/haproxy/haproxy-cat.sh" do
     user "haproxy"
     group "haproxy"
@@ -90,7 +93,7 @@ action :add_vhost do
 
   pool_name = new_resource.pool_name
 
-  # Create the directory for vhost server files.
+  # Creates the directory for vhost server files.
   directory "/etc/haproxy/#{node[:lb][:service][:provider]}.d/#{pool_name}" do
     owner "haproxy"
     group "haproxy"
@@ -99,7 +102,7 @@ action :add_vhost do
     action :create
   end
 
-  # Adding current pool to pool_list conf to preserve lb/pools order
+  # Adds current pool to pool_list conf to preserve lb/pools order
   template "/etc/haproxy/#{node[:lb][:service][:provider]}.d/pool_list.conf" do
      source "haproxy_backend_list.erb"
      owner "haproxy"
@@ -112,13 +115,16 @@ action :add_vhost do
      )
   end
 
+  # See cookbooks/lb_haproxy/definitions/haproxy_backend.rb for the definition
+  # of "lb_haproxy_backend".
   lb_haproxy_backend  "create main backend section" do
     pool_name  pool_name
   end
 
+  # Calls the "advanced_configs" action.
   action_advanced_configs
 
-  # (Re)generate the haproxy config file.
+  # (Re)generates the haproxy config file.
   execute "/etc/haproxy/haproxy-cat.sh" do
     user "haproxy"
     group "haproxy"
@@ -127,7 +133,9 @@ action :add_vhost do
     notifies :reload, resources(:service => "haproxy")
   end
 
-  # Tag this server as a load balancer for vhost it will answer for so app servers can send requests to it.
+  # Tags this server as a load balancer for vhost it will answer for so app servers
+  # can send requests to it.
+  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RightLinkTag for the "right_link_tag" resource.
   right_link_tag "loadbalancer:#{pool_name}=lb"
 
 end
@@ -139,13 +147,13 @@ action :attach do
 
   log "  Attaching #{new_resource.backend_id} / #{new_resource.backend_ip} / #{pool_name}"
 
-  # Create haproxy service.
+  # Creates haproxy service.
   service "haproxy" do
     supports :reload => true, :restart => true, :status => true, :start => true, :stop => true
     action :nothing
   end
 
-  # Create the directory for vhost server files.
+  # Creates the directory for vhost server files.
   directory "/etc/haproxy/#{node[:lb][:service][:provider]}.d/#{pool_name}" do
     owner "haproxy"
     group "haproxy"
@@ -154,7 +162,7 @@ action :attach do
     action :create
   end
 
-  # (Re)generate the haproxy config file.
+  # (Re)generates the haproxy config file.
   execute "/etc/haproxy/haproxy-cat.sh" do
     user "haproxy"
     group "haproxy"
@@ -163,7 +171,7 @@ action :attach do
     notifies :reload, resources(:service => "haproxy")
   end
 
-  # Create an individual server file for each vhost and notify the concatenation script if necessary.
+  # Creates an individual server file for each vhost and notifies the concatenation script if necessary.
   template ::File.join("/etc/haproxy/#{node[:lb][:service][:provider]}.d", pool_name, new_resource.backend_id) do
     source "haproxy_server.erb"
     owner "haproxy"
@@ -185,7 +193,7 @@ end
 
 action :advanced_configs do
 
-  # Create haproxy service.
+  # Creates haproxy service.
   service "haproxy" do
     supports :reload => true, :restart => true, :status => true, :start => true, :stop => true
     action :nothing
@@ -238,7 +246,8 @@ action :attach_request do
 
   log "  Attach request for #{new_resource.backend_id} / #{new_resource.backend_ip} / #{pool_name}"
 
-  # Run remote_recipe for each vhost app server wants to be part of.
+  # Runs remote_recipe for each vhost the app server wants to be part of.
+  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RemoteRecipe for the "remote_recipe" resource.
   remote_recipe "Attach me to load balancer" do
     recipe "lb::handle_attach"
     attributes :remote_recipe => {
@@ -260,13 +269,13 @@ action :detach do
 
   log "  Detaching #{backend_id} from #{pool_name}"
 
-  # Create haproxy service.
+  # Creates haproxy service.
   service "haproxy" do
     supports :reload => true, :restart => true, :status => true, :start => true, :stop => true
     action :nothing
   end
 
-  # (Re)generate the haproxy config file.
+  # (Re)generates the haproxy config file.
   execute "/etc/haproxy/haproxy-cat.sh" do
     user "haproxy"
     group "haproxy"
@@ -275,7 +284,7 @@ action :detach do
     notifies :reload, resources(:service => "haproxy")
   end
 
-  # Delete the individual server file and notify the concatenation script if necessary.
+  # Deletes the individual server file and notifies the concatenation script if necessary.
   file ::File.join("/etc/haproxy/#{node[:lb][:service][:provider]}.d", pool_name, backend_id) do
     action :delete
     backup false
@@ -291,7 +300,8 @@ action :detach_request do
 
   log "  Detach request for #{new_resource.backend_id} / #{pool_name}"
 
-  # Run remote_recipe for each vhost app server is part of.
+  # Runs remote_recipe for each vhost the app server is part of.
+  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RemoteRecipe for the "remote_recipe" resource.
   remote_recipe "Detach me from load balancer" do
     recipe "lb::handle_detach"
     attributes :remote_recipe => {
@@ -308,14 +318,14 @@ action :setup_monitoring do
 
   log "  Setup monitoring for haproxy"
 
-  # Install the haproxy collectd script into the collectd library plugins directory.
+  # Installs the haproxy collectd script into the collectd library plugins directory.
   cookbook_file(::File.join(node[:rightscale][:collectd_lib], "plugins", "haproxy")) do
     source "haproxy1.4.rb"
     cookbook "lb_haproxy"
     mode "0755"
   end
 
-  # Add a collectd config file for the haproxy collectd script with the exec plugin and restart collectd if necessary.
+  # Adds a collectd config file for the haproxy collectd script with the exec plugin and restart collectd if necessary.
   template ::File.join(node[:rightscale][:collectd_plugin_dir], "haproxy.conf") do
     backup false
     source "haproxy_collectd_exec.erb"

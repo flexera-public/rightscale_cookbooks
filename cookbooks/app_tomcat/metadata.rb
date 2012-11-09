@@ -13,9 +13,8 @@ depends "app"
 depends "repo"
 depends "rightscale"
 
-recipe  "app_tomcat::default", "set version and node variables specific to the chosen Tomcat version to installs the tomcat application server."
-recipe  "app_tomcat::default_6", "set version 6 and node variables specific to the chosen Tomcat version to installs the tomcat application server."
-recipe  "app_tomcat::default_7", "set version 7 and node variables specific to the chosen Tomcat version to installs the tomcat application server."
+recipe  "app_tomcat::setup_server_6", "Set version 6 and node variables specific to the chosen Tomcat version to installs the tomcat application server."
+recipe  "app_tomcat::setup_server_7", "Set version 7 and node variables specific to the chosen Tomcat version to installs the tomcat application server."
 
 # == Default attributes
 #
@@ -26,8 +25,8 @@ attribute "app_tomcat/code/root_war",
   :required => "recommended",
   :default => "",
   :recipes => [
-    "app_tomcat::default_6",
-    "app_tomcat::default_7"
+    "app_tomcat::setup_server_6",
+    "app_tomcat::setup_server_7"
    ]
 
 #Java tuning parameters
@@ -37,8 +36,8 @@ attribute "app_tomcat/java/xms",
   :required => "optional",
   :default => "512m",
   :recipes => [
-    "app_tomcat::default_6",
-    "app_tomcat::default_7"
+    "app_tomcat::setup_server_6",
+    "app_tomcat::setup_server_7"
    ]
 
 attribute "app_tomcat/java/xmx",
@@ -47,8 +46,8 @@ attribute "app_tomcat/java/xmx",
   :required => "optional",
   :default => "512m",
   :recipes => [
-    "app_tomcat::default_6",
-    "app_tomcat::default_7"
+    "app_tomcat::setup_server_6",
+    "app_tomcat::setup_server_7"
    ]
 
 attribute "app_tomcat/java/permsize",
@@ -57,8 +56,8 @@ attribute "app_tomcat/java/permsize",
   :required => "optional",
   :default => "256m",
   :recipes => [
-    "app_tomcat::default_6",
-    "app_tomcat::default_7"
+    "app_tomcat::setup_server_6",
+    "app_tomcat::setup_server_7"
    ]
 
 attribute "app_tomcat/java/maxpermsize",
@@ -67,8 +66,8 @@ attribute "app_tomcat/java/maxpermsize",
   :required => "optional",
   :default => "256m",
   :recipes => [
-    "app_tomcat::default_6",
-    "app_tomcat::default_7"
+    "app_tomcat::setup_server_6",
+    "app_tomcat::setup_server_7"
    ]
 
 attribute "app_tomcat/java/newsize",
@@ -77,8 +76,8 @@ attribute "app_tomcat/java/newsize",
   :required => "optional",
   :default => "256m",
   :recipes => [
-    "app_tomcat::default_6",
-    "app_tomcat::default_7"
+    "app_tomcat::setup_server_6",
+    "app_tomcat::setup_server_7"
    ]
 
 attribute "app_tomcat/java/maxnewsize",
@@ -87,8 +86,8 @@ attribute "app_tomcat/java/maxnewsize",
   :required => "optional",
   :default => "256m",
   :recipes => [
-    "app_tomcat::default_6",
-    "app_tomcat::default_7"
+    "app_tomcat::setup_server_6",
+    "app_tomcat::setup_server_7"
    ]
 
 attribute "app_tomcat/datasource_name",
@@ -97,6 +96,6 @@ attribute "app_tomcat/datasource_name",
   :required => "optional",
   :default => "jdbc/ConnDB",
   :recipes => [
-    "app_tomcat::default_6",
-    "app_tomcat::default_7"
+    "app_tomcat::setup_server_6",
+    "app_tomcat::setup_server_7"
   ]

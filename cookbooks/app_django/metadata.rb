@@ -17,7 +17,7 @@ depends "repo"
 depends "rightscale"
 depends "python"
 
-recipe  "app_django::default", "Installs the Django application server."
+recipe  "app_django::setup_server_1_4", "Installs the Django application server."
 recipe  "app_django::run_custom_django_commands", "Run specific user defined commands. Commands will be executed in the app directory."
 
 
@@ -27,7 +27,7 @@ attribute "app_django/app/debug_mode",
   :choice => ["true", "false"],
   :required => "optional",
   :default => "false",
-  :recipes => ["app_django::default"]
+  :recipes => ["app_django::setup_server_1_4"]
 
 attribute "app_django/apache/serve_local_files",
   :display_name => "Apache serve local Files",
@@ -35,14 +35,14 @@ attribute "app_django/apache/serve_local_files",
   :choice => ["true", "false"],
   :required => "optional",
   :default => "true",
-  :recipes => ["app_django::default"]
+  :recipes => ["app_django::setup_server_1_4"]
 
 attribute "app_django/project/opt_pip_list",
   :display_name => "Custom Python Package list",
   :description => "A space-separated list of optional python package(s), along with their versions in the Format:  py-pkg1==version  py-pkg2==version py-pkg3==version. Example: simplejson==1.7.1, Markdown==2.0.3",
   :required => "optional",
   :default => "",
-  :recipes => ["app_django::default"]
+  :recipes => ["app_django::setup_server_1_4"]
 
 attribute "app_django/project/custom_cmd",
   :display_name => "Custom Django command",
@@ -50,4 +50,3 @@ attribute "app_django/project/custom_cmd",
   :required => "optional",
   :default => "",
   :recipes => ["app_django::run_custom_django_commands"]
-

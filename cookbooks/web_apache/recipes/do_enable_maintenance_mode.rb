@@ -18,36 +18,36 @@
 
 rightscale_marker :begin
 
-  # Creating directory for maintenance page
-  directory "#{node[:web_apache][:docroot]}/system/" do
-    recursive true
-    mode "0755"
-  end
+# Creating directory for maintenance page
+directory "#{node[:web_apache][:docroot]}/system/" do
+  recursive true
+  mode "0755"
+end
 
-  # Applying default maintenance.html if maintenance_file input is empty.
+# Applying default maintenance.html if maintenance_file input is empty.
 
-  # Copy archive from cookbook files
-  cookbook_file "/tmp/maintenance.tar.gz" do
-    cookbook 'web_apache'
-    source "maintenance.tar.gz"
-    mode "0644"
-    only_if do node[:web_apache][:maintenance_file].empty? end
-  end
+# Copy archive from cookbook files
+cookbook_file "/tmp/maintenance.tar.gz" do
+  cookbook 'web_apache'
+  source "maintenance.tar.gz"
+  mode "0644"
+  only_if do node[:web_apache][:maintenance_file].empty? end
+end
 
-  bash "Unpack /tmp/maintenance.tar.gz to #{node[:web_apache][:docroot]}/system/" do
-    flags "-ex"
-    code <<-EOH
-      tar xzf /tmp/maintenance.tar.gz -C #{node[:web_apache][:docroot]}/system/
-    EOH
-    only_if do node[:web_apache][:maintenance_file].empty? end
-  end
+bash "Unpack /tmp/maintenance.tar.gz to #{node[:web_apache][:docroot]}/system/" do
+  flags "-ex"
+  code <<-EOH
+    tar xzf /tmp/maintenance.tar.gz -C #{node[:web_apache][:docroot]}/system/
+  EOH
+  only_if do node[:web_apache][:maintenance_file].empty? end
+end
 
-  bash "Applying user defined maintenance.html file" do
-    flags "-ex"
-    code <<-EOH
-      cp -f #{node[:web_apache][:maintenance_file]} #{node[:web_apache][:docroot]}/system/maintenance.html
-    EOH
-    not_if do node[:web_apache][:maintenance_file].empty? end
-  end
+bash "Applying user defined maintenance.html file" do
+  flags "-ex"
+  code <<-EOH
+    cp -f #{node[:web_apache][:maintenance_file]} #{node[:web_apache][:docroot]}/system/maintenance.html
+  EOH
+  not_if do node[:web_apache][:maintenance_file].empty? end
+end
 
 rightscale_marker :end

@@ -13,4 +13,4 @@ depends "rightscale"
 depends "app"
 depends "lb"
 
-recipe "lb_haproxy::default", "This loads the required 'lb' resource using the HAProxy provider."
+recipe "lb_haproxy::setup_server", "This loads the required 'lb' resource using the HAProxy provider."

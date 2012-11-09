@@ -8,6 +8,8 @@
 rightscale_marker :begin
 
 log "  Reloading logging server"
+# Calls the logging service reload command
+# See cookbooks/logging_<provider>/providers/default.rb for the "reload" action.
 logging "default" do
   action :reload
 end

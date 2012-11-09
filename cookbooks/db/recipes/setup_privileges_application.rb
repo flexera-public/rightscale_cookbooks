@@ -7,17 +7,9 @@
 
 rightscale_marker :begin
 
-DATA_DIR = node[:db][:data_dir]
+log "  Adding #{node[:db][:application][:user]} with CRUD privileges for ALL databases."
 
-user = node[:db][:application][:user]
-log "  Adding #{user} with CRUD privileges for ALL databases."
-
-db DATA_DIR do
-  privilege "user"
-  privilege_username user
-  privilege_password node[:db][:application][:password]
-  privilege_database "*.*"
-  action :set_privileges
-end
+# See cookbooks/db/definitions/db_set_privileges.rb for the "db_set_privileges" definition.
+db_set_privileges [{:role => "user", :username => node[:db][:application][:user], :password => node[:db][:application][:password]}]
 
 rightscale_marker :end

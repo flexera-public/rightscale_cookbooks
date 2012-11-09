@@ -9,42 +9,57 @@ include RightScale::Database::Helper
 include RightScale::Database::PostgreSQL::Helper
 
 action :stop do
+  # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "stop" method.
   @db = init(new_resource)
   @db.stop
 end
 
 action :start do
+  # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "start" method.
   @db = init(new_resource)
   @db.start
 end
 
 action :status do
+  # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "status" method.
   @db = init(new_resource)
   status = @db.status
   log "Database Status:\n#{status}"
 end
 
 action :lock do
+  # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "lock" method.
   @db = init(new_resource)
   @db.lock
 end
 
 action :unlock do
+  # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "unlock" method.
   @db = init(new_resource)
   @db.unlock
 end
 
 action :move_data_dir do
+  # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "move_datadir" method.
   @db = init(new_resource)
   @db.move_datadir(new_resource.name, node[:db_postgres][:datadir])
 end
 
 action :reset do
+  # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "reset" method.
   @db = init(new_resource)
   @db.reset(new_resource.name, node[:db_postgres][:datadir])
 end
 
 action :firewall_update_request do
+  # See cookbooks/sys_firewall/providers/default.rb for the "update_request" action.
   sys_firewall "Request database open port 5432 (PostgreSQL) to this server" do
     machine_tag new_resource.machine_tag
     port 5432
@@ -55,6 +70,7 @@ action :firewall_update_request do
 end
 
 action :firewall_update do
+  # See cookbooks/sys_firewall/providers/default.rb for the "update" action.
   sys_firewall "Request database open port 5432 (PostgrSQL) to this server" do
     machine_tag new_resource.machine_tag
     port 5432
@@ -64,6 +80,7 @@ action :firewall_update do
 end
 
 action :write_backup_info do
+  # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
   db_state_get node
   File_position = `#{node[:db_postgres][:bindir]}/pg_controldata #{node[:db_postgres][:datadir]} | grep "Latest checkpoint location:" | awk '{print $NF}'`
   masterstatus = Hash.new
@@ -78,27 +95,36 @@ action :write_backup_info do
     masterstatus['File_position'] = slavestatus['File_position']
   end
   log "  Saving master info...:\n#{masterstatus.to_yaml}"
+  # See cookbooks/db_postgres/libraries/helper.rb for the "RightScale::Database::PostgreSQL::Helper" class.
   ::File.open(::File.join(node[:db][:data_dir], RightScale::Database::PostgreSQL::Helper::SNAPSHOT_POSITION_FILENAME), ::File::CREAT|::File::TRUNC|::File::RDWR) do |out|
     YAML.dump(masterstatus, out)
   end
 end
 
 action :pre_restore_check do
+  # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "pre_restore_sanity_check" method.
   @db = init(new_resource)
   @db.pre_restore_sanity_check
 end
 
 action :post_restore_cleanup do
+  # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "restore_snapshot" method.
   @db = init(new_resource)
   @db.restore_snapshot
 end
 
 action :pre_backup_check do
+  # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "pre_backup_check" method.
   @db = init(new_resource)
   @db.pre_backup_check
 end
 
 action :post_backup_cleanup do
+  # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "post_backup_steps" method.
   @db = init(new_resource)
   @db.post_backup_steps
 end
@@ -111,6 +137,7 @@ action :set_privileges do
     priv_username = new_resource.privilege_username
     priv_password = new_resource.privilege_password
     priv_database = new_resource.privilege_database
+    # See cookbooks/db_postgres/definitions/db_postgres_set_privileges.rb for the "db_postgres_set_privileges" definition.
     db_postgres_set_privileges "setup db privileges" do
       preset priv
       username priv_username
@@ -122,17 +149,19 @@ end
 
 action :install_client do
 
+  version = new_resource.db_version
+
   # Install PostgreSQL package(s)
 
   node[:db][:socket] = value_for_platform(
-    "centos" => {
+    ["centos", "redhat"] => {
       "default" => "/var/run/postgresql"
     },
     "default" => ""
   )
 
   node[:db_postgres][:client_packages_install] = value_for_platform(
-    "centos" => {
+    ["centos", "redhat"] => {
       "default" => [
         "postgresql91-libs",
         "postgresql91",
@@ -143,7 +172,7 @@ action :install_client do
   )
 
   node[:db_postgres][:packages_version] = value_for_platform(
-    "centos" => {
+    ["centos", "redhat"] => {
       "5.8" => "9.1.5-3PGDG.rhel5",
       "default" => "9.1.5-3PGDG.rhel6"
     },
@@ -153,7 +182,7 @@ action :install_client do
   raise "Platform not supported for PostgreSQL #{version}" if node[:db_postgres][:client_packages_install].empty?
 
   # Install PostgreSQL package(s)
-  if node[:platform] == "centos"
+  if node[:platform] =~ /redhat|centos/
     arch = node[:kernel][:machine]
     raise "Unsupported platform detected!" unless arch == "x86_64"
 
@@ -176,22 +205,24 @@ action :install_client do
 
   # Link postgresql pg_config to default system bin path - required by app servers
   link "/usr/bin/pg_config" do
-    to "/usr/pgsql-#{node[:db_postgres][:version]}/bin/pg_config"
+    to "/usr/pgsql-#{version}/bin/pg_config"
     not_if { ::File.exists?("/usr/bin/pg_config") }
   end
 
   # Install PostgreSQL client gem
+  node[:db_postgres][:bindir] = "/usr/pgsql-#{version}/bin"
   gem_package("pg") do
     gem_binary("/opt/rightscale/sandbox/bin/gem")
     options("-- --with-pg-config=#{node[:db_postgres][:bindir]}/pg_config")
   end
+
 end
 
 action :install_server do
 
   arch = node[:kernel][:machine]
   raise "Unsupported platform detected!" unless arch == "x86_64"
-
+  version = new_resource.db_version
   package "uuid" do
     action :install
   end
@@ -205,14 +236,14 @@ action :install_server do
     end
   end
 
-  service "postgresql-#{node[:db_postgres][:version]}" do
+  service "postgresql-#{version}" do
     supports :status => true, :restart => true, :reload => true
     action :stop
   end
 
   # Initialize PostgreSQL server and create system tables
   touchfile = ::File.expand_path "~/.postgresql_installed"
-  execute "/etc/init.d/postgresql-#{node[:db_postgres][:version]} initdb ; touch #{touchfile}" do
+  execute "/etc/init.d/postgresql-#{version} initdb ; touch #{touchfile}" do
     creates touchfile
     not_if "test -f #{touchfile}"
   end
@@ -220,7 +251,7 @@ action :install_server do
   # Configure system for PostgreSQL
   #
   # Stop PostgreSQL
-  service "postgresql-#{node[:db_postgres][:version]}" do
+  service "postgresql-#{version}" do
     action :stop
   end
 
@@ -282,18 +313,69 @@ action :install_server do
   execute "ulimit -n #{postgres_file_ulimit}"
 
   # Start PostgreSQL
-  service "postgresql-#{node[:db_postgres][:version]}" do
+  service "postgresql-#{version}" do
     action :start
   end
 
+end
+
+action :install_client_driver do
+  type = new_resource.driver_type
+  log "  Installing postgres support for #{type} driver"
+
+  # Installation of the database client driver for application servers is
+  # done here based on the client driver type
+  case type
+  when "php"
+    # This adapter type is used by php application servers
+    node[:db][:client][:driver] = "postgres"
+    package "#{type} postgres integration" do
+      package_name value_for_platform(
+        [ "centos", "redhat" ] => {
+          "default" => "php53u-pgsql"
+        },
+        "ubuntu" => {
+          "default" => "php5-pgsql"
+        },
+        "default" => "php5-pgsql"
+      )
+      action :install
+    end
+  when "python"
+    # This adapter type is used by Django application servers
+    node[:db][:client][:driver] = "django.db.backends.postgresql_psycopg2"
+    python_pip "psycopg2" do
+      version "2.4.5"
+      action :install
+    end
+  when "java"
+    # This adapter type is used by tomcat application servers
+    node[:db][:client][:driver] = "org.postgresql.Driver"
+    # Copy to /usr/share/java/postgresql-9.1-901.jdbc4.jar
+    cookbook_file "/usr/share/java/postgresql-9.1-901.jdbc4.jar" do
+      source "postgresql-9.1-901.jdbc4.jar"
+      owner "root"
+      group "root"
+      mode "0644"
+      cookbook 'app_tomcat'
+    end
+  when "ruby"
+    # This adapter type is used by Apache Rails Passenger application servers
+    node[:db][:client][:driver] = "postgresql"
+    postgres_bin_dir = "/usr/pgsql-#{node[:db][:version]}/bin"
+    gem_package 'pg' do
+      gem_binary "/usr/bin/gem"
+      options "-- --with-pg-config=#{postgres_bin_dir}/pg_config"
+    end
+  else
+    raise "Unknown driver type specified: #{type}"
+  end
 end
 
 action :grant_replication_slave do
   require 'rubygems'
   Gem.clear_paths
   require 'pg'
-
-
 
   # Opening connection for pg operation
   conn = PGconn.open("localhost", nil, nil, nil, nil, "postgres", nil)
@@ -321,6 +403,7 @@ action :grant_replication_slave do
       log "  Creating replication user #{username}"
       conn.exec("CREATE USER #{username} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password}'")
       # Setup pg_hba.conf for replication user allow
+      # See cookbooks/db_postgres/libraries/helper.rb for the "RightScale::Database::PostgreSQL::Helper" class.
       RightScale::Database::PostgreSQL::Helper.configure_pg_hba(node)
       # Reload postgresql to read new updated pg_hba.conf
       RightScale::Database::PostgreSQL::Helper.do_query('select pg_reload_conf()')
@@ -331,11 +414,11 @@ action :grant_replication_slave do
   conn.finish
 end
 
-
 action :enable_replication do
+  # See cookbooks/db/libraries/helper.rb for "db_state_get" method.
   db_state_get node
   current_restore_process = new_resource.restore_process
-
+  version = new_resource.db_version
   newmaster_host = node[:db][:current_master_ip]
   rep_user = node[:db][:replication][:user]
   rep_pass = node[:db][:replication][:password]
@@ -344,6 +427,7 @@ action :enable_replication do
   # Check the volume before performing any actions.  If invalid raise error and exit.
   ruby_block "validate_master" do
     not_if { current_restore_process == :no_restore }
+    # See cookbooks/db_postgres/libraries/helper.rb for the "RightScale::Database::PostgreSQL::Helper" class.
     block do
       master_info = RightScale::Database::PostgreSQL::Helper.load_replication_info(node)
 
@@ -354,7 +438,7 @@ action :enable_replication do
   end
 
   # Stopping Postgresql service
-  service "postgresql-#{node[:db_postgres][:version]}" do
+  service "postgresql-#{version}" do
     not_if { current_restore_process == :no_restore }
     action :stop
   end
@@ -396,9 +480,10 @@ action :enable_replication do
 
   # Setup slave monitoring
   action_setup_slave_monitoring
-end  
+end
 
 action :promote do
+  # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
   db_state_get node
 
   previous_master = node[:db][:current_master_ip]
@@ -408,6 +493,7 @@ action :promote do
   begin
     # Promote the slave into the new master
     Chef::Log.info "  Promoting slave.."
+    # See cookbooks/db_postgres/libraries/helper.rb for the "RightScale::Database::PostgreSQL::Helper" class.
     RightScale::Database::PostgreSQL::Helper.write_trigger(node)
     sleep 10
 
@@ -420,6 +506,7 @@ action :promote do
 end
 
 action :setup_monitoring do
+  # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
   db_state_get node
 
   priv_username = new_resource.privilege_username
@@ -429,7 +516,7 @@ action :setup_monitoring do
     action :nothing
   end
 
-  if node[:platform] == 'centos'
+  if node[:platform] =~ /redhat|centos/
 
     collectd_version = node[:rightscale][:collectd_packages_version]
     package "collectd-postgresql" do
@@ -479,6 +566,7 @@ action :setup_monitoring do
 end
 
 action :setup_slave_monitoring do
+  # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
   db_state_get node
 
   service "collectd" do

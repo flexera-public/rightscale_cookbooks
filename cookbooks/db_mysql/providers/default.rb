@@ -15,8 +15,16 @@ action :stop do
 end
 
 action :start do
-  service node[:db_mysql][:service_name] do
-    action :start
+  begin
+    SystemTimer.timeout_after(node[:db_mysql][:init_timeout].to_i) do
+      begin
+        service node[:db_mysql][:service_name] do
+          action :nothing
+        end.run_action(:start)
+      end until ::File.exists?(node[:db][:socket])
+    end
+  rescue Timeout::Error
+    raise "  Failed to start MySQL: socket file not found."
   end
 end
 
@@ -27,32 +35,43 @@ action :restart do
 end
 
 action :status do
+  # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "status" method.
   @db = init(new_resource)
   status = @db.status
   Chef::Log.info "  Database Status:\n#{status}"
 end
 
 action :lock do
+  # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "lock" method.
   @db = init(new_resource)
   @db.lock
 end
 
 action :unlock do
+  # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "unlock" method.
   @db = init(new_resource)
   @db.unlock
 end
 
 action :move_data_dir do
+  # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "move_datadir" method.
   @db = init(new_resource)
   @db.move_datadir(new_resource.name, node[:db_mysql][:datadir])
 end
 
 action :reset do
+  # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
+# See "rightscale_tools" gem for the "reset" method.
   @db = init(new_resource)
   @db.reset(new_resource.name, node[:db_mysql][:datadir])
 end
 
 action :firewall_update_request do
+  # See cookbooks/sys_firewall/providers/default.rb for the "update_request" action.
   sys_firewall "Sending request to open port 3306 (MySQL) allowing this server to connect" do
     machine_tag new_resource.machine_tag
     port 3306
@@ -63,6 +82,7 @@ action :firewall_update_request do
 end
 
 action :firewall_update do
+  # See cookbooks/sys_firewall/providers/default.rb for the "update" action.
   sys_firewall "Opening port 3306 (MySQL) for tagged '#{new_resource.machine_tag}' to connect" do
     machine_tag new_resource.machine_tag
     port 3306
@@ -73,6 +93,8 @@ end
 
 
 action :write_backup_info do
+  # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
+  # See cookbooks/db/libraries/helper.rb for the "RightScale::Database::MySQL::Helper" class.
   db_state_get node
   masterstatus = Hash.new
   masterstatus = RightScale::Database::MySQL::Helper.do_query(node, 'SHOW MASTER STATUS')
@@ -89,11 +111,11 @@ action :write_backup_info do
   end
 
   # Save the db provider (MySQL) and version number as set in the node
-  version=node[:db_mysql][:version]
-  provider=node[:db][:provider]
+  provider = node[:db][:provider]
+  version = new_resource.db_version
   Chef::Log.info "  Saving #{provider} version #{version} in master info file"
-  masterstatus['DB_Provider']=provider
-  masterstatus['DB_Version']=version
+  masterstatus['DB_Provider'] = provider
+  masterstatus['DB_Version'] = version
 
   Chef::Log.info "  Saving master info...:\n#{masterstatus.to_yaml}"
   ::File.open(::File.join(node[:db][:data_dir], RightScale::Database::MySQL::Helper::SNAPSHOT_POSITION_FILENAME), ::File::CREAT|::File::TRUNC|::File::RDWR) do |out|
@@ -102,21 +124,23 @@ action :write_backup_info do
 end
 
 action :pre_restore_check do
+  # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "pre_restore_sanity_check" method.
   @db = init(new_resource)
   @db.pre_restore_sanity_check
 end
 
 action :post_restore_cleanup do
   # Performs checks for snapshot compatibility with current server
-
+  # See cookbooks/db_mysql/libraries/helper.rb for the "RightScale::Database::MySQL::Helper" class.
   master_info = RightScale::Database::MySQL::Helper.load_replication_info(node)
   # Check version matches
   # Not all 11H2 snapshots (prior to 5.5 release) saved provider or version.
   # Assume MySQL 5.1 if nil
-  snap_version=master_info['DB_Version']||='5.1'
-  snap_provider=master_info['DB_Provider']||='db_mysql'
-  current_version= node[:db_mysql][:version]
-  current_provider=master_info['DB_Provider']||=node[:db][:provider]
+  snap_version = master_info['DB_Version'] ||= '5.1'
+  snap_provider = master_info['DB_Provider'] ||= 'db_mysql'
+  current_version = new_resource.db_version
+  current_provider = master_info['DB_Provider'] ||= node[:db][:provider]
   Chef::Log.info "  Snapshot from #{snap_provider} version #{snap_version}"
   # skip check if restore version check is false
   if node[:db][:backup][:restore_version_check] == "true"
@@ -160,22 +184,29 @@ action :post_restore_cleanup do
   end
 
   # always update the my.cnf file on a restore
+  # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for the "db_mysql_set_mycnf" definition.
   db_mysql_set_mycnf "setup_mycnf" do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
     innodb_log_file_size ::File.stat("/var/lib/mysql/ib_logfile0").size
   end
 
+  # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "post_restore_cleanup" method.
   @db = init(new_resource)
   @db.post_restore_cleanup
 end
 
 action :pre_backup_check do
+  # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "pre_backup_check" method.
   @db = init(new_resource)
   @db.pre_backup_check
 end
 
 action :post_backup_cleanup do
+  # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "post_backup_steps" method.
   @db = init(new_resource)
   @db.post_backup_steps
 end
@@ -185,6 +216,7 @@ action :set_privileges do
   priv_username = new_resource.privilege_username
   priv_password = new_resource.privilege_password
   priv_database = new_resource.privilege_database
+  # See cookbooks/db_mysql/definitions/db_mysql_set_privileges.rb for the "db_mysql_set_privileges" definition.
   db_mysql_set_privileges "setup db privileges" do
     preset priv
     username priv_username
@@ -203,8 +235,8 @@ action :remove_anonymous do
 end
 
 action :install_client do
-  # Using node[:db_mysql][:version] to avoid misconfiguration during the run on Database Managers
-  node[:db_mysql][:version] = new_resource.db_version if node[:db_mysql][:version].nil?
+  # Using node[:db][:version] to avoid misconfiguration during the run on Database Managers
+  version = new_resource.db_version
   node[:db_mysql][:client_packages_uninstall] = []
   node[:db_mysql][:client_packages_install] = []
 
@@ -216,15 +248,12 @@ action :install_client do
     "default" => "/var/lib/mysql/mysql.sock"
   )
 
-  case node[:db_mysql][:version]
+  case version
     when "5.1"
       node[:db_mysql][:client_packages_install] = value_for_platform(
-        "centos" => {
+        ["centos", "redhat"] => {
           "5.8"=> [ "MySQL-shared-compat", "MySQL-devel-community", "MySQL-client-community" ],
           "default" => [ "mysql-devel", "mysql-libs", "mysql" ]
-        },
-        "redhat" => {
-          "default" => [ "MySQL-shared-compat", "MySQL-devel-community", "MySQL-client-community"]
         },
         "ubuntu" => {
           "10.04" => [ "libmysqlclient-dev", "mysql-client-5.1"],
@@ -234,38 +263,42 @@ action :install_client do
       )
 
     when "5.5"
+      # centos/redhat 6 by default has mysql-libs 5.1 installed as requirement for postfix.
+      # Will uninstall mysql-libs, install mysql55-lib
       node[:db_mysql][:client_packages_uninstall] = value_for_platform(
-        "centos"  => {
+        ["centos", "redhat"] => {
           "5.8" => [],
-          "default" => [ "postfix", "mysql-libs" ]
+          "default" => [ "mysql-libs" ]
         },
         "default" => []
       )
 
       node[:db_mysql][:client_packages_install] = value_for_platform(
-        "centos" => {
+        ["centos", "redhat"] => {
           "5.8" => [ "mysql55-devel", "mysql55-libs", "mysql55" ],
-          "default" => [ "mysql55-devel", "mysql55-libs", "mysql55", "postfix" ]
+          "default" => [ "mysql55-devel", "mysql55-libs", "mysql55" ]
         },
         "ubuntu" => {
           "10.04" => [],
           "default" => [ "libmysqlclient-dev", "mysql-client-5.5" ]
         },
-        "redhat" => {
-          "default" => [ "mysql55-devel", "mysql55-libs", "mysql55" ]
-        },
         "default" => []
       )
+
     else
-      raise "MySQL version: #{node[:db_mysql][:version]} not supported yet"
+      raise "MySQL version: #{version} not supported yet"
   end
 
   # Uninstall specified client packages
   packages = node[:db_mysql][:client_packages_uninstall]
-  log "  Packages to uninstall: #{packages.join(",")}" unless packages == ""
+  log "  Packages to uninstall: #{packages.join(",")}" unless packages.empty?
   packages.each do |p|
+    use_rpm = version == "5.5" && node[:platform] =~ /redhat|centos/ && node[:platform_version].to_i == 6 && p == "mysql-libs"
     r = package p do
       action :nothing
+      options "--nodeps" if use_rpm
+      ignore_failure true if use_rpm
+      provider Chef::Provider::Package::Rpm if use_rpm
     end
     r.run_action(:remove)
   end
@@ -287,12 +320,10 @@ action :install_client do
     r.run_action(:install)
   end
 
-  # Install MySQL client gem
-  #
-  # Also installs in compile phase
+  # Install MySQL client gem in compile phase.
+  # It is required by rightscale_tools gem for mysql operations.
   gem_package 'mysql' do
     gem_binary '/opt/rightscale/sandbox/bin/gem'
-    version '2.7'
     options '-- --build-flags --with-mysql-config'
   end
 
@@ -302,6 +333,7 @@ action :install_client do
     end
   end
   log "  Gem reload forced with Gem.clear_paths"
+
 end
 
 action :install_server do
@@ -327,6 +359,7 @@ action :install_server do
   end unless packages == ""
 
   # Stop mysql service
+  # See cookbooks/db_mysql/providers/default.rb for the "stop" action.
   db node[:db][:data_dir] do
     action :stop
     persist false
@@ -381,6 +414,8 @@ action :install_server do
   end
 
   # Setup my.cnf
+  # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for the "db_mysql_set_mycnf" definition.
+  # See cookbooks/db_mysql/libraries/helper.rb for the "RightScale::Database::MySQL::Helper" class.
   db_mysql_set_mycnf "setup_mycnf" do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
@@ -446,6 +481,7 @@ action :install_server do
 
   # Start MySQL
   Chef::Log.info "  Server installed.  Starting MySQL"
+  # See cookbooks/db_mysql/providers/default.rb for the "start" action.
   db node[:db][:data_dir] do
     action :start
     persist false
@@ -465,7 +501,63 @@ action :install_server do
 
 end
 
+action :install_client_driver do
+  type = new_resource.driver_type
+  log "  Installing mysql support for #{type} driver"
+
+  # Installation of the database client driver for application servers is
+  # done here based on the driver type
+  case type
+  when "php"
+    # This adapter type is used by php application servers
+    node[:db][:client][:driver] = "mysql"
+    package "#{type} mysql integration" do
+      package_name value_for_platform(
+        [ "centos", "redhat" ] => {
+          "default" => "php53u-mysql"
+        },
+        "ubuntu" => {
+          "default" => "php5-mysql"
+        },
+        "default" => "php-mysql"
+      )
+      action :install
+    end
+  when "python"
+    # This adapter type is used by Django application servers
+    node[:db][:client][:driver] = "django.db.backends.mysql"
+    python_pip "MySQL-python" do
+      version "1.2.3"
+      action :install
+    end
+  when "java"
+    # This adapter type is used by tomcat application servers
+    node[:db][:client][:driver] = "com.mysql.jdbc.Driver"
+    package "#{type} mysql integration" do
+      package_name value_for_platform(
+        ["centos", "redhat"] => {
+          "default" => "mysql-connector-java"
+        },
+        "ubuntu" => {
+          "default" => "libmysql-java"
+        }
+      )
+      action :install
+    end
+  when "ruby"
+    # This adapter type is used by Apache Rails Passenger application servers
+    node[:db][:client][:driver] = "mysql"
+    gem_package 'mysql' do
+      gem_binary "/usr/bin/gem"
+      options '-- --build-flags --with-mysql-config'
+    end
+  else
+    raise "Unknown driver type specified: #{type}"
+  end
+end
+
 action :setup_monitoring do
+  # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
   db_state_get node
 
   ruby_block "evaluate db type" do
@@ -519,6 +611,7 @@ action :grant_replication_slave do
 end
 
 action :promote do
+  # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
   db_state_get node
 
   x = node[:db_mysql][:log_bin]
@@ -536,12 +629,15 @@ action :promote do
   node[:db_mysql][:log_bin_enabled] = true
 
   # Setup my.cnf
+  # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for the "db_mysql_set_mycnf" definition.
+  # See cookbooks/db_mysql/libraries/helper.rb for the "RightScale::Database::MySQL::Helper" class.
   db_mysql_set_mycnf "setup_mycnf" do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
     innodb_log_file_size ::File.stat("/var/lib/mysql/ib_logfile0").size
   end
 
+  # See cookbooks/db_mysql/providers/default.rb for the "start" action.
   db node[:db][:data_dir] do
     action :start
     persist false
@@ -551,7 +647,7 @@ action :promote do
         Chef::Log.info "  Detected binlogs were disabled, restarting service to enable them for Master takeover."
         true
       else
-      	false
+        false
       end
     end
   end
@@ -625,10 +721,12 @@ end
 
 
 action :enable_replication do
+  # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
   db_state_get node
   current_restore_process = new_resource.restore_process
 
   # Check the volume before performing any actions.  If invalid raise error and exit.
+  # See cookbooks/db_mysql/libraries/helper.rb for the "RightScale::Database::MySQL::Helper" class.
   ruby_block "validate_master" do
     not_if { current_restore_process == :no_restore }
     block do
@@ -675,6 +773,7 @@ action :enable_replication do
   # Setup my.cnf
   unless current_restore_process == :no_restore
     # Setup my.cnf
+    # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for the "db_mysql_set_mycnf" definition.
     db_mysql_set_mycnf "setup_mycnf" do
       server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
       relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
@@ -691,14 +790,10 @@ action :enable_replication do
     group 'mysql'
   end
 
-  # ensure_db_started
-  # service provider uses the status command to decide if it
-  # has to run the start command again.
-  10.times do
-    db node[:db][:data_dir] do
-      action :start
-      persist false
-    end
+  # See cookbooks/db_mysql/providers/default.rb for "start" action.
+  db node[:db][:data_dir] do
+    action :start
+    persist false
   end
 
   ruby_block "configure_replication" do

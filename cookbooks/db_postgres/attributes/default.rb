@@ -9,10 +9,8 @@
 set_unless[:db_postgres][:server_usage] = "dedicated"  # or "shared"
 set_unless[:db_postgres][:previous_master] = nil
 
-
 # Optional attributes
 set_unless[:db_postgres][:port] = "5432"
-set_unless[:db_postgres][:version] = "9.1"
 
 set_unless[:db_postgres][:tmpdir] = "/tmp"
 set_unless[:db_postgres][:ident_file] = ""
@@ -21,11 +19,7 @@ set_unless[:db_postgres][:bind_address] = cloud[:private_ips][0]
 
 # Platform specific attributes
 case platform
-when "centos"
-  set_unless[:db_postgres][:basedir] = "/var/lib/pgsql/#{node[:db_postgres][:version]}"
-  set_unless[:db_postgres][:confdir] = "/var/lib/pgsql/#{node[:db_postgres][:version]}/data"
-  set_unless[:db_postgres][:datadir] = "/var/lib/pgsql/#{node[:db_postgres][:version]}/data"
-  set_unless[:db_postgres][:bindir] = "/usr/pgsql-#{node[:db_postgres][:version]}/bin"
+when "centos", "redhat"
   set_unless[:db_postgres][:packages_uninstall] = ""
   set_unless[:db_postgres][:log] = ""
   set_unless[:db_postgres][:log_error] = ""

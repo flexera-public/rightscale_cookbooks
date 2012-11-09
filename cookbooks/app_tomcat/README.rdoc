@@ -6,19 +6,14 @@
 * Installs and configures, Tomcat application server.
 
 == REQUIREMENTS:
+
 * Requires "app" Lightweight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
   or your own implementation of "app" resource. See the "app" cookbook README for
   details.
 * Requires a VM launched from a RightScale managed RightImage
-* Tested on the following RightImages:
-  * Version 6
-    * CentOS 5.8, 6.2, 6.3
-    * Ubuntu 10.04, 12.04
-    * RedHat 5.8
-  * Version 7
-    * Ubuntu 12.04
 
 == COOKBOOKS DEPENDENCIES:
+
 Please see the <tt>metadata.rb</tt> file for the latest dependencies.
 
 * <tt>app</tt>
@@ -33,9 +28,11 @@ There are no known limitations.
 
 == SETUP/USAGE:
 
-* Place <tt>tomcat::default</tt> and <tt>tomcat::default_6</tt> or <tt>tomcat::default_7</tt> (depending on which application server version to be installed) recipes into your runlist to set up the application server.
-* When using a RightScale ServerTemplate, this will also automatically add the
-  common attributes to your ServerTemplate inputs.
+* Place <tt>app_tomcat::setup_server_6</tt> or <tt>app_tomcat::setup_server_7</tt>
+  (depending on which application server version to be installed) recipes into
+  your runlist to set up the application server specific attributes.
+* Place <tt>app::install_server</tt> after setup_server recipe to install the
+  application server.
 * Set 'jdbc/ConnDB' as your datasource name to set up a database connection with
   the application server.
 
@@ -44,14 +41,18 @@ For more info see: {Release Notes}[http://support.rightscale.com/18-Release_Note
 Please checkout the tutorial: {Tomcat App Server}[http://support.rightscale.com/03-Tutorials/Tomcat_App_Server]
 
 == DETAILS:
+
 === General
 
 The <tt>app_tomcat</tt> cookbook will install and set up the Apache web server with a mod_jk module
 and the Tomcat application server, with support for MySQL or Postgres database servers.
+Set db/provider_type input in RightScale ServerTemplate to choose database
+provider. Place <tt>db::default</tt> recipe before application server installation
+to install the database client.
+
 The Cookbook will create a separate vhost config for the Apache web server, which will allow
 Apache to handle static content, such as images and HTML documents, 
 and forward all requests for dynamic content to Tomcat.
-
 
 <b>Apache</b>
 
@@ -114,15 +115,18 @@ also:
 * <tt>Collectd monitoring support</tt>
 
 === Attributes:
+
 These are settings used in recipes and templates. Default values are noted.
 
 Note: Only "internal" cookbook attributes are described here. Descriptions of
 attributes that are inputs are in the <tt>metadata.rb</tt> cookbook file.
 
 ====== General attributes
+
 * <tt>node[:app_tomcat][:code][:root_war]</tt> - Path to the directory which will contain the application for Tomcat.
 
 ====== Java heap tuning attributes
+
 * <tt>node[:app_tomcat][:java][:permsize]</tt> - The initial value of the permanent generation space size.
 * <tt>node[:app_tomcat][:java][:maxpermsize]</tt> - The maximum value of the permanent generation space size.
 * <tt>node[:app_tomcat][:java][:newsize]</tt> - The initial size of new space generation.
@@ -131,6 +135,7 @@ attributes that are inputs are in the <tt>metadata.rb</tt> cookbook file.
 * <tt>node[:app_tomcat][:java][:xms]</tt> - The initial size of the heap used by the JVM.
 
 ====== Platform dependent
+
 * <tt>node[:app][:user]</tt> - Username. Required for changing the owner
   of created project dirs.
 * <tt>node[:app_tomcat][:alternatives_cmd]</tt> - Java alternatives command list.
@@ -154,6 +159,8 @@ attributes that are inputs are in the <tt>metadata.rb</tt> cookbook file.
 * <tt>web_xml.erb</tt> - Content configuration template for Tomcat.
 * <tt>context_xml.erb</tt> - Configuration for project database connection
   config file.
+* <tt>catalina.properties.erb</tt> - Tomcat catalina properties with updated
+  configuration that loads all java classes from /usr/share/java.
 
 === LWRPs:
 
@@ -161,23 +168,14 @@ attributes that are inputs are in the <tt>metadata.rb</tt> cookbook file.
 <tt>providers/default.rb</tt> file and contains source for the following actions:
 
 * <tt>:install</tt>
-
 * <tt>:setup_vhost</tt>
-
 * <tt>:start</tt>
-
 * <tt>:stop</tt>
-
 * <tt>:reload</tt>
-
 * <tt>:restart</tt>
-
 * <tt>:code_update</tt>
-
 * <tt>:setup_db_connection</tt>
-
 * <tt>:setup_monitoring</tt>
-
 
 For more info about these actions please see <tt>app</tt> cookbook README.
 
@@ -187,31 +185,26 @@ interface to all <tt>app_tomcat</tt> provider logic.
 ===== Actions
 
 * <tt>:install</tt> - Install packages required for application server setup.
-
 * <tt>:setup_vhost</tt> - Set up Apache vhost file, with Tomcat module
   directives included. Install and set up Tomcat package dependencies.
-
 * <tt>:start</tt> - Start sequence for Tomcat application server.
-
 * <tt>:stop</tt> - Stop sequence for Tomcat application server.
-
 * <tt>:reload</tt> - Reload sequence for Tomcat application server.
-
 * <tt>:restart</tt> - Restart sequence for Tomcat application server.
-
 * <tt>:code_update</tt> - Perform project source code update/download using user
   selected "repo" LWRP. Set up logrotate config.
-
 * <tt>:setup_db_connection</tt> - Perform project
-  <tt>/etc/tomcat{6|7}/context.xml</tt> database file configuration.
-
+  <tt>/etc/tomcat{6|7}/context.xml</tt> database file configuration. The driver
+  type is specified as 'java' and the db_<provider> cookbook's
+  <tt>install_client_driver</tt> action performs necessary steps to install the
+  database adapter.
 * <tt>:setup_monitoring</tt> - Install and set up of required monitoring software.
 
 ===== Usage Example:
 
 For usage examples, please see corresponding section in <tt>app</tt> cookbook README.
 
-= LICENSE:
+== LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
