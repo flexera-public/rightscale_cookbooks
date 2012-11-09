@@ -126,7 +126,6 @@ action :setup_vhost do
     ruby_base_dir              node[:app_passenger][:ruby_gem_base_dir]
     rails_spawn_method         node[:app_passenger][:rails_spawn_method]
     destination                node[:app][:destination]
-    apache_maintenance_page    node[:app_passenger][:apache][:maintenance_page]
     apache_serve_local_files   node[:app_passenger][:apache][:serve_local_files]
     passenger_user             node[:app][:user]
     passenger_group            node[:app][:group]

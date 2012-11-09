@@ -36,14 +36,6 @@ attribute "app_passenger/project/environment",
   :default => "development",
   :recipes => ["app_passenger::setup_server_3_0"]
 
-attribute "app_passenger/apache/maintenance_page",
-  :display_name => "Apache maintenance page",
-  :description => "Maintenance URI to show if the page exists (based on document root). If this file exists, your site will show a \"Under Maintenance\" page and your site will not be available. Example: /system/maintenance.html",
-  :required => "optional",
-  :default => "",
-  :recipes => ["app_passenger::setup_server_3_0"]
-
-
 attribute "app_passenger/apache/serve_local_files",
   :display_name => "Apache serve local Files",
   :description => "This option tells Apache whether it should serve the (static) content itself. Currently, it will omit PHP and TomCat dynamic content, such as *.php, *.action, *.jsp, and *.do  Example: true",
