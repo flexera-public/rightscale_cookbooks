@@ -37,11 +37,11 @@ lvm_device = "lvol0"
 
 # The default mount point for ephemeral device in image.
 # Azure mounts the ephemeral drive at '/mnt/resource' while EC2 and openstack mount the ephemeral drive at
-# '/mnt' by default.
+# '/mnt/ephemeral' by default.
 if cloud == 'azure'
   ephemeral_mount_point = '/mnt/resource'
 else
-  ephemeral_mount_point = '/mnt'
+  ephemeral_mount_point = '/mnt/ephemeral'
 end
 
 # Ubuntu systems using upstart require the 'bootwait' option, otherwise
