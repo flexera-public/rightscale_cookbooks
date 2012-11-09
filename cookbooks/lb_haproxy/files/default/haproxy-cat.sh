@@ -27,7 +27,7 @@ done
 for single_vhost in ${vhosts}
 do
   acl=${single_vhost//\./_}"_acl"
-  echo "  acl ${acl} hdr_dom(host) -i ${single_vhost}" >> ${CONF_FILE}
+  echo "  acl ${acl} hdr_beg(host) -i ${single_vhost}" >> ${CONF_FILE}
 done
 
 echo "" >> ${CONF_FILE}
