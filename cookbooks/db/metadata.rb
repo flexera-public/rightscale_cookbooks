@@ -277,8 +277,8 @@ attribute "db/backup/restore_version_check",
     "db::do_primary_init_slave",
     "db::do_secondary_init_slave",
     "db::do_init_slave_at_boot",
-    "do_primary_restore_and_become_master",
-    "do_secondary_restore_and_become_master"
+    "db::do_primary_restore_and_become_master",
+    "db::do_secondary_restore_and_become_master"
   ]
 
 attribute "db/backup/primary/master/cron/hour",
