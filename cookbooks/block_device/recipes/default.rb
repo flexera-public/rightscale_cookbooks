@@ -61,6 +61,7 @@ do_for_all_block_devices node[:block_device] do |device|
     # Chef 0.10 has 'virtualization/system' while Chef 0.9 had 'virtualization/emulator'
     hypervisor node[:virtualization][:system] || node[:virtualization][:emulator]
 
+    instance_id node[:rightscale][:instance_uuid]
     mount_point get_device_or_default(node, device, :mount_point)
     lineage get_device_or_default(node, device, :backup, :lineage)
 
