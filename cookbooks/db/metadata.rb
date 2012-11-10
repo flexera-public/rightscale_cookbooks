@@ -116,10 +116,10 @@ attribute "db/admin/user",
   :recipes => [
     "db::install_server",
     "db::setup_privileges_admin",
-    "do_primary_restore",
-    "do_primary_restore_and_become_master",
-    "do_secondary_restore",
-    "do_secondary_restore_and_become_master"
+    "db::do_primary_restore",
+    "db::do_primary_restore_and_become_master",
+    "db::do_secondary_restore",
+    "db::do_secondary_restore_and_become_master"
   ]
 
 attribute "db/admin/password",
@@ -129,10 +129,10 @@ attribute "db/admin/password",
   :recipes => [
     "db::install_server",
     "db::setup_privileges_admin",
-    "do_primary_restore",
-    "do_primary_restore_and_become_master",
-    "do_secondary_restore",
-    "do_secondary_restore_and_become_master"
+    "db::do_primary_restore",
+    "db::do_primary_restore_and_become_master",
+    "db::do_secondary_restore",
+    "db::do_secondary_restore_and_become_master"
   ]
 
 attribute "db/replication/user",
@@ -173,10 +173,10 @@ attribute "db/application/user",
     "db::default",
     "db::setup_privileges_application",
     "db::install_server",
-    "do_primary_restore",
-    "do_primary_restore_and_become_master",
-    "do_secondary_restore",
-    "do_secondary_restore_and_become_master"
+    "db::do_primary_restore",
+    "db::do_primary_restore_and_become_master",
+    "db::do_secondary_restore",
+    "db::do_secondary_restore_and_become_master"
   ]
 
 attribute "db/application/password",
@@ -187,10 +187,10 @@ attribute "db/application/password",
     "db::default",
     "db::setup_privileges_application",
     "db::install_server",
-    "do_primary_restore",
-    "do_primary_restore_and_become_master",
-    "do_secondary_restore",
-    "do_secondary_restore_and_become_master"
+    "db::do_primary_restore",
+    "db::do_primary_restore_and_become_master",
+    "db::do_secondary_restore",
+    "db::do_secondary_restore_and_become_master"
   ]
 
 attribute "db/init_slave_at_boot",
