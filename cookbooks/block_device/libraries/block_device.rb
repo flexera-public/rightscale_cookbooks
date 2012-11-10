@@ -26,7 +26,7 @@ module RightScale
         :hypervisor => new_resource.hypervisor
       }
       options[:rackspace_use_snet] = new_resource.rackspace_snet if new_resource.rackspace_snet
-      options[:instance_id] = new_resource.instance_id
+      options[:instance_id] = new_resource.instance_id if new_resource.instance_id
 
       # Primary ROS options - some options needed regardless of backup type
       options[:primary_storage_cloud] = new_resource.primary_cloud if new_resource.primary_cloud
