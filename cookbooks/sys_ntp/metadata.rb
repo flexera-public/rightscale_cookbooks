@@ -11,7 +11,7 @@ version          "13.2.0"
 
 depends "rightscale"
 
-recipe "sys_ntp", "Installs and configures ntp client."
+recipe "sys_ntp::default", "Installs and configures ntp client."
 
 %w{ ubuntu redhat centos }.each do |os|
   supports os
