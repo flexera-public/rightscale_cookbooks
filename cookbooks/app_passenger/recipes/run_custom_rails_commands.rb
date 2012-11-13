@@ -21,6 +21,7 @@ bash "run commands" do
   flags "-ex"
   cwd "#{node[:app][:destination]}/"
   code <<-EOH
+    PATH=${PATH}:/usr/local/bin
     IFS=,  read -a ARRAY1 <<< "#{node[:app_passenger][:project][:custom_cmd]}"
     for i in "${ARRAY1[@]}"
     do
