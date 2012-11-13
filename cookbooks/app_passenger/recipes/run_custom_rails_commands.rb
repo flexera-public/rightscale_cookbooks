@@ -25,7 +25,7 @@ bash "run commands" do
     for i in "${ARRAY1[@]}"
     do
       tmp=`echo $i | sed 's/^[ \t]*//'`
-      /usr/bin/$tmp
+      $tmp
     done
   EOH
   only_if do (node[:app_passenger][:project][:custom_cmd]!="") end
