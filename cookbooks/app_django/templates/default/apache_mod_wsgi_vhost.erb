@@ -50,6 +50,7 @@
   </Directory>
 
   # Enable status page for monitoring purposes
+  RewriteEngine On
   RewriteCond %{REMOTE_ADDR} ^(127.0.0.1)
   RewriteRule ^(/server-status) $1 [H=server-status,L]
 
