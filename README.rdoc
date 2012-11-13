@@ -272,9 +272,14 @@ Cookbooks}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guid
 
 == DEVELOPMENT:
 
+The dependencies for working with the RightScale Cookbooks can be installed with Bundler:
+
+  bundle install
+
 === Rake Tasks:
 
-* There are several Rake tasks to check the cookbooks with {Foodcritic}[http://acrmp.github.com/foodcritic/]:
+* There are several Rake tasks to check the cookbooks with {Foodcritic}[http://acrmp.github.com/foodcritic/]
+  (Foodcritic currently only works with Ruby 1.9.2 and higher):
 
   * <tt>foodcritic</tt> Runs Foodcritic with the standard suite of rules
   * <tt>foodcritic_correctness</tt> Runs Foodcritic with just the correctness rules
