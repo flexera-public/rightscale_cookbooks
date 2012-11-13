@@ -54,6 +54,14 @@
   RewriteRule ^(/server-status) $1 [H=server-status,L]
 
 
+  # Redirects to a maintenance page if the specified file below exists
+  # ...but it still allows images to be served
+  RewriteCond <%= node[:web_apache][:maintenance_file] %> -f
+  RewriteCond %{SCRIPT_FILENAME} !/system/maintenance.html
+  RewriteCond %{SCRIPT_FILENAME} !^(.+).(gif|png|jpg|css|js|swf)$
+  RewriteRule ^.*$ <%= node[:web_apache][:maintenance_file] %> [L]
+
+
   <% if (@params[:apache_serve_local_files]=="true") %>
   # Serve any existing local files directly (except actionable ones)
   RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} -f

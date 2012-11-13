@@ -12,6 +12,7 @@ version          "13.2.0"
 depends "app"
 depends "repo"
 depends "rightscale"
+depends "web_apache"
 depends "logrotate"
 
 recipe "app_passenger::setup_server_3_0", "Default cookbook recipe which sets provider-specific attributes for rails-passenger."
