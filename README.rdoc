@@ -270,6 +270,16 @@ cannot be achieved using the inputs or in your own cookbooks, you can use a
 cookbook override. For more information see {Override Chef
 Cookbooks}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Override_Chef_Cookbooks].
 
+== DEVELOPMENT:
+
+=== Rake Tasks:
+
+* There are several Rake tasks to check the cookbooks with {Foodcritic}[http://acrmp.github.com/foodcritic/]:
+
+  * <tt>foodcritic</tt> Runs Foodcritic with the standard suite of rules
+  * <tt>foodcritic_correctness</tt> Runs Foodcritic with just the correctness rules
+  * <tt>foodcritic_syntax</tt> Runs Foodcritic with just the syntax rules
+
 == CONTRIBUTING:
 
 Contributors to the RightScale cookbooks need to agree to and sign the
