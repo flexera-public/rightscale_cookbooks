@@ -21,7 +21,7 @@ action :start do
         service node[:db_mysql][:service_name] do
           action :nothing
         end.run_action(:start)
-      end until ::File.exists?(node[:db][:socket])
+      end until ::File.exists?(node[:db_mysql][:socket])
     end
   rescue Timeout::Error
     raise "  Failed to start MySQL: socket file not found."
