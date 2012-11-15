@@ -36,7 +36,6 @@
       "recipes": [
         "lb_haproxy::default"
       ],
-      "category": "lb",
       "calculated": false,
       "type": "string"
     },
@@ -48,7 +47,6 @@
       "recipes": [
         "lb_haproxy::default"
       ],
-      "category": "lb",
       "choice": [
 
       ],
@@ -63,7 +61,6 @@
       "recipes": [
         "lb_haproxy::default"
       ],
-      "category": "lb",
       "choice": [
 
       ],
