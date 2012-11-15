@@ -50,7 +50,7 @@ action :install do
     cookbook "lb_haproxy"
   end
 
-  # Install the haproxy config head which is the part of the haproxy config
+  # Installs the haproxy config head which is the part of the haproxy config
   # that doesn't change.
   timeout_client = "timeout client #{node[:lb_haproxy][:timeout_client]}"
 
