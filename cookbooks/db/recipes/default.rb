@@ -7,6 +7,10 @@
 
 rightscale_marker :begin
 
+class Chef::Recipe
+  include RightScale::BlockDeviceHelper
+end
+
 # If block_device is used, set that to be node[:db][:data_dir]
 device = get_device_or_default(node, node[:block_device])
 if device
