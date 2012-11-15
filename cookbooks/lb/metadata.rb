@@ -3,7 +3,7 @@ maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "RighScale LB Manager"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "12.1.0"
+version          "13.2.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"
@@ -16,7 +16,7 @@ depends "apache2"
 depends "app", ">= 1.0"
 
 recipe "lb::default", "This loads the required load balancer resources."
-recipe "lb::setup_load_balancer", "Installs the load balancer and adds the loadbalancer:<pool_name>=lb tags to your server, which identifies it as a load balancer for a given listener pool. This tag is used by application servers to request connection/disconnection."
+recipe "lb::install_server", "Installs the load balancer and adds the loadbalancer:<pool_name>=lb tags to your server, which identifies it as a load balancer for a given listener pool. This tag is used by application servers to request connection/disconnection."
 recipe "lb::handle_attach", "Remote recipe executed by do_attach_request. DO NOT RUN."
 recipe "lb::handle_detach", "Remote recipe executed by do_detach_request. DO NOT RUN."
 recipe "lb::do_attach_all", "Registers all running application servers with the loadbalancer:<pool_name>=app tags. This should be run on a load balancer to connect all application servers in a deployment."
@@ -42,7 +42,7 @@ Example: www.mysite.com, api.mysite.com, /serverid, default",
     "lb::handle_attach",
     "lb::do_detach_request",
     "lb::handle_detach",
-    "lb::setup_load_balancer",
+    "lb::install_server",
     "lb::do_attach_all"
   ]
 
@@ -52,7 +52,7 @@ attribute "lb/stats_uri",
   :required => "optional",
   :default => "/haproxy-status",
   :recipes => [
-    "lb::setup_load_balancer"
+    "lb::install_server"
   ]
 
 attribute "lb/stats_user",
@@ -61,7 +61,7 @@ attribute "lb/stats_user",
   :required => "optional",
   :default => "",
   :recipes => [
-    "lb::setup_load_balancer"
+    "lb::install_server"
   ]
 
 attribute "lb/stats_password",
@@ -70,7 +70,7 @@ attribute "lb/stats_password",
   :required => "optional",
   :default => "",
   :recipes => [
-    "lb::setup_load_balancer"
+    "lb::install_server"
   ]
 
 attribute "lb/session_stickiness",
@@ -80,6 +80,7 @@ attribute "lb/session_stickiness",
   :choice => ["true", "false"],
   :default => "true",
   :recipes => [
+    "lb::do_attach_all",
     "lb::handle_attach"
   ]
 
@@ -89,7 +90,7 @@ attribute "lb/health_check_uri",
   :required => "optional",
   :default => "/",
   :recipes => [
-    "lb::setup_load_balancer",
+    "lb::install_server",
     "lb::handle_attach"
   ]
 

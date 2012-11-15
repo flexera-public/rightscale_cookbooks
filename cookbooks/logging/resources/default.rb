@@ -5,13 +5,10 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-# Add actions to @action_list array.
-# Used to allow comments between entries.
-def self.add_action(sym)
-  @action_list ||= Array.new
-  @action_list << sym unless @action_list.include?(sym)
-  @action_list
-end
+# This lightweight resource only defines the interface for logging providers.  This file
+# defines the actions and attributes that make up the logging interface (or abstraction).
+# See the action details found in the lightweight providers of other implementing
+# cookbooks, such as, cookbooks/logging_rsyslog/providers/default.rb
 
 # = Log Attributes
 #
@@ -30,65 +27,63 @@ end
 #
 # Calls the logging service stop command
 #
-add_action :stop
+actions :stop
 
 # == Start
 # Start the logging service.
 #
 # Calls the logging service start command
 #
-add_action :start
+actions :start
 
 # == Restart
 # Restart the logging service.
 #
 # Calls the logging service restart command
 #
-add_action :restart
+actions :restart
 
 # == Reload
-# load the logging service.
+# Reload the logging service.
 #
-# Calls the logging service load command
+# Calls the logging service reload command
 #
-add_action :reload
+actions :reload
 
 # == Status
 # Output the status of the logging service.
 #
 # Log and return the logging service status command results.
 #
-add_action :status
+actions :status
 
 # == Rotate
 #
 # Call the logging rotate command
 #
-add_action :rotate
+actions :rotate
 
 # == Add logging definition
 # Add a logging definition
 #
-add_action :add_definition
+actions :add_definition
 
 # == Add Log Rotation Policy
 #
-add_action :add_rotate_policy
+actions :add_rotate_policy
 
 # == Install Software
 # Installs logging software
 #
-add_action :install
+actions :install
 
 # == Configure
 # Updates the configuration
 #
-add_action :configure
-  attribute :remote_server, :kind_of => String
+actions :configure
+  attribute :remote_server, :kind_of => String, :default => ""
 
 # == Configure server
 # Configures a logging server
 #
-add_action :configure_server
-
-actions @action_list
+actions :configure_server

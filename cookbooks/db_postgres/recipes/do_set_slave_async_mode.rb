@@ -8,6 +8,7 @@
 rightscale_marker :begin
 
 # Run only on master server
+# See cookbooks/db/definitions/db_state_assert.rb for the "db_state_assert" definition.
 db_state_assert :master
 
 

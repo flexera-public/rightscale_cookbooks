@@ -24,10 +24,8 @@ This cookbook only supports the retrieval of code from Amazon S3, Rackspace Clou
 == SETUP/USAGE:
 
 * Provider will automatically be initialized when you add the <tt>repo:default</tt> recipe to your ServerTemplate's runlist.
-
 * Once setup, use the recipes in the 'repo' cookbook to install and manage how application code will be retrieved from ROS locations.
   See the 'repo' cookbook's README.rdoc for usage details.
-
 * Select 'repo_ros' option in the repo/default/provider input.
 
 To access to Remote Object Store repositories all inputs shown below must be filled.
@@ -74,7 +72,7 @@ Performs a standard repository pull plus a capistrano deployment style is applie
 
 For usage examples, please see the corresponding section in <tt>repo</tt> cookbook's README.
 
-= LICENSE:
+== LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 RightScale Terms of Service available at http://www.rightscale.com/terms.php and,

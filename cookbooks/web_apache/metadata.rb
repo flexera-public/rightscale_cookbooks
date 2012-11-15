@@ -2,7 +2,7 @@ maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "Installs/configures the apache2 webserver"
-version          "12.1.0"
+version          "13.2.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"
@@ -100,7 +100,7 @@ attribute "web_apache/ssl_passphrase",
 
 attribute "web_apache/application_name",
   :display_name => "Application Name",
-  :description => "Sets the directory for your application's web files (/home/webapps/Application Name/current/).  If you have multiple applications, you can run the code checkout script multiple times, each with a different value for the 'Application Name' input, so each application will be stored in a unique directory.  This must be a valid directory name.  Do not use symbols in the name. Example: myapp",
+  :description => "Sets the directory for your application's web files (/home/webapps/Application Name/).  If you have multiple applications, you can run the code checkout script multiple times, each with a different value for the 'Application Name' input, so each application will be stored in a unique directory.  This must be a valid directory name.  Do not use symbols in the name. Example: myapp",
   :required => "optional",
   :default => "myapp",
   :recipes => [

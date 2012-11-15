@@ -1,5 +1,5 @@
 #
-# Cookbook Name::memcached
+# Cookbook Name:: memcached
 #
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
@@ -7,6 +7,10 @@
 
 # Recommended attributes
 #
+
+# Default values for variables needed for the memcached server installation.
+# Will get set unless provided by user input.
+
 set_unless[:memcached][:tcp_port] = "11211"
 set_unless[:memcached][:udp_port] = "11211"
 set_unless[:memcached][:user] = "nobody"

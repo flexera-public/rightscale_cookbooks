@@ -8,10 +8,6 @@
 # List of additional php modules
 set_unless[:app_php][:modules_list] = []
 
-# Optional attributes
-# By default php uses MySQL as the DB adapter
-set_unless[:app][:db_adapter] = "mysql"
-
 # Calculated attributes
 # Defining apache user, module dependencies, and database adapter parameters depending on platform.
 case platform

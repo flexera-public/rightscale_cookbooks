@@ -3,7 +3,7 @@ maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "Installs/Configures block device storage."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "12.1.0"
+version          "13.2.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"
@@ -267,6 +267,13 @@ end.each do |device, number|
     :required => 'optional',
     :choice => ["50", "60", "70", "80", "90", "100"],
     :default => "90",
+    :recipes => [ "block_device::setup_block_device", "block_device::default" ]
+
+  attribute "block_device/devices/#{device}/iops",
+    :display_name => "I/O Operations per Second (#{number})",
+    :description => "The input/output operations per second (IOPS) that the volume can support. IOPS is currently only supported on Amazon EC2. Example: 500",
+    :type => "string",
+    :required => "optional",
     :recipes => [ "block_device::setup_block_device", "block_device::default" ]
 end
 

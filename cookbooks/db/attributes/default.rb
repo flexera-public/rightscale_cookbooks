@@ -8,9 +8,8 @@
 # Default setting for DB FQDN
 set_unless[:db][:dns][:master][:fqdn] = "localhost"
 
-# DB Provider, type of database which will be initialized
-# can be db_mysql or db_postgres, for more info please refer to corresponding cookbooks
-set_unless[:db][:provider] = "db_mysql"
+# Initial settings for client operations on application servers
+set_unless[:db][:data_dir] = "/mnt/storage"
 
 # Default settings for database administrator user and password
 set_unless[:db][:admin][:user] = "root"
@@ -27,6 +26,8 @@ set_unless[:db][:backup][:lineage_override] = ""
 # TTL limit to verify Master DB DNS TTL
 set_unless[:db][:dns][:ttl] = "60"
 
+# Database driver class to be used based on the type of driver
+set_unless[:db][:client][:driver] = ""
 
 # Server state variables
 #

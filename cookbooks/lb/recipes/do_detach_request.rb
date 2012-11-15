@@ -1,4 +1,4 @@
-# 
+#
 # Cookbook Name:: lb
 #
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
@@ -11,13 +11,17 @@ class Chef::Recipe
   include RightScale::App::Helper
 end
 
+# Calls the "detach_request" action for all the pools.
+# See cookbooks/app/libraries/helper.rb for the "pool_names" method.
 pool_names(node[:lb][:pools]).each do |pool_name|
   log "  Remove the load balancing tags, so we will not be re-attached. - #{pool_name}"
+  # See cookbooks/lb/definitions/lb_tag.rb for the "lb_tag" definition.
   lb_tag pool_name do
     action :remove
   end
 
   log "  Sending remote detach request..."
+  # See cookbooks/lb_<provider>/provider/default.rb for the "detach_request" action.
   lb pool_name do
     backend_id node[:rightscale][:instance_uuid]
     backend_ip node[:app][:ip]

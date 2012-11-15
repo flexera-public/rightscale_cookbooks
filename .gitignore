@@ -5,4 +5,5 @@
 .DS_Store
 .idea
 .rake_test_cache
+Gemfile.lock
 chefignoredoc

@@ -52,6 +52,7 @@ It supports repositories with public and private (username/password protected) a
 For normal operations, it requires "repo" resource, which acts as interface to all <tt>repo_svn</tt> provider logic.
 
 ===== Actions:
+
 <tt>:pull</tt>
 Standard repo pull. Pull source code from a remote repository by specifying its location with a URL.
 
@@ -62,7 +63,7 @@ Perform standard pull and then a capistrano deployment style will be applied.
 
 For usage examples, please see corresponding section in <tt>repo</tt> cookbook's README.
 
-= LICENSE:
+== LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 RightScale Terms of Service available at http://www.rightscale.com/terms.php and,

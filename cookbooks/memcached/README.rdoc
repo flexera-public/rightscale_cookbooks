@@ -42,15 +42,12 @@ These are the settings used in recipes and templates. Default values are noted.
 * <tt>node[:memcached][:log_level]</tt> - Memcached logging output level
 * <tt>node[:memcached][:cluster_id]</tt> - Cluster assosiation string.
 
-* <tt>node[:platform][:memcached][:config_file]</tt> - Location of memcached configuration file.
-
 === Templates:
 
 * <tt>memcached.conf.erb</tt> - Memcached configuration file. Unique for CentOS and Ubuntu. Used is the <tt>memcached::install_server</tt> recipe.
-
 * <tt>memcached_collectd.conf.erb</tt> - Memcached collectd plugin template. Used is the <tt>memcached::install_server</tt> recipe.
 
-= LICENSE:
+== LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to
 the RightScale Terms of Service available at http://www.rightscale.com/terms.php

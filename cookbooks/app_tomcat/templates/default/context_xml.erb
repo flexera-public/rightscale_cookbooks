@@ -14,7 +14,7 @@
 
     <!-- Default set of monitored resources -->
     <WatchedResource>WEB-INF/web.xml</WatchedResource>
-	
+
     <!-- Uncomment this to disable session persistence across Tomcat restarts -->
     <!--
     <Manager pathname="" />
@@ -25,15 +25,13 @@
     <!--
     <Valve className="org.apache.catalina.valves.CometConnectionManagerValve" />
     -->
-
-    <Resource name="<%= @datasource %>" auth="Container" type="javax.sql.DataSource"
+    <!--
+    The database driver class name used here is set by the "install_client_driver" action of the
+    db provider. See cookbooks/db_<provider>/providers/default.rb for more information.
+    -->
+    <Resource name="<%= @vars[:datasource] %>" auth="Container" type="javax.sql.DataSource"
              maxActive="100" maxIdle="30" maxWait="10000"
-             <% if node[:app][:db_adapter] == "mysql" -%>
-               username="<%= @user %>" password="<%= @password %>" driverClassName="com.mysql.jdbc.Driver"
-               url="jdbc:mysql://<%= @fqdn %>:3306/<%= @database %>"/>
-             <% elsif node[:app][:db_adapter] == "postgresql"-%>
-               username="<%= @user %>" password="<%= @password %>" driverClassName="org.postgresql.Driver"
-               url="jdbc:postgresql://<%= @fqdn %>:5432/<%= @database %>"/>
-             <% end -%>
+             username="<%= @user %>" password="<%= @password %>" driverClassName="<%= @node[:db][:client][:driver] %>"
+             url="jdbc:<%= @node[:db][:client][:driver].split(".")[1] %>://<%= @fqdn %>:<%= @node[:"#{node[:db][:provider]}"][:port]  %>/<%= @database %>"/>
 
 </Context>

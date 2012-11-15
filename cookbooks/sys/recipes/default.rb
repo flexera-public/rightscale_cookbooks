@@ -7,6 +7,7 @@
 
 rightscale_marker :begin
 
+# By default run the sys::do_reconverge_list_enable recipe
 include_recipe "sys::do_reconverge_list_enable"
 
 rightscale_marker :end

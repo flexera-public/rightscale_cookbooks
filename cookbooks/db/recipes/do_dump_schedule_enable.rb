@@ -17,6 +17,8 @@ skip, reason = true, "Container not provided"                if node[:db][:dump]
 if skip
   log "  Skipping import: #{reason}"
 else
+  # Set up parameters for creating dump file and export it in any cloud storage
+  # Add a cron job for scheduling dump creation and export.
   cron "db_dump_export" do
     hour "0"
     minute "#{5+rand(50)}"
@@ -25,4 +27,3 @@ else
 end
 
 rightscale_marker :end
-

@@ -5,13 +5,10 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-if platform == "centos"
-  set_unless[:db_postgres][:tunable][:shared_buffers] = "32MB"
-  set_unless[:db_postgres][:tunable][:max_connections] = "800"
-else
-  set_unless[:db_postgres][:tunable][:shared_buffers] = "27MB"
-  set_unless[:db_postgres][:tunable][:max_connections] = "100"
-end
+
+set_unless[:db_postgres][:tunable][:shared_buffers] = "24MB"
+set_unless[:db_postgres][:tunable][:max_connections] = "100"
+
 
 def value_with_units(value, units, usage_factor)
   raise "Error: value must convert to an integer." unless value.to_i

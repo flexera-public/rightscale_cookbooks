@@ -5,8 +5,6 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-# By default tomcat uses MySQL as the DB adapter
-set_unless[:app][:db_adapter] = "mysql"
 # List of required apache modules
 set[:app][:module_dependencies] = ["proxy", "proxy_http", "deflate", "rewrite"]
 
@@ -27,28 +25,12 @@ set_unless[:app_tomcat][:java][:xmx] = "512m"
 set_unless[:app_tomcat][:java][:xms] = "512m"
 
 # Calculated attributes
-# Defining apache user, java alternatives and database adapter parameters depending on platform.
+# Defining java alternatives parameter depending on platform.
 case node[:platform]
 when "ubuntu"
-  if node[:platform_version] == "10.04"
-    set[:app_tomcat][:jkworkersfile] = "/etc/tomcat6/workers.properties"
-  else
-    set[:app_tomcat][:jkworkersfile] = "/etc/libapache2-mod-jk/workers.properties"
-  end
   set[:app_tomcat][:alternatives_cmd] = "update-alternatives --auto java"
-  if app[:db_adapter] == "mysql"
-    set_unless[:app_tomcat][:datasource_name] = "jdbc/MYSQLDB"
-  elsif app[:db_adapter] == "postgresql"
-    set_unless[:app_tomcat][:datasource_name] = "jdbc/postgres"
-  end
 when "centos", "redhat"
-  set[:app_tomcat][:jkworkersfile] = "/etc/tomcat6/workers.properties"
   set[:app_tomcat][:alternatives_cmd] = "alternatives --auto java"
-  if app[:db_adapter] == "mysql"
-    set_unless[:app_tomcat][:datasource_name] = "jdbc/MYSQLDB"
-  elsif app[:db_adapter] == "postgresql"
-    set_unless[:app_tomcat][:datasource_name] = "jdbc/postgres"
-  end
 else
   raise "Unrecognized distro #{node[:platform]}, exiting "
 end

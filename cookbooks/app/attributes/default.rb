@@ -17,5 +17,3 @@ set[:app][:ip] = node[:cloud][:private_ips][0]
 set_unless[:app][:lb_ip]  = ""
 # The database schema name the app server uses
 set_unless[:app][:database_name] = ""
-# The database adapter the application uses. By default app servers use MySQL.
-set_unless[:app][:db_adapter] = "mysql"

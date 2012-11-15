@@ -8,8 +8,10 @@
 rightscale_marker :begin
 
 # Load the exec plugin in the main config file
+# See cookbooks/rightscale/definitions/rightscale_enable_collectd_plugin.rb for the "rightscale_enable_collectd_plugin" definition.
 rightscale_enable_collectd_plugin "exec"
 
+# See cookbooks/rightscale/recipes/setup_monitoring.rb for the "rightscale::setup_monitoring" recipe.
 include_recipe "rightscale::setup_monitoring"
 
 require 'fileutils'
@@ -33,7 +35,7 @@ cookbook_file(::File.join(node[:rightscale][:collectd_lib], "plugins", 'file-sta
   notifies :restart, resources(:service => "collectd")
 end
 
-# Used in db_mysql::do_backup in cookbooks_premium for backups
+# Used in db_mysql::do_backup in rightscale_cookbooks for backups
 file node[:rightscale][:db_backup_file] do
   action :touch
   owner "nobody"

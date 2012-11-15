@@ -66,7 +66,7 @@ To request that all servers with a given tag close a port to a given IP address 
 This can be useful when decommissioning a running server that had previously
 requested ports opened.
 
-= LICENSE:
+== LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to
 the RightScale Terms of Service available at http://www.rightscale.com/terms.php

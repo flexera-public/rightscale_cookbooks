@@ -37,11 +37,11 @@ lvm_device = "lvol0"
 
 # The default mount point for ephemeral device in image.
 # Azure mounts the ephemeral drive at '/mnt/resource' while EC2 and openstack mount the ephemeral drive at
-# '/mnt' by default.
+# '/mnt/ephemeral' by default.
 if cloud == 'azure'
   ephemeral_mount_point = '/mnt/resource'
 else
-  ephemeral_mount_point = '/mnt'
+  ephemeral_mount_point = '/mnt/ephemeral'
 end
 
 # Ubuntu systems using upstart require the 'bootwait' option, otherwise
@@ -68,6 +68,7 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
 
   # Get a list of ephemeral devices
   # Make sure to skip EBS volumes attached on boot
+  # See rightscale_tools gem for implementation of API.factory method
   @api = RightScale::Tools::API.factory('1.0', {:cloud => cloud}) if cloud == 'ec2'
   my_devices = []
   dev_index = 0
@@ -75,6 +76,8 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
     if node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
       device = node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
       device = '/dev/' + device if device !~ /^\/dev\//
+      # See rightscale_tools gem for implementation of unmap_device_for_ec2
+      # method.
       device = @api.unmap_device_for_ec2(device) if cloud == 'ec2'
       # for HVM: /dev/xvdb is symlinked to /dev/sda, though it shows up as
       # /dev/xvdb in /proc/partitions.  unmap function returns that

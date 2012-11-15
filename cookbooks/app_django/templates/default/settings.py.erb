@@ -19,22 +19,15 @@ PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
 DEBUG = <%= @node[:app_django][:app][:debug_mode] %>
 TEMPLATE_DEBUG = DEBUG
 
+# The database engine used here is set by the "install_client_driver" action of db provider.
+# See cookbooks/db_<provider>/providers/default.rb for more information.
 DATABASES = {
   'default': {
-    <%  case node[:app][:db_adapter]
-    when "mysql" %>
-    'ENGINE': 'django.db.backends.mysql',                   # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-    'NAME': '<%= @database %>',                             # Or path to database file if using sqlite3.
-    <%  when "postgresql"%>
-    'ENGINE': 'django.db.backends.postgresql_psycopg2',     # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-    'NAME': '<%= @database %>',                             # Or path to database file if using sqlite3.
-    <%  when "sqlite3","sqlite"%>
-    'ENGINE': 'django.db.backends.sqlite3',                 # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-    'NAME': os.path.join(PROJECT_DIR, '/<%= @database %>'), # Or path to database file if using sqlite3.
-    <%end%>
-    'USER': '<%= @user %>',                                 # Not used with sqlite3.
-    'PASSWORD': '<%= @password %>',                         # Not used with sqlite3.
-    'HOST': '<%= @fqdn %>',                                 # Set to empty string for localhost. Not used with sqlite3.
-    'PORT': '',                                             # Set to empty string for default. Not used with sqlite3.
+    'ENGINE': '<%= @node[:db][:client][:driver] %>',
+    'NAME': '<%= @database %>',
+    'USER': '<%= @user %>',
+    'PASSWORD': '<%= @password %>',
+    'HOST': '<%= @fqdn %>',
+    'PORT': '',
   }
 }

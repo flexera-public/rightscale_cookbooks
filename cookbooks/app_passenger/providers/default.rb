@@ -35,8 +35,10 @@ end
 # Restart apache/passenger
 action :restart do
   log "  Running restart sequence"
+  # Calls the :stop action.
   action_stop
   sleep 5
+  # Calls the :start action.
   action_start
 end
 
@@ -50,6 +52,13 @@ action :install do
     package p
   end
 
+  # Installing ruby-devel if not already installed.
+  # Required for passenger gem on centos/redhat.
+  log "  Verifying installation of ruby-devel"
+  package "ruby-devel" do
+    only_if { node[:platform] =~ /centos|redhat/ }
+  end
+
   # Installing passenger module
   log "  Installing passenger gem"
   gem_package "passenger" do
@@ -60,7 +69,7 @@ action :install do
   log "  Installing apache passenger module"
   execute "Install apache passenger module" do
     command "#{node[:app_passenger][:passenger_bin_dir]}/passenger-install-apache2-module --auto"
-    not_if { ::Dir.glob("#{node[:app_passenger][:ruby_gem_base_dir]}/gems/**/ext/apache2/mod_passenger.so").any? }
+    not_if { ::Dir.glob("#{node[:app_passenger][:ruby_gem_base_dir]}/gems/passenger-*/ext/apache2/mod_passenger.so").any? }
   end
 
 end
@@ -80,6 +89,7 @@ action :setup_vhost do
 
   # Enabling required apache modules
   node[:app][:module_dependencies].each do |mod|
+    # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_module.rb for the "apache_module" definition.
     apache_module mod
   end
 
@@ -90,9 +100,11 @@ action :setup_vhost do
   end
 
   # Adds php port to list of ports for webserver to listen on
+  # See cookbooks/app/definitions/app_add_listen_port.rb for the "app_add_listen_port" definition.
   app_add_listen_port port.to_s
 
   log "  Unlinking default apache vhost"
+  # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_site.rb for the "apache_site" definition.
   apache_site "000-default" do
     enable false
   end
@@ -100,6 +112,7 @@ action :setup_vhost do
   # Generation of new vhost config, based on user prefs
   log "  Generating new apache vhost"
   project_root = new_resource.root
+  # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/web_app.rb for the "web_app" definition.
   web_app "http-#{port}-#{node[:web_apache][:server_name]}.vhost" do
     template                   "basic_vhost.erb"
     cookbook                   'app_passenger'
@@ -127,17 +140,18 @@ action :setup_db_connection do
 
   deploy_dir = new_resource.destination
   db_name = new_resource.database_name
-  db_adapter = node[:app][:db_adapter]
 
   log "  Generating database.yml"
 
   # Tell Database to fill in our connection template
+  # See cookbooks/db/definitions/db_connect_app.rb for the "db_connect_app" definition.
   db_connect_app "#{deploy_dir.chomp}/config/database.yml" do
-    template      "database.yml.erb"
-    cookbook      "app_passenger"
-    owner         node[:app][:user]
-    group         node[:app][:group]
-    database      db_name
+    template "database.yml.erb"
+    cookbook "app_passenger"
+    owner node[:app][:user]
+    group node[:app][:group]
+    database db_name
+    driver_type "ruby"
   end
 
   # Creating bash file for manual $RAILS_ENV setup
@@ -163,6 +177,7 @@ action :code_update do
 
   log "  Starting source code download sequence..."
   # Calling "repo" LWRP to download remote project repository
+  # See cookbooks/repo/resources/default.rb for the "repo" resource.
   repo "default" do
     destination deploy_dir
     action node[:repo][:default][:perform_action].to_sym
@@ -194,6 +209,7 @@ action :code_update do
   end
 
   log "  Generating new logrotate config for rails application"
+  # See cookbooks/rightscale/definitions/rightscale_logrotate_app.rb for the "rightscale_logrotate_app" definition.
   rightscale_logrotate_app "rails" do
     cookbook "rightscale"
     template "logrotate.erb"

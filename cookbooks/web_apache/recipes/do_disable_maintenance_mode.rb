@@ -7,12 +7,12 @@
 
 rightscale_marker :begin
 
-  # Removing /system/maintenance.html from apache docroot
-  log "  Removing #{node[:web_apache][:docroot]}/system/maintenance.html"
-  file "#{node[:web_apache][:docroot]}/system/maintenance.html" do
-    action :delete
-    backup false
-    only_if do ::File.exists?("#{node[:web_apache][:docroot]}/system/maintenance.html")  end
-  end
+# Removes /system/maintenance.html from apache docroot.
+log "  Removing #{node[:web_apache][:docroot]}/system/maintenance.html"
+file "#{node[:web_apache][:docroot]}/system/maintenance.html" do
+  action :delete
+  backup false
+  only_if do ::File.exists?("#{node[:web_apache][:docroot]}/system/maintenance.html")  end
+end
 
 rightscale_marker :end

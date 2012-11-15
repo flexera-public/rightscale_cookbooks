@@ -3,7 +3,7 @@ maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "Abstract cookbook for managing source code repositories."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "13.1.0"
+version          "13.2.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"
@@ -62,7 +62,7 @@ attribute "repo/default/perform_action",
 
 attribute "repo/default/destination",
   :display_name => "Project App root",
-  :description => "The destination location where the application code will be placed on the local instance. If you want the application code to be placed in the root directory, use a forward slash (/) otherwise you will need to specify the full path (e.g. /path/to/code). If set to 'ignore' the default location (/home/webapp) will be used. The 'Application Name' input is used to name the destination folder into which the application code will be placed. Apache and PHP will look for the application in the specified path. Example: /home/webapps",
+  :description => "The destination location where the application code will be placed on the local instance. If you want the application code to be placed in the root directory, use a forward slash (/) otherwise you will need to specify the full path (e.g. /path/to/code). The 'Application Name' input is used to name the destination folder into which the application code will be placed in the specified path. Apache and PHP will look for the application in the specified path. Example: /home/webapps",
   :default => "/home/webapps",
   :required => "optional",
   :recipes => ["repo::default"]
@@ -83,12 +83,6 @@ attribute "repo/default/storage_account_provider",
     "SoftLayer_Singapore",
     "SoftLayer_Amsterdam"
   ],
-  :recipes => ["repo::default"]
-
-attribute "repo/default/container",
-  :display_name => "ROS Container",
-  :description => "The name of the ROS container where a tarball of the application code will be retrieved from. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name. Example: mycontainer",
-  :required => "optional",
   :recipes => ["repo::default"]
 
 attribute "repo/default/prefix",

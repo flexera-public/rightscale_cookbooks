@@ -1,6 +1,5 @@
 #
 # Cookbook Name:: logrotate
-# Definition:: logrotate_app
 #
 # Copyright 2009, Scott M. Likens
 #
@@ -15,9 +14,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 define :rightscale_logrotate_app, :enable => true, :frequency => "weekly", :template => "logrotate.erb", :cookbook => "logrotate" do
+  # See Opscode cookbooks at https://github.com/rightscale/cookbooks for the "logrotate" cookbook.
+  # See logrotate/recipes/default.rb for the "logrotate" recipe.
   include_recipe "logrotate"
 
   path = params[:path].respond_to?(:each) ? params[:path] : params[:path].split

@@ -12,8 +12,6 @@ set[:app_django][:version] = "1.4"
 # Django application debug mode - https://docs.djangoproject.com/en/dev/ref/settings/#debug
 set_unless[:app_django][:app][:debug_mode] = "False"
 
-# By default django uses MySQL as the DB adapter
-set_unless[:app][:db_adapter] = "mysql"
 # By default apache will serve any existing local files directly (except actionable ones)
 set_unless[:app_django][:apache][:serve_local_files] = "true"
 # List of required apache modules
@@ -24,7 +22,7 @@ set[:app][:module_dependencies] = ["proxy", "proxy_http"]
 case node[:platform]
 when "ubuntu"
   set[:app_django][:apache][:log_dir] = "/var/log/apache2"
-when "centos"
+when "centos", "redhat"
   set[:app_django][:apache][:log_dir] = "/var/log/httpd"
 end
 
