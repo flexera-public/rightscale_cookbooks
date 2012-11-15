@@ -74,7 +74,7 @@
   "groupings": {
   },
   "recipes": {
-    "lb_haproxy::default": "This loads the required 'lb' resource using the HAProxy provider."
+    "lb_haproxy::setup_server": "This loads the required 'lb' resource using the HAProxy provider."
   },
   "version": "13.2.0"
 }
