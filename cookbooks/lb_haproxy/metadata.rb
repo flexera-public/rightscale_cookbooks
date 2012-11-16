@@ -22,7 +22,7 @@ attribute "lb_haproxy/algorithm",
   :default => "roundrobin",
   :choice => ["roundrobin", "leastconn", "source"],
   :recipes => [
-    "lb_haproxy::default"
+    "lb_haproxy::setup_server"
   ]
 
 attribute "lb_haproxy/timeout_server",
@@ -31,7 +31,7 @@ attribute "lb_haproxy/timeout_server",
   :required => "optional",
   :default => "60000",
   :recipes => [
-    "lb_haproxy::default"
+    "lb_haproxy::setup_server"
   ]
 
 attribute "lb_haproxy/timeout_client",
@@ -40,5 +40,5 @@ attribute "lb_haproxy/timeout_client",
   :required => "optional",
   :default => "60000",
   :recipes => [
-    "lb_haproxy::default"
+    "lb_haproxy::setup_server"
   ]

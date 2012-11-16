@@ -34,7 +34,7 @@
         "source"
       ],
       "recipes": [
-        "lb_haproxy::default"
+        "lb_haproxy::setup_server"
       ],
       "calculated": false,
       "type": "string"
@@ -45,7 +45,7 @@
       "required": "optional",
       "default": "60000",
       "recipes": [
-        "lb_haproxy::default"
+        "lb_haproxy::setup_server"
       ],
       "choice": [
 
@@ -59,7 +59,7 @@
       "required": "optional",
       "default": "60000",
       "recipes": [
-        "lb_haproxy::default"
+        "lb_haproxy::setup_server"
       ],
       "choice": [
 
