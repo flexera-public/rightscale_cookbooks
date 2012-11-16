@@ -466,7 +466,7 @@ action :promote do
     group 'mysql'
   end
 
-  # Set read/write read_only.cnf
+  # Set read/write read_write_status.cnf
   db_mysql_set_mycnf_read_only "setup_mycnf_read_only" do
     read_only false
   end
@@ -666,7 +666,7 @@ action :enable_replication do
     end
   end
 
-  # Set read_only in read_only.cnf
+  # Set read_only in read_write_status.cnf
   db_mysql_set_mycnf_read_only "setup_mycnf_read_only" do
     read_only true
   end
