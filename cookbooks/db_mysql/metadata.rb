@@ -67,7 +67,7 @@ attribute "db_mysql/tmpdir",
 attribute "db_mysql/init_timeout",
   :display_name => "MySQL Init Timeout",
   :description => "Defines timeout to wait for a MySQL socket connection. Default: 600",
-  :recipes => ["db_mysql::setup_server_5_1", "db_mysql::setup_server_5_5"],
+  :recipes => ["db_mysql::default_5_1", "db_mysql::default_5_5"],
   :required => "optional",
   :default => "600"
 

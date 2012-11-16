@@ -21,7 +21,7 @@ action :start do
         service node[:db_mysql][:service_name] do
           action :nothing
         end.run_action(:start)
-      end until ::File.exists?(node[:db][:socket])
+      end until ::File.exists?(node[:db_mysql][:socket])
     end
   rescue Timeout::Error
     raise "  Failed to start MySQL: socket file not found."
@@ -319,6 +319,11 @@ action :install_server do
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
   end
 
+  # Setup read_write_status.cnf
+  db_mysql_set_mycnf_read_only "setup_mycnf_read_only" do
+    read_only false
+  end
+
   # Setup MySQL user limits
   mysql_file_ulimit = node[:db_mysql][:file_ulimit]
   template "/etc/security/limits.d/mysql.limits.conf" do
@@ -461,8 +466,11 @@ action :promote do
     group 'mysql'
   end
 
-  # Set read/write in my.cnf
-  node[:db_mysql][:tunable][:read_only] = 0
+  # Set read/write read_write_status.cnf
+  db_mysql_set_mycnf_read_only "setup_mycnf_read_only" do
+    read_only false
+  end
+
   # Enable binary logging in my.cnf
   node[:db_mysql][:log_bin_enabled] = true
 
@@ -658,7 +666,10 @@ action :enable_replication do
     end
   end
 
-  node[:db_mysql][:tunable][:read_only] = 1
+  # Set read_only in read_write_status.cnf
+  db_mysql_set_mycnf_read_only "setup_mycnf_read_only" do
+    read_only true
+  end
 
 end
 

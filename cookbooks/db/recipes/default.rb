@@ -7,10 +7,17 @@
 
 rightscale_marker :begin
 
+class Chef::Recipe
+  include RightScale::BlockDeviceHelper
+end
+
 # If block_device is used, set that to be node[:db][:data_dir]
-mount_point = node[:block_device][:devices][:device1][:mount_point]
-if !mount_point.nil? && !mount_point.empty?
-  node[:db][:data_dir] = mount_point
+device = get_device_or_default(node, node[:block_device])
+if device
+  mount_point = node[:block_device][:devices][:device1][:mount_point] if node[:block_device][:devices].include?(:device1)
+  if !mount_point.nil? && !mount_point.empty?
+    node[:db][:data_dir] = mount_point
+  end
 end
 
 # Setup default values for database resource
