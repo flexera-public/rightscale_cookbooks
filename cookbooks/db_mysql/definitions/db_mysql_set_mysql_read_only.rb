@@ -22,5 +22,5 @@ define :db_mysql_set_mycnf_read_only, :read_only => false do
   end
 
   # No need to do a restart - this is only called to update the config file and
-  # not change the running deamons read/write status.
+  # not change the running daemons read/write status.
 end
