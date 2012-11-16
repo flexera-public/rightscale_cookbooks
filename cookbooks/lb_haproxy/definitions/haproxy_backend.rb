@@ -13,8 +13,6 @@ define :lb_haproxy_backend, :pool_name => "" do
               "#{node[:lb][:stats_user]}".empty? || "#{node[:lb][:stats_password]}".empty?
   health_uri = "option httpchk GET #{node[:lb][:health_check_uri]}" unless "#{node[:lb][:health_check_uri]}".empty?
   health_chk = "http-check disable-on-404" unless "#{node[:lb][:health_check_uri]}".empty?
-  algorithm = "balance #{node[:lb_haproxy][:algorithm]}"
-  timeout_server = "timeout server #{node[:lb_haproxy][:timeout_server]}"
 
   # Creates backend haproxy files for the vhost it will answer for.
   template ::File.join("/etc/haproxy/#{node[:lb][:service][:provider]}.d", "backend_#{params[:pool_name]}.conf") do
@@ -30,8 +28,8 @@ define :lb_haproxy_backend, :pool_name => "" do
       :stats_auth_line => stats_auth,
       :health_uri_line => health_uri,
       :health_check_line => health_chk,
-      :algorithm_line => algorithm,
-      :timeout_server_line => timeout_server
+      :algorithm => node[:lb_haproxy][:algorithm],
+      :timeout_server => node[:lb_haproxy][:timeout_server]
     )
   end
 end

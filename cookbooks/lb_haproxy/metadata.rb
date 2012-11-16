@@ -27,7 +27,7 @@ attribute "lb_haproxy/algorithm",
 
 attribute "lb_haproxy/timeout_server",
   :display_name => "Server Timeout",
-  :description => "Set the maximum inactivity time on the server side in milliseconds.",
+  :description => "The maximum inactivity time on the server side in milliseconds.",
   :required => "optional",
   :default => "60000",
   :recipes => [
@@ -36,7 +36,7 @@ attribute "lb_haproxy/timeout_server",
 
 attribute "lb_haproxy/timeout_client",
   :display_name => "Client Timeout",
-  :description => "Set the maximum inactivity time on the client side milliseconds.",
+  :description => "The maximum inactivity time on the client side milliseconds.",
   :required => "optional",
   :default => "60000",
   :recipes => [

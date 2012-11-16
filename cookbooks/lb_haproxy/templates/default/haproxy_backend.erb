@@ -1,10 +1,10 @@
 backend <%= @backend_name_line %>
 
         mode http
-        <%= @algorithm_line %>
+        balance <%= @algorithm %>
         
         # Timeout
-        <%= @timeout_server_line %>
+        timeout server <%= @timeout_server %>
 
         # Haproxy status page
         <%= @stats_uri_line %>

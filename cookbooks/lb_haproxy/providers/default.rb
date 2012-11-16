@@ -52,8 +52,6 @@ action :install do
 
   # Installs the haproxy config head which is the part of the haproxy config
   # that doesn't change.
-  timeout_client = "timeout client #{node[:lb_haproxy][:timeout_client]}"
-
   template "/etc/haproxy/haproxy.cfg.head" do
     source "haproxy.cfg.head.erb"
     cookbook "lb_haproxy"
@@ -63,7 +61,7 @@ action :install do
     stats_file="stats socket /etc/haproxy/status user haproxy group haproxy"
     variables(
       :stats_file_line => stats_file,
-      :timeout_client_line => timeout_client
+      :timeout_client => node[:lb_haproxy][:timeout_client]
     )
   end
 
