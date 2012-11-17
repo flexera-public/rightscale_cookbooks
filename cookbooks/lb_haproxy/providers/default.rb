@@ -60,7 +60,8 @@ action :install do
     mode "0400"
     stats_file="stats socket /etc/haproxy/status user haproxy group haproxy"
     variables(
-      :stats_file_line => stats_file
+      :stats_file_line => stats_file,
+      :timeout_client => node[:lb_haproxy][:timeout_client]
     )
   end
 
