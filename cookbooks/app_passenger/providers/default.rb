@@ -72,7 +72,7 @@ action :install do
       code <<-EOH
       update_alternatives --set ruby "/usr/bin/ruby1.8"
       EOH
-      only_if node[:platform_version].to_i == 12
+      only_if { node[:platform_version].to_i == 12 }
     end  
   end
 
