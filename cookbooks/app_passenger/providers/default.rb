@@ -66,33 +66,14 @@ action :install do
       ruby_packages.each do |p|
         package p
       end
-      
-      gemenv = Chef::ShellOut.new("/usr/bin/gem env")
-      gemenv.run_command
-      gemenv.error!
-
-      # Resetting passenger binary directory
-      gemenv.stdout =~ /EXECUTABLE DIRECTORY: (.*)$/
-      node[:app_passenger][:passenger_bin_dir] = $1
-
-      # Reset path to Ruby gem directory
-      gemenv.stdout =~ /INSTALLATION DIRECTORY: (.*)$/
-      node[:app_passenger][:ruby_gem_base_dir] = $1
     end
   elsif node[:platform] =~ /ubuntu/
-    if node[:platform_version].to_i == 12
-      bash "use ruby 1.8 version" do
-        code <<-EOH
-        update-alternatives --set ruby "/usr/bin/ruby1.8"
-        update-alternatives --set gem "/usr/bin/gem1.8"
-        EOH
-      end
-
-      gemenv = Chef::ShellOut.new("/usr/bin/gem env")
-
-      # Resetting passenger binary directory
-      gemenv.stdout =~ /INSTALLATION DIRECTORY: (.*)$/
-      node[:app_passenger][:ruby_gem_base_dir] = $1
+    bash "use ruby 1.8 version" do
+      code <<-EOH
+      update-alternatives --set ruby "/usr/bin/ruby1.8"
+      update-alternatives --set gem "/usr/bin/gem1.8"
+      EOH
+      only_if { node[:platform_version].to_i == 12 }
     end
   end
 
@@ -110,6 +91,34 @@ action :install do
     action :install
   end
 
+  if node[:platform] =~ /centos|redhat/
+    if node[:platform_version].to_i == 6
+      # Determine the gem environment from what is installed
+      gemenv = Chef::ShellOut.new("/usr/bin/gem env")
+      gemenv.run_command
+      gemenv.error!
+
+      # Resetting passenger binary directory
+      gemenv.stdout =~ /EXECUTABLE DIRECTORY: (.*)$/
+      node[:app_passenger][:passenger_bin_dir] = $1
+
+      # Reset path to Ruby gem directory
+      gemenv.stdout =~ /INSTALLATION DIRECTORY: (.*)$/
+      node[:app_passenger][:ruby_gem_base_dir] = $1
+    end
+  elsif node[:platform] =~ /ubuntu/
+    if node[:platform_version].to_i == 12
+      # Determine the gem environment from what is installed
+      gemenv = Chef::ShellOut.new("/usr/bin/gem env")
+      gemenv.run_command
+      gemenv.error!
+
+      # Reset path to Ruby gem directory
+      gemenv.stdout =~ /INSTALLATION DIRECTORY: (.*)$/
+      node[:app_passenger][:ruby_gem_base_dir] = $1
+    end
+  end
+      
   log "  Installing apache passenger module"
   execute "Install apache passenger module" do
     command "#{node[:app_passenger][:passenger_bin_dir]}/passenger-install-apache2-module --auto"
