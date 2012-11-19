@@ -66,11 +66,15 @@ action :install do
       ruby_packages.each do |p|
         package p
       end
+      
+      gemenv = Chef::ShellOut.new("/usr/bin/gem env")
+      gemenv.stdout =~ /INSTALLATION DIRECTORY: (.*)$/
+      node[:app_passenger][:ruby_gem_base_dir] = $1
     end
   elsif node[:platform] =~ /ubuntu/
     bash "use ruby 1.8 version" do
       code <<-EOH
-      update_alternatives --set ruby "/usr/bin/ruby1.8"
+      update-alternatives --set ruby "/usr/bin/ruby1.8"
       EOH
       only_if { node[:platform_version].to_i == 12 }
     end  
