@@ -55,7 +55,7 @@ action :install do
   # On CentOS 6.3 images uninstall ruby 1.9 version and install ruby 1.8
   # On Ubuntu 12.04 images use update-alternatives cmd and choose ruby 1.8 
   if node[:platform] =~ /centos|redhat/
-    if node[:platform][:version].to_i == 6
+    if node[:platform_version].to_i == 6
       ruby_packages = ["ruby", "ruby-libs"]
       ruby_packages.each do |p|
         package p do
@@ -72,7 +72,7 @@ action :install do
       code <<-EOH
       update_alternatives --set ruby "/usr/bin/ruby1.8"
       EOH
-      only_if node[:platform][:version].to_i == 12
+      only_if node[:platform_version].to_i == 12
     end  
   end
 
