@@ -68,12 +68,14 @@ action :install do
       end
       
       gemenv = Chef::ShellOut.new("/usr/bin/gem env")
+      gemenv.run_command
+      gemenv.error!
 
       # Resetting passenger binary directory
       gemenv.stdout =~ /EXECUTABLE DIRECTORY: (.*)$/
       node[:app_passenger][:passenger_bin_dir] = $1
 
-      # Rest path to Ruby gem directory
+      # Reset path to Ruby gem directory
       gemenv.stdout =~ /INSTALLATION DIRECTORY: (.*)$/
       node[:app_passenger][:ruby_gem_base_dir] = $1
     end
