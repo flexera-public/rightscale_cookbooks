@@ -68,16 +68,30 @@ action :install do
       end
       
       gemenv = Chef::ShellOut.new("/usr/bin/gem env")
+
+      # Resetting passenger binary directory
+      gemenv.stdout =~ /EXECUTABLE DIRECTORY: (.*)$/
+      node[:app_passenger][:passenger_bin_dir] = $1
+
+      # Rest path to Ruby gem directory
       gemenv.stdout =~ /INSTALLATION DIRECTORY: (.*)$/
       node[:app_passenger][:ruby_gem_base_dir] = $1
     end
   elsif node[:platform] =~ /ubuntu/
-    bash "use ruby 1.8 version" do
-      code <<-EOH
-      update-alternatives --set ruby "/usr/bin/ruby1.8"
-      EOH
-      only_if { node[:platform_version].to_i == 12 }
-    end  
+    if node[:platform_version].to_i == 12
+      bash "use ruby 1.8 version" do
+        code <<-EOH
+        update-alternatives --set ruby "/usr/bin/ruby1.8"
+        update-alternatives --set gem "/usr/bin/gem1.8"
+        EOH
+      end
+
+      gemenv = Chef::ShellOut.new("/usr/bin/gem env")
+
+      # Resetting passenger binary directory
+      gemenv.stdout =~ /INSTALLATION DIRECTORY: (.*)$/
+      node[:app_passenger][:ruby_gem_base_dir] = $1
+    end
   end
 
   # Installing ruby-devel if not already installed.
