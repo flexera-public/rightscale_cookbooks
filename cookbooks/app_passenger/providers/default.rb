@@ -67,7 +67,7 @@ action :install do
         package p
       end
     end
-  elsif node[:platform] ~= /ubuntu/
+  elsif node[:platform] =~ /ubuntu/
     bash "use ruby 1.8 version" do
       code <<-EOH
       update_alternatives --set ruby "/usr/bin/ruby1.8"
