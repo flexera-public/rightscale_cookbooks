@@ -81,15 +81,15 @@ action :install do
   end
 
   # Repopulate gem environment
-  gem = Chef::ShellOut.new("/usr/bin/gem env")
+  gemenv = Chef::ShellOut.new("/usr/bin/gem env")
   gemenv.run_command
   gemenv.error!
 
-  # Path to Ruby gem directory
+  # Reset path to Ruby gem directory
   gemenv.stdout =~ /INSTALLATION DIRECTORY: (.*)$/
   node[:app_passenger][:ruby_gem_base_dir] = $1
 
-  # Setting passenger binary directory
+  # Resetting passenger binary directory
   gemenv.stdout =~ /EXECUTABLE DIRECTORY: (.*)$/
   node[:app_passenger][:passenger_bin_dir] = $1
 
@@ -114,7 +114,7 @@ action :install do
     PATH=${PATH}:/usr/local/bin
     passenger-install-apache2-module --auto
     EOH
-    not_if { ::Dir.glob("/usr/**/mod_passenger.so").any? }
+    not_if { ::Dir.glob("#{node[:app_passenger][:ruby_gem_base_dir]}/gems/passenger-*/ext/apache2/mod_passenger.so").any? }
 
   end
 
@@ -290,8 +290,8 @@ action :setup_monitoring do
     cookbook "app_passenger"
     variables(
       :apache_binary => node[:apache][:binary],
-      :passenger_memory_stats => "passenger-memory-stats",
-      :passenger_status => "passenger-status"
+      :passenger_memory_stats => "#{node[:app_passenger][:passenger_bin_dir]}/passenger-memory-stats",
+      :passenger_status => "#{node[:app_passenger][:passenger_bin_dir]}/passenger-status"
     )
   end
 

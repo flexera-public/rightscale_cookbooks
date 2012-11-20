@@ -46,6 +46,10 @@ gemenv = Chef::ShellOut.new("/usr/bin/gem env")
 gemenv.run_command
 gemenv.error!
 
+# Setting passenger binary directory
+gemenv.stdout =~ /EXECUTABLE DIRECTORY: (.*)$/
+node[:app_passenger][:passenger_bin_dir] = $1
+
 # Path to Ruby gem directory
 gemenv.stdout =~ /INSTALLATION DIRECTORY: (.*)$/
 node[:app_passenger][:ruby_gem_base_dir] = $1
