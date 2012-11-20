@@ -91,24 +91,14 @@ action :install do
     action :install
   end
 
-  bash "populate gem env" do
-    gemenv = Chef::ShellOut.new("/usr/bin/gem env")
-    gemenv.run_command
-    gemenv.error!
-
-    # Resetting passenger binary directory
-    gemenv.stdout =~ /EXECUTABLE DIRECTORY: (.*)$/
-    node[:app_passenger][:passenger_bin_dir] = $1
-
-    # Reset path to Ruby gem directory
-    gemenv.stdout =~ /INSTALLATION DIRECTORY: (.*)$/
-    node[:app_passenger][:ruby_gem_base_dir] = $1
-  end
-
   log "  Installing apache passenger module"
-  execute "Install apache passenger module" do
-    command "#{node[:app_passenger][:passenger_bin_dir]}/passenger-install-apache2-module --auto"
-    not_if { ::Dir.glob("#{node[:app_passenger][:ruby_gem_base_dir]}/gems/passenger-*/ext/apache2/mod_passenger.so").any? }
+  bash "Install apache passenger module" do
+    flags "-ex"
+    code <<-EOH
+    PATH=${PATH}:/usr/local/bin
+    passenger-install-apache2-module --auto
+    EOH
+    not_if { ::Dir.glob("/usr/**/mod_passenger.so") }
   end
 
 end
