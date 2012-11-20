@@ -98,7 +98,8 @@ action :install do
     PATH=${PATH}:/usr/local/bin
     passenger-install-apache2-module --auto
     EOH
-    not_if { ::Dir.glob("/usr/**/mod_passenger.so") }
+    not_if { ::Dir.glob("/usr/**/mod_passenger.so").any? }
+
   end
 
 end
