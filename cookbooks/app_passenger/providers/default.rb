@@ -57,22 +57,41 @@ action :install do
   if node[:platform] =~ /centos|redhat/
     ruby_packages = ["ruby", "ruby-libs"]
     ruby_packages.each do |p|
-      package p do
-        action :remove
+      r = package p do
+        action :nothing
       end
+      r.run_action(:remove)
     end 
     ruby_packages = ["ruby", "rubygems"]
     ruby_packages.each do |p|
-      package p
+      r = package p do
+        action :nothing
+      end
+      r.run_action(:install)
     end
   elsif node[:platform] =~ /ubuntu/
-    bash "use ruby 1.8 version" do
+    r = bash "use ruby 1.8 version" do
       code <<-EOH
       update-alternatives --set ruby "/usr/bin/ruby1.8"
       update-alternatives --set gem "/usr/bin/gem1.8"
       EOH
+      action :nothing
     end
+    r.run_action(:run)
   end
+
+  # Repopulate gem environment
+  gem = Chef::ShellOut.new("/usr/bin/gem env")
+  gemenv.run_command
+  gemenv.error!
+
+  # Path to Ruby gem directory
+  gemenv.stdout =~ /INSTALLATION DIRECTORY: (.*)$/
+  node[:app_passenger][:ruby_gem_base_dir] = $1
+
+  # Setting passenger binary directory
+  gemenv.stdout =~ /EXECUTABLE DIRECTORY: (.*)$/
+  node[:app_passenger][:passenger_bin_dir] = $1
 
   # Installing ruby-devel if not already installed.
   # Required for passenger gem on centos/redhat.
