@@ -12,4 +12,4 @@
 # Allowing apache user to access passenger monitoring resources
 Defaults:<%= @user %> !requiretty
 Defaults:<%= @user %> !env_reset
-<%= @user %> ALL = NOPASSWD: passenger-status, passenger-memory-stats
+<%= @user %> ALL = NOPASSWD: /usr/local/bin/passenger-status, /usr/local/bin/passenger-memory-stats
