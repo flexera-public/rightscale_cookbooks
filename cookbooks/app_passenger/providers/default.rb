@@ -273,8 +273,8 @@ action :setup_monitoring do
     cookbook "app_passenger"
     variables(
       :apache_binary => node[:apache][:binary],
-      :passenger_memory_stats => "#{node[:app_passenger][:passenger_bin_dir]}/passenger-memory-stats",
-      :passenger_status => "#{node[:app_passenger][:passenger_bin_dir]}/passenger-status"
+      :passenger_memory_stats => "passenger-memory-stats",
+      :passenger_status => "passenger-status"
     )
   end
 
@@ -312,8 +312,7 @@ action :setup_monitoring do
     source "passenger-status.erb"
     mode "0440"
     variables(
-      :user => node[:app][:user],
-      :passenger_bin_dir => node[:app_passenger][:passenger_bin_dir]
+      :user => node[:app][:user]
     )
     not_if { ::File.exists?("/etc/sudoers.d/passenger-status") }
     notifies :start, resources(:service => "collectd")
