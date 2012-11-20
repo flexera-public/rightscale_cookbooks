@@ -330,6 +330,7 @@ action :setup_monitoring do
     mode "0440"
     variables(
       :user => node[:app][:user]
+      :passenger_bin_dir => node[:app_passenger][:passenger_bin_dir]
     )
     not_if { ::File.exists?("/etc/sudoers.d/passenger-status") }
     notifies :start, resources(:service => "collectd")
