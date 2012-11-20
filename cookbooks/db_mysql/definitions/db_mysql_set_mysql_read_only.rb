@@ -10,7 +10,7 @@ define :db_mysql_set_mycnf_read_only, :read_only => false do
   read_only = params[:read_only] ? 1 : 0
   log "  Installing read_write_status.cnf with read_only = #{read_only}"
 
-  template value_for_platform("default" => "/etc/mysql/conf.d/read_write_status.cnf") do
+  template "/etc/mysql/conf.d/read_write_status.cnf" do
     source "read_write_status.cnf.erb"
     owner "root"
     group "root"
