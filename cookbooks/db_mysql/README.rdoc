@@ -60,6 +60,11 @@ override repository please see: {Override Chef Cookbooks}[http://support.rightsc
 The 'db' implementation is defined by a Lightweight Provider, which can be
 found in the <tt>providers/default.rb</tt> file.
 
+The ‘read_only’ flag in the MySQL configuration is set by the definition
+<tt>db_mysql_set_read_only</tt>. This flag is set to ‘false’ by default
+and changed to ‘true’ while initializing a slave server, and set back to
+‘false’ when the slave is promoted to a master server.
+
 === Attributes:
 
 These are settings used in recipes and templates. Default values are noted.
