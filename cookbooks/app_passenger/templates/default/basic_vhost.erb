@@ -53,20 +53,12 @@ RewriteCond %{REMOTE_ADDR} ^(127.0.0.1)
 RewriteRule ^(/server-status) $1 [H=server-status,L]
 
 
-<%  if (@params[:apache_maintenance_page].empty?) %>
-<%    @params[:apache_maintenance_page]="/system/maintenance.html" %>
-<%  else %>
-<%    @params[:apache_maintenance_page]=@params[:apache_maintenance_page].strip %>
-<%  end %>
-
 # Redirects to a maintenance page if the specified file below exists
 # ...but it still allows images to be served
-RewriteCond %{DOCUMENT_ROOT}<%=@params[:apache_maintenance_page]%> -f
-RewriteCond %{SCRIPT_FILENAME} !<%=@params[:apache_maintenance_page]%>
+RewriteCond <%= node[:web_apache][:maintenance_file] %> -f
+RewriteCond %{SCRIPT_FILENAME} !/system/maintenance.html
 RewriteCond %{SCRIPT_FILENAME} !^(.+).(gif|png|jpg|css|js|swf)$
-RewriteRule ^.*$ <%=@params[:apache_maintenance_page]%> [L]
-
-
+RewriteRule ^.*$ <%= node[:web_apache][:maintenance_file] %> [L]
 
 
 <% if (@params[:apache_serve_local_files]=="true") %>

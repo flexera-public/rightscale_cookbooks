@@ -34,10 +34,10 @@
 
   # Redirects to a maintenance page if the specified file below exists
   # ...but it still allows images to be served
-  RewriteCond %{DOCUMENT_ROOT}/system/maintenance.html -f
+  RewriteCond <%= node[:web_apache][:maintenance_file] %> -f
   RewriteCond %{SCRIPT_FILENAME} !/system/maintenance.html
   RewriteCond %{SCRIPT_FILENAME} !^(.+).(gif|png|jpg|css|js|swf)$
-  RewriteRule ^.*$ /system/maintenance.html [L]
+  RewriteRule ^.*$ <%= node[:web_apache][:maintenance_file] %> [L]
 
   # Next hop is HaProxy
   RewriteRule ^/(.*)$ http://127.0.0.1:85%{REQUEST_URI} [P,QSA,L]
