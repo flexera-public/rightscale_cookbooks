@@ -12,6 +12,7 @@ version          "13.2.0"
 depends "app"
 depends "repo"
 depends "rightscale"
+depends "web_apache"
 depends "logrotate"
 
 recipe "app_passenger::setup_server_3_0", "Default cookbook recipe which sets provider-specific attributes for rails-passenger."
@@ -35,14 +36,6 @@ attribute "app_passenger/project/environment",
   :required => "optional",
   :default => "development",
   :recipes => ["app_passenger::setup_server_3_0"]
-
-attribute "app_passenger/apache/maintenance_page",
-  :display_name => "Apache maintenance page",
-  :description => "Maintenance URI to show if the page exists (based on document root). If this file exists, your site will show a \"Under Maintenance\" page and your site will not be available. Example: /system/maintenance.html",
-  :required => "optional",
-  :default => "",
-  :recipes => ["app_passenger::setup_server_3_0"]
-
 
 attribute "app_passenger/apache/serve_local_files",
   :display_name => "Apache serve local Files",

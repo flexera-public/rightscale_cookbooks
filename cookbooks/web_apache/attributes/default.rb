@@ -51,7 +51,4 @@ set[:web_apache][:docroot] = "/home/webapp/#{web_apache[:application_name]}"
 set[:web_apache][:server_name] = "localhost"
 
 # Maintenance mode attributes
-set_unless[:web_apache][:maintenance_file] = ""
-
-# AllowOverride directive
-set_unless[:web_apache][:allow_override] = "None"
+set[:web_apache][:maintenance_file] = "/home/webapp/system/maintenance.html"

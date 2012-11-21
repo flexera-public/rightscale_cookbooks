@@ -52,6 +52,47 @@ action :install do
     package p
   end
 
+  # On CentOS 6.3 images uninstall ruby 1.9 version and install ruby 1.8
+  # On Ubuntu 12.04 images use update-alternatives cmd and choose ruby 1.8 
+  if node[:platform] =~ /centos|redhat/
+    ruby_packages = ["ruby", "ruby-libs"]
+    ruby_packages.each do |p|
+      r = package p do
+        action :nothing
+      end
+      r.run_action(:remove)
+    end 
+    ruby_packages = ["ruby", "rubygems"]
+    ruby_packages.each do |p|
+      r = package p do
+        action :nothing
+      end
+      r.run_action(:install)
+    end
+  elsif node[:platform] =~ /ubuntu/
+    r = bash "use ruby 1.8 version" do
+      code <<-EOH
+      update-alternatives --set ruby "/usr/bin/ruby1.8"
+      update-alternatives --set gem "/usr/bin/gem1.8"
+      EOH
+      action :nothing
+    end
+    r.run_action(:run)
+  end
+
+  # Repopulate gem environment
+  gemenv = Chef::ShellOut.new("/usr/bin/gem env")
+  gemenv.run_command
+  gemenv.error!
+
+  # Reset path to Ruby gem directory
+  gemenv.stdout =~ /INSTALLATION DIRECTORY: (.*)$/
+  node[:app_passenger][:ruby_gem_base_dir] = $1
+
+  # Resetting passenger binary directory
+  gemenv.stdout =~ /EXECUTABLE DIRECTORY: (.*)$/
+  node[:app_passenger][:passenger_bin_dir] = $1
+
   # Installing ruby-devel if not already installed.
   # Required for passenger gem on centos/redhat.
   log "  Verifying installation of ruby-devel"
@@ -67,9 +108,14 @@ action :install do
   end
 
   log "  Installing apache passenger module"
-  execute "Install apache passenger module" do
-    command "#{node[:app_passenger][:passenger_bin_dir]}/passenger-install-apache2-module --auto"
+  bash "Install apache passenger module" do
+    flags "-ex"
+    code <<-EOH
+    PATH=${PATH}:/usr/local/bin
+    passenger-install-apache2-module --auto
+    EOH
     not_if { ::Dir.glob("#{node[:app_passenger][:ruby_gem_base_dir]}/gems/passenger-*/ext/apache2/mod_passenger.so").any? }
+
   end
 
 end
@@ -126,7 +172,6 @@ action :setup_vhost do
     ruby_base_dir              node[:app_passenger][:ruby_gem_base_dir]
     rails_spawn_method         node[:app_passenger][:rails_spawn_method]
     destination                node[:app][:destination]
-    apache_maintenance_page    node[:app_passenger][:apache][:maintenance_page]
     apache_serve_local_files   node[:app_passenger][:apache][:serve_local_files]
     passenger_user             node[:app][:user]
     passenger_group            node[:app][:group]

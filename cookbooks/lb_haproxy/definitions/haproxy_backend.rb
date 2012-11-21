@@ -27,7 +27,9 @@ define :lb_haproxy_backend, :pool_name => "" do
       :stats_uri_line => stats_uri,
       :stats_auth_line => stats_auth,
       :health_uri_line => health_uri,
-      :health_check_line => health_chk
+      :health_check_line => health_chk,
+      :algorithm => node[:lb_haproxy][:algorithm],
+      :timeout_server => node[:lb_haproxy][:timeout_server]
     )
   end
 end

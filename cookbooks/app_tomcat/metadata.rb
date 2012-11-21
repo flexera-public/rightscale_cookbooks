@@ -12,6 +12,7 @@ version          "13.2.0"
 depends "app"
 depends "repo"
 depends "rightscale"
+depends "web_apache"
 
 recipe  "app_tomcat::setup_server_6", "Set version 6 and node variables specific to the chosen Tomcat version to installs the tomcat application server."
 recipe  "app_tomcat::setup_server_7", "Set version 7 and node variables specific to the chosen Tomcat version to installs the tomcat application server."
