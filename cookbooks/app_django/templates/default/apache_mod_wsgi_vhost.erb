@@ -49,19 +49,13 @@
     </Files>
   </Directory>
 
+  # Inherit Rewrite rules from server config
+  RewriteEngine on
+  RewriteOptions Inherit
+
   # Enable status page for monitoring purposes
-  RewriteEngine On
   RewriteCond %{REMOTE_ADDR} ^(127.0.0.1)
   RewriteRule ^(/server-status) $1 [H=server-status,L]
-
-
-  # Redirects to a maintenance page if the specified file below exists
-  # ...but it still allows images to be served
-  RewriteCond <%= node[:web_apache][:maintenance_file] %> -f
-  RewriteCond %{SCRIPT_FILENAME} !/system/maintenance.html
-  RewriteCond %{SCRIPT_FILENAME} !^(.+).(gif|png|jpg|css|js|swf)$
-  RewriteRule ^.*$ <%= node[:web_apache][:maintenance_file] %> [L]
-
 
   <% if (@params[:apache_serve_local_files]=="true") %>
   # Serve any existing local files directly (except actionable ones)
