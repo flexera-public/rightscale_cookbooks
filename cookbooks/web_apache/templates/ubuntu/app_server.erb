@@ -32,13 +32,6 @@
   RewriteCond %{REMOTE_ADDR} ^(127.0.0.1)
   RewriteRule ^(/server-status) $1 [H=server-status,L]
 
-  # Redirects to a maintenance page if the specified file below exists
-  # ...but it still allows images to be served
-  RewriteCond <%= node[:web_apache][:maintenance_file] %> -f
-  RewriteCond %{SCRIPT_FILENAME} !/system/maintenance.html
-  RewriteCond %{SCRIPT_FILENAME} !^(.+).(gif|png|jpg|css|js|swf)$
-  RewriteRule ^.*$ <%= node[:web_apache][:maintenance_file] %> [L]
-
   # Setup the logs in the appropriate directory
   CustomLog <%= node[:apache][:log_dir] %>/access.log combined
   ErrorLog  <%= node[:apache][:log_dir] %>/error.log
