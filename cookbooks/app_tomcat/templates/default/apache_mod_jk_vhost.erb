@@ -28,11 +28,6 @@
       Allow from all
      </Directory>
 
-     RewriteEngine On
-     # Uncomment for rewrite debugging
-     #RewriteLog /var/log/httpd/http_rewrite_log
-     #RewriteLogLevel 9
-
      # <CUSTOM RULES BEFORE ANYTHING BEGIN>
 
      # <CUSTOM RULES BEFORE ANYTHING END>
@@ -55,9 +50,15 @@
      JkUnMount /*.css  ajp13
      JkUnMount /*.js  ajp13
 
-     # Inherit Rewrite rules from server config
-     RewriteEngine on
-     RewriteOptions Inherit
+     RewriteEngine On
+     # Uncomment for rewrite debugging
+     #RewriteLog /var/log/httpd/http_rewrite_log
+     #RewriteLogLevel 9
+
+     # Include Rewrite rules from server config for maintenance mode.
+     # Rewrite rules are not inherited in VirtualHost Directive, so must
+     # explicitly include it here.
+     Include conf.d/maintenance.conf
 
      # Enable status page for monitoring purposes
      RewriteCond %{REMOTE_ADDR} ^(127.0.0.1)
