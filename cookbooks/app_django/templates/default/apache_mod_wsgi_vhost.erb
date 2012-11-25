@@ -49,9 +49,12 @@
     </Files>
   </Directory>
 
-  # Inherit Rewrite rules from server config
   RewriteEngine on
-  RewriteOptions Inherit
+
+  # Include Rewrite rules from server config for maintenance mode.
+  # Rewrite rules are not inherited in VirtualHost Directive, so must
+  # explicitly include it here.
+  Include conf.d/maintenance.conf
 
   # Enable status page for monitoring purposes
   RewriteCond %{REMOTE_ADDR} ^(127.0.0.1)
