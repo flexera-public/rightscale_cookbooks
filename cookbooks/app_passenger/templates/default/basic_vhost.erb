@@ -28,11 +28,6 @@
   Allow from all
 </Directory>
 
-RewriteEngine On
-# Uncomment for rewrite debugging
-#RewriteLog <%= @params[:apache_log_dir]%>/<%=@params[:server_name]%>-http_rewrite_log
-#RewriteLogLevel 9
-
 <% @params[:ruby_base_dir]=%x[/usr/bin/gem environment gemdir] %>
 <% passenger_dir=%x[/bin/bash -c "ls -d #{@params[:ruby_base_dir].chomp}/gems/passenger*"] %>
 
@@ -48,9 +43,15 @@ PassengerAppRoot <%="#{@params[:destination].chomp}"%>
 PassengerUser <%=@params[:passenger_user]%>
 PassengerGroup <%=@params[:passenger_group]%>
 
-# Inherit Rewrite rules from server config
-RewriteEngine on
-RewriteOptions Inherit
+RewriteEngine On
+# Uncomment for rewrite debugging
+#RewriteLog <%= @params[:apache_log_dir]%>/<%=@params[:server_name]%>-http_rewrite_log
+#RewriteLogLevel 9
+
+# Include Rewrite rules from server config for maintenance mode.
+# Rewrite rules are not inherited in VirtualHost Directive, so must
+# explicitly include it here.
+Include conf.d/maintenance.conf
 
 # Enable status page for monitoring purposes
 RewriteCond %{REMOTE_ADDR} ^(127.0.0.1)
