@@ -100,12 +100,18 @@ action :install do
   gemenv.stdout =~ /EXECUTABLE DIRECTORY: (.*)$/
   node[:app_passenger][:passenger_bin_dir] = $1
 
-  # Installing ruby-devel if not already installed.
-  # Required for passenger gem on centos/redhat.
-  log "  Verifying installation of ruby-devel"
-  package "ruby-devel" do
-    only_if { node[:platform] =~ /centos|redhat/ }
-  end
+  # Installing ruby devel package if not already installed.
+  # Required for passenger gem.
+  ruby_dev_pkg = value_for_platform(
+    ["centos", "redhat"] => {
+      "default" => "ruby-devel"
+    },
+    "ubuntu" => {
+      "default" => "ruby-dev"
+    }
+  ) 
+  log "  Verifying installation of #{ruby_dev_pkg}"
+  package ruby_dev_pkg
 
   # Installing passenger module
   log "  Installing passenger gem"
