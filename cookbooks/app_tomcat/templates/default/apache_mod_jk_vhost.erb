@@ -28,11 +28,6 @@
       Allow from all
      </Directory>
 
-     RewriteEngine On
-     # Uncomment for rewrite debugging
-     #RewriteLog /var/log/httpd/http_rewrite_log
-     #RewriteLogLevel 9
-
      # <CUSTOM RULES BEFORE ANYTHING BEGIN>
 
      # <CUSTOM RULES BEFORE ANYTHING END>
@@ -55,17 +50,19 @@
      JkUnMount /*.css  ajp13
      JkUnMount /*.js  ajp13
 
+     RewriteEngine On
+     # Uncomment for rewrite debugging
+     #RewriteLog /var/log/httpd/http_rewrite_log
+     #RewriteLogLevel 9
+
+     # Include Rewrite rules from server config for maintenance mode.
+     # Rewrite rules are not inherited in VirtualHost Directive, so must
+     # explicitly include it here.
+     Include conf.d/maintenance.conf
 
      # Enable status page for monitoring purposes
      RewriteCond %{REMOTE_ADDR} ^(127.0.0.1)
      RewriteRule ^(/server-status) $1 [H=server-status,L]
-
-     # Redirects to a maintenance page if the specified file below exists
-     # ...but it still allows images to be served
-     RewriteCond <%= node[:web_apache][:maintenance_file] %> -f
-     RewriteCond %{SCRIPT_FILENAME} !/system/maintenance.html
-     RewriteCond %{SCRIPT_FILENAME} !^(.+).(gif|png|jpg|css|js|swf)$
-     RewriteRule ^.*$ <%= node[:web_apache][:maintenance_file] %> [L]
 
      # <CUSTOM RULES BEFORE FORWARDING BEGIN>
 

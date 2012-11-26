@@ -98,6 +98,13 @@ when "ubuntu"
   package "apache2-mpm-#{node[:web_apache][:mpm]}"
 end
 
+# Apache Maintenance Mode configuration
+template File.join(node[:apache][:dir], 'conf.d', 'maintenance.conf') do
+  backup false
+  source "maintenance.conf.erb"
+  notifies :restart, resources(:service => "apache2")
+end
+
 log "  Started the apache server."
 
 rightscale_marker :end
