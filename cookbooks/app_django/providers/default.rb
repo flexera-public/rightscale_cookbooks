@@ -116,7 +116,7 @@ action :setup_vhost do
     docroot project_root
     vhost_port django_port.to_s
     server_name node[:web_apache][:server_name]
-    allow_override  node[:web_apache][:allow_override]
+    allow_override node[:web_apache][:allow_override]
     apache_log_dir node[:app_django][:apache][:log_dir]
     apache_serve_local_files node[:app_django][:apache][:serve_local_files]
     cookbook "app_django"
