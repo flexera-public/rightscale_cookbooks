@@ -70,6 +70,13 @@ action :install do
       r.run_action(:install)
     end
   elsif node[:platform] =~ /ubuntu/
+    ruby_packages = ["ruby", "rubygems"]
+    ruby_packages.each do |p|
+      r = package p do
+        action :nothing
+      end
+      r.run_action(:install)
+    end
     r = bash "use ruby 1.8 version" do
       code <<-EOH
       update-alternatives --set ruby "/usr/bin/ruby1.8"
