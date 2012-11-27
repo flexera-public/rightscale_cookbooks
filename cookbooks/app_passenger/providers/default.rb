@@ -61,15 +61,34 @@ action :install do
         action :nothing
       end
       r.run_action(:remove)
-    end 
-    ruby_packages = ["ruby", "rubygems"]
+    end
+
+    # Install ruby 1.8 using bash block instead of package resource because
+    # we can use wildcard to install the latest ruby 1.8 patch level.
+    # Package resource requires ruby version to be hardcoded which won't
+    # scale very well.
+    r = bash "install ruby 1.8" do
+      code  <<-EOH
+      yum install ruby-1.8.* --assumeyes
+      EOH
+      action :nothing
+    end
+    r.run_action(:run)
+
+    # Install rubygems
+    r = package "rubygems" do
+      action :nothing
+    end
+    r.run_action(:install)
+
+  elsif node[:platform] =~ /ubuntu/
+    ruby_packages = ["ruby1.8", "rubygems"]
     ruby_packages.each do |p|
       r = package p do
         action :nothing
       end
       r.run_action(:install)
     end
-  elsif node[:platform] =~ /ubuntu/
     r = bash "use ruby 1.8 version" do
       code <<-EOH
       update-alternatives --set ruby "/usr/bin/ruby1.8"
@@ -93,12 +112,18 @@ action :install do
   gemenv.stdout =~ /EXECUTABLE DIRECTORY: (.*)$/
   node[:app_passenger][:passenger_bin_dir] = $1
 
-  # Installing ruby-devel if not already installed.
-  # Required for passenger gem on centos/redhat.
-  log "  Verifying installation of ruby-devel"
-  package "ruby-devel" do
-    only_if { node[:platform] =~ /centos|redhat/ }
-  end
+  # Installing ruby devel package if not already installed.
+  # Required for passenger gem.
+  ruby_dev_pkg = value_for_platform(
+    ["centos", "redhat"] => {
+      "default" => "ruby-devel"
+    },
+    "ubuntu" => {
+      "default" => "ruby-dev"
+    }
+  ) 
+  log "  Verifying installation of #{ruby_dev_pkg}"
+  package ruby_dev_pkg
 
   # Installing passenger module
   log "  Installing passenger gem"
