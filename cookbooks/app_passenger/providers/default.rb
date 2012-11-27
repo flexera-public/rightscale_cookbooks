@@ -64,11 +64,17 @@ action :install do
     end
 
     # Install ruby 1.8
-    package "ruby" do
+    r = package "ruby" do
       version "1.8.*"
+      action :nothing
     end
+    r.run_action(:install)
+
     # Install rubygems
-    package "rubygems"
+    r = package "rubygems" do
+      action :nothing
+    end
+    r.run_action(:install)
 
   elsif node[:platform] =~ /ubuntu/
     ruby_packages = ["ruby1.8", "rubygems"]
