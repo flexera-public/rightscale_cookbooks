@@ -68,7 +68,7 @@ action :install do
     # scale very well.
     r = bash "install ruby 1.8" do
       code  <<-EOH
-      yum install ruby-1.8.*
+      yum install ruby-1.8.* --assumeyes
       EOH
       action :nothing
     end
