@@ -63,12 +63,16 @@ action :install do
       r.run_action(:remove)
     end
 
-    # Install ruby 1.8
-    r = package "ruby" do
-      version "1.8.*"
+    # Install ruby 1.8 using bash block instead of package resource.
+    # Package resource requires ruby version to be hardcoded which won't
+    # scale very well.
+    r = bash "install ruby 1.8" do
+      code  <<-EOH
+      yum install ruby-1.8.*
+      EOH
       action :nothing
     end
-    r.run_action(:install)
+    r.run_action(:run)
 
     # Install rubygems
     r = package "rubygems" do
