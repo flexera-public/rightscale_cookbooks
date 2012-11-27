@@ -10,7 +10,7 @@
 
 rightscale_marker :begin
 
-# Include apache2 recipe for correct node values initialization
+# Include apache2 recipe for correct node values and providers initialization
 # in operational mode
 include_recipe "apache2"
 
