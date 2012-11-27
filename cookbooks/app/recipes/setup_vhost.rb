@@ -10,6 +10,10 @@
 
 rightscale_marker :begin
 
+# Include apache2 recipe for correct node values initialization
+# in operational mode
+include_recipe "apache2"
+
 log "  Configuring vhost file for App server"
 # See cookbooks/app_<providers>/providers/default.rb for the "setup_vhost" action.
 app "default" do
