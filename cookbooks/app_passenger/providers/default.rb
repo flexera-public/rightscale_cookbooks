@@ -63,7 +63,8 @@ action :install do
       r.run_action(:remove)
     end
 
-    # Install ruby 1.8 using bash block instead of package resource.
+    # Install ruby 1.8 using bash block instead of package resource because
+    # we can use wildcard to install the latest ruby 1.8 patch level.
     # Package resource requires ruby version to be hardcoded which won't
     # scale very well.
     r = bash "install ruby 1.8" do
