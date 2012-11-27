@@ -78,7 +78,7 @@ grouping "block_device/devices/default",
 
 attribute "block_device/devices/default/backup/primary/cred/user",
   :display_name => "Primary Backup User (default)",
-  :description => "Primary cloud authentication credentials. For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME). For clouds that do not require primary credentials (e.g., Amazon), set to 'ignore'.",
+  :description => "Primary cloud authentication credentials. For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME). For OpenStack Swift the format is: <tenant-id>:<user-name>. For clouds that do not require primary credentials (e.g., Amazon), set to 'ignore'.",
   :required => "recommended",
   :default => "",
   :recipes => [ "block_device::default" ]
@@ -107,7 +107,7 @@ attribute "block_device/devices/default/backup/primary/endpoint",
 
 attribute "block_device/devices/default/backup/secondary/cred/user",
   :display_name => "Secondary Backup User (default)",
-  :description => "Secondary cloud authentication credentials. For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME). For Amazon S3, use your Amazon key ID (e.g., cred:AWS_ACCESS_KEY_ID).",
+  :description => "Secondary cloud authentication credentials. For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME). For OpenStack Swift the format is: <tenant-id>:<user-name>. For Amazon S3, use your Amazon key ID (e.g., cred:AWS_ACCESS_KEY_ID).",
   :required => "recommended",
   :default => "",
   :recipes => [ "block_device::default", "block_device::do_secondary_backup", "block_device::do_secondary_restore" ]
