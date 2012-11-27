@@ -61,14 +61,15 @@ action :install do
         action :nothing
       end
       r.run_action(:remove)
-    end 
-    ruby_packages = ["ruby-1.8.*", "rubygems"]
-    ruby_packages.each do |p|
-      r = package p do
-        action :nothing
-      end
-      r.run_action(:install)
     end
+
+    # Install ruby 1.8
+    package "ruby" do
+      version "1.8.*"
+    end
+    # Install rubygems
+    package "rubygems"
+
   elsif node[:platform] =~ /ubuntu/
     ruby_packages = ["ruby1.8", "rubygems"]
     ruby_packages.each do |p|
