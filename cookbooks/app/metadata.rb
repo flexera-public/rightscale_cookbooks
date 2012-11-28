@@ -64,3 +64,16 @@ attribute "app/database_name",
   :description => "Enter the name of the database schema to which applications will connect to. The database schema should have been created when the initial database was first set up. This input will be used to set the application server's database configuration file so that applications can connect to the correct schema within the database.  This input is also used for database dump backups in order to determine which schema will be backed up.  Example: mydbschema",
   :required => "required",
   :recipes => ["app::setup_db_connection"]
+
+attribute "app/backend_ip_type",
+  :display_name => "Application ip given to ladbalancer",
+  :description => "The port that the application service is listening on. Example: Private",
+  :choice => ["Public", "Private"],
+  :required => "optional",
+  :default => "Public",
+  :recipes => [
+    "app::install_server",
+    "app::handle_loadbalancers_allow",
+    "app::handle_loadbalancers_deny"
+  ],
+  :required => "optional"

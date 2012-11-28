@@ -28,6 +28,23 @@
       "description": "The port that the application service is listening on. Example: 8000",
       "display_name": "Application Listen Port"
     },
+    "app/backend_ip_type": {
+        "required": "optional",
+        "calculated": false,
+        "choice": [
+          "Public",
+          "Private"
+        ],
+        "default": "Public",
+        "type": "string",
+        "recipes": [
+          "app::install_server",
+          "app::handle_loadbalancers_allow",
+          "app::handle_loadbalancers_deny"
+        ],
+        "description": "The port that the application service is listening on. Example: Private",
+        "display_name": "Application ip given to ladbalancer"
+      },
     "app/database_name": {
       "required": "required",
       "calculated": false,
