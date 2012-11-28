@@ -109,7 +109,7 @@ attribute "web_apache/application_name",
 
 attribute "web_apache/allow_override",
   :display_name => "AllowOverride Directive",
-  :description => "When the server finds an .htaccess file (as specified by AccessFileName) it needs to know which directives declared in that file can override earlier configuration directives. Can be None (default), All, or any directive-type as specified in Apache documentation.",
+  :description => "Allows/disallows the use of .htaccess files in project web root directory. Can be None (default), All, or any directive-type as specified in Apache documentation. Example: None",
   :required => "optional",
   :choice => [ "None", "All" ],
   :default =>  "None",
