@@ -93,7 +93,7 @@ action :setup_vhost do
     docroot project_root
     vhost_port php_port.to_s
     server_name node[:web_apache][:server_name]
-    cookbook "web_apache"
+    cookbook "app_php"
   end
 
 end

@@ -25,21 +25,26 @@
 
   RewriteEngine On
   # Uncomment for rewrite debugging
-  #RewriteLog <%= node[:apache][:log_dir] %>/http_rewrite.log
+  #RewriteLog <%= node[:apache][:log_dir] %>/http_rewrite_log
   #RewriteLogLevel 9
-
-  # Enable status page for monitoring purposes
-  RewriteCond %{REMOTE_ADDR} ^(127.0.0.1)
-  RewriteRule ^(/server-status) $1 [H=server-status,L]
 
   # Include Rewrite rules from server config for maintenance mode.
   # Rewrite rules are not inherited in VirtualHost Directive, so must
   # explicitly include it here.
   Include conf.d/maintenance.conf
 
+  # Enable status page for monitoring purposes
+  RewriteCond %{REMOTE_ADDR} ^(127.0.0.1)
+  RewriteRule ^(/server-status) $1 [H=server-status,L]
+
   # Setup the logs in the appropriate directory
+<% if node[:platform] == "ubuntu" %>
   CustomLog <%= node[:apache][:log_dir] %>/access.log combined
   ErrorLog  <%= node[:apache][:log_dir] %>/error.log
+<% else %>
+  CustomLog <%= node[:apache][:log_dir] %>/access_log combined
+  ErrorLog  <%= node[:apache][:log_dir] %>/error_log
+<% end %>
 
   LogLevel warn
 
