@@ -31,3 +31,6 @@ RightScale::BlockDeviceHelper.do_for_all_block_devices block_device do |device, 
   set_unless[:block_device][:devices][device][:vg_data_percentage] = "90"
   set_unless[:block_device][:devices][device][:nickname] = "data_storage#{number}"
 end
+
+# block_device/first_server_uuid will be used to generate unique block device nicknames
+set_unless[:block_device][:first_server_uuid] = node[:rightscale][:instance_uuid]
