@@ -24,13 +24,16 @@
   </Directory>
 
   # Setup the logs in the appropriate directory
-  CustomLog <%= node[:apache][:log_dir] %>/access_log combined
-  ErrorLog  <%= node[:apache][:log_dir] %>/error_log
+  <%# The default configuration file for Ubuntu has the log files name ending %>
+  <%# with ".log" but CentOS/RedHat have "_log". %>
+  <% ext = node[:platform] == "ubuntu" ? ".log" : "_log" %>
+  CustomLog <%= node[:apache][:log_dir] %>/access<%= ext %> combined
+  ErrorLog  <%= node[:apache][:log_dir] %>/error<%= ext %>
   LogLevel warn
 
   RewriteEngine On
   # Uncomment for rewrite debugging
-  #RewriteLog <%= node[:apache][:log_dir] %>/http_rewrite_log
+  #RewriteLog <%= node[:apache][:log_dir] %>/http_rewrite<%= ext %>
   #RewriteLogLevel 9
 
   # Include Rewrite rules from server config for maintenance mode.
