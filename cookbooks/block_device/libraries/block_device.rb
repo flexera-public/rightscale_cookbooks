@@ -27,7 +27,7 @@ module RightScale
       }
       options[:rackspace_use_snet] = new_resource.rackspace_snet if new_resource.rackspace_snet
       # Appends RightScale instance uuid to make the nickname unique.
-      modified_nickname = new_resource.nickname + '_' + node[:rightscale][:instance_uuid] if new_resource.nickname
+      modified_nickname = new_resource.nickname + '_' + node[:block_device][:first_server_uuid] if new_resource.nickname
 
       # Primary ROS options - some options needed regardless of backup type
       options[:primary_storage_cloud] = new_resource.primary_cloud if new_resource.primary_cloud
