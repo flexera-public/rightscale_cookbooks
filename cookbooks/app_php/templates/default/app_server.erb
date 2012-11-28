@@ -25,7 +25,10 @@
 
   RewriteEngine On
   # Uncomment for rewrite debugging
-  #RewriteLog <%= node[:apache][:log_dir] %>/http_rewrite_log
+  <%# The default configuration file for Ubuntu has the log files name ending %>
+  <%# with ".log" but CentOS/RedHat have "_log". %>
+  <% ext = node[:platform] == "ubuntu" ? ".log" : "_log" %>
+  #RewriteLog <%= node[:apache][:log_dir] %>/http_rewrite<%= ext %>
   #RewriteLogLevel 9
 
   # Include Rewrite rules from server config for maintenance mode.
@@ -38,14 +41,8 @@
   RewriteRule ^(/server-status) $1 [H=server-status,L]
 
   # Setup the logs in the appropriate directory
-<% if node[:platform] == "ubuntu" %>
-  CustomLog <%= node[:apache][:log_dir] %>/access.log combined
-  ErrorLog  <%= node[:apache][:log_dir] %>/error.log
-<% else %>
-  CustomLog <%= node[:apache][:log_dir] %>/access_log combined
-  ErrorLog  <%= node[:apache][:log_dir] %>/error_log
-<% end %>
-
+  CustomLog <%= node[:apache][:log_dir] %>/access<%= ext %> combined
+  ErrorLog  <%= node[:apache][:log_dir] %>/error<%= ext %>
   LogLevel warn
 
   # Deflate
