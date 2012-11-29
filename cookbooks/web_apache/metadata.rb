@@ -106,3 +106,16 @@ attribute "web_apache/application_name",
     "web_apache::setup_frontend",
     "web_apache::default"
   ]
+
+attribute "web_apache/allow_override",
+  :display_name => "AllowOverride Directive",
+  :description => "Allows/disallows the use of .htaccess files in project web root directory. Can be None (default), All, or any directive-type as specified in Apache documentation. Example: None",
+  :required => "optional",
+  :choice => [ "None", "All" ],
+  :default =>  "None",
+  :recipes => [
+    "web_apache::setup_frontend_ssl_vhost",
+    "web_apache::setup_frontend_http_vhost",
+    "web_apache::setup_frontend",
+    "web_apache::default"
+  ]

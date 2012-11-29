@@ -31,6 +31,7 @@ web_app "#{node[:web_apache][:application_name]}.frontend" do
   docroot node[:web_apache][:docroot]
   vhost_port http_port
   server_name node[:web_apache][:server_name]
+  allow_override node[:web_apache][:allow_override]
   notifies :restart, resources(:service => "apache2")
 end
 
