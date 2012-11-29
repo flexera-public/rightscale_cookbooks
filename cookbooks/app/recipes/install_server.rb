@@ -6,10 +6,14 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 rightscale_marker :begin
+
+log "  Instance public ip is #{node[:cloud][:public_ips][0]} the hash is: #{node[:cloud][:public_ips].inspect}"
+log "  Instance private ip is #{node[:cloud][:private_ips][0]} the hash is: #{node[:cloud][:private_ips].inspect}"
+log "  Backend input value: #{node[:app][:backend_ip_type]}"
 if node[:cloud][:public_ips][0]
   node[:app][:backend_ip_type] == "Public" ?  node[:app][:ip] = node[:cloud][:public_ips][0] : node[:app][:ip] = node[:cloud][:private_ips][0]
 else
-  log " No public IP detected. Forcing to first private: #{node[:cloud][:private_ips][0]}"
+  log "  No public IP detected. Forcing to first private: #{node[:cloud][:private_ips][0]}"
   node[:app][:ip] = node[:cloud][:private_ips][0]
 end
 
