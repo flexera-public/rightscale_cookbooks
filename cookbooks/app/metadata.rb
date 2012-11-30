@@ -70,10 +70,6 @@ attribute "app/backend_ip_type",
   :description => "The port that the application service is listening on. Example: Private",
   :choice => ["Public", "Private"],
   :required => "optional",
-  :default => "Public",
-  :recipes => [
-    "app::install_server",
-    "app::handle_loadbalancers_allow",
-    "app::handle_loadbalancers_deny"
-  ],
+  :default => "Private",
+  :recipes => ["app::install_server"],
   :required => "optional"
