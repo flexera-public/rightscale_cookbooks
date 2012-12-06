@@ -200,6 +200,7 @@ action :setup_vhost do
     apache_serve_local_files   node[:app_passenger][:apache][:serve_local_files]
     passenger_user             node[:app][:user]
     passenger_group            node[:app][:group]
+    allow_override             node[:web_apache][:allow_override]    
   end
 
 end

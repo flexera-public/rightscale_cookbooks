@@ -2,7 +2,7 @@ maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "Installs/configures the apache2 webserver"
-version          "13.2.0"
+version          "13.3.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"
@@ -100,6 +100,19 @@ attribute "web_apache/application_name",
   :description => "Sets the directory for your application's web files (/home/webapps/Application Name/).  If you have multiple applications, you can run the code checkout script multiple times, each with a different value for the 'Application Name' input, so each application will be stored in a unique directory.  This must be a valid directory name.  Do not use symbols in the name. Example: myapp",
   :required => "optional",
   :default => "myapp",
+  :recipes => [
+    "web_apache::setup_frontend_ssl_vhost",
+    "web_apache::setup_frontend_http_vhost",
+    "web_apache::setup_frontend",
+    "web_apache::default"
+  ]
+
+attribute "web_apache/allow_override",
+  :display_name => "AllowOverride Directive",
+  :description => "Allows/disallows the use of .htaccess files in project web root directory. Can be None (default), All, or any directive-type as specified in Apache documentation. Example: None",
+  :required => "optional",
+  :choice => [ "None", "All" ],
+  :default =>  "None",
   :recipes => [
     "web_apache::setup_frontend_ssl_vhost",
     "web_apache::setup_frontend_http_vhost",

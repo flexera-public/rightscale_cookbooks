@@ -43,6 +43,9 @@
   WSGIScriptAlias / <%=@params[:docroot]%>/wsgi.py
 
   <Directory "<%=@params[:docroot]%>">
+    AllowOverride <%= @params[:allow_override] %>
+    Order deny,allow
+    Allow from all
     <Files wsgi.py>
       Order allow,deny
       Allow from all
