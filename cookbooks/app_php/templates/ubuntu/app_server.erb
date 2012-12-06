@@ -25,7 +25,7 @@
 
   RewriteEngine On
   # Uncomment for rewrite debugging
-  #RewriteLog <%= node[:apache][:log_dir] %>/http_rewrite_log
+  #RewriteLog <%= node[:apache][:log_dir] %>/http_rewrite.log
   #RewriteLogLevel 9
 
   # Include Rewrite rules from server config for maintenance mode.
@@ -38,8 +38,8 @@
   RewriteRule ^(/server-status) $1 [H=server-status,L]
 
   # Setup the logs in the appropriate directory
-  CustomLog <%= node[:apache][:log_dir] %>/access_log combined
-  ErrorLog  <%= node[:apache][:log_dir] %>/error_log
+  CustomLog <%= node[:apache][:log_dir] %>/access.log combined
+  ErrorLog  <%= node[:apache][:log_dir] %>/error.log
   LogLevel warn
 
   # Deflate

@@ -23,9 +23,14 @@
     Allow from all
   </Directory>
 
+  # Setup the logs in the appropriate directory
+  CustomLog <%= node[:apache][:log_dir] %>/access.log combined
+  ErrorLog  <%= node[:apache][:log_dir] %>/error.log
+  LogLevel warn
+
   RewriteEngine On
   # Uncomment for rewrite debugging
-  #RewriteLog <%= node[:apache][:log_dir] %>/http_rewrite_log
+  #RewriteLog <%= node[:apache][:log_dir] %>/http_rewrite.log
   #RewriteLogLevel 9
 
   # Include Rewrite rules from server config for maintenance mode.
@@ -37,10 +42,20 @@
   RewriteCond %{REMOTE_ADDR} ^(127.0.0.1)
   RewriteRule ^(/server-status) $1 [H=server-status,L]
 
-  # Setup the logs in the appropriate directory
-  CustomLog <%= node[:apache][:log_dir] %>/access_log combined
-  ErrorLog  <%= node[:apache][:log_dir] %>/error_log
-  LogLevel warn
+  # Next hop is HaProxy
+  RewriteRule ^/(.*)$ http://127.0.0.1:85%{REQUEST_URI} [P,QSA,L]
+
+  # Serve any existing local files directly (except actionable ones)
+  RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} -f
+  RewriteCond %{REQUEST_FILENAME} !\.php|\.jsp|\.do|\.action$ [NC]
+  RewriteRule ^/(.*)$ /$1 [QSA,L]
+
+  # Special rule to forward "/" directly to haproxy
+  RewriteCond %{DOCUMENT_ROOT}/$ -d
+  RewriteRule ^/(.*)$ http://127.0.0.1:85%{REQUEST_URI} [P,QSA,L]
+
+  RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} -d
+  RewriteRule ^/(.*)$ /$1 [QSA,L]
 
   # Deflate
   AddOutputFilterByType DEFLATE text/html text/plain text/xml application/xml application/xhtml+xml text/javascript text/css application/x-javascript
