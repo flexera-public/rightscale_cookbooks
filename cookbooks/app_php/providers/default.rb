@@ -94,7 +94,7 @@ action :setup_vhost do
     vhost_port php_port.to_s
     server_name node[:web_apache][:server_name]
     allow_override node[:web_apache][:allow_override]
-    cookbook "web_apache"
+    cookbook "app_php"
   end
 
 end

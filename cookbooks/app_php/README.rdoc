@@ -82,6 +82,7 @@ Note: Only "internal" cookbook attributes are described here. Descriptions of at
 === Templates:
 
 * <tt>db.php.erb</tt> - Configuration for project database connection config file used in the <tt>app::setup_db_connection</tt> recipe and defined in the <tt>:setup_db_connection</tt> action of the <tt>app_php</tt> LWRP.
+* <tt>app_server.erb</tt> - Configuration for apache basic application server vhost file.
 
 === LWRPs:
 
