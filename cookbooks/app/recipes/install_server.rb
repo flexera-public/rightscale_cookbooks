@@ -6,7 +6,9 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 rightscale_marker :begin
-
+# Set ip address that the application service is listening on.
+# If instance has no public ip's first private ip will be used.
+# User will be notified.
 if node[:cloud][:public_ips][0]
   node[:app][:backend_ip_type] == "Public" ?  node[:app][:ip] = node[:cloud][:public_ips][0] : node[:app][:ip] = node[:cloud][:private_ips][0]
 else

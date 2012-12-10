@@ -67,7 +67,7 @@ attribute "app/database_name",
 
 attribute "app/backend_ip_type",
   :display_name => "Application ip given to ladbalancer",
-  :description => "The port that the application service is listening on. Example: Private",
+  :description => "The ip that the application service is listening on. Example: Private",
   :choice => ["Public", "Private"],
   :required => "optional",
   :default => "Private",
