@@ -65,7 +65,7 @@ end
 
 action :reset do
   # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
-# See "rightscale_tools" gem for the "reset" method.
+  # See "rightscale_tools" gem for the "reset" method.
   @db = init(new_resource)
   @db.reset(new_resource.name, node[:db_mysql][:datadir])
 end
@@ -161,17 +161,17 @@ action :post_restore_cleanup do
   # compare size of node[:db_mysql][:tunable][:innodb_log_file_size] to
   # actual size of restored /var/lib/mysql/ib_logfile0 (symlink)
   innodb_log_file_size_to_bytes = case node[:db_mysql][:tunable][:innodb_log_file_size]
-  when /^(\d+)[Kk]$/
-    $1.to_i * 1024
-  when /^(\d+)[Mm]$/
-    $1.to_i * 1024**2
-  when /^(\d+)[Gg]$/
-    $1.to_i * 1024**3
-  when /^(\d+)$/
-    $1
-  else
-    raise "FATAL: unknown log file size"
-  end
+                                  when /^(\d+)[Kk]$/
+                                    $1.to_i * 1024
+                                  when /^(\d+)[Mm]$/
+                                    $1.to_i * 1024**2
+                                  when /^(\d+)[Gg]$/
+                                    $1.to_i * 1024**3
+                                  when /^(\d+)$/
+                                    $1
+                                  else
+                                    raise "FATAL: unknown log file size"
+                                  end
 
   # warn if sizes do not match
   if ::File.stat("/var/lib/mysql/ib_logfile0").size == innodb_log_file_size_to_bytes
@@ -242,51 +242,51 @@ action :install_client do
 
   # Socket value
   node[:db][:socket] = value_for_platform(
-    "ubuntu"  => {
+    "ubuntu" => {
       "default" => "/var/run/mysqld/mysqld.sock"
     },
     "default" => "/var/lib/mysql/mysql.sock"
   )
 
   case version
-    when "5.1"
-      node[:db_mysql][:client_packages_install] = value_for_platform(
-        ["centos", "redhat"] => {
-          "5.8"=> [ "MySQL-shared-compat", "MySQL-devel-community", "MySQL-client-community" ],
-          "default" => [ "mysql-devel", "mysql-libs", "mysql" ]
-        },
-        "ubuntu" => {
-          "10.04" => [ "libmysqlclient-dev", "mysql-client-5.1"],
-          "default" => []
-        },
+  when "5.1"
+    node[:db_mysql][:client_packages_install] = value_for_platform(
+      ["centos", "redhat"] => {
+        "5.8" => ["MySQL-shared-compat", "MySQL-devel-community", "MySQL-client-community"],
+        "default" => ["mysql-devel", "mysql-libs", "mysql"]
+      },
+      "ubuntu" => {
+        "10.04" => ["libmysqlclient-dev", "mysql-client-5.1"],
         "default" => []
-      )
+      },
+      "default" => []
+    )
 
-    when "5.5"
-      # centos/redhat 6 by default has mysql-libs 5.1 installed as requirement for postfix.
-      # Will uninstall mysql-libs, install mysql55-lib
-      node[:db_mysql][:client_packages_uninstall] = value_for_platform(
-        ["centos", "redhat"] => {
-          "5.8" => [],
-          "default" => [ "mysql-libs" ]
-        },
-        "default" => []
-      )
+  when "5.5"
+    # centos/redhat 6 by default has mysql-libs 5.1 installed as requirement for postfix.
+    # Will uninstall mysql-libs, install mysql55-lib
+    node[:db_mysql][:client_packages_uninstall] = value_for_platform(
+      ["centos", "redhat"] => {
+        "5.8" => [],
+        "default" => ["mysql-libs"]
+      },
+      "default" => []
+    )
 
-      node[:db_mysql][:client_packages_install] = value_for_platform(
-        ["centos", "redhat"] => {
-          "5.8" => [ "mysql55-devel", "mysql55-libs", "mysql55" ],
-          "default" => [ "mysql55-devel", "mysql55-libs", "mysql55" ]
-        },
-        "ubuntu" => {
-          "10.04" => [],
-          "default" => [ "libmysqlclient-dev", "mysql-client-5.5" ]
-        },
-        "default" => []
-      )
+    node[:db_mysql][:client_packages_install] = value_for_platform(
+      ["centos", "redhat"] => {
+        "5.8" => ["mysql55-devel", "mysql55-libs", "mysql55"],
+        "default" => ["mysql55-devel", "mysql55-libs", "mysql55"]
+      },
+      "ubuntu" => {
+        "10.04" => [],
+        "default" => ["libmysqlclient-dev", "mysql-client-5.5"]
+      },
+      "default" => []
+    )
 
-    else
-      raise "MySQL version: #{version} not supported yet"
+  else
+    raise "MySQL version: #{version} not supported yet"
   end
 
   # Uninstall specified client packages
@@ -301,14 +301,6 @@ action :install_client do
       provider Chef::Provider::Package::Rpm if use_rpm
     end
     r.run_action(:remove)
-  end
-
-  # Install MySQL client packages
-  # Must install during the compile stage because mysql gem build depends on the libs
-  if node[:platform] =~ /redhat|centos/
-    # Install MySQL GPG Key (http://download.oracle.com/docs/cd/E17952_01/refman-5.5-en/checking-gpg-signature.html)
-    gpgkey = ::File.join(::File.dirname(__FILE__), "..", "files", "centos", "mysql_pubkey.asc")
-    `rpm --import #{gpgkey}`
   end
 
   packages = node[:db_mysql][:client_packages_install]
@@ -348,9 +340,9 @@ action :install_server do
   packages = node[:db_mysql][:server_packages_uninstall]
   Chef::Log.info "  Packages to uninstall: #{packages.join(",")}" unless packages == ""
   packages.each do |p|
-     package p do
-       action :remove
-     end
+    package p do
+      action :remove
+    end
   end unless packages == ""
 
   # Install MySQL 5.1 and other packages
@@ -380,7 +372,7 @@ action :install_server do
       require 'fileutils'
       remove_files = ::Dir.glob(::File.join(node[:db_mysql][:datadir], 'ib_logfile*')) + ::Dir.glob(::File.join(node[:db_mysql][:datadir], 'ibdata*'))
       FileUtils.rm_rf(remove_files)
-      ::File.open(touchfile,'a'){}
+      ::File.open(touchfile, 'a') {}
     end
   end
 
@@ -447,7 +439,7 @@ action :install_server do
   # Timeouts enabled.
   # Ubuntu's init script does not support configurable startup timeout
   #
-  log_msg = ( platform =~ /redhat|centos/ ) ?  "  Setting mysql startup timeout" : "  Skipping mysql startup timeout setting for Ubuntu"
+  log_msg = (platform =~ /redhat|centos/) ? "  Setting mysql startup timeout" : "  Skipping mysql startup timeout setting for Ubuntu"
   Chef::Log.info log_msg
   template "/etc/sysconfig/#{node[:db_mysql][:service_name]}" do
     source "sysconfig-mysqld.erb"
@@ -519,7 +511,7 @@ action :install_client_driver do
     node[:db][:client][:driver] = "mysql"
     package "#{type} mysql integration" do
       package_name value_for_platform(
-        [ "centos", "redhat" ] => {
+        ["centos", "redhat"] => {
           "default" => "php53u-mysql"
         },
         "ubuntu" => {
@@ -569,7 +561,7 @@ action :setup_monitoring do
   ruby_block "evaluate db type" do
     block do
       if node[:db][:init_status].to_sym == :initialized
-        node[:db_mysql][:collectd_master_slave_mode] = ( node[:db][:this_is_master] == true ? "Master" : "Slave" ) + "Stats true"
+        node[:db_mysql][:collectd_master_slave_mode] = (node[:db][:this_is_master] == true ? "Master" : "Slave") + "Stats true"
       else
         node[:db_mysql][:collectd_master_slave_mode] = ""
       end
@@ -716,7 +708,7 @@ action :promote do
       # Unlocking oldmaster
       RightScale::Database::MySQL::Helper.do_query(node, 'UNLOCK TABLES', previous_master)
       SystemTimer.timeout_after(RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT) do
-      # Demote oldmaster
+        # Demote oldmaster
         Chef::Log.info "  Calling reconfigure replication with host: #{previous_master} ip: #{node[:cloud][:private_ips][0]} file: #{newmaster_file} position: #{newmaster_position}"
         RightScale::Database::MySQL::Helper.reconfigure_replication(node, previous_master, node[:cloud][:private_ips][0], newmaster_file, newmaster_position)
       end
@@ -746,13 +738,13 @@ action :enable_replication do
         if master_info['Master_instance_uuid'] != node[:db][:current_master_uuid]
           raise "FATAL: snapshot was taken from a different master! snap_master was:#{master_info['Master_instance_uuid']} != current master: #{node[:db][:current_master_uuid]}"
         end
-      # 11H1 backup
+        # 11H1 backup
       elsif master_info['Master_instance_id']
         Chef::Log.info "  Detected 11H1 snapshot to migrate"
         if master_info['Master_instance_id'] != node[:db][:current_master_ec2_id]
           raise "FATAL: snapshot was taken from a different master! snap_master was:#{master_info['Master_instance_id']} != current master: #{node[:db][:current_master_ec2_id]}"
         end
-      # File not found or does not contain info
+        # File not found or does not contain info
       else
         raise "Position and file not saved!"
       end
@@ -764,9 +756,9 @@ action :enable_replication do
     block do
       Chef::Log.info "  Wiping existing runtime config files"
       data_dir = ::File.join(node[:db][:data_dir], 'mysql')
-      files_to_delete = [ "master.info","relay-log.info","mysql-bin.*","*relay-bin.*"]
+      files_to_delete = ["master.info", "relay-log.info", "mysql-bin.*", "*relay-bin.*"]
       files_to_delete.each do |file|
-        expand = Dir.glob(::File.join(data_dir,file))
+        expand = Dir.glob(::File.join(data_dir, file))
         unless expand.empty?
           expand.each do |exp_file|
             FileUtils.rm_rf(exp_file)
@@ -844,8 +836,8 @@ end
 
 action :generate_dump_file do
 
-  db_name     = new_resource.db_name
-  dumpfile    = new_resource.dumpfile
+  db_name = new_resource.db_name
+  dumpfile = new_resource.dumpfile
 
   execute "Write the mysql DB backup file" do
     command "mysqldump --single-transaction -u root #{db_name} | gzip -c > #{dumpfile}"
@@ -855,14 +847,14 @@ end
 
 action :restore_from_dump_file do
 
-  db_name   = new_resource.db_name
-  dumpfile  = new_resource.dumpfile
-  db_check  = `mysql -e "SHOW DATABASES LIKE '#{db_name}'"`
+  db_name = new_resource.db_name
+  dumpfile = new_resource.dumpfile
+  db_check = `mysql -e "SHOW DATABASES LIKE '#{db_name}'"`
 
   Chef::Log.info "  Check if DB already exists"
   ruby_block "checking existing db" do
     block do
-      if ! db_check.empty?
+      if !db_check.empty?
         Chef::Log.warn "  WARNING: database '#{db_name}' already exists. No changes will be made to existing database."
       end
     end
