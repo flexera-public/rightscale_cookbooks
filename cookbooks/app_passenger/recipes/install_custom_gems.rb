@@ -32,12 +32,11 @@ ruby_block "Install custom gems" do
         end
       end
       Chef::Log.info("  Installing custom gem: #{name}")
-      raise "Error installing gems!" unless
-      system("#{node[:app_passenger][:gem_bin].chomp} install #{name} --no-ri --no-rdoc --no-update-sources")
+      raise "Error installing gems!" unless system("#{node[:app_passenger][:gem_bin].chomp} install #{name} --no-ri --no-rdoc --no-update-sources")
     end
 
   end
-   only_if do (node[:app_passenger][:project][:gem_list]!="") end
+  only_if { node[:app_passenger][:project][:gem_list] != "" }
 end
 
 rightscale_marker :end

@@ -68,7 +68,7 @@ action :install do
     # Package resource requires ruby version to be hardcoded which won't
     # scale very well.
     r = bash "install ruby 1.8" do
-      code  <<-EOH
+      code <<-EOH
       yum install ruby-1.8.* --assumeyes
       EOH
       action :nothing
@@ -121,7 +121,7 @@ action :install do
     "ubuntu" => {
       "default" => "ruby-dev"
     }
-  ) 
+  )
   log "  Verifying installation of #{ruby_dev_pkg}"
   package ruby_dev_pkg
 
@@ -167,7 +167,7 @@ action :setup_vhost do
   # Apache fix on RHEL
   file "/etc/httpd/conf.d/README" do
     action :delete
-    only_if do node[:platform] == "redhat" end
+    only_if { node[:platform] == "redhat" }
   end
 
   # Adds php port to list of ports for webserver to listen on
@@ -185,22 +185,22 @@ action :setup_vhost do
   project_root = new_resource.root
   # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/web_app.rb for the "web_app" definition.
   web_app "http-#{port}-#{node[:web_apache][:server_name]}.vhost" do
-    template                   "basic_vhost.erb"
-    cookbook                   'app_passenger'
-    docroot                    project_root
-    vhost_port                 port.to_s
-    server_name                node[:web_apache][:server_name]
-    rails_env                  node[:app_passenger][:project][:environment]
-    apache_install_dir         node[:app_passenger][:apache][:install_dir]
-    apache_log_dir             node[:app_passenger][:apache][:log_dir]
-    ruby_bin                   node[:app_passenger][:ruby_bin]
-    ruby_base_dir              node[:app_passenger][:ruby_gem_base_dir]
-    rails_spawn_method         node[:app_passenger][:rails_spawn_method]
-    destination                node[:app][:destination]
-    apache_serve_local_files   node[:app_passenger][:apache][:serve_local_files]
-    passenger_user             node[:app][:user]
-    passenger_group            node[:app][:group]
-    allow_override             node[:web_apache][:allow_override]    
+    template "basic_vhost.erb"
+    cookbook 'app_passenger'
+    docroot project_root
+    vhost_port port.to_s
+    server_name node[:web_apache][:server_name]
+    rails_env node[:app_passenger][:project][:environment]
+    apache_install_dir node[:app_passenger][:apache][:install_dir]
+    apache_log_dir node[:app_passenger][:apache][:log_dir]
+    ruby_bin node[:app_passenger][:ruby_bin]
+    ruby_base_dir node[:app_passenger][:ruby_gem_base_dir]
+    rails_spawn_method node[:app_passenger][:rails_spawn_method]
+    destination node[:app][:destination]
+    apache_serve_local_files node[:app_passenger][:apache][:serve_local_files]
+    passenger_user node[:app][:user]
+    passenger_group node[:app][:group]
+    allow_override node[:web_apache][:allow_override]
   end
 
 end
@@ -228,9 +228,9 @@ action :setup_db_connection do
   # Creating bash file for manual $RAILS_ENV setup
   log "  Creating bash file for manual $RAILS_ENV setup"
   template "/etc/profile.d/rails_env.sh" do
-    mode         '0744'
-    source       "rails_env.erb"
-    cookbook     'app_passenger'
+    mode '0744'
+    source "rails_env.erb"
+    cookbook 'app_passenger'
     variables(
       :environment => node[:app_passenger][:project][:environment]
     )
@@ -341,7 +341,7 @@ action :setup_monitoring do
   # passenger monitoring resources have strict restrictions, only for root can gather full stat info
   # we gave permissions to apache user to access passenger monitoring resources
   ruby_block "sudo setup" do
-    block { ::File.open('/etc/sudoers', 'a') { |file| file.puts "#includedir /etc/sudoers.d\n"} }
+    block { ::File.open('/etc/sudoers', 'a') { |file| file.puts "#includedir /etc/sudoers.d\n" } }
     not_if { ::File.readlines("/etc/sudoers").grep(/^\s*#includedir\s+\/etc\/sudoers.d/).any? }
   end
 

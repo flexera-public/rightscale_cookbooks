@@ -29,7 +29,7 @@ bash "run commands" do
       $tmp
     done
   EOH
-  only_if do (node[:app_passenger][:project][:custom_cmd]!="") end
+  only_if { node[:app_passenger][:project][:custom_cmd] != "" }
 end
 
 rightscale_marker :end
