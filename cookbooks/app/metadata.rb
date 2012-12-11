@@ -66,7 +66,7 @@ attribute "app/database_name",
   :recipes => ["app::setup_db_connection"]
 
 attribute "app/backend_ip_type",
-  :display_name => "Application ip given to ladbalancer",
+  :display_name => "Application ip given to loadbalancer",
   :description => "The ip that the application service is listening on. Example: Private",
   :choice => ["Public", "Private"],
   :required => "optional",
