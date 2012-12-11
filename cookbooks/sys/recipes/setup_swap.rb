@@ -10,7 +10,6 @@ rightscale_marker :begin
 swap_size = node[:sys][:swap_size]
 swap_file = node[:sys][:swap_file]
 
-
 def clean_swap(swap_file)
 
   # Turn off swap on swap_file if turned on.
@@ -36,7 +35,6 @@ def clean_swap(swap_file)
   end
 
 end
-
 
 def activate_swap_file(swap_file, swap_size)
 
@@ -77,7 +75,6 @@ def activate_swap_file(swap_file, swap_size)
 
 end
 
-
 # Sanitize user data 'swap_size'.
 if swap_size !~ /^\d*[.]?\d+$/
   raise "  ERROR: invalid swap size."
@@ -86,12 +83,10 @@ else
   swap_size = ((swap_size.to_f)*1024).to_i
 end
 
-
 # Sanitize user data 'swap_file'.
 if swap_file !~ /^\/{1}(((\/{1}\.{1})?[a-zA-Z0-9 ]+\/?)+(\.{1}[a-zA-Z0-9]{2,4})?)$/
   raise "  ERROR: invalid swap file name"
 end
-
 
 # Skip creating swap or disable swap.
 if swap_size == 0
@@ -122,7 +117,7 @@ else
         FileUtils.mkdir_p(swap_dir) unless swap_dir == "/"
         (fs_total, fs_used) = `df --block-size=1M -P #{swap_dir} |tail -1| awk '{print $2":"$3}'`.chomp.split(":")
         if (((fs_used.to_f + swap_size).to_f/fs_total.to_f)*100).to_i > fs_size_threshold_percent
-          raise "  ERROR: swap file size too big - would exceed #{fs_size_threshold_percent} percent of filesystem - currently using #{fs_used} out of #{fs_total} wanting to add #{swap_size} in swap"
+          raise "  ERROR: Requested swap file size is too big! Currently #{fs_used}MB used out of #{fs_total}MB total. Cannot add #{swap_size}MB swap because it would exceed #{fs_size_threshold_percent}% of filesystem."
         end
       end
     end
