@@ -110,12 +110,11 @@ action :write_backup_info do
     masterstatus['Position'] = slavestatus['Exec_Master_Log_Pos']
   end
 
-  # Save the db provider (MySQL) and version number as set in the node
   provider = node[:db][:provider]
   version = new_resource.db_version
   Chef::Log.info "  Saving #{provider} version #{version} in master info file"
-  masterstatus['DB_Provider'] = provider
-  masterstatus['DB_Version'] = version
+  masterstatus['DB_Provider'] = provider # save the db provider
+  masterstatus['DB_Version'] = version # save the version number
 
   Chef::Log.info "  Saving master info...:\n#{masterstatus.to_yaml}"
   ::File.open(::File.join(node[:db][:data_dir], RightScale::Database::MySQL::Helper::SNAPSHOT_POSITION_FILENAME), ::File::CREAT|::File::TRUNC|::File::RDWR) do |out|
@@ -131,35 +130,35 @@ action :pre_restore_check do
 end
 
 action :post_restore_cleanup do
-  # Performs checks for snapshot compatibility with current server
+  # Performs checks for snapshot compatibility with current server.
   # See cookbooks/db_mysql/libraries/helper.rb for the "RightScale::Database::MySQL::Helper" class.
   master_info = RightScale::Database::MySQL::Helper.load_replication_info(node)
-  # Check version matches
-  # Not all 11H2 snapshots (prior to 5.5 release) saved provider or version.
-  # Assume MySQL 5.1 if nil
+
+  # Checks version matches because not all 11H2 snapshots (prior to 5.5 release)
+  # saved provider or version. Assume MySQL 5.1 if nil.
   snap_version = master_info['DB_Version'] ||= '5.1'
   snap_provider = master_info['DB_Provider'] ||= 'db_mysql'
   current_version = new_resource.db_version
   current_provider = master_info['DB_Provider'] ||= node[:db][:provider]
   Chef::Log.info "  Snapshot from #{snap_provider} version #{snap_version}"
-  # skip check if restore version check is false
+
   if node[:db][:backup][:restore_version_check] == "true"
     unless (snap_version == current_version) && (snap_provider == current_provider)
       raise "FATAL: Attempting to restore #{snap_provider} #{snap_version} snapshot to #{current_provider} #{current_version} with :restore_version_check enabled."
     end
-  else
+  else # skip check if restore version check is false
     Chef::Log.info "  Skipping #{snap_provider} restore version check"
   end
 
-  # create symlink from package default mysql datadir to restored datadir
+  # Creates symlink from package default MySQL datadir to restored datadir.
   default_datadir = "/var/lib/mysql"
   unless ::File.symlink?(default_datadir)
     FileUtils.rm_rf(default_datadir)
     ::File.symlink(node[:db][:data_dir], default_datadir)
   end
 
-  # compare size of node[:db_mysql][:tunable][:innodb_log_file_size] to
-  # actual size of restored /var/lib/mysql/ib_logfile0 (symlink)
+  # Compares size of node[:db_mysql][:tunable][:innodb_log_file_size] to
+  # actual size of restored /var/lib/mysql/ib_logfile0 (symlink).
   innodb_log_file_size_to_bytes = case node[:db_mysql][:tunable][:innodb_log_file_size]
                                   when /^(\d+)[Kk]$/
                                     $1.to_i * 1024
@@ -173,17 +172,16 @@ action :post_restore_cleanup do
                                     raise "FATAL: unknown log file size"
                                   end
 
-  # warn if sizes do not match
   if ::File.stat("/var/lib/mysql/ib_logfile0").size == innodb_log_file_size_to_bytes
     Chef::Log.info "  innodb log file sizes the same... OK."
-  else
+  else # warn if sizes do not match
     Chef::Log.warn "  innodb log file size does not match."
     Chef::Log.warn "  Updating my.cnf to match log file from snapshot."
     Chef::Log.warn "  Discovered size: #{::File.stat("/var/lib/mysql/ib_logfile0").size}"
     Chef::Log.warn "  Expected size: #{innodb_log_file_size_to_bytes}"
   end
 
-  # always update the my.cnf file on a restore
+  # Always update the my.cnf file on a restore.
   # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for the "db_mysql_set_mycnf" definition.
   db_mysql_set_mycnf "setup_mycnf" do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
@@ -235,12 +233,12 @@ action :remove_anonymous do
 end
 
 action :install_client do
-  # Using node[:db][:version] to avoid misconfiguration during the run on Database Managers
+
   version = new_resource.db_version
   node[:db_mysql][:client_packages_uninstall] = []
   node[:db_mysql][:client_packages_install] = []
 
-  # Socket value
+  # Socket path.
   node[:db][:socket] = value_for_platform(
     "ubuntu" => {
       "default" => "/var/run/mysqld/mysqld.sock"
@@ -263,8 +261,8 @@ action :install_client do
     )
 
   when "5.5"
-    # centos/redhat 6 by default has mysql-libs 5.1 installed as requirement for postfix.
-    # Will uninstall mysql-libs, install mysql55-lib
+    # CentOS/RedHat 6 by default has mysql-libs 5.1 installed as requirement for postfix.
+    # Will uninstall mysql-libs, install mysql55-lib.
     node[:db_mysql][:client_packages_uninstall] = value_for_platform(
       ["centos", "redhat"] => {
         "5.8" => [],
@@ -289,7 +287,7 @@ action :install_client do
     raise "MySQL version: #{version} not supported yet"
   end
 
-  # Uninstall specified client packages
+  # Uninstall specified client packages.
   packages = node[:db_mysql][:client_packages_uninstall]
   log "  Packages to uninstall: #{packages.join(",")}" unless packages.empty?
   packages.each do |p|
@@ -312,8 +310,8 @@ action :install_client do
     r.run_action(:install)
   end
 
-  # Install MySQL client gem in compile phase.
-  # It is required by rightscale_tools gem for mysql operations.
+  # Installs MySQL client gem in compile phase.
+  # It is required by rightscale_tools gem for MySQL operations.
   gem_package 'mysql' do
     gem_binary '/opt/rightscale/sandbox/bin/gem'
     version '2.7'
@@ -331,12 +329,12 @@ end
 
 action :install_server do
 
-  # Installing MySQL server
   platform = node[:platform]
-  # MySQL server depends on MySQL client
+
+  # MySQL server depends on MySQL client.
   action_install_client
 
-  # Uninstall specified server packages
+  # Uninstalls specified server packages.
   packages = node[:db_mysql][:server_packages_uninstall]
   Chef::Log.info "  Packages to uninstall: #{packages.join(",")}" unless packages == ""
   packages.each do |p|
@@ -345,26 +343,26 @@ action :install_server do
     end
   end unless packages == ""
 
-  # Install MySQL 5.1 and other packages
+  # Installs required server packages.
   packages = node[:db_mysql][:server_packages_install]
   packages.each do |p|
     package p
   end unless packages == ""
 
-  # Stop mysql service
+  # Stops MySQL service.
   # See cookbooks/db_mysql/providers/default.rb for the "stop" action.
   db node[:db][:data_dir] do
     action :stop
     persist false
   end
 
-  # Create MySQL server system tables
+  # Creates MySQL server system tables.
   touchfile = ::File.expand_path "~/.mysql_installed"
   execute "/usr/bin/mysql_install_db ; touch #{touchfile}" do
     creates touchfile
   end
 
-  # moves mysql default db to storage location, removes ib_logfiles for re-config of innodb_log_file_size
+  # Moves MySQL default db to storage location, removes ib_logfiles for re-config of innodb_log_file_size.
   touchfile = ::File.expand_path "~/.mysql_dbmoved"
   ruby_block "clean innodb logfiles" do
     not_if { ::File.exists?(touchfile) }
@@ -376,7 +374,7 @@ action :install_server do
     end
   end
 
-  # Initialize the binlog dir
+  # Initializes the binlog dir.
   binlog = ::File.dirname(node[:db_mysql][:log_bin])
   directory binlog do
     owner "mysql"
@@ -384,7 +382,7 @@ action :install_server do
     recursive true
   end
 
-  # Create the tmp directory
+  # Creates the tmp directory.
   directory node[:db_mysql][:tmpdir] do
     owner "mysql"
     group "mysql"
@@ -392,13 +390,13 @@ action :install_server do
     recursive true
   end
 
-  # Create it so mysql can use it if configured
+  # Creates it so MySQL can use it if configured.
   file "/var/log/mysqlslow.log" do
     owner "mysql"
     group "mysql"
   end
 
-  # Ensure that config directories exist
+  # Ensures that config directories exist.
   directory "/etc/mysql/conf.d" do
     owner "mysql"
     group "mysql"
@@ -406,7 +404,7 @@ action :install_server do
     recursive true
   end
 
-  # Setup my.cnf
+  # Sets up my.cnf
   # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for the "db_mysql_set_mycnf" definition.
   # See cookbooks/db_mysql/libraries/helper.rb for the "RightScale::Database::MySQL::Helper" class.
   db_mysql_set_mycnf "setup_mycnf" do
@@ -414,12 +412,12 @@ action :install_server do
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
   end
 
-  # Setup read_write_status.cnf
+  # Sets up read_write_status.cnf
   db_mysql_set_mycnf_read_only "setup_mycnf_read_only" do
     read_only false
   end
 
-  # Setup MySQL user limits
+  # Sets up MySQL user limits.
   mysql_file_ulimit = node[:db_mysql][:file_ulimit]
   template "/etc/security/limits.d/mysql.limits.conf" do
     source "mysql.limits.conf.erb"
@@ -429,16 +427,14 @@ action :install_server do
     cookbook 'db_mysql'
   end
 
-  # Change root's limitations for THIS shell.  The entry in the limits.d will be
+  # Changes root's limitations for THIS shell. The entry in the limits.d will be
   # used for future logins.
-  # The setting needs to be in place before mysql is started.
+  # The setting needs to be in place before MySQL is started.
   execute "ulimit -n #{mysql_file_ulimit}"
 
-  # Setup custom mysqld init script via /etc/sysconfig/mysqld.
-  #
+  # Sets up custom mysqld init script via /etc/sysconfig/mysqld.
   # Timeouts enabled.
   # Ubuntu's init script does not support configurable startup timeout
-  #
   log_msg = (platform =~ /redhat|centos/) ? "  Setting mysql startup timeout" : "  Skipping mysql startup timeout setting for Ubuntu"
   Chef::Log.info log_msg
   template "/etc/sysconfig/#{node[:db_mysql][:service_name]}" do
@@ -448,10 +444,9 @@ action :install_server do
     only_if { platform =~ /redhat|centos/ }
   end
 
-  # Specific configs for ubuntu
-  # - set config file localhost access w/ root and no password
-  # - disable the 'check_for_crashed_tables'.
-  #
+  # Specific configs for ubuntu:
+  # * sets config file localhost access w/ root and no password
+  # * disables the 'check_for_crashed_tables'.
   cookbook_file "/etc/mysql/debian.cnf" do
     only_if { platform == "ubuntu" }
     mode "0600"
@@ -466,9 +461,8 @@ action :install_server do
     cookbook 'db_mysql'
   end
 
-  # Fix permissions
-  # During the first startup after install some of the file are created with root:root
-  # so MySQL can not read them.
+  # Fixes permissions: during the first startup after installation some of the
+  # files are created with root:root so MySQL cannot read them.
   dir=node[:db_mysql][:datadir]
   bash "chown mysql #{dir}" do
     flags "-ex"
@@ -477,17 +471,17 @@ action :install_server do
     EOH
   end
 
-  # Start MySQL
   Chef::Log.info "  Server installed.  Starting MySQL"
+  # Starts MySQL.
   # See cookbooks/db_mysql/providers/default.rb for the "start" action.
   db node[:db][:data_dir] do
     action :start
     persist false
   end
 
-  # Verify mysql has started before completing this action.
-  # Allows mysql to start before running other commands that would fail
-  # unless mysql has completed starting.
+  # Verifies MySQL has started before completing this action.
+  # Allows MySQL to start before running other commands that would fail
+  # unless MySQL has completed starting.
   bash "verifying mysql running" do
     retries 15
     retry_delay 2
@@ -504,11 +498,12 @@ action :install_client_driver do
   log "  Installing mysql support for #{type} driver"
 
   # Installation of the database client driver for application servers is
-  # done here based on the driver type
+  # done here based on the driver type.
   case type
   when "php"
-    # This adapter type is used by php application servers
+    # This adapter type is used by PHP application servers.
     node[:db][:client][:driver] = "mysql"
+
     package "#{type} mysql integration" do
       package_name value_for_platform(
         ["centos", "redhat"] => {
@@ -522,15 +517,17 @@ action :install_client_driver do
       action :install
     end
   when "python"
-    # This adapter type is used by Django application servers
+    # This adapter type is used by Django application servers.
     node[:db][:client][:driver] = "django.db.backends.mysql"
+
     python_pip "MySQL-python" do
       version "1.2.3"
       action :install
     end
   when "java"
-    # This adapter type is used by tomcat application servers
+    # This adapter type is used by Tomcat application servers.
     node[:db][:client][:driver] = "com.mysql.jdbc.Driver"
+
     package "#{type} mysql integration" do
       package_name value_for_platform(
         ["centos", "redhat"] => {
@@ -543,8 +540,9 @@ action :install_client_driver do
       action :install
     end
   when "ruby"
-    # This adapter type is used by Apache Rails Passenger application servers
+    # This adapter type is used by Apache Rails Passenger application servers.
     node[:db][:client][:driver] = "mysql"
+
     gem_package 'mysql' do
       gem_binary "/usr/bin/gem"
       options '-- --build-flags --with-mysql-config'
@@ -573,8 +571,7 @@ action :setup_monitoring do
   end
 
   platform = node[:platform]
-  collectd_version = node[:rightscale][:collectd_packages_version]
-  # Centos specific items
+  # Installs CentOS specific items.
   collectd_version = node[:rightscale][:collectd_packages_version]
   package "collectd-mysql" do
     action :install
@@ -590,7 +587,7 @@ action :setup_monitoring do
     notifies :restart, resources(:service => "collectd")
   end
 
-  # Send warning if not centos/redhat or ubuntu
+  # Sends warning if not centos/redhat or ubuntu.
   log "  WARNING: attempting to install collectd-mysql on unsupported platform #{platform}, continuing.." do
     not_if { platform =~ /centos|redhat|ubuntu/ }
     level :warn
@@ -621,7 +618,7 @@ action :promote do
     group 'mysql'
   end
 
-  # Set read/write in read_write_status.cnf
+  # Sets read/write in read_write_status.cnf
   db_mysql_set_mycnf_read_only "setup_mycnf_read_only" do
     read_only false
   end
@@ -629,7 +626,7 @@ action :promote do
   # Enable binary logging in my.cnf
   node[:db_mysql][:log_bin_enabled] = true
 
-  # Setup my.cnf
+  # Sets up my.cnf
   # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for the "db_mysql_set_mycnf" definition.
   # See cookbooks/db_mysql/libraries/helper.rb for the "RightScale::Database::MySQL::Helper" class.
   db_mysql_set_mycnf "setup_mycnf" do
@@ -686,8 +683,8 @@ action :promote do
     Chef::Log.info "  WARNING: caught exception #{e} during non-critical operations on the OLD MASTER"
   end
 
-  # PHASE2: reset and promote this slave to master
-  # Critical operations on newmaster, if a failure occurs here we allow it to halt promote operations
+  # PHASE2: reset and promote this slave to master.
+  # Critical operations on newmaster, if a failure occurs here we allow it to halt promote operations.
   Chef::Log.info "  Promoting slave.."
   RightScale::Database::MySQL::Helper.do_query(node, 'RESET MASTER')
 
@@ -702,13 +699,13 @@ action :promote do
   action_grant_replication_slave
   RightScale::Database::MySQL::Helper.do_query(node, 'SET GLOBAL READ_ONLY=0')
 
-  # PHASE3: more non-critical operations, have already made assumption oldmaster is dead
+  # PHASE3: more non-critical operations, have already made assumption oldmaster is dead.
   begin
     unless previous_master.nil?
-      # Unlocking oldmaster
+      # Unlocks oldmaster.
       RightScale::Database::MySQL::Helper.do_query(node, 'UNLOCK TABLES', previous_master)
       SystemTimer.timeout_after(RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT) do
-        # Demote oldmaster
+        # Demotes oldmaster.
         Chef::Log.info "  Calling reconfigure replication with host: #{previous_master} ip: #{node[:cloud][:private_ips][0]} file: #{newmaster_file} position: #{newmaster_position}"
         RightScale::Database::MySQL::Helper.reconfigure_replication(node, previous_master, node[:cloud][:private_ips][0], newmaster_file, newmaster_position)
       end
@@ -733,20 +730,19 @@ action :enable_replication do
     block do
       master_info = RightScale::Database::MySQL::Helper.load_replication_info(node)
 
-      # Check that the snapshot is from the current master or a slave associated with the current master
+      # Checks that the snapshot is from the current master or a slave
+      # associated with the current master.
       if master_info['Master_instance_uuid']
         if master_info['Master_instance_uuid'] != node[:db][:current_master_uuid]
           raise "FATAL: snapshot was taken from a different master! snap_master was:#{master_info['Master_instance_uuid']} != current master: #{node[:db][:current_master_uuid]}"
         end
-        # 11H1 backup
-      elsif master_info['Master_instance_id']
+      elsif master_info['Master_instance_id'] # 11H1 backup
         Chef::Log.info "  Detected 11H1 snapshot to migrate"
         if master_info['Master_instance_id'] != node[:db][:current_master_ec2_id]
           raise "FATAL: snapshot was taken from a different master! snap_master was:#{master_info['Master_instance_id']} != current master: #{node[:db][:current_master_ec2_id]}"
         end
-        # File not found or does not contain info
       else
-        raise "Position and file not saved!"
+        raise "Position and file not saved!" # file not found or does not contain info
       end
     end
   end
@@ -768,12 +764,11 @@ action :enable_replication do
     end
   end
 
-  # Disable binary logging
+  # Disables binary logging.
   node[:db_mysql][:log_bin_enabled] = false
 
-  # Setup my.cnf
   unless current_restore_process == :no_restore
-    # Setup my.cnf
+    # Sets up my.cnf
     # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for the "db_mysql_set_mycnf" definition.
     db_mysql_set_mycnf "setup_mycnf" do
       server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
@@ -782,7 +777,7 @@ action :enable_replication do
     end
   end
 
-  # empty out the binary log dir
+  # Empties out the binary log dir.
   directory ::File.dirname(node[:db_mysql][:log_bin]) do
     not_if { current_restore_process == :no_restore }
     action [:delete, :create]
@@ -808,7 +803,7 @@ action :enable_replication do
     end
   end
 
-  # following done after a stop/start and reboot on a slave
+  # Following done after a stop/start and reboot on a slave.
   ruby_block "reconfigure_replication" do
     only_if { current_restore_process == :no_restore }
     block do
@@ -827,7 +822,7 @@ action :enable_replication do
     end
   end
 
-  # Set read_only in read_write_status.cnf
+  # Sets read_only in read_write_status.cnf
   db_mysql_set_mycnf_read_only "setup_mycnf_read_only" do
     read_only true
   end
