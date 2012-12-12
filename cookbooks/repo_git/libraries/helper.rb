@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: repo
+# Cookbook Name:: repo_git
 #
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
@@ -18,12 +18,15 @@ module RightScale
       # @param ssh_key [string] Git private ssh key
       #
       # @raises [RuntimeError] if ssh key string is empty
-      def create(ssh_key)
+      def create(ssh_key, check_host_key)
         @sshkey.create(ssh_key)
+        @sshkey.add_host_key(check_host_key)
+
+        check_host_key ? strict_check = "yes" : strict_check = "no"
 
         Chef::Log.info("  Creating GIT_SSH environment variable")
         ::File.open("#{SshKey::KEYFILE}.sh", "w") do |sshfile|
-          sshfile << "exec ssh -o StrictHostKeyChecking=no -i #{SshKey::KEYFILE} \"$@\""
+          sshfile << "exec ssh -o StrictHostKeyChecking=#{strict_check} -i #{SshKey::KEYFILE} \"$@\""
           sshfile.chmod(0777)
         end
 

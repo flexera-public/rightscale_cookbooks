@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: repo_rsync
+# Cookbook Name:: repo
 #
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
@@ -32,6 +32,15 @@ module RightScale
         ::File.delete(KEYFILE)
       end
 
+      def add_host_key(host_key)
+        Chef::Log.info("  Installing ssh hostkey for root.")
+        ::File.open("/root/.ssh/known_hosts", "a") do |known_hosts|
+          known_hosts << host_key
+          known_hosts.chmod(0600)
+        end
+      end
+
     end
+
   end
 end

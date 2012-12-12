@@ -90,3 +90,9 @@ attribute "repo/default/prefix",
   :description => "The prefix that will be used to locate the correct tarball of the application. For example, if you're using 'myapp.tgz' specify 'myapp' as the ROS Prefix.",
   :required => "optional",
   :recipes => ["repo::default"]
+
+attribute "repo/default/ssh_host_key",
+  :display_name => "Known hosts ssh key",
+  :description => "A valid SSH key which will br appended to /root/.ssh/known_hosts file. Use this input if you want to improve security and for MiM attacks prevention Example: cred:SSH_KNOWN_HOST_KEY.",
+  :required => "optional",
+  :recipes => ["repo::default"]

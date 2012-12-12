@@ -28,8 +28,11 @@ action :pull do
     block do
       # See cookbooks/repo_rsync/libraries/default.rb for the "create" method.
       RightScale::Repo::SshKey.new.create(new_resource.credential)
+      RightScale::Repo::SshKey.new.add_host_key(new_resource.ssh_host_key)
     end
   end
+
+  new_resource.ssh_host_key ? strict_check = "yes" : strict_check = "no"
 
   # Backup project directory if it is not empty
   ruby_block "Backup of existing project directory" do
@@ -51,7 +54,7 @@ action :pull do
   # -e, --rsh=COMMAND           specify the remote shell to use
   # --stats                     give some file-transfer stats
   execute "Downloading data with RSync" do
-    command "rsync -cavzP -e 'ssh -o StrictHostKeyChecking=no -i /tmp/ssh.key' --stats #{new_resource.account}@#{new_resource.repository}/* #{new_resource.destination}"
+    command "rsync -cavzP -e 'ssh -o StrictHostKeyChecking=#{strict_check} -i /tmp/ssh.key' --stats #{new_resource.account}@#{new_resource.repository}/* #{new_resource.destination}"
   end
 
   # Delete SSH key

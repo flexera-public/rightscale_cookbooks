@@ -35,7 +35,7 @@ action :pull do
       end
       # Add ssh key and exec script
       # See cookbooks/repo_git/libraries/default.rb for the "create" method.
-      RightScale::Repo::GitSshKey.new.create(new_resource.credential)
+      RightScale::Repo::GitSshKey.new.create(new_resource.credential,new_resource.ssh_host_key)
     end
   end
 
