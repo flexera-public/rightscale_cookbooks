@@ -24,7 +24,7 @@ module RightScale
 
         check_host_key ? strict_check = "yes" : strict_check = "no"
 
-        Chef::Log.info("  Creating GIT_SSH environment variable")
+        Chef::Log.info("  Creating GIT_SSH environment variable with options: StrictHostKeyChecking=#{strict_check}")
         ::File.open("#{SshKey::KEYFILE}.sh", "w") do |sshfile|
           sshfile << "exec ssh -o StrictHostKeyChecking=#{strict_check} -i #{SshKey::KEYFILE} \"$@\""
           sshfile.chmod(0777)
@@ -35,10 +35,10 @@ module RightScale
 
       # Delete SSH key created by "create" method, after successful pull operation. And clear GIT_SSH.
       def delete
-        @sshkey.delete
-        ::File.delete("#{SshKey::KEYFILE}.sh")
-
-        ENV.delete("GIT_SSH")
+      #  @sshkey.delete
+      #  ::File.delete("#{SshKey::KEYFILE}.sh")
+        Chef::Log.info("!!!!!!!!!#{ENV["GIT_SSH"]} ")
+       # ENV.delete("GIT_SSH")
       end
 
     end
