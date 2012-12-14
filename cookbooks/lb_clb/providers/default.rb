@@ -9,7 +9,8 @@
 
 action :install do
   log "  Install does not apply to CLB"
-end # action :install do
+end
+
 
 action :attach do
 
@@ -66,7 +67,8 @@ action :attach do
     backup false
   end
 
-end # action :attach do
+end
+
 
 action :attach_request do
 
@@ -83,7 +85,8 @@ action :attach_request do
     action :attach
   end
 
-end # action :attach_request do
+end
+
 
 action :detach do
 
@@ -139,7 +142,8 @@ action :detach do
     action :update
   end
 
-end # action :detach do
+end
+
 
 action :detach_request do
 
@@ -155,12 +159,14 @@ action :detach_request do
     action :detach
   end
 
-end # action :detach_request do
+end
+
 
 action :setup_monitoring do
   log "  Setup monitoring does not apply to CLB"
-end # action :setup_monitoring do
+end
+
 
 action :restart do
   log "  Restart does not apply to CLB"
-end # action :restart do
+end

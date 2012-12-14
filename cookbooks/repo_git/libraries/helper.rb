@@ -7,43 +7,36 @@
 
 module RightScale
   module Repo
-    class Ssh_key
-     KEYFILE = "/tmp/gitkey"
+    class GitSshKey
 
-     # Create bash script, which will set user defined ssh key required to access to private git source code repositories.
-     #
-     # @param git_ssh_key [string] Git private ssh key
-     #
-     # @raise [RuntimeError] if ssh key string is empty
-     def create(git_ssh_key)
-       Chef::Log.info("  Creating ssh key")
-       keyfile = nil
-       keyname = git_ssh_key
+      def initialize
+        @sshkey = SshKey.new
+      end
 
-       if "#{keyname}" != ""
-         keyfile = KEYFILE
-         # Writing key to file
-         system("echo -n '#{keyname}' > #{keyfile}")
-         # Setting permissions
-         system("chmod 700 #{keyfile}")
-         # Adding additional parameters
-         system("echo 'exec ssh -oStrictHostKeyChecking=no -i #{keyfile} \"$@\"' > #{keyfile}.sh")
-         system("chmod +x #{keyfile}.sh")
-       end
-       # GIT_SSH environment variable.
-       ENV["GIT_SSH"] = "#{keyfile}.sh" unless ("#{keyfile}" == "")
-     end
 
-     # Delete SSH key created by "create" method, after successful pull operation. And clear GIT_SSH.
-     def delete
-       Chef::Log.warn "Deleting ssh key "
-        keyfile = KEYFILE
-       if keyfile != nil
-         # Removing previously created files.
-         system("rm -f #{keyfile}")
-         system("rm -f #{keyfile}.sh")
-       end
-     end
+      # Create bash script, which will set user defined ssh key required to access to private git source code repositories.
+      #
+      # @param ssh_key [string] Git private ssh key
+      #
+      # @raises [RuntimeError] if ssh key string is empty
+      def create(ssh_key)
+        @sshkey.create(ssh_key)
+
+        Chef::Log.info("  Creating GIT_SSH environment variable")
+        ::File.open("#{SshKey::KEYFILE}.sh", "w") do |sshfile|
+          sshfile << "exec ssh -o StrictHostKeyChecking=no -i #{SshKey::KEYFILE} \"$@\""
+          sshfile.chmod(0777)
+        end
+
+        ENV["GIT_SSH"] = "#{SshKey::KEYFILE}.sh"
+      end
+
+
+      # Delete SSH key created by "create" method, after successful pull operation. And clear GIT_SSH.
+      def delete
+        @sshkey.delete
+        ::File.delete("#{SshKey::KEYFILE}.sh")
+      end
 
     end
   end

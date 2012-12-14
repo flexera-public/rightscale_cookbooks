@@ -51,8 +51,8 @@ elsif secondary_storage_cloud =~ /rackspace/i
 end
 
 log "  Performing Secondary Restore from #{node[:db][:backup][:secondary_location]}..."
-# Requires block_device DATA_DIR to be instantiated
-# previously. Make sure block_device::default recipe has been run.
+# Requires block_device DATA_DIR to be previously instantiated.
+# Make sure block_device::default recipe has been run.
 block_device NICKNAME do
   lineage restore_lineage
   timestamp_override restore_timestamp_override
@@ -60,7 +60,7 @@ block_device NICKNAME do
   volume_size get_device_or_default(node, :device1, :volume_size)
 
   secondary_cloud secondary_storage_cloud
-  secondary_endpoint get_device_or_default(node, :device1, :backup, :secondary, :endpoint)
+  secondary_endpoint get_device_or_default(node, :device1, :backup, :secondary, :endpoint) || ""
   secondary_container get_device_or_default(node, :device1, :backup, :secondary, :container)
   secondary_user get_device_or_default(node, :device1, :backup, :secondary, :cred, :user)
   secondary_secret get_device_or_default(node, :device1, :backup, :secondary, :cred, :secret)
@@ -80,5 +80,21 @@ log "  Starting database..."
 db DATA_DIR do
   action [ :start, :status ]
 end
+
+# Restoring admin and application user privileges
+cred = [["administrator", [node[:db][:admin][:user], node[:db][:admin][:password]]],\
+        ["user", [node[:db][:application][:user], node[:db][:application][:password]]]]
+
+cred.each do |role, role_cred_values|
+  log "  Restoring #{role} privileges."
+  db DATA_DIR do
+    privilege role
+    privilege_username role_cred_values[0]
+    privilege_password role_cred_values[1]
+    privilege_database "*.*"
+    action :set_privileges
+  end
+end
+
 
 rightscale_marker :end

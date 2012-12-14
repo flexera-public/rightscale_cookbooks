@@ -1,0 +1,83 @@
+#
+# Cookbook Name:: app_tomcat
+#
+# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
+# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
+# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+#
+# Managed by RightScale
+# DO NOT EDIT BY HAND
+#
+# System-wide configuration file for tomcat<%=@version%> services
+# This will be sourced by tomcat<%=@version%> and any secondary service
+# Values will be overridden by service-specific configuration
+# files in /etc/sysconfig
+#
+# Use this one to change default values for all services
+# Change the service specific ones to affect only one service
+# (see, for instance, /etc/sysconfig/tomcat<%=@version%>)
+#
+
+# Where your java installation lives
+JAVA_HOME="/usr/lib/jvm/java"
+
+# Where your tomcat installation lives
+CATALINA_BASE="/usr/share/tomcat<%=@version%>"
+CATALINA_HOME="/usr/share/tomcat<%=@version%>"
+JASPER_HOME="/usr/share/tomcat<%=@version%>"
+CATALINA_TMPDIR="/var/tmp/tomcat<%=@version%>"
+
+<% if @platform =~ /redhat|centos/ %>
+  <% if @platform_ver == 6 %>
+# Cannot resolve user database reference - naming-factory-dbcp
+# the real problem is a cnfe that is avoided by configuring
+# the -Djavax.sql.DataSource.Factory. This fixes the rpm install.
+JAVA_OPTS="${JAVA_OPTS} -Djavax.sql.DataSource.Factory=org.apache.commons.dbcp.BasicDataSourceFactory"
+  <% end %>
+<% end %>
+
+# You can pass some parameters to java here if you wish to
+#JAVA_OPTS="-Xminf0.1 -Xmaxf0.3"
+
+# Use JAVA_OPTS to set java.library.path for libtcnative.so
+#JAVA_OPTS="-Djava.library.path=/usr/lib"
+
+# What user should run tomcat
+TOMCAT_USER="<%=@app_user%>"
+
+# You can change your tomcat locale here
+#LANG="en_US"
+
+# Run tomcat under the Java Security Manager
+SECURITY_MANAGER="false"
+
+# Time to wait in seconds, before killing process
+SHUTDOWN_WAIT="30"
+
+# Whether to annoy the user with "attempting to shut down" messages or not
+SHUTDOWN_VERBOSE="false"
+
+# Set the TOMCAT_PID location
+CATALINA_PID="/var/run/tomcat<%=@version%>.pid"
+
+# Connector port is 8080 for this tomcat<%=@version%> instance
+#CONNECTOR_PORT="8080"
+
+# If you wish to further customize your tomcat environment,
+# put your own definitions here
+# (i.e. LD_LIBRARY_PATH for some jdbc drivers)
+
+#JVM tuning options
+# see http://www.tomcatexpert.com/blog/2011/11/22/performance-tuning-jvm-running-tomcat
+
+# XMX and XMS
+CATALINA_OPTS="$CATALINA_OPTS -Xms<%=@java_xms%> -Xmx<%=@java_xmx%>"
+
+#PermSize and MaxPermSize
+CATALINA_OPTS="$CATALINA_OPTS -XX:PermSize=<%=@java_permsize%> -XX:MaxPermSize=<%=@java_maxpermsize%>"
+
+#NewSize and MaxNewSize
+CATALINA_OPTS="$CATALINA_OPTS -XX:NewSize=<%=@java_newsize%> -XX:MaxNewSize=<%=@java_maxnewsize%>"
+
+#Collectd
+

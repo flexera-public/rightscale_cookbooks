@@ -143,14 +143,6 @@ module RightScale
           return $? == 0
         end
 
-        # This is a check to verify node is master server
-        #
-        # @param node [Hash] Node name
-        def self.detect_if_slave(node)
-          read_only = `/usr/pgsql-9.1/bin/pg_controldata /var/lib/pgsql/9.1/data | grep "Database cluster state" | awk '{print $NF}'`
-          return true if read_only =~ /recovery/
-        end
-
         # Replication process reconfiguration
         #
         # @param newmaster_host [String] FQDN or ip of new replication master

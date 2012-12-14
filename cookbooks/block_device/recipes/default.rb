@@ -24,18 +24,26 @@ package "xfsprogs" do
   not_if { node[:platform] == "redhat" }
 end
 
+log "Inputs volume_size and stripe_count are not used in Rackspace cloud provider. For further information, please visit http://support.rightscale.com/09-Clouds/Rackspace_Hosting#Unsupported_Features" do
+  only_if {node[:cloud][:provider] == 'rackspace'}
+end
+
 bash "Load kernel modules" do
   flags '-ex'
   code <<-EOS
     modprobe dm_mod
     modprobe dm_snapshot
   EOS
+  # These modules are compiled into the kernel on Ubuntu.
+  not_if { node[:platform] == "ubuntu" }
+  only_if { File.exists?("/proc/modules") }
 end
 
 bash "Load xfs kernel module" do
   flags '-ex'
   code 'modprobe xfs'
   not_if { node[:platform] == "redhat" }
+  only_if { File.exists?("/proc/modules") }
 end
 
 # Setup block_device resources
@@ -59,9 +67,10 @@ do_for_all_block_devices node[:block_device] do |device|
     volume_size get_device_or_default(node, device, :volume_size)
     stripe_count get_device_or_default(node, device, :stripe_count)
     vg_data_percentage get_device_or_default(node, device, :vg_data_percentage)
+    iops get_device_or_default(node, device, :iops) || ""
 
     primary_cloud get_device_or_default(node, device, :backup, :primary, :cloud)
-    primary_endpoint get_device_or_default(node, device, :backup, :primary, :endpoint)
+    primary_endpoint get_device_or_default(node, device, :backup, :primary, :endpoint) || ""
     primary_user get_device_or_default(node, device, :backup, :primary, :cred, :user)
     primary_secret get_device_or_default(node, device, :backup, :primary, :cred, :secret)
 

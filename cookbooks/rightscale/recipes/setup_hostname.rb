@@ -17,7 +17,7 @@ def local_ip
   end
 ensure
   Socket.do_not_reverse_lookup = orig
-end # def local_ip
+end
 
 def show_host_info
   # Display current hostname values in log.
@@ -27,7 +27,7 @@ def show_host_info
   log "  Short host name (cut from first dot of hostname): #{`hostname -s` == '' ? '<none>' : `hostname -s`}"
   log "  Domain of hostname: #{`domainname` == '' ? '<none>' : `domainname`}"
   log "  FQDN of host: #{`hostname -f` == '' ? '<none>' : `hostname -f`}"
-end # def show_host_info
+end
 
 # Set hostname from short or long (when domain_name set).
 if "#{node.rightscale.domain_name}" != ""
@@ -76,12 +76,15 @@ nameserver=`cat /etc/resolv.conf  | grep -v '^#' | grep nameserver | awk '{print
 if nameserver != ""
   nameserver="nameserver #{nameserver}"
 end
+
 if "#{node.rightscale.domain_name}" != ""
   domain = "domain #{node.rightscale.domain_name}"
 end
+
 if "#{node.rightscale.search_suffix}" != ""
   search = "search #{node.rightscale.search_suffix}"
 end
+
 template "/etc/resolv.conf" do
   source "resolv.conf.erb"
   owner "root"
@@ -131,14 +134,6 @@ if platform?('ubuntu')
     service_name "hostname"
     supports :restart => true, :status => true, :reload => true
     action :restart
-  end
-end
-if platform?('debian')
-  log "  Starting hostname.sh service."
-  service "hostname.sh" do
-    service_name "hostname.sh"
-    supports :restart => false, :status => true, :reload => false
-    action :start
   end
 end
 

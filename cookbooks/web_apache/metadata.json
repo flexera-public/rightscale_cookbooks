@@ -1,171 +1,183 @@
 {
-  "maintainer": "RightScale, Inc.",
-  "suggestions": {
+  "dependencies": {
+    "rightscale": ">= 0.0.0",
+    "apache2": ">= 0.0.0"
   },
+  "name": "web_apache",
   "maintainer_email": "support@rightscale.com",
-  "long_description": "",
-  "description": "Installs/configures the apache2 webserver",
-  "conflicting": {
-  },
-  "platforms": {
-  },
-  "license": "Copyright RightScale, Inc. All rights reserved.",
-  "providing": {
-  },
-  "recipes": {
-    "web_apache::setup_frontend_ssl_vhost": "Frontend apache vhost with SSL enabled.",
-    "web_apache::do_enable_default_site": "Enables the default vhost",
-    "web_apache::do_restart": "Runs service apache restart",
-    "web_apache::setup_monitoring": "Install collectd-apache for monitoring support",
-    "web_apache::install_apache": "Installs and configures the Apache2 webserver.",
-    "web_apache::setup_frontend": "Frontend apache vhost.  Select ssl_enabled for SSL.",
-    "web_apache::setup_frontend_http_vhost": "Frontend apache vhost with SSL enabled.",
-    "web_apache::do_start": "Runs service apache start",
-    "web_apache::default": "Runs web_apache::install_apache.",
-    "web_apache::do_stop": "Runs service apache stop"
-  },
   "attributes": {
+    "web_apache/ssl_key": {
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+
+      ],
+      "default": "",
+      "type": "string",
+      "recipes": [
+        "web_apache::setup_frontend_ssl_vhost",
+        "web_apache::setup_frontend"
+      ],
+      "display_name": "SSL Certificate Key",
+      "description": "Your SSL Certificate Key. Example: cred:SSL_KEY"
+    },
     "web_apache/mpm": {
+      "required": "optional",
+      "calculated": false,
       "choice": [
         "prefork",
         "worker"
       ],
-      "required": "optional",
       "default": "prefork",
-      "calculated": false,
       "type": "string",
-      "display_name": "Multi-Processing Module",
-      "description": "Defines the multi-processing module setting in httpd.conf.  Use 'worker' for Rails/Tomcat/Standalone frontends and 'prefork' for PHP.",
       "recipes": [
         "web_apache::default",
         "web_apache::install_apache",
         "web_apache::setup_frontend_ssl_vhost",
         "web_apache::setup_frontend_http_vhost",
         "web_apache::setup_frontend"
-      ]
+      ],
+      "display_name": "Multi-Processing Module",
+      "description": "Defines the multi-processing module setting in httpd.conf.  Use 'worker' for Rails/Tomcat/Standalone frontends and 'prefork' for PHP. Example: prefork"
     },
     "web_apache/ssl_enable": {
+      "required": "optional",
+      "calculated": false,
       "choice": [
         "true",
         "false"
       ],
-      "required": "optional",
       "default": "false",
-      "calculated": false,
       "type": "string",
-      "display_name": "SSL Enable",
-      "description": "Enables SSL ('https')",
       "recipes": [
         "web_apache::install_apache",
         "web_apache::setup_frontend_ssl_vhost",
         "web_apache::setup_frontend"
-      ]
-    },
-    "web_apache/ssl_passphrase": {
-      "choice": [
-
       ],
-      "required": "optional",
-      "default": "",
-      "calculated": false,
-      "type": "string",
-      "display_name": "SSL passphrase",
-      "description": "Your SSL passphrase.",
-      "recipes": [
-        "web_apache::setup_frontend_ssl_vhost",
-        "web_apache::setup_frontend"
-      ]
-    },
-    "web_apache": {
-      "choice": [
-
-      ],
-      "required": "optional",
-      "calculated": false,
-      "type": "hash",
-      "display_name": "apache hash",
-      "description": "Apache Web Server",
-      "recipes": [
-
-      ]
+      "display_name": "SSL Enable",
+      "description": "Enables SSL ('https'). Example: true"
     },
     "web_apache/ssl_certificate": {
+      "required": "optional",
+      "calculated": false,
       "choice": [
 
       ],
-      "required": "optional",
       "default": "",
-      "calculated": false,
       "type": "string",
+      "recipes": [
+        "web_apache::setup_frontend_ssl_vhost",
+        "web_apache::setup_frontend"
+      ],
       "display_name": "SSL Certificate",
-      "description": "The name of your SSL Certificate.",
-      "recipes": [
-        "web_apache::setup_frontend_ssl_vhost",
-        "web_apache::setup_frontend"
-      ]
+      "description": "The name of your SSL Certificate. Example: cred:SSL_CERT"
     },
-    "web_apache/ssl_certificate_chain": {
+    "web_apache": {
+      "required": "optional",
+      "calculated": false,
       "choice": [
 
       ],
-      "required": "optional",
-      "default": "",
-      "calculated": false,
-      "type": "string",
-      "display_name": "SSL Certificate Chain",
-      "description": "Your SSL Certificate Chain.",
+      "type": "hash",
       "recipes": [
-        "web_apache::setup_frontend_ssl_vhost",
-        "web_apache::setup_frontend"
-      ]
+
+      ],
+      "display_name": "apache hash",
+      "description": "Apache Web Server"
     },
     "web_apache/application_name": {
+      "required": "optional",
+      "calculated": false,
       "choice": [
 
       ],
-      "required": "optional",
       "default": "myapp",
-      "calculated": false,
       "type": "string",
-      "display_name": "Application Name",
-      "description": "Sets the directory for your application's web files (/home/webapps/Application Name/current/).  If you have multiple applications, you can run the code checkout script multiple times, each with a different value for APPLICATION, so each application will be stored in a unique directory.  This must be a valid directory name.  Do not use symbols in the name.",
       "recipes": [
         "web_apache::setup_frontend_ssl_vhost",
         "web_apache::setup_frontend_http_vhost",
         "web_apache::setup_frontend",
         "web_apache::default"
-      ]
+      ],
+      "display_name": "Application Name",
+      "description": "Sets the directory for your application's web files (/home/webapps/Application Name/).  If you have multiple applications, you can run the code checkout script multiple times, each with a different value for the 'Application Name' input, so each application will be stored in a unique directory.  This must be a valid directory name.  Do not use symbols in the name. Example: myapp"
     },
-    "web_apache/ssl_key": {
+    "web_apache/ssl_certificate_chain": {
+      "required": "optional",
+      "calculated": false,
       "choice": [
 
       ],
-      "required": "optional",
       "default": "",
-      "calculated": false,
       "type": "string",
-      "display_name": "SSL Certificate Key",
-      "description": "Your SSL Certificate Key.",
       "recipes": [
         "web_apache::setup_frontend_ssl_vhost",
         "web_apache::setup_frontend"
-      ]
+      ],
+      "display_name": "SSL Certificate Chain",
+      "description": "Your SSL Certificate Chain. Example: cred:SSL_CERT_CHAIN"
+    },
+    "web_apache/maintenance_file": {
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+
+      ],
+      "default": "",
+      "type": "string",
+      "recipes": [
+        "web_apache::do_enable_maintenance_mode"
+      ],
+      "display_name": "Path to maintenance.html",
+      "description": "Optional system-root related path to maintenance html page which will be used if maintenance mode is enabled  Example: /home/webapp/maintenance.html"
+    },
+    "web_apache/ssl_passphrase": {
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+
+      ],
+      "default": "",
+      "type": "string",
+      "recipes": [
+        "web_apache::setup_frontend_ssl_vhost",
+        "web_apache::setup_frontend"
+      ],
+      "display_name": "SSL Passphrase",
+      "description": "Your SSL passphrase. Example: cred:SSL_PASSPHRASE"
     }
+  },
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "suggestions": {
+  },
+  "platforms": {
+  },
+  "maintainer": "RightScale, Inc.",
+  "long_description": "",
+  "version": "13.2.0",
+  "recommendations": {
+  },
+  "recipes": {
+    "web_apache::do_restart": "Runs service apache restart.",
+    "web_apache::default": "Runs web_apache::install_apache.",
+    "web_apache::setup_frontend": "Frontend apache vhost. Select ssl_enabled for SSL.",
+    "web_apache::install_apache": "Installs and configures the Apache2 webserver.",
+    "web_apache::do_disable_maintenance_mode": "Disable maintenance mode for Apache2 webserver",
+    "web_apache::setup_monitoring": "Installs the collectd-apache plugin for monitoring support.",
+    "web_apache::setup_frontend_ssl_vhost": "Frontend apache vhost with SSL enabled.",
+    "web_apache::do_enable_maintenance_mode": "Enable maintenance mode for Apache2 webserver",
+    "web_apache::setup_frontend_http_vhost": "Frontend apache vhost with SSL enabled.",
+    "web_apache::do_stop": "Runs service apache stop.",
+    "web_apache::do_start": "Runs service apache start.",
+    "web_apache::do_enable_default_site": "Enables the default vhost."
+  },
+  "groupings": {
+  },
+  "conflicting": {
   },
   "replacing": {
   },
-  "dependencies": {
-    "rightscale": [
-
-    ],
-    "apache2": [
-
-    ]
-  },
-  "name": "web_apache",
-  "groupings": {
-  },
-  "version": "0.0.1",
-  "recommendations": {
+  "description": "Installs/configures the apache2 webserver",
+  "providing": {
   }
 }

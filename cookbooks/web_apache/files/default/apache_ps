@@ -29,9 +29,9 @@ sample_interval = 20
 
 opts.each do |opt, arg|
   case opt
-    when '--hostname'
+  when '--hostname'
       hostname = arg
-    when '--sample-interval'
+  when '--sample-interval'
       sample_interval = arg.to_i
   end
   arg.inspect
@@ -50,7 +50,7 @@ distro = distro.chomp
 # default fallback
 apache_ps_name = "apache"
 
-if distro == "CentOS"
+if distro =~ /centos|redhat/i
   apache_ps_name = "httpd"
   # Check to see if we're using worker or prefork.
   ret = `grep -c '^HTTPD=/usr/sbin/httpd.worker' /etc/sysconfig/httpd`

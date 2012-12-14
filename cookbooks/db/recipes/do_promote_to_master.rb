@@ -21,10 +21,12 @@ sys_firewall "Open port to the old master which is becoming a slave" do
   action :update
 end
 
-# Promote to master
-# Do promote, but do not change master tags or node state yet.
+# Set mysql username and password with permissions to replicate from the new master.
 include_recipe "db::setup_replication_privileges"
 
+# Promote to master
+# Tags are not set here.  We need the tags on the old master in order
+# to demote it later.  Once demoted, then we add master tags.
 db DATA_DIR do
   action :promote
 end
@@ -56,10 +58,8 @@ db DATA_DIR do
   action :setup_monitoring
 end
 
-# Force a backup
-db_request_backup "do force backup" do
-  force true
-end
+# Perform a backup
+db_request_backup "do backup"
 
 # Schedule master backups
 include_recipe "db::do_primary_backup_schedule_enable"

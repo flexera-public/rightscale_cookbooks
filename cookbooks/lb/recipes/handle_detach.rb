@@ -13,8 +13,8 @@ end
 
 log "Remote recipe executed by do_detach_request"
 
-vhosts(node[:remote_recipe][:vhost_names]).each do |vhost_name|
-  lb vhost_name do
+pool_names(node[:remote_recipe][:pools]).each do |pool_name|
+  lb pool_name do
     backend_id node[:remote_recipe][:backend_id]
     action :detach
   end

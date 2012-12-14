@@ -63,4 +63,4 @@ define :db_init_status, :expected_state => :initialized, :error_message => "ERRO
     backup false
   end
 
-end 
+end

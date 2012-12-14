@@ -12,13 +12,15 @@ class Chef::Recipe
 end
 
 # Sending request to application servers, to add iptables rule, which will allow connection with loadbalancer
-vhosts(node[:lb][:vhost_names]).each do | vhost_name |
-  sys_firewall "Request all appservers open ports to this loadbalancer" do
-    machine_tag "loadbalancer:#{vhost_name}=app"
-    port node[:app][:port].to_i
-    enable true
-    ip_addr node[:cloud][:private_ips][0]
-    action :update_request
+
+attrs = {:app => Hash.new}
+attrs[:app][:lb_ip] = node[:cloud][:private_ips][0]
+
+pool_names(node[:lb][:pools]).each do | pool_name |
+  remote_recipe "Update app servers firewall" do
+    recipe "app::handle_loadbalancers_allow"
+    recipients_tags "loadbalancer:#{pool_name}=app"
+    attributes attrs
   end
 end
 

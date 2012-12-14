@@ -2,20 +2,20 @@
 
 == DESCRIPTION:
 
-RightScale application server management cookbook
+RightScale's cookbook for application server management.
 
-This cookbook contains recipes that generally applicable to all application
-servers.
+This is an abstract cookbook that defines the recipes and interface to
+application provider cookbooks.  It is not a standalone cookbook and must be
+used in conjunction with an application provider cookbook (i.e.
+<tt>app_php</tt>, app_tomcat, app_passenger, app_django or a user created application
+provider).
 
-Initialized App resource and its actions cover default set of operations, required for typical application server setup.
-
-More detailed info you can find in app::* recipes description.
+More detailed information can be found in the descriptions for each recipe in the cookbook. <tt>app::*</tt>.
 
 == REQUIREMENTS:
 
 * Requires a VM launched from a RightScale managed RightImage
-
-* Corresponding app providers cookbooks
+* Requires a corresponding app provider cookbook
 
 == COOKBOOKS DEPENDENCIES:
 Please see <tt>metadata.rb</tt> file for the latest dependencies.
@@ -26,6 +26,7 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 * <tt>app_php</tt>
 * <tt>app_passenger</tt>
 * <tt>app_tomcat</tt>
+* <tt>app_django</tt>
 
 == KNOWN LIMITATIONS:
 
@@ -33,13 +34,19 @@ There are no known limitations.
 
 == SETUP:
 
-In order to use App resource, you must create corresponding providers in your app server cookbook.
-See for example app_passenger, app_php or app_tomcat cookbooks.
+In order to use App resource, you must create corresponding providers in your
+app server cookbook. For examples, see <tt>app_passenger</tt>, <tt>app_php</tt>, <tt>app_django</tt> or
+<tt>app_tomcat</tt> cookbooks.
 
-You must define app attributes which will be used in initialized app[default] resource
+You must define app attributes which will be used in the initialized
+<tt>app[default]</tt> resource.
+
 Required attributes:
+
   node[:app][:provider] = "app_passenger"
+
 Recommended:
+
   node[:app][:destination]
   node[:app][:port]
   node[:app][:root]
@@ -47,50 +54,62 @@ Recommended:
   node[:app][:database_user]
   node[:app][:database_password]
   node[:app][:database_sever_fqdn]
-More detailed description of these attribute variables is located in resource file description.
+  node[:app][:db_adapter]
+  node[:app][:module_dependencies]
+  node[:app][:user]
+  node[:app][:group]
+
+More detailed descriptions of these attribute variables is located in the resource
+file's description.
 
 == USAGE:
 
-1. Add the default recipe to tag your server as an app server. This is used by
+1. Add the <tt>app_*::default</tt> recipe prior to the <tt>app::default</tt>
+   recipe to define the provider.
+2. Add the default recipe to tag your server as an appserver. This is used by
    servers (like databases) to identify their clients.
-2. Add desired app::do_* recipes to your application server ServerTemplate
-3. Develop corresponding providers in your application server cookbook.
-4. Define required and recommended attributes in your application server cookbook attributes file.
+3. Add desired <tt>app::do_*</tt> recipes to your application server
+   ServerTemplate.
+4. Develop corresponding providers in your application server's cookbook.
+5. Define required and recommended attributes in your application server's
+   cookbook attributes file.
 
 == DETAILS:
 
 === General
-This cookbook is intended to be used in conjunction with cookbooks that contain
+This cookbook is can only be used in conjunction with cookbooks that contain
 Lightweight Providers which implement the 'app' interface. See the RightScale
-app_php cookbook for an example.
+<tt>app_php</tt> cookbook for an example.
 
-Note: app[default] resource uses "persist true" flag, which allow to save created resource and its attributes in memory for future use.
+Note: <tt>app[default]</tt> resource uses the "persist true" flag, which allows you to
+save the created resource and its attributes in memory for future use.
 
-This cookbook contains recipes, required to connect your instance to RightScale Load balancer ServerTemplate
-* do_loadbalancers_allow
-* do_loadbalancers_deny
-* request_loadbalancer_allow
-* request_loadbalancer_deny
+This cookbook contains recipes that are required to connect your instance to RightScale's
+"Load Balancer" ServerTemplates:
 
-for more info please see: http://support.rightscale.com/03-Tutorials/02-AWS/02-Website_Edition/2.5_Load_Balancer_Setups
+* <tt>do_loadbalancers_allow</tt>
+* <tt>do_loadbalancers_deny</tt>
+* <tt>request_loadbalancer_allow</tt>
+* <tt>request_loadbalancer_deny</tt>
+
+For more info please see: {Load Balancer Setups}[http://support.rightscale.com/03-Tutorials/HAProxy_Load_Balancer_Server_Setup].
 
 === Attributes:
 
 * <tt>node[:app][:provider]</tt> - Set a default provider.
 * <tt>node[:app][:port]</tt> - Set a default port to listen on. Default: 8000
-* <tt>node[:app][:ip]</tt> - Ip to listen on. Default: First private IP
-
-=== Templates:
-none
+* <tt>node[:app][:ip]</tt> - IP to listen on. Default: First private IP
+* <tt>node[:app][:user]</tt> - Application server user. Required for changing owner of created project dirs.
+* <tt>node[:app][:group]</tt> - Application server group. Required for changing owner of created project dirs.
 
 === Definitions:
 
 <b>app_add_listen_port</b>
-Adds a port to the apache listen ports.conf file and node attribute
+Adds a port to the apache listen 'ports.conf' file and node attribute.
 
 Create node[:apache][:listen_ports] - array of strings for the web server to listen on.
 
-This definition created specifically for the apache2 cookbook at this time.
+This definition created specifically for the <tt>apache2</tt> cookbook at this time.
 
 ===== Example:
 
@@ -101,12 +120,13 @@ This definition created specifically for the apache2 cookbook at this time.
 
 ===== RightScale::App::Helper.bind_ip(private_ips = [ ], public_ips = [ ])
 
-Return the IP address of the interface that this application server listens on.
+Returns the IP address of the interface that this application server will accept requests from
+on the specified listen ports.
 
 <b>Parameters</b>
 
-* <tt>private_ips(Array)::</tt> List of private ips assigned to the application server
-* <tt>public_ips(Array)::</tt> List of public ips assigned to the application server
+* <tt>private_ips(Array)::</tt> List of private IP addresses assigned to the application server.
+* <tt>public_ips(Array)::</tt> List of public IP addresses assigned to the application server.
 
 <b>Returns</b>
 
@@ -114,12 +134,12 @@ Return the IP address of the interface that this application server listens on.
 
 <b>Raise</b>
 
-<tt>RuntimeError::</tt> If neither a valid private nor public ip can be found
+<tt>RuntimeError::</tt> If neither a valid private nor public IP address can be found.
 
 
 ===== RightScale::App::Helper.bind_port()
 
-Return the port that this application server listens on
+Return the port that this application server listens on.
 
 <b>Returns</b>
 
@@ -128,11 +148,11 @@ Return the port that this application server listens on
 
 ===== RightScale::App::Helper.vhosts(vhost_list)
 
-created to convert vhost names into array from a comma separated list
+Created to convert vhost names into an array from a comma-separated list.
 
 <b>Parameters</b>
 
-<tt>vhost_list(Sting)::</tt> Comma separated list of virtual hosts
+<tt>vhost_list(Sting)::</tt> Comma-separated list of virtual hosts.
 
 <b>Returns</b>
 
@@ -141,35 +161,50 @@ created to convert vhost names into array from a comma separated list
 
 === LWRPs:
 
-This cookbook provides abstract <tt>app</tt> resource. Which will act as "interface" for corresponding Light Weight app_* providers
+This cookbook provides the abstract <tt>app</tt> resource, which will act as
+an "interface" for corresponding Lightweight app_* providers.
 
-For now we have app_php, app_tomcat and app_passenger cookbooks. Each of them contain implementation of corresponding app__* Light Weight Provider
-which can be called using this resource.
+This includes <tt>app_php</tt>, <tt>app_tomcat</tt>, <tt>app_passenger</tt> and <tt>app_django</tt>
+cookbooks. Each of them contains an implementation of the corresponding app__*
+Lightweight Provider which can be called using this resource.
 
-Provider persisted in this cookbook will act as a cap if there will be no another app_ Light Weight Provider implementation. To avoid unexpected fails.
+To avoid unexpected failures, the Provider persisted in this cookbook will act as a 
+cap if there is no other app_ Light Weight Provider implementation. 
 
-For more information about Lightweight Resources and Providers (LWRPs), please see:
-http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)
+For more information about Lightweight Resources and Providers (LWRPs), please
+see: {Lightweight Resources and Providers (LWRP)}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)].
 
 
 ===== App resource actions
-All actions declared in this resource intended to act as a templates to typical application server setup operations.
 
-* <tt>:install</tt> - Install packages required for application server setup
+All actions declared in this resource are intended to act as templates to typical
+application server setup operations.
 
-* <tt>:setup_vhost</tt> - Action designed to setup APP LWRP with common parameters required for apache vhost file
+* <tt>:install</tt> - Install packages required for application server setup.
 
-* <tt>:start</tt> - Action designed to setup user defined start sequence for application server.
+* <tt>:setup_vhost</tt> - Action designed to set up APP LWRP with common
+  parameters required for apache vhost file.
 
-* <tt>:stop</tt> - Action designed to setup user defined stop sequence for application server.
+* <tt>:start</tt> - Action designed to set up a user defined start sequence for
+  the application server.
 
-* <tt>:restart</tt> - Action designed to setup user defined restart sequence for application server.
+* <tt>:stop</tt> - Action designed to set up a user defined stop sequence for
+  the application server.
 
-* <tt>:code_update</tt> - Action designed to perform project source code update/download
+* <tt>:restart</tt> - Action designed to set up a user defined restart sequence for
+  the application server.
 
-* <tt>:setup_db_connection</tt> -  Action designed to perform database configuration file creation
+* <tt>:reload</tt> - Action designed to set up a user defined reload sequence for
+  the application server.
 
-* <tt>:setup_monitoring</tt> - Action designed to install and setup of required monitoring software.
+* <tt>:code_update</tt> - Action designed to perform project source code
+  update/download.
+
+* <tt>:setup_db_connection</tt> - Action designed to perform database
+  configuration file creation.
+
+* <tt>:setup_monitoring</tt> - Action designed to set up and install required
+  monitoring software.
 
 
 ===== App resource attributes
@@ -177,28 +212,31 @@ All actions declared in this resource intended to act as a templates to typical 
 * <tt>packages</tt> - Set of installed packages
 * <tt>root</tt> - Application root
 * <tt>port</tt> - Application port
-* <tt>destination</tt> - Path to where project repo will be pulled
+* <tt>destination</tt> - The path on the instance where the application code will be placed
 * <tt>database_name</tt> - Name of the required database
 * <tt>database_user</tt> - Database user
 * <tt>database_password</tt> - Database password
-* <tt>database_sever_fqdn</tt> - Database server fqdn
-
+* <tt>database_sever_fqdn</tt> - Database server's fully qualified domain name (FQDN)
+* <tt>user</tt> - App user
+* <tt>group</tt> - Group the app user belongs to
 
 ===== Usage Examples:
-Only basic examples here. More detailed examples of this resource use you can find in cookbook recipes do_* and setup_*
+Below are a few basic examples. More detailed examples of this resource use can be
+found in the <tt>do_*</tt> and <tt>setup_*</tt> recipes in the cookbook.
 
  app "default" do
    persist true
+end
    provider node[:app][:provider]
    packages node[:app][:packages]
    action :install
  end
 
  app "default" do
-   database_name        node[:app][:database_name]
-   database_user        node[:app][:database_user]
-   database_password    node[:app][:database_password]
-   database_sever_fqdn  node[:app][:database_sever_fqdn]
+   database_name node[:app][:database_name]
+   database_user node[:app][:database_user]
+   database_password node[:app][:database_password]
+   database_sever_fqdn node[:app][:database_sever_fqdn]
    action :setup_db_connection
  end
 

@@ -1,0 +1,8 @@
+  userlist UsersFor_<%=@pool_name %>
+
+<% @user_credentials.each do |user_and_pass| %>
+<%   user_pair = user_and_pass.split ":" %>
+<%   user_string = "user #{user_pair[0]} insecure-password #{user_pair[1]}" %>
+    <%= user_string %>
+<%  end %>
+

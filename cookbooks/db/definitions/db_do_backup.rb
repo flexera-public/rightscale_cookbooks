@@ -6,20 +6,15 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 # Does a snapshot backup of the filesystem containing the database
-# Note that the upload becomes a background job in order to allow other recipes to
-# not wait if the upload takes a long time.
 # Since this backup is a snapshot of a filesystem, it will check if the database has
 # been 'initialized', else it will fail.
 #
-# @param force [Boolean] If false, if a backup is currently running, will error out stating so.
-#   If true, if a backup is currently running, will kill that process and take over the lock.
-# @param backup_type [String] If 'primary' will do a primary backup using node attributes specific
+# @param [String] backup_type If 'primary' will do a primary backup using node attributes specific
 #   to the main backup.  If 'secondary' will do a secondary backup using node attributes for
 #   secondary.  Secondary uses 'ROS'.
 #
-# @raise [RuntimeError] If force is false and a backup is currently running, will raise an exception.
-# @raise [RuntimeError] If database is not 'initialized'
-define :db_do_backup, :force => false, :backup_type => "primary" do
+# @raises [RuntimeError] If database is not 'initialized'
+define :db_do_backup, :backup_type => "primary" do
 
   class Chef::Recipe
     include RightScale::BlockDeviceHelper
@@ -32,7 +27,6 @@ define :db_do_backup, :force => false, :backup_type => "primary" do
   NICKNAME = get_device_or_default(node, :device1, :nickname)
   DATA_DIR = node[:db][:data_dir]
 
-  do_force        = params[:force]
   do_backup_type  = params[:backup_type] == "primary" ? "primary" : "secondary"
 
   # Check if database is able to be backed up (initialized)
@@ -43,7 +37,7 @@ define :db_do_backup, :force => false, :backup_type => "primary" do
     error_message "Database not initialized."
   end
 
-  # Verify initalized database
+  # Verify initialized database
   # Check the node state to verify that we have correctly initialized this server.
   db_state_assert :either
 
@@ -52,18 +46,11 @@ define :db_do_backup, :force => false, :backup_type => "primary" do
     action :pre_backup_check
   end
 
-  # Acquire the backup lock or die
-  #
-  # This lock is released in the 'backup' script for now.
-  # See below for more information about 'backup'
-  # if 'force' is true, kills pid and removes locks
-  block_device NICKNAME do
-    action :backup_lock_take
-    force do_force
-  end
+  log "Timeout is #{node[:db][:init_timeout]}"
 
   log "  Performing (#{do_backup_type} backup) lock DB and write backup info file..."
   db DATA_DIR do
+    timeout node[:db][:init_timeout]
     action [ :lock, :write_backup_info ]
   end
 
@@ -91,7 +78,7 @@ define :db_do_backup, :force => false, :backup_type => "primary" do
 
     # Secondary arguments
     secondary_cloud get_device_or_default(node, :device1, :backup, :secondary, :cloud)
-    secondary_endpoint get_device_or_default(node, :device1, :backup, :secondary, :endpoint)
+    secondary_endpoint get_device_or_default(node, :device1, :backup, :secondary, :endpoint) || ""
     secondary_container get_device_or_default(node, :device1, :backup, :secondary, :container)
     secondary_user get_device_or_default(node, :device1, :backup, :secondary, :cred, :user)
     secondary_secret get_device_or_default(node, :device1, :backup, :secondary, :cred, :secret)
@@ -102,9 +89,5 @@ define :db_do_backup, :force => false, :backup_type => "primary" do
   log "  Performing post backup cleanup..."
   db DATA_DIR do
     action :post_backup_cleanup
-  end
-
-  block_device NICKNAME do
-    action :backup_lock_give
   end
 end

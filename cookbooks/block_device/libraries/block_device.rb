@@ -20,34 +20,36 @@ module RightScale
     # @param new_resource [Object] Resource which will be initialized
     #
     # @return [BlockDevice] BlockDevice object
-    def init(new_resource)
+    def init(new_resource, backup_type = :primary)
       # Setup options
       options = {
-        :hypervisor => new_resource.hypervisor,
-        :primary_endpoint => new_resource.primary_endpoint,
-        :secondary_endpoint => new_resource.secondary_endpoint
+        :hypervisor => new_resource.hypervisor
       }
       options[:rackspace_use_snet] = new_resource.rackspace_snet if new_resource.rackspace_snet
 
-      # Primary ROS options
+      # Primary ROS options - some options needed regardless of backup type
       options[:primary_storage_cloud] = new_resource.primary_cloud if new_resource.primary_cloud
+      options[:primary_endpoint] = new_resource.primary_endpoint unless !new_resource.primary_endpoint || new_resource.primary_endpoint.empty?
       options[:primary_storage_key] = new_resource.primary_user if new_resource.primary_user
       options[:primary_storage_secret] = new_resource.primary_secret if new_resource.primary_secret
       options[:primary_storage_container] = new_resource.lineage
 
-      # Secondary ROS options
-      options[:secondary_storage_cloud] = new_resource.secondary_cloud if new_resource.secondary_cloud
-      options[:secondary_storage_key] = new_resource.secondary_user if new_resource.secondary_user
-      options[:secondary_storage_secret] = new_resource.secondary_secret if new_resource.secondary_secret
-      options[:secondary_storage_container] = new_resource.secondary_container if new_resource.secondary_container
+      # Secondary ROS options if doing secondary backup
+      if backup_type == :secondary
+        options[:secondary_storage_cloud] = new_resource.secondary_cloud if new_resource.secondary_cloud
+        options[:secondary_endpoint] = new_resource.secondary_endpoint unless !new_resource.secondary_endpoint || new_resource.secondary_endpoint.empty?
+        options[:secondary_storage_key] = new_resource.secondary_user if new_resource.secondary_user
+        options[:secondary_storage_secret] = new_resource.secondary_secret if new_resource.secondary_secret
+        options[:secondary_storage_container] = new_resource.secondary_container if new_resource.secondary_container
+      end
 
       # Create and return BlockDevice object
       ::RightScale::Tools::BlockDevice.factory(
-          :lvm,                     # Backup using local LVM snapshot + cloud persistence.
-          node[:cloud][:provider],  # The local cloud that we are currently running.
-          new_resource.mount_point,
-          new_resource.nickname,    # Nickname for device.
-          options)
+        :lvm,                     # Backup using local LVM snapshot + cloud persistence.
+        node[:cloud][:provider],  # The local cloud that we are currently running.
+        new_resource.mount_point,
+        new_resource.nickname,    # Nickname for device.
+        options)
     end
 
     # Perform checks to prevent empty values of attributes which are required to get
@@ -161,5 +163,15 @@ module RightScale
       value
     end
 
+    # Returns true if fstab and mtab entry exists for ephemeral mount point
+    #
+    # @param fstab_entry [String] fstab entry
+    # @param mount_point [String] mount point of the ephemeral drive
+    # @param filesystem_type [String] filesystem type
+    def ephemeral_fstab_and_mtab_checks(fstab_entry, mount_point, filesystem_type)
+      fstab_exists = File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$")
+      mtab_exists = File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " )
+      fstab_exists && mtab_exists
+    end
   end
 end

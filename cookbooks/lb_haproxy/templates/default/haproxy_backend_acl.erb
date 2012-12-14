@@ -1,0 +1,6 @@
+<%if @pool_name_full.include? "/" %>
+  acl acl_<%=@pool_name %> path_beg <%=@pool_name_full%>
+<% else %>
+  acl acl_<%=@pool_name %> hdr_beg(host) -i <%=@pool_name_full%>
+<% end %>
+

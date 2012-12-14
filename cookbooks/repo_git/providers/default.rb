@@ -7,6 +7,23 @@
 
 # @resource repo
 
+action :setup_attributes do
+
+  branch = new_resource.revision
+  repository_url = new_resource.repository
+
+  # Checking branch
+  if branch.empty?
+    log "  Warning: branch/tag input is empty, switching to 'master' branch"
+    branch = "master"
+    new_resource.revision branch
+  end
+
+  # Checking repository URL
+  raise "  ERROR: repository input is unset. Please fill 'Repository URL' input" if repository_url.empty?
+
+end
+
 action :pull do
 
   capistrano_dir="/home/capistrano_repo"
@@ -17,20 +34,22 @@ action :pull do
         ::File.rename("#{new_resource.destination}", "#{capistrano_dir}/releases/capistrano_old_"+::Time.now.strftime("%Y%m%d%H%M"))
       end
       # Add ssh key and exec script
-      RightScale::Repo::Ssh_key.new.create(new_resource.git_ssh_key)
+      RightScale::Repo::GitSshKey.new.create(new_resource.credential)
     end
   end
+
+  # Checking attributes
+  action_setup_attributes
 
   destination = new_resource.destination
   repository_url = new_resource.repository
   revision = new_resource.revision
   app_user = new_resource.app_user
-  raise "  ERROR: repo URL input is unset. Please fill 'Repository Url' input" if repository_url.empty?
 
   # If repository already exists, just update it
   if ::File.directory?("#{destination}/.git")
     log "  Git project repository already exists, updating to latest revision"
-    git_action = :checkout
+    git_action = :sync
   else
     ruby_block "Backup of existing project directory" do
       only_if do ::File.directory?(destination) end
@@ -39,7 +58,7 @@ action :pull do
       end
     end
     log "  Downloading new Git project repository"
-    git_action = :sync
+    git_action = :checkout
   end
 
   git "#{destination}" do
@@ -52,21 +71,25 @@ action :pull do
   # Delete SSH key & clear GIT_SSH
   ruby_block "After pull" do
     block do
-      RightScale::Repo::Ssh_key.new.delete
+      RightScale::Repo::GitSshKey.new.delete
     end
   end
 
   log "  GIT repository update/download action - finished successfully!"
 end
 
+
 action :capistrano_pull do
 
   # Add ssh key and exec script
   ruby_block "Before deploy" do
     block do
-       RightScale::Repo::Ssh_key.new.create(new_resource.git_ssh_key)
+       RightScale::Repo::GitSshKey.new.create(new_resource.credential)
     end
   end
+
+  # Checking attributes
+  action_setup_attributes
 
   log "  Preparing to capistrano deploy action. Setting parameters for the process..."
   destination = new_resource.destination
@@ -78,12 +101,12 @@ action :capistrano_pull do
   symlinks = new_resource.symlinks
   scm_provider = new_resource.provider
   environment = new_resource.environment
-  raise "  ERROR: repo URL input is unset. Please fill 'Repository Url' input" if repository.empty?
+
   log "  Deploying branch: #{revision} of the #{repository} to #{destination}. New owner #{app_user}"
   log "  Deploy provider #{scm_provider}"
 
   # Applying capistrano style deployment
-  capistranize_repo "Source repo" do
+  repo_capistranize "Source repo" do
     repository                 repository
     revision                   revision
     destination                destination
@@ -98,7 +121,7 @@ action :capistrano_pull do
   # Delete SSH key & clear GIT_SSH
   ruby_block "After deploy" do
     block do
-      RightScale::Repo::Ssh_key.new.delete
+      RightScale::Repo::GitSshKey.new.delete
     end
   end
 

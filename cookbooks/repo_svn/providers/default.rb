@@ -1,38 +1,57 @@
 #
 # Cookbook Name:: repo_svn
 #
-#
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 # @resource repo
 
+action :setup_attributes do
+
+  branch = new_resource.revision
+  repository_url = new_resource.repository
+
+  # Checking branch
+  if branch.empty?
+    log "  Warning: branch/tag input is empty, switching to 'HEAD' version"
+    branch = "HEAD"
+    new_resource.revision branch
+  end
+
+  # Checking repository URL
+  raise "  ERROR: repo URL input is unset. Please fill 'Repository URL' input" if repository_url.empty?
+
+end
+
 action :pull do
+
+  # Checking attributes
+  action_setup_attributes
 
   # Setting parameters
   destination_path = new_resource.destination
   repository_url = new_resource.repository
   branch_tag = new_resource.revision
   app_user = new_resource.app_user
-  svn_password = new_resource.svn_password
-  svn_user = new_resource.svn_username
+  svn_password = new_resource.credential
+  svn_user = new_resource.account
   params = "--no-auth-cache --non-interactive"
-  raise "  ERROR: repo URL input is unset. Please fill 'Repository Url' input" if repository_url.empty?
+
 
   # If repository already exists, just update it
   if ::File.directory?("#{destination_path}/.svn")
     log "  Svn project repository already exists, updating to latest revision"
-    svn_action = :checkout
+    svn_action = :sync
   else
     ruby_block "Backup of existing project directory" do
-      only_if do ::File.directory?(destination_path) end
+      only_if { ::File.directory?(destination_path) }
       block do
         ::File.rename("#{destination_path}", "#{destination_path}"+::Time.now.strftime("%Y%m%d%H%M"))
       end
     end
     log "  Downloading new Svn project repository"
-    svn_action = :sync
+    svn_action = :checkout
   end
 
   # Downloading SVN repository
@@ -53,25 +72,27 @@ end
 
 action :capistrano_pull do
 
+  # Checking attributes
+  action_setup_attributes
+
   log "  Preparing to capistrano deploy action. Setting parameters for the process..."
   destination = new_resource.destination
   repository = new_resource.repository
   revision = new_resource.revision
-  svn_username = new_resource.svn_username
-  svn_password = new_resource.svn_password
+  svn_username = new_resource.account
+  svn_password = new_resource.credential
   app_user = new_resource.app_user
   purge_before_symlink = new_resource.purge_before_symlink
   create_dirs_before_symlink = new_resource.create_dirs_before_symlink
   symlinks = new_resource.symlinks
   scm_provider = new_resource.provider
   environment = new_resource.environment
-  raise "  ERROR: repo URL input is unset. Please fill 'Repository Url' input" if repository.empty?
 
   log "  Deploying branch: #{revision} of the #{repository} to #{destination}. New owner #{app_user}"
   log "  Deploy provider #{scm_provider}"
 
   # Applying capistrano style deployment
-  capistranize_repo "Source repo" do
+  repo_capistranize "Source repo" do
     repository repository
     destination destination
     revision revision

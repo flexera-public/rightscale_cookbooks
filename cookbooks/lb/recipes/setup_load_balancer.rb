@@ -11,18 +11,19 @@ class Chef::Recipe
   include RightScale::App::Helper
 end
 
-VHOST_NAMES = node[:lb][:vhost_names]
+POOL_NAMES = node[:lb][:pools]
 
 log "  Install load balancer"
 
-# In the 'install' action, the name is not used, but the provider from default recipe is needed.
-# Any vhost name set with provider can be used. Using first one in list to make it simple.
-lb vhosts(VHOST_NAMES).first do
+# Install haproxy and create main config files.
+# Name passed in :install action will be used as default backend.
+# Currently, using last item from lb/pools as default backend.
+lb pool_names(POOL_NAMES).last do
   action :install
 end
 
-vhosts(VHOST_NAMES).each do |vhost_name|
-  lb vhost_name do
+pool_names(POOL_NAMES).each do |pool_name|
+  lb pool_name do
     action :add_vhost
   end
 end

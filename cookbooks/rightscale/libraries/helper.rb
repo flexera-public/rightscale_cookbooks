@@ -25,7 +25,7 @@ module RightScale
         end
 
         File.fnmatch?(wildcard, tag)
-      end # def self.matches_tag_wildcard?(wildcard, tag)
+      end
 
       # Filters a server collection to only include servers with all of the supplied tags.
       #
@@ -44,7 +44,7 @@ module RightScale
 
           reject
         end.to_hash
-      end # def self.filter_tags(collection, name, tags)
+      end
 
       # Filters a server collection to only include servers with all of the supplied tags modifying the given server collection.
       #
@@ -55,7 +55,7 @@ module RightScale
       # @return [Hash] A filtered server collection
       def self.filter_tags!(collection, name, tags)
         collection[name] = filter_tags(collection, name, tags)
-      end # def self.filter_tags!(collection, name, tags)
+      end
 
       # Get the value portion of a tag with a given prefix from a list of tags.
       #
@@ -68,8 +68,7 @@ module RightScale
         if tags.detect { |tag| tag =~ /^#{Regexp.escape(prefix)}=(#{capture})$/ }
           $1
         end
-      end # def self.get_tag_value(prefix, tags, capture = '.*')
-
+      end
     end
   end
 end

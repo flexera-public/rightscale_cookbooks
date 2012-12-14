@@ -18,6 +18,7 @@ action :create do
     :vg_data_percentage => new_resource.vg_data_percentage,
     :force => new_resource.force
   }
+  create_options[:iops] = new_resource.iops if new_resource.iops && !new_resource.iops.empty?
   device.create(create_options)
 end
 
@@ -25,18 +26,6 @@ end
 action :snapshot do
   device = init(new_resource)
   device.snapshot
-end
-
-# Acquire the backup lock
-action :backup_lock_take do
-  device = init(new_resource)
-  device.backup_lock_take(new_resource.force)
-end
-
-# Create the backup lock
-action :backup_lock_give do
-  device = init(new_resource)
-  device.backup_lock_give
 end
 
 # Prepare device for primary backup
@@ -75,6 +64,7 @@ action :primary_restore do
     :storage_key => new_resource.primary_user,
     :storage_secret => new_resource.primary_secret
   }
+  restore_args[:iops] = new_resource.iops if new_resource.iops && !new_resource.iops.empty?
 
   device.primary_restore(new_resource.lineage, restore_args)
 end
@@ -82,14 +72,14 @@ end
 # Prepare device for secondary backup
 action :secondary_backup do
   secondary_checks(new_resource)
-  device = init(new_resource)
+  device = init(new_resource, :secondary)
   device.secondary_backup(new_resource.lineage)
 end
 
 # Prepare device for secondary restore
 action :secondary_restore do
   secondary_checks(new_resource)
-  device = init(new_resource)
+  device = init(new_resource, :secondary)
   restore_args = {
     :timestamp => new_resource.timestamp_override == "" ? nil : new_resource.timestamp_override,
     :force => new_resource.force,
@@ -98,6 +88,7 @@ action :secondary_restore do
     :stripe_count => new_resource.stripe_count,
     :vg_data_percentage => new_resource.vg_data_percentage
   }
+  restore_args[:iops] = new_resource.iops if new_resource.iops && !new_resource.iops.empty?
 
   device.secondary_restore(new_resource.lineage, restore_args)
 end
@@ -111,30 +102,30 @@ end
 # Enable cron backups
 action :backup_schedule_enable do
 
-    # Verify parameters
-    minute = new_resource.cron_backup_minute
-    raise "ERROR: missing cron_backup_minute value." unless minute
-    hour = new_resource.cron_backup_hour
-    raise "ERROR: missing cron_backup_hour value." unless hour
+  # Verify parameters
+  minute = new_resource.cron_backup_minute
+  raise "ERROR: missing cron_backup_minute value." unless minute
+  hour = new_resource.cron_backup_hour
+  raise "ERROR: missing cron_backup_hour value." unless hour
 
-    # Verify backup params used in cron recipe
-    lineage = new_resource.lineage
-    raise "ERROR: 'Backup Lineage' required for scheduled process" if lineage.empty?
+  # Verify backup params used in cron recipe
+  lineage = new_resource.lineage
+  raise "ERROR: 'Backup Lineage' required for scheduled process" if lineage.empty?
 
-    # Select recipe to schedule
-    recipe = new_resource.cron_backup_recipe
+  # Select recipe to schedule
+  recipe = new_resource.cron_backup_recipe
 
-    puts "Scheduling #{recipe} to run via cron job: Minute:#{minute} Hour:#{hour}"
+  puts "Scheduling #{recipe} to run via cron job: Minute:#{minute} Hour:#{hour}"
 
-    # Attributes for schedule will default to '*' if not provided so only
-    # specify the schedule attributes if input is not an empty string.
-    cron "RightScale remote_recipe #{recipe}" do
-      minute "#{minute}" unless minute.empty?
-      hour "#{hour}" unless hour.empty?
-      user "root"
-      command "rs_run_recipe -n \"#{recipe}\" 2>&1 > /var/log/rightscale_tools_cron_backup.log"
-      action :create
-    end
+  # Attributes for schedule will default to '*' if not provided so only
+  # specify the schedule attributes if input is not an empty string.
+  cron "RightScale remote_recipe #{recipe}" do
+    minute "#{minute}" unless minute.empty?
+    hour "#{hour}" unless hour.empty?
+    user "root"
+    command "rs_run_recipe --policy '#{recipe}' --name '#{recipe}' 2>&1 >> /var/log/rightscale_tools_cron_backup.log"
+    action :create
+  end
 
 end
 
