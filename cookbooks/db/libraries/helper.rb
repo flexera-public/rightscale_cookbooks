@@ -12,7 +12,7 @@ module RightScale
 
       # Get the current status of the database server.
       #
-      # @param db_state_get [Hash] Server node name to check.
+      # @param [Hash] db_state_get Server node name to check.
       def db_state_get(node)
         Chef::Log.info "  Loading master/slave state"
         state = ::File.exist?(DB_MASTER_SLAVE_STATE) ? JSON.load(::File.read(DB_MASTER_SLAVE_STATE)) : {

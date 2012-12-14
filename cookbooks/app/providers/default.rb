@@ -8,7 +8,7 @@
 # = Default application server provider
 #
 
-# @resource Chef::Resource::App
+# @resource app
 
 # Stop application
 action :stop do

@@ -5,7 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-# @resource Chef::Resource::SysReconverge
+# @resource sys_reconverge
 
 action :enable do
   recipe = new_resource.recipe_name
