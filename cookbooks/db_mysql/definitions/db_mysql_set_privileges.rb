@@ -13,8 +13,21 @@ define :db_mysql_set_privileges, :preset => "administrator", :username => nil, :
   db_name = "*.*"
   db_name = "#{params[:db_name]}.*" if params[:db_name]
 
+  # The list of all privileges applicable in a non global scope. I.E. dbname.*
+  priv_list = [
+    "SELECT", "INSERT", "UPDATE", "DELETE", "CREATE", "DROP", "REFERENCES", "INDEX",
+    "ALTER", "CREATE TEMPORARY TABLES", "LOCK TABLES", "EXECUTE", "CREATE VIEW",
+    "SHOW VIEW", "CREATE ROUTINE", "ALTER ROUTINE", "EVENT", "TRIGGER"
+  ]
 
-  ruby_block "set admin credentials" do
+  # The list of all privileges applicable only for *.* or "global"
+  global_priv_list = [
+    "RELOAD", "SHUTDOWN", "PROCESS", "FILE", "SHOW DATABASES", "REPLICATION SLAVE",
+    "REPLICATION CLIENT", "CREATE USER"
+  ]
+
+
+  ruby_block "set #{priv_preset} credentials for #{username} on #{db_name}" do
     block do
       require 'rubygems'
       require 'mysql'
@@ -37,8 +50,10 @@ define :db_mysql_set_privileges, :preset => "administrator", :username => nil, :
         con.query("GRANT ALL PRIVILEGES on *.* TO '#{username}'@'localhost' IDENTIFIED BY '#{password}' WITH GRANT OPTION")
       when 'user'
         # Grant only the appropriate privs
-        con.query("GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, RELOAD, SHUTDOWN, PROCESS, FILE, REFERENCES, INDEX, ALTER, SHOW DATABASES, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, REPLICATION SLAVE, REPLICATION CLIENT, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, CREATE USER, EVENT, TRIGGER on #{db_name} TO '#{username}'@'%' IDENTIFIED BY '#{password}'")
-        con.query("GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, RELOAD, SHUTDOWN, PROCESS, FILE, REFERENCES, INDEX, ALTER, SHOW DATABASES, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, REPLICATION SLAVE, REPLICATION CLIENT, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, CREATE USER, EVENT, TRIGGER on #{db_name} TO '#{username}'@'localhost' IDENTIFIED BY '#{password}'")
+        privs = priv_list
+        privs += global_priv_list if db_name == "*.*"
+        con.query("GRANT #{privs.join(',')} on #{db_name} TO '#{username}'@'%' IDENTIFIED BY '#{password}'")
+        con.query("GRANT #{privs.join(',')} on #{db_name} TO '#{username}'@'localhost' IDENTIFIED BY '#{password}'")
       else
         raise "only 'administrator' and 'user' type presets are supported!"
       end
