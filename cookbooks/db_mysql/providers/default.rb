@@ -64,6 +64,11 @@ action :move_data_dir do
 end
 
 action :reset do
+  # Set read/write in read_write_status.cnf
+  db_mysql_set_mysql_read_only "setup mysql read/write" do
+    read_only false
+  end
+
   # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "reset" method.
   @db = init(new_resource)
@@ -412,8 +417,8 @@ action :install_server do
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
   end
 
-  # Sets up read_write_status.cnf
-  db_mysql_set_mycnf_read_only "setup_mycnf_read_only" do
+  # Setup read_write_status.cnf
+  db_mysql_set_mysql_read_only "setup mysql read/write" do
     read_only false
   end
 
@@ -618,8 +623,8 @@ action :promote do
     group 'mysql'
   end
 
-  # Sets read/write in read_write_status.cnf
-  db_mysql_set_mycnf_read_only "setup_mycnf_read_only" do
+  # Set read/write in read_write_status.cnf
+  db_mysql_set_mysql_read_only "setup mysql read/write" do
     read_only false
   end
 
@@ -822,8 +827,8 @@ action :enable_replication do
     end
   end
 
-  # Sets read_only in read_write_status.cnf
-  db_mysql_set_mycnf_read_only "setup_mycnf_read_only" do
+  # Set read_only in read_write_status.cnf
+  db_mysql_set_mysql_read_only "setup mysql read only" do
     read_only true
   end
 
