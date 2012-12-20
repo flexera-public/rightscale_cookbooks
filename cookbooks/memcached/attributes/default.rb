@@ -11,12 +11,12 @@
 # Default values for variables needed for the memcached server installation.
 # Will get set unless provided by user input.
 
-set_unless[:memcached][:tcp_port] = "11211"
-set_unless[:memcached][:udp_port] = "11211"
-set_unless[:memcached][:user] = "nobody"
-set_unless[:memcached][:connection_limit] = "1024"
-set_unless[:memcached][:memtotal_percent] = "90"
-set_unless[:memcached][:threads] = "1"
-set_unless[:memcached][:interface] = "any"
-set_unless[:memcached][:log_level] = "off"
-set_unless[:memcached][:cluster_id] = ""
+default[:memcached][:tcp_port] = "11211"
+default[:memcached][:udp_port] = "11211"
+default[:memcached][:user] = "nobody"
+default[:memcached][:connection_limit] = "1024"
+default[:memcached][:memtotal_percent] = "90"
+default[:memcached][:threads] = "1"
+default[:memcached][:interface] = "any"
+default[:memcached][:log_level] = "off"
+default[:memcached][:cluster_id] = ""
