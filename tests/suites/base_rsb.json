@@ -1,0 +1,8 @@
+{
+  "description": "Tests the functionality of Base ServerTemplate for Linux (RSB)",
+  "server_templates": ["base_rsb"],
+  "cases": ["base.rb"],
+  "variables": {
+    "server_template_type": "rsb"
+  }
+}
