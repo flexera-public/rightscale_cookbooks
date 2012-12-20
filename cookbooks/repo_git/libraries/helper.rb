@@ -35,10 +35,9 @@ module RightScale
 
       # Delete SSH key created by "create" method, after successful pull operation. And clear GIT_SSH.
       def delete
-      #  @sshkey.delete
-      #  ::File.delete("#{SshKey::KEYFILE}.sh")
-        Chef::Log.info("!!!!!!!!!#{ENV["GIT_SSH"]} ")
-       # ENV.delete("GIT_SSH")
+        @sshkey.delete
+        ::File.delete("#{SshKey::KEYFILE}.sh")
+        ENV.delete("GIT_SSH")
       end
 
     end
