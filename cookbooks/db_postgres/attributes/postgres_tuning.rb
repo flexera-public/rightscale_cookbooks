@@ -6,9 +6,8 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 
-set_unless[:db_postgres][:tunable][:shared_buffers] = "24MB"
-set_unless[:db_postgres][:tunable][:max_connections] = "100"
-
+default[:db_postgres][:tunable][:shared_buffers] = "24MB"
+default[:db_postgres][:tunable][:max_connections] = "100"
 
 def value_with_units(value, units, usage_factor)
   raise "Error: value must convert to an integer." unless value.to_i
@@ -18,53 +17,52 @@ def value_with_units(value, units, usage_factor)
   (value * factor).to_i.to_s + units
 end
 
-
 # Set tuning parameters.
 
-set_unless[:db_postgres][:tunable][:ulimit] = `sysctl -n fs.file-max`.to_i/33
+default[:db_postgres][:tunable][:ulimit] = `sysctl -n fs.file-max`.to_i/33
 
 # Shared servers get %50 of the resources allocated to a dedicated server.
-set_unless[:db_postgres][:server_usage] = "dedicated"  # or "shared"
+default[:db_postgres][:server_usage] = "dedicated" # or "shared"
 usage = 1 # Dedicated server
 usage = 0.5 if db_postgres[:server_usage] == :shared
 
 # Ohai returns total in KB.  Set GB so X*GB can be used in conditional
 # GB=1024*1024
 mem = memory[:total].to_i/1024
-Chef::Log.info("Auto-tuning PostgreSQL parameters.  Total memory: #{mem}M")
+Chef::Log.info("  Auto-tuning PostgreSQL parameters.  Total memory: #{mem}M")
 one_percent_mem = (mem*0.01).to_i
-one_percent_str=value_with_units(one_percent_mem,"M",usage)
+one_percent_str = value_with_units(one_percent_mem, "M", usage)
 eighty_percent_mem = (mem*0.80).to_i
-eighty_percent_str=value_with_units(eighty_percent_mem,"M",usage)
+eighty_percent_str = value_with_units(eighty_percent_mem, "M", usage)
 
 
 if attribute?("ec2")
   # tune the database for dedicated vs. shared and instance type
   case ec2[:instance_type]
   when "t1.micro"
-    if(db_postgres[:server_usage] == :dedicated)
-      set_unless[:db_postgres][:tunable][:shared_buffers] = "48M"
+    if (db_postgres[:server_usage] == :dedicated)
+      default[:db_postgres][:tunable][:shared_buffers] = "48M"
     else
-      set_unless[:db_postgres][:tunable][:shared_buffers] = "24M"
-      set_unless[:db_postgres][:tunable][:max_connections] = "100"
+      default[:db_postgres][:tunable][:shared_buffers] = "24M"
+      default[:db_postgres][:tunable][:max_connections] = "100"
     end
   when "m1.small", "c1.medium"
     if (db_postgres[:server_usage] == :dedicated)
-      set_unless[:db_postgres][:tunable][:shared_buffers] = "128M"
+      default[:db_postgres][:tunable][:shared_buffers] = "128M"
     else
-      set_unless[:db_postgres][:tunable][:shared_buffers] = "64M"
+      default[:db_postgres][:tunable][:shared_buffers] = "64M"
     end
   when "m1.large", "c1.xlarge"
     if (db_postgres[:server_usage] == :dedicated)
-      set_unless[:db_postgres][:tunable][:shared_buffers] = "192M"
+      default[:db_postgres][:tunable][:shared_buffers] = "192M"
     else
-      set_unless[:db_postgres][:tunable][:shared_buffers] = "128M"
+      default[:db_postgres][:tunable][:shared_buffers] = "128M"
     end
   when "m1.xlarge"
     if (db_postgres[:server_usage] == :dedicated)
-      set_unless[:db_postgres][:tunable][:shared_buffers] = "265M"
+      default[:db_postgres][:tunable][:shared_buffers] = "265M"
     else
-      set_unless[:db_postgres][:tunable][:shared_buffers] = "192M"
+      default[:db_postgres][:tunable][:shared_buffers] = "192M"
     end
   end
 end
