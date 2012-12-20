@@ -9,7 +9,7 @@
 action :stop do
   log "  Running stop sequence"
   service "apache2" do
-    action :start
+    action :stop
     persist false
   end
 end
