@@ -13,26 +13,26 @@
 
 # Optional attributes
 #
-set_unless[:rightscale][:timezone] = "UTC"
-set_unless[:rightscale][:process_list] = ""
-set_unless[:rightscale][:process_match_list] = ""
-set_unless[:rightscale][:private_ssh_key] = ""
+default[:rightscale][:timezone] = "UTC"
+default[:rightscale][:process_list] = ""
+default[:rightscale][:process_match_list] = ""
+default[:rightscale][:private_ssh_key] = ""
 
-set_unless[:rightscale][:db_backup_file] = "/var/run/db-backup"
+default[:rightscale][:db_backup_file] = "/var/run/db-backup"
 
 #
 # Setup Distro dependent variables
 #
 case platform
-when "redhat","centos"
+when "redhat", "centos"
   rightscale[:logrotate_config] = "/etc/logrotate.d/syslog"
 when "ubuntu"
   rightscale[:logrotate_config] = "/etc/logrotate.d/syslog-ng"
 end
 
-default[:rightscale][:short_hostname]        = nil
-default[:rightscale][:domain_name]           = ""
-default[:rightscale][:search_suffix]         = ""
+default[:rightscale][:short_hostname] = nil
+default[:rightscale][:domain_name] = ""
+default[:rightscale][:search_suffix] = ""
 
 
 # Cloud specific attributes
