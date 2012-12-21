@@ -1,4 +1,4 @@
 {
-  "base_chef": "Base ServerTemplate for Linux (v13.2)",
-  "base_rsb": "Base ServerTemplate for Linux (RSB) (v13.2)"
+  "base_chef": "Base ServerTemplate for Linux STAGING",
+  "base_rsb": "Base ServerTemplate for Linux (RSB) STAGING"
 }
