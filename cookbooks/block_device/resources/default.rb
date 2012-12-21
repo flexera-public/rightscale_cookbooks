@@ -1,4 +1,4 @@
-# 
+#
 # Cookbook Name:: block_device
 #
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
@@ -8,7 +8,7 @@
 require 'uri'
 
 # = Block_device Attributes
-# 
+#
 # Below are the attributes defined by the block_device resource interface.
 #
 
@@ -22,9 +22,9 @@ attribute :force, :equal_to => [ true, false ], :default => false
 
 # == Backup/Restore options
 attribute :lineage, :kind_of => String
-attribute :timestamp_override, :kind_of => String # Restore only 
+attribute :timestamp_override, :kind_of => String # Restore only
 
- 
+
 # == Primary backup schedule options
 attribute :cron_backup_minute, :kind_of => String
 attribute :cron_backup_hour, :kind_of => String
@@ -44,6 +44,7 @@ attribute :volume_size, :kind_of => String
 attribute :stripe_count, :kind_of => String
 attribute :vg_data_percentage, :kind_of => String
 attribute :iops, :kind_of => String
+attribute :device_type, :kind_of => String
 
 # == Callbacks for ROS endpoint validation
 endpoint_callbacks = {
