@@ -67,3 +67,10 @@ attribute "db_mysql/tunable/expire_logs_days",
   :required => "optional",
   :default => "2"
 
+attribute "db_mysql/compressed_protocol",
+  :display_name => "Compression of the slave/master protocol",
+  :description => "Use compression of the slave/master protocol if both the slave and the master support it. Default: disabled",
+  :recipes => ["db_mysql::setup_server_5_1", "db_mysql::setup_server_5_5"],
+  :required => "optional",
+  :choice => ["enabled", "disabled"],
+  :default => "disabled"

@@ -75,7 +75,7 @@ query_cache_size        = <%= node[:db_mysql][:tunable][:query_cache_size] %>
 <%= node[:db_mysql][:tunable][:log_slow_queries] %>
 <%= node[:db_mysql][:tunable][:long_query_time] %>
 log-queries-not-using-indexes
-
+slave_compressed_protocol = <%= @compressed_protocol %>
 <%= "read_only = 1" unless node[:db_mysql][:tunable][:read_only] == nil %>
 server-id               = <%= @server_id %>
 <% if node[:db_mysql][:log_bin_enabled] %>

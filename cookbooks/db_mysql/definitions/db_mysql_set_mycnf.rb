@@ -5,7 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-define :db_mysql_set_mycnf, :server_id => nil, :relay_log => nil, :innodb_log_file_size => nil do
+define :db_mysql_set_mycnf, :server_id => nil, :relay_log => nil, :innodb_log_file_size => nil, :compressed_protocol => "0" do
 
   log "  Installing my.cnf with server_id = #{params[:server_id]}, relay_log = #{params[:relay_log]}"
 
@@ -17,6 +17,7 @@ define :db_mysql_set_mycnf, :server_id => nil, :relay_log => nil, :innodb_log_fi
     variables(
       :server_id => params[:server_id],
       :relay_log => params[:relay_log],
+      :compressed_protocol => (node[:db_mysql][:compressed_protocol] == "enabled" ? "1" : params[:compressed_protocol]),
       :innodb_log_file_size => params[:innodb_log_file_size] || node[:db_mysql][:tunable][:innodb_log_file_size]
     )
     cookbook "db_mysql"
