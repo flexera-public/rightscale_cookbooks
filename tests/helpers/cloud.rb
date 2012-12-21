@@ -1,6 +1,6 @@
 # Cloud base class.
 class Cloud
-  # Factory method that returns an instance of the right cloud class based on the :cloud variable.
+  # Factory method that returns an instance of the right cloud class based on the +:cloud+ variable.
   #
   # @return [Cloud] Cloud base object.
   def self.factory
