@@ -1,11 +1,13 @@
 helpers do
-  # input: server_template_type = {chef, rsb}
-
   # Include the helper methods.
   helper_include "cloud"
   helper_include "wait_for_ip_repopulation"
 
-  # Taken from the old feature file.
+  # Checks if the swapfile is listed in /proc/swaps.
+  #
+  # @return [Boolean] True if swapfile is listed.
+  #
+  # @raises [RuntimeError] If swap file cannot be setup.
   def test_swapspace
 	  probe(servers.first, "grep -c /swapfile /proc/swaps") { |result, status|
 	    print "grep -c /swapfile /proc/swaps returned = " + result.to_s
@@ -14,7 +16,10 @@ helpers do
     }
   end
 
-  # base_chef is currently a superset of base_rsb.
+  # Checks the server template uses Chef.
+  # Will be deprecated after features are ported to RSB.
+  #
+  # @return [Boolean] True if server template uses chef and False otherwise.
   def is_chef?
     suite_variables[:server_template_type] == "chef"
   end
@@ -49,8 +54,6 @@ test "smoke_test" do
 end
 
 test "ebs_stop_start" do
-  skip unless is_chef?
-
   cloud = Cloud.factory
   skip unless cloud.supports_start_stop?(server)
 
