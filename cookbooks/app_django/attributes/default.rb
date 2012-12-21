@@ -10,15 +10,15 @@
 set[:app_django][:version] = "1.4"
 
 # Django application debug mode - https://docs.djangoproject.com/en/dev/ref/settings/#debug
-set_unless[:app_django][:app][:debug_mode] = "False"
+default[:app_django][:app][:debug_mode] = "False"
 
 # By default apache will serve any existing local files directly (except actionable ones)
-set_unless[:app_django][:apache][:serve_local_files] = "true"
+default[:app_django][:apache][:serve_local_files] = "true"
 # List of required apache modules
 set[:app][:module_dependencies] = ["proxy", "proxy_http"]
 
 
-# Defining apache user, group and log directory path depending on platform.
+# Defining log directory path depending on platform.
 case node[:platform]
 when "ubuntu"
   set[:app_django][:apache][:log_dir] = "/var/log/apache2"
@@ -31,6 +31,6 @@ set[:app_django][:pip_bin] = "/usr/bin/pip"
 # Path to python executable
 set[:app_django][:python_bin] = "/usr/bin/python"
 # List of additional python packages, required for django application
-set_unless[:app_django][:project][:opt_pip_list] = ""
+default[:app_django][:project][:opt_pip_list] = ""
 # List of python commands required for django application initialization
-set_unless[:app_django][:project][:custom_cmd] = ""
+default[:app_django][:project][:custom_cmd] = ""
