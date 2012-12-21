@@ -7,11 +7,16 @@ helpers do
 
   # Checks if the swapfile is listed in /proc/swaps.
   #
+  # @param server [Server] Server's swapspace to check.
+  #
   # @return [Boolean] True if swapfile is listed.
   #
   # @raises [RuntimeError] If swap file cannot be setup.
-  def test_swapspace
-	  probe(servers.first, "grep -c /swapfile /proc/swaps") { |result, status|
+  def test_swapspace(server)
+    # Get location of swapfile from ServerTemplate input.
+    swapfile = get_input_from_server(server)["sys/swap_file"].to_s.split("text:")[1]
+
+	  probe(servers.first, "grep -c #{swapfile} /proc/swaps") { |result, status|
 	    print "grep -c /swapfile /proc/swaps returned = " + result.to_s
 	    raise "raise swap file not setup correctly" unless ((result).to_i > 0)
 	    true
@@ -39,7 +44,7 @@ end
 test "smoke_test" do
   if is_chef?
     verify_ephemeral_mounted
-    test_swapspace
+    test_swapspace(server)
   end
 
   check_monitoring
@@ -49,7 +54,7 @@ test "smoke_test" do
 
   if is_chef?
     verify_ephemeral_mounted
-    test_swapspace
+    test_swapspace(server)
   end
 
   check_monitoring
