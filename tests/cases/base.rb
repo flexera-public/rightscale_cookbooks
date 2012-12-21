@@ -16,10 +16,10 @@ helpers do
     # Get location of swapfile from ServerTemplate input.
     swapfile = get_input_from_server(server)["sys/swap_file"].to_s.split("text:")[1]
 
-	  probe(servers.first, "grep -c #{swapfile} /proc/swaps") do |result, status|
-	    puts "Swapfile: #{result.inspect}"
-	    raise "raise swap file not setup correctly" unless ((result).to_i > 0)
-	    true
+    probe(servers.first, "grep -c #{swapfile} /proc/swaps") do |result, status|
+      puts "Swapfile: #{result.inspect}"
+      raise "raise swap file not setup correctly" unless ((result).to_i > 0)
+      true
     end
   end
 
