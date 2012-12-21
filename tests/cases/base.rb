@@ -1,3 +1,5 @@
+# suite variables: server_template_type = {chef, rsb}
+
 helpers do
   # Include the helper methods.
   helper_include "cloud"
