@@ -1,10 +1,10 @@
 # suite variables: server_template_type = {chef, rsb}
 
-helpers do
-  # Include the helper methods.
-  helper_include "cloud"
-  helper_include "wait_for_ip_repopulation"
+# Include the helper objects and methods.
+helper_include "cloud"
+helper_include "wait_for_ip_repopulation"
 
+helpers do
   # Checks if the swapfile is listed in /proc/swaps.
   #
   # @param server [Server] Server's swapspace to check.
@@ -16,11 +16,11 @@ helpers do
     # Get location of swapfile from ServerTemplate input.
     swapfile = get_input_from_server(server)["sys/swap_file"].to_s.split("text:")[1]
 
-	  probe(servers.first, "grep -c #{swapfile} /proc/swaps") { |result, status|
-	    print "grep -c /swapfile /proc/swaps returned = " + result.to_s
+	  probe(servers.first, "grep -c #{swapfile} /proc/swaps") do |result, status|
+	    puts "Swapfile: #{result.inspect}"
 	    raise "raise swap file not setup correctly" unless ((result).to_i > 0)
 	    true
-    }
+    end
   end
 
   # Checks the server template uses Chef.
