@@ -42,6 +42,9 @@ before do
 end
 
 test "smoke_test" do
+  # Single server in deployment.
+  server = servers.first
+
   if is_chef?
     verify_ephemeral_mounted
     test_swapspace(server)
@@ -61,18 +64,20 @@ test "smoke_test" do
 end
 
 test "ebs_stop_start" do
+  # Current cloud.
   cloud = Cloud.factory
-  skip unless cloud.supports_start_stop?(server)
 
   # Single server in deployment.
   server = servers.first
 
-  # Stop EBS image.
+  skip unless cloud.supports_start_stop?(server)
+
+  # Stop EBS server.
   puts "Stopping current server."
   server.stop_ebs
   wait_for_server_state(server, "stopped")
 
-  # Start EBS image.
+  # Start EBS server.
   puts "Starting current server."
   server.start_ebs
   wait_for_server_state(server, "operational")
