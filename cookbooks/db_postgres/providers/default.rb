@@ -153,10 +153,6 @@ action :install_client do
 
   # Install PostgreSQL package(s)
 
-  node[:db][:socket] = value_for_platform(
-    "default" => ""
-  )
-
   node[:db_postgres][:client_packages_install] = value_for_platform(
     ["centos", "redhat"] => {
       "default" => [
