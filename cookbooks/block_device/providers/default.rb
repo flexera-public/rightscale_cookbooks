@@ -20,7 +20,7 @@ action :create do
     :force => new_resource.force
   }
   create_options[:iops] = new_resource.iops if new_resource.iops && !new_resource.iops.empty?
-  create_options[:volume_type] => new_resource.device_type
+  create_options[:volume_type] = new_resource.device_type
   # See rightscale_tools gem for implementation of "create" method.
   device.create(create_options)
 end
