@@ -64,7 +64,7 @@ recipe "db::do_secondary_restore_and_become_master", "Restores the database from
 recipe "db::do_primary_init_slave", "Initializes the slave server from the primary backup location. Authentication information provided by inputs is ignored for slave servers."
 recipe "db::do_secondary_init_slave", "Initializes the slave server from the secondary backup location. Authentication information provided by inputs is ignored for slave servers."
 recipe "db::do_init_slave_at_boot", "Initializes the slave server at boot."
-recipe "db::do_set_dns_slave_private_ip", "Sets the slave DNS record to the private IP."
+recipe "db::do_setup_slave_dns", "Sets the slave DNS record to the network interface IP."
 recipe "db::do_promote_to_master", "Promotes a replicating slave to master."
 recipe "db::setup_replication_privileges", "Sets up privileges for replication slave servers."
 recipe "db::request_master_allow", "Sends a request to the master database server tagged with rs_dbrepl:master_instance_uuid=<master_instance_uuid> to allow connections from the server's private IP address. This script should be run on a slave before it sets up replication."
@@ -101,13 +101,13 @@ attribute "db/dns/slave/fqdn",
   :display_name => "Database Slave FQDN",
   :description => "The fully qualified domain name for a slave database server. Example: db-slave.example.com",
   :required => "optional",
-  :recipes => ["db::do_set_dns_slave_private_ip"]
+  :recipes => ["db::do_setup_slave_dns"]
 
 attribute "db/dns/slave/id",
   :display_name => "Database Slave DNS Record ID",
   :description => "The unique identifier that is associated with the DNS A record of a slave server.  The unique identifier is assigned by the DNS provider when you create a dynamic DNS A record. This ID is used to update the associated A record with the private IP address of a slave server when this recipe is run.  If you are using DNS Made Easy as your DNS provider, a 7-digit number is used (e.g., 4403234).",
   :required => "required",
-  :recipes => ["db::do_set_dns_slave_private_ip"]
+  :recipes => ["db::do_setup_slave_dns"]
 
 attribute "db/admin/user",
   :display_name => "Database Admin Username",
@@ -175,7 +175,7 @@ attribute "db/replication/network_interface",
     "db::do_promote_to_master.rb",
     "db::request_master_allow.rb",
     "db::request_master_deny.rb",
-    "db::do_set_dns_slave_private_ip"
+    "db::do_setup_slave_dns"
   ]
 
 attribute "db/application/user",

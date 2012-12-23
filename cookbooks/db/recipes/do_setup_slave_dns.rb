@@ -26,11 +26,11 @@ end
 
 bind_ip = get_local_replication_interface
 log "   Setting slave #{node[:db][:dns][:slave][:fqdn]} to #{bind_ip}"
-# See cookbooks/sys_dns/providers/*.rb for the "set_private" action.
+# See cookbooks/sys_dns/providers/*.rb for the "set" action.
 sys_dns "default" do
   id node[:db][:dns][:slave][:id]
   address bind_ip
-  action :set_private
+  action :set
 end
 
 rightscale_marker :end

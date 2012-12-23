@@ -13,11 +13,11 @@ define :db_register_master do
   # Do this first so that DNS can propagate while the recipe runs
   bind_ip = get_local_replication_interface
   log "  Setting master database #{node[:db][:dns][:master][:fqdn]} to #{bind_ip}"
-  # See cookbooks/sys_dns/providers/*.rb for the "set_private" action.
+  # See cookbooks/sys_dns/providers/*.rb for the "set" action.
   sys_dns "default" do
     id node[:db][:dns][:master][:id]
     address bind_ip
-    action :set_private
+    action :set
   end
 
   # Set master tags
