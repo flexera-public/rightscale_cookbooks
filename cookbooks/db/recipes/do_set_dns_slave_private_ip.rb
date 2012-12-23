@@ -24,12 +24,12 @@ log "  WARNING: Slave database is not initialized!" do
   level :warn
 end
 
-private_ip = node[:cloud][:private_ips][0]
-log "   Setting slave #{node[:db][:dns][:slave][:fqdn]} to #{private_ip}"
+bind_ip = get_local_replication_interface
+log "   Setting slave #{node[:db][:dns][:slave][:fqdn]} to #{bind_ip}"
 # See cookbooks/sys_dns/providers/*.rb for the "set_private" action.
 sys_dns "default" do
   id node[:db][:dns][:slave][:id]
-  address private_ip
+  address bind_ip
   action :set_private
 end
 

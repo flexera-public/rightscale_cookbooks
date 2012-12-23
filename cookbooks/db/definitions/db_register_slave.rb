@@ -34,13 +34,13 @@ define :db_register_slave, :action => :primary_restore do
     # See cookbooks/rightscale/providers/server_collection.rb for the "load" action.
     r = rightscale_server_collection "master_servers" do
       tags 'rs_dbrepl:master_instance_uuid'
-      secondary_tags [ 'rs_dbrepl:master_active', 'server:private_ip_0' ]
+      secondary_tags ['rs_dbrepl:master_active', 'server:private_ip_0']
       action :nothing
     end
     # See cookbooks/rightscale/providers/server_collection.rb for the "load" action.
     r.run_action(:load)
 
-    # Finds the master matching lineage and sets the node attribs for
+    # Finds the master matching lineage and sets the node attributes for
     #   node[:db][:current_master_uuid]
     #   node[:db][:current_master_ip]
     #   node[:db][:this_is_master]
@@ -51,14 +51,24 @@ define :db_register_slave, :action => :primary_restore do
         # Declare vars before block to persist after 'each do' loop.
         collect = {}
         lineage = ""
+        ip_tag = case node[:db][:replication][:network_interface]
+                 when "private"
+                   "server:private_ip_0"
+                 when "public"
+                   "server:public_ip_0"
+                 when "vpn"
+                   "server:vpn_ip_0"
+                 else
+                   raise "  \"#{node[:db][:replication][:network_interface]}\" is not a valid network interface."
+                 end
         # Using reverse order to end with first found master if no DB tagged with lineage.
         node[:server_collection]["master_servers"].reverse_each do |id, tags|
           master_active_tag = tags.select { |s| s =~ /rs_dbrepl:master_active/ }
 
-          active,lineage = master_active_tag[0].split('-',2)
+          active, lineage = master_active_tag[0].split('-', 2)
 
           my_uuid = tags.detect { |u| u =~ /rs_dbrepl:master_instance_uuid/ }
-          my_ip_0 = tags.detect { |i| i =~ /server:private_ip_0/ }
+          my_ip_0 = tags.detect { |i| i =~ /#{ip_tag}/ }
 
           # Following used for detecting 11H1 DB servers
           ec2_instance_id = tags.detect { |each_ec2_instance_id| each_ec2_instance_id =~ /ec2:instance_id/ }
@@ -66,7 +76,7 @@ define :db_register_slave, :action => :primary_restore do
           collect[most_recent] = my_uuid, my_ip_0, ec2_instance_id
 
           # If this master has the right lineage, break, else continue checking.
-          if ( lineage && lineage == node[:db][:backup][:lineage] )
+          if (lineage && lineage == node[:db][:backup][:lineage])
             Chef::Log.info "  #{lineage} : Lineage match found"
             break
           else
@@ -77,7 +87,7 @@ define :db_register_slave, :action => :primary_restore do
 
         # If lineage was not part of the master_active_tag tag
         # use the first (or only) found master
-        unless ( lineage && lineage == node[:db][:backup][:lineage] )
+        unless (lineage && lineage == node[:db][:backup][:lineage])
           Chef::Log.info "  Lineage not found in tags, defaulting to first discovered master"
         end
 

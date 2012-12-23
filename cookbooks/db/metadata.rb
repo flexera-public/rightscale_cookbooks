@@ -165,6 +165,19 @@ attribute "db/replication/password",
     "db::do_init_slave_at_boot"
   ]
 
+attribute "db/replication/network_interface",
+  :display_name => "Database Replication Network Interface",
+  :description => "The network interface used for replication. Default: private",
+  :required => "optional",
+  :choice => ["private", "public", "vpn"],
+  :recipes => [
+    "db::install_server",
+    "db::do_promote_to_master.rb",
+    "db::request_master_allow.rb",
+    "db::request_master_deny.rb",
+    "db::do_set_dns_slave_private_ip"
+  ]
+
 attribute "db/application/user",
   :display_name => "Database Application Username",
   :description => "The username of the database user that has 'user' privileges (e.g., cred:DBAPPLICATION_USER).",

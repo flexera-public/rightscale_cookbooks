@@ -25,6 +25,24 @@ module RightScale
         node[:db][:this_is_master] = is_master = state["is_master"]
         Chef::Log.info "  Loaded master/slave state: master UUID: #{master_uuid} IP: #{master_ip} this is #{is_master ? "master" : "slave"}"
       end
+
+      # Gets the local replication interface.
+      #
+      # @return [String] interface ip address
+      def get_local_replication_interface
+        case node[:db][:replication][:network_interface]
+        when "private"
+          node[:cloud][:private_ips][0]
+        when "public"
+          node[:cloud][:public_ips][0]
+        when "vpn"
+          r = %x[rs_tag --list][/server:vpn_ip_0=([\d.]+)/, 1]
+          raise "  No \"server:vpn_ip_0=\" tag found" if r.nil?
+        else
+          raise "  \"#{node[:db][:replication][:network_interface]}\" is not a valid network interface."
+        end
+      end
+
     end
   end
 end

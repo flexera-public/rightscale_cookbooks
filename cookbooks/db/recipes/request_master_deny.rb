@@ -17,7 +17,7 @@ db_state_assert :slave
 db node[:db][:data_dir] do
   machine_tag "rs_dbrepl:master_instance_uuid=#{node[:db][:current_master_uuid]}"
   enable false
-  ip_addr node[:cloud][:private_ips][0]
+  ip_addr get_local_replication_interface
   action :firewall_update_request
 end
 
