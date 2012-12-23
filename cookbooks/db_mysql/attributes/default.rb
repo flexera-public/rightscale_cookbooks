@@ -19,7 +19,7 @@ default[:db_mysql][:binlog_format] = "MIXED"
 default[:db_mysql][:tmpdir] = "/mnt/ephemeral/tmp"
 default[:db_mysql][:datadir] = "/var/lib/mysql"
 # Always set to support stop/start
-set[:db_mysql][:bind_address] = cloud[:private_ips][0]
+set[:db_mysql][:bind_address] = "0.0.0.0"
 
 default[:db_mysql][:dump][:storage_account_provider] = ""
 default[:db_mysql][:dump][:storage_account_id] = ""
