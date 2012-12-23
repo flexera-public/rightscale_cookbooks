@@ -9,8 +9,13 @@
 # The tasks include setting up DNS, setting tags, and setting node attributes.
 define :db_register_master do
 
+  class Chef::Recipe
+    include RightScale::Database::Helper
+  end
+
   # Set master DNS
   # Do this first so that DNS can propagate while the recipe runs
+  # See cookbooks/db/libraries/helper.rb for the "get_local_replication_interface" method.
   bind_ip = get_local_replication_interface
   log "  Setting master database #{node[:db][:dns][:master][:fqdn]} to #{bind_ip}"
   # See cookbooks/sys_dns/providers/*.rb for the "set" action.

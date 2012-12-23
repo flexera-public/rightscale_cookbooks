@@ -24,6 +24,7 @@ log "  WARNING: Slave database is not initialized!" do
   level :warn
 end
 
+# See cookbooks/db/libraries/helper.rb for the "get_local_replication_interface" method.
 bind_ip = get_local_replication_interface
 log "   Setting slave #{node[:db][:dns][:slave][:fqdn]} to #{bind_ip}"
 # See cookbooks/sys_dns/providers/*.rb for the "set" action.

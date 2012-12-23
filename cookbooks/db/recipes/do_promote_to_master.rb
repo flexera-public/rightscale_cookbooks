@@ -9,6 +9,10 @@ rightscale_marker :begin
 
 DATA_DIR = node[:db][:data_dir]
 
+class Chef::Recipe
+  include RightScale::Database::Helper
+end
+
 # Verify initialized database
 # Check the node state to verify that we have correctly initialized this server.
 # See cookbooks/db/definitions/db_state_assert.rb for the "db_state_assert" definition.
@@ -48,6 +52,7 @@ end
 # Demote old master
 # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RemoteRecipe for the "remote_recipe" resource.
 # See cookbooks/db/recipes/handle_demote_master.rb for the "db::handle_demote_master" recipe.
+# See cookbooks/db/libraries/helper.rb for the "get_local_replication_interface" method.
 remote_recipe "demote master" do
   recipe "db::handle_demote_master"
   attributes :remote_recipe => {
