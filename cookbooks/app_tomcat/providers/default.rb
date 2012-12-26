@@ -77,25 +77,11 @@ action :install do
   end
 
   # Moving tomcat logs to ephemeral
-
-  # Deleting old tomcat log directory
-  directory "/var/log/tomcat#{version}" do
-    recursive true
-    action :delete
-  end
-
-  # Creating new directory for tomcat logs on ephemeral volume
-  directory "/mnt/ephemeral/log/tomcat#{version}" do
-    owner node[:app][:user]
+  # See cookbooks/rightscale/definitions/rightscale_move_to_ephemeral.rb for the "rightscale_move_to_ephemeral" definition.
+  rightscale_move_to_ephemeral "/var/log/tomcat#{version}" do
+    location_on_ephemeral "/tomcat#{version}"
+    user node[:app][:user]
     group node[:app][:group]
-    mode "0755"
-    action :create
-    recursive true
-  end
-
-  # Create symlink from /var/log/tomcat#{version} to ephemeral volume
-  link "/var/log/tomcat#{version}" do
-    to "/mnt/ephemeral/log/tomcat#{version}"
   end
 
   # Symlinking to new jvm-exports
