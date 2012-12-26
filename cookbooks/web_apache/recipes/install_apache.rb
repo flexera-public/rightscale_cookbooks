@@ -40,6 +40,7 @@ end
 # See cookbooks/rightscale/definitions/rightscale_move_to_ephemeral.rb for the "rightscale_move_to_ephemeral" definition.
 rightscale_move_to_ephemeral "/var/www" do
   location_on_ephemeral "/www"
+  move_content true
 end
 
 # Apache Multi-Processing Module configuration.

@@ -6,7 +6,7 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 #Definition designed to move any directory to ephemeral drive and create symlink to it
-define :rightscale_move_to_ephemeral, :location_on_ephemeral => nil, :user => "root", :group => "root" do
+define :rightscale_move_to_ephemeral, :location_on_ephemeral => nil, :user => "root", :group => "root", :move_content => false do
   default_dir = params[:name]
   ephemeral_dir = "/mnt/ephemeral/#{params[:location_on_ephemeral]}"
 
@@ -18,13 +18,15 @@ define :rightscale_move_to_ephemeral, :location_on_ephemeral => nil, :user => "r
     recursive true
   end
 
-  # If default_dir is not a link, move it's files to ephemeral_dir.
-  bash " Moving #{default_dir} to #{ephemeral_dir}" do
-    not_if { File.symlink?(default_dir) }
-    flags "-ex"
-    code <<-EOH
-      mv #{default_dir}/* #{ephemeral_dir}
-    EOH
+  if params[:move_content]
+    # If default_dir is not a link, move it's files to ephemeral_dir.
+    bash " Moving content from #{default_dir} to #{ephemeral_dir}" do
+      not_if { File.symlink?(default_dir) }
+      flags "-ex"
+      code <<-EOH
+        mv #{default_dir}/* #{ephemeral_dir}
+      EOH
+    end
   end
 
   # Delete default directory
