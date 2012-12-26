@@ -231,7 +231,7 @@ end
 action :remove_anonymous do
   require 'mysql'
   con = Mysql.new('localhost', 'root')
-  host=`hostname`.strip
+  host = `hostname`.strip
   con.query("DELETE FROM mysql.user WHERE user='' AND host='#{host}'")
 
   con.close
@@ -337,6 +337,7 @@ action :install_server do
   platform = node[:platform]
 
   # MySQL server depends on MySQL client.
+  # Calls the :install_client action.
   action_install_client
 
   # Uninstalls specified server packages.
@@ -409,6 +410,38 @@ action :install_server do
     recursive true
   end
 
+  # Determine whether to enable SSL for MySQL based on provided inputs.
+  # SSL will only be enabled if all inputs contain credentials.
+  node[:db_mysql][:ssl_enabled] =
+    !node[:db_mysql][:ca_certificate].to_s.empty? && \
+    !node[:db_mysql][:master_certificate].to_s.empty? && \
+    !node[:db_mysql][:master_key].to_s.empty? && \
+    !node[:db_mysql][:slave_certificate].to_s.empty? && \
+    !node[:db_mysql][:slave_key].to_s.empty?
+
+  node[:db_mysql][:ssl_credentials] = {
+    :ca_certificate => {:credential => node[:db_mysql][:ca_certificate], :path => "/etc/mysql/ca_certificate.pem"},
+    :master_certificate => {:credential => node[:db_mysql][:master_certificate], :path => "/etc/mysql/master_certificate.pem"},
+    :master_key => {:credential => node[:db_mysql][:master_key], :path => "/etc/mysql/master_key.pem"},
+    :slave_certificate => {:credential => node[:db_mysql][:slave_certificate], :path => "/etc/mysql/slave_certificate.pem"},
+    :slave_key => {:credential => node[:db_mysql][:slave_key], :path => "/etc/mysql/slave_key.pem"}
+  }
+
+  if node[:db_mysql][:ssl_enabled]
+    node[:db_mysql][:ssl_credentials].each do |name, data|
+      template data[:path] do
+        source "credential.pem.erb"
+        cookbook "db_mysql"
+        owner "mysql"
+        group "mysql"
+        mode "0400"
+        variables(
+          :credential => data[:credential]
+        )
+      end
+    end
+  end
+
   # Sets up my.cnf
   # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for the "db_mysql_set_mycnf" definition.
   # See cookbooks/db_mysql/libraries/helper.rb for the "RightScale::Database::MySQL::Helper" class.
@@ -429,7 +462,7 @@ action :install_server do
     variables(
       :ulimit => mysql_file_ulimit
     )
-    cookbook 'db_mysql'
+    cookbook "db_mysql"
   end
 
   # Changes root's limitations for THIS shell. The entry in the limits.d will be
@@ -445,7 +478,7 @@ action :install_server do
   template "/etc/sysconfig/#{node[:db_mysql][:service_name]}" do
     source "sysconfig-mysqld.erb"
     mode "0755"
-    cookbook 'db_mysql'
+    cookbook "db_mysql"
     only_if { platform =~ /redhat|centos/ }
   end
 
@@ -456,19 +489,19 @@ action :install_server do
     only_if { platform == "ubuntu" }
     mode "0600"
     source "debian.cnf"
-    cookbook 'db_mysql'
+    cookbook "db_mysql"
   end
 
   cookbook_file "/etc/mysql/debian-start" do
     only_if { platform == "ubuntu" }
     mode "0755"
     source "debian-start"
-    cookbook 'db_mysql'
+    cookbook "db_mysql"
   end
 
   # Fixes permissions: during the first startup after installation some of the
   # files are created with root:root so MySQL cannot read them.
-  dir=node[:db_mysql][:datadir]
+  dir = node[:db_mysql][:datadir]
   bash "chown mysql #{dir}" do
     flags "-ex"
     code <<-EOH
@@ -588,7 +621,7 @@ action :setup_monitoring do
     source "collectd-plugin-mysql.conf.erb"
     mode "0644"
     backup false
-    cookbook 'db_mysql'
+    cookbook "db_mysql"
     notifies :restart, resources(:service => "collectd")
   end
 
@@ -677,8 +710,8 @@ action :promote do
     # OLDMASTER: unconfigure source of replication
     RightScale::Database::MySQL::Helper.do_query(node, "CHANGE MASTER TO MASTER_HOST=''", previous_master, RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT)
 
-    master_file=masterstatus['File']
-    master_position=masterstatus['Position']
+    master_file = masterstatus['File']
+    master_position = masterstatus['Position']
     Chef::Log.info "  Retrieved master info...File: " + master_file + " position: " + master_position
 
     Chef::Log.info "  Waiting for slave to catch up with OLDMASTER (if alive).."
@@ -694,8 +727,8 @@ action :promote do
   RightScale::Database::MySQL::Helper.do_query(node, 'RESET MASTER')
 
   newmasterstatus = RightScale::Database::MySQL::Helper.do_query(node, 'SHOW MASTER STATUS')
-  newmaster_file=newmasterstatus['File']
-  newmaster_position=newmasterstatus['Position']
+  newmaster_file = newmasterstatus['File']
+  newmaster_position = newmasterstatus['Position']
   Chef::Log.info "  Retrieved new master info...File: " + newmaster_file + " position: " + newmaster_position
 
   Chef::Log.info "  Stopping slave and misconfiguring master"
