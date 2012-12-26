@@ -22,6 +22,14 @@
 # @raise [RuntimeError] if invalid action type is chosen must be primary_restore, :secondary_restore or no_restore
 define :db_register_slave, :action => :primary_restore do
 
+  class Chef::Recipe
+    include RightScale::Database::Helper
+  end
+
+  class Chef::Resource::Db
+    include RightScale::Database::Helper
+  end
+
   # Tag the slave server
   # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RightLinkTag for the "right_link_tag" resource.
   right_link_tag "rs_dbrepl:slave_instance_uuid=#{node[:rightscale][:instance_uuid]}"

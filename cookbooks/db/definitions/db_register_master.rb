@@ -13,6 +13,10 @@ define :db_register_master do
     include RightScale::Database::Helper
   end
 
+  class Chef::Resource::Db
+    include RightScale::Database::Helper
+  end
+
   # Set master DNS
   # Do this first so that DNS can propagate while the recipe runs
   # See cookbooks/db/libraries/helper.rb for the "get_local_replication_interface" method.
