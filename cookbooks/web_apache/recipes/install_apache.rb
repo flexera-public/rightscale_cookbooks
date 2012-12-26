@@ -18,8 +18,6 @@ log "  Apache log dir was #{apache_log_dir}"
 # See cookbooks/rightscale/definitions/rightscale_move_to_ephemeral.rb for the "rightscale_move_to_ephemeral" definition.
 rightscale_move_to_ephemeral "#{apache_log_dir}" do
   location_on_ephemeral "/log/#{apache_name}"
-  user node[:apache][:user]
-  group node[:apache][:group]
 end
 
 # Include the public recipe for basic installation.
