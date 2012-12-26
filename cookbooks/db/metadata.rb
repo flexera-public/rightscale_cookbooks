@@ -170,6 +170,7 @@ attribute "db/replication/network_interface",
   :description => "The network interface used for replication. Default: private",
   :required => "optional",
   :choice => ["private", "public", "vpn"],
+  :default => "private",
   :recipes => [
     "db::install_server",
     "db::do_promote_to_master.rb",

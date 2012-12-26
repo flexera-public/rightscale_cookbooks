@@ -178,6 +178,7 @@
         "public",
         "vpn"
       ],
+      "default": "private",
       "recipes": [
         "db::install_server",
         "db::do_promote_to_master.rb",
