@@ -32,7 +32,7 @@ define :rightscale_move_to_ephemeral, :location_on_ephemeral => nil, :user => "r
   # Delete default directory
   directory default_dir do
     not_if { File.symlink?(default_dir) }
-    recursive false
+    recursive true
     action :delete
   end
 
