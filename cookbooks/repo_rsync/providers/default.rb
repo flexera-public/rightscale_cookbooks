@@ -26,13 +26,20 @@ action :pull do
   # Add ssh key and exec script
   ruby_block "Before deploy" do
     block do
-      # See cookbooks/repo_rsync/libraries/default.rb for the "create" method.
+      # See cookbooks/repo/libraries/default.rb for the "create" method.
       RightScale::Repo::SshKey.new.create(new_resource.credential)
-      RightScale::Repo::SshKey.new.add_host_key(new_resource.ssh_host_key)
     end
   end
 
-  new_resource.ssh_host_key ? strict_check = "yes" : strict_check = "no"
+  # add record to /known_hosts file and enable StrictHostKeyChecking
+  # if host_key input is set
+  if check_host_key.to_s.empty?
+    strict_check = "no"
+  else
+    strict_check = "yes"
+    # See cookbooks/repo/libraries/default.rb for the "add_host_key" method.
+    RightScale::Repo::SshKey.new.add_host_key(new_resource.ssh_host_key)
+  end
 
   # Backup project directory if it is not empty
   ruby_block "Backup of existing project directory" do

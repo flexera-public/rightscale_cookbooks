@@ -21,10 +21,11 @@ module RightScale
       def create(ssh_key, check_host_key)
         @sshkey.create(ssh_key)
 
+        # add record to /known_hosts file and enable StrictHostKeyChecking
+        # if host_key input is set
         if check_host_key.to_s.empty?
           strict_check = "no"
         else
-          Chef::Log.info(" DEBUG: SSH host key -#{check_host_key}-")
           strict_check = "yes"
           @sshkey.add_host_key(check_host_key)
         end
