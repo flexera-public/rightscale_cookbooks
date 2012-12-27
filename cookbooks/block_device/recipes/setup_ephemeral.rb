@@ -156,9 +156,9 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
 
     # Create the mount point
     directory mount_point do
-      owner 'root'
-      group 'root'
-      mode 0755
+      owner "root"
+      group "root"
+      mode "0755"
       recursive true
       not_if { ephemeral_fstab_and_mtab_checks(fstab_entry, mount_point, filesystem_type) }
     end
