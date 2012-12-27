@@ -280,7 +280,7 @@ action :detach do
   execute "/etc/haproxy/haproxy-cat.sh" do
     user "haproxy"
     group "haproxy"
-    umask 0077
+    umask "0077"
     action :nothing
     notifies :reload, resources(:service => "haproxy")
   end
