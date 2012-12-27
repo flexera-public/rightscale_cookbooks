@@ -13,8 +13,6 @@ default[:lb][:pools] = nil
 default[:lb][:host]= nil
 default[:server_collection]['app_servers'] = Hash.new
 
-# The address that load balancer should bind to.
-default[:lb][:bind_address] = "127.0.0.1"
 # Port that load balancer should bind to.
 default[:lb][:bind_port] = 85
 
