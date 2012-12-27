@@ -35,7 +35,7 @@ action :install do
   directory "/etc/haproxy/#{node[:lb][:service][:provider]}.d" do
     owner "haproxy"
     group "haproxy"
-    mode 0755
+    mode "0755"
     recursive true
     action :create
   end
@@ -45,7 +45,7 @@ action :install do
   cookbook_file "/etc/haproxy/haproxy-cat.sh" do
     owner "haproxy"
     group "haproxy"
-    mode 0755
+    mode "0755"
     source "haproxy-cat.sh"
     cookbook "lb_haproxy"
   end
@@ -84,7 +84,7 @@ action :install do
   execute "/etc/haproxy/haproxy-cat.sh" do
     user "haproxy"
     group "haproxy"
-    umask 0077
+    umask "0077"
     notifies :start, resources(:service => "haproxy")
   end
 end
@@ -98,7 +98,7 @@ action :add_vhost do
   directory "/etc/haproxy/#{node[:lb][:service][:provider]}.d/#{pool_name}" do
     owner "haproxy"
     group "haproxy"
-    mode 0755
+    mode "0755"
     recursive true
     action :create
   end
@@ -108,7 +108,7 @@ action :add_vhost do
      source "haproxy_backend_list.erb"
      owner "haproxy"
      group "haproxy"
-     mode 0600
+     mode "0600"
      backup false
      cookbook "lb_haproxy"
      variables(
@@ -129,7 +129,7 @@ action :add_vhost do
   execute "/etc/haproxy/haproxy-cat.sh" do
     user "haproxy"
     group "haproxy"
-    umask 0077
+    umask "0077"
     action :run
     notifies :reload, resources(:service => "haproxy")
   end
@@ -158,7 +158,7 @@ action :attach do
   directory "/etc/haproxy/#{node[:lb][:service][:provider]}.d/#{pool_name}" do
     owner "haproxy"
     group "haproxy"
-    mode 0755
+    mode "0755"
     recursive true
     action :create
   end
@@ -167,7 +167,7 @@ action :attach do
   execute "/etc/haproxy/haproxy-cat.sh" do
     user "haproxy"
     group "haproxy"
-    umask 0077
+    umask "0077"
     action :nothing
     notifies :reload, resources(:service => "haproxy")
   end
@@ -177,7 +177,7 @@ action :attach do
     source "haproxy_server.erb"
     owner "haproxy"
     group "haproxy"
-    mode 0600
+    mode "0600"
     backup false
     cookbook "lb_haproxy"
     variables(
@@ -213,7 +213,7 @@ action :advanced_configs do
      source "haproxy_backend_acl.erb"
      owner "haproxy"
      group "haproxy"
-     mode 0600
+     mode "0600"
      backup false
      cookbook "lb_haproxy"
      variables(
@@ -229,7 +229,7 @@ action :advanced_configs do
     source "haproxy_backend_use.erb"
     owner "haproxy"
     group "haproxy"
-    mode 0600
+    mode "0600"
     backup false
     cookbook "lb_haproxy"
     variables(
