@@ -12,7 +12,7 @@
 
 global
         <%= @stats_file_line %>
-        log 127.0.0.1        syslog info
+        log /dev/log syslog info
         maxconn 4096
         ulimit-n 8250
         chroot /etc/haproxy
@@ -31,6 +31,5 @@ defaults
         option  redispatch
         maxconn 2000
         contimeout        5000
-        clitimeout        60000
-        srvtimeout        60000
+        timeout client <%= @timeout_client %>
 

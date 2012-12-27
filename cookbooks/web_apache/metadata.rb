@@ -2,7 +2,7 @@ maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "Installs/configures the apache2 webserver"
-version          "13.2.0"
+version          "13.3.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"
@@ -21,15 +21,6 @@ recipe "web_apache::setup_monitoring", "Installs the collectd-apache plugin for 
 recipe "web_apache::do_enable_maintenance_mode", "Enable maintenance mode for Apache2 webserver"
 recipe "web_apache::do_disable_maintenance_mode", "Disable maintenance mode for Apache2 webserver"
 
-
-all_recipes = [
-  "web_apache::default",
-  "web_apache::install_apache",
-  "web_apache::setup_frontend_ssl_vhost",
-  "web_apache::setup_frontend_http_vhost",
-  "web_apache::setup_frontend",
-]
-
 depends "apache2"
 depends "rightscale"
 
@@ -42,7 +33,13 @@ attribute "web_apache/mpm",
   :display_name => "Multi-Processing Module",
   :description => "Defines the multi-processing module setting in httpd.conf.  Use 'worker' for Rails/Tomcat/Standalone frontends and 'prefork' for PHP. Example: prefork",
   :required => "optional",
-  :recipes => all_recipes,
+  :recipes => [
+    "web_apache::default",
+    "web_apache::install_apache",
+    "web_apache::setup_frontend_ssl_vhost",
+    "web_apache::setup_frontend_http_vhost",
+    "web_apache::setup_frontend",
+  ],
   :choice => [ "prefork", "worker" ],
   :default =>  "prefork"
 
@@ -110,9 +107,15 @@ attribute "web_apache/application_name",
     "web_apache::default"
   ]
 
-attribute "web_apache/maintenance_file",
-  :display_name => "Path to maintenance.html",
-  :description => "Optional system-root related path to maintenance html page which will be used if maintenance mode is enabled  Example: /home/webapp/maintenance.html",
+attribute "web_apache/allow_override",
+  :display_name => "AllowOverride Directive",
+  :description => "Allows/disallows the use of .htaccess files in project web root directory. Can be None (default), All, or any directive-type as specified in Apache documentation. Example: None",
   :required => "optional",
-  :default =>  "",
-  :recipes => ["web_apache::do_enable_maintenance_mode"]
+  :choice => [ "None", "All" ],
+  :default =>  "None",
+  :recipes => [
+    "web_apache::setup_frontend_ssl_vhost",
+    "web_apache::setup_frontend_http_vhost",
+    "web_apache::setup_frontend",
+    "web_apache::default"
+  ]

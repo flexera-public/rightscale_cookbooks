@@ -13,7 +13,6 @@ module RightScale
         @sshkey = SshKey.new
       end
 
-
       # Create bash script, which will set user defined ssh key required to access to private git source code repositories.
       #
       # @param ssh_key [string] Git private ssh key
@@ -31,13 +30,12 @@ module RightScale
         ENV["GIT_SSH"] = "#{SshKey::KEYFILE}.sh"
       end
 
-
       # Delete SSH key created by "create" method, after successful pull operation. And clear GIT_SSH.
       def delete
         @sshkey.delete
         ::File.delete("#{SshKey::KEYFILE}.sh")
+        ENV.delete("GIT_SSH")
       end
-
     end
   end
 end

@@ -30,8 +30,8 @@ module RightScale
             Chef::Log.warn "  Please contact Rightscale to upgrade your account."
           end
           mount_point = new_resource.name
-          version = node[:db_mysql][:version].to_f > 5.1 ? :mysql55 : :mysql
-          Chef::Log.info "  Using version: #{version} : #{node[:db_mysql][:version]}"
+          version = node[:db][:version].to_f > 5.1 ? :mysql55 : :mysql
+          Chef::Log.info "  Using version: #{version} : #{node[:db][:version]}"
 
           RightScale::Tools::Database.factory(version, new_resource.user, new_resource.password, mount_point, Chef::Log)
         end

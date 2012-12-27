@@ -32,7 +32,7 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 The <tt>logging_syslog_ng</tt> cookbook does the minimal configuration for remote logging setup.
 Additional features are TBD.
 
-= LICENSE:
+== LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 RightScale Terms of Service available at http://www.rightscale.com/terms.php and,

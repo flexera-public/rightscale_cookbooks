@@ -7,6 +7,7 @@
 
 # @resource repo
 
+# Setup repository URL and other attributes.
 action :setup_attributes do
 
   branch = new_resource.revision
@@ -21,12 +22,13 @@ action :setup_attributes do
 
   # Checking repository URL
   raise "  ERROR: repository input is unset. Please fill 'Repository URL' input" if repository_url.empty?
-
 end
 
+
+# Pull code from a determined repository to a specified destination.
 action :pull do
 
-  capistrano_dir="/home/capistrano_repo"
+  capistrano_dir = "/home/capistrano_repo"
   ruby_block "Before pull" do
     block do
       Chef::Log.info "  Check for previous capistrano repository in case of action change"
@@ -34,11 +36,13 @@ action :pull do
         ::File.rename("#{new_resource.destination}", "#{capistrano_dir}/releases/capistrano_old_"+::Time.now.strftime("%Y%m%d%H%M"))
       end
       # Add ssh key and exec script
+      # See cookbooks/repo_git/libraries/default.rb for the "create" method.
       RightScale::Repo::GitSshKey.new.create(new_resource.credential)
     end
   end
 
   # Checking attributes
+  # Calls the :setup_attributes action.
   action_setup_attributes
 
   destination = new_resource.destination
@@ -71,6 +75,7 @@ action :pull do
   # Delete SSH key & clear GIT_SSH
   ruby_block "After pull" do
     block do
+      # See cookbooks/repo_git/libraries/default.rb for the "delete" method.
       RightScale::Repo::GitSshKey.new.delete
     end
   end
@@ -79,16 +84,19 @@ action :pull do
 end
 
 
+# Pull code from a determined repository to a specified destination and create a capistrano-style deployment.
 action :capistrano_pull do
 
   # Add ssh key and exec script
   ruby_block "Before deploy" do
     block do
+      # See cookbooks/repo_git/libraries/default.rb for the "create" method.
        RightScale::Repo::GitSshKey.new.create(new_resource.credential)
     end
   end
 
   # Checking attributes
+  # Calls the :setup_attributes action.
   action_setup_attributes
 
   log "  Preparing to capistrano deploy action. Setting parameters for the process..."
@@ -106,6 +114,7 @@ action :capistrano_pull do
   log "  Deploy provider #{scm_provider}"
 
   # Applying capistrano style deployment
+  # See cookbooks/repo/definition/repo_capistranize.rb for the "repo_capistranize" definition.
   repo_capistranize "Source repo" do
     repository                 repository
     revision                   revision
@@ -121,6 +130,7 @@ action :capistrano_pull do
   # Delete SSH key & clear GIT_SSH
   ruby_block "After deploy" do
     block do
+      # See cookbooks/repo_git/libraries/default.rb for the "delete" method.
       RightScale::Repo::GitSshKey.new.delete
     end
   end

@@ -6,41 +6,41 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 # Default setting for DB FQDN
-set_unless[:db][:dns][:master][:fqdn] = "localhost"
+default[:db][:dns][:master][:fqdn] = "localhost"
 
-# Initial settings for db::install client correct operations
-# on application servers
-set_unless[:db][:data_dir] = "/mnt/storage"
-set_unless[:db][:provider_type] = "db_mysql_5.1"
+# Initial settings for client operations on application servers
+default[:db][:data_dir] = "/mnt/storage"
 
 # Default settings for database administrator user and password
-set_unless[:db][:admin][:user] = "root"
-set_unless[:db][:admin][:password] = ""
+default[:db][:admin][:user] = "root"
+default[:db][:admin][:password] = ""
 
 # Default settings for database replication user and password
-set_unless[:db][:replication][:user] = nil
-set_unless[:db][:replication][:password] = nil
+default[:db][:replication][:user] = nil
+default[:db][:replication][:password] = nil
 
 # Default settings for backup lineage
-set_unless[:db][:backup][:lineage] = ""
-set_unless[:db][:backup][:lineage_override] = ""
+default[:db][:backup][:lineage] = ""
+default[:db][:backup][:lineage_override] = ""
 
 # TTL limit to verify Master DB DNS TTL
-set_unless[:db][:dns][:ttl] = "60"
+default[:db][:dns][:ttl] = "60"
 
+# Database driver class to be used based on the type of driver
+default[:db][:client][:driver] = ""
 
 # Server state variables
 #
 # Default value for DB status
 # valid values are :initialized or :uninitialized
-set_unless[:db][:init_status] = :uninitialized
+default[:db][:init_status] = :uninitialized
 
 # Default value for DB master/slave check
-set_unless[:db][:this_is_master] = false
+default[:db][:this_is_master] = false
 
 # Instance UUID and ip default values
-set_unless[:db][:current_master_uuid] = nil
-set_unless[:db][:current_master_ip] = nil
+default[:db][:current_master_uuid] = nil
+default[:db][:current_master_ip] = nil
 
 
 # Calculate recommended backup times for master/slave
@@ -55,13 +55,13 @@ cron_h = rand(23)
 cron_min = 5 + rand(24)
 
 # Master backup daily at a random hour and a random minute between 5-29
-set_unless[:db][:backup][:primary][:master][:cron][:hour] = cron_h
-set_unless[:db][:backup][:primary][:master][:cron][:minute] = cron_min
+default[:db][:backup][:primary][:master][:cron][:hour] = cron_h
+default[:db][:backup][:primary][:master][:cron][:minute] = cron_min
 
 # Slave backup every hour at a random minute 30 minutes offset from the master.
-set_unless[:db][:backup][:primary][:slave][:cron][:hour] = "*" # every hour
-set_unless[:db][:backup][:primary][:slave][:cron][:minute] = cron_min + 30
+default[:db][:backup][:primary][:slave][:cron][:hour] = "*" # every hour
+default[:db][:backup][:primary][:slave][:cron][:minute] = cron_min + 30
 
 # DB manager type specific commands array for db_sys_info.log file
-set_unless[:db][:info_file_options] = []
-set_unless[:db][:info_file_location] = "/etc"
+default[:db][:info_file_options] = []
+default[:db][:info_file_location] = "/etc"

@@ -3,7 +3,7 @@ maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "Abstract cookbook for managing source code repositories."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "13.2.0"
+version          "13.3.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"
@@ -83,12 +83,6 @@ attribute "repo/default/storage_account_provider",
     "SoftLayer_Singapore",
     "SoftLayer_Amsterdam"
   ],
-  :recipes => ["repo::default"]
-
-attribute "repo/default/container",
-  :display_name => "ROS Container",
-  :description => "The name of the ROS container where a tarball of the application code will be retrieved from. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name. Example: mycontainer",
-  :required => "optional",
   :recipes => ["repo::default"]
 
 attribute "repo/default/prefix",

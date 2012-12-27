@@ -1,0 +1,53 @@
+;
+; Cookbook Name:: logging_rsyslog
+;
+; Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
+; RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
+; if applicable, other agreements such as a RightScale Master Subscription Agreement.
+;
+; Managed by RightScale
+; DO NOT EDIT BY HAND
+;
+
+<%# TLS/SSL certificate. %>
+; Certificate/key is needed in server mode and optional in client mode
+cert = /etc/stunnel/stunnel.pem
+
+; Protocol version (all, SSLv2, SSLv3, TLSv1)
+<% unless node[:platform_version] =~ /^5\..+/ %>
+<%# Cannot force this option for CentOS/RedHat 5.8 %>
+sslVersion = SSLv3
+<% end %>
+<%# Making sure we don't use insecure SSLv2. %>
+options = NO_SSLv2
+
+<%# Server specific configuration. %>
+<% unless @client %>
+<%# verify = 3 would require and verify certificates against locally installed certificates. %>
+verify = 3
+CAfile = /etc/stunnel/stunnel.pem
+<% end %>
+
+<%# Client specific configuration. %>
+<%= @client  %>
+
+; Some security enhancements for UNIX systems
+chroot = <%= @chroot %>
+setuid = <%= @owner %>
+setgid = <%= @group %>
+; PID is created inside the chroot jail
+pid = <%= @pid %>
+
+; Some performance tunings
+socket = l:TCP_NODELAY=1
+socket = r:TCP_NODELAY=1
+;compression = zlib
+
+; Some debugging stuff useful for troubleshooting
+;debug = 7
+;output = stunnel.log
+
+; Service-level configuration
+[syslog]
+accept  = <%= @accept %>
+connect = <%= @connect %>

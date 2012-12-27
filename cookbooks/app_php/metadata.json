@@ -1,59 +1,59 @@
 {
-  "dependencies": {
-    "repo": ">= 0.0.0",
-    "app": ">= 0.0.0",
-    "web_apache": ">= 0.0.0",
-    "rightscale": ">= 0.0.0"
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "maintainer": "RightScale, Inc.",
+  "recipes": {
+    "app_php::setup_server_5_3": "Installs the php application server."
   },
-  "name": "app_php",
-  "maintainer_email": "support@rightscale.com",
+  "groupings": {
+  },
+  "suggestions": {
+  },
+  "description": "Installs the php application server.",
+  "version": "13.3.0",
   "attributes": {
     "app_php/modules_list": {
-      "required": "optional",
+      "recipes": [
+        "app_php::setup_server_5_3"
+      ],
+      "description": "An optional list of php module packages to install. Accepts an array of package names. When using CentOS, package names are prefixed with php53u instead of php. To see a list of available php modules on CentOS, run 'yum search php53u' on the server. Example: php53u-mysql, php53u-pecl-memcache",
       "calculated": false,
+      "required": "optional",
       "choice": [
 
       ],
       "type": "array",
-      "recipes": [
-        "app_php::default"
-      ],
-      "display_name": "PHP module packages",
-      "description": "An optional list of php module packages to install. Accepts an array of package names. When using CentOS, package names are prefixed with php53u instead of php. To see a list of available php modules on CentOS, run 'yum search php53u' on the server. Example: php53u-mysql, php53u-pecl-memcache"
+      "display_name": "PHP module packages"
     },
     "app_php": {
-      "required": "optional",
+      "recipes": [
+
+      ],
       "calculated": false,
+      "required": "optional",
       "choice": [
 
       ],
       "type": "hash",
-      "recipes": [
-
-      ],
       "display_name": "PHP Application Settings"
     }
   },
-  "license": "Copyright RightScale, Inc. All rights reserved.",
-  "suggestions": {
+  "replacing": {
   },
   "platforms": {
   },
-  "maintainer": "RightScale, Inc.",
-  "long_description": "= RightScale App PHP Cookbook \n\n== DESCRIPTION:\n\n* Cookbook provides Apache + PHP implementation of the app LWRP.\n* Installs and configures an Apache + PHP application server.\n\n== REQUIREMENTS:\n* Requires \"app\" Light Weight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app\n  or your own implementation of \"app\" resource. See \"app\" cookbook README for details.\n* Requires a VM launched from a RightScale managed RightImage\n* Tested on CentOS 5.8, CentOS 6.2, and CentOS 6.3 RightImages\n* Tested on Ubuntu 10.04 and Ubuntu 12.04 RightImages\n* Tested on RedHat 5.8 RightImage\n\n== COOKBOOKS DEPENDENCIES:\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n* <tt>rightscale</tt>\n* <tt>web_apache</tt>\n* <tt>repo</tt>\n* <tt>db_mysql</tt>\n* <tt>db_postgres</tt>\n* <tt>app</tt>\n* <tt>db</tt>\n\n== KNOWN LIMITATIONS:\n Currently apache uses a static configuration and makes no tuning changes for resources available on larger instances.\n However, configuration can be overwritten using cookbook override techniques. See {Override Chef Cookbooks}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Override_Chef_Cookbooks]\n\n== SETUP/USAGE:\n\n* Place <tt>app_php::default</tt> recipe into your runlist to set up the application\n  server. Since this sets up the app provider, it must be run before the\n  <tt>app::default</tt> recipe, which expects a provider to already be set.\n* When using a RightScale ServerTemplate, this will also automatically add the\n  common attributes to your ServerTemplate inputs.\n\nFor more info see: {Release Notes}[http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current] (Section ‘PHP App Server’ under ServerTemplates)\n\nPlease checkout the tutorial: {PHP App Server}[http://support.rightscale.com/03-Tutorials/PHP_Application_Server_Setup]\n\n== DETAILS:\n=== General\nThe <tt>app_php</tt> cookbook will help you to install and set up an Apache + Zend Engine PHP application server, which can connect to a MySQL or Postgres database server.\n\n<b>Apache</b>\nServer version: Apache/2.2.3\n\nServer built: Jun 6 2012 10:00:42\n\n<b>PHP</b>\nPHP 5.3.6 (cli) (built: Apr 25 2011 10:45:29)\n\nCopyright (c) 1997-2011 The PHP Group\n\nZend Engine v2.3.0, Copyright (c) 1998-2011 Zend Technologies\n\n\nNote: The 'php/modules_list' contains an array of package names of PHP modules to install.\nWe are using packages from the IUS repository, so the package names must be prepended with php53u.\nThe input type should be set to Array only.\n\n\n=== Attributes:\nThese are settings used in recipes and templates. Default values are noted.\n\nNote: Only \"internal\" cookbook attributes are described here. Descriptions of attributes which have inputs can be found in the metadata.rb cookbook file. For generic app attributes, refer to the app cookbook readme.\n\n====== General attributes\n* <tt>node[:app_php][:modules_list]</tt> - List of additional php modules.\n\n=== Templates:\n\n* <tt>db.php.erb</tt> - Configuration for project database connection config file used in the <tt>app::setup_db_connection</tt> recipe and defined in the <tt>:setup_db_connection</tt> action of the <tt>app_php</tt> LWRP.\n\n=== Definitions:\nnone\n\n=== Libraries-helpers:\nnone\n\n=== LWRPs:\n\n<tt>app_php</tt> Lightweight provider is defined in providers/default.rb file and contains source code for the following actions:\n\n* <tt>:install</tt>\n\n* <tt>:setup_vhost</tt>\n\n* <tt>:start</tt>\n\n* <tt>:stop</tt>\n\n* <tt>:reload</tt>\n\n* <tt>:restart</tt>\n\n* <tt>:code_update</tt>\n\n* <tt>:setup_db_connection</tt>\n\nFor more info about these actions please see the <tt>app</tt> cookbook's README.\n\nFor normal operations it requires the \"app\" resource which will act as the interface to all <tt>app_php</tt> provider logic.\n\n===== Actions\n\n* <tt>:install</tt> - Install packages required for application server setup.\n\n* <tt>:setup_vhost</tt> - Set up apache vhost file with mod_php support included.\n\n* <tt>:start</tt> - Start sequence for PHP application server.\n\n* <tt>:stop</tt> - Stop sequence for PHP application server.\n\n* <tt>:reload</tt> - Reload sequence for PHP application server.\n\n* <tt>:restart</tt> - Restart sequence for PHP application server.\n\n* <tt>:code_update</tt> - Perform project source code update/download using user selected \"repo\" LWRP.\n\n* <tt>:setup_db_connection</tt> - Perform project config/db.php database connection configuration\n\n===== Usage Example:\n\nFor usage examples please see corresponding section in the <tt>app</tt> cookbook's README.\n\n= LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to the\nRightScale Terms of Service available at http://www.rightscale.com/terms.php and,\nif applicable, other agreements such as a RightScale Master Subscription Agreement.\n",
-  "version": "13.2.0",
-  "recommendations": {
-  },
-  "recipes": {
-    "app_php::default": "Installs the php application server."
-  },
-  "groupings": {
-  },
   "conflicting": {
   },
-  "replacing": {
+  "recommendations": {
   },
-  "description": "Installs the php application server.",
+  "dependencies": {
+    "rightscale": ">= 0.0.0",
+    "app": ">= 0.0.0",
+    "web_apache": ">= 0.0.0",
+    "repo": ">= 0.0.0"
+  },
+  "long_description": "= RightScale App PHP Cookbook \n\n== DESCRIPTION:\n\n* Cookbook provides Apache + PHP implementation of the app LWRP.\n* Installs and configures an Apache + PHP application server.\n\n== REQUIREMENTS:\n\n* Requires \"app\" Light Weight resource cookbook https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app\n  or your own implementation of \"app\" resource. See \"app\" cookbook README for details.\n* Requires a VM launched from a RightScale managed RightImage\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n* <tt>rightscale</tt>\n* <tt>web_apache</tt>\n* <tt>repo</tt>\n* <tt>db_mysql</tt>\n* <tt>db_postgres</tt>\n* <tt>app</tt>\n* <tt>db</tt>\n\n== KNOWN LIMITATIONS:\n\n* Currently apache uses a static configuration and makes no tuning changes for resources available on larger instances.\n  However, configuration can be overwritten using cookbook override techniques. See {Override Chef Cookbooks}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Override_Chef_Cookbooks]\n\n== SETUP/USAGE:\n\n* Place <tt>app_php::setup_server_5_3</tt> recipe into your runlist to set up\n  the application server specific attributes. This sets up the app provider and\n  version.\n* Place <tt>app::install_server</tt> recipe after setup_server recipe to install\n  the application server.\n\nFor more info see: {Release Notes}[http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current] (Section ‘PHP App Server’ under ServerTemplates)\n\nPlease checkout the tutorial: {PHP App Server}[http://support.rightscale.com/03-Tutorials/PHP_Application_Server_Setup]\n\n== DETAILS:\n\n=== General\n\nThe <tt>app_php</tt> cookbook will help you to install and set up an\nApache + Zend Engine PHP application server, which can connect to a\nMySQL or Postgres database server.\nSet db/provider_type input in RightScale ServerTemplate to choose database\nprovider. Place <tt>db::default</tt> recipe before application server installation\nto install the database client.\n\n<b>Apache</b>\n\nServer version: Apache/2.2.3\n\nServer built: Jun 6 2012 10:00:42\n\n<b>PHP</b>\n\nPHP 5.3.6 (cli) (built: Apr 25 2011 10:45:29)\n\nCopyright (c) 1997-2011 The PHP Group\n\nZend Engine v2.3.0, Copyright (c) 1998-2011 Zend Technologies\n\nNote: The 'php/modules_list' contains an array of package names of PHP modules to install.\nWe are using packages from the IUS repository, so the package names must be prepended with php53u.\nThe input type should be set to Array only.\n\n=== Attributes:\n\nThese are settings used in recipes and templates. Default values are noted.\n\nNote: Only \"internal\" cookbook attributes are described here. Descriptions of attributes which have inputs can be found in the metadata.rb cookbook file. For generic app attributes, refer to the app cookbook readme.\n\n====== General attributes\n\n* <tt>node[:app_php][:modules_list]</tt> - List of additional php modules.\n\n=== Templates:\n\n* <tt>db.php.erb</tt> - Configuration for project database connection config file used in the <tt>app::setup_db_connection</tt> recipe and defined in the <tt>:setup_db_connection</tt> action of the <tt>app_php</tt> LWRP.\n\n=== LWRPs:\n\n<tt>app_php</tt> Lightweight provider is defined in providers/default.rb file and contains source code for the following actions:\n\n* <tt>:install</tt>\n* <tt>:setup_vhost</tt>\n* <tt>:start</tt>\n* <tt>:stop</tt>\n* <tt>:reload</tt>\n* <tt>:restart</tt>\n* <tt>:code_update</tt>\n* <tt>:setup_db_connection</tt>\n\nFor more info about these actions please see the <tt>app</tt> cookbook's README.\n\nFor normal operations it requires the \"app\" resource which will act as the interface to all <tt>app_php</tt> provider logic.\n\n===== Actions\n\n* <tt>:install</tt> - Install packages required for application server setup.\n* <tt>:setup_vhost</tt> - Set up apache vhost file with mod_php support included.\n* <tt>:start</tt> - Start sequence for PHP application server.\n* <tt>:stop</tt> - Stop sequence for PHP application server.\n* <tt>:reload</tt> - Reload sequence for PHP application server.\n* <tt>:restart</tt> - Restart sequence for PHP application server.\n* <tt>:code_update</tt> - Perform project source code update/download using user selected \"repo\" LWRP.\n* <tt>:setup_db_connection</tt> - Perform project config/db.php database connection configuration.\n  The driver type is specified as 'php' and the db_<provider> cookbook's\n  <tt>install_client_driver</tt> action performs necessary steps to install the\n  database adapter.\n\n===== Usage Example:\n\nFor usage examples please see corresponding section in the <tt>app</tt> cookbook's README.\n\n== LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to the\nRightScale Terms of Service available at http://www.rightscale.com/terms.php and,\nif applicable, other agreements such as a RightScale Master Subscription Agreement.\n",
+  "name": "app_php",
   "providing": {
-  }
+  },
+  "maintainer_email": "support@rightscale.com"
 }

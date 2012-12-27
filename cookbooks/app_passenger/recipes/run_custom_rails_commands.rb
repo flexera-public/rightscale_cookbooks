@@ -21,14 +21,15 @@ bash "run commands" do
   flags "-ex"
   cwd "#{node[:app][:destination]}/"
   code <<-EOH
+    PATH=${PATH}:/usr/local/bin
     IFS=,  read -a ARRAY1 <<< "#{node[:app_passenger][:project][:custom_cmd]}"
     for i in "${ARRAY1[@]}"
     do
       tmp=`echo $i | sed 's/^[ \t]*//'`
-      /usr/bin/$tmp
+      $tmp
     done
   EOH
-  only_if do (node[:app_passenger][:project][:custom_cmd]!="") end
+  only_if { node[:app_passenger][:project][:custom_cmd] != "" }
 end
 
 rightscale_marker :end

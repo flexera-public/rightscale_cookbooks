@@ -80,7 +80,12 @@ device names or '*' to indicate all devices. By default, there are two available
 block devices. Currently, in order to add more block devices you need to 
 override the cookbook. Instructions can be found at: {Increase the Number of Block Devices}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Increase_the_Number_of_Block_Devices]
 
-= LICENSE:
+The volume nicknames are made unique by appending the RightScale instance's uuid
+to the provided nickname input. In case of "stop/start" operation (supported by
+instances launched with EBS images), the uuid of the first instance before the
+"stop" operation is used.
+
+== LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to
 the RightScale Terms of Service available at http://www.rightscale.com/terms.php

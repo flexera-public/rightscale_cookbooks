@@ -11,6 +11,7 @@ require 'timeout'
 
 # Provider collects and processes server tags used by the server_collection resource
 action :load do
+  # See cookbooks/rightscale/resources/server_collection.rb for the "server_collection" resource.
   collection_resource = server_collection new_resource.name do
     tags new_resource.tags
     agent_ids new_resource.agent_ids
@@ -29,10 +30,12 @@ action :load do
         break if new_resource.empty_ok && collection.empty?
         break if !collection.empty? && collection.all? do |id, tags|
           all_tags.all? do |prefix|
+            # See cookbooks/rightscale/libraries/helper.rb for the "matches_tag_wildcard?" method.
             tags.detect { |tag| RightScale::Utils::Helper.matches_tag_wildcard?(prefix, tag) }
           end
         end
 
+        # See cookbooks/rightscale/libraries/helper.rb for the "calculate_exponential_backoff" method.
         delay = RightScale::System::Helper.calculate_exponential_backoff(delay)
         Chef::Log.info "not all tags for #{new_resource.tags.inspect} exist; retrying in #{delay} seconds..."
         sleep delay

@@ -15,6 +15,15 @@ class Chef::Resource::BlockDevice
   include RightScale::BlockDeviceHelper
 end
 
+# In this code block, we restore snapshot from a lineage specified by
+# "lineage" attribute. We can override that lineage by specifying
+# "device/lineage_override" input. If device/timestamp_override input is set,
+# the snapshot from that timestamp in the lineage will be restored. Else
+# the snapshot with the most recent timestamp will be restored.
+# See cookbooks/block_device/providers/default.rb for definition of
+# primary_restore action and cookbooks/block_device/libraries/block_device.rb
+# for definition of do_for_block_devices and get_device_or_default methods.
+#
 do_for_block_devices node[:block_device] do |device|
   # Do the restore.
   log "  Creating block device and restoring data from primary backup for device #{device}..."

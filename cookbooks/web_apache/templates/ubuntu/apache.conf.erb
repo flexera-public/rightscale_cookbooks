@@ -18,33 +18,32 @@
 
   <Directory <%= @params[:docroot] %>>
     Options FollowSymLinks
-    AllowOverride None
+    AllowOverride <%= @params[:allow_override] %>
     Order allow,deny
     Allow from all
   </Directory>
 
+  # Setup the logs in the appropriate directory
+  CustomLog <%= node[:apache][:log_dir] %>/access.log combined
+  ErrorLog  <%= node[:apache][:log_dir] %>/error.log
+  LogLevel warn
+
   RewriteEngine On
   # Uncomment for rewrite debugging
-  #RewriteLog <%= node[:apache][:log_dir] %>/http_rewrite_log
+  #RewriteLog <%= node[:apache][:log_dir] %>/http_rewrite.log
   #RewriteLogLevel 9
+
+  # Include Rewrite rules from server config for maintenance mode.
+  # Rewrite rules are not inherited in VirtualHost Directive, so must
+  # explicitly include it here.
+  Include conf.d/maintenance.conf
 
   # Enable status page for monitoring purposes
   RewriteCond %{REMOTE_ADDR} ^(127.0.0.1)
   RewriteRule ^(/server-status) $1 [H=server-status,L]
 
-  # Redirects to a maintenance page if the specified file below exists
-  # ...but it still allows images to be served
-  RewriteCond %{DOCUMENT_ROOT}/system/maintenance.html -f
-  RewriteCond %{SCRIPT_FILENAME} !/system/maintenance.html
-  RewriteCond %{SCRIPT_FILENAME} !^(.+).(gif|png|jpg|css|js|swf)$
-  RewriteRule ^.*$ /system/maintenance.html [L]
-
   # Next hop is HaProxy
   RewriteRule ^/(.*)$ http://127.0.0.1:85%{REQUEST_URI} [P,QSA,L]
-
-  # Setup the logs in the appropriate directory
-  CustomLog <%= node[:apache][:log_dir] %>/access.log combined
-  ErrorLog  <%= node[:apache][:log_dir] %>/error.log
 
   # Serve any existing local files directly (except actionable ones)
   RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} -f
@@ -57,8 +56,6 @@
 
   RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} -d
   RewriteRule ^/(.*)$ /$1 [QSA,L]
-
-  LogLevel warn
 
   # Deflate
   AddOutputFilterByType DEFLATE text/html text/plain text/xml application/xml application/xhtml+xml text/javascript text/css application/x-javascript

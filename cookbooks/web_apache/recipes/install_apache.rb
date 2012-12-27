@@ -9,12 +9,12 @@ rightscale_marker :begin
 
 apache_log_dir = node[:apache][:log_dir]
 
-# Symlink Apache log location
+# Symlink Apache log location.
 apache_name = node[:apache][:dir].split("/").last
-log " Apache name was #{apache_name}"
-log " Apache log dir was #{apache_log_dir}"
+log "  Apache name was #{apache_name}"
+log "  Apache log dir was #{apache_log_dir}"
 
-# Create physical directory holding the logs
+# Create physical directory holding the logs.
 directory "/mnt/ephemeral/log/#{apache_name}" do
   action :create
   recursive true
@@ -29,21 +29,23 @@ directory apache_log_dir do
   action :delete
 end
 
-# Create symlink from where apache logs to physical directory
+# Create symlink from where apache logs to physical directory.
 link apache_log_dir do
   to "/mnt/ephemeral/log/#{apache_name}"
 end
 
-# Include the public recipe for basic installation
+# Include the public recipe for basic installation.
+# Calls the https://github.com/rightscale/cookbooks/blob/master/apache2/recipes/default.rb recipe.
 include_recipe "apache2"
 
-# Persist apache2 resource to node for use in other run lists
+# Persist apache2 resource to node for use in other run lists.
 service "apache2" do
   action :nothing
   persist true
 end
 
-# Installing ssl support from "apache2" cookbook if enabled
+# Installing ssl support from "apache2" cookbook if enabled.
+# Calls the https://github.com/rightscale/cookbooks/blob/master/apache2/recipes/mod_ssl.rb recipe.
 if node[:web_apache][:ssl_enable]
   include_recipe "apache2::mod_ssl"
 end
@@ -75,25 +77,32 @@ link default_web_dir do
   to content_web_dir
 end
 
-# Apache Multi-Processing Module configuration
+# Apache Multi-Processing Module configuration.
 case node[:platform]
 when "centos","redhat"
-    # RedHat based systems have no mpm change scripts included so we have to configure mpm here.
-    # Configuring "HTTPD" option to insert it to /etc/sysconfig/httpd file
-    binary_to_use = node[:apache][:binary]
-    binary_to_use << ".#{node[:web_apache][:mpm]}" unless node[:web_apache][:mpm] == 'prefork'
+  # RedHat based systems have no mpm change scripts included so we have to configure mpm here.
+  # Configuring "HTTPD" option to insert it to /etc/sysconfig/httpd file.
+  binary_to_use = node[:apache][:binary]
+  binary_to_use << ".#{node[:web_apache][:mpm]}" unless node[:web_apache][:mpm] == 'prefork'
 
-    # Updating /etc/sysconfig/httpd  to use required worker
-    template "/etc/sysconfig/httpd" do
-      source "sysconfig_httpd.erb"
-      mode "0644"
-      variables(
-        :sysconfig_httpd => binary_to_use
-      )
-      notifies :reload, resources(:service => "apache2"), :immediately
-    end
+  # Updating /etc/sysconfig/httpd to use required worker.
+  template "/etc/sysconfig/httpd" do
+    source "sysconfig_httpd.erb"
+    mode "0644"
+    variables(
+      :sysconfig_httpd => binary_to_use
+    )
+    notifies :reload, resources(:service => "apache2"), :immediately
+  end
 when "ubuntu"
-    package "apache2-mpm-#{node[:web_apache][:mpm]}"
+  package "apache2-mpm-#{node[:web_apache][:mpm]}"
+end
+
+# Apache Maintenance Mode configuration
+template File.join(node[:apache][:dir], 'conf.d', 'maintenance.conf') do
+  backup false
+  source "maintenance.conf.erb"
+  notifies :restart, resources(:service => "apache2")
 end
 
 log "  Started the apache server."

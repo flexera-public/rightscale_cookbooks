@@ -33,6 +33,7 @@ define :db_state_set, :master_uuid => nil, :master_ip => nil, :is_master => fals
   end
   r.run_action(:create) if immediate
 
+  # See cookbooks/db/libraries/helper.rb for the "DB_MASTER_SLAVE_STATE" variable.
   r = file RightScale::Database::Helper::DB_MASTER_SLAVE_STATE do
     backup false
     content JSON.dump({

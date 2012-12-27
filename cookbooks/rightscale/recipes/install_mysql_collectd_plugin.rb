@@ -10,6 +10,7 @@ rightscale_marker :begin
 # Load the mysql plugin in the main config file
 rightscale_enable_collectd_plugin "mysql"
 
+# See cookbooks/rightscale/recipes/setup_monitoring.rb for the "rightscale::setup_monitoring" recipe.
 include_recipe "rightscale::setup_monitoring"
 
 log "Installing MySQL collectd plugin"
@@ -24,11 +25,7 @@ cookbook_file "#{node[:rightscale][:collectd_plugin_dir]}/mysql.conf" do
   notifies :restart, resources(:service => "collectd")
 end
 
-# When using the dot notation the following error is thrown:
-#
-# You tried to set a nested key, where the parent is not a hash-like object: rightscale/process_list/process_list
-#
-# The only related issue I could find was for Chef 0.9.8 - http://tickets.opscode.com/browse/CHEF-1680
+# See cookbooks/rightscale/definitions/rightscale_monitor_process.rb for the "rightscale_monitor_process" definition.
 rightscale_monitor_process "mysqld"
 template File.join(node[:rightscale][:collectd_plugin_dir], 'processes.conf') do
   backup false

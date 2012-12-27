@@ -8,7 +8,7 @@
 # This is an adaptation of Opscode "deploy" resource to be used with RightScale repository LWRPs:
 # cookbooks/repo, cookbooks/repo_git, cookbooks/repo_ros, cookbooks/repo_svn
 
-capistrano_dir="/home/capistrano_repo"
+capistrano_dir = "/home/capistrano_repo"
 # More detailed parameters descriptions you can find in repo/resources/default.rb
 define :repo_capistranize,
   :destination => "",

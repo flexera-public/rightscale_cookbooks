@@ -7,47 +7,36 @@
 
 # This recipe will enable maintenance mode for Apache
 # All RightScale apache vhost erb templates have maintenance mode rewrite rule:
-# RewriteCond %{DOCUMENT_ROOT}/system/maintenance.html -f
+# RewriteCond <%= node[:web_apache][:maintenance_file] %> -f
 # RewriteCond %{SCRIPT_FILENAME} !/system/maintenance.html
 # RewriteCond %{SCRIPT_FILENAME} !^(.+).(gif|png|jpg|css|js|swf)$
 # RewriteRule ^.*$ /system/maintenance.html [L]
 #
-# Recipe will copy cookbook default or user specified /maintenance.html to
-# apache doc root /system/maintenance.html.
-# This will automatically enable maintenance mode rewrite rule.
+# Recipe will extract a maintenance.html from maintenance.tar.gz
+# which will automatically enable maintenance mode rewrite rule.
 
 rightscale_marker :begin
 
-  # Creating directory for maintenance page
-  directory "#{node[:web_apache][:docroot]}/system/" do
-    recursive true
-    mode "0755"
-  end
+maintenance_file_dir = ::File.dirname(node[:web_apache][:maintenance_file])
 
-  # Applying default maintenance.html if maintenance_file input is empty.
+# Creating directory for maintenance page.
+directory maintenance_file_dir do
+  recursive true
+  mode "0755"
+end
 
-  # Copy archive from cookbook files
-  cookbook_file "/tmp/maintenance.tar.gz" do
-    cookbook 'web_apache'
-    source "maintenance.tar.gz"
-    mode "0644"
-    only_if do node[:web_apache][:maintenance_file].empty? end
-  end
+# Copy archive from cookbook files.
+cookbook_file "/tmp/maintenance.tar.gz" do
+  cookbook 'web_apache'
+  source "maintenance.tar.gz"
+  mode "0644"
+end
 
-  bash "Unpack /tmp/maintenance.tar.gz to #{node[:web_apache][:docroot]}/system/" do
-    flags "-ex"
-    code <<-EOH
-      tar xzf /tmp/maintenance.tar.gz -C #{node[:web_apache][:docroot]}/system/
-    EOH
-    only_if do node[:web_apache][:maintenance_file].empty? end
-  end
-
-  bash "Applying user defined maintenance.html file" do
-    flags "-ex"
-    code <<-EOH
-      cp -f #{node[:web_apache][:maintenance_file]} #{node[:web_apache][:docroot]}/system/maintenance.html
-    EOH
-    not_if do node[:web_apache][:maintenance_file].empty? end
-  end
+bash "Unpack /tmp/maintenance.tar.gz to #{maintenance_file_dir}" do
+  flags "-ex"
+  code <<-EOH
+    tar xzf /tmp/maintenance.tar.gz -C #{maintenance_file_dir}
+  EOH
+end
 
 rightscale_marker :end

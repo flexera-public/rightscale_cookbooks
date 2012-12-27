@@ -3,7 +3,7 @@ maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "Installs/Configures block device storage."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "13.2.0"
+version          "13.3.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"
@@ -78,7 +78,7 @@ grouping "block_device/devices/default",
 
 attribute "block_device/devices/default/backup/primary/cred/user",
   :display_name => "Primary Backup User (default)",
-  :description => "Primary cloud authentication credentials. For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME). For clouds that do not require primary credentials (e.g., Amazon), set to 'ignore'.",
+  :description => "Primary cloud authentication credentials. For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME). For OpenStack Swift the format is: <tenant-id>:<user-name>. For clouds that do not require primary credentials (e.g., Amazon), set to 'ignore'.",
   :required => "recommended",
   :default => "",
   :recipes => [ "block_device::default" ]
@@ -107,7 +107,7 @@ attribute "block_device/devices/default/backup/primary/endpoint",
 
 attribute "block_device/devices/default/backup/secondary/cred/user",
   :display_name => "Secondary Backup User (default)",
-  :description => "Secondary cloud authentication credentials. For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME). For Amazon S3, use your Amazon key ID (e.g., cred:AWS_ACCESS_KEY_ID).",
+  :description => "Secondary cloud authentication credentials. For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME). For OpenStack Swift the format is: <tenant-id>:<user-name>. For Amazon S3, use your Amazon key ID (e.g., cred:AWS_ACCESS_KEY_ID).",
   :required => "recommended",
   :default => "",
   :recipes => [ "block_device::default", "block_device::do_secondary_backup", "block_device::do_secondary_restore" ]
@@ -270,8 +270,8 @@ end.each do |device, number|
     :recipes => [ "block_device::setup_block_device", "block_device::default" ]
 
   attribute "block_device/devices/#{device}/iops",
-    :display_name => "I/O Operations per Second",
-    :description => "The input/output operations per second (IOPS) that the volue can support. IOPS is currently only supported on Amazon EC2. Example: 500",
+    :display_name => "I/O Operations per Second (#{number})",
+    :description => "The input/output operations per second (IOPS) that the volume can support. IOPS is currently only supported on Amazon EC2. Example: 500",
     :type => "string",
     :required => "optional",
     :recipes => [ "block_device::setup_block_device", "block_device::default" ]

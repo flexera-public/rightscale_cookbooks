@@ -6,18 +6,14 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 # List of additional php modules
-set_unless[:app_php][:modules_list] = []
-
-# Optional attributes
-# By default php uses MySQL as the DB adapter
-set_unless[:app][:db_adapter] = "mysql"
+default[:app_php][:modules_list] = []
 
 # Calculated attributes
-# Defining apache user, module dependencies, and database adapter parameters depending on platform.
+# Defining module dependencies depending on platform.
 case platform
 when "ubuntu"
-  set[:app_php][:module_dependencies] = [ "proxy_http", "php5" ]
+  set[:app_php][:module_dependencies] = ["proxy_http", "php5"]
 when "centos", "redhat"
-  set[:app_php][:module_dependencies] = [ "proxy", "proxy_http" ]
+  set[:app_php][:module_dependencies] = ["proxy", "proxy_http"]
 end
 
