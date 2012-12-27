@@ -32,10 +32,14 @@ module RightScale
         ::File.delete(KEYFILE)
       end
 
+      # Create record in /root/.ssh/known_hosts
+      #
+      # @param host_key [string] host_key record: fqdn,ip ssh-rsa value
       def add_host_key(host_key)
+        host_key_record = "\n#{host_key}\n"
         Chef::Log.info("  Installing ssh hostkey for root.")
         ::File.open("/root/.ssh/known_hosts", "a") do |known_hosts|
-          known_hosts << host_key
+          known_hosts << host_key_record
           known_hosts.chmod(0600)
         end
       end
