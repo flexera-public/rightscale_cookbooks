@@ -38,7 +38,7 @@ end
 
 log "  Creating mysql directory in the block device..."
 directory DATA_DIR do
-  mode  "0755"
+  mode "0755"
   action :create
 end
 
@@ -46,7 +46,7 @@ log "  Moving database to block device and starting database..."
 
 # See cookbooks/db_<provider>/providers/default.rb for the "move-data_dir" and "start" actions.
 db DATA_DIR do
-  action [ :move_data_dir, :start ]
+  action [:move_data_dir, :start]
 end
 
 log "  Setting state of database to be 'initialized'..."
