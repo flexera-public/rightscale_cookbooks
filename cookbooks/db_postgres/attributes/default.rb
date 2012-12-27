@@ -15,7 +15,6 @@ default[:db_postgres][:port] = "5432"
 default[:db_postgres][:tmpdir] = "/tmp"
 default[:db_postgres][:ident_file] = ""
 default[:db_postgres][:pid_file] = ""
-default[:db_postgres][:bind_address] = cloud[:private_ips][0]
 
 # Platform specific attributes
 case platform
