@@ -125,22 +125,6 @@ module RightScale
       end
     end
 
-    # Extends chef attribute definition adding set_unless_deep_merge
-    #
-    # @param node [Hash] Node name
-    # @param src [Hash] Source attribute
-    # @param dst [Hash] Destination attribute
-    def self.set_unless_deep_merge(node, src, dst)
-      src.reduce(node) {|values, key| values[key]}.each_pair do |attribute, value|
-        case value
-        when Mash, Chef::Node::Attribute
-          set_unless_deep_merge(node, src + [attribute], dst + [attribute])
-        else
-          dst.reduce(node.set_unless) {|values, key| values[key]}[attribute] = value
-        end
-      end
-    end
-
     # Instance method for get_device_or_default
     # will call RightScale::BlockDeviceHelper.get_device_or_default with given parameters
     #
