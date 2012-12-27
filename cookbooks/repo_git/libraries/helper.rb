@@ -20,9 +20,14 @@ module RightScale
       # @raises [RuntimeError] if ssh key string is empty
       def create(ssh_key, check_host_key)
         @sshkey.create(ssh_key)
-        @sshkey.add_host_key(check_host_key)
 
-        check_host_key ? strict_check = "yes" : strict_check = "no"
+        if check_host_key.to_s.empty?
+          strict_check = "no"
+        else
+          Chef::Log.info(" DEBUG: SSH host key -#{check_host_key}-")
+          strict_check = "yes"
+          @sshkey.add_host_key(check_host_key)
+        end
 
         Chef::Log.info("  Creating GIT_SSH environment variable with options: StrictHostKeyChecking=#{strict_check}")
         ::File.open("#{SshKey::KEYFILE}.sh", "w") do |sshfile|
