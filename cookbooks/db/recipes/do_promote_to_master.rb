@@ -13,6 +13,10 @@ class Chef::Recipe
   include RightScale::Database::Helper
 end
 
+class Chef::Resource::RemoteRecipe
+  include RightScale::Database::Helper
+end
+
 # Verify initialized database
 # Check the node state to verify that we have correctly initialized this server.
 # See cookbooks/db/definitions/db_state_assert.rb for the "db_state_assert" definition.
