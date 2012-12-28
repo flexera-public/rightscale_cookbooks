@@ -14,24 +14,11 @@ apache_name = node[:apache][:dir].split("/").last
 log "  Apache name was #{apache_name}"
 log "  Apache log dir was #{apache_log_dir}"
 
-# Create physical directory holding the logs.
-directory "/mnt/ephemeral/log/#{apache_name}" do
-  action :create
-  recursive true
-end
-
-# If directory exists for any reason, delete it.
-# This should error out if there is content in the dir,
-# explicitly setting recursive to false to show behavior.
-directory apache_log_dir do
-  not_if { File.symlink?(apache_log_dir) }
-  recursive false
-  action :delete
-end
-
-# Create symlink from where apache logs to physical directory.
-link apache_log_dir do
-  to "/mnt/ephemeral/log/#{apache_name}"
+# Move apache log directory to ephemeral drive
+# See cookbooks/rightscale/definitions/rightscale_move_to_ephemeral.rb
+# for the "rightscale_move_to_ephemeral" definition.
+rightscale_move_to_ephemeral "#{apache_log_dir}" do
+  location_on_ephemeral "log/#{apache_name}"
 end
 
 # Include the public recipe for basic installation.
@@ -51,30 +38,11 @@ if node[:web_apache][:ssl_enable]
 end
 
 # Move default apache content files to ephemeral storage and make symlink.
-default_web_dir = "/var/www"
-content_web_dir = "/mnt/ephemeral/www"
-
-# Creates content_web_dir if it does not exists.
-# Gone after stop/start.
-directory content_web_dir do
-  action :create
-  recursive true
-end
-
-# If default_web_dir is not a link, move it's files to content_web_dir.
-# default_web_dir will later become a symlink to content_web_dir.
-bash "Moving #{default_web_dir} to #{content_web_dir}" do
-  not_if { File.symlink?(default_web_dir) }
-  flags "-ex"
-  code <<-EOH
-    mv #{default_web_dir}/* #{content_web_dir}
-    rmdir #{default_web_dir}
-  EOH
-end
-
-# Create symlink from default_web_dir to content_web_dir.
-link default_web_dir do
-  to content_web_dir
+# See cookbooks/rightscale/definitions/rightscale_move_to_ephemeral.rb
+# for the "rightscale_move_to_ephemeral" definition.
+rightscale_move_to_ephemeral "/var/www" do
+  location_on_ephemeral "www"
+  move_content true
 end
 
 # Apache Multi-Processing Module configuration.
