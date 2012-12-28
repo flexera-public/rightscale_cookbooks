@@ -192,7 +192,7 @@ action :setup_vhost do
     server_name node[:web_apache][:server_name]
     rails_env node[:app_passenger][:project][:environment]
     apache_install_dir node[:app_passenger][:apache][:install_dir]
-    apache_log_dir node[:app_passenger][:apache][:log_dir]
+    apache_log_dir node[:apache][:log_dir]
     ruby_bin node[:app_passenger][:ruby_bin]
     ruby_base_dir node[:app_passenger][:ruby_gem_base_dir]
     rails_spawn_method node[:app_passenger][:rails_spawn_method]

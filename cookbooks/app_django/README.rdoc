@@ -102,10 +102,6 @@ Note: Only "internal" cookbook attributes are described here. Descriptions of at
 * <tt>node[:app_django][:project][:opt_pip_list]</tt> - A list of additional python packages, required for django application
 * <tt>node[:app_django][:project][:custom_cmd]</tt> - A list of python commands required for django application initialization.
 
-====== Platform dependent
-
-* <tt>node[:app_django][:apache][:log_dir]</tt> - Path to apache log directory.
-
 === Templates:
 
 * <tt>apache_mod_wsgi_vhost.erb</tt> - Configuration for apache vhost file used in the <tt>app::setup_vhost</tt> recipe
