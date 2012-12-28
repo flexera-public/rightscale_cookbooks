@@ -9,7 +9,7 @@
 # When a slave database starts, it needs to determine which database it should use as
 # master.  If there is only one DB tagged as master, it will be chosen. Lineage is used to
 # restore the database from a backup created by the master.  Master DBs can contain it's lineage
-# in it's "rs_dbrepl:master_active" tag. This definition uses this logic to detemine what
+# in it's "rs_dbrepl:master_active" tag. This definition uses this logic to determine what
 # database should be master for the slave running it.
 #
 # @param [Symbol] action restore process to do before becoming a slave.
@@ -34,13 +34,13 @@ define :db_register_slave, :action => :primary_restore do
     # See cookbooks/rightscale/providers/server_collection.rb for the "load" action.
     r = rightscale_server_collection "master_servers" do
       tags 'rs_dbrepl:master_instance_uuid'
-      secondary_tags [ 'rs_dbrepl:master_active', 'server:private_ip_0' ]
+      secondary_tags ['rs_dbrepl:master_active', 'server:private_ip_0']
       action :nothing
     end
     # See cookbooks/rightscale/providers/server_collection.rb for the "load" action.
     r.run_action(:load)
 
-    # Finds the master matching lineage and sets the node attribs for
+    # Finds the master matching lineage and sets the node attributes for
     #   node[:db][:current_master_uuid]
     #   node[:db][:current_master_ip]
     #   node[:db][:this_is_master]
@@ -55,7 +55,7 @@ define :db_register_slave, :action => :primary_restore do
         node[:server_collection]["master_servers"].reverse_each do |id, tags|
           master_active_tag = tags.select { |s| s =~ /rs_dbrepl:master_active/ }
 
-          active,lineage = master_active_tag[0].split('-',2)
+          active, lineage = master_active_tag[0].split('-', 2)
 
           my_uuid = tags.detect { |u| u =~ /rs_dbrepl:master_instance_uuid/ }
           my_ip_0 = tags.detect { |i| i =~ /server:private_ip_0/ }
@@ -66,7 +66,7 @@ define :db_register_slave, :action => :primary_restore do
           collect[most_recent] = my_uuid, my_ip_0, ec2_instance_id
 
           # If this master has the right lineage, break, else continue checking.
-          if ( lineage && lineage == node[:db][:backup][:lineage] )
+          if (lineage && lineage == node[:db][:backup][:lineage])
             Chef::Log.info "  #{lineage} : Lineage match found"
             break
           else
@@ -77,7 +77,7 @@ define :db_register_slave, :action => :primary_restore do
 
         # If lineage was not part of the master_active_tag tag
         # use the first (or only) found master
-        unless ( lineage && lineage == node[:db][:backup][:lineage] )
+        unless (lineage && lineage == node[:db][:backup][:lineage])
           Chef::Log.info "  Lineage not found in tags, defaulting to first discovered master"
         end
 

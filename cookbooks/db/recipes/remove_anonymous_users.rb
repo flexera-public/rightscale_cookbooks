@@ -10,7 +10,7 @@
 # For more information, visit 
 # http://dev.mysql.com/doc/refman/5.5/en/default-privileges.html
 
-# This recipe removes anonymous users acces from any hosts except localhost to
+# This recipe removes anonymous users access from any hosts except localhost to
 # prevent remote unauthorized access.
 
 rightscale_marker :begin
