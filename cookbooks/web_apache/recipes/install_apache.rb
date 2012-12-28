@@ -15,7 +15,8 @@ log "  Apache name was #{apache_name}"
 log "  Apache log dir was #{apache_log_dir}"
 
 # Move apache log directory to ephemeral drive
-# See cookbooks/rightscale/definitions/rightscale_move_to_ephemeral.rb for the "rightscale_move_to_ephemeral" definition.
+# See cookbooks/rightscale/definitions/rightscale_move_to_ephemeral.rb
+# for the "rightscale_move_to_ephemeral" definition.
 rightscale_move_to_ephemeral "#{apache_log_dir}" do
   location_on_ephemeral "log/#{apache_name}"
 end
