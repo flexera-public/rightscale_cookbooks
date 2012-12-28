@@ -275,6 +275,15 @@ end.each do |device, number|
     :type => "string",
     :required => "optional",
     :recipes => [ "block_device::setup_block_device", "block_device::default" ]
+
+  attribute "block_device/devices/#{device}/device_type",
+    :display_name => "Device Type",
+    :description => "The type of the device - SATA or SSD. This attribute is supported only on Rackspace Open Cloud.",
+    :type => "string",
+    :required => "optional",
+    :choice => ["SATA", "SSD"],
+    :default => "SATA",
+    :recipes => ["block_device::setup_block_device", "block_device::default"]
 end
 
 attribute "block_device/terminate_safety",
