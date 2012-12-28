@@ -17,14 +17,14 @@ attribute :nickname, :kind_of => String, :name_attribute => true
 attribute :cloud, :required => true
 attribute :hypervisor, :kind_of => String
 attribute :mount_point, :kind_of => String, :required => true
-attribute :is_master, :equal_to => [ true, false ], :default => false
-attribute :force, :equal_to => [ true, false ], :default => false
+attribute :is_master, :equal_to => [true, false], :default => false
+attribute :force, :equal_to => [true, false], :default => false
 
 # == Backup/Restore options
 attribute :lineage, :kind_of => String
 attribute :timestamp_override, :kind_of => String # Restore only 
 
- 
+
 # == Primary backup schedule options
 attribute :cron_backup_minute, :kind_of => String
 attribute :cron_backup_hour, :kind_of => String
@@ -72,7 +72,7 @@ attribute :secondary_secret, :kind_of => String
 
 
 # == Cloud specific options
-attribute :rackspace_snet, :equal_to => [ true, false ], :default => true
+attribute :rackspace_snet, :equal_to => [true, false], :default => true
 
 
 # = General Block_device Actions

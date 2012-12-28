@@ -47,10 +47,10 @@ module RightScale
 
       # Create and return BlockDevice object
       ::RightScale::Tools::BlockDevice.factory(
-        :lvm,                     # Backup using local LVM snapshot + cloud persistence.
-        node[:cloud][:provider],  # The local cloud that we are currently running.
+        :lvm, # Backup using local LVM snapshot + cloud persistence.
+        node[:cloud][:provider], # The local cloud that we are currently running.
         new_resource.mount_point,
-        modified_nickname,        # Nickname for device.
+        modified_nickname, # Nickname for device.
         options)
     end
 
@@ -84,7 +84,6 @@ module RightScale
     def do_for_block_devices(block_device, &block)
       RightScale::BlockDeviceHelper.do_for_block_devices(block_device, &block)
     end
-
 
     # Helper to perform perform actions to a set of all available block devices
     #
@@ -145,7 +144,7 @@ module RightScale
         break nil if values == nil
         values[key]
       end
-      value = keys.reduce(node[:block_device][:devices][:default]) {|values, key| values[key]} if !value || value.empty?
+      value = keys.reduce(node[:block_device][:devices][:default]) { |values, key| values[key] } if !value || value.empty?
       value
     end
 
@@ -156,7 +155,7 @@ module RightScale
     # @param filesystem_type [String] filesystem type
     def ephemeral_fstab_and_mtab_checks(fstab_entry, mount_point, filesystem_type)
       fstab_exists = File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$")
-      mtab_exists = File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " )
+      mtab_exists = File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} ")
       fstab_exists && mtab_exists
     end
   end

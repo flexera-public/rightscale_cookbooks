@@ -58,9 +58,9 @@ else
   filesystem_type = "xfs"
 end
 
-root_device = `mount`.find {|dev| dev.include? " on / "}.split[0]
+root_device = `mount`.find { |dev| dev.include? " on / " }.split[0]
 
-current_mnt_device = `mount`.find {|dev| dev.include? " on #{ephemeral_mount_point} "}
+current_mnt_device = `mount`.find { |dev| dev.include? " on #{ephemeral_mount_point} " }
 current_mnt_device = current_mnt_device ? current_mnt_device.split[0] : nil
 
 # Only EC2, Azure, and openstack clouds are currently supported
@@ -83,7 +83,7 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
       # /dev/xvdb in /proc/partitions.  unmap function returns that
       device = Pathname.new(device).realpath.to_s if File.exists?(device)
       # verify that device is actually on the instance and is a blockSpecial
-      if ( File.exists?(device) && File.ftype(device) == "blockSpecial" )
+      if (File.exists?(device) && File.ftype(device) == "blockSpecial")
         my_devices << device
       else
         log "  WARNING: Cannot use device #{device} - skipping"
@@ -98,7 +98,7 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
   if cloud == 'azure'
     device = '/dev/sdb1'
     device = Pathname.new(device).realpath.to_s if File.exists?(device)
-    if ( File.exists?(device) && File.ftype(device) == "blockSpecial" )
+    if (File.exists?(device) && File.ftype(device) == "blockSpecial")
       my_devices << device
     else
       log "  WARNING: Cannot use device #{device} - skipping"
@@ -112,18 +112,18 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
   else
     # determine mnt_device from root_device name
     mnt_device = current_mnt_device ||
-                 case root_device
-                 when /sda/
-                   "/dev/sdb"
-                 when /sde/
-                   "/dev/sdf"
-                 when /vda/
-                   "/dev/vdb"
-                 when /xvda/
-                   "/dev/xvdb"
-                 when /xvde/
-                   (node[:platform] == "redhat") ? "/dev/xvdj" : "/dev/xvdf"
-                 end
+      case root_device
+      when /sda/
+        "/dev/sdb"
+      when /sde/
+        "/dev/sdf"
+      when /vda/
+        "/dev/vdb"
+      when /xvda/
+        "/dev/xvdb"
+      when /xvde/
+        (node[:platform] == "redhat") ? "/dev/xvdj" : "/dev/xvdf"
+      end
 
     # Generate fstab entry here
     fstab_entry = "/dev/vg-data/#{lvm_device}\t#{mount_point}\t#{filesystem_type}\t#{options}\t0 0"
@@ -210,7 +210,7 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
     directory ephemeral_mount_point do
       recursive false
       action :delete
-      only_if {cloud == 'azure'}
+      only_if { cloud == 'azure' }
     end
   end
 else
