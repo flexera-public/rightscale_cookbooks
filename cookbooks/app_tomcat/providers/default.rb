@@ -195,13 +195,9 @@ action :setup_vhost do
 
     when "centos", "redhat"
 
-      package "apr-devel" do
-        options "-y"
-      end
+      package "apr-devel"
 
-      package "httpd-devel" do
-        options "-y"
-      end
+      package "httpd-devel"
 
       # Preparing to install tomcat connectors
       cookbook_file "/tmp/#{connectors_source}" do
