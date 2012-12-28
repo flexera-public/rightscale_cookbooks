@@ -109,7 +109,7 @@ end
 if node[:platform] =~ /redhat|centos/
   cookbook_file "/etc/init.d/collectd" do
     source "collectd-init-centos-with-monitor"
-    mode 0755
+    mode "0755"
     notifies :restart, resources(:service => "collectd")
   end
 end

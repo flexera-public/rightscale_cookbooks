@@ -26,9 +26,9 @@ do_for_block_devices node[:block_device] do |device|
   block_device_json = "/var/lib/rightscale_block_device_#{device}.json"
 
   file block_device_json do
-    owner 'root'
-    group 'root'
-    mode 0644
+    owner "root"
+    group "root"
+    mode "0644"
     content JSON.dump({:block_device => {:devices_to_use => device}})
     backup false
   end

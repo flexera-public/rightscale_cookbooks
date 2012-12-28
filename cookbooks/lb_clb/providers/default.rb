@@ -40,7 +40,7 @@ action :attach do
     source 'clb_attach_exec.erb'
     owner 'root'
     group 'root'
-    mode 0700
+    mode "0700"
     backup false
     cookbook "lb_clb"
     variables(
@@ -109,7 +109,7 @@ action :detach do
     source 'clb_detach_exec.erb'
     owner 'root'
     group 'root'
-    mode 0700
+    mode "0700"
     backup false
     cookbook "lb_clb"
     variables(

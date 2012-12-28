@@ -261,7 +261,7 @@ action :install_server do
   directory "#{node[:db][:socket]}" do
     owner "postgres"
     group "postgres"
-    mode 0770
+    mode "0770"
     recursive true
   end
 
