@@ -77,9 +77,10 @@ action :install do
   end
 
   # Moving tomcat logs to ephemeral
-  # See cookbooks/rightscale/definitions/rightscale_move_to_ephemeral.rb for the "rightscale_move_to_ephemeral" definition.
+  # See cookbooks/rightscale/definitions/rightscale_move_to_ephemeral.rb
+  # for the "rightscale_move_to_ephemeral" definition.
   rightscale_move_to_ephemeral "/var/log/tomcat#{version}" do
-    location_on_ephemeral "/tomcat#{version}"
+    location_on_ephemeral "tomcat#{version}"
     user node[:app][:user]
     group node[:app][:group]
   end

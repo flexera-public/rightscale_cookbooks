@@ -17,7 +17,7 @@ log "  Apache log dir was #{apache_log_dir}"
 # Move apache log directory to ephemeral drive
 # See cookbooks/rightscale/definitions/rightscale_move_to_ephemeral.rb for the "rightscale_move_to_ephemeral" definition.
 rightscale_move_to_ephemeral "#{apache_log_dir}" do
-  location_on_ephemeral "/log/#{apache_name}"
+  location_on_ephemeral "log/#{apache_name}"
 end
 
 # Include the public recipe for basic installation.
@@ -37,9 +37,10 @@ if node[:web_apache][:ssl_enable]
 end
 
 # Move default apache content files to ephemeral storage and make symlink.
-# See cookbooks/rightscale/definitions/rightscale_move_to_ephemeral.rb for the "rightscale_move_to_ephemeral" definition.
+# See cookbooks/rightscale/definitions/rightscale_move_to_ephemeral.rb
+# for the "rightscale_move_to_ephemeral" definition.
 rightscale_move_to_ephemeral "/var/www" do
-  location_on_ephemeral "/www"
+  location_on_ephemeral "www"
   move_content true
 end
 
