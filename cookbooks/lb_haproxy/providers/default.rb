@@ -105,21 +105,21 @@ action :add_vhost do
 
   # Adds current pool to pool_list conf to preserve lb/pools order
   template "/etc/haproxy/#{node[:lb][:service][:provider]}.d/pool_list.conf" do
-     source "haproxy_backend_list.erb"
-     owner "haproxy"
-     group "haproxy"
-     mode 0600
-     backup false
-     cookbook "lb_haproxy"
-     variables(
-       :pool_list => node[:lb][:pools]
-     )
+    source "haproxy_backend_list.erb"
+    owner "haproxy"
+    group "haproxy"
+    mode 0600
+    backup false
+    cookbook "lb_haproxy"
+    variables(
+      :pool_list => node[:lb][:pools]
+    )
   end
 
   # See cookbooks/lb_haproxy/definitions/haproxy_backend.rb for the definition
   # of "lb_haproxy_backend".
-  lb_haproxy_backend  "create main backend section" do
-    pool_name  pool_name
+  lb_haproxy_backend "create main backend section" do
+    pool_name pool_name
   end
 
   # Calls the "advanced_configs" action.
@@ -201,7 +201,7 @@ action :advanced_configs do
   end
 
   pool_name = new_resource.pool_name
-  pool_name_full =  new_resource.pool_name_full
+  pool_name_full = new_resource.pool_name_full
   log "  Current pool name is #{pool_name}"
   log "  Current FULL pool name is #{pool_name_full}"
 
@@ -210,16 +210,16 @@ action :advanced_configs do
   # acl url_serverid  path_beg    /serverid
   # acl ns-ss-db1-test-rightscale-com_acl  hdr_dom(host) -i ns-ss-db1.test.rightscale.com
   template "/etc/haproxy/#{node[:lb][:service][:provider]}.d/acl_#{pool_name}.conf" do
-     source "haproxy_backend_acl.erb"
-     owner "haproxy"
-     group "haproxy"
-     mode 0600
-     backup false
-     cookbook "lb_haproxy"
-     variables(
-       :pool_name => pool_name,
-       :pool_name_full => pool_name_full
-     )
+    source "haproxy_backend_acl.erb"
+    owner "haproxy"
+    group "haproxy"
+    mode 0600
+    backup false
+    cookbook "lb_haproxy"
+    variables(
+      :pool_name => pool_name,
+      :pool_name_full => pool_name_full
+    )
   end
 
   # Template to generate acl sections for haproxy config file
