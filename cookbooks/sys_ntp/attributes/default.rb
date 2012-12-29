@@ -6,10 +6,10 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 # Choosing the correct naming for NTP service
-case platform 
+case platform
 when "ubuntu"
   default[:sys_ntp][:service] = "ntp"
-when "redhat","centos"
+when "redhat", "centos"
   default[:sys_ntp][:service] = "ntpd"
 end
 
