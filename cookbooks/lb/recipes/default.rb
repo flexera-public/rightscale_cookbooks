@@ -15,7 +15,7 @@ log "  Setup default load balancer resource."
 
 # Sets provider for each pool name.
 # See cookbooks/app/libraries/helper.rb for the "pool_names" method.
-pool_names(node[:lb][:pools]).each do | pool_name |
+pool_names(node[:lb][:pools]).each do |pool_name|
   lb pool_name do
     provider node[:lb][:service][:provider]
     persist true # Store this resource in node between converges.
