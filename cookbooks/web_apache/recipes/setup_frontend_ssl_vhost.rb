@@ -22,7 +22,7 @@ apache_site "000-default" do
   enable false
 end
 
-ssl_dir = "/etc/#{node[:apache][:config_subdir]}/rightscale.d/key"
+ssl_dir = "/etc/#{node[:web_apache][:config_subdir]}/rightscale.d/key"
 
 # Creating directory where certificate files will be stored
 directory ssl_dir do

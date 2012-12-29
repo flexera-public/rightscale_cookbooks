@@ -175,7 +175,7 @@ action :setup_vhost do
 
   log "  Setup mod_jk vhost"
   # Setup mod_jk vhost start
-  etc_apache = "/etc/#{node[:apache][:config_subdir]}"
+  etc_apache = "/etc/#{node[:web_apache][:config_subdir]}"
 
   # Check if mod_jk is installed
   if !::File.exists?("#{etc_apache}/conf.d/mod_jk.conf")
@@ -229,7 +229,7 @@ action :setup_vhost do
       source "tomcat_workers.properties.erb"
       variables(
         :version => version,
-        :config_subdir => node[:apache][:config_subdir]
+        :config_subdir => node[:web_apache][:config_subdir]
       )
       cookbook 'app_tomcat'
     end

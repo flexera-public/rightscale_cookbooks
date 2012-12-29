@@ -331,7 +331,7 @@ action :setup_monitoring do
     cookbook "app_passenger"
     source "collectd_passenger.conf.erb"
     variables(
-      :apache_executable => node[:apache][:config_subdir],
+      :apache_executable => node[:web_apache][:config_subdir],
       :apache_user => node[:app][:user],
       :plugin_path => plugin_path
     )

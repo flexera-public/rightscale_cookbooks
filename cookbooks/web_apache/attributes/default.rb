@@ -9,14 +9,14 @@
 # worker = multithreaded (when you need a great deal of scalability)
 # prefork = single-threaded (when you need stability or compatibility with older software)
 # for more info please visit: http://httpd.apache.org/docs/2.0/en/mpm.html
-default[:apache][:mpm] = "prefork"
+default[:web_apache][:mpm] = "prefork"
 
 # Distribution specific config dir
 case platform
 when "ubuntu"
-  set[:apache][:config_subdir] = "apache2"
+  set[:web_apache][:config_subdir] = "apache2"
 when "centos", "redhat"
-  set[:apache][:config_subdir] = "httpd"
+  set[:web_apache][:config_subdir] = "httpd"
 end
 
 # Disabling ssl by default
