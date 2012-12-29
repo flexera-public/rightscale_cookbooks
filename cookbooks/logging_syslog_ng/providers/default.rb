@@ -8,7 +8,7 @@
 # Stop syslog-ng
 action :stop do
   service "syslog-ng" do
-    action :start
+    action :stop
     persist false
   end
 end
