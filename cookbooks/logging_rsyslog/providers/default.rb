@@ -93,8 +93,8 @@ action :configure do
 
     # Writing configuration template.
     template value_for_platform(
-      ["ubuntu"] => { "default" => "/etc/rsyslog.d/client.conf" },
-      ["centos", "redhat"] => { "5.8" => "/etc/rsyslog.conf", "default" => "/etc/rsyslog.d/client.conf" }
+      ["ubuntu"] => {"default" => "/etc/rsyslog.d/client.conf"},
+      ["centos", "redhat"] => {"5.8" => "/etc/rsyslog.conf", "default" => "/etc/rsyslog.d/client.conf"}
     ) do
       source "client.conf.erb"
       cookbook "logging_rsyslog"
@@ -137,8 +137,8 @@ action :configure_server do
 
   # Writing configuration template.
   template value_for_platform(
-    ["ubuntu"] => { "default" => "/etc/rsyslog.d/10-server.conf" },
-    ["centos", "redhat"] => { "5.8" => "/etc/rsyslog.conf", "default" => "/etc/rsyslog.d/10-server.conf" }
+    ["ubuntu"] => {"default" => "/etc/rsyslog.d/10-server.conf"},
+    ["centos", "redhat"] => {"5.8" => "/etc/rsyslog.conf", "default" => "/etc/rsyslog.d/10-server.conf"}
   ) do
     source "server.conf.erb"
     cookbook "logging_rsyslog"

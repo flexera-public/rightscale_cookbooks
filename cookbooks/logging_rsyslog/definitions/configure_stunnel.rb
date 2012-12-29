@@ -19,12 +19,12 @@ define :configure_stunnel, :accept => "514", :connect => "515", :client => nil d
   package "stunnel"
 
   owner = value_for_platform(
-    ["ubuntu"] => { "default" => "stunnel4" },
-    ["centos", "redhat"] => { "default" => "nobody" }
+    ["ubuntu"] => {"default" => "stunnel4"},
+    ["centos", "redhat"] => {"default" => "nobody"}
   )
   group = value_for_platform(
-    ["ubuntu"] => { "default" => "stunnel4" },
-    ["centos", "redhat"] => { "default" => "nobody" }
+    ["ubuntu"] => {"default" => "stunnel4"},
+    ["centos", "redhat"] => {"default" => "nobody"}
   )
 
   # Saving certificate if provided by user and restricting access
@@ -46,14 +46,14 @@ define :configure_stunnel, :accept => "514", :connect => "515", :client => nil d
     variables(
       :client => params[:client],
       :chroot => value_for_platform(
-        ["ubuntu"] => { "default" => "/var/lib/stunnel4/" },
-        ["centos", "redhat"] => { "default" => "/var/run/stunnel/" }
+        ["ubuntu"] => {"default" => "/var/lib/stunnel4/"},
+        ["centos", "redhat"] => {"default" => "/var/run/stunnel/"}
       ),
       :owner => owner,
       :group => group,
       :pid => value_for_platform(
-        ["ubuntu"] => { "default" => "/stunnel4.pid" },
-        ["centos", "redhat"] => { "default" => "/stunnel.pid" }
+        ["ubuntu"] => {"default" => "/stunnel4.pid"},
+        ["centos", "redhat"] => {"default" => "/stunnel.pid"}
       ),
       :accept => params[:accept],
       :connect => params[:connect]
@@ -91,8 +91,8 @@ define :configure_stunnel, :accept => "514", :connect => "515", :client => nil d
 
   # Enabling stunnel to start on system boot and restarting to apply new settings
   service value_for_platform(
-    ["ubuntu"] => { "default" => "stunnel4" },
-    ["centos", "redhat"] => { "default" => "stunnel" }
+    ["ubuntu"] => {"default" => "stunnel4"},
+    ["centos", "redhat"] => {"default" => "stunnel"}
   ) do
     supports :reload => true, :restart => true, :start => true, :stop => true
     action [:enable, :restart]
