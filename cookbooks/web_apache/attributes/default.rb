@@ -6,30 +6,12 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 
-# Recommended attributes
-
-# Admin email
-default[:apache][:contact] = "root@localhost"
-
-# Optional attributes
-
-# Turning off Keepalive to prevent conflicting HAproxy
-default[:apache][:keepalive] = "Off"
-
-# Turn on generation of "full" apache status
-default[:apache][:extended_status] = "On"
-
 # worker = multithreaded (when you need a great deal of scalability)
 # prefork = single-threaded (when you need stability or compatibility with older software)
 # for more info please visit: http://httpd.apache.org/docs/2.0/en/mpm.html
 default[:apache][:mpm] = "prefork"
 
-# Security: Configuring Server Signature
-default[:apache][:serversignature] = "Off "
-
-# Calculated attributes
-
-# DISTRO specific config dir
+# Distribution specific config dir
 case platform
 when "ubuntu"
   set[:apache][:config_subdir] = "apache2"

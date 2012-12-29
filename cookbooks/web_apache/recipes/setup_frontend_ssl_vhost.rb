@@ -14,7 +14,7 @@ end
 
 # Setup Apache vhost on following ports
 https_port = "443"
-http_port  = "80"
+http_port = "80"
 
 # Disable default vhost.
 # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_site.rb for the "apache_site" definition.
@@ -22,7 +22,7 @@ apache_site "000-default" do
   enable false
 end
 
-ssl_dir =  "/etc/#{node[:apache][:config_subdir]}/rightscale.d/key"
+ssl_dir = "/etc/#{node[:apache][:config_subdir]}/rightscale.d/key"
 
 # Creating directory where certificate files will be stored
 directory ssl_dir do
@@ -48,7 +48,7 @@ end
 log "  Using passphrase to decrypt certificate"
 bash "decrypt openssl keyfile" do
   flags "-ex"
-  environment({ :OPT_SSL_PASSPHRASE => node[:web_apache][:ssl_passphrase] })
+  environment({:OPT_SSL_PASSPHRASE => node[:web_apache][:ssl_passphrase]})
   code "openssl rsa -passin env:OPT_SSL_PASSPHRASE -in #{ssl_key_file} -passout env:OPT_SSL_PASSPHRASE -out #{ssl_key_file}"
   only_if { node[:web_apache][:ssl_passphrase]!=nil }
 end
