@@ -76,7 +76,6 @@ refer to the db cookbook readme.
 ===== General attributes
 
 * <tt>node[:db_mysql][:collectd_master_slave_mode]</tt> - The mode for collectd in MySQL server.
-* <tt>node[:db_mysql][:previous_master]</tt> - The previous master of MySQL server.
 * <tt>node[:db_mysql][:port]</tt> - The port on which MySQL server listens.
 * <tt>node[:db_mysql][:log_bin_enabled]</tt> - Determines whether binary logging is enabled or disabled.
 * <tt>node[:db_mysql][:datadir]</tt> - The data directory for MySQL server where the database contents are stored.
