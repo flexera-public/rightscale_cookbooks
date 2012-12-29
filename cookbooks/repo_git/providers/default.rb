@@ -54,9 +54,9 @@ action :pull do
     git_action = :sync
   else
     ruby_block "Backup of existing project directory" do
-      only_if do ::File.directory?(destination) end
+      only_if { ::File.directory?(destination) }
       block do
-        ::File.rename(destination.sub(/\/+$/,''), destination.sub(/\/+$/,'') + ::Time.now.strftime("%Y%m%d%H%M"))
+        ::File.rename(destination.sub(/\/+$/, ''), destination.sub(/\/+$/, '') + ::Time.now.strftime("%Y%m%d%H%M"))
       end
     end
     log "  Downloading new Git project repository"
@@ -89,7 +89,7 @@ action :capistrano_pull do
   ruby_block "Before deploy" do
     block do
       # See cookbooks/repo_git/libraries/default.rb for the "create" method.
-       RightScale::Repo::GitSshKey.new.create(new_resource.credential)
+      RightScale::Repo::GitSshKey.new.create(new_resource.credential)
     end
   end
 
@@ -114,15 +114,15 @@ action :capistrano_pull do
   # Applying capistrano style deployment
   # See cookbooks/repo/definition/repo_capistranize.rb for the "repo_capistranize" definition.
   repo_capistranize "Source repo" do
-    repository                 repository
-    revision                   revision
-    destination                destination
-    app_user                   app_user
-    purge_before_symlink       purge_before_symlink
+    repository repository
+    revision revision
+    destination destination
+    app_user app_user
+    purge_before_symlink purge_before_symlink
     create_dirs_before_symlink create_dirs_before_symlink
-    symlinks                   symlinks
-    scm_provider               scm_provider
-    environment                environment
+    symlinks symlinks
+    scm_provider scm_provider
+    environment environment
   end
 
   # Delete SSH key & clear GIT_SSH
