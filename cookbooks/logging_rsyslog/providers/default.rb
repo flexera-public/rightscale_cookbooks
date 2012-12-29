@@ -8,7 +8,7 @@
 # Stop rsyslog
 action :stop do
   service "rsyslog" do
-    action :start
+    action :stop
     persist false
   end
 end
