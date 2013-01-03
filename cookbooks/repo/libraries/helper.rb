@@ -36,12 +36,17 @@ module RightScale
       #
       # @param host_key [string] host_key record: fqdn,ip ssh-rsa value
       def add_host_key(host_key)
-        host_key_record = "\n#{host_key}\n"
-        Chef::Log.info("  Installing ssh hostkey for root.")
-        ::File.open("/root/.ssh/known_hosts", "a") do |known_hosts|
-          known_hosts << host_key_record
-          known_hosts.chmod(0600)
+        host_file = "/root/.ssh/known_hosts"
+        if ::File.exists?("#{host_file}") && ::File.readlines(host_file).grep("#{host_key}\n").any?
+          Chef::Log.info("  Skipping key installation. Looks like the key already exists.")
+        else
+          Chef::Log.info("  Installing ssh host key for root.")
+          ::File.open(host_file, "a") do |known_hosts|
+            known_hosts << "#{host_key}\n"
+            known_hosts.chmod(0600)
+          end
         end
+
       end
 
     end
