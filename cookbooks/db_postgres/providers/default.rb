@@ -153,13 +153,6 @@ action :install_client do
 
   # Install PostgreSQL package(s)
 
-  node[:db][:socket] = value_for_platform(
-    ["centos", "redhat"] => {
-      "default" => "/var/run/postgresql"
-    },
-    "default" => ""
-  )
-
   node[:db_postgres][:client_packages_install] = value_for_platform(
     ["centos", "redhat"] => {
       "default" => [
@@ -191,7 +184,7 @@ action :install_client do
     end
 
     packages = node[:db_postgres][:client_packages_install]
-    log "Packages to install: #{packages.join(", ")}"
+    log "  Packages to install: #{packages.join(", ")}"
     packages.each do |p|
       package p do
         action :install
@@ -255,15 +248,6 @@ action :install_server do
     action :stop
   end
 
-
-  # Create the Socket directory
-  #directory "/var/run/postgresql" do
-  directory "#{node[:db][:socket]}" do
-    owner "postgres"
-    group "postgres"
-    mode "0770"
-    recursive true
-  end
 
   # Setup postgresql.conf
   # template_source = "postgresql.conf.erb"

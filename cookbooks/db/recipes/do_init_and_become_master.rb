@@ -36,7 +36,7 @@ block_device NICKNAME do
   action :create
 end
 
-log "  Creating mysql directory in the block device..."
+log "  Creating directory in the block device..."
 directory DATA_DIR do
   mode "0755"
   action :create
