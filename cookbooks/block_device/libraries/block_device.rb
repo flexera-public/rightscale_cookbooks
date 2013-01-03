@@ -175,5 +175,21 @@ module RightScale
       mtab_exists = File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " )
       fstab_exists && mtab_exists
     end
+
+    def set_override_attrs(lineage,lineage_override, restore_timestamp_override)
+      #lineage = get_device_or_default(node, device, :backup, :lineage)
+      #lineage_override = get_device_or_default(node, device, :backup, :lineage_override)
+      #restore_timestamp_override = get_device_or_default(node, device, :backup, :timestamp_override)
+
+      restore_lineage = lineage_override == nil || lineage_override.empty? ? lineage : lineage_override
+      Chef::Log.info "  Input lineage #{restore_lineage.inspect}"
+      Chef::Log.info "  Input lineage_override #{lineage_override.inspect}"
+      Chef::Log.info "  Using lineage #{restore_lineage.inspect}"
+      Chef::Log.info "  Input timestamp_override #{restore_timestamp_override.inspect}"
+      restore_timestamp_override ||= ""
+      value = [restore_timestamp_override, restore_lineage]
+      value
+    end
+
   end
 end
