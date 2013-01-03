@@ -251,22 +251,6 @@
       "description": "Prevents the accidental running of the block_device::do_teminate_server recipe. The recipe will only run if the input variable is overridden and set to \"off\".",
       "display_name": "Terminate Safety"
     },
-    "block_device/devices/device2/device_type": {
-      "required": "optional",
-      "calculated": false,
-      "choice": [
-        "SATA",
-        "SSD"
-      ],
-      "default": "SATA",
-      "type": "string",
-      "recipes": [
-        "block_device::setup_block_device",
-        "block_device::default"
-      ],
-      "description": "The type of the device - SATA or SSD. This attribute is supported only on Rackspace Open Cloud.",
-      "display_name": "Device Type"
-    },
     "block_device/devices/device2/backup/primary/cron/hour": {
       "required": "optional",
       "calculated": false,
@@ -358,22 +342,6 @@
       ],
       "description": "The maximum number of primary backups to keep in addition to those being rotated.",
       "display_name": "Backup Max Snapshots (2)"
-    },
-    "block_device/devices/device1/device_type": {
-      "required": "optional",
-      "calculated": false,
-      "choice": [
-        "SATA",
-        "SSD"
-      ],
-      "default": "SATA",
-      "type": "string",
-      "recipes": [
-        "block_device::setup_block_device",
-        "block_device::default"
-      ],
-      "description": "The type of the device - SATA or SSD. This attribute is supported only on Rackspace Open Cloud.",
-      "display_name": "Device Type"
     },
     "block_device/devices/device1/backup/primary/cron/hour": {
       "required": "optional",
@@ -687,6 +655,22 @@
       "description": "The number of daily primary backups to keep (i.e., rotation size).",
       "display_name": "Keep Daily Backups (2)"
     },
+    "block_device/devices/device1/volume_type": {
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+        "SATA",
+        "SSD"
+      ],
+      "default": "SATA",
+      "type": "string",
+      "recipes": [
+        "block_device::setup_block_device",
+        "block_device::default"
+      ],
+      "description": "Type of the volume - SATA or SSD. This attribute is supported only on Rackspace Open Cloud and ignored on other clouds.",
+      "display_name": "Volume Type"
+    },
     "block_device/devices/device1/backup/primary/keep/monthly": {
       "required": "optional",
       "calculated": false,
@@ -727,6 +711,22 @@
       ],
       "description": "The secondary backup storage cloud. Specify 'S3' for Amazon, and 'cloudfiles' for Rackspace.",
       "display_name": "Secondary Backup Storage Cloud (default)"
+    },
+    "block_device/devices/device2/volume_type": {
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+        "SATA",
+        "SSD"
+      ],
+      "default": "SATA",
+      "type": "string",
+      "recipes": [
+        "block_device::setup_block_device",
+        "block_device::default"
+      ],
+      "description": "Type of the volume - SATA or SSD. This attribute is supported only on Rackspace Open Cloud and ignored on other clouds.",
+      "display_name": "Volume Type"
     },
     "block_device/devices/device1/backup/primary/keep/weekly": {
       "required": "optional",
