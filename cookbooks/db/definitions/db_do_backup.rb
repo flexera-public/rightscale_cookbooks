@@ -28,7 +28,7 @@ define :db_do_backup, :backup_type => "primary" do
   NICKNAME = get_device_or_default(node, :device1, :nickname)
   DATA_DIR = node[:db][:data_dir]
 
-  do_backup_type  = params[:backup_type] == "primary" ? "primary" : "secondary"
+  do_backup_type = params[:backup_type] == "primary" ? "primary" : "secondary"
 
   log "  Checking db_init_status making sure db ready for backup"
 
@@ -42,7 +42,7 @@ define :db_do_backup, :backup_type => "primary" do
 
   # Verify initialized database
   # Check database state to verify that we have correctly initialized this server.
-  # See cookbooks/db/defintion/db_state_assert.rb for the "db_state_assert" definition.
+  # See cookbooks/db/definitions/db_state_assert.rb for the "db_state_assert" definition.
   db_state_assert :either
 
   log "  Performing pre-backup check..."
@@ -57,7 +57,7 @@ define :db_do_backup, :backup_type => "primary" do
   # See cookbooks/db_<provider>/providers/default.rb for the "lock" and "write_backup_info" actions.
   db DATA_DIR do
     timeout node[:db][:init_timeout]
-    action [ :lock, :write_backup_info ]
+    action [:lock, :write_backup_info]
   end
 
   log "  Performing (#{do_backup_type} backup) Snapshot with lineage #{node[:db][:backup][:lineage]}.."
@@ -69,7 +69,7 @@ define :db_do_backup, :backup_type => "primary" do
   end
 
   log "  Performing unlock DB..."
-  # See cookbooks/db_<provider>/providers/defaul.rb for the "unlock" action.
+  # See cookbooks/db_<provider>/providers/default.rb for the "unlock" action.
   db DATA_DIR do
     action :unlock
   end

@@ -9,7 +9,7 @@
 action :stop do
   log "  Running stop sequence"
   service "apache2" do
-    action :start
+    action :stop
     persist false
   end
 end
@@ -45,8 +45,8 @@ end
 action :install do
   # Installing required packages
   packages = new_resource.packages
- 
-  if not packages.nil?
+
+  unless packages.nil?
     log "  Packages which will be installed #{packages}"
 
     packages.each do |p|

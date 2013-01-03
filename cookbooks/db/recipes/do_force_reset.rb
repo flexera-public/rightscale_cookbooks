@@ -58,7 +58,7 @@ log "  Resetting database, then starting database..."
 
 # See cookbooks/db_<provider>/providers/default.rb for the "reset" and "start" action.
 db DATA_DIR do
-  action [ :reset, :start ]
+  action [:reset, :start]
 end
 
 log "  Setting database state to 'uninitialized'..."

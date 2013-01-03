@@ -24,13 +24,13 @@ attribute :restore_process, :kind_of => Symbol, :default => :primary_restore
 attribute :timeout, :kind_of => String, :default => "60"
 
 # == Privilege options
-attribute :privilege, :equal_to => [ "administrator", "user" ], :default => "administrator"
+attribute :privilege, :equal_to => ["administrator", "user"], :default => "administrator"
 attribute :privilege_username, :kind_of => String
 attribute :privilege_password, :kind_of => String
 attribute :privilege_database, :kind_of => String, :default => "*.*"
 
 # == Firewall options
-attribute :enable, :equal_to => [ true, false ], :default => true
+attribute :enable, :equal_to => [true, false], :default => true
 attribute :ip_addr, :kind_of => String
 attribute :machine_tag, :kind_of => String, :regex => /^([^:]+):(.+)=.+/
 

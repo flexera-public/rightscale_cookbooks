@@ -28,7 +28,7 @@ define :rightscale_logrotate_app, :enable => true, :frequency => "weekly", :temp
     template "/etc/logrotate.d/#{params[:name]}" do
       source params[:template]
       cookbook params[:cookbook]
-      mode 0440
+      mode "0440"
       owner "root"
       group "root"
       backup false

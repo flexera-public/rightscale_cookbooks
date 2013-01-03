@@ -1,4 +1,4 @@
-# 
+#
 # Cookbook Name:: block_device
 #
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
@@ -31,6 +31,7 @@ do_for_block_devices node[:block_device] do |device|
     stripe_count get_device_or_default(node, device, :stripe_count)
     vg_data_percentage get_device_or_default(node, device, :vg_data_percentage)
     iops get_device_or_default(node, device, :iops) || ""
+    device_type get_device_or_default(node, device, :device_type)
 
     action :create
   end

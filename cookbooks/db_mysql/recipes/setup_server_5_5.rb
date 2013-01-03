@@ -16,7 +16,7 @@ log "  Setting DB MySQL version to #{version}"
 # Set MySQL 5.5 specific node variables in this recipe.
 #
 node[:db][:socket] = value_for_platform(
-  "ubuntu"  => {
+  "ubuntu" => {
     "default" => "/var/run/mysqld/mysqld.sock"
   },
   "default" => "/var/lib/mysql/mysql.sock"
@@ -40,12 +40,12 @@ node[:db_mysql][:server_packages_uninstall] = []
 node[:db_mysql][:server_packages_install] = value_for_platform(
   "ubuntu" => {
     "10.04" => [],
-    "default" => [ "mysql-server-5.5" ]
+    "default" => ["mysql-server-5.5"]
   },
-  "default" => [ "mysql55-server" ]
+  "default" => ["mysql55-server"]
 )
 
-node[:db][:init_timeout]= node[:db_mysql][:init_timeout]
+node[:db][:init_timeout] = node[:db_mysql][:init_timeout]
 
 # Mysql specific commands for db_sys_info.log file
 node[:db][:info_file_options] = ["mysql -V", "cat /etc/mysql/conf.d/my.cnf"]

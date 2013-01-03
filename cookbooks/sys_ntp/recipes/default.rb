@@ -72,7 +72,7 @@ template "/etc/ntp.conf" do
   source "ntp.conf.erb"
   owner "root"
   group "root"
-  mode 0644
+  mode "0644"
   notifies :restart, resources(:service => node[:sys_ntp][:service])
 end
 
@@ -80,7 +80,7 @@ end
 directory "/var/log/ntpstats" do
   owner "ntp"
   group "ntp"
-  mode 0755
+  mode "0755"
 end
 
 # Start NTP service after configuration

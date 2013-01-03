@@ -87,7 +87,7 @@ action :capistrano_pull do
 
     block do
       Chef::Log.info("  Check previous repo in case of action change")
-      timestamp  = ::Time.now.gmtime.strftime("%Y%m%d%H%M")
+      timestamp = ::Time.now.gmtime.strftime("%Y%m%d%H%M")
       if ::File.exists?("#{capistrano_dir}")
         ::File.rename("#{new_resource.destination}", "#{capistrano_dir}/releases/_initial_#{timestamp}")
         Chef::Log.info("  Destination directory is not empty. Backup to #{capistrano_dir}/releases/_initial_#{timestamp}")
@@ -158,7 +158,7 @@ action :capistrano_pull do
     create_dirs_before_symlink create_dirs_before_symlink
     symlinks symlinks
     scm_provider scm_provider
-    environment  environment
+    environment environment
   end
 
   log "  Cleaning transformation temp files"

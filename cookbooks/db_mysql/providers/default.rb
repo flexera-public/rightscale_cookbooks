@@ -231,7 +231,7 @@ end
 action :remove_anonymous do
   require 'mysql'
   con = Mysql.new('localhost', 'root')
-  host=`hostname`.strip
+  host = `hostname`.strip
   con.query("DELETE FROM mysql.user WHERE user='' AND host='#{host}'")
 
   con.close
@@ -391,7 +391,7 @@ action :install_server do
   directory node[:db_mysql][:tmpdir] do
     owner "mysql"
     group "mysql"
-    mode 0770
+    mode "0770"
     recursive true
   end
 
@@ -405,7 +405,7 @@ action :install_server do
   directory "/etc/mysql/conf.d" do
     owner "mysql"
     group "mysql"
-    mode 0644
+    mode "0644"
     recursive true
   end
 
@@ -468,7 +468,7 @@ action :install_server do
 
   # Fixes permissions: during the first startup after installation some of the
   # files are created with root:root so MySQL cannot read them.
-  dir=node[:db_mysql][:datadir]
+  dir = node[:db_mysql][:datadir]
   bash "chown mysql #{dir}" do
     flags "-ex"
     code <<-EOH
@@ -677,8 +677,8 @@ action :promote do
     # OLDMASTER: unconfigure source of replication
     RightScale::Database::MySQL::Helper.do_query(node, "CHANGE MASTER TO MASTER_HOST=''", previous_master, RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT)
 
-    master_file=masterstatus['File']
-    master_position=masterstatus['Position']
+    master_file = masterstatus['File']
+    master_position = masterstatus['Position']
     Chef::Log.info "  Retrieved master info...File: " + master_file + " position: " + master_position
 
     Chef::Log.info "  Waiting for slave to catch up with OLDMASTER (if alive).."
@@ -694,8 +694,8 @@ action :promote do
   RightScale::Database::MySQL::Helper.do_query(node, 'RESET MASTER')
 
   newmasterstatus = RightScale::Database::MySQL::Helper.do_query(node, 'SHOW MASTER STATUS')
-  newmaster_file=newmasterstatus['File']
-  newmaster_position=newmasterstatus['Position']
+  newmaster_file = newmasterstatus['File']
+  newmaster_position = newmasterstatus['Position']
   Chef::Log.info "  Retrieved new master info...File: " + newmaster_file + " position: " + newmaster_position
 
   Chef::Log.info "  Stopping slave and misconfiguring master"
