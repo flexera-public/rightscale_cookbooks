@@ -22,8 +22,8 @@ log "  Bundler will install gems from Gemfile"
 bash "Install apache passenger module" do
   flags "-ex"
   code <<-EOH
-  PATH=${PATH}:/usr/local/bin
-  bundle install --gemfile=#{node[:app][:destination]}/Gemfile
+    PATH=${PATH}:/usr/local/bin
+    bundle install --gemfile=#{node[:app][:destination]}/Gemfile
   EOH
   only_if { ::File.exists?("#{node[:app][:destination]}/Gemfile") }
 end

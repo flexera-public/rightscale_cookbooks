@@ -20,16 +20,6 @@ default[:rightscale][:private_ssh_key] = ""
 
 default[:rightscale][:db_backup_file] = "/var/run/db-backup"
 
-#
-# Setup Distro dependent variables
-#
-case platform
-when "redhat", "centos"
-  rightscale[:logrotate_config] = "/etc/logrotate.d/syslog"
-when "ubuntu"
-  rightscale[:logrotate_config] = "/etc/logrotate.d/syslog-ng"
-end
-
 default[:rightscale][:short_hostname] = nil
 default[:rightscale][:domain_name] = ""
 default[:rightscale][:search_suffix] = ""

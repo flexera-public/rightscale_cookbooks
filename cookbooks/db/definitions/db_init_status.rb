@@ -22,7 +22,7 @@
 # @raise [RuntimeError] :name param must be either :set, :reset, :check or will raise an error.
 define :db_init_status, :expected_state => :initialized, :error_message => "ERROR: your database is not in expected state" do
 
-  new_action     = params[:name]
+  new_action = params[:name]
   expected_state = params[:expected_state]
   initialized_file = '/var/lib/rightscale_db_initialized'
 

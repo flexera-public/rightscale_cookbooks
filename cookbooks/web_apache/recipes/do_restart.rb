@@ -12,5 +12,5 @@ log "  Restarting apache"
 service "apache2" do
   action :restart
 end
- 
+
 rightscale_marker :end
