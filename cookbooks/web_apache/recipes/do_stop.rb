@@ -12,5 +12,5 @@ log "  Stopping apache"
 service "apache2" do
   action :stop
 end
- 
+
 rightscale_marker :end

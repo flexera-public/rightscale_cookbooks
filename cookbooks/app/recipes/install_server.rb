@@ -12,7 +12,7 @@ rightscale_marker :begin
 public_ip = node[:cloud][:public_ips][0]
 private_ip = node[:cloud][:private_ips][0]
 if public_ip
-  node[:app][:backend_ip_type] == "Public" ?  node[:app][:ip] = public_ip : node[:app][:ip] = private_ip
+  node[:app][:backend_ip_type] == "Public" ? node[:app][:ip] = public_ip : node[:app][:ip] = private_ip
 else
   log "  No public IP detected. Forcing to first private: #{private_ip}"
   node[:app][:ip] = private_ip

@@ -5,14 +5,12 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-define :db_postgres_set_privileges, :preset => "administrator", :username => nil, :password => nil, :db_name => nil do 
+define :db_postgres_set_privileges, :preset => "administrator", :username => nil, :password => nil do
 
 
   priv_preset = params[:preset]
   username = params[:username]
   password = params[:password]
-  db_name = "*.*"
-  db_name = "#{params[:db_name]}.*" if params[:db_name]
 
   ruby_block "set admin credentials" do
     block do
@@ -29,16 +27,15 @@ define :db_postgres_set_privileges, :preset => "administrator", :username => nil
       username = conn.quote_ident(username_esc)
       password = conn.quote_ident(password_esc)
 
-      case priv_preset
-
-      # Create group roles, don't error out if already created.  Users don't inherit "special" attribs
+      # Create group roles, don't error out if already created.  Users don't inherit "special" attributes
       # from group role, see: http://www.postgresql.org/docs/9.1/static/role-membership.html
-      # cmd ==> createuser -h /var/run/postgresql -U postgres #{admin_role} -sdril
+      case priv_preset
       when 'administrator'
+        # cmd ==> createuser -h /var/run/postgresql -U postgres #{admin_role} -sdril
         # Enable admin/replication user
         result = conn.exec("SELECT COUNT(*) FROM pg_user WHERE usename='#{username_esc}'")
-        userstat = result.getvalue(0,0)
-        if ( userstat == '1' )
+        userstat = result.getvalue(0, 0)
+        if (userstat == '1')
           Chef::Log.info "  User #{username_esc} already exists, updating user using current inputs"
           conn.exec("ALTER USER #{username} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password}'")
         else
@@ -46,14 +43,12 @@ define :db_postgres_set_privileges, :preset => "administrator", :username => nil
           conn.exec("CREATE USER #{username} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password}'")
         end
 
-      # Create group roles, don't error out if already created.  Users don't inherit "special" attribs
-      # from group role, see: http://www.postgresql.org/docs/9.1/static/role-membership.html
-      # cmd ==> createuser -h /var/run/postgresql -U postgres #{user_role} -SdRil
       when 'user'
+        # cmd ==> createuser -h /var/run/postgresql -U postgres #{user_role} -SdRil
         # Enable application user
         result = conn.exec("SELECT COUNT(*) FROM pg_user WHERE usename='#{username_esc}'")
-        userstat = result.getvalue(0,0)
-        if ( userstat == '1' )
+        userstat = result.getvalue(0, 0)
+        if (userstat == '1')
           Chef::Log.info "  User #{username_esc} already exists, updating user using current inputs"
           conn.exec("ALTER USER #{username} NOSUPERUSER CREATEDB NOCREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password}'")
         else

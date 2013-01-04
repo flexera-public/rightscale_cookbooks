@@ -16,7 +16,7 @@ node[:lb][:service][:provider] = "lb_haproxy"
 
 # 2D array of pools
 # Example: [["_serverid", "/serverid"], ["_appsever", "/appsever"], ["default", "default"]]
-pool_list = node[:lb][:pools].gsub(/\s+/, "").split(",").uniq.map { |pool| [ pool.gsub(/[\/]/, '_'), pool ] }
+pool_list = node[:lb][:pools].gsub(/\s+/, "").split(",").uniq.map { |pool| [pool.gsub(/[\/]/, '_'), pool] }
 
 pool_list.each do |pool_name_short, pool_name_full|
   log "  Setup default load balancer resource for vhost '#{pool_name_short}'."

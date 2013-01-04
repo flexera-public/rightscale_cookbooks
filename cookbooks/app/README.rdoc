@@ -118,32 +118,6 @@ This definition created specifically for the <tt>apache2</tt> cookbook at this t
 
 === Libraries-helpers:
 
-===== RightScale::App::Helper.bind_ip(private_ips = [ ], public_ips = [ ])
-
-Returns the IP address of the interface that this application server will accept requests from
-on the specified listen ports.
-
-<b>Parameters</b>
-
-* <tt>private_ips(Array)::</tt> List of private IP addresses assigned to the application server.
-* <tt>public_ips(Array)::</tt> List of public IP addresses assigned to the application server.
-
-<b>Returns</b>
-
-<tt>String::</tt> IP Address
-
-<b>Raise</b>
-
-<tt>RuntimeError::</tt> If neither a valid private nor public IP address can be found.
-
-===== RightScale::App::Helper.bind_port()
-
-Return the port that this application server listens on.
-
-<b>Returns</b>
-
-<tt>node[:app][:port](integer)</tt> Port number
-
 ===== RightScale::App::Helper.vhosts(vhost_list)
 
 Created to convert vhost names into an array from a comma-separated list.

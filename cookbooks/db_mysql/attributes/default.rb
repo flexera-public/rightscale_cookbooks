@@ -8,7 +8,6 @@
 # Recommended attributes
 
 default[:db_mysql][:collectd_master_slave_mode] = ""
-default[:db_mysql][:previous_master] = nil
 
 # Optional attributes
 

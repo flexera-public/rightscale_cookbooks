@@ -16,7 +16,7 @@ rightscale_enable_collectd_plugin 'exec'
 include_recipe "rightscale::setup_monitoring"
 
 # Additional "httpd/apache2" service definition required for "rightscale_monitor_process".
-service "#{node[:apache][:config_subdir]}" do
+service "#{node[:web_apache][:config_subdir]}" do
   action :nothing
 end
 

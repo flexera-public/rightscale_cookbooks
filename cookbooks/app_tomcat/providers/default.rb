@@ -141,9 +141,9 @@ action :setup_vhost do
     mode "0644"
     cookbook 'app_tomcat'
     variables(
-            :doc_root => app_root,
-            :app_port => tomcat_port.to_s
-          )
+      :doc_root => app_root,
+      :app_port => tomcat_port.to_s
+    )
   end
 
   log "  Setup logrotate for tomcat"
@@ -151,7 +151,7 @@ action :setup_vhost do
   rightscale_logrotate_app "tomcat" do
     cookbook "rightscale"
     template "logrotate.erb"
-    path [ "/var/log/tomcat#{version}/*log", "/var/log/tomcat#{version}/*.out" ]
+    path ["/var/log/tomcat#{version}/*log", "/var/log/tomcat#{version}/*.out"]
     frequency "size 10M"
     rotate 4
   end
@@ -162,7 +162,7 @@ action :setup_vhost do
 
   log "  Setup mod_jk vhost"
   # Setup mod_jk vhost start
-  etc_apache = "/etc/#{node[:apache][:config_subdir]}"
+  etc_apache = "/etc/#{node[:web_apache][:config_subdir]}"
 
   # Check if mod_jk is installed
   if !::File.exists?("#{etc_apache}/conf.d/mod_jk.conf")
@@ -172,7 +172,7 @@ action :setup_vhost do
     # Installing required packages depending on platform
     case node[:platform]
     when "ubuntu"
-      ubuntu_p = [ "apache2-mpm-prefork", "apache2-threaded-dev", "libapr1-dev", "libapache2-mod-jk" ]
+      ubuntu_p = ["apache2-mpm-prefork", "apache2-threaded-dev", "libapr1-dev", "libapache2-mod-jk"]
       ubuntu_p.each do |p|
         package p do
           retries 15
@@ -180,15 +180,11 @@ action :setup_vhost do
         end
       end
 
-    when "centos","redhat"
+    when "centos", "redhat"
 
-      package "apr-devel" do
-        options "-y"
-      end
+      package "apr-devel"
 
-      package "httpd-devel" do
-        options "-y"
-      end
+      package "httpd-devel"
 
       # Preparing to install tomcat connectors
       cookbook_file "/tmp/#{connectors_source}" do
@@ -220,7 +216,7 @@ action :setup_vhost do
       source "tomcat_workers.properties.erb"
       variables(
         :version => version,
-        :config_subdir => node[:apache][:config_subdir]
+        :config_subdir => node[:web_apache][:config_subdir]
       )
       cookbook 'app_tomcat'
     end
@@ -273,13 +269,13 @@ action :setup_vhost do
   log "  Configuring apache vhost for tomcat"
   # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/web_app.rb for the "web_app" definition.
   web_app "http-#{port}-#{node[:web_apache][:server_name]}.vhost" do
-    template        'apache_mod_jk_vhost.erb'
-    cookbook        'app_tomcat'
-    docroot         apache_docroot
-    vhost_port      port.to_s
-    server_name     node[:web_apache][:server_name]
-    allow_override  node[:web_apache][:allow_override]
-    apache_log_dir  node[:apache][:log_dir]
+    template 'apache_mod_jk_vhost.erb'
+    cookbook 'app_tomcat'
+    docroot apache_docroot
+    vhost_port port.to_s
+    server_name node[:web_apache][:server_name]
+    allow_override node[:web_apache][:allow_override]
+    apache_log_dir node[:apache][:log_dir]
   end
 
   # Apache server restart

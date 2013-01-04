@@ -10,7 +10,7 @@ define :lb_haproxy_backend, :pool_name => "" do
   backend_name = params[:pool_name] + "_backend"
   stats_uri = "stats uri #{node[:lb][:stats_uri]}" unless "#{node[:lb][:stats_uri]}".empty?
   stats_auth = "stats auth #{node[:lb][:stats_user]}:#{node[:lb][:stats_password]}" unless \
-              "#{node[:lb][:stats_user]}".empty? || "#{node[:lb][:stats_password]}".empty?
+               "#{node[:lb][:stats_user]}".empty? || "#{node[:lb][:stats_password]}".empty?
   health_uri = "option httpchk GET #{node[:lb][:health_check_uri]}" unless "#{node[:lb][:health_check_uri]}".empty?
   health_chk = "http-check disable-on-404" unless "#{node[:lb][:health_check_uri]}".empty?
 
