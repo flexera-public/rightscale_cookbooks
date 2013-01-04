@@ -48,7 +48,7 @@ module RightScale
         # Should only generate once.  Used to create unique relay_log files used for slave
         # Always set to support stop/start
         def self.mycnf_relay_log(node)
-          node[:db_mysql][:mycnf_relay_log] = Time.now.to_i.to_s + rand(9999).to_s.rjust(4,'0') if !node[:db_mysql][:mycnf_relay_log]
+          node[:db_mysql][:mycnf_relay_log] = Time.now.to_i.to_s + rand(9999).to_s.rjust(4, '0') if !node[:db_mysql][:mycnf_relay_log]
           return node[:db_mysql][:mycnf_relay_log]
         end
 
@@ -70,7 +70,7 @@ module RightScale
           loadfile = ::File.join(node[:db][:data_dir], "master.info")
           Chef::Log.info "  Loading master.info file from #{loadfile}"
           file_contents = File.readlines(loadfile)
-          file_contents.each {|f| f.rstrip!}
+          file_contents.each { |f| f.rstrip! }
           master_info = Hash.new
           master_info["File"] = file_contents[1]
           master_info["Position"] = file_contents[2]
@@ -150,29 +150,30 @@ module RightScale
           end
 
           cmd = "CHANGE MASTER TO MASTER_HOST='#{newmaster_host}'"
-          cmd +=   ", MASTER_LOG_FILE='#{newmaster_logfile}'" if newmaster_logfile
-          cmd +=   ", MASTER_LOG_POS=#{newmaster_position}" if newmaster_position
+          cmd += ", MASTER_LOG_FILE='#{newmaster_logfile}'" if newmaster_logfile
+          cmd += ", MASTER_LOG_POS=#{newmaster_position}" if newmaster_position
           Chef::Log.info "Reconfiguring replication on localhost: \n#{cmd}"
           # don't log replication user and password
-          cmd +=   ", MASTER_USER='#{node[:db][:replication][:user]}'"
-          cmd +=   ", MASTER_PASSWORD='#{node[:db][:replication][:password]}'"
+          cmd += ", MASTER_USER='#{node[:db][:replication][:user]}'"
+          cmd += ", MASTER_PASSWORD='#{node[:db][:replication][:password]}'"
+          cmd += ", MASTER_SSL=1" if node[:db_mysql][:ssl_enabled]
           RightScale::Database::MySQL::Helper.do_query(node, cmd, hostname)
 
           RightScale::Database::MySQL::Helper.do_query(node, "START SLAVE", hostname)
-          started=false
+          started = false
           10.times do
             row = RightScale::Database::MySQL::Helper.do_query(node, "SHOW SLAVE STATUS", hostname)
             slave_IO = row["Slave_IO_Running"].strip.downcase
             slave_SQL = row["Slave_SQL_Running"].strip.downcase
-            if( slave_IO == "yes" and slave_SQL == "yes" ) then
-              started=true
+            if slave_IO == "yes" and slave_SQL == "yes"
+              started = true
               break
             else
               Chef::Log.info "  Threads at new slave not started yet...waiting a bit more..."
               sleep 2
             end
           end
-          if( started )
+          if started
             Chef::Log.info "  Slave threads on the master are up and running."
           else
             Chef::Log.info "  Error: slave threads in the master do not seem to be up and running..."
