@@ -25,16 +25,17 @@ end
 # for definition of do_for_block_devices and get_device_or_default methods.
 #
 do_for_block_devices node[:block_device] do |device|
+=begin
   # Do the restore.
-  log "  Creating block device and restoring data from primary backup for device #{device}..."
+  log "  RM Creating block device and restoring data from primary backup for device #{device}..."
   lineage = get_device_or_default(node, device, :backup, :lineage)
   lineage_override = get_device_or_default(node, device, :backup, :lineage_override)
   restore_lineage = lineage_override == nil || lineage_override.empty? ? lineage : lineage_override
   restore_timestamp_override = get_device_or_default(node, device, :backup, :timestamp_override)
-  log "  Input lineage #{restore_lineage.inspect}"
-  log "  Input lineage_override #{lineage_override.inspect}"
-  log "  Using lineage #{restore_lineage.inspect}"
-  log "  Input timestamp_override #{restore_timestamp_override.inspect}"
+  log "  RM Input lineage #{restore_lineage.inspect}"
+  log "  RM Input lineage_override #{lineage_override.inspect}"
+  log "  RM Using lineage #{restore_lineage.inspect}"
+  log "  RM Input timestamp_override #{restore_timestamp_override.inspect}"
   restore_timestamp_override ||= ""
 
   block_device get_device_or_default(node, device, :nickname) do
@@ -42,6 +43,14 @@ do_for_block_devices node[:block_device] do |device|
     lineage restore_lineage
     timestamp_override restore_timestamp_override
 
+    action :primary_restore
+  end
+=end
+  restore_attrs = set_override_attrs(get_device_or_default(node, device, :backup, :lineage), get_device_or_default(node, device, :backup, :lineage_override), get_device_or_default(node, device, :backup, :timestamp_override))
+  block_device get_device_or_default(node, device, :nickname) do
+    # Backup/Restore arguments
+    lineage restore_attrs[0]
+    timestamp_override restore_attrs[1]
     action :primary_restore
   end
 end

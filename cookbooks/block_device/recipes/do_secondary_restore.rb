@@ -23,6 +23,7 @@ end
 # "do_for_block_devices" and "get_device_or_default".
 #
 do_for_block_devices node[:block_device] do |device|
+=begin
   # Do the restore.
   log "  Creating block device and restoring data from secondary backup for device #{device}..."
   lineage = get_device_or_default(node, device, :backup, :lineage)
@@ -34,11 +35,26 @@ do_for_block_devices node[:block_device] do |device|
   log "  Using lineage #{restore_lineage.inspect}"
   log "  Input timestamp_override #{restore_timestamp_override.inspect}"
   restore_timestamp_override ||= ""
+=end
+
+  restore_attrs = set_override_attrs(get_device_or_default(node, device, :backup, :lineage),
+    get_device_or_default(node, device, :backup, :lineage_override),
+    get_device_or_default(node, device, :backup, :timestamp_override))
 
   block_device get_device_or_default(node, device, :nickname) do
     # Backup/Restore arguments
-    lineage restore_lineage
-    timestamp_override restore_timestamp_override
+    lineage restore_attrs[0]
+    timestamp_override restore_attrs[1]
+    action :primary_restore
+  end
+
+
+  block_device get_device_or_default(node, device, :nickname) do
+    # Backup/Restore arguments
+#    lineage restore_lineage
+#    timestamp_override restore_timestamp_override
+    lineage restore_attrs[0]
+    timestamp_override restore_attrs[1]
 
     secondary_cloud get_device_or_default(node, device, :backup, :secondary, :cloud)
     secondary_endpoint get_device_or_default(node, device, :backup, :secondary, :endpoint) || ""
