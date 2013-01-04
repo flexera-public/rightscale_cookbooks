@@ -43,14 +43,6 @@ do_for_block_devices node[:block_device] do |device|
 
   block_device get_device_or_default(node, device, :nickname) do
     # Backup/Restore arguments
-    lineage restore_attrs[0]
-    timestamp_override restore_attrs[1]
-    action :primary_restore
-  end
-
-
-  block_device get_device_or_default(node, device, :nickname) do
-    # Backup/Restore arguments
 #    lineage restore_lineage
 #    timestamp_override restore_timestamp_override
     lineage restore_attrs[0]
