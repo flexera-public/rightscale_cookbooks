@@ -158,7 +158,7 @@ module RightScale
       mtab_exists = File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} ")
       fstab_exists && mtab_exists
     end
-
+    #set_restore_params
     def set_override_attrs(lineage, lineage_override, restore_timestamp_override)
       restore_lineage = lineage_override == nil || lineage_override.empty? ? lineage : lineage_override
       Chef::Log.info "  Input lineage #{restore_lineage.inspect}"

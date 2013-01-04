@@ -61,11 +61,18 @@ log "  Input lineage_override #{lineage_override.inspect}"
 log "  Using lineage #{restore_lineage.inspect}"
 log "  Input timestamp_override #{restore_timestamp_override.inspect}"
 restore_timestamp_override ||= ""
+#lineage, lineage_override, restore_timestamp_override
+restore_params = set_override_attrs(node[:db][:backup][:lineage],
+  node[:db][:backup][:lineage_override],
+  node[:db][:backup][:timestamp_override])
+
 
 # See cookbooks/block_device/providers/default.rb for the "primary_restore" action.
 block_device NICKNAME do
-  lineage restore_lineage
-  timestamp_override restore_timestamp_override
+  #lineage restore_lineage
+  #timestamp_override restore_timestamp_override
+  lineage restore_params[0]
+  timestamp_override restore_params[1]
   volume_size get_device_or_default(node, :device1, :volume_size)
   action :primary_restore
 end
