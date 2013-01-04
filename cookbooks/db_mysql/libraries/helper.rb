@@ -156,7 +156,12 @@ module RightScale
           # don't log replication user and password
           cmd += ", MASTER_USER='#{node[:db][:replication][:user]}'"
           cmd += ", MASTER_PASSWORD='#{node[:db][:replication][:password]}'"
-          cmd += ", MASTER_SSL=1" if node[:db_mysql][:ssl_enabled]
+          if node[:db_mysql][:ssl_enabled]
+            cmd += ", MASTER_SSL=1"
+            cmd += ", MASTER_SSL_CA='#{node[:db_mysql][:ssl_credentials][:ca_certificate][:path]}'"
+            cmd += ", MASTER_SSL_CERT='#{node[:db_mysql][:ssl_credentials][:slave_certificate][:path]}'"
+            cmd += ", MASTER_SSL_KEY='#{node[:db_mysql][:ssl_credentials][:slave_key][:path]}'"
+          end
           RightScale::Database::MySQL::Helper.do_query(node, cmd, hostname)
 
           RightScale::Database::MySQL::Helper.do_query(node, "START SLAVE", hostname)
