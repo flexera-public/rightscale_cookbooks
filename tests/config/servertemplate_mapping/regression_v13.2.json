@@ -1,0 +1,10 @@
+{
+  "base_chef": {
+    "nickname": "Base ServerTemplate for Linux (v13.2)",
+    "rev": "latest"
+  },
+  "base_rsb": {
+    "nickname": "Base ServerTemplate for Linux (RSB) (v13.2)",
+    "rev": "latest"
+  }
+}

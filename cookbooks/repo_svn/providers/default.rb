@@ -110,5 +110,5 @@ action :capistrano_pull do
     scm_provider scm_provider
   end
 
- log "  Capistrano SVN deployment action - finished successfully!"
+  log "  Capistrano SVN deployment action - finished successfully!"
 end

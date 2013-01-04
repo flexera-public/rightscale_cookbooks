@@ -23,7 +23,7 @@ sys_firewall "Open port to the old master which is becoming a slave" do
   action :update
 end
 
-# Set mysql username and password with permissions to replicate from the new master.
+# Set database username and password with permissions to replicate from the new master.
 # See cookbooks/db/recipes/setup_replication_privileges.rb for the "db::setup_replication_privileges" recipe.
 include_recipe "db::setup_replication_privileges"
 
@@ -51,9 +51,9 @@ end
 remote_recipe "demote master" do
   recipe "db::handle_demote_master"
   attributes :remote_recipe => {
-                :new_master_ip => node[:cloud][:private_ips][0],
-                :new_master_uuid => node[:rightscale][:instance_uuid]
-              }
+    :new_master_ip => node[:cloud][:private_ips][0],
+    :new_master_uuid => node[:rightscale][:instance_uuid]
+  }
   recipients_tags "rs_dbrepl:master_instance_uuid=#{node[:db][:current_master_uuid]}"
 end
 
