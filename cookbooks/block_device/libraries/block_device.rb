@@ -134,7 +134,7 @@ module RightScale
       RightScale::BlockDeviceHelper.get_device_or_default(node, device, *keys)
     end
 
-    #Return current device
+    # Return current device
     #
     # @param node [Hash] Node name
     # @param device [Symbol] Device
@@ -158,8 +158,16 @@ module RightScale
       mtab_exists = File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} ")
       fstab_exists && mtab_exists
     end
-    #set_restore_params
-    def set_override_attrs(lineage, lineage_override, restore_timestamp_override)
+
+    # Calculates and print out restore params
+    # and returns the array of ready to use values.
+    #
+    # @param lineage [String] lineage input value
+    # @param lineage_override [String] lineage override input value
+    # @param restore_timestamp_override [String]restore timestamp override input value
+    #
+    # @return [Array] Array of calculated values
+    def set_restore_params(lineage, lineage_override, restore_timestamp_override)
       restore_lineage = lineage_override == nil || lineage_override.empty? ? lineage : lineage_override
       Chef::Log.info "  Input lineage #{restore_lineage.inspect}"
       Chef::Log.info "  Input lineage_override #{lineage_override.inspect}"
