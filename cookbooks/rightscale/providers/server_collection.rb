@@ -19,6 +19,9 @@ action :load do
   begin
     Timeout::timeout(new_resource.timeout) do
       all_tags = new_resource.tags.collect
+      # Add mandatory tags
+      all_tags += new_resource.mandatory_tags.collect if new_resource.mandatory_tags
+      # and also accept 'secondary' not to break the interface.
       all_tags += new_resource.secondary_tags.collect if new_resource.secondary_tags
       delay = 1
       while true

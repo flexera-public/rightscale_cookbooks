@@ -12,6 +12,9 @@ actions :load
 # Attribute specifies the tag or tags to search for (if multiple tags are specified servers with any of the tags will match).
 attribute :tags, :kind_of => [String, Array]
 # Optional attribute specifies tags that need to also appear on the servers.
+attribute :mandatory_tags, :kind_of => [String, Array]
+# Optional attribute duplicate of :mandatory_tags attribute
+# we should keep it to not to break the interface
 attribute :secondary_tags, :kind_of => [String, Array]
 # IDs for the servers to lookup.
 attribute :agent_ids, :kind_of => [String, Array]
