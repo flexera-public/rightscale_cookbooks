@@ -37,10 +37,11 @@ There are no known limitations.
 
 === General:
 
-The <tt>app_passenger</tt> cookbook will install and set up an Apache + Phusion Passenger application server configured to connect with a MySQL or Postgres database server.
-Set db/provider_type input in RightScale ServerTemplate to choose database
-provider. Place <tt>db::default</tt> recipe before application server installation
-to install the database client.
+The <tt>app_passenger</tt> cookbook will install and set up Ruby 1.8 + Apache +
+Phusion Passenger application server configured to connect with a MySQL or
+Postgres database server. Set db/provider_type input in RightScale
+ServerTemplate to choose database provider. Place <tt>db::default</tt> recipe
+before application server installation to install the database client.
 
 <b>Apache</b>
 
