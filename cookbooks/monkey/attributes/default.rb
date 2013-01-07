@@ -23,15 +23,9 @@ set[:monkey][:virtualmonkey][:packages] = []
 set[:monkey][:virtualmonkey][:gem_packages] = [
   "rake",
   "hoe",
-  "rcov", 
-  "fog", 
-  "ParseTree",
-  "ruby2ruby",
+  "rcov",
   "chef",
   "daemons",
-  "colorize",
-  "sinatra",
-  "chronic",
   "right_http_connection",
   "right_aws"
 ]
