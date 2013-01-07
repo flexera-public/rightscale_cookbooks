@@ -38,6 +38,7 @@ Detailed cookbook attributes descriptions you can find in attributed/default.rb 
 * <tt>apache_collectd_plugin.conf.erb</tt> - Collectd status plugin configuration template.
 * <tt>apache_ssl_vhost.erb</tt> - Configuration for apache ssl vhost file.
 * <tt>apache_status.conf.erb</tt> - Configuration for apache status information access.
+* <tt>maintenance.conf.erb</tt> - Configuration for apache maintenance mode setup.
 * <tt>ssl_certificate.erb</tt> - Apache ssl certificate path template.
 * <tt>ssl_certificate_chain.erb</tt> - Apache ssl certificate chain path template.
 * <tt>ssl_key.erb</tt> - Apache ssl key template.
