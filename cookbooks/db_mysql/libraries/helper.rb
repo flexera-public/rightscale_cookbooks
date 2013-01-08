@@ -152,7 +152,7 @@ module RightScale
           cmd = "CHANGE MASTER TO MASTER_HOST='#{newmaster_host}'"
           cmd += ", MASTER_LOG_FILE='#{newmaster_logfile}'" if newmaster_logfile
           cmd += ", MASTER_LOG_POS=#{newmaster_position}" if newmaster_position
-          Chef::Log.info "Reconfiguring replication on localhost: \n#{cmd}"
+          Chef::Log.info "  Reconfiguring replication on localhost: \n#{cmd}"
           # don't log replication user and password
           cmd += ", MASTER_USER='#{node[:db][:replication][:user]}'"
           cmd += ", MASTER_PASSWORD='#{node[:db][:replication][:password]}'"

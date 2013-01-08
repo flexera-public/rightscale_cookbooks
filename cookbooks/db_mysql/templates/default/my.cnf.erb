@@ -118,11 +118,6 @@ ssl
 ssl-ca = <%= node[:db_mysql][:ssl_credentials][:ca_certificate][:path] %>
 ssl-cert = <%= node[:db_mysql][:ssl_credentials][:master_certificate][:path] %>
 ssl-key = <%= node[:db_mysql][:ssl_credentials][:master_key][:path] %>
-
-[client]
-ssl-ca = <%= node[:db_mysql][:ssl_credentials][:ca_certificate][:path] %>
-ssl-cert = <%= node[:db_mysql][:ssl_credentials][:slave_certificate][:path] %>
-ssl-key = <%= node[:db_mysql][:ssl_credentials][:slave_key][:path] %>
 <% end %>
 
 [mysqldump]

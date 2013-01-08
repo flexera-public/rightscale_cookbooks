@@ -419,12 +419,15 @@ action :install_server do
     !node[:db_mysql][:slave_certificate].to_s.empty? && \
     !node[:db_mysql][:slave_key].to_s.empty?
 
+  log "  MySQL SSL enabled: #{node[:db_mysql][:ssl_enabled]}"
+  log "  MySQL SSL will only be enabled if all inputs contain credentials." unless node[:db_mysql][:ssl_enabled]
+
   node[:db_mysql][:ssl_credentials] = {
-    :ca_certificate => {:credential => node[:db_mysql][:ca_certificate], :path => "/etc/mysql/ca_certificate.pem"},
-    :master_certificate => {:credential => node[:db_mysql][:master_certificate], :path => "/etc/mysql/master_certificate.pem"},
-    :master_key => {:credential => node[:db_mysql][:master_key], :path => "/etc/mysql/master_key.pem"},
-    :slave_certificate => {:credential => node[:db_mysql][:slave_certificate], :path => "/etc/mysql/slave_certificate.pem"},
-    :slave_key => {:credential => node[:db_mysql][:slave_key], :path => "/etc/mysql/slave_key.pem"}
+    :ca_certificate => {:credential => node[:db_mysql][:ca_certificate], :path => "/etc/mysql/certs/ca_cert.pem"},
+    :master_certificate => {:credential => node[:db_mysql][:master_certificate], :path => "/etc/mysql/certs/master_cert.pem"},
+    :master_key => {:credential => node[:db_mysql][:master_key], :path => "/etc/mysql/certs/master_key.pem"},
+    :slave_certificate => {:credential => node[:db_mysql][:slave_certificate], :path => "/etc/mysql/certs/slave_cert.pem"},
+    :slave_key => {:credential => node[:db_mysql][:slave_key], :path => "/etc/mysql/certs/slave_key.pem"}
   }
 
   if node[:db_mysql][:ssl_enabled]
