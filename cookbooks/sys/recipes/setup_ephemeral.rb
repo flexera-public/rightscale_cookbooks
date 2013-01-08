@@ -8,15 +8,18 @@
 rightscale_marker :begin
 
 class Chef::Resource::Mount
-  include RightScale::BlockDeviceHelper
+  #include RightScale::BlockDeviceHelper
+  include RightScale::System::Helper
 end
 
 class Chef::Resource::Directory
-  include RightScale::BlockDeviceHelper
+  #include RightScale::BlockDeviceHelper
+  include RightScale::System::Helper
 end
 
 class Chef::Resource::RubyBlock
-  include RightScale::BlockDeviceHelper
+  #include RightScale::BlockDeviceHelper
+  include RightScale::System::Helper
 end
 
 require 'fileutils'
