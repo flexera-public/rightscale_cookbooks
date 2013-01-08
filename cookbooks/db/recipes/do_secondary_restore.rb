@@ -39,9 +39,11 @@ end
 
 # See cookbooks/block_device/libraries/block_device.rb for
 # "set_restore_params" and "get_device_or_default" methods.
-restore_params = set_override_attrs(node[:db][:backup][:lineage],
+lineage, timestamp_override = set_override_attrs(
+  node[:db][:backup][:lineage],
   node[:db][:backup][:lineage_override],
-  node[:db][:backup][:timestamp_override])
+  node[:db][:backup][:timestamp_override]
+)
 
 secondary_storage_cloud = get_device_or_default(node, :device1, :backup, :secondary, :cloud)
 if secondary_storage_cloud =~ /aws/i
@@ -55,10 +57,11 @@ log "  Performing Secondary Restore from #{node[:db][:backup][:secondary_locatio
 # Make sure block_device::default recipe has been run.
 # See cookbooks/block_device/providers/default.rb for the "secondary_restore" action.
 block_device NICKNAME do
-  lineage restore_params[0]
-  timestamp_override restore_params[1]
+  lineage lineage
+  timestamp_override timestamp_override
 
   volume_size get_device_or_default(node, :device1, :volume_size)
+
   secondary_cloud secondary_storage_cloud
   secondary_endpoint get_device_or_default(node, :device1, :backup, :secondary, :endpoint) || ""
   secondary_container get_device_or_default(node, :device1, :backup, :secondary, :container)
