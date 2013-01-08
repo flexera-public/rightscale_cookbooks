@@ -431,6 +431,12 @@ action :install_server do
   }
 
   if node[:db_mysql][:ssl_enabled]
+    directory "/etc/mysql/certs" do
+      owner "mysql"
+      group "mysql"
+      mode "0600"
+    end
+
     node[:db_mysql][:ssl_credentials].each do |name, data|
       template data[:path] do
         source "credential.pem.erb"
