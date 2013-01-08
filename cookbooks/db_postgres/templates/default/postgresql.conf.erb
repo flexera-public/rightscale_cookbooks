@@ -23,16 +23,16 @@ data_directory = '<%= @node[:db_postgres][:datadir] %>'           # use data in 
                                         # (change requires restart)
 hba_file = '<%= @node[:db_postgres][:confdir] %>/pg_hba.conf'     # host-based authentication file
                                         # (change requires restart)
-ident_file = '<%= @node[:db_postgres][:ident_file] %>' # ident configuration file
+ident_file = '' # ident configuration file
                                         # (change requires restart)
-external_pid_file = '<%= @node[:db_postgres][:pid_file] %>'           # write an extra PID file
+external_pid_file = ''           # write an extra PID file
                                         # (change requires restart)
 listen_addresses = '*'          # what IP address(es) to listen on;
                                         # comma-separated list of addresses;
                                         # defaults to 'localhost', '*' = all
                                         # (change requires restart)
 max_connections = <%= @node[:db_postgres][:tunable][:max_connections] %>                   # (change requires restart)
-unix_socket_directory = '<%= @node[:db][:socket] %>'             # (change requires restart)
+# unix_socket_directory = ''             # (change requires restart)
 shared_buffers = <%= @node[:db_postgres][:tunable][:shared_buffers] %>                   # min 128kB
                                         # (change requires restart)
 wal_level = hot_standby                 # minimal, archive, or hot_standby

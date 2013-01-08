@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: db_mysql
+# Cookbook Name:: db
 #
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
@@ -12,7 +12,7 @@ module RightScale
 
       # Get the current status of the database server.
       #
-      # @param [Hash] db_state_get Server node name to check.
+      # @param [Hash] node Server node name to check.
       def db_state_get(node)
         Chef::Log.info "  Loading master/slave state"
         state = ::File.exist?(DB_MASTER_SLAVE_STATE) ? JSON.load(::File.read(DB_MASTER_SLAVE_STATE)) : {

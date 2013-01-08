@@ -7,7 +7,7 @@
 
 rightscale_marker :begin
 
-version="5.1"
+version = "5.1"
 node[:db][:version] = version
 node[:db][:provider] = "db_mysql"
 
@@ -18,14 +18,14 @@ log "  Setting DB MySQL version to #{version}"
 
 node[:db_mysql][:service_name] = value_for_platform(
   ["centos", "redhat"] => {
-    "5.8"     => "mysql",
+    "5.8" => "mysql",
     "default" => "mysqld"
   },
-  "default"   => "mysql"
+  "default" => "mysql"
 )
 
 node[:db][:socket] = value_for_platform(
-  "ubuntu"  => {
+  "ubuntu" => {
     "default" => "/var/run/mysqld/mysqld.sock"
   },
   "default" => "/var/lib/mysql/mysql.sock"
@@ -38,17 +38,17 @@ node[:db_mysql][:server_packages_uninstall] = []
 
 node[:db_mysql][:server_packages_install] = value_for_platform(
   ["centos", "redhat"] => {
-    "5.8" => [ "MySQL-server-community" ],
-    "default" => [ "mysql-server" ]
+    "5.8" => ["MySQL-server-community"],
+    "default" => ["mysql-server"]
   },
   "ubuntu" => {
-    "10.04" => [ "mysql-server-5.1" ],
-    "default"   => []
+    "10.04" => ["mysql-server-5.1"],
+    "default" => []
   },
   "default" => []
 )
 
-node[:db][:init_timeout]= node[:db_mysql][:init_timeout]
+node[:db][:init_timeout] = node[:db_mysql][:init_timeout]
 
 # Mysql specific commands for db_sys_info.log file
 node[:db][:info_file_options] = ["mysql -V", "cat /etc/mysql/conf.d/my.cnf"]

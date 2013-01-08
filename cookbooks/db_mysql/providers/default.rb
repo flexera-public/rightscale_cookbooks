@@ -392,7 +392,7 @@ action :install_server do
   directory node[:db_mysql][:tmpdir] do
     owner "mysql"
     group "mysql"
-    mode 0770
+    mode "0770"
     recursive true
   end
 
@@ -406,7 +406,7 @@ action :install_server do
   directory "/etc/mysql/conf.d" do
     owner "mysql"
     group "mysql"
-    mode 0644
+    mode "0644"
     recursive true
   end
 

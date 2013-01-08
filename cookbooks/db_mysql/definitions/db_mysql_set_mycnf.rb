@@ -26,7 +26,7 @@ define :db_mysql_set_mycnf, :server_id => nil, :relay_log => nil, :innodb_log_fi
   cookbook_file "/etc/mysql/setup-my-cnf.sh" do
     owner "root"
     group "root"
-    mode 0755
+    mode "0755"
     source "setup_my_cnf.sh"
     cookbook "db_mysql"
   end
@@ -34,7 +34,7 @@ define :db_mysql_set_mycnf, :server_id => nil, :relay_log => nil, :innodb_log_fi
   execute "/etc/mysql/setup-my-cnf.sh" do
     user "root"
     group "root"
-    umask 0022
+    umask "0022"
     action :run
   end
 end

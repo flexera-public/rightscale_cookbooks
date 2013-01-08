@@ -86,7 +86,7 @@ end
 log "  Starting database..."
 # See cookbooks/db_<provider>/providers/default.rb for the "start" and "status" actions.
 db DATA_DIR do
-  action [ :start, :status ]
+  action [:start, :status]
 end
 
 # Restoring admin and application user privileges

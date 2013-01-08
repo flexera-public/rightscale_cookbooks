@@ -9,7 +9,7 @@
 # When a slave database starts, it needs to determine which database it should use as
 # master.  If there is only one DB tagged as master, it will be chosen. Lineage is used to
 # restore the database from a backup created by the master.  Master DBs can contain it's lineage
-# in it's "rs_dbrepl:master_active" tag. This definition uses this logic to detemine what
+# in it's "rs_dbrepl:master_active" tag. This definition uses this logic to determine what
 # database should be master for the slave running it.
 #
 # @param [Symbol] action restore process to do before becoming a slave.

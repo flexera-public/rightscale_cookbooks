@@ -5,27 +5,15 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-
-# Setting Django version
-set[:app_django][:version] = "1.4"
-
-# Django application debug mode - https://docs.djangoproject.com/en/dev/ref/settings/#debug
-default[:app_django][:app][:debug_mode] = "False"
-
-# By default apache will serve any existing local files directly (except actionable ones)
-default[:app_django][:apache][:serve_local_files] = "true"
 # List of required apache modules
 set[:app][:module_dependencies] = ["proxy", "proxy_http"]
 
-
-# Defining log directory path depending on platform.
-case node[:platform]
-when "ubuntu"
-  set[:app_django][:apache][:log_dir] = "/var/log/apache2"
-when "centos", "redhat"
-  set[:app_django][:apache][:log_dir] = "/var/log/httpd"
-end
-
+# By default apache will serve any existing local files directly (except actionable ones)
+default[:app_django][:apache][:serve_local_files] = "true"
+# Setting Django version
+set[:app_django][:version] = "1.4"
+# Django application debug mode - https://docs.djangoproject.com/en/dev/ref/settings/#debug
+default[:app_django][:app][:debug_mode] = "False"
 # Path to PIP executable
 set[:app_django][:pip_bin] = "/usr/bin/pip"
 # Path to python executable

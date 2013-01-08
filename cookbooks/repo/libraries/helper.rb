@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: repo_rsync
+# Cookbook Name:: repo
 #
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
@@ -32,6 +32,24 @@ module RightScale
         ::File.delete(KEYFILE)
       end
 
+      # Create record in /root/.ssh/known_hosts
+      #
+      # @param host_key [string] host_key record: fqdn,ip ssh-rsa value
+      def add_host_key(host_key)
+        host_file = "/root/.ssh/known_hosts"
+        if ::File.exists?("#{host_file}") && ::File.readlines(host_file).grep("#{host_key}\n").any?
+          Chef::Log.info("  Skipping key installation. Looks like the key already exists.")
+        else
+          Chef::Log.info("  Installing ssh host key for root.")
+          ::File.open(host_file, "a") do |known_hosts|
+            known_hosts << "#{host_key}\n"
+            known_hosts.chmod(0600)
+          end
+        end
+
+      end
+
     end
+
   end
 end

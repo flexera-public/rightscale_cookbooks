@@ -36,7 +36,7 @@ end
 # Preparing list of packages depending on platform
 node[:app][:packages] = value_for_platform(
   ["centos", "redhat"] => {
-   "default" => [
+    "default" => [
       "ecj",
       "tomcat6",
       "tomcat6-admin-webapps",
@@ -45,7 +45,7 @@ node[:app][:packages] = value_for_platform(
     ]
   },
   "ubuntu" => {
-    "default"  => [
+    "default" => [
       "ecj-gcj",
       "tomcat6",
       "tomcat6-admin",

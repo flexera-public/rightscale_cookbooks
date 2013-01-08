@@ -26,7 +26,7 @@ when "ubuntu"
     "libapache2-mod-wsgi",
     "python-simplejson",
     "python-pip"
-   ]
+  ]
   node[:app][:user] = "www-data"
   node[:app][:group] = "www-data"
 when "centos", "redhat"
@@ -46,7 +46,7 @@ when "centos", "redhat"
     "python-setuptools",
     "python-simplejson",
     "python-pip"
-   ]
+  ]
   node[:app][:user] = "apache"
   node[:app][:group] = "apache"
 else
@@ -54,6 +54,6 @@ else
 end
 
 # Set debug mode django style (https://docs.djangoproject.com/en/dev/ref/settings/#debug)
-node[:app_django][:app][:debug_mode].gsub!(/^./) {|a| a.upcase}
+node[:app_django][:app][:debug_mode].gsub!(/^./) { |a| a.upcase }
 
 rightscale_marker :end

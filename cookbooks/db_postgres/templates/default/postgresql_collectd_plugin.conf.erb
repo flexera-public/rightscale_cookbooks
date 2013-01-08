@@ -13,7 +13,7 @@ LoadPlugin postgresql
 #      </Result>
 #  </Query>
 <Database "<%= node[:db_postgres][:database_name] %>">
-Host "/var/run/postgresql"
+Host ""
 User "<%=@database_owner%>"
 Password "<%=@database_owner_pass%>"
 </Database>

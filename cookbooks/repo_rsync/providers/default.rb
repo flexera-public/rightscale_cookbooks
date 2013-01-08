@@ -26,9 +26,19 @@ action :pull do
   # Add ssh key and exec script
   ruby_block "Before deploy" do
     block do
-      # See cookbooks/repo_rsync/libraries/default.rb for the "create" method.
+      # See cookbooks/repo/libraries/default.rb for the "create" method.
       RightScale::Repo::SshKey.new.create(new_resource.credential)
     end
+  end
+
+  # add record to /known_hosts file and enable StrictHostKeyChecking
+  # if host_key input is set
+  if check_host_key.to_s.empty?
+    strict_check = "no"
+  else
+    strict_check = "yes"
+    # See cookbooks/repo/libraries/default.rb for the "add_host_key" method.
+    RightScale::Repo::SshKey.new.add_host_key(new_resource.ssh_host_key)
   end
 
   # Backup project directory if it is not empty
@@ -51,7 +61,7 @@ action :pull do
   # -e, --rsh=COMMAND           specify the remote shell to use
   # --stats                     give some file-transfer stats
   execute "Downloading data with RSync" do
-    command "rsync -cavzP -e 'ssh -o StrictHostKeyChecking=no -i /tmp/ssh.key' --stats #{new_resource.account}@#{new_resource.repository}/* #{new_resource.destination}"
+    command "rsync -cavzP -e 'ssh -o StrictHostKeyChecking=#{strict_check} -i /tmp/ssh.key' --stats #{new_resource.account}@#{new_resource.repository}/* #{new_resource.destination}"
   end
 
   # Delete SSH key
@@ -87,7 +97,7 @@ action :capistrano_pull do
 
     block do
       Chef::Log.info("  Check previous repo in case of action change")
-      timestamp  = ::Time.now.gmtime.strftime("%Y%m%d%H%M")
+      timestamp = ::Time.now.gmtime.strftime("%Y%m%d%H%M")
       if ::File.exists?("#{capistrano_dir}")
         ::File.rename("#{new_resource.destination}", "#{capistrano_dir}/releases/_initial_#{timestamp}")
         Chef::Log.info("  Destination directory is not empty. Backup to #{capistrano_dir}/releases/_initial_#{timestamp}")
@@ -158,7 +168,7 @@ action :capistrano_pull do
     create_dirs_before_symlink create_dirs_before_symlink
     symlinks symlinks
     scm_provider scm_provider
-    environment  environment
+    environment environment
   end
 
   log "  Cleaning transformation temp files"

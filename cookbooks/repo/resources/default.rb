@@ -38,6 +38,9 @@ attribute :account, :kind_of => String
 attribute :credential, :kind_of => String
 
 
+# ssh_hostkey to be added to known hosts
+attribute :ssh_host_key, :kind_of => String
+
 # SVN
 #
 
@@ -59,7 +62,7 @@ attribute :storage_account_provider, :kind_of => String
 attribute :container, :kind_of => String
 
 # Unpack downloaded source or not Source file must be kind of tar archive
-attribute :unpack_source, :equal_to => [ true, false ], :default => true
+attribute :unpack_source, :equal_to => [true, false], :default => true
 
 
 # Capistrano
