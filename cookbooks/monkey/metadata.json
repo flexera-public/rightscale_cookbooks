@@ -463,12 +463,25 @@
       "calculated": false,
       "type": "string"
     },
-    "monkey/virtualmonkey/environment": {
-      "display_name": "VirtualMonkey Environment",
-      "description": "VirtualMonkey Environmnet",
+    "monkey/rocketmonkey/repo_url": {
+      "display_name": "RocketMonkey Repo URL",
+      "description": "Git repository URL for RocketMonkey",
       "required": "required",
       "recipes": [
-        "monkey::setup_virtualmonkey"
+        "monkey::setup_rocketmonkey"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "monkey/rocketmonkey/repo_branch": {
+      "display_name": "RocketMonkey Repo Branch",
+      "description": "Git branch for VirtualMonkey project",
+      "required": "required",
+      "recipes": [
+        "monkey::setup_rocketmonkey"
       ],
       "choice": [
 
@@ -484,6 +497,7 @@
     "monkey::setup_git": "Setting up Git for monkey.",
     "monkey::setup_rest_connection": "Setting up rest_connection for monkey.",
     "monkey::setup_virtualmonkey": "Setting up virtualmonkey.",
+    "monkey::setup_rocketmonkey": "Setting up rocketmonkey.",
     "monkey::update_fog_credentials": "Setting up or updating existing credentials for fog configuration.",
     "monkey::test_virtualmonkey_api_connection": "Testing API connectivity for virtualmonkey."
   },

@@ -7,7 +7,7 @@ version          "13.2.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"
-# supports "ubuntu", "~> 10.04", "~> 12.04" 
+# supports "ubuntu", "~> 10.04", "~> 12.04"
 
 
 depends "rightscale"
@@ -16,6 +16,7 @@ recipe "monkey::default", "Default recipe for monkey setup."
 recipe "monkey::setup_git", "Setting up Git for monkey."
 recipe "monkey::setup_rest_connection", "Setting up rest_connection for monkey."
 recipe "monkey::setup_virtualmonkey", "Setting up virtualmonkey."
+recipe "monkey::setup_rocketmonkey", "Setting up rocketmonkey."
 recipe "monkey::update_fog_credentials", "Setting up or updating existing credentials for fog configuration."
 recipe "monkey::test_virtualmonkey_api_connection", "Testing API connectivity for virtualmonkey."
 
@@ -223,9 +224,15 @@ attribute "monkey/virtualmonkey/collateral_repo_branch",
   :required => "required",
   :recipes => ["monkey::setup_virtualmonkey"]
 
-attribute "monkey/virtualmonkey/environment",
-  :display_name => "VirtualMonkey Environment",
-  :description => "VirtualMonkey Environmnet",
+attribute "monkey/rocketmonkey/repo_url",
+  :display_name => "RocketMonkey Repo URL",
+  :description => "Git repository URL for RocketMonkey",
   :required => "required",
-  :recipes => ["monkey::setup_virtualmonkey"]
+  :recipes => ["monkey::setup_rocketmonkey"]
+
+attribute "monkey/rocketmonkey/repo_branch",
+  :display_name => "RocketMonkey Repo Branch",
+  :description => "Git branch for VirtualMonkey project",
+  :required => "required",
+  :recipes => ["monkey::setup_rocketmonkey"]
 
