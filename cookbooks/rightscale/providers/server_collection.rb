@@ -22,7 +22,10 @@ action :load do
       # Add mandatory tags
       all_tags += new_resource.mandatory_tags.collect if new_resource.mandatory_tags
       # and also accept 'secondary' not to break the interface.
-      all_tags += new_resource.secondary_tags.collect if new_resource.secondary_tags
+      if new_resource.secondary_tags
+        all_tags += new_resource.secondary_tags.collect
+        Chef::Log.warn "  WARNING: Use of 'secondary_tags' attribute is deprecated. Use 'mandatory_tags' attribute instead"
+      end
       delay = 1
       while true
         collection_resource.run_action(:load)
