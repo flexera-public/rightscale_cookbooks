@@ -14,6 +14,7 @@ depends "rightscale"
 recipe "sys::do_reconverge_list_enable", "Enables the periodic execution (every 15 minutes) of recipes specified in the 'Reconverge List' input."
 recipe "sys::do_reconverge_list_disable", "Disable recipe reconverge list."
 recipe "sys::setup_swap", "Installs swap space."
+recipe "sys::setup_ephemeral", "Creates, formats, and mounts a brand new block device on the instance's ephemeral drives. Does nothing on clouds without ephemeral drives."
 
 attribute "sys/reconverge_list",
   :display_name => "Reconverge List",
@@ -43,4 +44,15 @@ attribute "sys/swap_file",
   :default => "/mnt/ephemeral/swapfile",
   :recipes => [
     "sys::setup_swap"
+  ]
+
+attribute "sys/ephemeral/vg_data_percentage",
+  :display_name => "Percentage of the ephemeral LVM used for data",
+  :description => "The percentage of the total ephemeral Volume Group extents (LVM) that is used for data. (e.g. 50 percent - 1/2 used for data 100 percent - all space is allocated for data. WARNING: Using a non-default value it not recommended. Make sure you understand what you are doing before changing this value. Example: 100",
+  :type => "string",
+  :required => "optional",
+  :choice => ["50", "60", "70", "80", "90", "100"],
+  :default => "100",
+  :recipes => [
+    "sys::setup_ephemeral"
   ]

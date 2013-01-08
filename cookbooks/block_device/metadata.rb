@@ -13,7 +13,6 @@ depends "rightscale"
 
 recipe "block_device::default", "Sets up input dependencies for use by other cookbooks."
 recipe "block_device::setup_block_device", "Creates, formats, and mounts a brand new block device on the instance."
-recipe "block_device::setup_ephemeral", "Creates, formats, and mounts a brand new block device on the instance's ephemeral drives. Does nothing on clouds without ephemeral drives."
 
 recipe "block_device::do_primary_backup", :description => "Creates a primary backup in the local cloud where the server is currently running.", :thread => 'block_backup'
 recipe "block_device::do_primary_restore","Restores a primary backup from the local cloud where the server is currently running."
@@ -262,7 +261,7 @@ end.each do |device, number|
 
   attribute "block_device/devices/#{device}/vg_data_percentage",
     :display_name => "Percentage of the LVM used for data (#{number})",
-    :description => "The percentage of the total Volume Group extents (LVM) that is used for data. (e.g. 50 percent - 1/2 used for data and remainder used for overhead and snapshots, 100 percent - all space is allocated for data (therefore snapshots can not be taken) WARNING: If the space used for data storage is too large, LVM snapshots cannot be performed. Using a non-default value it not reccommended. Make sure you understand what you are doing before changing this value.",
+    :description => "The percentage of the total Volume Group extents (LVM) that is used for data. (e.g. 50 percent - 1/2 used for data and remainder used for overhead and snapshots, 100 percent - all space is allocated for data (therefore snapshots can not be taken) WARNING: If the space used for data storage is too large, LVM snapshots cannot be performed. Using a non-default value it not recommended. Make sure you understand what you are doing before changing this value.",
     :type => "string",
     :required => 'optional',
     :choice => ["50", "60", "70", "80", "90", "100"],
