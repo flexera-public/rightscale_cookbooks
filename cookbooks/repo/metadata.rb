@@ -35,7 +35,7 @@ attribute "repo/default/repository",
 
 attribute "repo/default/revision",
   :display_name => "Repository Branch/Tag/Commit",
-  :description => "The specific branch, tag, or commit (SHA) of the specified Git/Subversion repository that the application code will be retrieved from. For Git repositories, use 'master' to retrieve the master branch from the repository. Example: mybranch",
+  :description => "The specific branch, tag, or commit (SHA) of the specified Git/Subversion repository that the application code will be retrieved from.  For Git repositories, use 'master' to retrieve the master branch from the repository.  For SVN repositories, use 'HEAD' to retrieve the latest changes from the repository. Example: mybranch",
   :required => "recommended",
   :default => "master",
   :recipes => ["repo::default"]
@@ -52,6 +52,12 @@ attribute "repo/default/credential",
   :required => "recommended",
   :recipes => ["repo::default"]
 
+attribute "repo/default/ssh_host_key",
+  :display_name => "Known hosts ssh key",
+  :description => "A valid SSH key which will be appended to /root/.ssh/known_hosts file. This input will allow to verify the destination host, by comparing its IP,FQDN, SSH-RSA with the record in /root/.ssh/known_hosts file. Use this input if you want to improve security and for MiTM attacks prevention Example: cred:SSH_KNOWN_HOST_KEY.",
+  :required => "optional",
+  :recipes => ["repo::default"]
+
 attribute "repo/default/perform_action",
   :display_name => "Action",
   :description => "Specify how the application code will be pulled from the specified repository. 'pull'- standard repository pull, 'capistrano_pull' standard repository pull plus a capistrano deployment style is applied. Example: pull",
@@ -62,13 +68,11 @@ attribute "repo/default/perform_action",
 
 attribute "repo/default/destination",
   :display_name => "Project App root",
-  :description => "The destination location where the application code will be placed on the local instance. If you want the application code to be placed in the root directory, use a forward slash (/) otherwise you will need to specify the full path (e.g. /path/to/code). The 'Application Name' input is used to name the destination folder into which the application code will be placed in the specified path. Apache and PHP will look for the application in the specified path. Example: /home/webapps",
+  :description => "The destination location where the application code will be placed on the local instance. If you want the application code to be placed in the root directory, use a forward slash (/) otherwise you will need to specify the full path (e.g. /path/to/code). Example: /home/webapps",
   :default => "/home/webapps",
   :required => "optional",
   :recipes => ["repo::default"]
 
-# ROS
-#
 attribute "repo/default/storage_account_provider",
   :display_name => "ROS Storage Account Provider",
   :description => "The Remote Object Storage (ROS) service where the tarball of the application code will be retrieved from. Example: s3",
@@ -91,8 +95,3 @@ attribute "repo/default/prefix",
   :required => "optional",
   :recipes => ["repo::default"]
 
-attribute "repo/default/ssh_host_key",
-  :display_name => "Known hosts ssh key",
-  :description => "A valid SSH key which will be appended to /root/.ssh/known_hosts file. This input will allow to verify the destination host, by comparing its IP,FQDN, SSH-RSA with the record in /root/.ssh/known_hosts file. Use this input if you want to improve security and for MiTM attacks prevention Example: cred:SSH_KNOWN_HOST_KEY.",
-  :required => "optional",
-  :recipes => ["repo::default"]
