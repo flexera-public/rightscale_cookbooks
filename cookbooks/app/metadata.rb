@@ -28,7 +28,7 @@ recipe "app::request_loadbalancer_allow", "Sends a request to all application se
 
 recipe "app::request_loadbalancer_deny", "Sends a request to all application servers tagged with loadbalancer:app=<applistener_name> to deny connections from the server's private IP address. This script should be run on a load balancer after disconnecting application servers or upon decommissioning."
 
-recipe "app::setup_vhost", "Set up the application vhost on port 8000. This recipe will call the corresponding provider from the app server cookbook, which creates an apache vhost file."
+recipe "app::setup_vhost", "Set up the application vhost on selected port. This recipe will call the corresponding provider from the app server cookbook, which creates an apache vhost file."
 
 recipe "app::setup_db_connection", "Set up the database connection file. This recipe will call the corresponding provider from app server cookbook, which creates an application database configuration file."
 
@@ -61,13 +61,13 @@ attribute "app/port",
 
 attribute "app/database_name",
   :display_name => "Database Schema Name",
-  :description => "Enter the name of the database schema to which applications will connect to. The database schema should have been created when the initial database was first set up. This input will be used to set the application server's database configuration file so that applications can connect to the correct schema within the database.  This input is also used for database dump backups in order to determine which schema will be backed up.  Example: mydbschema",
+  :description => "Enter the name of the database schema to which applications will connect to. The database schema should have been created when the initial database was first set up. This input will be used to set the application server's database configuration file so that applications can connect to the correct schema within the database.  NOTE: LAMP servers use this input for database dump backups in order to determine which schema will be backed up.  Example: mydbschema",
   :required => "required",
   :recipes => ["app::setup_db_connection"]
 
 attribute "app/backend_ip_type",
-  :display_name => "Application ip given to loadbalancer",
-  :description => "The ip that the application service is listening on. Example: Private",
+  :display_name => "Application ip type given to loadbalancer",
+  :description => "The ip type that the application service is listening on. Example: Private",
   :choice => ["Public", "Private"],
   :required => "optional",
   :default => "Private",
