@@ -39,7 +39,7 @@ attribute "app_passenger/project/environment",
 
 attribute "app_passenger/apache/serve_local_files",
   :display_name => "Apache serve local Files",
-  :description => "This option tells Apache whether it should serve the (static) content itself. Currently, it will omit PHP and TomCat dynamic content, such as *.php, *.action, *.jsp, and *.do  Example: true",
+  :description => "This option tells Apache whether it should serve the (static) content itself. Currently, it will omit dynamic content, such as *.php, *.action, *.jsp, and *.do  Example: true",
   :choice => ["true", "false"],
   :required => "optional",
   :default => "true",
