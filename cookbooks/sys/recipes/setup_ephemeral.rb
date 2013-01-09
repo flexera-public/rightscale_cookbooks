@@ -8,12 +8,10 @@
 rightscale_marker :begin
 
 class Chef::Resource::Mount
-  #include RightScale::BlockDeviceHelper
   include RightScale::System::Helper
 end
 
 class Chef::Resource::Directory
-  #include RightScale::BlockDeviceHelper
   include RightScale::System::Helper
 end
 
@@ -184,9 +182,8 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
         if my_devices.empty?
           Chef::Log.info "  No ephemeral devices attached"
         else
-          ephemeral_size = node[:sys][:ephemeral][:vg_data_percentage].to_s
           run_command("vgcreate vg-data #{my_devices.join(' ')}")
-          run_command("lvcreate vg-data -n #{lvm_device} -i #{my_devices.size} -I 256 -l #{ephemeral_size}%VG")
+          run_command("lvcreate vg-data -n #{lvm_device} -i #{my_devices.size} -I 256 -l #{node[:sys][:ephemeral][:vg_data_percentage].to_s}%VG")
           run_command("mkfs.#{filesystem_type} /dev/vg-data/#{lvm_device}")
 
           # Add the fstab_entry to fstab if it does not already exists.
