@@ -97,8 +97,7 @@ Syntax:
     mandatory_tags "server:uuid=*"
   end
 
-NOTE: The resource also supports <tt>secondary_tags</tt> - duplicate of <tt>mandatory_tags</tt> attribute.
-This attribute is deprecated, use <tt>mandatory_tags</tt> instead.
+NOTE: The <tt>secondary_tags</tt> attribute is deprecated in favor of <tt>mandatory_tags</tt>.
 
 
 == LICENSE:
