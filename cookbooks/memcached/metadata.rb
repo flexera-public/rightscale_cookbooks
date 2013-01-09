@@ -25,28 +25,28 @@ recipe "memcached::do_stop", "Stop memcached service."
 
 attribute "memcached/tcp_port",
   :display_name => "Memcached TCP Port",
-  :description => "The TCP port to use for connections. Default : 11211",
+  :description => "The TCP port to use for connections. Example: 11211",
   :required => "recommended",
   :default => "11211",
   :recipes => ["memcached::install_server", "memcached::default"]
 
 attribute "memcached/udp_port",
   :display_name => "Memcached UDP Port",
-  :description => "The UDP port to use for connections. Default : 11211",
+  :description => "The UDP port to use for connections. Example: 11211",
   :required => "recommended",
   :default => "11211",
   :recipes => ["memcached::install_server", "memcached::default"]
 
 attribute "memcached/user",
   :display_name => "Memcached user",
-  :description => "The user for executing memcached. Default: nobody",
+  :description => "The user for executing memcached. Example: nobody",
   :required => "recommended",
   :default => "nobody",
   :recipes => ["memcached::install_server"]
 
 attribute "memcached/connection_limit",
   :display_name => "Memcached connection limit",
-  :description => "Option to either reduce the number of connections (to prevent overloading memcached service) or to increase the number making more effective use of the server running memcached. Default: 1024",
+  :description => "Option to either reduce the number of connections (to prevent overloading memcached service) or to increase the number making more effective use of the server running memcached. Example: 1024",
   :required => "recommended",
   :default => "1024",
   :recipes => ["memcached::install_server"]
@@ -68,7 +68,7 @@ attribute "memcached/threads",
 
 attribute "memcached/interface",
   :display_name => "Memcached listening interface",
-  :description => "Interface used for memcached connections. Default: any",
+  :description => "Interface used for memcached connections. Example: any",
   :required => "recommended",
   :choice => ["localhost", "private", "any"],
   :default => "any",
@@ -76,7 +76,7 @@ attribute "memcached/interface",
 
 attribute "memcached/log_level",
   :display_name => "Memcached logging output level",
-  :description => "Without the verbose options, memcached normally produces no output during normal operating.",
+  :description => "Without the verbose options, memcached normally produces no output during normal operating. Example: off",
   :required => "optional",
   :choice => ["off", "verbose", "debug", "extremely verbose"],
   :default => "off",
@@ -84,7 +84,7 @@ attribute "memcached/log_level",
 
 attribute "memcached/cluster_id",
   :display_name => "Memcached cluster_id",
-  :description => "Used to associate server with a memcached cluster.",
+  :description => "Used to associate server with a memcached cluster. Example: cache_cluster",
   :required => "optional",
   :default => "cache_cluster",
   :recipes => ["memcached::install_server", "memcached::default"]
