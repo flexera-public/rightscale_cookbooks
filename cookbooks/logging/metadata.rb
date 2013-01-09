@@ -13,12 +13,12 @@ depends "rightscale"
 depends "logging_rsyslog"
 depends "logging_syslog_ng"
 
-recipe "logging::default", "Configures a native logging provider."
-recipe "logging::install_server", "Configures a syslog server."
-recipe "logging::do_server_start", "Starts syslog server."
-recipe "logging::do_server_stop", "Stops syslog server."
-recipe "logging::do_server_restart", "Restarts syslog server."
-recipe "logging::do_server_reload", "Reloads syslog server."
+recipe "logging::default", "Default recipe to setup provided resources."
+recipe "logging::install_server", "Configures a logging server."
+recipe "logging::do_server_start", "Starts logging server."
+recipe "logging::do_server_stop", "Stops logging server."
+recipe "logging::do_server_restart", "Restarts logging server."
+recipe "logging::do_server_reload", "Reloads logging server."
 
 attribute "logging",
   :display_name => "Log Service Settings",
@@ -32,7 +32,7 @@ attribute "logging/remote_server",
 
 attribute "logging/protocol",
   :display_name => "Logging Protocol",
-  :description => "Protocol used to send logging messages from client to server.",
+  :description => "Protocol used to send logging messages from client to server. Example: udp",
   :required => "optional",
   :choice => [ "udp", "relp", "relp-secured"],
   :default =>  "udp",
