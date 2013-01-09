@@ -24,7 +24,7 @@ recipe "db::setup_monitoring", "Installs the collectd plugin for database monito
 
 # == Common Database Recipes
 #
-recipe "db::do_primary_backup", "Creates a primary backup of the database using persistent storage in the current cloud. Backup type depends on cloud and hypervisor type. For clouds with volume snapshots support available, volume backup will be used only if hypervisor is different than KVM. For clouds without volume snapshots support and for KVM based instances backups are uploaded to ROS container."
+recipe "db::do_primary_backup", :description => "Creates a primary backup of the database using persistent storage in the current cloud. Backup type depends on cloud and hypervisor type. For clouds with volume snapshots support available, volume backup will be used only if hypervisor is different than KVM. For clouds without volume snapshots support and for KVM based instances backups are uploaded to ROS container.", :thread => 'db_backup'
 
 recipe "db::do_primary_backup_schedule_enable", "Enables db::do_primary_backup to be run periodically."
 recipe "db::do_primary_backup_schedule_disable", "Disables db::do_primary_backup from being run periodically."
@@ -33,7 +33,7 @@ recipe "db::setup_privileges_admin", "Adds the username and password for 'superu
 recipe "db::setup_privileges_application", "Adds the username and password for application privileges."
 recipe "db::remove_anonymous_users", "Removes anonymous users from database."
 
-recipe "db::do_secondary_backup", "Creates a backup of the database and uploads it to a secondary cloud storage location, which can be used to migrate your database to a different cloud. For example, you can save a secondary backup to an Amazon S3 bucket or a Rackspace Cloud Files container."
+recipe "db::do_secondary_backup", :description => "Creates a backup of the database and uploads it to a secondary cloud storage location, which can be used to migrate your database to a different cloud. For example, you can save a secondary backup to an Amazon S3 bucket or a Rackspace Cloud Files container.", :thread => 'db_backup'
 recipe "db::do_secondary_restore", "Restores the database from the most recently completed backup available in a secondary location."
 
 recipe "db::do_force_reset", "Resets the database back to a pristine state. WARNING: Execution of this script will delete any data in your database!"
@@ -314,7 +314,7 @@ attribute "db/dump",
 
 attribute "db/dump/storage_account_provider",
   :display_name => "Dump Storage Account Provider",
-  :description => "Location where the dump file will be saved. Used by dump recipes to back up to remote object storage.(complete list of supported storage locations see in input dropdown). Example: s3",
+  :description => "Location where the dump file will be saved. Used by dump recipes to back up to remote object storage (complete list of supported storage locations is in input dropdown). Example: s3",
   :required => "required",
   :choice => [
     "s3",
