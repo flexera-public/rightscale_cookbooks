@@ -420,7 +420,9 @@ action :install_server do
     !node[:db_mysql][:slave_key].to_s.empty?
 
   log "  MySQL SSL enabled: #{node[:db_mysql][:ssl_enabled]}"
-  log "  MySQL SSL will only be enabled if all inputs contain credentials." unless node[:db_mysql][:ssl_enabled]
+  log "  MySQL SSL will only be enabled if all inputs contain credentials." do
+    not_if { node[:db_mysql][:ssl_enabled] }
+  end
 
   node[:db_mysql][:ssl_credentials] = {
     :ca_certificate => {
@@ -449,7 +451,7 @@ action :install_server do
     directory "/etc/mysql/certs" do
       owner "mysql"
       group "mysql"
-      mode "0600"
+      mode "0700"
     end
 
     node[:db_mysql][:ssl_credentials].each do |name, data|
