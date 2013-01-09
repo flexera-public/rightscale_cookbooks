@@ -29,7 +29,7 @@ attribute "sys_dns/id",
 
 attribute "sys_dns/user",
   :display_name => "DNS User",
-  :description => "The username that is used to access and modify the DNS A records. For DNS Made Easy and DynDNS, enter your user name (e.g., cred:DNS_USER). For Amazon DNS, enter your Amazon access key ID (e.g., cred:AWS_ACCESS_KEY_ID)",
+  :description => "The username that is used to access and modify the DNS A records. For DNS Made Easy and DynDNS, enter your user name (e.g., cred:DNS_USER). For Amazon DNS, enter your Amazon access key ID (e.g., cred:AWS_ACCESS_KEY_ID). For CloudDNS, enter your login username (e.g., cred:RACKSPACE_USERNAME)",
   :required => "required",
   :recipes => ["sys_dns::do_set_private", "sys_dns::default"]
 
