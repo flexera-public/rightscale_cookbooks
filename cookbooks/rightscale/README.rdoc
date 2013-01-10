@@ -99,7 +99,6 @@ Syntax:
 
 NOTE: The <tt>secondary_tags</tt> attribute is deprecated in favor of <tt>mandatory_tags</tt>.
 
-
 == LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to

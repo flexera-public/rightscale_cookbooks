@@ -16,7 +16,6 @@ attribute :tags, :kind_of => [String, Array]
 attribute :mandatory_tags, :kind_of => [String, Array]
 
 # @deprecated Duplicate of +mandatory_tags+
-# we should keep it to not to break the interface
 attribute :secondary_tags, :kind_of => [String, Array]
 
 # IDs for the servers to lookup.
