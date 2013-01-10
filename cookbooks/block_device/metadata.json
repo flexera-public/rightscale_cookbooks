@@ -198,6 +198,25 @@
       ],
       "calculated": false
     },
+    "block_device/ephemeral/vg_data_percentage": {
+      "display_name": "Percentage of the ephemeral LVM used for data",
+      "description": "The percentage of the total ephemeral Volume Group extents (LVM) that is used for data. (e.g. 50 percent - 1/2 used for data 100 percent - all space is allocated for data. WARNING: Using a non-default value it not recommended. Make sure you understand what you are doing before changing this value. Example: 100",
+      "type": "string",
+      "required": "optional",
+      "choice": [
+        "50",
+        "60",
+        "70",
+        "80",
+        "90",
+        "100"
+      ],
+      "default": "100",
+      "recipes": [
+        "block_device::setup_ephemeral"
+      ],
+      "calculated": false
+    },
     "block_device/devices/device1/stripe_count": {
       "display_name": "Number of Volumes in the Stripe (1)",
       "description": "The total number of volumes in the volume stripe that will be used by the database. Volumes will be created and mounted to the instance. The default value is 1, which means that only a single volume will be used (no striping). This value is ignored on clouds that do not support volumes (e.g., Rackspace).",
@@ -808,6 +827,7 @@
   "recipes": {
     "block_device::default": "Sets up input dependencies for use by other cookbooks.",
     "block_device::setup_block_device": "Creates, formats, and mounts a brand new block device on the instance.",
+    "block_device::setup_ephemeral": "Creates, formats, and mounts a brand new block device on the instance's ephemeral drives. Does nothing on clouds without ephemeral drives.",
     "block_device::do_primary_backup": {
       "description": "Creates a primary backup in the local cloud where the server is currently running.",
       "thread": "block_backup"

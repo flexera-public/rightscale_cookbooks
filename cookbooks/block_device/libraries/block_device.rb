@@ -158,6 +158,5 @@ module RightScale
       mtab_exists = File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} ")
       fstab_exists && mtab_exists
     end
-
   end
 end
