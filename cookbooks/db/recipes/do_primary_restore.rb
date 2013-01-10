@@ -55,7 +55,7 @@ log "  Performing Restore..."
 
 # See cookbooks/block_device/libraries/block_device.rb for
 # "set_restore_params" and "get_device_or_default" methods.
-lineage, timestamp_override = set_restore_params(
+restore_lineage, restore_timestamp_override = set_restore_params(
   node[:db][:backup][:lineage],
   node[:db][:backup][:lineage_override],
   node[:db][:backup][:timestamp_override]
@@ -63,8 +63,8 @@ lineage, timestamp_override = set_restore_params(
 
 # See cookbooks/block_device/providers/default.rb for the "primary_restore" action.
 block_device NICKNAME do
-  lineage lineage
-  timestamp_override timestamp_override
+  lineage restore_lineage
+  timestamp_override restore_timestamp_override
   volume_size get_device_or_default(node, :device1, :volume_size)
   action :primary_restore
 end

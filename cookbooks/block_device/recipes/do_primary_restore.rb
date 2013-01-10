@@ -28,7 +28,7 @@ do_for_block_devices node[:block_device] do |device|
 
   # Do the restore.
   log "  Creating block device and restoring data from primary backup for device #{device}..."
-  lineage, timestamp_override = set_restore_params(
+  restore_lineage, restore_timestamp_override = set_restore_params(
     get_device_or_default(node, device, :backup, :lineage),
     get_device_or_default(node, device, :backup, :lineage_override),
     get_device_or_default(node, device, :backup, :timestamp_override)
@@ -36,8 +36,8 @@ do_for_block_devices node[:block_device] do |device|
 
   block_device get_device_or_default(node, device, :nickname) do
     # Backup/Restore arguments
-    lineage lineage
-    timestamp_override timestamp_override
+    lineage restore_lineage
+    timestamp_override restore_timestamp_override
     action :primary_restore
   end
 end
