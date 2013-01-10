@@ -22,7 +22,6 @@ end
 default[:db_postgres][:tunable][:ulimit] = `sysctl -n fs.file-max`.to_i/33
 
 # Shared servers get %50 of the resources allocated to a dedicated server.
-default[:db_postgres][:server_usage] = "dedicated" # or "shared"
 usage = 1 # Dedicated server
 usage = 0.5 if db_postgres[:server_usage] == :shared
 

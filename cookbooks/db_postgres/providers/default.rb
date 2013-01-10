@@ -155,13 +155,6 @@ action :install_client do
 
   # Install PostgreSQL package(s)
 
-  node[:db][:socket] = value_for_platform(
-    ["centos", "redhat"] => {
-      "default" => "/var/run/postgresql"
-    },
-    "default" => ""
-  )
-
   node[:db_postgres][:client_packages_install] = value_for_platform(
     ["centos", "redhat"] => {
       "default" => [
@@ -193,7 +186,7 @@ action :install_client do
     end
 
     packages = node[:db_postgres][:client_packages_install]
-    log  "Packages to install: #{packages.join(", ")}"
+    log "  Packages to install: #{packages.join(", ")}"
     packages.each do |p|
       package p do
         action :install
@@ -257,15 +250,6 @@ action :install_server do
     action :stop
   end
 
-
-  # Create the Socket directory
-  #directory "/var/run/postgresql" do
-  directory "#{node[:db][:socket]}" do
-    owner "postgres"
-    group "postgres"
-    mode 0770
-    recursive true
-  end
 
   # Setup postgresql.conf
   # template_source = "postgresql.conf.erb"
@@ -333,7 +317,7 @@ action :install_client_driver do
     node[:db][:client][:driver] = "postgres"
     package "#{type} postgres integration" do
       package_name value_for_platform(
-        [ "centos", "redhat" ] => {
+        ["centos", "redhat"] => {
           "default" => "php53u-pgsql"
         },
         "ubuntu" => {
@@ -393,12 +377,12 @@ action :grant_replication_slave do
   # Enable admin/replication user
   # Check if server is in read_only mode, if found skip this...
   res = conn.exec("show transaction_read_only")
-  slavestatus = res.getvalue(0,0)
-  if ( slavestatus == 'off' )
+  slavestatus = res.getvalue(0, 0)
+  if (slavestatus == 'off')
     log "  Detected Master server."
     result = conn.exec("SELECT COUNT(*) FROM pg_user WHERE usename='#{username_esc}'")
-    userstat = result.getvalue(0,0)
-    if ( userstat == '1' )
+    userstat = result.getvalue(0, 0)
+    if (userstat == '1')
       log "  User #{username} already exists, updating user using current inputs"
       conn.exec("ALTER USER #{username} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password}'")
     else
@@ -464,9 +448,9 @@ action :enable_replication do
   bash "wipe_existing_runtime_config" do
     not_if { current_restore_process == :no_restore }
     flags "-ex"
-     code <<-EOH
+    code <<-EOH
        rm -rf #{node[:db_postgres][:datadir]}/pg_xlog/*
-     EOH
+    EOH
   end
 
   # Ensure that database started
@@ -500,7 +484,7 @@ action :promote do
     sleep 10
 
     # Let the new slave loose and thus let him become the new master
-    Chef::Log.info  "  New master is ReadWrite."
+    Chef::Log.info "  New master is ReadWrite."
 
   rescue => e
     Chef::Log.info "  WARNING: caught exception #{e} during critical operations on the MASTER"
@@ -621,14 +605,14 @@ end
 
 action :generate_dump_file do
 
-  db_name     = new_resource.db_name
-  dumpfile    = new_resource.dumpfile
+  db_name = new_resource.db_name
+  dumpfile = new_resource.dumpfile
 
   bash "Write the postgres DB backup file" do
-      user 'postgres'
-      code <<-EOH
-        pg_dump -U postgres -h /var/run/postgresql #{db_name} | gzip -c > #{dumpfile}
-      EOH
+    user 'postgres'
+    code <<-EOH
+      pg_dump -U postgres -h /var/run/postgresql #{db_name} | gzip -c > #{dumpfile}
+    EOH
   end
 
 
@@ -636,16 +620,14 @@ end
 
 action :restore_from_dump_file do
 
-  db_name     = new_resource.db_name
-  dumpfile    = new_resource.dumpfile
+  db_name = new_resource.db_name
+  dumpfile = new_resource.dumpfile
 
   log "  Check if DB already exists"
   ruby_block "checking existing db" do
     block do
       db_check = `echo "select datname from pg_database" | psql -U postgres -h /var/run/postgresql | grep -q  "#{db_name}"`
-      if ! db_check.empty?
-        raise "ERROR: database '#{db_name}' already exists"
-      end
+      raise "ERROR: database '#{db_name}' already exists" unless db_check.empty?
     end
   end
 

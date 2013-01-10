@@ -7,21 +7,11 @@
 
 # List of required apache modules
 set[:app][:module_dependencies] = ["proxy", "proxy_ajp"]
-# By default passenger will use "conservative" spawn method for more info see: http://www.modrails.com/documentation/Users%20guide%20Apache.html#PassengerSpawnMethod
-default[:app_passenger][:rails_spawn_method] = "conservative"
+
 # By default apache will serve any existing local files directly (except actionable ones)
 default[:app_passenger][:apache][:serve_local_files] = "true"
-
-# Defining log directory path depending on platform.
-case node[:platform]
-when "ubuntu"
-  set[:app_passenger][:apache][:log_dir] = "/var/log/apache2"
-when "centos", "redhat"
-  set[:app_passenger][:apache][:log_dir] = "/var/log/httpd"
-else
-  raise "Unrecognized distro #{node[:platform]}, exiting "
-end
-
+# By default passenger will use "conservative" spawn method for more info see: http://www.modrails.com/documentation/Users%20guide%20Apache.html#PassengerSpawnMethod
+default[:app_passenger][:rails_spawn_method] = "conservative"
 # Path to Ruby gem executable
 set[:app_passenger][:gem_bin] = "/usr/bin/gem"
 # Path to Ruby ruby executable

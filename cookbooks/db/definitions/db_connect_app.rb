@@ -25,7 +25,7 @@ define :db_connect_app, :template => "db_connection_example.erb", :cookbook => "
   template params[:name] do
     source params[:template]
     cookbook params[:cookbook]
-    mode 0440
+    mode "0440"
     owner params[:owner]
     group params[:group]
     backup false

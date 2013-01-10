@@ -25,7 +25,7 @@ package "xfsprogs" do
 end
 
 log "Inputs volume_size and stripe_count are not used in Rackspace cloud provider. For further information, please visit http://support.rightscale.com/09-Clouds/Rackspace_Hosting#Unsupported_Features" do
-  only_if {node[:cloud][:provider] == 'rackspace'}
+  only_if { node[:cloud][:provider] == 'rackspace' }
 end
 
 bash "Load kernel modules" do
@@ -75,6 +75,7 @@ do_for_all_block_devices node[:block_device] do |device|
     stripe_count get_device_or_default(node, device, :stripe_count)
     vg_data_percentage get_device_or_default(node, device, :vg_data_percentage)
     iops get_device_or_default(node, device, :iops) || ""
+    device_type get_device_or_default(node, device, :device_type)
 
     primary_cloud get_device_or_default(node, device, :backup, :primary, :cloud)
     primary_endpoint get_device_or_default(node, device, :backup, :primary, :endpoint) || ""
@@ -86,7 +87,7 @@ do_for_all_block_devices node[:block_device] do |device|
 
     action :nothing
 
-    persist true  # store resource to node for use in other run lists
+    persist true # store resource to node for use in other run lists
   end
 end
 

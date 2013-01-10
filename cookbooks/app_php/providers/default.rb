@@ -47,8 +47,8 @@ end
 action :install do
   # Installing required packages
   packages = new_resource.packages
- 
-  if not packages.nil?
+
+  unless packages.nil?
     log "  Packages which will be installed #{packages}"
 
     packages.each do |p|

@@ -37,7 +37,7 @@ action :install do
   directory "/etc/haproxy/#{node[:lb][:service][:provider]}.d" do
     owner "haproxy"
     group "haproxy"
-    mode 0755
+    mode "0755"
     recursive true
     action :create
   end
@@ -47,7 +47,7 @@ action :install do
   cookbook_file "/etc/haproxy/haproxy-cat.sh" do
     owner "haproxy"
     group "haproxy"
-    mode 0755
+    mode "0755"
     source "haproxy-cat.sh"
     cookbook "lb_haproxy"
   end
@@ -86,7 +86,7 @@ action :install do
   execute "/etc/haproxy/haproxy-cat.sh" do
     user "haproxy"
     group "haproxy"
-    umask 0077
+    umask "0077"
     notifies :start, resources(:service => "haproxy")
   end
 end
@@ -100,28 +100,28 @@ action :add_vhost do
   directory "/etc/haproxy/#{node[:lb][:service][:provider]}.d/#{pool_name}" do
     owner "haproxy"
     group "haproxy"
-    mode 0755
+    mode "0755"
     recursive true
     action :create
   end
 
   # Adds current pool to pool_list conf to preserve lb/pools order
   template "/etc/haproxy/#{node[:lb][:service][:provider]}.d/pool_list.conf" do
-     source "haproxy_backend_list.erb"
-     owner "haproxy"
-     group "haproxy"
-     mode 0600
-     backup false
-     cookbook "lb_haproxy"
-     variables(
-       :pool_list => node[:lb][:pools]
-     )
+    source "haproxy_backend_list.erb"
+    owner "haproxy"
+    group "haproxy"
+    mode "0600"
+    backup false
+    cookbook "lb_haproxy"
+    variables(
+      :pool_list => node[:lb][:pools]
+    )
   end
 
   # See cookbooks/lb_haproxy/definitions/haproxy_backend.rb for the definition
   # of "lb_haproxy_backend".
-  lb_haproxy_backend  "create main backend section" do
-    pool_name  pool_name
+  lb_haproxy_backend "create main backend section" do
+    pool_name pool_name
   end
 
   # Calls the "advanced_configs" action.
@@ -131,7 +131,7 @@ action :add_vhost do
   execute "/etc/haproxy/haproxy-cat.sh" do
     user "haproxy"
     group "haproxy"
-    umask 0077
+    umask "0077"
     action :run
     notifies :reload, resources(:service => "haproxy")
   end
@@ -160,7 +160,7 @@ action :attach do
   directory "/etc/haproxy/#{node[:lb][:service][:provider]}.d/#{pool_name}" do
     owner "haproxy"
     group "haproxy"
-    mode 0755
+    mode "0755"
     recursive true
     action :create
   end
@@ -169,7 +169,7 @@ action :attach do
   execute "/etc/haproxy/haproxy-cat.sh" do
     user "haproxy"
     group "haproxy"
-    umask 0077
+    umask "0077"
     action :nothing
     notifies :reload, resources(:service => "haproxy")
   end
@@ -179,7 +179,7 @@ action :attach do
     source "haproxy_server.erb"
     owner "haproxy"
     group "haproxy"
-    mode 0600
+    mode "0600"
     backup false
     cookbook "lb_haproxy"
     variables(
@@ -203,7 +203,7 @@ action :advanced_configs do
   end
 
   pool_name = new_resource.pool_name
-  pool_name_full =  new_resource.pool_name_full
+  pool_name_full = new_resource.pool_name_full
   log "  Current pool name is #{pool_name}"
   log "  Current FULL pool name is #{pool_name_full}"
 
@@ -212,16 +212,16 @@ action :advanced_configs do
   # acl url_serverid  path_beg    /serverid
   # acl ns-ss-db1-test-rightscale-com_acl  hdr_dom(host) -i ns-ss-db1.test.rightscale.com
   template "/etc/haproxy/#{node[:lb][:service][:provider]}.d/acl_#{pool_name}.conf" do
-     source "haproxy_backend_acl.erb"
-     owner "haproxy"
-     group "haproxy"
-     mode 0600
-     backup false
-     cookbook "lb_haproxy"
-     variables(
-       :pool_name => pool_name,
-       :pool_name_full => pool_name_full
-     )
+    source "haproxy_backend_acl.erb"
+    owner "haproxy"
+    group "haproxy"
+    mode "0600"
+    backup false
+    cookbook "lb_haproxy"
+    variables(
+      :pool_name => pool_name,
+      :pool_name_full => pool_name_full
+    )
   end
 
   # Template to generate acl sections for haproxy config file
@@ -231,7 +231,7 @@ action :advanced_configs do
     source "haproxy_backend_use.erb"
     owner "haproxy"
     group "haproxy"
-    mode 0600
+    mode "0600"
     backup false
     cookbook "lb_haproxy"
     variables(
@@ -282,7 +282,7 @@ action :detach do
   execute "/etc/haproxy/haproxy-cat.sh" do
     user "haproxy"
     group "haproxy"
-    umask 0077
+    umask "0077"
     action :nothing
     notifies :reload, resources(:service => "haproxy")
   end
