@@ -39,7 +39,7 @@ end
 
 # See cookbooks/block_device/libraries/block_device.rb for
 # "set_restore_params" and "get_device_or_default" methods.
-restore_lineage, restore_timestamp_override = set_override_attrs(
+restore_lineage, restore_timestamp_override = set_restore_params(
   node[:db][:backup][:lineage],
   node[:db][:backup][:lineage_override],
   node[:db][:backup][:timestamp_override]
