@@ -13,6 +13,7 @@ depends "rightscale"
 
 recipe "block_device::default", "Sets up input dependencies for use by other cookbooks."
 recipe "block_device::setup_block_device", "Creates, formats, and mounts a brand new block device on the instance."
+recipe "block_device::setup_ephemeral", "Creates, formats, and mounts a brand new block device on the instance's ephemeral drives. Does nothing on clouds without ephemeral drives."
 
 recipe "block_device::do_primary_backup", :description => "Creates a primary backup in the local cloud where the server is currently running.", :thread => 'block_backup'
 recipe "block_device::do_primary_restore","Restores a primary backup from the local cloud where the server is currently running."
@@ -26,8 +27,6 @@ recipe "block_device::do_primary_backup_schedule_disable", "Disables continuous 
 recipe "block_device::do_delete_volumes_and_terminate_server", "Deletes any currently attached volumes from the instance and then terminates the machine. WARNING: Execution of this script will delete any data on your block device!"
 
 recipe "block_device::do_force_reset", "Unmount and delete the attached block device(s) for this lineage. Designed for test and development purposes only. WARNING: Execution of this script will delete any data on your block device!"
-
-recipe "block_device::setup_ephemeral", "Creates, formats, and mounts a brand new block device on the instance's ephemeral drives. Does nothing on clouds without ephemeral drives."
 
 # all recipes EXCEPT for block_device::default which is used to "export" inputs to other cookbooks.
 all_recipes = [
