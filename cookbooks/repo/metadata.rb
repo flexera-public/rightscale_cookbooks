@@ -91,7 +91,7 @@ attribute "repo/default/storage_account_provider",
 
 attribute "repo/default/prefix",
   :display_name => "ROS Prefix",
-  :description => "The prefix that will be used to locate the correct tarball of the application. For example, if you're using 'myapp.tgz' specify 'myapp' as the ROS Prefix.",
+  :description => "The prefix that will be used to locate the correct tarball of the application. For example, if you're using 'myapp.tgz' specify 'myapp' as the ROS Prefix. Example: myapp",
   :required => "optional",
   :recipes => ["repo::default"]
 
