@@ -40,7 +40,7 @@ attribute "db_mysql/log_bin",
 
 attribute "db_mysql/binlog_format",
   :display_name => "MySQL Binlog Format",
-  :description => "Defines the format of your MySQL stored binlog files. Sets the 'binlog_format' option in the MySQL config file. Accepted options: STATEMENT, ROW, and MIXED",
+  :description => "Defines the format of your MySQL stored binlog files. Sets the 'binlog_format' option in the MySQL config file. Accepted options: STATEMENT, ROW, and MIXED. Example: MIXED",
   :recipes => ["db_mysql::setup_server_5_1", "db_mysql::setup_server_5_5"],
   :required => "optional",
   :choice => ["STATEMENT", "ROW", "MIXED"],
