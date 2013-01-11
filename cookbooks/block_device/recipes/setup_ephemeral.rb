@@ -182,7 +182,7 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
           Chef::Log.info "  No ephemeral devices attached"
         else
           run_command("vgcreate vg-data #{my_devices.join(' ')}")
-          run_command("lvcreate vg-data -n #{lvm_device} -i #{my_devices.size} -I 256 -l 100%VG")
+          run_command("lvcreate vg-data -n #{lvm_device} -i #{my_devices.size} -I 256 -l #{node[:block_device][:ephemeral][:vg_data_percentage]}%VG")
           run_command("mkfs.#{filesystem_type} /dev/vg-data/#{lvm_device}")
 
           # Add the fstab_entry to fstab if it does not already exists.
@@ -200,7 +200,7 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
             end
           end
           run_command("mount /dev/vg-data/#{lvm_device}")
-          Chef::Log.info "Done setting up LVM on ephemeral drives"
+          Chef::Log.info "  Done setting up LVM on ephemeral drives"
         end
       end
       not_if { ephemeral_fstab_and_mtab_checks(fstab_entry, mount_point, filesystem_type) }
