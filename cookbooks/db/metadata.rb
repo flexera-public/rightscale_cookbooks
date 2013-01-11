@@ -167,7 +167,7 @@ attribute "db/replication/password",
 
 attribute "db/replication/network_interface",
   :display_name => "Database Replication Network Interface",
-  :description => "The network interface used for replication. Default: private",
+  :description => "The network interface used for replication. WARNING: when selecting 'public' we highly recommend enabling SSL encryption, otherwise data could travel over insecure connections. Make sure you understand what you are doing before changing this value. Default: private",
   :required => "optional",
   :choice => ["private", "public", "vpn"],
   :default => "private",
