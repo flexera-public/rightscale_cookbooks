@@ -6,7 +6,7 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 # Required attributes that determine which provider to use.
-set_unless[:lb][:service][:provider] = "lb_haproxy"
+set_unless[:lb][:service][:provider] = "lb_client"
 
 # Logical name for the application (balancing group) to use.
 set_unless[:lb][:pools] = nil
