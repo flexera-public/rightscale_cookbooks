@@ -130,7 +130,7 @@ attribute "lb/service/lb_name",
 
 attribute "lb/service/account_id",
   :display_name => "Load Balance Service ID",
-  :description => "The account name that is required for access to specified cloud load balancer. For Rackspace's CLB service, use your Rackspace username. (e.g., cred: RACKSPACE_USERNAME). For Amazon ELB, use your Amazon key ID (e.g., cred:AWS_ACCESS_KEY_ID).",
+  :description => "The account name that is required for access to specified cloud load balancer. For Rackspace's CLB service, use your Rackspace username. (e.g., cred: RACKSPACE_USERNAME). For Amazon ELB, use your Amazon key ID (e.g., cred:AWS_ACCESS_KEY_ID). Example: cred:CLOUD_ACCOUNT_USERNAME",
   :required => "optional",
   :recipes => [
     "lb::default",
@@ -140,7 +140,7 @@ attribute "lb/service/account_id",
 
 attribute "lb/service/account_secret",
   :display_name => "Load Balance Service Secret",
-  :description => "The account secret that is required for access to specified cloud load balancer. For Rackspace's CLB service, use your Rackspace account API key (e.g., cred:RACKSPACE_AUTH_KEY). For Amazon ELB, use your Amazon secret key (e.g., cred:AWS_SECRET_ACCESS_KEY).",
+  :description => "The account secret that is required for access to specified cloud load balancer. For Rackspace's CLB service, use your Rackspace account API key (e.g., cred:RACKSPACE_AUTH_KEY). For Amazon ELB, use your Amazon secret key (e.g., cred:AWS_SECRET_ACCESS_KEY). Example: cred:CLOUD_ACCOUNT_KEY",
   :required => "optional",
   :recipes => [
     "lb::default",
