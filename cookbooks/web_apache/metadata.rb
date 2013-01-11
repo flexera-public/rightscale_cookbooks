@@ -97,10 +97,7 @@ attribute "web_apache/ssl_passphrase",
 
 attribute "web_apache/application_name",
   :display_name => "Application Name",
-  :description => "Sets the directory for your application's web files (/home/webapps/Application Name/).
-If you have multiple applications, you can run the code checkout script multiple times, each with a different value for the 'Application Name' input,
-so each application will be stored in a unique directory. This must be a valid directory name.
-Do not use symbols in the name. Example: myapp",
+  :description => "Sets the directory for your application's web files (/home/webapps/Application Name/). If you have multiple applications, you can run the code checkout script multiple times, each with a different value for the 'Application Name' input, so each application will be stored in a unique directory. This must be a valid directory name. Do not use symbols in the name. Example: myapp",
   :required => "optional",
   :default => "myapp",
   :recipes => [
