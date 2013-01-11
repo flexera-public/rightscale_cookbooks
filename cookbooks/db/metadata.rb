@@ -282,25 +282,25 @@ attribute "db/backup/restore_version_check",
 
 attribute "db/backup/primary/master/cron/hour",
   :display_name => "Master Backup Cron Hour",
-  :description => "Defines the hour of the day when the primary backup will be taken of the master database. Backups of the master are taken daily. By default, an hour will be randomly chosen at launch time. Otherwise, the time of the backup is defined by 'Master Backup Cron Hour' and 'Master Backup Cron Minute'. Uses standard crontab format. Example:  23 for 11:00 PM.",
+  :description => "Defines the hour of the day when the primary backup will be taken of the master database. Backups of the master are taken daily. By default, an hour will be randomly chosen at launch time. Otherwise, the time of the backup is defined by 'Master Backup Cron Hour' and 'Master Backup Cron Minute'..However, if you specify a value in this input (e.g., 23 for 11:00 PM), then backups will occur once per day at the specified hour, rather than hourly. Uses standard crontab format. Example: 23 ",
   :required => "optional",
   :recipes => ["db::do_primary_backup_schedule_enable"]
 
 attribute "db/backup/primary/slave/cron/hour",
   :display_name => "Slave Backup Cron Hour",
-  :description => "By default, primary backups of the slave database are taken hourly. However, if you specify a value in this input (e.g., 23 for 11:00 PM), then backups will occur once per day at the specified hour, rather than hourly. Example: 23 for 11:00 PM.",
+  :description => "By default, primary backups of the slave database are taken hourly. However, if you specify a value in this input (e.g., 23 for 11:00 PM), then backups will occur once per day at the specified hour, rather than hourly. Example: 23.",
   :required => "optional",
   :recipes => ["db::do_primary_backup_schedule_enable"]
 
 attribute "db/backup/primary/master/cron/minute",
   :display_name => "Master Backup Cron Minute",
-  :description => "Defines the minute of the hour when the backup will be taken of the master database. Backups of the master are taken daily. By default, a minute will be randomly chosen at launch time. Otherwise, the time of the backup is defined by 'Master Backup Cron Hour' and 'Master Backup Cron Minute'. Uses standard crontab format.  Example: 30 for minute 30 of the hour.",
+  :description => "Defines the minute of the hour when the backup will be taken of the master database. Backups of the master are taken daily. By default, a minute will be randomly chosen at launch time. Otherwise, the time of the backup is defined by 'Master Backup Cron Hour' and 'Master Backup Cron Minute'. Uses standard crontab format.  Example: 30",
   :required => "optional",
   :recipes => ["db::do_primary_backup_schedule_enable"]
 
 attribute "db/backup/primary/slave/cron/minute",
   :display_name => "Slave Backup Cron Minute",
-  :description => "Defines the minute of the hour when the backup EBS snapshot will be taken of the slave database. Backups of the slave are taken hourly. By default, a minute will be randomly chosen at launch time. Uses standard crontab format (e.g., 30 for minute 30 of the hour).",
+  :description => "Defines the minute of the hour when the backup EBS snapshot will be taken of the slave database. Backups of the slave are taken hourly. By default, a minute will be randomly chosen at launch time. Uses standard crontab format (e.g., 30 for minute 30 of the hour). Example 30",
   :required => "optional",
   :recipes => ["db::do_primary_backup_schedule_enable"]
 
@@ -360,7 +360,7 @@ attribute "db/dump/database_name",
 
 attribute "db/terminate_safety",
   :display_name => "Terminate Safety",
-  :description => "Prevents the accidental running of the 'db::do_teminate_server' recipe. This recipe will only run if this input variable is overridden and set to \"off\".",
+  :description => "Prevents the accidental running of the 'db::do_teminate_server' recipe. This recipe will only run if this input variable is overridden and set to \"off\". Example: text:off",
   :type => "string",
   :choice => ["Override the dropdown and set to \"off\" to really run this recipe"],
   :default => "Override the dropdown and set to \"off\" to really run this recipe",
@@ -369,7 +369,7 @@ attribute "db/terminate_safety",
 
 attribute "db/force_safety",
   :display_name => "Force Reset Safety",
-  :description => "Prevents the accidental running of the db::do_force_reset recipe. This recipe will only run if the input variable is overridden and set to \"off\".",
+  :description => "Prevents the accidental running of the db::do_force_reset recipe. This recipe will only run if the input variable is overridden and set to \"off\". Example: text:off",
   :type => "string",
   :choice => ["Override the dropdown and set to \"off\" to really run this recipe"],
   :default => "Override the dropdown and set to \"off\" to really run this recipe",
