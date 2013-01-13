@@ -20,20 +20,17 @@ end
 # which the snapshot needs to be retrieved.
 # See cookbooks/block_device/providers/default.rb for secondary_restore action
 # implementation and cookbooks/block_device/libraries/block_device.rb for
-# "do_for_block_devices" and "get_device_or_default".
+# "do_for_block_devices", "set_restore_params" and "get_device_or_default" methods.
 #
 do_for_block_devices node[:block_device] do |device|
+
   # Do the restore.
   log "  Creating block device and restoring data from secondary backup for device #{device}..."
-  lineage = get_device_or_default(node, device, :backup, :lineage)
-  lineage_override = get_device_or_default(node, device, :backup, :lineage_override)
-  restore_lineage = lineage_override == nil || lineage_override.empty? ? lineage : lineage_override
-  restore_timestamp_override = get_device_or_default(node, device, :backup, :timestamp_override)
-  log "  Input lineage #{restore_lineage.inspect}"
-  log "  Input lineage_override #{lineage_override.inspect}"
-  log "  Using lineage #{restore_lineage.inspect}"
-  log "  Input timestamp_override #{restore_timestamp_override.inspect}"
-  restore_timestamp_override ||= ""
+  restore_lineage, restore_timestamp_override = set_restore_params(
+    get_device_or_default(node, device, :backup, :lineage),
+    get_device_or_default(node, device, :backup, :lineage_override),
+    get_device_or_default(node, device, :backup, :timestamp_override)
+  )
 
   block_device get_device_or_default(node, device, :nickname) do
     # Backup/Restore arguments

@@ -34,7 +34,7 @@ define :db_register_slave, :action => :primary_restore do
     # See cookbooks/rightscale/providers/server_collection.rb for the "load" action.
     r = rightscale_server_collection "master_servers" do
       tags 'rs_dbrepl:master_instance_uuid'
-      secondary_tags ['rs_dbrepl:master_active', 'server:private_ip_0']
+      mandatory_tags ['rs_dbrepl:master_active', 'server:private_ip_0']
       action :nothing
     end
     # See cookbooks/rightscale/providers/server_collection.rb for the "load" action.

@@ -143,6 +143,17 @@ attribute "block_device/devices/default/backup/rackspace_snet",
   :default => "true",
   :recipes => [ "block_device::default" ] + backup_recipes + restore_recipes
 
+attribute "block_device/ephemeral/vg_data_percentage",
+  :display_name => "Percentage of the ephemeral LVM used for data",
+  :description => "The percentage of the total ephemeral Volume Group extents (LVM) that is used for data. (e.g. 50 percent - 1/2 used for data 100 percent - all space is allocated for data. WARNING: Using a non-default value it not recommended. Make sure you understand what you are doing before changing this value. Example: 100",
+  :type => "string",
+  :required => "optional",
+  :choice => ["50", "60", "70", "80", "90", "100"],
+  :default => "100",
+  :recipes => [
+    "block_device::setup_ephemeral"
+  ]
+
 # Multiple Block Devices
 device_count = 2
 devices = 1.upto(device_count).map {|number| "device#{number}"}
@@ -262,7 +273,7 @@ end.each do |device, number|
 
   attribute "block_device/devices/#{device}/vg_data_percentage",
     :display_name => "Percentage of the LVM used for data (#{number})",
-    :description => "The percentage of the total Volume Group extents (LVM) that is used for data. (e.g. 50 percent - 1/2 used for data and remainder used for overhead and snapshots, 100 percent - all space is allocated for data (therefore snapshots can not be taken) WARNING: If the space used for data storage is too large, LVM snapshots cannot be performed. Using a non-default value it not reccommended. Make sure you understand what you are doing before changing this value.",
+    :description => "The percentage of the total Volume Group extents (LVM) that is used for data. (e.g. 50 percent - 1/2 used for data and remainder used for overhead and snapshots, 100 percent - all space is allocated for data (therefore snapshots can not be taken) WARNING: If the space used for data storage is too large, LVM snapshots cannot be performed. Using a non-default value it not recommended. Make sure you understand what you are doing before changing this value.",
     :type => "string",
     :required => 'optional',
     :choice => ["50", "60", "70", "80", "90", "100"],

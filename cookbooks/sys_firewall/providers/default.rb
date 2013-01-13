@@ -49,7 +49,7 @@ action :update do
       # See cookbooks/rightscale/providers/server_collection.rb for the "rightscale_server_collection" resource.
       rightscale_server_collection collection_name do
         tags machine_tag
-        secondary_tags ip_tag
+        mandatory_tags ip_tag
       end
     end
 
