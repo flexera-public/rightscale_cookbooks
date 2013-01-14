@@ -136,7 +136,7 @@ attribute "block_device/devices/default/backup/secondary/endpoint",
 
 attribute "block_device/devices/default/backup/rackspace_snet",
   :display_name => "Rackspace SNET Enabled for Backup",
-  :description => "When 'true', Rackspace internal private networking (preferred) is used for communications between servers and Rackspace Cloud Files. Ignored for all other clouds.  Example: true",
+  :description => "When 'true', Rackspace internal private networking (preferred) is used for communications between servers and Rackspace Cloud Files. Ignored for all other clouds. Example: true",
   :type => "string",
   :required => "optional",
   :choice => ["true", "false"],
@@ -164,14 +164,14 @@ end.each do |device, number|
 
   attribute "block_device/devices/#{device}/volume_size",
     :display_name => "Total Volume Size (#{number})",
-    :description => "Defines the total size of the LVM volume stripe set (in GB). For example, if the stripe_count is '3' and you specify '3' for this input, it will create an LVM volume stripe that contains 3 volumes that are each 1 GB in size. If an uneven ratio is defined, volume sizes will be rounded up to the nearest whole integer. Ignored on clouds that do not support volumes (e.g., Rackspace).  Example: 10",
+    :description => "Defines the total size of the LVM volume stripe set (in GB). For example, if the stripe_count is '3' and you specify '3' for this input, it will create an LVM volume stripe that contains 3 volumes that are each 1 GB in size. If an uneven ratio is defined, volume sizes will be rounded up to the nearest whole integer. Ignored on clouds that do not support volumes (e.g., Rackspace). Example: 10",
     :required => device != 'device2' ? 'recommended' : 'optional',
     :default => "10",
     :recipes => [ "block_device::setup_block_device", "block_device::default" ]
 
   attribute "block_device/devices/#{device}/backup/lineage",
     :display_name => "Backup Lineage (#{number})",
-    :description => "The name associated with your primary and secondary database backups. It's used to associate them with your database environment for maintenance, restore, and replication purposes. Backup snapshots will automatically be tagged with this value (e.g. rs_backup:lineage=mysqlbackup). Backups are identified by their lineage name. Note: For servers running on Rackspace, this value also indicates the Cloud Files container to use for storing primary backups. If a Cloud Files container with this name does not already exist, one will automatically be created.  Example: prod_db_lineage ",
+    :description => "The name associated with your primary and secondary database backups. It's used to associate them with your database environment for maintenance, restore, and replication purposes. Backup snapshots will automatically be tagged with this value (e.g. rs_backup:lineage=mysqlbackup). Backups are identified by their lineage name. Note: For servers running on Rackspace, this value also indicates the Cloud Files container to use for storing primary backups. If a Cloud Files container with this name does not already exist, one will automatically be created. Example: prod_db_lineage ",
     :required => device != 'device2' ? 'required' : 'optional',
     :recipes => backup_recipes + restore_recipes
 
