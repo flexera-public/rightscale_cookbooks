@@ -25,6 +25,7 @@ recipe "db::setup_monitoring", "Installs the collectd plugin for database monito
 # == Common Database Recipes
 #
 recipe "db::do_primary_backup", :description => "Creates a primary backup of the database using persistent storage in the current cloud. Backup type depends on cloud and hypervisor type. For clouds with volume snapshots support available, volume backup will be used only if hypervisor is different than KVM. For clouds without volume snapshots support and for KVM based instances backups are uploaded to ROS container.", :thread => 'db_backup'
+recipe "db::do_primary_restore", "Restores the database from the most recently completed primary backup available in persistent storage of the current cloud."
 
 recipe "db::do_primary_backup_schedule_enable", "Enables db::do_primary_backup to be run periodically."
 recipe "db::do_primary_backup_schedule_disable", "Disables db::do_primary_backup from being run periodically."
@@ -151,7 +152,7 @@ attribute "db/replication/user",
 
 attribute "db/replication/password",
   :display_name => "Database Replication Password",
-  :description => "The password of the database user that has 'replication' privileges. Example: cred:DBREPLICATION_PASSWORD).",
+  :description => "The password of the database user that has 'replication' privileges. Example: cred:DBREPLICATION_PASSWORD.",
   :required => "required",
   :recipes => [
     "db::setup_replication_privileges",
@@ -166,7 +167,7 @@ attribute "db/replication/password",
 
 attribute "db/application/user",
   :display_name => "Database Application Username",
-  :description => "The username of the database user that has 'user' privileges. Example: cred:DBAPPLICATION_USER).",
+  :description => "The username of the database user that has 'user' privileges. Example: cred:DBAPPLICATION_USER.",
   :required => "required",
   :recipes => [
     "db::default",
@@ -180,7 +181,7 @@ attribute "db/application/user",
 
 attribute "db/application/password",
   :display_name => "Database Application Password",
-  :description => "The password of the database user that has 'user' privileges. Example: cred:DBAPPLICATION_PASSWORD).",
+  :description => "The password of the database user that has 'user' privileges. Example: cred:DBAPPLICATION_PASSWORD.",
   :required => "required",
   :recipes => [
     "db::default",
@@ -201,7 +202,7 @@ attribute "db/init_slave_at_boot",
 
 attribute "db/dns/ttl",
   :display_name => "Database DNS TTL Limit",
-  :description => "The upper limit for the TTL of the master DB DNS record in seconds. This value should be kept low in the event of Master DB failure so that the DNS record updates in a timely manner. When installing the DB server, this value is checked in the DNS records. Input should be set for 300 when using CloudDNS.  Example: 60",
+  :description => "The upper limit for the TTL of the master DB DNS record in seconds. This value should be kept low in the event of Master DB failure so that the DNS record updates in a timely manner. When installing the DB server, this value is checked in the DNS records. Input should be set for 300 when using CloudDNS. Example: 60",
   :required => "optional",
   :default => "60",
   :choice => ["60", "300"],
@@ -218,7 +219,7 @@ attribute "db/provider_type",
 #
 attribute "db/backup/lineage",
   :display_name => "Database Backup Lineage",
-  :description => "The prefix that will be used to name/locate the backup of a particular database. Note: For servers running on Rackspace, this value also indicates the Cloud Files container to use for storing primary backups. If a Cloud Files container with this name does not already exist, the setup process creates one.  Example: text:prod_db_lineage",
+  :description => "The prefix that will be used to name/locate the backup of a particular database. Note: For servers running on Rackspace, this value also indicates the Cloud Files container to use for storing primary backups. If a Cloud Files container with this name does not already exist, the setup process creates one. Example: text:prod_db_lineage",
   :required => "required",
   :recipes => [
     "db::do_primary_init_slave",
@@ -294,7 +295,7 @@ attribute "db/backup/primary/slave/cron/hour",
 
 attribute "db/backup/primary/master/cron/minute",
   :display_name => "Master Backup Cron Minute",
-  :description => "Defines the minute of the hour when the backup will be taken of the master database. Backups of the master are taken daily. By default, a minute will be randomly chosen at launch time. Otherwise, the time of the backup is defined by 'Master Backup Cron Hour' and 'Master Backup Cron Minute'. Uses standard crontab format.  Example: 30",
+  :description => "Defines the minute of the hour when the backup will be taken of the master database. Backups of the master are taken daily. By default, a minute will be randomly chosen at launch time. Otherwise, the time of the backup is defined by 'Master Backup Cron Hour' and 'Master Backup Cron Minute'. Uses standard crontab format. Example: 30",
   :required => "optional",
   :recipes => ["db::do_primary_backup_schedule_enable"]
 
