@@ -87,7 +87,7 @@ define :db_register_slave, :action => :primary_restore do
         end
 
         activation_time, current_master_uuid, current_master_ip,
-          current_master_ec2_id = selected_master_info.values_as(
+          current_master_ec2_id = selected_master_info.values_at(
           :activation_time,
           :my_uuid,
           :my_ip_0,
