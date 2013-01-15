@@ -23,7 +23,7 @@ attribute "sys_dns/choice",
 
 attribute "sys_dns/id",
   :display_name => "DNS Record ID",
-  :description => "The unique identifier that is associated with the DNS A record of the server. The unique identifier is assigned by the DNS provider when you create a dynamic DNS A record. This ID is used to update the associated A record with the private IP address of the server when this recipe is run. If you are using DNS Made Easy as your DNS provider, a 7-digit number is used (e.g., 4403234). If you are using Cloud DNS, provide both Domain ID and Record ID (e.g., DomainID:A-RecordID) Example: 111021",
+  :description => "The unique identifier that is associated with the DNS A record of the server. The unique identifier is assigned by the DNS provider when you create a dynamic DNS A record. This ID is used to update the associated A record with the private IP address of the server when this recipe is run. If you are using DNS Made Easy as your DNS provider, a 7-digit number is used (e.g., 4403234). If you are using Cloud DNS, provide both Domain ID and Record ID (e.g., DomainID:A-RecordID). Example: 111021",
   :required => "required",
   :recipes => ["sys_dns::do_set_private"]
 
