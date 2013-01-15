@@ -193,7 +193,7 @@ attribute "monkey/rest/ssh_pub_key",
   :display_name => "Public key of Jenkins master",
   :description => "Public key of Jenkins master that should be given access",
   :required => "optional",
-  :recipes => "monkey::setup_rest_connection"
+  :recipes => ["monkey::setup_rest_connection"]
 
 attribute "monkey/rest/repo_url",
   :display_name => "Rest connection Repo URL",

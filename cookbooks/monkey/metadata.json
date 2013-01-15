@@ -338,7 +338,8 @@
       "description": "RightScale password to connect to the API",
       "required": "required",
       "recipes": [
-        "monkey::setup_rest_connection"
+        "monkey::setup_rest_connection",
+        "monkey::test_virtualmonkey_api_connection"
       ],
       "choice": [
 
@@ -351,7 +352,8 @@
       "description": "RightScale email address to connect to the API",
       "required": "required",
       "recipes": [
-        "monkey::setup_rest_connection"
+        "monkey::setup_rest_connection",
+        "monkey::test_virtualmonkey_api_connection"
       ],
       "choice": [
 
@@ -364,7 +366,8 @@
       "description": "RightScale account ID used to connect to the API",
       "required": "required",
       "recipes": [
-        "monkey::setup_rest_connection"
+        "monkey::setup_rest_connection",
+        "monkey::test_virtualmonkey_api_connection"
       ],
       "choice": [
 
@@ -376,6 +379,19 @@
       "display_name": "API user key",
       "description": "API user key used by rest_connection",
       "required": "required",
+      "recipes": [
+        "monkey::setup_rest_connection"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "monkey/rest/ssh_pub_key": {
+      "display_name": "Public key of Jenkins master",
+      "description": "Public key of Jenkins master that should be given access",
+      "required": "optional",
       "recipes": [
         "monkey::setup_rest_connection"
       ],
