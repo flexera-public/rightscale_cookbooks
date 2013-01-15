@@ -169,19 +169,19 @@ attribute "monkey/rest/right_passwd",
   :display_name => "RightScale password",
   :description => "RightScale password to connect to the API",
   :required => "required",
-  :recipes => ["monkey::setup_rest_connection"]
+  :recipes => ["monkey::setup_rest_connection", "monkey::test_virtualmonkey_api_connection"]
 
 attribute "monkey/rest/right_email",
   :display_name => "RightScale Email",
   :description => "RightScale email address to connect to the API",
   :required => "required",
-  :recipes => ["monkey::setup_rest_connection"]
+  :recipes => ["monkey::setup_rest_connection", "monkey::test_virtualmonkey_api_connection"]
 
 attribute "monkey/rest/right_acct_id",
   :display_name => "RightScale account ID",
   :description => "RightScale account ID used to connect to the API",
   :required => "required",
-  :recipes => ["monkey::setup_rest_connection"]
+  :recipes => ["monkey::setup_rest_connection", "monkey::test_virtualmonkey_api_connection"]
 
 attribute "monkey/rest/ssh_key",
   :display_name => "API user key",
