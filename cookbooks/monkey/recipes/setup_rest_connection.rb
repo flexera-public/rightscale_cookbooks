@@ -84,7 +84,7 @@ template "/root/.rest_connection/rest_api_config.yaml" do
   cookbook "monkey"
 end
 
-bash "Adding optional ssh key" do
+bash "Adding private ssh key" do
   code <<-EOH
     echo "#{node[:monkey][:rest][:ssh_key]}" > /root/.ssh/api_user_key
     chmod 600 /root/.ssh/api_user_key
@@ -94,5 +94,11 @@ bash "Adding optional ssh key" do
 EOF
 EOH
 end unless node[:monkey][:rest][:ssh_key] == ""
+
+bash "Adding optional public ssh key ro authorized keys" do
+  code <<-EOH
+  echo "#{node[:monkey][:rest][:ssh_pub_key]}" >> /root/.ssh/authorized_keys
+  EOH
+end unless node[:monkey][:rest][:ssh_pub_key] == ""
 
 rightscale_marker :end
