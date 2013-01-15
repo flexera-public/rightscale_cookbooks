@@ -86,13 +86,10 @@ define :db_register_slave, :action => :primary_restore do
           Chef::Log.info "  Lineage not found, using first discovered master"
         end
 
-        activation_time, current_master_uuid, current_master_ip,
-          current_master_ec2_id = selected_master_info.values_at(
-          :activation_time,
-          :my_uuid,
-          :my_ip_0,
-          :ec_instance_id
-        )
+        activation_time = selected_master_info{:activation_time}
+        current_master_uuid = selected_master_info{:my_uuid}
+        current_master_ip = selected_master_info{:my_ip_0}
+        current_master_ec2_id = selected_master_info{:ec_instance_id}
 
         if current_master_uuid =~ /#{node[:rightscale][:instance_uuid]}/
           Chef::Log.info "  This instance is the current master"
