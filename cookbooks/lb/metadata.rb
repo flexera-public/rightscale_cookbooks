@@ -108,7 +108,7 @@ attribute "lb/service/provider",
 
 attribute "lb/service/region",
   :display_name => "Load Balance Service Region",
-  :description => "Rackspace's Cloud Load Balancing service region, specify the cloud region or data center being used for this service. Example: ORD (Chicago)",
+  :description => "For Rackspace's Cloud Load Balancing service region, specify the cloud region or data center being used for this service. Example: ORD (Chicago)",
   :required => "optional",
   :default => "ORD (Chicago)",
   :choice => ["ORD (Chicago)", "DFW (Dallas/Ft. Worth)", "LON (London)"],
