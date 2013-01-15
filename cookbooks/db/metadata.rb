@@ -105,7 +105,7 @@ attribute "db/dns/slave/fqdn",
 
 attribute "db/dns/slave/id",
   :display_name => "Database Slave DNS Record ID",
-  :description => "The unique identifier that is associated with the DNS A record of a slave server.  The unique identifier is assigned by the DNS provider when you create a dynamic DNS A record. This ID is used to update the associated A record with the private IP address of a slave server when this recipe is run.  If you are using DNS Made Easy as your DNS provider, a 7-digit number is used (e.g., 4403234). Example:4403234",
+  :description => "The unique identifier that is associated with the DNS A record of a slave server. The unique identifier is assigned by the DNS provider when you create a dynamic DNS A record. This ID is used to update the associated A record with the private IP address of a slave server when this recipe is run. If you are using DNS Made Easy as your DNS provider, a 7-digit number is used (e.g., 4403234). Example:4403234",
   :required => "required",
   :recipes => ["db::do_set_dns_slave_private_ip"]
 
