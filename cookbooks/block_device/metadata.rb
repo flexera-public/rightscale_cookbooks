@@ -254,7 +254,7 @@ end.each do |device, number|
 
   attribute "block_device/devices/#{device}/mount_point",
     :display_name => "Block Device Mount Directory (#{number})",
-    :description => "The directory of where to mount the block device (e.g., /mnt/storage).  Example: /mnt/storage",
+    :description => "The directory of where to mount the block device. Example: /mnt/storage",
     :type => "string",
     :required => device != 'device2' ? 'recommended' : 'optional',
     :default => "/mnt/storage#{number}",
