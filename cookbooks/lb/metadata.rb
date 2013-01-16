@@ -147,4 +147,3 @@ attribute "lb/service/account_secret",
     "lb::do_attach_request",
     "lb::do_detach_request"
   ]
-
