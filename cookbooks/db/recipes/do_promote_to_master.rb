@@ -9,10 +9,6 @@ rightscale_marker :begin
 
 DATA_DIR = node[:db][:data_dir]
 
-class Chef::Recipe
-  include RightScale::Database::Helper
-end
-
 class Chef::Resource::RemoteRecipe
   include RightScale::Database::Helper
 end
