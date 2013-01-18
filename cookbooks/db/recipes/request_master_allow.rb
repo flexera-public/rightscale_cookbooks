@@ -7,7 +7,7 @@
 
 rightscale_marker :begin
 
-class Chef::Recipe
+class Chef::Resource::Db
   include RightScale::Database::Helper
 end
 
