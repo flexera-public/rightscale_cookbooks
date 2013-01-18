@@ -144,15 +144,35 @@ action :post_restore_cleanup do
   snap_version = master_info['DB_Version'] ||= '5.1'
   snap_provider = master_info['DB_Provider'] ||= 'db_mysql'
   current_version = new_resource.db_version
-  current_provider = master_info['DB_Provider'] ||= node[:db][:provider]
+  current_provider = node[:db][:provider]
   Chef::Log.info "  Snapshot from #{snap_provider} version #{snap_version}"
 
-  if node[:db][:backup][:restore_version_check] == "true"
-    unless (snap_version == current_version) && (snap_provider == current_provider)
-      raise "FATAL: Attempting to restore #{snap_provider} #{snap_version} snapshot to #{current_provider} #{current_version} with :restore_version_check enabled."
+  # mysql_upgrade should only be run if corresponding input is set and snapshot
+  # restore from an older version of MySQL is detected.
+  run_mysql_upgrade = false
+
+  if snap_provider != current_provider
+    raise "FATAL: Wrong snapshot provider detected: #{snap_provider}. " +
+      "Expected #{current_provider}."
+  end
+  case snap_version <=> current_version
+  when 1
+    raise "FATAL: Cannot restore snapshot from a newer version of MySQL."
+  when 0
+    Chef::Log.info "  Restore version and provider checks passed."
+  when -1
+    if node[:db_mysql][:enable_mysql_upgrade] == "false"
+      Chef::Log.warn "WARNING: Attempting to restore #{snap_provider} " +
+        "#{snap_version} snapshot to #{current_provider} #{current_version} " +
+        "without running mysql_upgrade."
+    else
+      run_mysql_upgrade = true
+      Chef::Log.info "  Attempting to restore #{snap_provider} " +
+        "#{snap_version} snapshot to #{current_provider} #{current_version}. " +
+        "Will run mysql_upgrade to fix incompatibilities."
     end
-  else # skip check if restore version check is false
-    Chef::Log.info "  Skipping #{snap_provider} restore version check"
+  else
+    raise "Cannot compare versions: #{snap_version} with #{current_version}"
   end
 
   # Creates symlink from package default MySQL datadir to restored datadir.
@@ -198,6 +218,31 @@ action :post_restore_cleanup do
   # See "rightscale_tools" gem for the "post_restore_cleanup" method.
   @db = init(new_resource)
   @db.post_restore_cleanup
+
+  if run_mysql_upgrade
+    # Calls the "start" action.
+    db node[:db][:data_dir] do
+      action :start
+      persist false
+    end
+
+    output = %x[mysql_upgrade]
+    exitstatus = $?
+    Chef::Log.info output
+
+    if exitstatus.success?
+      Chef::Log.info "  mysql_upgrade ran successfully."
+    else
+      raise "FATAL: mysql_upgrade execution failed!"
+    end
+
+    # Calls the "stop" action.
+    db node[:db][:data_dir] do
+      action :stop
+      persist false
+    end
+  end
+
 end
 
 action :pre_backup_check do
