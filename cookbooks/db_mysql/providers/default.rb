@@ -664,9 +664,10 @@ action :grant_replication_slave do
 
   Chef::Log.info "GRANT REPLICATION SLAVE to #{node[:db][:replication][:user]}"
   con = Mysql.new('localhost', 'root')
-  grant_replication_query = "GRANT REPLICATION SLAVE ON *.* TO '#{node[:db][:replication][:user]}'@'%' IDENTIFIED BY '#{node[:db][:replication][:password]}'"
-  grant_replication_query += " REQUIRE SSL" if node[:db_mysql][:ssl_enabled]
-  con.query(grant_replication_query)
+  query = "GRANT REPLICATION SLAVE ON *.* TO '#{node[:db][:replication][:user]}"
+  query << "'@'%' IDENTIFIED BY '#{node[:db][:replication][:password]}'"
+  query << " REQUIRE SSL" if node[:db_mysql][:ssl_enabled]
+  con.query(query)
   con.query("FLUSH PRIVILEGES")
   con.close
 end
