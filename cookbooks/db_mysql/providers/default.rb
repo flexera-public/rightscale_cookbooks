@@ -413,10 +413,10 @@ action :install_server do
   # Determine whether to enable SSL for MySQL based on provided inputs.
   # SSL will only be enabled if all inputs are populated.
   node[:db_mysql][:ssl_enabled] =
-    !node[:db_mysql][:ca_certificate].to_s.empty? && \
-    !node[:db_mysql][:master_certificate].to_s.empty? && \
-    !node[:db_mysql][:master_key].to_s.empty? && \
-    !node[:db_mysql][:slave_certificate].to_s.empty? && \
+    !node[:db_mysql][:ca_certificate].to_s.empty? &&
+    !node[:db_mysql][:master_certificate].to_s.empty? &&
+    !node[:db_mysql][:master_key].to_s.empty? &&
+    !node[:db_mysql][:slave_certificate].to_s.empty? &&
     !node[:db_mysql][:slave_key].to_s.empty?
 
   log "  MySQL SSL enabled: #{node[:db_mysql][:ssl_enabled]}"
@@ -773,8 +773,16 @@ action :promote do
       SystemTimer.timeout_after(RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT) do
         # Demotes oldmaster.
         # See cookbooks/db/libraries/helper.rb for the "get_local_replication_interface" method.
-        Chef::Log.info "  Calling reconfigure replication with host: #{previous_master} ip: #{get_local_replication_interface} file: #{newmaster_file} position: #{newmaster_position}"
-        RightScale::Database::MySQL::Helper.reconfigure_replication(node, previous_master, get_local_replication_interface, newmaster_file, newmaster_position)
+        Chef::Log.info "  Calling reconfigure replication with host: " +
+          "#{previous_master} ip: #{get_local_replication_interface} file: " +
+          "#{newmaster_file} position: #{newmaster_position}"
+        RightScale::Database::MySQL::Helper.reconfigure_replication(
+          node,
+          previous_master,
+          get_local_replication_interface,
+          newmaster_file,
+          newmaster_position
+        )
       end
     end
   rescue Timeout::Error => e

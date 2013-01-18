@@ -87,7 +87,9 @@ attribute "db_mysql/tunable/expire_logs_days",
 
 attribute "db_mysql/compressed_protocol",
   :display_name => "Compression of the slave/master protocol",
-  :description => "Use compression of the slave/master protocol if both the slave and the master support it. Default: disabled",
+  :description =>
+    "Use compression of the slave/master protocol if both the slave and the " +
+    "master support it. Default: disabled",
   :required => "optional",
   :choice => ["enabled", "disabled"],
   :default => "disabled",
@@ -98,7 +100,10 @@ attribute "db_mysql/compressed_protocol",
 
 attribute "db_mysql/ca_certificate",
   :display_name => "CA SSL Certificate",
-  :description => "The name of your CA SSL Certificate. Example: cred:CA_CERT",
+  :description =>
+    "The name of your CA SSL Certificate. " +
+    "This is one of the 5 inputs needed to do secured replication. " +
+    "Example: cred:CA_CERT",
   :required => "optional",
   :default =>  "",
   :recipes => [
@@ -108,7 +113,10 @@ attribute "db_mysql/ca_certificate",
 
 attribute "db_mysql/master_certificate",
   :display_name => "Master SSL Certificate",
-  :description => "The name of your Master SSL Certificate. Example: cred:MASTER_CERT",
+  :description =>
+    "The name of your Master SSL Certificate. " +
+    "This is one of the 5 inputs needed to do secured replication. " +
+    "Example: cred:MASTER_CERT",
   :required => "optional",
   :default =>  "",
   :recipes => [
@@ -118,7 +126,10 @@ attribute "db_mysql/master_certificate",
 
 attribute "db_mysql/master_key",
   :display_name => "Master SSL Key",
-  :description => "The name of your Master SSL Key. Example: cred:MASTER_KEY",
+  :description =>
+    "The name of your Master SSL Key. " +
+    "This is one of the 5 inputs needed to do secured replication. " +
+    "Example: cred:MASTER_KEY",
   :required => "optional",
   :default =>  "",
   :recipes => [
@@ -128,7 +139,10 @@ attribute "db_mysql/master_key",
 
 attribute "db_mysql/slave_certificate",
   :display_name => "Slave SSL Certificate",
-  :description => "The name of your Slave SSL Certificate. Example: cred:SLAVE_CERT",
+  :description =>
+    "The name of your Slave SSL Certificate. " +
+    "This is one of the 5 inputs needed to do secured replication. " +
+    "Example: cred:SLAVE_CERT",
   :required => "optional",
   :default =>  "",
   :recipes => [
@@ -138,7 +152,10 @@ attribute "db_mysql/slave_certificate",
 
 attribute "db_mysql/slave_key",
   :display_name => "Slave SSL Key",
-  :description => "The name of your Slave SSL Key. Example: cred:SLAVE_KEY",
+  :description =>
+    "The name of your Slave SSL Key. " +
+    "This is one of the 5 inputs needed to do secured replication. " +
+    "Example: cred:SLAVE_KEY",
   :required => "optional",
   :default =>  "",
   :recipes => [
