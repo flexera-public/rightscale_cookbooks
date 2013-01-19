@@ -68,10 +68,10 @@ attribute "db_mysql/tunable/expire_logs_days",
   :default => "2"
 
 attribute "db_mysql/enable_mysql_upgrade",
-  :display_name =>
+  :display_name => "Enable mysql_upgrade",
+  :description =>
     "Run mysql_upgrade if a restore from an older version of MySQL " +
     "is detected. Default: false",
-  :description => "",
   :recipes => ["db_mysql::setup_server_5_5"],
   :required => "optional",
   :choice => ["true", "false"],

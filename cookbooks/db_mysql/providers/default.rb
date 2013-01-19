@@ -222,9 +222,9 @@ action :post_restore_cleanup do
   if run_mysql_upgrade
     # Calls the "start" action.
     db node[:db][:data_dir] do
-      action :start
+      action :nothing
       persist false
-    end
+    end.run_action(:start)
 
     output = %x[mysql_upgrade]
     exitstatus = $?
@@ -238,9 +238,9 @@ action :post_restore_cleanup do
 
     # Calls the "stop" action.
     db node[:db][:data_dir] do
-      action :stop
+      action :nothing
       persist false
-    end
+    end.run_action(:stop)
   end
 
 end
