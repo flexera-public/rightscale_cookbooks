@@ -26,10 +26,10 @@ else
   dumpfilepath_without_extension = "/tmp/" + prefix
   container = node[:db][:dump][:container]
   cloud = node[:db][:dump][:storage_account_provider]
-  command_to_execute = "/opt/rightscale/sandbox/bin/ros_util get"
-  command_to_execute << " --cloud #{cloud} -- container #{container}"
-  command_to_execute << " --dest #{dumpfilepath_without_extension}"
-  command_to_execute << " --source #{prefix} --latest"
+  command_to_execute = "/opt/rightscale/sandbox/bin/ros_util get" +
+    " --cloud #{cloud} --container #{container}" +
+    " --dest #{dumpfilepath_without_extension}" +
+    " --source #{prefix} --latest"
 
   # Obtain the dumpfile from ROS
   execute "Download dumpfile from Remote Object Store" do
