@@ -34,7 +34,7 @@ end
 
 # Increase connection tracking table sizes
 #
-# Increase the value for the 'netfilter.nf_conntrack_max' parameter
+# Increase the value for the 'conntrack_max' module parameter
 # to avoid dropping packets on high-throughput systems.
 
 nf_module_name = value_for_platform(
@@ -45,7 +45,7 @@ nf_module_name = value_for_platform(
 )
 
 # The ip_conntrack_max is calculated based on the RAM available on
-# the VM using this formula: ip_conntrack_max=64*n, where n is the amount
+# the VM using this formula: conntrack_max=64*n, where n is the amount
 # of RAM in MB.
 GB=1024*1024
 mem_mb = node[:memory][:total].to_i/1024
