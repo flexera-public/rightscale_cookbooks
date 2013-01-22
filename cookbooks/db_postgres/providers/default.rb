@@ -621,6 +621,20 @@ action :restore_from_dump_file do
   db_name = new_resource.db_name
   dumpfile = new_resource.dumpfile
 
+  # Set the correct command to uncompress the downloaded dump file
+  uncompress_command = ""
+  ruby_block do
+    block do
+      if dumpfile =~ /\.zip/
+        uncompress_command = "unzip -p #{dumpfile}"
+      elsif dumpfile =~ /\.gz/
+        uncompress_command = "gunzip < #{dumpfile}"
+      elsif dumpfile =~ /\.bz2/
+        uncompress_command = "bunzip2 < #{dumpfile}"
+      end
+    end
+  end
+
   log "  Check if DB already exists"
   ruby_block "checking existing db" do
     block do
@@ -639,7 +653,7 @@ action :restore_from_dump_file do
         exit 1
       fi
       createdb -U postgres -h /var/run/postgresql #{db_name}
-      gunzip < #{dumpfile} | psql -U postgres -h /var/run/postgresql #{db_name}
+      #{uncompress_command} | psql -U postgres -h /var/run/postgresql #{db_name}
     EOH
   end
 
