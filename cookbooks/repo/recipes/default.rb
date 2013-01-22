@@ -14,6 +14,7 @@ node[:repo].each do |resource_name, entry|
   branch = entry[:revision] || ""
   account = entry[:account] || ""
   credential = entry[:credential] || ""
+  ssh_host_key = entry[:ssh_host_key] || ""
   storage_account_provider = entry[:storage_account_provider] || ""
   prefix = entry[:prefix] || ""
 
@@ -26,6 +27,7 @@ node[:repo].each do |resource_name, entry|
     revision branch
     account account
     credential credential
+    ssh_host_key ssh_host_key
     storage_account_provider storage_account_provider
     prefix prefix
     unpack_source true

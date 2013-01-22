@@ -390,7 +390,7 @@
         "block_device::setup_block_device",
         "block_device::default"
       ],
-      "description": "The percentage of the total Volume Group extents (LVM) that is used for data. (e.g. 50 percent - 1/2 used for data and remainder used for overhead and snapshots, 100 percent - all space is allocated for data (therefore snapshots can not be taken) WARNING: If the space used for data storage is too large, LVM snapshots cannot be performed. Using a non-default value it not reccommended. Make sure you understand what you are doing before changing this value.",
+      "description": "The percentage of the total Volume Group extents (LVM) that is used for data. (e.g. 50 percent - 1/2 used for data and remainder used for overhead and snapshots, 100 percent - all space is allocated for data (therefore snapshots can not be taken) WARNING: If the space used for data storage is too large, LVM snapshots cannot be performed. Using a non-default value it not recommended. Make sure you understand what you are doing before changing this value.",
       "display_name": "Percentage of the LVM used for data (1)"
     },
     "block_device/devices/device1/nickname": {
@@ -453,7 +453,7 @@
         "block_device::setup_block_device",
         "block_device::default"
       ],
-      "description": "The percentage of the total Volume Group extents (LVM) that is used for data. (e.g. 50 percent - 1/2 used for data and remainder used for overhead and snapshots, 100 percent - all space is allocated for data (therefore snapshots can not be taken) WARNING: If the space used for data storage is too large, LVM snapshots cannot be performed. Using a non-default value it not reccommended. Make sure you understand what you are doing before changing this value.",
+      "description": "The percentage of the total Volume Group extents (LVM) that is used for data. (e.g. 50 percent - 1/2 used for data and remainder used for overhead and snapshots, 100 percent - all space is allocated for data (therefore snapshots can not be taken) WARNING: If the space used for data storage is too large, LVM snapshots cannot be performed. Using a non-default value it not recommended. Make sure you understand what you are doing before changing this value.",
       "display_name": "Percentage of the LVM used for data (2)"
     },
     "block_device/devices/device2/backup/primary/keep/monthly": {
@@ -638,6 +638,25 @@
       "description": "The secondary backup storage container where the backup will be saved to or restored from. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name.",
       "display_name": "Secondary Backup Storage Container (1)"
     },
+    "block_device/ephemeral/vg_data_percentage": {
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+        "50",
+        "60",
+        "70",
+        "80",
+        "90",
+        "100"
+      ],
+      "default": "100",
+      "type": "string",
+      "recipes": [
+        "block_device::setup_ephemeral"
+      ],
+      "description": "The percentage of the total ephemeral Volume Group extents (LVM) that is used for data. (e.g. 50 percent - 1/2 used for data 100 percent - all space is allocated for data. WARNING: Using a non-default value it not recommended. Make sure you understand what you are doing before changing this value. Example: 100",
+      "display_name": "Percentage of the ephemeral LVM used for data"
+    },
     "block_device/devices/device2/backup/primary/keep/daily": {
       "required": "optional",
       "calculated": false,
@@ -668,7 +687,7 @@
         "block_device::setup_block_device",
         "block_device::default"
       ],
-      "description": "Type of the volume - SATA or SSD. This attribute is supported only on Rackspace Open Cloud and ignored on other clouds.",
+      "description": "Type of the volume - SATA or SSD. This attribute is supported only on Rackspace Open Cloud and ignored on other clouds. Example: SATA",
       "display_name": "Volume Type"
     },
     "block_device/devices/device1/backup/primary/keep/monthly": {
@@ -725,7 +744,7 @@
         "block_device::setup_block_device",
         "block_device::default"
       ],
-      "description": "Type of the volume - SATA or SSD. This attribute is supported only on Rackspace Open Cloud and ignored on other clouds.",
+      "description": "Type of the volume - SATA or SSD. This attribute is supported only on Rackspace Open Cloud and ignored on other clouds. Example: SATA",
       "display_name": "Volume Type"
     },
     "block_device/devices/device1/backup/primary/keep/weekly": {

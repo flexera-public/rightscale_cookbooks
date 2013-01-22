@@ -19,7 +19,19 @@ action :load do
   begin
     Timeout::timeout(new_resource.timeout) do
       all_tags = new_resource.tags.collect
-      all_tags += new_resource.secondary_tags.collect if new_resource.secondary_tags
+
+      # Add 'mandatory' tags
+      if new_resource.mandatory_tags
+        all_tags += new_resource.mandatory_tags.collect if new_resource.mandatory_tags
+      else
+        if new_resource.secondary_tags
+          # Accept 'secondary' if 'mandatory' tags is unset to not to break the interface.
+          all_tags += new_resource.secondary_tags.collect
+          Chef::Log.warn "  WARNING: Use of 'secondary_tags' attribute is deprecated. Use 'mandatory_tags' attribute instead"
+        end
+        Chef::Log.info "  No 'mandatory_tags' detected"
+      end
+
       delay = 1
       while true
         collection_resource.run_action(:load)
