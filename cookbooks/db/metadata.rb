@@ -376,3 +376,15 @@ attribute "db/force_safety",
   :default => "Override the dropdown and set to \"off\" to really run this recipe",
   :required => "optional",
   :recipes => ["db::do_force_reset"]
+
+attribute "db/force_promote",
+  :display_name => "Force promote to master",
+  :description =>
+    "Promote a replicating slave to master without any checks. " +
+    "WARNING: we highly recommend using the standard promotion mechanism. " +
+    "Make sure you understand what you are doing before changing this value. " +
+    "Default: false",
+  :required => "recommended",
+  :default => "false",
+  :choice => ["true", "false"],
+  :recipes => ["db::do_promote_to_master"]
