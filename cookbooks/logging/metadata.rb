@@ -1,9 +1,9 @@
-maintainer       "RightScale, Inc."
+maintainer "RightScale, Inc."
 maintainer_email "support@rightscale.com"
-license          "Copyright RightScale, Inc. All rights reserved."
-description      "Enable instance Monitoring in the RightScale dashboard."
+license "Copyright RightScale, Inc. All rights reserved."
+description "Enable instance Monitoring in the RightScale dashboard."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "13.3.0"
+version "13.3.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"
@@ -28,14 +28,14 @@ attribute "logging/remote_server",
   :display_name => "Remote Server",
   :description => "Configures an instance to forward its log data to a remote server. Specify either the remote server's FQDN or IP address. Example: syslog.example.com or 192.168.0.1",
   :required => "optional",
-  :recipes => [ "logging::default" ]
+  :recipes => ["logging::default"]
 
 attribute "logging/protocol",
   :display_name => "Logging Protocol",
   :description => "Protocol used to send logging messages from client to server. Example: udp",
   :required => "optional",
-  :choice => [ "udp", "relp", "relp-secured"],
-  :default =>  "udp",
+  :choice => ["udp", "relp", "relp-secured"],
+  :default => "udp",
   :recipes => [
     "logging::default",
     "logging::install_server"
