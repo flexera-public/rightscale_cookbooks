@@ -633,8 +633,10 @@ action :promote do
   node[:db_mysql][:log_bin_enabled] = true
 
   # Sets up my.cnf
-  # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for the "db_mysql_set_mycnf" definition.
-  # See cookbooks/db_mysql/libraries/helper.rb for the "RightScale::Database::MySQL::Helper" class.
+  # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb
+  # for the "db_mysql_set_mycnf" definition.
+  # See cookbooks/db_mysql/libraries/helper.rb
+  # for the "RightScale::Database::MySQL::Helper" class.
   db_mysql_set_mycnf "setup_mycnf" do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
@@ -646,9 +648,15 @@ action :promote do
     action :start
     persist false
     only_if do
-      log_bin = RightScale::Database::MySQL::Helper.do_query(node, "show variables like 'log_bin'", 'localhost', RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT)
+      log_bin = RightScale::Database::MySQL::Helper.do_query(
+        node,
+        "show variables like 'log_bin'",
+        'localhost',
+        RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT
+      )
       if log_bin['Value'] == 'OFF'
-        Chef::Log.info "  Detected binlogs were disabled, restarting service to enable them for Master takeover."
+        Chef::Log.info "  Detected binlogs were disabled, restarting service " +
+          "to enable them for Master takeover."
         true
       else
         false
@@ -656,51 +664,94 @@ action :promote do
     end
   end
 
-  RightScale::Database::MySQL::Helper.do_query(node, "SET GLOBAL READ_ONLY=0", 'localhost', RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT)
-  newmasterstatus = RightScale::Database::MySQL::Helper.do_query(node, 'SHOW SLAVE STATUS', 'localhost', RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT)
+  RightScale::Database::MySQL::Helper.do_query(
+    node,
+    "SET GLOBAL READ_ONLY=0",
+    'localhost',
+    RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT
+  )
+  newmasterstatus = RightScale::Database::MySQL::Helper.do_query(
+    node,
+    'SHOW SLAVE STATUS',
+    'localhost',
+    RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT
+  )
   previous_master = node[:db][:current_master_ip]
 
   unless force_promote
-    raise "FATAL: could not determine master host from slave status" if previous_master.nil?
+    if previous_master.nil?
+      raise "FATAL: could not determine master host from slave status"
+    end
     Chef::Log.info "  host: #{previous_master}}"
 
     # PHASE1: contains non-critical old master operations, if a timeout or
     # error occurs we continue promotion assuming the old master is dead.
     begin
       # OLDMASTER: query with terminate (STOP SLAVE)
-      RightScale::Database::MySQL::Helper.do_query(node, 'STOP SLAVE', previous_master, RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT, 2)
+      RightScale::Database::MySQL::Helper.do_query(
+        node,
+        'STOP SLAVE',
+        previous_master,
+        RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT,
+        2
+      )
 
       # OLDMASTER: flush_and_lock_db
-      RightScale::Database::MySQL::Helper.do_query(node, 'FLUSH TABLES WITH READ LOCK', previous_master, 5, 12)
-
+      RightScale::Database::MySQL::Helper.do_query(
+        node,
+        'FLUSH TABLES WITH READ LOCK',
+        previous_master,
+        5,
+        12
+      )
 
       # OLDMASTER:
-      masterstatus = RightScale::Database::MySQL::Helper.do_query(node, 'SHOW MASTER STATUS', previous_master, RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT)
+      masterstatus = RightScale::Database::MySQL::Helper.do_query(
+        node,
+        'SHOW MASTER STATUS',
+        previous_master,
+        RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT
+      )
 
       # OLDMASTER: unconfigure source of replication
-      RightScale::Database::MySQL::Helper.do_query(node, "CHANGE MASTER TO MASTER_HOST=''", previous_master, RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT)
+      RightScale::Database::MySQL::Helper.do_query(
+        node,
+        "CHANGE MASTER TO MASTER_HOST=''",
+        previous_master,
+        RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT
+      )
 
       master_file = masterstatus['File']
       master_position = masterstatus['Position']
-      Chef::Log.info "  Retrieved master info...File: " + master_file + " position: " + master_position
+      Chef::Log.info "  Retrieved master info...File: " + master_file +
+        " position: " + master_position
 
-      Chef::Log.info "  Waiting for slave to catch up with OLDMASTER (if alive).."
+      Chef::Log.info "  Waiting for slave to catch up with OLDMASTER (if alive)"
       # NEWMASTER localhost:
-      RightScale::Database::MySQL::Helper.do_query(node, "SELECT MASTER_POS_WAIT('#{master_file}',#{master_position})")
+      RightScale::Database::MySQL::Helper.do_query(
+        node,
+        "SELECT MASTER_POS_WAIT('#{master_file}',#{master_position})"
+      )
     rescue => e
-      Chef::Log.info "  WARNING: caught exception #{e} during non-critical operations on the OLD MASTER"
+      Chef::Log.info "  WARNING: caught exception #{e} during non-critical " +
+        "operations on the OLD MASTER"
     end
   end
 
   # PHASE2: reset and promote this slave to master.
-  # Critical operations on newmaster, if a failure occurs here we allow it to halt promote operations.
+  # Critical operations on newmaster, if a failure occurs here we allow it
+  # to halt promote operations.
   Chef::Log.info "  Promoting slave.."
   RightScale::Database::MySQL::Helper.do_query(node, 'RESET MASTER')
 
-  newmasterstatus = RightScale::Database::MySQL::Helper.do_query(node, 'SHOW MASTER STATUS')
+  newmasterstatus = RightScale::Database::MySQL::Helper.do_query(
+    node,
+    'SHOW MASTER STATUS'
+  )
   newmaster_file = newmasterstatus['File']
   newmaster_position = newmasterstatus['Position']
-  Chef::Log.info "  Retrieved new master info...File: " + newmaster_file + " position: " + newmaster_position
+  Chef::Log.info "  Retrieved new master info...File: " + newmaster_file +
+    " position: " + newmaster_position
 
   Chef::Log.info "  Stopping slave and misconfiguring master"
   RightScale::Database::MySQL::Helper.do_query(node, "STOP SLAVE")
@@ -709,21 +760,38 @@ action :promote do
   RightScale::Database::MySQL::Helper.do_query(node, 'SET GLOBAL READ_ONLY=0')
 
   unless force_promote
-    # PHASE3: more non-critical operations, have already made assumption oldmaster is dead.
+    # PHASE3: more non-critical operations, have already made assumption
+    # oldmaster is dead.
     begin
       unless previous_master.nil?
         # Unlocks oldmaster.
-        RightScale::Database::MySQL::Helper.do_query(node, 'UNLOCK TABLES', previous_master)
-        SystemTimer.timeout_after(RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT) do
+        RightScale::Database::MySQL::Helper.do_query(
+          node,
+          'UNLOCK TABLES',
+          previous_master
+        )
+        SystemTimer.timeout_after(
+          RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT
+        ) do
           # Demotes oldmaster.
-          Chef::Log.info "  Calling reconfigure replication with host: #{previous_master} ip: #{node[:cloud][:private_ips][0]} file: #{newmaster_file} position: #{newmaster_position}"
-          RightScale::Database::MySQL::Helper.reconfigure_replication(node, previous_master, node[:cloud][:private_ips][0], newmaster_file, newmaster_position)
+          Chef::Log.info "  Calling reconfigure replication with host: " +
+            "#{previous_master} ip: #{node[:cloud][:private_ips][0]} file: " +
+            "#{newmaster_file} position: #{newmaster_position}"
+          RightScale::Database::MySQL::Helper.reconfigure_replication(
+            node,
+            previous_master,
+            node[:cloud][:private_ips][0],
+            newmaster_file,
+            newmaster_position
+          )
         end
       end
     rescue Timeout::Error => e
-      Chef::Log.info("  WARNING: rescuing SystemTimer exception #{e}, continuing with promote")
+      Chef::Log.info "  WARNING: rescuing SystemTimer exception #{e}, " +
+        "continuing with promote"
     rescue => e
-      Chef::Log.info("  WARNING: rescuing exception #{e}, continuing with promote")
+      Chef::Log.info "  WARNING: rescuing exception #{e}, " +
+        "continuing with promote"
     end
   end
 
