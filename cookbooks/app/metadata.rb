@@ -83,8 +83,8 @@ recipe "app::handle_loadbalancers_deny", "Remote recipe run on app server " +
 
 attribute "app/port",
   :display_name => "Application Listen Port",
-  :description => "The port that the application service is listening on." +
-    " Example: 8000",
+  :description => "The port that the application service is listening on. " +
+    "Example: 8000",
   :default => "8000",
   :recipes => [
     "app::install_server",
