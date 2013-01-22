@@ -43,7 +43,7 @@ attribute "repo/default/revision",
   :display_name => "Repository Branch/Tag/Commit",
   :description => "The specific branch, tag, or commit (SHA) of the " +
     "specified Git/Subversion repository that the application code will " +
-    "be retrieved from.  For Git repositories, use 'master' " +
+    "be retrieved from. For Git repositories, use 'master' " +
     "to retrieve the master branch from the repository. " +
     "For SVN repositories, use 'HEAD' to retrieve the latest changes " +
     "from the repository. Example: mybranch",

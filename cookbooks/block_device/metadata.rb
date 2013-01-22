@@ -16,8 +16,8 @@ recipe "block_device::default",
 recipe "block_device::setup_block_device",
   "Creates, formats, and mounts a brand new block device on the instance."
 recipe "block_device::setup_ephemeral", "Creates, formats, and mounts " +
-  "a brand new block device on the instance's ephemeral drives." +
-  " Does nothing on clouds without ephemeral drives."
+  "a brand new block device on the instance's ephemeral drives. " +
+  "Does nothing on clouds without ephemeral drives."
 
 recipe "block_device::do_primary_backup",
   :description => "Creates a primary backup in the local cloud " +
@@ -222,8 +222,8 @@ end.each do |device, number|
 
   attribute "block_device/devices/#{device}/stripe_count",
     :display_name => "Number of Volumes in the Stripe (#{number})",
-    :description => "The total number of volumes in the volume stripe" +
-      " that will be used by the database. " +
+    :description => "The total number of volumes in the volume stripe " +
+      "that will be used by the database. " +
       "Volumes will be created and mounted to the instance. " +
       "The default value is 1, which means that only " +
       "a single volume will be used (no striping). " +
@@ -290,8 +290,8 @@ end.each do |device, number|
       "timestamp. Specify a string matching the timestamp tags on the volume " +
       "snapshot set. You will need to specify the timestamp that's defined " +
       "by the snapshot's tag (not name). For example, if the snapshot's tag " +
-      "is 'rs_backup:timestamp=1303613371' you would specify '1303613371' for" +
-      " this input. Example: 1303613371",
+      "is 'rs_backup:timestamp=1303613371' you would specify '1303613371' " +
+      "for this input. Example: 1303613371",
     :required => "optional",
     :default => "",
     :recipes => restore_recipes
@@ -307,9 +307,9 @@ end.each do |device, number|
 
   attribute "block_device/devices/#{device}/backup/primary/cron/hour",
     :display_name => "Backup Cron Hour (#{number})",
-    :description => "Defines the hour when the backup will be taken. " +
-      "Use a value of 1-24, or set to 'Ignore' to create a backup every hour." +
-      " Example: 10",
+    :description => "Defines the hour when the backup will be taken. Use " +
+      "a value of 1-24, or set to 'Ignore' to create a backup every hour. " +
+      "Example: 10",
     :required => "optional",
     :default => "",
     :recipes => ["block_device::do_primary_backup_schedule_enable"]
@@ -356,8 +356,8 @@ end.each do |device, number|
 
   attribute "block_device/devices/#{device}/backup/secondary/container",
     :display_name => "Secondary Backup Storage Container (#{number})",
-    :description => "The secondary backup storage container" +
-      " where the backup will be saved to or restored from. " +
+    :description => "The secondary backup storage container " +
+      "where the backup will be saved to or restored from. " +
       "For Amazon S3, use the bucket name. " +
       "For Rackspace Cloud Files, use the container name. " +
       "Example: db_backup_bucket",

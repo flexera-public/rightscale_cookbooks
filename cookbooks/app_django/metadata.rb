@@ -35,8 +35,8 @@ attribute "app_django/app/debug_mode",
 attribute "app_django/apache/serve_local_files",
   :display_name => "Apache serve local Files",
   :description => "This option tells Apache whether it should serve " +
-    "the (static) content itself. Currently, it will omit dynamic content," +
-    " such as *.php, *.action, *.jsp, and *.do  Example: true",
+    "the (static) content itself. Currently, it will omit dynamic content, " +
+    "such as *.php, *.action, *.jsp, and *.do  Example: true",
   :choice => ["true", "false"],
   :required => "optional",
   :default => "true",
@@ -56,8 +56,8 @@ attribute "app_django/project/custom_cmd",
   :display_name => "Custom Django command",
   :description => "A comma-separated list of optional commands " +
     "which will be executed in the app directory. " +
-    "Example: manage.py syncdb, manage.py migrate, manage.py loaddata" +
-    " ./fixtures/example_initial_data.json",
+    "Example: manage.py syncdb, manage.py migrate, manage.py loaddata " +
+    "./fixtures/example_initial_data.json",
   :required => "optional",
   :default => "",
   :recipes => ["app_django::run_custom_django_commands"]

@@ -45,8 +45,8 @@ attribute "db_postgres",
 #
 attribute "db_postgres/server_usage",
   :display_name => "Server Usage",
-  :description => "Use 'dedicated' if the PostgreSQL config file allocates" +
-    " all existing resources of the machine. Use 'shared' if the PostgreSQL " +
+  :description => "Use 'dedicated' if the PostgreSQL config file allocates " +
+    "all existing resources of the machine. Use 'shared' if the PostgreSQL " +
     "config file is configured to use less resources so that it can be run " +
     "concurrently with other apps like Apache and Rails for example. " +
     "Example: dedicated",

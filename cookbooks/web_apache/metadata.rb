@@ -49,9 +49,9 @@ attribute "web_apache",
 
 attribute "web_apache/mpm",
   :display_name => "Multi-Processing Module",
-  :description => "Defines the multi-processing module setting in httpd.conf." +
-    " Use 'worker' for Rails/Tomcat/Standalone frontends and 'prefork' " +
-    "for PHP. Example: prefork",
+  :description => "Defines the multi-processing module setting " +
+    "in httpd.conf. Use 'worker' for Rails/Tomcat/Standalone frontends " +
+    "and 'prefork' for PHP. Example: prefork",
   :required => "optional",
   :recipes => [
     "web_apache::default",
@@ -135,8 +135,8 @@ attribute "web_apache/application_name",
 
 attribute "web_apache/allow_override",
   :display_name => "AllowOverride Directive",
-  :description => "Allows/disallows the use of .htaccess files in project web" +
-  " root directory. Can be None (default), All, or any directive-type as " +
+  :description => "Allows/disallows the use of .htaccess files in project " +
+  "web root directory. Can be None (default), All, or any directive-type as " +
   "specified in Apache documentation. Example: None",
   :required => "optional",
   :choice => ["None", "All"],

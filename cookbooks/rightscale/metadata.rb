@@ -120,8 +120,8 @@ attribute "rightscale/timezone",
 
 attribute "rightscale/process_list",
   :display_name => "Process List",
-  :description => "A space-separated list of additional processes to monitor" +
-    " in the RightScale Dashboard.  Example: sshd crond",
+  :description => "A space-separated list of additional processes to monitor " +
+    "in the RightScale Dashboard.  Example: sshd crond",
   :required => "optional",
   :default => "",
   :recipes => [

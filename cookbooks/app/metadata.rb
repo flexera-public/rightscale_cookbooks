@@ -23,18 +23,18 @@ recipe "app::install_server", "Adds the appserver:active=true, " +
   "server which identifies it as an application server" +
   "and tells the load balancer what IP address and port to connect to. " +
   "For example, a 'master' database server will update its " +
-  "firewall port permissions to accept incoming requests from" +
-  " application servers with this tag."
+  "firewall port permissions to accept incoming requests from " +
+  "application servers with this tag."
 
 recipe "app::do_loadbalancers_allow", "Allows connections from " +
-  "all load balancers within a given listener pool which are tagged with" +
-  " loadbalancer:lb=<applistener_name>." +
-  " This script should be run on an application server before it makes " +
+  "all load balancers within a given listener pool which are tagged with " +
+  "loadbalancer:lb=<applistener_name>. " +
+  "This script should be run on an application server before it makes " +
   "a request to be connected to the load balancers."
 
 recipe "app::do_loadbalancers_deny", "Denies connections from all " +
-  "load balancers which are tagged with loadbalancer:lb=<applistener_name>." +
-  " For example, you can run this script on an application server " +
+  "load balancers which are tagged with loadbalancer:lb=<applistener_name>. " +
+  "For example, you can run this script on an application server " +
   "to deny connections from all load balancers within a given listener pool."
 
 recipe "app::request_loadbalancer_allow", "Sends a request to " +
@@ -45,8 +45,8 @@ recipe "app::request_loadbalancer_allow", "Sends a request to " +
 
 recipe "app::request_loadbalancer_deny", "Sends a request to " +
   "all application servers tagged with loadbalancer:app=<applistener_name> " +
-  "to deny connections from the server's private IP address." +
-  " This script should be run on a load balancer " +
+  "to deny connections from the server's private IP address. " +
+  "This script should be run on a load balancer " +
   "after disconnecting application servers or upon decommissioning."
 
 recipe "app::setup_vhost", "Set up the application vhost on selected port. " +
@@ -54,8 +54,8 @@ recipe "app::setup_vhost", "Set up the application vhost on selected port. " +
   "app server cookbook, which creates an apache vhost file."
 
 recipe "app::setup_db_connection", "Set up the database connection file. " +
-  "This recipe will call the corresponding provider from app server cookbook," +
-  " which creates an application database configuration file."
+  "This recipe will call the corresponding provider from app server " +
+  "cookbook, which creates an application database configuration file."
 
 recipe "app::do_update_code", "Updates application source files " +
   "from the remote repository. This recipe will call the corresponding " +
@@ -108,8 +108,8 @@ attribute "app/database_name",
 
 attribute "app/backend_ip_type",
   :display_name => "Application ip type given to loadbalancer",
-  :description => "The ip type that the application service is listening on." +
-    " Example: Private",
+  :description => "The ip type that the application service is listening on. " +
+    "Example: Private",
   :choice => ["Public", "Private"],
   :required => "optional",
   :default => "Private",

@@ -67,15 +67,15 @@ recipe "db::do_secondary_backup",
 recipe "db::do_secondary_restore", "Restores the database from the most " +
   "recently completed backup available in a secondary location."
 
-recipe "db::do_force_reset", "Resets the database back to a pristine state." +
-  " WARNING: Execution of this script will delete any data in your database!"
+recipe "db::do_force_reset", "Resets the database back to a pristine state. " +
+  "WARNING: Execution of this script will delete any data in your database!"
 
 recipe "db::do_dump_export", "Creates a dump file and uploads it to a remote " +
   "object storage (e.g., Amazon S3, Google Cloud Storage, Azure, Softlayer " +
   "or Rackspace Cloud Files)."
 
-recipe "db::do_dump_import", "Retrieves a dump file from remote object" +
-  " storage (e.g., Amazon S3 Google Cloud Storage, Azure, Softlayer or " +
+recipe "db::do_dump_import", "Retrieves a dump file from remote object " +
+  "storage (e.g., Amazon S3 Google Cloud Storage, Azure, Softlayer or " +
   "Rackspace Cloud Files) and imports it to the database server."
 
 recipe "db::do_dump_schedule_enable",
@@ -312,9 +312,9 @@ attribute "db/dns/ttl",
   :display_name => "Database DNS TTL Limit",
   :description => "The upper limit for the TTL of the master DB DNS record " +
     "in seconds. This value should be kept low in the event of Master DB " +
-    "failure so that the DNS record updates in a timely manner. " +
-    "When installing the DB server, this value is checked in the DNS records." +
-    " Input should be set for 300 when using CloudDNS. Example: 60",
+    "failure so that the DNS record updates in a timely manner. When " +
+    "installing the DB server, this value is checked in the DNS records. " +
+    "Input should be set for 300 when using CloudDNS. Example: 60",
   :required => "optional",
   :default => "60",
   :choice => ["60", "300"],
@@ -334,8 +334,8 @@ attribute "db/provider_type",
 #
 attribute "db/backup/lineage",
   :display_name => "Database Backup Lineage",
-  :description => "The prefix that will be used to name/locate the backup" +
-    " of a particular database. " +
+  :description => "The prefix that will be used to name/locate the backup " +
+    "of a particular database. " +
     "Note: For servers running on Rackspace, this value also indicates " +
     "the Cloud Files container to use for storing primary backups. " +
     "If a Cloud Files container with this name does not already exist, " +
@@ -386,8 +386,8 @@ attribute "db/backup/timestamp_override",
   :description => "An optional variable to restore a database backup " +
     "with a specific timestamp rather than the most recent backup in " +
     "the lineage. You must specify a string that matches the timestamp tag " +
-    "on the volume snapshot. You will need to specify the timestamp" +
-    " that is defined by the snapshot's tag (not the name). " +
+    "on the volume snapshot. You will need to specify the timestamp " +
+    "that is defined by the snapshot's tag (not the name). " +
     "For example, if the snapshot's tag is 'rs_backup:timestamp=1303613371' " +
     "you would specify '1303613371' for this input. Example: 1303613371",
   :required => "optional",
@@ -437,9 +437,9 @@ attribute "db/backup/primary/master/cron/hour",
 
 attribute "db/backup/primary/slave/cron/hour",
   :display_name => "Slave Backup Cron Hour",
-  :description => "By default, primary backups of the slave " +
-    "database are taken hourly. However, if you specify a value in this input" +
-    " (e.g., 23 for 11:00 PM), then backups will occur once per day " +
+  :description => "By default, primary backups of the slave database " +
+    "are taken hourly. However, if you specify a value in this input " +
+    "(e.g., 23 for 11:00 PM), then backups will occur once per day " +
     "at the specified hour, rather than hourly. Example: 23.",
   :required => "optional",
   :recipes => ["db::do_primary_backup_schedule_enable"]
@@ -568,8 +568,8 @@ attribute "db/dump/database_name",
 attribute "db/terminate_safety",
   :display_name => "Terminate Safety",
   :description => "Prevents the accidental running of the " +
-  "'db::do_teminate_server' recipe. This recipe will only run if this " +
-  "input variable is overridden and set to \"off\". Example: text:off",
+    "'db::do_teminate_server' recipe. This recipe will only run if this " +
+    "input variable is overridden and set to \"off\". Example: text:off",
   :type => "string",
   :choice =>
     ["Override the dropdown and set to \"off\" to really run this recipe"],
@@ -581,8 +581,8 @@ attribute "db/terminate_safety",
 attribute "db/force_safety",
   :display_name => "Force Reset Safety",
   :description => "Prevents the accidental running " +
-  "of the db::do_force_reset recipe. This recipe will only run if " +
-  "the input variable is overridden and set to \"off\". Example: text:off",
+    "of the db::do_force_reset recipe. This recipe will only run if " +
+    "the input variable is overridden and set to \"off\". Example: text:off",
   :type => "string",
   :choice =>
     ["Override the dropdown and set to \"off\" to really run this recipe"],

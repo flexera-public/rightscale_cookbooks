@@ -17,8 +17,8 @@ depends "logrotate"
 
 recipe "memcached::default", "Default recipe for memcached setup."
 
-recipe "memcached::install_server", "Installation and configuration recipe" +
-  " for memcached. Does memcached setup and configuration, " +
+recipe "memcached::install_server", "Installation and configuration recipe " +
+  "for memcached. Does memcached setup and configuration, " +
   "opens port in firewall, configures collectd and logrotate."
 recipe "memcached::do_start", "Start memcached service."
 
@@ -52,8 +52,8 @@ attribute "memcached/user",
 
 attribute "memcached/connection_limit",
   :display_name => "Memcached connection limit",
-  :description => "Option to either reduce the number of connections" +
-    " (to prevent overloading memcached service) or to increase the number " +
+  :description => "Option to either reduce the number of connections " +
+    "(to prevent overloading memcached service) or to increase the number " +
     "making more effective use of the server running memcached. Example: 1024",
   :required => "recommended",
   :default => "1024",

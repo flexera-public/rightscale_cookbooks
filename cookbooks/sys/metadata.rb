@@ -18,8 +18,8 @@ recipe "sys::setup_swap", "Installs swap space."
 
 attribute "sys/reconverge_list",
   :display_name => "Reconverge List",
-  :description => "A space-separated list of recipes to run every 15 minutes," +
-    " which is designed to enforce system consistency. " +
+  :description => "A space-separated list of recipes to run every " +
+    "15 minutes, which is designed to enforce system consistency. " +
     "Example: app::do_firewall_request_open lb_haproxy::do_attach_all",
   :required => "optional",
   :default => "",

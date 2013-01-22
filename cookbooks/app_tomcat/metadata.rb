@@ -14,20 +14,21 @@ depends "repo"
 depends "rightscale"
 depends "web_apache"
 
-recipe "app_tomcat::setup_server_6", "Set version 6" +
-  " and node variables specific to the chosen Tomcat version" +
-  " to install the tomcat application server."
-recipe "app_tomcat::setup_server_7", "Set version 7" +
-  " and node variables specific to the chosen Tomcat version" +
-  " to install the tomcat application server."
+recipe "app_tomcat::setup_server_6", "Set version 6 " +
+  "and node variables specific to the chosen Tomcat version " +
+  "to install the tomcat application server."
+
+recipe "app_tomcat::setup_server_7", "Set version 7 " +
+  "and node variables specific to the chosen Tomcat version " +
+  "to install the tomcat application server."
 
 # == Default attributes
 #
 #Code repo attributes
 attribute "app_tomcat/code/root_war",
   :display_name => "War file for ROOT",
-  :description => "The path to the war file relative to project repo" +
-    " root directory. Will be renamed to ROOT.war. Example: /dist/app_test.war",
+  :description => "The path to the war file relative to project repo " +
+    "root directory. Will be renamed to ROOT.war. Example: /dist/app_test.war",
   :required => "recommended",
   :default => "",
   :recipes => [
