@@ -42,9 +42,9 @@ else
   end
 
   # Detect the compression type of the downloaded file
+  extension = ""
   ruby_block "Detect compression type" do
     block do
-      extension = ""
       if `file #{dumpfilepath_without_extension}` =~ /Zip archive data/
         extension = "zip"
       elsif `file #{dumpfilepath_without_extension}` =~ /gzip compressed data/
