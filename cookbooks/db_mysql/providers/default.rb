@@ -853,7 +853,7 @@ action :restore_from_dump_file do
 
   # Set the correct command to uncompress the downloaded dump file
   uncompress_command = ""
-  ruby_block do
+  ruby_block "Find out the uncompress command to use" do
     block do
       if dumpfile =~ /\.zip/
         uncompress_command = "unzip -p #{dumpfile}"

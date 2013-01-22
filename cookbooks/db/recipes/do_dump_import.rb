@@ -42,7 +42,7 @@ else
   end
 
   # Detect the compression type of the downloaded file
-  ruby_block do
+  ruby_block "Detect compression type" do
     block do
       extension = ""
       if `file #{dumpfilepath_without_extension}` =~ /Zip archive data/
