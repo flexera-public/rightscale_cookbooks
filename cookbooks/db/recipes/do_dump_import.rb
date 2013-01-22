@@ -23,22 +23,50 @@ else
 
   db_name = node[:db][:dump][:database_name]
   prefix = node[:db][:dump][:prefix]
-  dumpfilepath = "/tmp/" + prefix + ".gz"
+  dumpfilepath_without_extension = "/tmp/" + prefix
   container = node[:db][:dump][:container]
   cloud = node[:db][:dump][:storage_account_provider]
+  command_to_execute = "/opt/rightscale/sandbox/bin/ros_util get"
+  command_to_execute << " --cloud #{cloud} -- container #{container}"
+  command_to_execute << " --dest #{dumpfilepath_without_extension}"
+  command_to_execute << " --source #{prefix} --latest"
 
   # Obtain the dumpfile from ROS
   execute "Download dumpfile from Remote Object Store" do
-    command "/opt/rightscale/sandbox/bin/ros_util get --cloud #{cloud} --container #{container} --dest #{dumpfilepath} --source #{prefix} --latest"
-    creates dumpfilepath
+    command command_to_execute
+    creates dumpfilepath_without_extension
     environment ({
       'STORAGE_ACCOUNT_ID' => node[:db][:dump][:storage_account_id],
       'STORAGE_ACCOUNT_SECRET' => node[:db][:dump][:storage_account_secret]
     })
   end
 
+  # Detect the compression type of the downloaded file
+  ruby_block do
+    block do
+      extension = ""
+      if `file #{dumpfilepath_without_extension}` =~ /Zip archive data/
+        extension = "zip"
+      elsif `file #{dumpfilepath_without_extension}` =~ /gzip compressed data/
+        extension = "gz"
+      elsif `file #{dumpfilepath_without_extension}` =~ /bzip2 compressed data/
+        extension = "bz2"
+      end
+    end
+  end
+
+  # Add the detected extension to the filename prefix
+  dumpfilepath = "#{dumpfilepath_without_extension}.#{extension}"
+
+  # Set the correct extension for the downloaded file
+  execute "Setting extension to downloaded file" do
+    command "mv #{dumpfilepath_without_extension} #{dumpfilepath}"
+    creates dumpfilepath
+  end
+
   # Restore the dump file to db
-  # See cookbooks/db_<provider>/providers/default.rb for the "restore_from_dump_file" action.
+  # See cookbooks/db_<provider>/providers/default.rb for the
+  # "restore_from_dump_file" action.
   db node[:db][:data_dir] do
     dumpfile dumpfilepath
     db_name db_name
