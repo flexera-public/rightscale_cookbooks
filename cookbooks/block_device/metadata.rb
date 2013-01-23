@@ -247,7 +247,7 @@ end.each do |device, number|
       " The default value is 1, which means that only" +
       " a single volume will be used (no striping)." +
       " This value is ignored on clouds that do not support volumes" +
-      "(e.g., Rackspace). Example: 1",
+      " (e.g., Rackspace). Example: 1",
     :required => device != 'device2' ? 'recommended' : 'optional',
     :default => "1",
     :recipes => ["block_device::setup_block_device", "block_device::default"]
@@ -341,7 +341,7 @@ end.each do |device, number|
     :display_name => "Backup Max Snapshots (#{number})",
     :description =>
       "The maximum number of primary backups to keep in addition to" +
-      "those being rotated. Example: 60",
+      " those being rotated. Example: 60",
     :required => "optional",
     :default => "60",
     :recipes => ["block_device::default"]

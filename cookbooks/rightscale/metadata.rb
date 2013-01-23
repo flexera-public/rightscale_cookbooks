@@ -127,7 +127,7 @@ attribute "rightscale/process_list",
   :display_name => "Process List",
   :description =>
     "A space-separated list of additional processes to monitor" +
-    "in the RightScale Dashboard. Example: sshd crond",
+    " in the RightScale Dashboard. Example: sshd crond",
   :required => "optional",
   :default => "",
   :recipes => [
@@ -167,7 +167,7 @@ attribute "rightscale/short_hostname",
   :display_name => "Short Hostname",
   :description =>
     "The short hostname that you would like this node to have." +
-    "Example: myhost",
+    " Example: myhost",
   :required => "required",
   :default => nil,
   :recipes => [
@@ -178,7 +178,7 @@ attribute "rightscale/domain_name",
   :display_name => "Domain Name",
   :description =>
     "The domain name that you would like this node to have." +
-    "Example: example.com",
+    " Example: example.com",
   :required => "optional",
   :default => "",
   :recipes => [

@@ -60,7 +60,7 @@ attribute "repo/default/account",
   :description =>
     "The account name (i.e. username, ID) that is required to access files in" +
     " the specified location. This input is optional and may not be required." +
-    "Example: cred:RACKSPACE_USERNAME",
+    " Example: cred:RACKSPACE_USERNAME",
   :required => "recommended",
   :recipes => ["repo::default"]
 
@@ -113,7 +113,7 @@ attribute "repo/default/storage_account_provider",
   :display_name => "ROS Storage Account Provider",
   :description =>
     "The Remote Object Storage (ROS) service where the tarball" +
-    "of the application code will be retrieved from. Example: s3",
+    " of the application code will be retrieved from. Example: s3",
   :required => "optional",
   :choice => [
     "s3",

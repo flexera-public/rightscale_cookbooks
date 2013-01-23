@@ -110,7 +110,7 @@ attribute "lb/stats_password",
   :display_name => "Status Page Password",
   :description =>
     "The password that is required to access the load balancer statistics" +
-    "report page. Example: cred:STATS_PASSWORD",
+    " report page. Example: cred:STATS_PASSWORD",
   :required => "optional",
   :default => "",
   :recipes => [

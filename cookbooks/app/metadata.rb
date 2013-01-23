@@ -40,7 +40,7 @@ recipe "app::do_loadbalancers_deny",
 
 recipe "app::request_loadbalancer_allow",
   "Sends a request to all application servers tagged with" +
-  "loadbalancer:app=<applistener_name> to allow connections from the server's" +
+  " loadbalancer:app=<applistener_name> to allow connections from the server's" +
   " private IP address. This script should be run on a load balancer before" +
   " any application servers are attached to it."
 

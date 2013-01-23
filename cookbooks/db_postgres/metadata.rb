@@ -52,7 +52,7 @@ attribute "db_postgres/server_usage",
     " resources of the machine. Use 'shared' if the PostgreSQL config file" +
     " is configured to use less resources so that it can be run concurrently" +
     " with other apps like Apache and Rails for example." +
-    "Example: dedicated",
+    " Example: dedicated",
   :recipes => ["db_postgres::setup_server_9_1"],
   :choice => ["shared", "dedicated"],
   :default => "dedicated"

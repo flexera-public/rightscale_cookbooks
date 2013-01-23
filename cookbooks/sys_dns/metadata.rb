@@ -21,10 +21,10 @@ attribute "sys_dns/choice",
   :display_name => "DNS Service Provider",
   :description =>
     "The name of your DNS provider. Select the DNS provider" +
-    "that you're using to manage the DNS A records of your master/slave" +
-    "database servers (e.g., DNSMadeEasy, DynDNS, Route53, CloudDNS)." +
-    "Note: You must specify the region when using Cloud DNS." +
-    "Example: DNSMadeEasy ",
+    " that you're using to manage the DNS A records of your master/slave" +
+    " database servers (e.g., DNSMadeEasy, DynDNS, Route53, CloudDNS)." +
+    " Note: You must specify the region when using Cloud DNS." +
+    " Example: DNSMadeEasy ",
   :required => "required",
   :choice => ["DNSMadeEasy", "DynDNS", "Route53", "CloudDNS"],
   :recipes => ["sys_dns::do_set_private", "sys_dns::default"]
@@ -34,7 +34,7 @@ attribute "sys_dns/id",
   :description =>
     "The unique identifier that is associated with the DNS A record" +
     " of the server. The unique identifier is assigned by the DNS provider" +
-    "when you create a dynamic DNS A record. This ID is used to update" +
+    " when you create a dynamic DNS A record. This ID is used to update" +
     " the associated A record with the private IP address of the server" +
     " when this recipe is run. If you are using DNS Made Easy as" +
     " your DNS provider, a 7-digit number is used (e.g., 4403234)." +
