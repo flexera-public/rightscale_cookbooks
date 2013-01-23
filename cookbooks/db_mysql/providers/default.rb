@@ -449,6 +449,24 @@ action :install_server do
   }
 
   if node[:db_mysql][:ssl_enabled]
+    directory "/etc/mysql/certs" do
+      owner "mysql"
+      group "mysql"
+      mode "0700"
+    end
+
+    node[:db_mysql][:ssl_credentials].each do |name, data|
+      template data[:path] do
+        source "credential.pem.erb"
+        cookbook "db_mysql"
+        owner "mysql"
+        group "mysql"
+        mode "0400"
+        variables(
+          :credential => data[:credential]
+        )
+      end
+    end
 
     cmd = "openssl verify -CAfile"
     cmd << " #{node[:db_mysql][:ssl_credentials][:ca_certificate][:path]}"
@@ -469,25 +487,6 @@ action :install_server do
     else
       raise "FATAL: an error occurred while trying to verify Master and" +
         " Slave certificates against the CA certificate."
-    end
-
-    directory "/etc/mysql/certs" do
-      owner "mysql"
-      group "mysql"
-      mode "0700"
-    end
-
-    node[:db_mysql][:ssl_credentials].each do |name, data|
-      template data[:path] do
-        source "credential.pem.erb"
-        cookbook "db_mysql"
-        owner "mysql"
-        group "mysql"
-        mode "0400"
-        variables(
-          :credential => data[:credential]
-        )
-      end
     end
   end
 
