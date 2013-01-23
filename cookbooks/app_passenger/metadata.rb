@@ -17,10 +17,10 @@ depends "logrotate"
 
 recipe "app_passenger::setup_server_3_0", "Default cookbook recipe which " +
   "sets provider-specific attributes for rails-passenger."
-recipe "app_passenger::install_custom_gems", "Custom gems to install."
-recipe "app_passenger::install_required_app_gems", "Bundler gems install. " +
+recipe "app_passenger::install_custom_gems", "Installs custom gems."
+recipe "app_passenger::install_required_app_gems", "Installs bundler gems. " +
   "Gemfile must be present in app directory."
-recipe "app_passenger::run_custom_rails_commands", "Run specific user " +
+recipe "app_passenger::run_custom_rails_commands", "Runs specific user " +
   "defined commands. Commands will be executed in the app directory. " +
   "Command path ../rails/bin/"
 

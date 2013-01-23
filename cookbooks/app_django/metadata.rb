@@ -18,7 +18,7 @@ depends "rightscale"
 depends "python"
 
 recipe "app_django::setup_server_1_4", "Installs the Django application server."
-recipe "app_django::run_custom_django_commands", "Run specific user defined " +
+recipe "app_django::run_custom_django_commands", "Runs specific user defined " +
   "commands. Commands will be executed in the app directory."
 
 

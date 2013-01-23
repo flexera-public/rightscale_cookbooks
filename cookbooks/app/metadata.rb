@@ -18,13 +18,14 @@ depends "app_tomcat"
 depends "db"
 depends "app_django"
 
-recipe "app::install_server", "Adds the appserver:active=true, " +
-  "appserver:listen_ip=<ip> and appserver:listen_port=<port> tags to your " +
-  "server which identifies it as an application server" +
-  "and tells the load balancer what IP address and port to connect to. " +
-  "For example, a 'master' database server will update its " +
-  "firewall port permissions to accept incoming requests from " +
-  "application servers with this tag."
+recipe "app::install_server",
+  "Adds the appserver:active=true," +
+  " appserver:listen_ip=<ip> and appserver:listen_port=<port> tags to your" +
+  " server which identifies it as an application server" +
+  " and tells the load balancer what IP address and port to connect to." +
+  " For example, a 'master' database server will update its" +
+  " firewall port permissions to accept incoming requests from" +
+  " application servers with this tag."
 
 recipe "app::do_loadbalancers_allow", "Allows connections from " +
   "all load balancers within a given listener pool which are tagged with " +
@@ -49,11 +50,11 @@ recipe "app::request_loadbalancer_deny", "Sends a request to " +
   "This script should be run on a load balancer " +
   "after disconnecting application servers or upon decommissioning."
 
-recipe "app::setup_vhost", "Set up the application vhost on selected port. " +
+recipe "app::setup_vhost", "Sets up the application vhost on selected port. " +
   "This recipe will call the corresponding provider from the " +
   "app server cookbook, which creates an apache vhost file."
 
-recipe "app::setup_db_connection", "Set up the database connection file. " +
+recipe "app::setup_db_connection", "Sets up the database connection file. " +
   "This recipe will call the corresponding provider from app server " +
   "cookbook, which creates an application database configuration file."
 
@@ -62,7 +63,7 @@ recipe "app::do_update_code", "Updates application source files " +
   "provider from the app server cookbook, which will download/update " +
   "application source code."
 
-recipe "app::setup_monitoring", "Install collectd monitoring. " +
+recipe "app::setup_monitoring", "Installs collectd monitoring. " +
   "This recipe will call the corresponding provider " +
   "from the app server cookbook, which installs and configures required" +
   "monitoring software."
@@ -75,10 +76,10 @@ recipe "app::do_server_stop", "Runs application server stop sequence."
 
 recipe "app::do_server_reload", "Runs application server reload sequence."
 
-recipe "app::handle_loadbalancers_allow", "Remote recipe run on app server " +
+recipe "app::handle_loadbalancers_allow", "Runs remote recipe on app server " +
   "from loadbalancer requesting access. DO NOT RUN."
 
-recipe "app::handle_loadbalancers_deny", "Remote recipe run on app server " +
+recipe "app::handle_loadbalancers_deny", "Runs remote recipe on app server " +
   "from loadbalancer revoking access. DO NOT RUN."
 
 attribute "app/port",
@@ -100,9 +101,9 @@ attribute "app/database_name",
     "The database schema should have been created when the initial database " +
     "was first set up. This input will be used to set the application " +
     "server's database configuration file so that applications can connect " +
-    "to the correct schema within the database.  " +
+    "to the correct schema within the database. " +
     "NOTE: LAMP servers use this input for database dump backups in " +
-    "order to determine which schema will be backed up.  Example: mydbschema",
+    "order to determine which schema will be backed up. Example: mydbschema",
   :required => "required",
   :recipes => ["app::setup_db_connection"]
 

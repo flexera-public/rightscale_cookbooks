@@ -14,11 +14,11 @@ depends "repo"
 depends "rightscale"
 depends "web_apache"
 
-recipe "app_tomcat::setup_server_6", "Set version 6 " +
+recipe "app_tomcat::setup_server_6", "Sets version 6 " +
   "and node variables specific to the chosen Tomcat version " +
   "to install the tomcat application server."
 
-recipe "app_tomcat::setup_server_7", "Set version 7 " +
+recipe "app_tomcat::setup_server_7", "Sets version 7 " +
   "and node variables specific to the chosen Tomcat version " +
   "to install the tomcat application server."
 

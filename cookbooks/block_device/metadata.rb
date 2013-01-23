@@ -26,8 +26,11 @@ recipe "block_device::do_primary_backup",
 recipe "block_device::do_primary_restore", "Restores a primary backup " +
   "from the local cloud where the server is currently running."
 
-recipe "block_device::do_secondary_backup", :description => "Creates a secondary backup to the remote cloud specified by block_device/secondary provider", :thread => 'block_backup'
-recipe "block_device::do_secondary_restore","Restores a secondary backup from the remote cloud specified by block_device/secondary provider."
+recipe "block_device::do_secondary_backup",
+  :description => "Creates a secondary backup to the remote cloud specified by block_device/secondary provider",
+  :thread => 'block_backup'
+recipe "block_device::do_secondary_restore",
+  "Restores a secondary backup from the remote cloud specified by block_device/secondary provider."
 
 recipe "block_device::do_primary_backup_schedule_enable",
   "Enables continuous primary backups by updating the crontab file."
