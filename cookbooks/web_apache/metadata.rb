@@ -8,15 +8,20 @@ version          "13.3.0"
 # supports "redhat", "~> 5.8"
 # supports "ubuntu", "~> 10.04", "~> 12.04"
 
-recipe "web_apache::default", "Runs web_apache::install_apache."
+recipe "web_apache::default",
+  "Runs web_apache::install_apache."
 
-recipe "web_apache::do_start", "Runs service apache start."
+recipe "web_apache::do_start",
+  "Runs service apache start."
 
-recipe "web_apache::do_stop", "Runs service apache stop."
+recipe "web_apache::do_stop",
+  "Runs service apache stop."
 
-recipe "web_apache::do_restart", "Runs service apache restart."
+recipe "web_apache::do_restart",
+  "Runs service apache restart."
 
-recipe "web_apache::do_enable_default_site", "Enables the default vhost."
+recipe "web_apache::do_enable_default_site",
+  "Enables the default vhost."
 
 recipe "web_apache::install_apache",
   "Installs and configures the Apache2 webserver."
@@ -44,14 +49,16 @@ depends "rightscale"
 
 attribute "web_apache",
   :display_name => "apache hash",
-  :description => "Apache Web Server",
+  :description =>
+    "Apache Web Server",
   :type => "hash"
 
 attribute "web_apache/mpm",
   :display_name => "Multi-Processing Module",
-  :description => "Defines the multi-processing module setting " +
-    "in httpd.conf. Use 'worker' for Rails/Tomcat/Standalone frontends " +
-    "and 'prefork' for PHP. Example: prefork",
+  :description =>
+    "Defines the multi-processing module setting in httpd.conf." +
+    " Use 'worker' for Rails/Tomcat/Standalone frontends" +
+    " and 'prefork' for PHP. Example: prefork",
   :required => "optional",
   :recipes => [
     "web_apache::default",
@@ -65,7 +72,8 @@ attribute "web_apache/mpm",
 
 attribute "web_apache/ssl_enable",
   :display_name => "SSL Enable",
-  :description => "Enables SSL ('https'). Example: true",
+  :description =>
+    "Enables SSL ('https'). Example: true",
   :recipes => [
     "web_apache::install_apache",
     "web_apache::setup_frontend_ssl_vhost",
@@ -77,7 +85,8 @@ attribute "web_apache/ssl_enable",
 
 attribute "web_apache/ssl_certificate",
   :display_name => "SSL Certificate",
-  :description => "The name of your SSL Certificate. Example: cred:SSL_CERT",
+  :description =>
+    "The name of your SSL Certificate. Example: cred:SSL_CERT",
   :required => "optional",
   :default => "",
   :recipes => [
@@ -87,7 +96,8 @@ attribute "web_apache/ssl_certificate",
 
 attribute "web_apache/ssl_certificate_chain",
   :display_name => "SSL Certificate Chain",
-  :description => "Your SSL Certificate Chain. Example: cred:SSL_CERT_CHAIN",
+  :description =>
+    "Your SSL Certificate Chain. Example: cred:SSL_CERT_CHAIN",
   :required => "optional",
   :default => "",
   :recipes => [
@@ -97,7 +107,8 @@ attribute "web_apache/ssl_certificate_chain",
 
 attribute "web_apache/ssl_key",
   :display_name => "SSL Certificate Key",
-  :description => "Your SSL Certificate Key. Example: cred:SSL_KEY",
+  :description =>
+    "Your SSL Certificate Key. Example: cred:SSL_KEY",
   :required => "optional",
   :default => "",
   :recipes => [
@@ -107,7 +118,8 @@ attribute "web_apache/ssl_key",
 
 attribute "web_apache/ssl_passphrase",
   :display_name => "SSL Passphrase",
-  :description => "Your SSL passphrase. Example: cred:SSL_PASSPHRASE",
+  :description =>
+    "Your SSL passphrase. Example: cred:SSL_PASSPHRASE",
   :required => "optional",
   :default => "",
   :recipes => [
@@ -117,13 +129,14 @@ attribute "web_apache/ssl_passphrase",
 
 attribute "web_apache/application_name",
   :display_name => "Application Name",
-  :description => "Sets the directory for your application's web files " +
-    "(/home/webapps/Application Name/). If you have multiple applications, " +
-    "you can run the code checkout script multiple times, each with a " +
-    "different value for the 'Application Name' input, so each application " +
-    "will be stored in a unique directory. " +
-    "This must be a valid directory name. Do not use symbols in the name. " +
-    "Example: myapp",
+  :description =>
+    "Sets the directory for your application's web files" +
+    " (/home/webapps/Application Name/). If you have multiple applications," +
+    " you can run the code checkout script multiple times, each with a" +
+    " different value for the 'Application Name' input, so each application" +
+    " will be stored in a unique directory." +
+    " This must be a valid directory name. Do not use symbols in the name." +
+    " Example: myapp",
   :required => "optional",
   :default => "myapp",
   :recipes => [
@@ -135,9 +148,10 @@ attribute "web_apache/application_name",
 
 attribute "web_apache/allow_override",
   :display_name => "AllowOverride Directive",
-  :description => "Allows/disallows the use of .htaccess files in project " +
-  "web root directory. Can be None (default), All, or any directive-type as " +
-  "specified in Apache documentation. Example: None",
+  :description =>
+    "Allows/disallows the use of .htaccess files in project web root directory." +
+    " Can be None (default), All, or any directive-type as specified in" +
+    " Apache documentation. Example: None",
   :required => "optional",
   :choice => ["None", "All"],
   :default => "None",

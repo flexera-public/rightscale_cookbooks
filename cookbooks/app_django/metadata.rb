@@ -17,16 +17,19 @@ depends "repo"
 depends "rightscale"
 depends "python"
 
-recipe "app_django::setup_server_1_4", "Installs the Django application server."
-recipe "app_django::run_custom_django_commands", "Runs specific user defined " +
-  "commands. Commands will be executed in the app directory."
+recipe "app_django::setup_server_1_4",
+  "Installs the Django application server."
+recipe "app_django::run_custom_django_commands",
+  "Runs specific user defined commands. Commands will be executed" +
+  " in the app directory."
 
 
 attribute "app_django/app/debug_mode",
   :display_name => "Django App Debug Mode",
-  :description => "Creates a Django application debug environment variable, " +
-    "e.g. should be true for dev and false for prod environment." +
-    "Example: false",
+  :description =>
+    "Creates a Django application debug environment variable," +
+    " e.g. should be true for dev and false for prod environment." +
+    " Example: false",
   :choice => ["true", "false"],
   :required => "optional",
   :default => "false",
@@ -34,9 +37,10 @@ attribute "app_django/app/debug_mode",
 
 attribute "app_django/apache/serve_local_files",
   :display_name => "Apache serve local Files",
-  :description => "This option tells Apache whether it should serve " +
-    "the (static) content itself. Currently, it will omit dynamic content, " +
-    "such as *.php, *.action, *.jsp, and *.do  Example: true",
+  :description =>
+    "This option tells Apache whether it should serve the (static) content" +
+    " itself. Currently, it will omit dynamic content, such as *.php," +
+    " *.action, *.jsp, and *.do. Example: true",
   :choice => ["true", "false"],
   :required => "optional",
   :default => "true",
@@ -44,20 +48,21 @@ attribute "app_django/apache/serve_local_files",
 
 attribute "app_django/project/opt_pip_list",
   :display_name => "Custom Python Package list",
-  :description => "A space-separated list of optional python package(s), " +
-    "along with their versions in the Format: py-pkg1==version " +
-    "py-pkg2==version py-pkg3==version. "+
-    "Example: simplejson==1.7.1, Markdown==2.0.3",
+  :description =>
+    "A space-separated list of optional python package(s), along with their" +
+    " versions in the Format: py-pkg1==version py-pkg2==version" +
+    " py-pkg3==version. Example: simplejson==1.7.1, Markdown==2.0.3",
   :required => "optional",
   :default => "",
   :recipes => ["app_django::setup_server_1_4"]
 
 attribute "app_django/project/custom_cmd",
   :display_name => "Custom Django command",
-  :description => "A comma-separated list of optional commands " +
-    "which will be executed in the app directory. " +
-    "Example: manage.py syncdb, manage.py migrate, manage.py loaddata " +
-    "./fixtures/example_initial_data.json",
+  :description =>
+    "A comma-separated list of optional commands which will be executed in" +
+    " the app directory." +
+    " Example: manage.py syncdb, manage.py migrate, manage.py loaddata" +
+    " ./fixtures/example_initial_data.json",
   :required => "optional",
   :default => "",
   :recipes => ["app_django::run_custom_django_commands"]
