@@ -37,9 +37,10 @@ module RightScale
           node[:cloud][:public_ips][0]
         when "vpn"
           r = %x[rs_tag --list][/server:vpn_ip_0=([\d.]+)/, 1]
-          raise "  No \"server:vpn_ip_0=\" tag found" if r.nil?
+          raise "No \"server:vpn_ip_0=\" tag found" if r.nil?
         else
-          raise "  \"#{node[:db][:replication][:network_interface]}\" is not a valid network interface."
+          raise "\"#{node[:db][:replication][:network_interface]}\"" +
+            " is not a valid network interface."
         end
       end
 

@@ -59,7 +59,8 @@ define :db_register_slave, :action => :primary_restore do
                  when "vpn"
                    "server:vpn_ip_0"
                  else
-                   raise "  \"#{node[:db][:replication][:network_interface]}\" is not a valid network interface."
+                   raise "\"#{node[:db][:replication][:network_interface]}\"" +
+                     " is not a valid network interface."
                  end
         # Using reverse order to end with first found master if no DB tagged with lineage.
         node[:server_collection]["master_servers"].reverse_each do |id, tags|
