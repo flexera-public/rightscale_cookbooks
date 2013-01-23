@@ -37,7 +37,7 @@ include_recipe "db::setup_replication_privileges"
 # to demote it later.  Once demoted, then we add master tags.
 # See cookbooks/db_<provider>/providers/default.rb for the "promote" action.
 db DATA_DIR do
-  force true if force_promote
+  force force_promote
   action :promote
 end
 
