@@ -468,27 +468,37 @@ action :install_server do
       end
     end
 
-    cmd = "openssl verify -CAfile"
-    cmd << " #{node[:db_mysql][:ssl_credentials][:ca_certificate][:path]}"
-    cmd << " #{node[:db_mysql][:ssl_credentials][:master_certificate][:path]}"
-    master = %x[#{cmd}]
-    master_exit = $?
-    Chef::Log.info master
+    m_cmd = "openssl verify -CAfile"
+    m_cmd << " #{node[:db_mysql][:ssl_credentials][:ca_certificate][:path]}"
+    m_cmd << " #{node[:db_mysql][:ssl_credentials][:master_certificate][:path]}"
 
-    cmd = "openssl verify -CAfile"
-    cmd << " #{node[:db_mysql][:ssl_credentials][:ca_certificate][:path]}"
-    cmd << " #{node[:db_mysql][:ssl_credentials][:slave_certificate][:path]}"
-    slave = %x[#{cmd}]
-    slave_exit = $?
-    Chef::Log.info slave
+    s_cmd = "openssl verify -CAfile"
+    s_cmd << " #{node[:db_mysql][:ssl_credentials][:ca_certificate][:path]}"
+    s_cmd << " #{node[:db_mysql][:ssl_credentials][:slave_certificate][:path]}"
 
-    if master_exit.success? && slave_exit.success?
-      Chef::Log.info "  Master and Slave certificates verify: OK."
-    else
-      raise "FATAL: an error occurred while trying to verify Master and" +
-        " Slave certificates against the CA certificate."
+
+    ruby_block "verify_certificates" do
+      block do
+        master = Chef::ShellOut.new(m_cmd)
+        master.run_command
+
+        slave = Chef::ShellOut.new(s_cmd)
+        slave.run_command
+
+        if master.exitstatus == 0 && slave.exitstatus == 0
+          Chef::Log.info master.stdout
+          Chef::Log.info slave.stdout
+          Chef::Log.info "  Master and Slave certificates verified."
+        else
+          Chef::Log.info master.stderr
+          Chef::Log.info slave.stderr
+          raise "FATAL: an error occurred while trying to verify Master and" +
+            " Slave certificates against the CA certificate."
+        end
+      end
     end
   end
+
 
   log "  MySQL SSL enabled: #{node[:db_mysql][:ssl_enabled]}"
   log "  MySQL SSL will only be enabled if all inputs contain credentials." do
