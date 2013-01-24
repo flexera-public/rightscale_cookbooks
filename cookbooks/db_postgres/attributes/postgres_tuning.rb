@@ -24,7 +24,7 @@ mem = memory[:total].to_i/1024
 Chef::Log.info("  Auto-tuning PostgreSQL parameters.  Total memory: #{mem}MB")
 one_percent_mem = (mem*0.01).to_i
 one_percent_str = value_with_units(one_percent_mem, "MB", usage)
-twenty_five_percent_mem = (mem*0.50).to_i
+twenty_five_percent_mem = (mem*0.25).to_i
 twenty_five_percent_str = value_with_units(twenty_five_percent_mem, "MB", usage)
 eighty_percent_mem = (mem*0.80).to_i
 eighty_percent_str = value_with_units(eighty_percent_mem, "MB", usage)
