@@ -16,23 +16,23 @@ depends "logrotate"
 
 
 recipe "memcached::default",
-  "Default recipe for memcached setup."
+  "Sets up mecached.."
 
 recipe "memcached::install_server",
-  "Installation and configuration recipe for memcached." +
-  " Does memcached setup and configuration, opens port in firewall," +
-  " configures collectd and logrotate."
+  "Installs and configures memcached, opens port in firewall," +
+  " and configures collectd and logrotate."
+
 recipe "memcached::do_start",
-  "Start memcached service."
+  "Starts memcached service."
 
 recipe "memcached::do_restart",
-  "Restart memcached service."
+  "Restarts memcached service."
 
 recipe "memcached::do_reload",
-  "Reload memcached service."
+  "Reloads memcached service."
 
 recipe "memcached::do_stop",
-  "Stop memcached service."
+  "Stops memcached service."
 
 
 attribute "memcached/tcp_port",

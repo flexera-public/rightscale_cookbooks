@@ -17,7 +17,7 @@ depends "repo_ftp"
 depends "repo_rsync"
 
 recipe "repo::default",
-  "Default recipe to setup provided resources."
+  "Sets up repo resource and provider."
 
 
 attribute "repo/default/provider",

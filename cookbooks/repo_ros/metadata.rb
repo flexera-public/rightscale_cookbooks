@@ -12,4 +12,4 @@ version          "13.3.0"
 depends "repo"
 
 recipe  "repo_ros::default",
-  "Default pattern for loading provided packages and resources."
+  "Checks for ros_util binary availability"

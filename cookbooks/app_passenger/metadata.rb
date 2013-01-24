@@ -27,7 +27,7 @@ recipe "app_passenger::install_required_app_gems",
 
 recipe "app_passenger::run_custom_rails_commands",
   "Runs specific user defined commands. Commands will be executed in" +
-  " the app directory. Command path ../rails/bin/"
+  " the app directory."
 
 
 attribute "app_passenger/spawn_method",

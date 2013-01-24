@@ -12,4 +12,4 @@ version          "13.3.0"
 depends "logging"
 
 recipe "logging_syslog_ng::default",
-  "Set syslog_ng logging provider"
+  "Sets syslog_ng logging provider"

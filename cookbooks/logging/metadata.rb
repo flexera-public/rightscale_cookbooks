@@ -14,7 +14,7 @@ depends "logging_rsyslog"
 depends "logging_syslog_ng"
 
 recipe "logging::default",
-  "Default recipe to setup provided resources."
+  "Sets up logging server.."
 
 recipe "logging::install_server",
   "Configures a logging server."

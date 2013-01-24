@@ -16,7 +16,7 @@ recipe "sys::do_reconverge_list_enable",
   " in the 'Reconverge List' input."
 
 recipe "sys::do_reconverge_list_disable",
-  "Disable recipe reconverge list."
+  "Disables recipe reconverge list."
 
 recipe "sys::setup_swap",
   "Installs swap space."

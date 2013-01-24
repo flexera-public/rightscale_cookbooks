@@ -56,20 +56,20 @@ recipe "lb::setup_monitoring",
   "Installs the load balancer collectd plugin for monitoring support."
 
 recipe "lb::setup_advanced_configuration",
-  "Recipe for advanced load balancer configuration setup."
+  "Sets up advanced load balancer configuration."
 
 attribute "lb/pools",
   :display_name => "Load Balance Pools",
   :description =>
     "Comma-separated list of URIs or FQDNs for which the load balancer" +
     " will create server pools to answer website requests." +
-    " Last entry will be the default backend and will answer" +
-    " for all URIs and FQDNs not listed here. A single entry of any name," +
-    " e.g. 'default', 'www.mysite.com' or '/appserver', will mimic basic" +
-    " behavior of one load balancer with one pool of application servers." +
-    " This will be used for naming server pool backends. Application servers" +
-    " can provide any numbers of URIs or FQDNs to join corresponding server" +
-    " pool backends. Example: www.mysite.com, api.mysite.com, /serverid, default",
+    " Last entry will be the default backend and will answer for all URIs and" +
+    " FQDNs not listed here. A single entry of any name, e.g. 'default', " +
+    " 'www.mysite.com' or '/appserver', will mimic basic behavior of" +
+    " one load balancer with one pool of application servers. This will be" +
+    " used for naming server pool backends. Application servers can provide" +
+    " any numbers of URIs or FQDNs to join corresponding server pool" +
+    " backends.Example: www.mysite.com, api.mysite.com, /serverid, default",
   :required => "recommended",
   :default => "default",
   :recipes => [

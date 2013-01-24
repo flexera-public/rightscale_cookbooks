@@ -12,4 +12,4 @@ version          "13.3.0"
 depends "repo"
 
 recipe  "repo_ftp::default",
-  "Default pattern for loading provided packages and resources."
+  "Installs \"wget\" package."

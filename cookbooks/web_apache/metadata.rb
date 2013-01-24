@@ -27,22 +27,22 @@ recipe "web_apache::install_apache",
   "Installs and configures the Apache2 webserver."
 
 recipe "web_apache::setup_frontend",
-  "Frontend apache vhost. Select ssl_enabled for SSL."
+  "Sets up front-end apache vhost. Select ssl_enabled for SSL."
 
 recipe "web_apache::setup_frontend_ssl_vhost",
-  "Frontend apache vhost with SSL enabled."
+  "Sets up front-end apache vhost with SSL enabled."
 
 recipe "web_apache::setup_frontend_http_vhost",
-  "Frontend apache vhost with SSL enabled."
+  "Sets up front-end apache vhost on port 80."
 
 recipe "web_apache::setup_monitoring",
   "Installs the collectd-apache plugin for monitoring support."
 
 recipe "web_apache::do_enable_maintenance_mode",
-  "Enable maintenance mode for Apache2 webserver"
+  "Enables maintenance mode for Apache2 webserver"
 
 recipe "web_apache::do_disable_maintenance_mode",
-  "Disable maintenance mode for Apache2 webserver"
+  "Disables maintenance mode for Apache2 webserver"
 
 depends "apache2"
 depends "rightscale"
@@ -149,9 +149,9 @@ attribute "web_apache/application_name",
 attribute "web_apache/allow_override",
   :display_name => "AllowOverride Directive",
   :description =>
-    "Allows/disallows the use of .htaccess files in project web root directory." +
-    " Can be None (default), All, or any directive-type as specified in" +
-    " Apache documentation. Example: None",
+    "Allows/disallows the use of .htaccess files in project web root" +
+    " directory. Can be None (default), All, or any directive-type" +
+    " as specified in Apache documentation. Example: None",
   :required => "optional",
   :choice => ["None", "All"],
   :default => "None",

@@ -12,4 +12,4 @@ supports "ubuntu", "~> 10.04.0"
 depends "repo"
 
 recipe  "repo_rsync::default",
-  "Default pattern for loading provided packages and resources."
+  "Installs \"rsync\" package."

@@ -15,10 +15,10 @@ depends "sys_dns"
 depends "rightscale"
 
 recipe "db_mysql::setup_server_5_1",
-  "Set the DB MySQL provider. Sets version 5.1 and node variables specific" +
+  "Sets the DB MySQL provider. Sets version 5.1 and node variables specific" +
   " to MySQL 5.1."
 recipe "db_mysql::setup_server_5_5",
-  "Set the DB MySQL provider. Sets version 5.5 and node variables specific" +
+  "Sets the DB MySQL provider. Sets version 5.5 and node variables specific" +
   " to MySQL 5.5."
 
 attribute "db_mysql",

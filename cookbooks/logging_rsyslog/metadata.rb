@@ -12,4 +12,4 @@ version          "13.3.0"
 depends "logging"
 
 recipe "logging_rsyslog::setup_server",
-  "Set rsyslog logging provider"
+  "Sets rsyslog logging provider"

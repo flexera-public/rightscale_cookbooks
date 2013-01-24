@@ -15,8 +15,8 @@ depends "rightscale"
 depends "block_device"
 
 recipe "db_postgres::setup_server_9_1",
-  "Set the DB PostgresSQL provider. Sets version 9.1 and node variables" +
-  " specific to PostgresSQL 9.1."
+  "Sets the DB PostgreSQL provider. Sets version 9.1 and node variables" +
+  " specific to PostgreSQL 9.1."
 
 recipe "db_postgres::do_set_slave_sync_mode",
   "Set master to do sync-based replication with slaves." +
@@ -33,11 +33,11 @@ recipe "db_postgres::do_set_slave_sync_mode",
   " http://www.postgresql.org/docs/9.1/static/warm-standby.html#SYNCHRONOUS-REPLICATION "
 
 recipe "db_postgres::do_set_slave_async_mode",
-  "Set master to do async-based replication with slaves. For more info refer:" +
-  " http://www.postgresql.org/docs/9.1/static/warm-standby.html#SYNCHRONOUS-REPLICATION"
+  "Sets master to do async-based replication with slaves. For more info" +
+  "refer: http://www.postgresql.org/docs/9.1/static/warm-standby.html#SYNCHRONOUS-REPLICATION"
 
 recipe "db_postgres::do_show_slave_sync_mode",
-  "Show the sync mode used for replication."
+  "Shows the sync mode used for replication."
 
 attribute "db_postgres",
   :display_name => "General Database Options",

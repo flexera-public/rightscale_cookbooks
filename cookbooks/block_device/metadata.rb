@@ -49,13 +49,13 @@ recipe "block_device::do_primary_backup_schedule_disable",
 
 recipe "block_device::do_delete_volumes_and_terminate_server",
   "Deletes any currently attached volumes from the instance" +
-  " and then terminates the machine." +
-  " WARNING: Execution of this script will delete any data on your block device!"
+  " and then terminates the machine. WARNING:" +
+  " Execution of this script will delete any data on your block device!"
 
 recipe "block_device::do_force_reset",
   "Unmount and delete the attached block device(s) for this lineage." +
-  " Designed for test and development purposes only." +
-  " WARNING: Execution of this script will delete any data on your block device!"
+  " Designed for test and development purposes only. WARNING:" +
+  " Execution of this script will delete any data on your block device!"
 
 # all recipes EXCEPT for block_device::default
 # which is used to "export" inputs to other cookbooks.
@@ -410,8 +410,8 @@ end.each do |device, number|
   attribute "block_device/devices/#{device}/vg_data_percentage",
     :display_name => "Percentage of the LVM used for data (#{number})",
     :description =>
-      "The percentage of the total Volume Group extents (LVM) that is used for" +
-      " data. (e.g. 50 percent - 1/2 used for data and remainder used for" +
+      "The percentage of the total Volume Group extents (LVM) that is used " +
+      " for data. (e.g. 50 percent - 1/2 used for data and remainder used for" +
       " overhead and snapshots, 100 percent - all space is allocated for data" +
       " (therefore snapshots can not be taken) WARNING: If the space used for" +
       " data storage is too large, LVM snapshots cannot be performed." +

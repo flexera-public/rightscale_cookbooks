@@ -13,4 +13,4 @@ depends "git"
 depends "repo"
 
 recipe  "repo_git::default",
-  "Default pattern for loading provided packages and resources."
+  "Installs \"git\" package."

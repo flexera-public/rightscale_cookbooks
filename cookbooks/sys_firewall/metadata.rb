@@ -14,13 +14,13 @@ depends "sys"
 depends "rightscale"
 
 recipe "sys_firewall::default",
-  "Use in conjunction with the 'Firewall' input to enable or disable iptables."
+  "Enables or disables iptables based on the value set in \"Firewall\" input"
 
 recipe "sys_firewall::setup_rule",
-  "Use for enabling/disabling specific firewall ports."
+  "Enables or disables specific firewall ports."
 
 recipe "sys_firewall::do_list_rules",
-  "List the firewall rules."
+  "Lists the firewall rules."
 
 attribute "sys_firewall/enabled",
   :display_name => "Firewall",
