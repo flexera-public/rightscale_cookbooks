@@ -41,42 +41,64 @@ else
     })
   end
 
-  # Detect the compression type of the downloaded file
-  extension = ""
+  # Detect the compression type of the downloaded file and set the
+  # extension properly.
+  node[:db][:dump][:filepath] = ""
+  node[:db][:dump][:uncompress_command] = ""
   ruby_block "Detect compression type" do
     block do
-      if `file #{dumpfilepath_without_extension}` =~ /Zip archive data/
+      require "fileutils"
+
+      file_type = Chef::ShellOut.new("file #{dumpfilepath_without_extension}")
+      file_type.run_command
+      file_type.error!
+      command_output = file_type.stdout
+
+      extension = ""
+      if command_output =~ /Zip archive data/
         extension = "zip"
-      elsif `file #{dumpfilepath_without_extension}` =~ /gzip compressed data/
+        node[:db][:dump][:uncompress_command] = "unzip -p"
+      elsif command_output =~ /gzip compressed data/
         extension = "gz"
-      elsif `file #{dumpfilepath_without_extension}` =~ /bzip2 compressed data/
+        node[:db][:dump][:uncompress_command] = "gunzip <"
+      elsif command_output =~ /bzip2 compressed data/
         extension = "bz2"
+        node[:db][:dump][:uncompress_command] = "bunzip2 <"
       end
+      node[:db][:dump][:filepath] = dumpfilepath_without_extension +
+        "." +
+        extension
+      FileUtils.mv(dumpfilepath_without_extension, node[:db][:dump][:filepath])
+
+      # The dumpfile attribute for the db resource's "restore_from_dump_file"
+      # action is evaluated during compile time and when it converges the old
+      # value (the one without the extension) is used. This ruby block runs in
+      # converge phase which updates the value to be used for the dumpfile
+      # attribute. The following code will update the db resource's dumpfile
+      # attribute in converge time.
+      restore_resource = run_context.resource_collection.find(
+        :db => node[:db][:data_dir]
+      )
+      restore_resource.dumpfile node[:db][:dump][:filepath]
     end
   end
 
-  # Add the detected extension to the filename prefix
-  dumpfilepath = "#{dumpfilepath_without_extension}.#{extension}"
-
-  # Set the correct extension for the downloaded file
-  execute "Setting extension to downloaded file" do
-    command "mv #{dumpfilepath_without_extension} #{dumpfilepath}"
-    creates dumpfilepath
-  end
 
   # Restore the dump file to db
   # See cookbooks/db_<provider>/providers/default.rb for the
   # "restore_from_dump_file" action.
   db node[:db][:data_dir] do
-    dumpfile dumpfilepath
+    dumpfile node[:db][:dump][:filepath]
     db_name db_name
     action :restore_from_dump_file
   end
 
   # Delete the local file.
-  file dumpfilepath do
-    backup false
-    action :delete
+  ruby_block "Delete the local file" do
+    block do
+      require "fileutils"
+      FileUtils.rm_f node[:db][:dump][:filepath]
+    end
   end
 
 end
