@@ -851,25 +851,12 @@ action :restore_from_dump_file do
   dumpfile = new_resource.dumpfile
   db_check = `mysql -e "SHOW DATABASES LIKE '#{db_name}'"`
 
-  # Set the correct command to uncompress the downloaded dump file
-  uncompress_command = ""
-  ruby_block "Find out the uncompress command to use" do
-    block do
-      if dumpfile =~ /\.zip/
-        uncompress_command = "unzip -p #{dumpfile}"
-      elsif dumpfile =~ /\.gz/
-        uncompress_command = "gunzip < #{dumpfile}"
-      elsif dumpfile =~ /\.bz2/
-        uncompress_command = "bunzip2 < #{dumpfile}"
-      end
-    end
-  end
-
   Chef::Log.info "  Check if DB already exists"
   ruby_block "checking existing db" do
     block do
       if !db_check.empty?
-        Chef::Log.warn "  WARNING: database '#{db_name}' already exists. No changes will be made to existing database."
+        Chef::Log.warn "  WARNING: database '#{db_name}' already exists." +
+          " No changes will be made to existing database."
       end
     end
   end
@@ -885,7 +872,8 @@ action :restore_from_dump_file do
         exit 1
       fi
       mysqladmin -u root create #{db_name}
-      #{uncompress_command} | mysql -u root -b #{db_name}
+      #{node[:db][:dump][:uncompress_command]} #{dumpfile} | \
+        mysql -u root -b #{db_name}
     EOH
   end
 
