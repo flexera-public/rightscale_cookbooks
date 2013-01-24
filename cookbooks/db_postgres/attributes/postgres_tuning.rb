@@ -14,13 +14,6 @@ def value_with_units(value, units, usage_factor)
   (value * factor).to_i.to_s + units
 end
 
-# Set tuning parameters.
-
-default[:db_postgres][:tunable][:ulimit] = `sysctl -n fs.file-max`.to_i/33
-default[:db_postgres][:tunable][:shared_buffers] = "24MB"
-default[:db_postgres][:tunable][:max_connections] = "100"
-
-
 # Shared servers get %50 of the resources allocated to a dedicated server.
 usage = 1 # Dedicated server
 usage = 0.5 if db_postgres[:server_usage] == "shared"
@@ -31,6 +24,14 @@ mem = memory[:total].to_i/1024
 Chef::Log.info("  Auto-tuning PostgreSQL parameters.  Total memory: #{mem}MB")
 one_percent_mem = (mem*0.01).to_i
 one_percent_str = value_with_units(one_percent_mem, "MB", usage)
+twenty_five_percent_mem = (mem*0.50).to_i
+twenty_five_percent_str = value_with_units(twenty_five_percent_mem, "MB", usage)
 eighty_percent_mem = (mem*0.80).to_i
 eighty_percent_str = value_with_units(eighty_percent_mem, "MB", usage)
+
+# Set tuning parameters.
+
+default[:db_postgres][:tunable][:ulimit] = `sysctl -n fs.file-max`.to_i/33
+default[:db_postgres][:tunable][:max_connections] = (400 * usage).to_i
+default[:db_postgres][:tunable][:shared_buffers] = twenty_five_percent_str
 
