@@ -58,6 +58,14 @@ Custom tuning parameters can be applied by overriding the <tt>postgres_tuning.rb
 attributes file. For more information and an example override repository,
 please see: {Override Chef Cookbooks}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Override_Chef_Cookbooks].
 
+The tuning parameters are adjusted based on the database server usage.  Shared
+servers are allocated %50 of the resources of a dedicated server.
+
+The current implementation sets the following tuning parameters:
+
+* max_connections: Static setting with 400 for a dedicated server and 200 for a shared server
+* shared_buffers: Dynamically set to %25 of available memory.
+
 == DETAILS:
 
 The 'db' implementation is defined by a Lightweight Provider, which can be
