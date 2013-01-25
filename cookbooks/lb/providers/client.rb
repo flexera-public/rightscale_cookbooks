@@ -8,22 +8,22 @@
 include RightScale::LB::Helper
 
 action :install do
-  raise "The :install action is not supported for the generic lb provider."
+  raise "The :install action is not supported by the generic lb provider."
 end
 
 
 action :add_vhost do
-  raise "The :add_vhost action is not supported for the generic lb provider."
+  raise "The :add_vhost action is not supported by the generic lb provider."
 end
 
 
 action :attach do
-  raise "The :attach action is not supported for the generic lb provider."
+  raise "The :attach action is not supported by the generic lb provider."
 end
 
 action :advanced_configs do
-  raise "The :advanced_configs action is not supported for the generic " +
-    "lb provider."
+  raise "The :advanced_configs action is not supported by the generic" +
+    " lb provider."
 end
 
 
@@ -52,7 +52,7 @@ end
 
 
 action :detach do
-  raise "The :detach action is not supported for the generic lb provider."
+  raise "The :detach action is not supported by the generic lb provider."
 end
 
 
@@ -78,11 +78,11 @@ end
 
 
 action :setup_monitoring do
-  raise "The :setup_monitoring action is not supported for the generic " +
-    "lb provider."
+  raise "The :setup_monitoring action is not supported by the generic" +
+    " lb provider."
 end
 
 
 action :restart do
-  raise "The :restart action is not supported for the generic lb provider."
+  raise "The :restart action is not supported by the generic lb provider."
 end
