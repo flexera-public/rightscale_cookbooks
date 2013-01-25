@@ -152,8 +152,8 @@ action :post_restore_cleanup do
   run_mysql_upgrade = false
 
   if snap_provider != current_provider
-    raise "FATAL: Wrong snapshot provider detected: #{snap_provider}. " +
-      "Expected #{current_provider}."
+    raise "FATAL: Wrong snapshot provider detected: #{snap_provider}." +
+      " Expected #{current_provider}."
   end
   case snap_version <=> current_version
   when 1
@@ -162,14 +162,14 @@ action :post_restore_cleanup do
     Chef::Log.info "  Restore version and provider checks passed."
   when -1
     if node[:db_mysql][:enable_mysql_upgrade] == "false"
-      Chef::Log.warn "WARNING: Attempting to restore #{snap_provider} " +
-        "#{snap_version} snapshot to #{current_provider} #{current_version} " +
-        "without running mysql_upgrade."
+      Chef::Log.warn "WARNING: Attempting to restore #{snap_provider}" +
+        " #{snap_version} snapshot to #{current_provider} #{current_version}" +
+        " without running mysql_upgrade."
     else
       run_mysql_upgrade = true
-      Chef::Log.info "  Attempting to restore #{snap_provider} " +
-        "#{snap_version} snapshot to #{current_provider} #{current_version}. " +
-        "Will run mysql_upgrade to fix incompatibilities."
+      Chef::Log.info "  Attempting to restore #{snap_provider}" +
+        " #{snap_version} snapshot to #{current_provider} #{current_version}." +
+        " Will run mysql_upgrade to fix incompatibilities."
     end
   else
     raise "Cannot compare versions: #{snap_version} with #{current_version}"
@@ -184,18 +184,19 @@ action :post_restore_cleanup do
 
   # Compares size of node[:db_mysql][:tunable][:innodb_log_file_size] to
   # actual size of restored /var/lib/mysql/ib_logfile0 (symlink).
-  innodb_log_file_size_to_bytes = case node[:db_mysql][:tunable][:innodb_log_file_size]
-                                  when /^(\d+)[Kk]$/
-                                    $1.to_i * 1024
-                                  when /^(\d+)[Mm]$/
-                                    $1.to_i * 1024**2
-                                  when /^(\d+)[Gg]$/
-                                    $1.to_i * 1024**3
-                                  when /^(\d+)$/
-                                    $1
-                                  else
-                                    raise "FATAL: unknown log file size"
-                                  end
+  innodb_log_file_size_to_bytes =
+    case node[:db_mysql][:tunable][:innodb_log_file_size]
+    when /^(\d+)[Kk]$/
+      $1.to_i * 1024
+    when /^(\d+)[Mm]$/
+      $1.to_i * 1024**2
+    when /^(\d+)[Gg]$/
+      $1.to_i * 1024**3
+    when /^(\d+)$/
+      $1
+    else
+      raise "FATAL: unknown log file size"
+    end
 
   if ::File.stat("/var/lib/mysql/ib_logfile0").size == innodb_log_file_size_to_bytes
     Chef::Log.info "  innodb log file sizes the same... OK."
