@@ -36,4 +36,3 @@ CACHESIZE="<%=@memtotal%>"
 #     no default option for this on centos/redhat so redirecting and appending both STDOUT and STDERR to file
 ###
 OPTIONS="-L -U <%=@udp_port%> -f 1.25 -n 48 -t <%=@threads%> -l <%=@interface%> -b 1024 -R 20 <%=@log_level%> >>/var/log/memcached.log 2>&1"
-

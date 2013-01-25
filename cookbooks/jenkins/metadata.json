@@ -23,6 +23,71 @@
   "replacing": {
   },
   "attributes": {
+    "jenkins/server/user_name": {
+      "display_name": "Jenkins User Name",
+      "description": "***",
+      "required": "required",
+      "recipes": [
+        "jenkins::install_jenkins"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "jenkins/server/user_email": {
+      "display_name": "Jenkins User Email",
+      "description": "***",
+      "required": "required",
+      "recipes": [
+        "jenkins::install_jenkins"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "jenkins/server/user_full_name": {
+      "display_name": "Jenkins User full Name",
+      "description": "***",
+      "required": "required",
+      "recipes": [
+        "jenkins::install_jenkins"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "jenkins/server/password": {
+      "display_name": "Jenkins Password",
+      "description": "***",
+      "required": "required",
+      "recipes": [
+        "jenkins::install_jenkins"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "jenkins/server/plugins": {
+      "display_name": "Jenkins Plugins",
+      "description": "***",
+      "required": "required",
+      "recipes": [
+        "jenkins::install_plugins"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    }
   },
   "groupings": {
   },
