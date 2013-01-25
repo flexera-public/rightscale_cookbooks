@@ -17,7 +17,7 @@ module RightScale
 
     # Create new BlockDevice object
     #
-    # @param new_resource [Object] Resource which will be initialized
+    # @param [Object] new_resource Resource which will be initialized
     #
     # @return [BlockDevice] BlockDevice object
     def init(new_resource, backup_type = :primary)
@@ -47,17 +47,17 @@ module RightScale
 
       # Create and return BlockDevice object
       ::RightScale::Tools::BlockDevice.factory(
-        :lvm,                     # Backup using local LVM snapshot + cloud persistence.
-        node[:cloud][:provider],  # The local cloud that we are currently running.
+        :lvm, # Backup using local LVM snapshot + cloud persistence.
+        node[:cloud][:provider], # The local cloud that we are currently running.
         new_resource.mount_point,
-        modified_nickname,        # Nickname for device.
+        modified_nickname, # Nickname for device.
         options)
     end
 
     # Perform checks to prevent empty values of attributes which are required to get
     # backup files from cloud storage
     #
-    # @param new_resource [Object] Resource which will be initialized
+    # @param [Object] new_resource Resource which will be initialized
     #
     # @raises [RuntimeError] if any of required parameters has no value
     def secondary_checks(new_resource)
@@ -70,8 +70,8 @@ module RightScale
     # Instance method for do_for_all_block_devices
     # will call RightScale::BlockDeviceHelper.do_for_all_block_devices with given parameters
     #
-    # @param block_device [Hash] Block device
-    # @param block [Object] Hash of block devices to which block_device belongs to
+    # @param [Hash] block_device Block device
+    # @param [Object] block Hash of block devices to which block_device belongs to
     def do_for_all_block_devices(block_device, &block)
       RightScale::BlockDeviceHelper.do_for_all_block_devices(block_device, &block)
     end
@@ -79,17 +79,16 @@ module RightScale
     # Instance method for do_for_block_devices
     # will call RightScale::BlockDeviceHelper.do_for_block_devices with given parameters
     #
-    # @param block_device [Hash] Block device
-    # @param block [Object] Hash of block devices to which block_device belongs to
+    # @param [Hash] block_device Block device
+    # @param [Object] block Hash of block devices to which block_device belongs to
     def do_for_block_devices(block_device, &block)
       RightScale::BlockDeviceHelper.do_for_block_devices(block_device, &block)
     end
 
-
     # Helper to perform perform actions to a set of all available block devices
     #
-    # @param block_device [Hash] Block device
-    # @param block [Proc] Block which will be used for setup of all available block device resources.
+    # @param [Hash] block_device Block device
+    # @param [Proc] block Block which will be used for setup of all available block device resources.
     def self.do_for_all_block_devices(block_device, &block)
       block_device[:devices].keys.reject do |key|
         key == 'default'
@@ -102,8 +101,8 @@ module RightScale
 
     # Helper to perform perform actions to a set of block devices
     #
-    # @param block_device [Hash] Block device
-    # @param block [Proc] Block which will be used for setup of block device resource
+    # @param [Hash] block_device Block device
+    # @param [Proc] block Block which will be used for setup of block device resource
     #
     # @raises [RuntimeError] if block device has no number
     def self.do_for_block_devices(block_device, &block)
@@ -125,55 +124,62 @@ module RightScale
       end
     end
 
-    # Extends chef attribute definition adding set_unless_deep_merge
-    #
-    # @param node [Hash] Node name
-    # @param src [Hash] Source attribute
-    # @param dst [Hash] Destination attribute
-    def self.set_unless_deep_merge(node, src, dst)
-      src.reduce(node) {|values, key| values[key]}.each_pair do |attribute, value|
-        case value
-        when Mash, Chef::Node::Attribute
-          set_unless_deep_merge(node, src + [attribute], dst + [attribute])
-        else
-          dst.reduce(node.set_unless) {|values, key| values[key]}[attribute] = value
-        end
-      end
-    end
-
     # Instance method for get_device_or_default
     # will call RightScale::BlockDeviceHelper.get_device_or_default with given parameters
     #
-    # @param node [Hash] Node name
-    # @param device [Symbol] Device
-    # @param keys [Array] Array of keys
+    # @param [Hash] node Node name
+    # @param [Symbol] device Device
+    # @param [Array] keys Array of keys
     def get_device_or_default(node, device, *keys)
       RightScale::BlockDeviceHelper.get_device_or_default(node, device, *keys)
     end
 
-    #Return current device
+    # Return current device
     #
-    # @param node [Hash] Node name
-    # @param device [Symbol] Device
-    # @param keys [Array] Array of keys
+    # @param [Hash] node Node name
+    # @param [Symbol] device Device
+    # @param [Array] keys Array of keys
     def self.get_device_or_default(node, device, *keys)
       value = keys.reduce(node[:block_device][:devices][device]) do |values, key|
         break nil if values == nil
         values[key]
       end
-      value = keys.reduce(node[:block_device][:devices][:default]) {|values, key| values[key]} if !value || value.empty?
+      value = keys.reduce(node[:block_device][:devices][:default]) { |values, key| values[key] } if !value || value.empty?
       value
     end
 
     # Returns true if fstab and mtab entry exists for ephemeral mount point
     #
-    # @param fstab_entry [String] fstab entry
-    # @param mount_point [String] mount point of the ephemeral drive
-    # @param filesystem_type [String] filesystem type
+    # @param [String] fstab_entry Fstab entry
+    # @param [String] mount_point Mount point of the ephemeral drive
+    # @param [String] filesystem_type Filesystem type
     def ephemeral_fstab_and_mtab_checks(fstab_entry, mount_point, filesystem_type)
       fstab_exists = File.open('/etc/fstab', 'r') { |f| f.read }.match("^#{fstab_entry}$")
-      mtab_exists = File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} " )
+      mtab_exists = File.open('/etc/mtab', 'r') { |f| f.read }.match(" #{mount_point} #{filesystem_type} ")
       fstab_exists && mtab_exists
     end
+
+    # Calculates and print out restore params
+    # and returns the array of ready to use values.
+    #
+    # @param [String] lineage Lineage input value
+    # @param [String] lineage_override Lineage override input value
+    # @param [String] restore_timestamp_override Restore timestamp override input value
+    #
+    # @return [Array] Array of calculated values
+    def set_restore_params(lineage, lineage_override, restore_timestamp_override)
+      restore_lineage = lineage_override == nil || lineage_override.empty? ? lineage : lineage_override
+
+      Chef::Log.info "  Input lineage #{restore_lineage.inspect}"
+      Chef::Log.info "  Input lineage_override #{lineage_override.inspect}"
+      Chef::Log.info "  Using lineage #{restore_lineage.inspect}"
+      Chef::Log.info "  Input timestamp_override #{restore_timestamp_override.inspect}"
+
+      restore_timestamp_override ||= ""
+
+      value = [restore_lineage, restore_timestamp_override]
+      value
+    end
+
   end
 end

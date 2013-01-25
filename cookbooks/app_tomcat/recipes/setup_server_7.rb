@@ -54,5 +54,5 @@ node[:app][:packages] = value_for_platform(
 )
 
 raise "Unrecognized distro #{node[:platform]} for tomcat#{version}, exiting " if node[:app][:packages].empty?
-        
+
 rightscale_marker :end

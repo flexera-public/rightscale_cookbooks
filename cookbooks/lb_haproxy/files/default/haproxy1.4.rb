@@ -33,7 +33,6 @@ HAPROXY_COMMAND="show stat\n"
   :interval => 20
 }
 
-
 def usage(code = 0)
   out = "\n" + $0.split(' ')[0] + " usage:\n"
   out << "\e[1mDESCRIPTION\e[0m\n"
@@ -50,7 +49,6 @@ def usage(code = 0)
   puts "\n" + out
   Kernel.exit(code)
 end
-
 
 # Read stats from socket as CSV values.
 def readstats

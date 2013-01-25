@@ -86,16 +86,18 @@ Syntax:
 The server collection resource finds a set of servers in a deployment with a set
 of tags. The <tt>tags</tt> attribute specifies the tag or tags to search for (if
 multiple tags are specified, servers with any of the tags will match) and the
-optional <tt>secondary_tags</tt> attribute specifies tags that need to also
-appear on the servers, it will wait one minute for the <tt>secondary_tags</tt>
+optional <tt>mandatory_tags</tt> attribute specifies tags that need to also
+appear on the servers, it will wait one minute for the <tt>mandatory_tags</tt>
 to appear, which can be overridden with the <tt>timeout</tt> attribute.
 
 Syntax:
 
   rightscale_server_collection "rightscale_servers" do
     tags "rs_login:state=active"
-    secondary_tags "server:uuid=*"
+    mandatory_tags "server:uuid=*"
   end
+
+NOTE: The <tt>secondary_tags</tt> attribute is deprecated in favor of <tt>mandatory_tags</tt>.
 
 == LICENSE:
 

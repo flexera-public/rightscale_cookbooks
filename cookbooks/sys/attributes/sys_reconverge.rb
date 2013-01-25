@@ -7,4 +7,4 @@
 
 # Required attributes
 
-set_unless[:sys][:reconverge_list] = ""
+default[:sys][:reconverge_list] = ""

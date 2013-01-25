@@ -13,7 +13,7 @@ package value_for_platform(
     "10.04" => "libdigest-sha1-perl",
     "default" => "libdigest-sha-perl"
   },
-  [ "centos", "redhat" ] => {
+  ["centos", "redhat"] => {
     "default" => "perl-Digest-SHA1"
   }
 )
@@ -22,7 +22,7 @@ package value_for_platform(
   "ubuntu" => {
     "default" => "libdigest-hmac-perl"
   },
-  [ "centos", "redhat" ] => {
+  ["centos", "redhat"] => {
     "default" => "perl-Digest-HMAC"
   }
 )

@@ -3,7 +3,7 @@ maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "Abstract cookbook for managing source code repositories."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "13.2.0"
+version          "13.3.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"
@@ -88,5 +88,11 @@ attribute "repo/default/storage_account_provider",
 attribute "repo/default/prefix",
   :display_name => "ROS Prefix",
   :description => "The prefix that will be used to locate the correct tarball of the application. For example, if you're using 'myapp.tgz' specify 'myapp' as the ROS Prefix.",
+  :required => "optional",
+  :recipes => ["repo::default"]
+
+attribute "repo/default/ssh_host_key",
+  :display_name => "Known hosts ssh key",
+  :description => "A valid SSH key which will be appended to /root/.ssh/known_hosts file. This input will allow to verify the destination host, by comparing its IP,FQDN, SSH-RSA with the record in /root/.ssh/known_hosts file. Use this input if you want to improve security and for MiTM attacks prevention Example: cred:SSH_KNOWN_HOST_KEY.",
   :required => "optional",
   :recipes => ["repo::default"]

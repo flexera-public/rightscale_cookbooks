@@ -13,8 +13,8 @@ dumpfilepath = "/tmp/#{dumpfilename}"
 
 databasename = node[:db][:dump][:database_name]
 
-container   = node[:db][:dump][:container]
-cloud       = node[:db][:dump][:storage_account_provider]
+container = node[:db][:dump][:container]
+cloud = node[:db][:dump][:storage_account_provider]
 
 # Execute the command to create the dumpfile
 # See cookbooks/db_<provider>/providers/default.rb for the "generate_dump_file" action.

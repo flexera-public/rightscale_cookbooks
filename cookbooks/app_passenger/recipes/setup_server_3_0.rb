@@ -21,10 +21,10 @@ when "ubuntu"
     "apache2-prefork-dev",
     "libapr1-dev",
     "libcurl4-openssl-dev"
-   ]
+  ]
   node[:app][:user] = "www-data"
   node[:app][:group] = "www-data"
-when "centos","redhat"
+when "centos", "redhat"
   node[:app][:packages] = [
     "zlib-devel",
     "openssl-devel",
@@ -34,7 +34,7 @@ when "centos","redhat"
     "apr-devel",
     "apr-util-devel",
     "readline-devel"
-   ]
+  ]
   node[:app][:user] = "apache"
   node[:app][:group] = "apache"
 else

@@ -37,15 +37,13 @@ db DATA_DIR do
   action :stop
 end
 
-lineage = node[:db][:backup][:lineage]
-lineage_override = node[:db][:backup][:lineage_override]
-restore_lineage = lineage_override == nil || lineage_override.empty? ? lineage : lineage_override
-restore_timestamp_override = node[:db][:backup][:timestamp_override]
-log "  Input lineage #{restore_lineage.inspect}"
-log "  Input lineage_override #{lineage_override.inspect}"
-log "  Using lineage #{restore_lineage.inspect}"
-log "  Input timestamp_override #{restore_timestamp_override.inspect}"
-restore_timestamp_override ||= ""
+# See cookbooks/block_device/libraries/block_device.rb for
+# "set_restore_params" and "get_device_or_default" methods.
+restore_lineage, restore_timestamp_override = set_restore_params(
+  node[:db][:backup][:lineage],
+  node[:db][:backup][:lineage_override],
+  node[:db][:backup][:timestamp_override]
+)
 
 secondary_storage_cloud = get_device_or_default(node, :device1, :backup, :secondary, :cloud)
 if secondary_storage_cloud =~ /aws/i
@@ -86,7 +84,7 @@ end
 log "  Starting database..."
 # See cookbooks/db_<provider>/providers/default.rb for the "start" and "status" actions.
 db DATA_DIR do
-  action [ :start, :status ]
+  action [:start, :status]
 end
 
 # Restoring admin and application user privileges

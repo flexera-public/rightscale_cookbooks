@@ -30,7 +30,7 @@ define :db_register_master do
       action :remove
     end
   rescue Exception => e
-   log "  This server was not previously a slave"
+    log "  This server was not previously a slave"
   end
 
   active_tag = "rs_dbrepl:master_active=#{Time.now.strftime("%Y%m%d%H%M%S")}-#{node[:db][:backup][:lineage]}"
