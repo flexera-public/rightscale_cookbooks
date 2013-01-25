@@ -19,7 +19,7 @@ recipe "db_postgres::setup_server_9_1",
   " specific to PostgreSQL 9.1."
 
 recipe "db_postgres::do_set_slave_sync_mode",
-  "Set master to do sync-based replication with slaves." +
+  "Sets master to do sync-based replication with slaves." +
   " PostgreSQL streaming replication is asynchronous by default." +
   " If the primary server crashes then some transactions" +
   " that were committed may not have been replicated to the standby server," +

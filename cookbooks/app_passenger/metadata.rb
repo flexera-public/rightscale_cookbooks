@@ -16,8 +16,7 @@ depends "web_apache"
 depends "logrotate"
 
 recipe "app_passenger::setup_server_3_0",
-  "Default cookbook recipe which sets provider-specific attributes for" +
-  " rails-passenger."
+  "Sets provider-specific attributes for rails-passenger"
 
 recipe "app_passenger::install_custom_gems",
   "Installs custom gems."

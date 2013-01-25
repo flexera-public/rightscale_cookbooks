@@ -53,7 +53,7 @@ recipe "block_device::do_delete_volumes_and_terminate_server",
   " Execution of this script will delete any data on your block device!"
 
 recipe "block_device::do_force_reset",
-  "Unmount and delete the attached block device(s) for this lineage." +
+  "Unmounts and deletes the attached block device(s) for this lineage." +
   " Designed for test and development purposes only. WARNING:" +
   " Execution of this script will delete any data on your block device!"
 
