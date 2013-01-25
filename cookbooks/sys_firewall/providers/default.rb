@@ -43,10 +43,10 @@ action :update do
     end
 
     if machine_tag
-      # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#Server_Collection for the "rightscale_server_collection" resource.
+      # See cookbooks/rightscale/providers/server_collection.rb for the "rightscale_server_collection" resource.
       rightscale_server_collection collection_name do
         tags machine_tag
-        secondary_tags ip_tag
+        mandatory_tags ip_tag
       end
     end
 
