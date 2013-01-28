@@ -28,7 +28,9 @@ attribute :timestamp_override, :kind_of => String # Restore only
 # == Primary backup schedule options
 attribute :cron_backup_minute, :kind_of => String
 attribute :cron_backup_hour, :kind_of => String
-attribute :cron_backup_recipe, :kind_of => String, :default => "block_device::do_backup"
+attribute :cron_backup_recipe,
+  :kind_of => String,
+  :default => "block_device::do_backup"
 
 
 # == Rotation options
@@ -44,7 +46,10 @@ attribute :volume_size, :kind_of => String
 attribute :stripe_count, :kind_of => String
 attribute :vg_data_percentage, :kind_of => String
 attribute :iops, :kind_of => String
-attribute :volume_type, :kind_of => String, :equal_to => ["SATA", "SSD"], :default => "SATA"
+attribute :volume_type,
+  :kind_of => String,
+  :equal_to => ["SATA", "SSD"],
+  :default => "SATA"
 
 # == Callbacks for ROS endpoint validation
 endpoint_callbacks = {
@@ -59,14 +64,20 @@ endpoint_callbacks = {
 
 # == Options for Remote Object Store
 attribute :primary_cloud, :kind_of => String
-attribute :primary_endpoint, :kind_of => String, :callbacks => endpoint_callbacks
+attribute :primary_endpoint,
+  :kind_of => String,
+  :callbacks => endpoint_callbacks
+
 attribute :primary_user, :kind_of => String
 attribute :primary_secret, :kind_of => String
 
 
 # == Secondary backup options
 attribute :secondary_cloud, :kind_of => String
-attribute :secondary_endpoint, :kind_of => String, :callbacks => endpoint_callbacks
+attribute :secondary_endpoint,
+  :kind_of => String,
+  :callbacks => endpoint_callbacks
+
 attribute :secondary_container, :kind_of => String
 attribute :secondary_user, :kind_of => String
 attribute :secondary_secret, :kind_of => String

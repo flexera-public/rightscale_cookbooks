@@ -19,7 +19,9 @@ action :create do
     :vg_data_percentage => new_resource.vg_data_percentage,
     :force => new_resource.force
   }
-  create_options[:iops] = new_resource.iops if new_resource.iops && !new_resource.iops.empty?
+  if new_resource.iops && !new_resource.iops.empty?
+    create_options[:iops] = new_resource.iops
+  end
   create_options[:volume_type] = new_resource.volume_type
   # See rightscale_tools gem for implementation of "create" method.
   device.create(create_options)
@@ -63,7 +65,8 @@ action :primary_restore do
   # init method.
   device = init(new_resource)
   restore_args = {
-    :timestamp => new_resource.timestamp_override == "" ? nil : new_resource.timestamp_override,
+    :timestamp => new_resource.timestamp_override == "" ?
+      nil : new_resource.timestamp_override,
     :force => new_resource.force,
     :from_master => new_resource.is_master,
     :new_size_gb => new_resource.volume_size,
@@ -75,7 +78,9 @@ action :primary_restore do
     :storage_key => new_resource.primary_user,
     :storage_secret => new_resource.primary_secret
   }
-  restore_args[:iops] = new_resource.iops if new_resource.iops && !new_resource.iops.empty?
+  if new_resource.iops && !new_resource.iops.empty?
+    restore_args[:iops] = new_resource.iops
+  end
   restore_args[:volume_type] = new_resource.volume_type
 
   # See rightscale_tools gem for definition of primary_restore method.
@@ -100,14 +105,17 @@ action :secondary_restore do
   secondary_checks(new_resource)
   device = init(new_resource, :secondary)
   restore_args = {
-    :timestamp => new_resource.timestamp_override == "" ? nil : new_resource.timestamp_override,
+    :timestamp => new_resource.timestamp_override == "" ?
+      nil : new_resource.timestamp_override,
     :force => new_resource.force,
     :volume_size => new_resource.volume_size,
     :new_size_gb => new_resource.volume_size,
     :stripe_count => new_resource.stripe_count,
     :vg_data_percentage => new_resource.vg_data_percentage
   }
-  restore_args[:iops] = new_resource.iops if new_resource.iops && !new_resource.iops.empty?
+  if new_resource.iops && !new_resource.iops.empty?
+    restore_args[:iops] = new_resource.iops
+  end
   restore_args[:volume_type] = new_resource.volume_type
 
   # See rightscale_tools gem for implementation of secondary_restore method.
