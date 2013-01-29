@@ -610,7 +610,7 @@ action :generate_dump_file do
   bash "Write the postgres DB backup file" do
     user 'postgres'
     code <<-EOH
-      pg_dump -U postgres -h /var/run/postgresql #{db_name} | gzip -c > #{dumpfile}
+      pg_dump -U postgres #{db_name} | gzip -c > #{dumpfile}
     EOH
   end
 
@@ -625,7 +625,7 @@ action :restore_from_dump_file do
   log "  Check if DB already exists"
   ruby_block "checking existing db" do
     block do
-      db_check = `echo "select datname from pg_database" | psql -U postgres -h /var/run/postgresql | grep -q  "#{db_name}"`
+      db_check = `echo "select datname from pg_database" | psql -U postgres | grep -q  "#{db_name}"`
       raise "ERROR: database '#{db_name}' already exists" unless db_check.empty?
     end
   end
@@ -639,8 +639,8 @@ action :restore_from_dump_file do
         echo "ERROR: PostgreSQL dumpfile not found! File: '#{dumpfile}'"
         exit 1
       fi
-      createdb -U postgres -h /var/run/postgresql #{db_name}
-      gunzip < #{dumpfile} | psql -U postgres -h /var/run/postgresql #{db_name}
+      createdb -U postgres #{db_name}
+      gunzip < #{dumpfile} | psql -U postgres #{db_name}
     EOH
   end
 

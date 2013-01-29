@@ -19,7 +19,7 @@ bash "show sync mode status" do
   code <<-EOH
     echo "==================== do_show_slave_mode : Begin =================="
 
-    psql -h #{node[:db][:socket]} -U postgres -c "select application_name, client_addr, sync_state from pg_stat_replication"
+    psql -U postgres -c "select application_name, client_addr, sync_state from pg_stat_replication"
 
     echo "==================== do_show_slave_mode : End ===================="
   EOH

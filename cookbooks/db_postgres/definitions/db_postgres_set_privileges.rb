@@ -32,7 +32,7 @@ define :db_postgres_set_privileges, :preset => "administrator", :username => nil
       # from group role, see: http://www.postgresql.org/docs/9.1/static/role-membership.html
       case priv_preset
       when 'administrator'
-        # cmd ==> createuser -h /var/run/postgresql -U postgres #{admin_role} -sdril
+        # cmd ==> createuser -U postgres #{admin_role} -sdril
         # Enable admin/replication user
         result = conn.exec("SELECT COUNT(*) FROM pg_user WHERE usename='#{username_esc}'")
         userstat = result.getvalue(0, 0)
@@ -45,7 +45,7 @@ define :db_postgres_set_privileges, :preset => "administrator", :username => nil
         end
 
       when 'user'
-        # cmd ==> createuser -h /var/run/postgresql -U postgres #{user_role} -SdRil
+        # cmd ==> createuser -U postgres #{user_role} -SdRil
         # Enable application user
         result = conn.exec("SELECT COUNT(*) FROM pg_user WHERE usename='#{username_esc}'")
         userstat = result.getvalue(0, 0)
