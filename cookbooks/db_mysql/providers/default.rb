@@ -136,16 +136,17 @@ end
 
 action :post_restore_cleanup do
   # Performs checks for snapshot compatibility with current server.
-  # See cookbooks/db_mysql/libraries/helper.rb for the "RightScale::Database::MySQL::Helper" class.
+  # See cookbooks/db_mysql/libraries/helper.rb
+  # for the "RightScale::Database::MySQL::Helper" class.
   master_info = RightScale::Database::MySQL::Helper.load_replication_info(node)
 
   # Checks version matches because not all 11H2 snapshots (prior to 5.5 release)
   # saved provider or version. Assume MySQL 5.1 if nil.
-  snap_version = master_info['DB_Version'] ||= '5.1'
   snap_provider = master_info['DB_Provider'] ||= 'db_mysql'
-  current_version = new_resource.db_version
   current_provider = node[:db][:provider]
+  snap_version = master_info['DB_Version'] ||= '5.1'
   Chef::Log.info "  Snapshot from #{snap_provider} version #{snap_version}"
+
 
   # mysql_upgrade should only be run if corresponding input is set and snapshot
   # restore from an older version of MySQL is detected.
@@ -155,24 +156,25 @@ action :post_restore_cleanup do
     raise "FATAL: Wrong snapshot provider detected: #{snap_provider}." +
       " Expected #{current_provider}."
   end
-  case snap_version <=> current_version
-  when 1
+
+  snap_version = Gem::Version.new(snap_version)
+  current_version = Gem::Version.new(new_resource.db_version)
+  if snap_version > current_version
     raise "FATAL: Cannot restore snapshot from a newer version of MySQL."
-  when 0
+  elsif snap_version == current_version
     Chef::Log.info "  Restore version and provider checks passed."
-  when -1
+  elsif snap_version < current_version
     if node[:db_mysql][:enable_mysql_upgrade] == "false"
       Chef::Log.warn "WARNING: Attempting to restore #{snap_provider}" +
-        " #{snap_version} snapshot to #{current_provider} #{current_version}" +
-        " without running mysql_upgrade."
+        " #{snap_version.version} snapshot to #{current_provider}" +
+        " #{current_version.version} without running mysql_upgrade."
     else
       run_mysql_upgrade = true
       Chef::Log.info "  Attempting to restore #{snap_provider}" +
-        " #{snap_version} snapshot to #{current_provider} #{current_version}." +
+        " #{snap_version.version} snapshot to #{current_provider}" +
+        " #{current_version.version}." +
         " Will run mysql_upgrade to fix incompatibilities."
     end
-  else
-    raise "Cannot compare versions: #{snap_version} with #{current_version}"
   end
 
   # Creates symlink from package default MySQL datadir to restored datadir.
@@ -208,7 +210,8 @@ action :post_restore_cleanup do
   end
 
   # Always update the my.cnf file on a restore.
-  # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for the "db_mysql_set_mycnf" definition.
+  # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb
+  # for the "db_mysql_set_mycnf" definition.
   db_mysql_set_mycnf "setup_mycnf" do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
