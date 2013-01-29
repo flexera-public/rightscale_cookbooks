@@ -12,4 +12,5 @@ version          "13.3.0"
 depends "git"
 depends "repo"
 
-recipe  "repo_git::default", "Default pattern for loading provided packages and resources."
+recipe  "repo_git::default",
+  "Installs \"git\" package."
