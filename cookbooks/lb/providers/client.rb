@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: lb
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 include RightScale::LB::Helper
 
@@ -31,8 +32,9 @@ action :attach_request do
 
   pool_name = new_resource.pool_name
 
-  log "  Attach request for #{new_resource.backend_id} / " +
-    "#{new_resource.backend_ip} / #{pool_name}"
+  log "  Attach request for backend_id = #{new_resource.backend_id.inspect} /" +
+    " backend_ip = #{new_resource.backend_ip.inspect} /" +
+    " pool_name = #{pool_name.inspect}"
 
   # Runs remote_recipe for each vhost the app server wants to be part of.
   # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RemoteRecipe
@@ -60,7 +62,9 @@ action :detach_request do
 
   pool_name = new_resource.pool_name
 
-  log "  Detach request for #{new_resource.backend_id} / #{pool_name}"
+  log "  Detach request for backend_id = #{new_resource.backend_id.inspect} /" +
+    " backend_ip = #{new_resource.backend_ip.inspect} /" +
+    " pool_name = #{pool_name.inspect}"
 
   # Runs remote_recipe for each vhost the app server is part of.
   # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RemoteRecipe

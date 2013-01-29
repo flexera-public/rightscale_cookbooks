@@ -6,7 +6,7 @@ This cookbook provides a set of load balancer recipes used by RightScale's
 Load Balancer ServerTemplates.
 
 This cookbook is intended to provide an interface for general load balancer
- actions and parameters.
+actions and parameters.
 
 == DETAILS:
 
@@ -38,7 +38,8 @@ configure themselves to attach to the application server.
 ==== handle_attach recipes
 
 This recipe is used by a load balancer server to add an application server to
-its configuration when the application server requests it, and restart, if necessary.
+its configuration when the application server requests it, and restart,
+if necessary.
 
 === Application Server Detach
 
@@ -50,7 +51,8 @@ configure themselves to detach from the application server.
 ==== handle_detach recipes
 
 This recipe is used by a load balancer server to remove an application server
-from its configuration when the application server requests it, and restart, if necessary.
+from its configuration when the application server requests it, and restart,
+if necessary.
 
 === Automatic Server Detection
 
@@ -65,15 +67,15 @@ other recipes. This recipe is set to run in a periodic reconverge, which, by def
 === lb_client (providers/client.rb)
 
 There is a generic lb_client resource provider included in this cookbook. This
- provider is intended to be used on application servers that need to attach to a
- load balancer. The lb_client provider only supports the :attach_request and
- :detach_request actions.
+provider is intended to be used on application servers that need to attach to a
+load balancer. The lb_client provider only supports the :attach_request and
+:detach_request actions.
 
 The :attach_request and :detach_request actions will send a remote recipe to all
- load balancers in the deployment with the "loadbalancer:#{pool_name}=lb"
- machine tag.  The :attach_request action will request them to run the
- "lb::handle_attach" recipe.  The :detach_request will request them to run the
- "lb::handle_dettach" recipe.
+load balancers in the deployment with the "loadbalancer:#{pool_name}=lb"
+machine tag.  The :attach_request action will request them to run the
+"lb::handle_attach" recipe.  The :detach_request will request them to run the
+"lb::handle_dettach" recipe.
 
 Example of an application server requesting to be attached to the "www" vhost:
 
@@ -85,7 +87,7 @@ Example of an application server requesting to be attached to the "www" vhost:
   end
   
 For more examples see the lb::do_attach_request and lb::do_detach_request
- recipes.
+recipes.
 
 == KNOWN LIMITATIONS:
 
