@@ -6,6 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
+require 'mixlib/shellout'
 
 def value_with_units(value, units, usage_factor)
   raise "Error: value must convert to an integer." unless value.to_i
@@ -29,7 +30,10 @@ twenty_five_percent_mem = (mem * 0.25).to_i
 twenty_five_percent_str = value_with_units(twenty_five_percent_mem, "MB", usage)
 
 # Set tuning parameters.
-default[:db_postgres][:tunable][:ulimit] = `sysctl -n fs.file-max`.to_i/33
+ulimit = Mixlib::ShellOut.new("sysctl -n fs.file-max")
+ulimit.run_command
+ulimit.error!
+default[:db_postgres][:tunable][:ulimit] = ulimit.stdout.to_i/33
 default[:db_postgres][:tunable][:max_connections] = (400 * usage).to_i
 default[:db_postgres][:tunable][:shared_buffers] = twenty_five_percent_str
 
