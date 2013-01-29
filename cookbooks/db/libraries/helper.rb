@@ -25,6 +25,27 @@ module RightScale
         node[:db][:this_is_master] = is_master = state["is_master"]
         Chef::Log.info "  Loaded master/slave state: master UUID: #{master_uuid} IP: #{master_ip} this is #{is_master ? "master" : "slave"}"
       end
+
+      # Set the attribute of a resource during converge phase
+      #
+      # @param [Hash] resource Hash representing the resource
+      # @param [Symbol] attribute attribute to be changed
+      # @param [String] value value of the attribute
+      #
+      # @example Set the attribute of db resource
+      #   set_resource_attribute(
+      #     {:db => node[:db][:data_dir]},
+      #     :dumpfile,
+      #     node[:db][:dump][:filepath]
+      #   )
+      #
+      # @note This method should only be called in the converge phase
+      #
+      def set_resource_attribute(resource, attribute, value)
+        resource_found = run_context.resource_collection.find(resource)
+        resource_found.method(attribute).call(value)
+      end
+
     end
   end
 end
