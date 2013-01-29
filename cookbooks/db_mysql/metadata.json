@@ -38,7 +38,7 @@
     },
     "db_mysql/server_usage": {
       "display_name": "Server Usage",
-      "description": "When set to 'dedicated' all server resources are allocated to MySQL. When set to 'shared' less resources are allocated for MySQL so that it can be run concurrently with other apps like Apache and Rails for example.  Example: shared",
+      "description": "When set to 'dedicated' all server resources are allocated to MySQL. When set to 'shared' less resources are allocated for MySQL so that it can be run concurrently with other apps like Apache and Rails for example. Example: shared",
       "recipes": [
         "db_mysql::setup_server_5_1",
         "db_mysql::setup_server_5_5"
@@ -69,7 +69,7 @@
     },
     "db_mysql/binlog_format": {
       "display_name": "MySQL Binlog Format",
-      "description": "Defines the format of your MySQL stored binlog files. Sets the 'binlog_format' option in the MySQL config file. Accepted options: STATEMENT, ROW, and MIXED",
+      "description": "Defines the format of your MySQL stored binlog files. Sets the 'binlog_format' option in the MySQL config file. Accepted options: STATEMENT, ROW, and MIXED. Example: MIXED",
       "recipes": [
         "db_mysql::setup_server_5_1",
         "db_mysql::setup_server_5_5"
@@ -148,8 +148,8 @@
   "groupings": {
   },
   "recipes": {
-    "db_mysql::setup_server_5_1": "Set the DB MySQL provider. Sets version 5.1 and node variables specific to MySQL 5.1.",
-    "db_mysql::setup_server_5_5": "Set the DB MySQL provider. Sets version 5.5 and node variables specific to MySQL 5.5."
+    "db_mysql::setup_server_5_1": "Sets the DB MySQL provider. Sets version 5.1 and node variables specific to MySQL 5.1.",
+    "db_mysql::setup_server_5_5": "Sets the DB MySQL provider. Sets version 5.5 and node variables specific to MySQL 5.5."
   },
   "version": "13.3.0"
 }
