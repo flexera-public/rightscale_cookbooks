@@ -35,12 +35,10 @@ then opens 22, 80 and 443 ports by default
 (additionally on SoftLayer 48000..48020 ports are opened on the private 10.*
 network for the monitoring agent).
 
-<tt>sys_firewall::default</tt> recipe increase the value for the
+<tt>sys_firewall::default</tt> recipe increases the value for the
 'netfilter.nf_conntrack_max' parameter  for Centos images and
 the 'net.ipv4.ip_conntrack_max' for Ubuntu and Rhel images to avoid dropping
-packets on high-throughput systems. The IPTABLES_MODULES_UNLOAD config option is
-set to "no" to prevent drop of calculated values during iptables reconfiguration
- on Centos/Rhel images.
+packets on high-throughput systems.
 
 === Updating firewall rules using tags
 
@@ -62,7 +60,8 @@ at once.
 
 ==== Update Request Action
 
-To request that all servers with a given tag close a port to a given IP address use:
+To request that all servers with a given tag close a port to a given IP address
+use:
 
   sys_firewall "Request all app servers close ports to this load balancer" do
     machine_tag "loadbalancer:app=www"

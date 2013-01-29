@@ -47,7 +47,6 @@ nf_module_name = value_for_platform(
 # The ip_conntrack_max is calculated based on the RAM available on
 # the VM using this formula: conntrack_max=64*n, where n is the amount
 # of RAM in MB.
-GB=1024*1024
 mem_mb = node[:memory][:total].to_i/1024
 nf_conntrack_max = "#{nf_module_name} = #{64*mem_mb}"
 
@@ -58,7 +57,7 @@ bash "Update #{nf_module_name}" do
     echo "#{nf_conntrack_max}" >> /etc/sysctl.conf
     sysctl -e -p /etc/sysctl.conf > /dev/null
   EOH
-  not_if { ::File.readlines("/etc/sysctl.conf").grep("#{nf_conntrack_max}\n").any? }
+  not_if { ::File.readlines("/etc/sysctl.conf").grep(/^\s*#{nf_conntrack_max}/).any? }
 end
 
 # Update iptables config file to not to reset nf_* modules to its default values
