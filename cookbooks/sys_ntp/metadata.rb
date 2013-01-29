@@ -11,7 +11,8 @@ version          "13.3.0"
 
 depends "rightscale"
 
-recipe "sys_ntp::default", "Installs and configures ntp client."
+recipe "sys_ntp::default",
+  "Installs and configures ntp client."
 
 %w{ ubuntu redhat centos }.each do |os|
   supports os
@@ -19,6 +20,10 @@ end
 
 attribute "sys_ntp/servers",
   :display_name => "NTP Servers",
-  :description => "A comma-separated list of fully qualified domain names for the array of servers that instances should talk to. Example: time1.example.com, time2.example.com, time3.example.com",
+  :description =>
+    "A comma-separated list of fully qualified domain names " +
+    " for the array of servers that instances should talk to. " +
+    " Example: time1.example.com, time2.example.com, time3.example.com",
   :type => "string",
-  :default => "time.rightscale.com, ec2-us-east.time.rightscale.com, ec2-us-west.time.rightscale.com"
+  :default => "time.rightscale.com, ec2-us-east.time.rightscale.com, " +
+    "ec2-us-west.time.rightscale.com"
