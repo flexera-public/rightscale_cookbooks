@@ -16,7 +16,7 @@
       "recipes": [
         "block_device::do_primary_backup_schedule_enable"
       ],
-      "description": "Defines the minute of the hour when the backup will be taken. Use a value of 1-59, or set to 'Ignore' and a random minute will be calculated.",
+      "description": "Defines the minute of the hour when the backup will be taken. Use a value of 1-59, or set to 'Ignore' and a random minute will be calculated. Example: 10",
       "display_name": "Backup Cron Minute (2)"
     },
     "block_device/devices/device2/backup/timestamp_override": {
@@ -31,7 +31,7 @@
         "block_device::do_primary_restore",
         "block_device::do_secondary_restore"
       ],
-      "description": "Another optional variable to restore from a specific timestamp. Specify a string matching the timestamp tags on the volume snapshot set. You will need to specify the timestamp that's defined by the snapshot's tag (not name). For example, if the snapshot's tag is 'rs_backup:timestamp=1303613371' you would specify '1303613371' for this input.",
+      "description": "Another optional variable to restore from a specific timestamp. Specify a string matching the timestamp tags on the volume snapshot set. You will need to specify the timestamp that's defined by the snapshot's tag (not name). For example, if the snapshot's tag is 'rs_backup:timestamp=1303613371' you would specify '1303613371' for this input. Example: 1303613371",
       "display_name": "Backup Restore Timestamp Override (2)"
     },
     "block_device/devices/device2/stripe_count": {
@@ -46,7 +46,7 @@
         "block_device::setup_block_device",
         "block_device::default"
       ],
-      "description": "The total number of volumes in the volume stripe that will be used by the database. Volumes will be created and mounted to the instance. The default value is 1, which means that only a single volume will be used (no striping). This value is ignored on clouds that do not support volumes (e.g., Rackspace).",
+      "description": "The total number of volumes in the volume stripe that will be used by the database. Volumes will be created and mounted to the instance. The default value is 1, which means that only a single volume will be used (no striping). This value is ignored on clouds that do not support volumes (e.g., Rackspace). Example: 1",
       "display_name": "Number of Volumes in the Stripe (2)"
     },
     "block_device/devices/device1/backup/primary/keep/yearly": {
@@ -63,7 +63,7 @@
         "block_device::do_secondary_backup",
         "block_device::default"
       ],
-      "description": "The number of yearly primary backups to keep (i.e., rotation size).",
+      "description": "The number of yearly primary backups to keep (i.e., rotation size). Example: 2",
       "display_name": "Keep Yearly Backups (1)"
     },
     "block_device/devices/device1/backup/lineage_override": {
@@ -78,7 +78,7 @@
         "block_device::do_primary_restore",
         "block_device::do_secondary_restore"
       ],
-      "description": "If defined, this will override the input defined for 'Backup Lineage' (block_device/devices/device1/backup/lineage) so that you can restore the volume from another backup that has as a different lineage name. The most recently completed snapshots will be used unless a specific timestamp value is specified for 'Restore Timestamp Override' (block_device/devices/device1/backup/timestamp_override). ",
+      "description": "If defined, this will override the input defined for 'Backup Lineage' (block_device/devices/device1/backup/lineage) so that you can restore the volume from another backup that has as a different lineage name. The most recently completed snapshots will be used unless a specific timestamp value is specified for 'Restore Timestamp Override' (block_device/devices/device1/backup/timestamp_override). Example: prod_db_lienage_2",
       "display_name": "Backup Lineage Override"
     },
     "block_device/devices/default/backup/secondary/cred/user": {
@@ -94,7 +94,7 @@
         "block_device::do_secondary_backup",
         "block_device::do_secondary_restore"
       ],
-      "description": "Secondary cloud authentication credentials. For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME). For OpenStack Swift the format is: <tenant-id>:<user-name>. For Amazon S3, use your Amazon key ID (e.g., cred:AWS_ACCESS_KEY_ID).",
+      "description": "Secondary cloud authentication credentials. For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME). For OpenStack Swift the format is: <tenant-id>:<user-name>. For Amazon S3, use your Amazon key ID (e.g., cred:AWS_ACCESS_KEY_ID). Example: cred:CLOUD_ACCOUNT_USERNAME",
       "display_name": "Secondary Backup User (default)"
     },
     "block_device/devices/device2/iops": {
@@ -123,7 +123,7 @@
         "block_device::setup_block_device",
         "block_device::default"
       ],
-      "description": "The directory of where to mount the block device (e.g., /mnt/storage).",
+      "description": "The directory of where to mount the block device (e.g., /mnt/storage). Example: /mnt/storage",
       "display_name": "Block Device Mount Directory (2)"
     },
     "block_device/devices/device2/backup/lineage": {
@@ -140,7 +140,7 @@
         "block_device::do_primary_restore",
         "block_device::do_secondary_restore"
       ],
-      "description": "The name associated with your primary and secondary database backups. It's used to associate them with your database environment for maintenance, restore, and replication purposes. Backup snapshots will automatically be tagged with this value (e.g. rs_backup:lineage=mysqlbackup). Backups are identified by their lineage name. Note: For servers running on Rackspace, this value also indicates the Cloud Files container to use for storing primary backups. If a Cloud Files container with this name does not already exist, one will automatically be created.",
+      "description": "The name associated with your primary and secondary database backups. It's used to associate them with your database environment for maintenance, restore, and replication purposes. Backup snapshots will automatically be tagged with this value (e.g. rs_backup:lineage=mysqlbackup). Backups are identified by their lineage name. Note: For servers running on Rackspace, this value also indicates the Cloud Files container to use for storing primary backups. If a Cloud Files container with this name does not already exist, one will automatically be created. Example: prod_db_lineage ",
       "display_name": "Backup Lineage (2)"
     },
     "block_device/devices/device1/backup/primary/cron/minute": {
@@ -154,7 +154,7 @@
       "recipes": [
         "block_device::do_primary_backup_schedule_enable"
       ],
-      "description": "Defines the minute of the hour when the backup will be taken. Use a value of 1-59, or set to 'Ignore' and a random minute will be calculated.",
+      "description": "Defines the minute of the hour when the backup will be taken. Use a value of 1-59, or set to 'Ignore' and a random minute will be calculated. Example: 10",
       "display_name": "Backup Cron Minute (1)"
     },
     "block_device/devices/device1/backup/timestamp_override": {
@@ -169,7 +169,7 @@
         "block_device::do_primary_restore",
         "block_device::do_secondary_restore"
       ],
-      "description": "Another optional variable to restore from a specific timestamp. Specify a string matching the timestamp tags on the volume snapshot set. You will need to specify the timestamp that's defined by the snapshot's tag (not name). For example, if the snapshot's tag is 'rs_backup:timestamp=1303613371' you would specify '1303613371' for this input.",
+      "description": "Another optional variable to restore from a specific timestamp. Specify a string matching the timestamp tags on the volume snapshot set. You will need to specify the timestamp that's defined by the snapshot's tag (not name). For example, if the snapshot's tag is 'rs_backup:timestamp=1303613371' you would specify '1303613371' for this input. Example: 1303613371",
       "display_name": "Backup Restore Timestamp Override (1)"
     },
     "block_device/devices/default/backup/primary/endpoint": {
@@ -183,7 +183,7 @@
       "recipes": [
         "block_device::default"
       ],
-      "description": "The endpoint URL for the primary backup storage cloud. This is used to override the default endpoint or for generic storage clouds such as Swift.",
+      "description": "The endpoint URL for the primary backup storage cloud. This is used to override the default endpoint or for generic storage clouds such as Swift.Example: http://endpoint_ip:5000/v2.0/tokens",
       "display_name": "Primary Backup Storage Cloud Endpoint URL (default)"
     },
     "block_device/devices/device1/iops": {
@@ -214,7 +214,7 @@
         "block_device::do_primary_restore",
         "block_device::do_secondary_restore"
       ],
-      "description": "The name associated with your primary and secondary database backups. It's used to associate them with your database environment for maintenance, restore, and replication purposes. Backup snapshots will automatically be tagged with this value (e.g. rs_backup:lineage=mysqlbackup). Backups are identified by their lineage name. Note: For servers running on Rackspace, this value also indicates the Cloud Files container to use for storing primary backups. If a Cloud Files container with this name does not already exist, one will automatically be created.",
+      "description": "The name associated with your primary and secondary database backups. It's used to associate them with your database environment for maintenance, restore, and replication purposes. Backup snapshots will automatically be tagged with this value (e.g. rs_backup:lineage=mysqlbackup). Backups are identified by their lineage name. Note: For servers running on Rackspace, this value also indicates the Cloud Files container to use for storing primary backups. If a Cloud Files container with this name does not already exist, one will automatically be created. Example: prod_db_lineage ",
       "display_name": "Backup Lineage (1)"
     },
     "block_device/devices/default/backup/rackspace_snet": {
@@ -234,7 +234,7 @@
         "block_device::do_primary_restore",
         "block_device::do_secondary_restore"
       ],
-      "description": "When 'true', Rackspace internal private networking (preferred) is used for communications between servers and Rackspace Cloud Files. Ignored for all other clouds.",
+      "description": "When 'true', Rackspace internal private networking preferred) (is used for communications between servers and Rackspace Cloud Files. Ignored for all other clouds. Example: true",
       "display_name": "Rackspace SNET Enabled for Backup"
     },
     "block_device/terminate_safety": {
@@ -248,7 +248,7 @@
       "recipes": [
         "block_device::do_delete_volumes_and_terminate_server"
       ],
-      "description": "Prevents the accidental running of the block_device::do_teminate_server recipe. The recipe will only run if the input variable is overridden and set to \"off\".",
+      "description": "Prevents the accidental running of the block_device::do_teminate_server recipe.The recipe will only run if the input variable is overridden and set to \"off\". Example: text:off",
       "display_name": "Terminate Safety"
     },
     "block_device/devices/device2/backup/primary/cron/hour": {
@@ -262,7 +262,7 @@
       "recipes": [
         "block_device::do_primary_backup_schedule_enable"
       ],
-      "description": "Defines the hour when the backup will be taken. Use a value of 1-24, or set to 'Ignore' to create a backup every hour.",
+      "description": "Defines the hour when the backup will be taken. Use a value of 1-24, or set to 'Ignore' to create a backup every hour. Example: 10",
       "display_name": "Backup Cron Hour (2)"
     },
     "block_device/devices/device2/backup/lineage_override": {
@@ -277,7 +277,7 @@
         "block_device::do_primary_restore",
         "block_device::do_secondary_restore"
       ],
-      "description": "If defined, this will override the input defined for 'Backup Lineage' (block_device/devices/device2/backup/lineage) so that you can restore the volume from another backup that has as a different lineage name. The most recently completed snapshots will be used unless a specific timestamp value is specified for 'Restore Timestamp Override' (block_device/devices/device2/backup/timestamp_override). ",
+      "description": "If defined, this will override the input defined for 'Backup Lineage' (block_device/devices/device2/backup/lineage) so that you can restore the volume from another backup that has as a different lineage name. The most recently completed snapshots will be used unless a specific timestamp value is specified for 'Restore Timestamp Override' (block_device/devices/device2/backup/timestamp_override). Example: prod_db_lienage_2",
       "display_name": "Backup Lineage Override"
     },
     "block_device/devices/device1/backup/primary/keep/max_snapshots": {
@@ -291,7 +291,7 @@
       "recipes": [
         "block_device::default"
       ],
-      "description": "The maximum number of primary backups to keep in addition to those being rotated.",
+      "description": "The maximum number of primary backups to keep in addition to those being rotated. Example: 60",
       "display_name": "Backup Max Snapshots (1)"
     },
     "block_device/devices_to_use": {
@@ -326,7 +326,7 @@
       "recipes": [
         "block_device::do_force_reset"
       ],
-      "description": "Prevents the accidental running of the block_device::do_force_reset recipe. The recipe will only run if the input variable is overridden and set to \"off\".",
+      "description": "Prevents the accidental running of the block_device::do_force_reset recipe. The recipe will only run if the input variable is overridden and set to \"off\". Example: text:off",
       "display_name": "Force Reset Safety"
     },
     "block_device/devices/device2/backup/primary/keep/max_snapshots": {
@@ -340,7 +340,7 @@
       "recipes": [
         "block_device::default"
       ],
-      "description": "The maximum number of primary backups to keep in addition to those being rotated.",
+      "description": "The maximum number of primary backups to keep in addition to those being rotated. Example: 60",
       "display_name": "Backup Max Snapshots (2)"
     },
     "block_device/devices/device1/backup/primary/cron/hour": {
@@ -354,7 +354,7 @@
       "recipes": [
         "block_device::do_primary_backup_schedule_enable"
       ],
-      "description": "Defines the hour when the backup will be taken. Use a value of 1-24, or set to 'Ignore' to create a backup every hour.",
+      "description": "Defines the hour when the backup will be taken. Use a value of 1-24, or set to 'Ignore' to create a backup every hour. Example: 10",
       "display_name": "Backup Cron Hour (1)"
     },
     "block_device/devices/default/backup/secondary/endpoint": {
@@ -370,7 +370,7 @@
         "block_device::do_secondary_backup",
         "block_device::do_secondary_restore"
       ],
-      "description": "The endpoint URL for the secondary backup storage cloud. This is used to override the default endpoint or for generic storage clouds such as Swift.",
+      "description": "The endpoint URL for the secondary backup storage cloud. This is used to override the default endpoint or for generic storage clouds such as Swift. Example: http://endpoint_ip:5000/v2.0/tokens",
       "display_name": "Secondary Backup Storage Cloud Endpoint URL (default)"
     },
     "block_device/devices/device1/vg_data_percentage": {
@@ -390,7 +390,7 @@
         "block_device::setup_block_device",
         "block_device::default"
       ],
-      "description": "The percentage of the total Volume Group extents (LVM) that is used for data. (e.g. 50 percent - 1/2 used for data and remainder used for overhead and snapshots, 100 percent - all space is allocated for data (therefore snapshots can not be taken) WARNING: If the space used for data storage is too large, LVM snapshots cannot be performed. Using a non-default value it not recommended. Make sure you understand what you are doing before changing this value.",
+      "description": "The percentage of the total Volume Group extents (LVM) that is used for data. (e.g. 50 percent - 1/2 used for data and remainder used for overhead and snapshots, 100 percent - all space is allocated for data (therefore snapshots can not be taken). WARNING: If the space used for data storage is too large, LVM snapshots cannot be performed. Using a non-default value is not recommended. Make sure you understand what you are doing before changing this value.",
       "display_name": "Percentage of the LVM used for data (1)"
     },
     "block_device/devices/device1/nickname": {
@@ -404,7 +404,7 @@
       "recipes": [
         "block_device::default"
       ],
-      "description": "The name displayed in the dashboard for volumes and to uniquely identify LVM volume groups.",
+      "description": "The name displayed in the dashboard for volumes and to uniquely identify LVM volume groups. Example: data_storage1",
       "display_name": "Nickname (1)"
     },
     "block_device/devices/device1/volume_size": {
@@ -419,7 +419,7 @@
         "block_device::setup_block_device",
         "block_device::default"
       ],
-      "description": "Defines the total size of the LVM volume stripe set (in GB). For example, if the stripe_count is '3' and you specify '3' for this input, it will create an LVM volume stripe that contains 3 volumes that are each 1 GB in size. If an uneven ratio is defined, volume sizes will be rounded up to the nearest whole integer. Ignored on clouds that do not support volumes (e.g., Rackspace).",
+      "description": "Defines the total size of the LVM volume stripe set (in GB). For example, if the stripe_count is '3' and you specify '3' for this input, it will create an LVM volume stripe that contains 3 volumes that are each 1 GB in size. If an uneven ratio is defined, volume sizes will be rounded up to the nearest whole integer. Ignored on clouds that do not support volumes (e.g., Rackspace). Example: 10",
       "display_name": "Total Volume Size (1)"
     },
     "block_device/devices/default/backup/primary/cred/user": {
@@ -433,7 +433,7 @@
       "recipes": [
         "block_device::default"
       ],
-      "description": "Primary cloud authentication credentials. For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME). For OpenStack Swift the format is: <tenant-id>:<user-name>. For clouds that do not require primary credentials (e.g., Amazon), set to 'ignore'.",
+      "description": "Primary cloud authentication credentials. For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME). For OpenStack Swift the format is: <tenant-id>:<user-name>. For clouds that do not require primary credentials (e.g., Amazon), set to 'ignore'. Example: cred:CLOUD_ACCOUNT_USERNAME ",
       "display_name": "Primary Backup User (default)"
     },
     "block_device/devices/device2/vg_data_percentage": {
@@ -453,7 +453,7 @@
         "block_device::setup_block_device",
         "block_device::default"
       ],
-      "description": "The percentage of the total Volume Group extents (LVM) that is used for data. (e.g. 50 percent - 1/2 used for data and remainder used for overhead and snapshots, 100 percent - all space is allocated for data (therefore snapshots can not be taken) WARNING: If the space used for data storage is too large, LVM snapshots cannot be performed. Using a non-default value it not recommended. Make sure you understand what you are doing before changing this value.",
+      "description": "The percentage of the total Volume Group extents (LVM) that is used for data. (e.g. 50 percent - 1/2 used for data and remainder used for overhead and snapshots, 100 percent - all space is allocated for data (therefore snapshots can not be taken). WARNING: If the space used for data storage is too large, LVM snapshots cannot be performed. Using a non-default value is not recommended. Make sure you understand what you are doing before changing this value.",
       "display_name": "Percentage of the LVM used for data (2)"
     },
     "block_device/devices/device2/backup/primary/keep/monthly": {
@@ -470,7 +470,7 @@
         "block_device::do_secondary_backup",
         "block_device::default"
       ],
-      "description": "The number of monthly primary backups to keep (i.e., rotation size).",
+      "description": "The number of monthly primary backups to keep (i.e., rotation size). Example: 12",
       "display_name": "Keep Monthly Backups (2)"
     },
     "block_device/devices/device2/nickname": {
@@ -484,7 +484,7 @@
       "recipes": [
         "block_device::default"
       ],
-      "description": "The name displayed in the dashboard for volumes and to uniquely identify LVM volume groups.",
+      "description": "The name displayed in the dashboard for volumes and to uniquely identify LVM volume groups. Example: data_storage1",
       "display_name": "Nickname (2)"
     },
     "block_device/devices/device2/volume_size": {
@@ -499,7 +499,7 @@
         "block_device::setup_block_device",
         "block_device::default"
       ],
-      "description": "Defines the total size of the LVM volume stripe set (in GB). For example, if the stripe_count is '3' and you specify '3' for this input, it will create an LVM volume stripe that contains 3 volumes that are each 1 GB in size. If an uneven ratio is defined, volume sizes will be rounded up to the nearest whole integer. Ignored on clouds that do not support volumes (e.g., Rackspace).",
+      "description": "Defines the total size of the LVM volume stripe set (in GB). For example, if the stripe_count is '3' and you specify '3' for this input, it will create an LVM volume stripe that contains 3 volumes that are each 1 GB in size. If an uneven ratio is defined, volume sizes will be rounded up to the nearest whole integer. Ignored on clouds that do not support volumes (e.g., Rackspace). Example: 10",
       "display_name": "Total Volume Size (2)"
     },
     "block_device/devices/device1/backup/primary/keep/daily": {
@@ -516,7 +516,7 @@
         "block_device::do_secondary_backup",
         "block_device::default"
       ],
-      "description": "The number of daily primary backups to keep (i.e., rotation size).",
+      "description": "The number of daily primary backups to keep (i.e., rotation size). Example: 14",
       "display_name": "Keep Daily Backups (1)"
     },
     "block_device/devices/default/backup/primary/cloud": {
@@ -538,7 +538,7 @@
       "recipes": [
         "block_device::default"
       ],
-      "description": "The primary backup storage cloud. This is only used if the server's cloud does not have volume support.",
+      "description": "The primary backup storage cloud (complete list of supported storage locations is in input dropdown). This is only used if the server's cloud does not have volume support. Example: s3",
       "display_name": "Primary Backup Storage Cloud (default)"
     },
     "block_device/devices/device2/backup/secondary/container": {
@@ -554,7 +554,7 @@
         "block_device::do_secondary_backup",
         "block_device::do_secondary_restore"
       ],
-      "description": "The secondary backup storage container where the backup will be saved to or restored from. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name.",
+      "description": "The secondary backup storage container where the backup will be saved to or restored from. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name. Example: db_backup_bucket",
       "display_name": "Secondary Backup Storage Container (2)"
     },
     "block_device/devices/device2/backup/primary/keep/weekly": {
@@ -571,7 +571,7 @@
         "block_device::do_secondary_backup",
         "block_device::default"
       ],
-      "description": "The number of weekly primary backups to keep (i.e., rotation size).",
+      "description": "The number of weekly primary backups to keep (i.e., rotation size). Example: 6",
       "display_name": "Keep Weekly Backups (2)"
     },
     "block_device/devices/device1/mount_point": {
@@ -586,7 +586,7 @@
         "block_device::setup_block_device",
         "block_device::default"
       ],
-      "description": "The directory of where to mount the block device (e.g., /mnt/storage).",
+      "description": "The directory of where to mount the block device (e.g., /mnt/storage). Example: /mnt/storage",
       "display_name": "Block Device Mount Directory (1)"
     },
     "block_device/devices/default/backup/secondary/cred/secret": {
@@ -602,7 +602,7 @@
         "block_device::do_secondary_backup",
         "block_device::do_secondary_restore"
       ],
-      "description": "Secondary cloud authentication credentials. For Rackspace Cloud Files, use your Rackspace account API key (e.g., cred:RACKSPACE_AUTH_KEY). For Amazon S3, use your Amazon secret key (e.g., cred:AWS_SECRET_ACCESS_KEY).",
+      "description": "Secondary cloud authentication credentials. For Rackspace Cloud Files, use your Rackspace account API key (e.g., cred:RACKSPACE_AUTH_KEY). For Amazon S3, use your Amazon secret key (e.g., cred:AWS_SECRET_ACCESS_KEY). Example: cred:CLOUD_ACCOUNT_KEY",
       "display_name": "Secondary Backup Secret (default)"
     },
     "block_device/devices/device2/backup/primary/keep/yearly": {
@@ -619,7 +619,7 @@
         "block_device::do_secondary_backup",
         "block_device::default"
       ],
-      "description": "The number of yearly primary backups to keep (i.e., rotation size).",
+      "description": "The number of yearly primary backups to keep (i.e., rotation size). Example: 2",
       "display_name": "Keep Yearly Backups (2)"
     },
     "block_device/devices/device1/backup/secondary/container": {
@@ -635,27 +635,8 @@
         "block_device::do_secondary_backup",
         "block_device::do_secondary_restore"
       ],
-      "description": "The secondary backup storage container where the backup will be saved to or restored from. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name.",
+      "description": "The secondary backup storage container where the backup will be saved to or restored from. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name. Example: db_backup_bucket",
       "display_name": "Secondary Backup Storage Container (1)"
-    },
-    "block_device/ephemeral/vg_data_percentage": {
-      "required": "optional",
-      "calculated": false,
-      "choice": [
-        "50",
-        "60",
-        "70",
-        "80",
-        "90",
-        "100"
-      ],
-      "default": "100",
-      "type": "string",
-      "recipes": [
-        "block_device::setup_ephemeral"
-      ],
-      "description": "The percentage of the total ephemeral Volume Group extents (LVM) that is used for data. (e.g. 50 percent - 1/2 used for data 100 percent - all space is allocated for data. WARNING: Using a non-default value it not recommended. Make sure you understand what you are doing before changing this value. Example: 100",
-      "display_name": "Percentage of the ephemeral LVM used for data"
     },
     "block_device/devices/device2/backup/primary/keep/daily": {
       "required": "optional",
@@ -671,7 +652,7 @@
         "block_device::do_secondary_backup",
         "block_device::default"
       ],
-      "description": "The number of daily primary backups to keep (i.e., rotation size).",
+      "description": "The number of daily primary backups to keep (i.e., rotation size). Example: 14",
       "display_name": "Keep Daily Backups (2)"
     },
     "block_device/devices/device1/volume_type": {
@@ -687,7 +668,7 @@
         "block_device::setup_block_device",
         "block_device::default"
       ],
-      "description": "Type of the volume - SATA or SSD. This attribute is supported only on Rackspace Open Cloud and ignored on other clouds. Example: SATA",
+      "description": "The type of the volume - SATA or SSD. This attribute is supported only on Rackspace Open Cloud. Example: SATA",
       "display_name": "Volume Type"
     },
     "block_device/devices/device1/backup/primary/keep/monthly": {
@@ -704,7 +685,7 @@
         "block_device::do_secondary_backup",
         "block_device::default"
       ],
-      "description": "The number of monthly primary backups to keep (i.e., rotation size).",
+      "description": "The number of monthly primary backups to keep (i.e., rotation size). Example: 12",
       "display_name": "Keep Monthly Backups (1)"
     },
     "block_device/devices/default/backup/secondary/cloud": {
@@ -728,7 +709,7 @@
         "block_device::do_secondary_backup",
         "block_device::do_secondary_restore"
       ],
-      "description": "The secondary backup storage cloud. Specify 'S3' for Amazon, and 'cloudfiles' for Rackspace.",
+      "description": "The secondary backup storage cloud. (See complete list of supported storage locations in input dropdown). Example: s3",
       "display_name": "Secondary Backup Storage Cloud (default)"
     },
     "block_device/devices/device2/volume_type": {
@@ -744,7 +725,7 @@
         "block_device::setup_block_device",
         "block_device::default"
       ],
-      "description": "Type of the volume - SATA or SSD. This attribute is supported only on Rackspace Open Cloud and ignored on other clouds. Example: SATA",
+      "description": "The type of the volume - SATA or SSD. This attribute is supported only on Rackspace Open Cloud. Example: SATA",
       "display_name": "Volume Type"
     },
     "block_device/devices/device1/backup/primary/keep/weekly": {
@@ -761,7 +742,7 @@
         "block_device::do_secondary_backup",
         "block_device::default"
       ],
-      "description": "The number of weekly primary backups to keep (i.e., rotation size).",
+      "description": "The number of weekly primary backups to keep (i.e., rotation size). Example: 6",
       "display_name": "Keep Weekly Backups (1)"
     },
     "block_device/devices/device1/stripe_count": {
@@ -776,7 +757,7 @@
         "block_device::setup_block_device",
         "block_device::default"
       ],
-      "description": "The total number of volumes in the volume stripe that will be used by the database. Volumes will be created and mounted to the instance. The default value is 1, which means that only a single volume will be used (no striping). This value is ignored on clouds that do not support volumes (e.g., Rackspace).",
+      "description": "The total number of volumes in the volume stripe that will be used by the database. Volumes will be created and mounted to the instance. The default value is 1, which means that only a single volume will be used (no striping). This value is ignored on clouds that do not support volumes (e.g., Rackspace). Example: 1",
       "display_name": "Number of Volumes in the Stripe (1)"
     },
     "block_device/devices/default/backup/primary/cred/secret": {
@@ -790,7 +771,7 @@
       "recipes": [
         "block_device::default"
       ],
-      "description": "Primary cloud authentication credentials. For Rackspace Cloud Files, use your Rackspace account API key (e.g., cred:RACKSPACE_AUTH_KEY). For clouds that do not require primary credentials (e.g., Amazon), set to 'ignore'.",
+      "description": "Primary cloud authentication credentials. For Rackspace Cloud Files, use your Rackspace account API key (e.g., cred:RACKSPACE_AUTH_KEY). For clouds that do not require primary credentials (e.g., Amazon), set to 'ignore'. Example: cred:CLOUD_ACCOUNT_KEY",
       "display_name": "Primary Backup Secret (default)"
     }
   },
@@ -820,7 +801,7 @@
     },
     "block_device::do_primary_restore": "Restores a primary backup from the local cloud where the server is currently running.",
     "block_device::default": "Sets up input dependencies for use by other cookbooks.",
-    "block_device::do_force_reset": "Unmount and delete the attached block device(s) for this lineage. Designed for test and development purposes only. WARNING: Execution of this script will delete any data on your block device!",
+    "block_device::do_force_reset": "Unmounts and deletes the attached block device(s) for this lineage. Designed for test and development purposes only. WARNING: Execution of this script will delete any data on your block device!",
     "block_device::setup_ephemeral": "Creates, formats, and mounts a brand new block device on the instance's ephemeral drives. Does nothing on clouds without ephemeral drives."
   },
   "groupings": {
