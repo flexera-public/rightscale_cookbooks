@@ -431,22 +431,6 @@ attribute "db/backup/timestamp_override",
     "db::do_secondary_init_slave"
   ]
 
-attribute "db/backup/restore_version_check",
-  :display_name => "Backup restore version check",
-  :description => "A variable for allowing the restoration of a database from a backup that was performed on a different version of the DB software. Make sure you fully understand the implications of cross-version restoration.  Set to 'False' to skip version checking.",
-  :required => "optional",
-  :choice => ["true", "false"],
-  :default => "true",
-  :recipes => [
-    "db::do_primary_restore",
-    "db::do_secondary_restore",
-    "db::do_primary_init_slave",
-    "db::do_secondary_init_slave",
-    "db::do_init_slave_at_boot",
-    "db::do_primary_restore_and_become_master",
-    "db::do_secondary_restore_and_become_master"
-  ]
-
 attribute "db/backup/primary/master/cron/hour",
   :display_name => "Master Backup Cron Hour",
   :description =>
