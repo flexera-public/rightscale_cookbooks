@@ -148,12 +148,13 @@ attribute "lb/health_check_uri",
 attribute "lb/service/provider",
   :display_name => "Load Balance Provider",
   :description =>
-    "Specify the load balance provider to use:" +
-    " either 'lb_haproxy' for HAProxy, 'lb_elb' for AWS Load Balancing," +
-    " or 'lb_clb' for Rackspace Cloud Load Balancing. Example: lb_haproxy",
+    "Specify the load balance provider to use either: 'lb_client' for" +
+    " ServerTemplate based Load Balancer solutions (such as aiCache, HAProxy," +
+    " etc.), 'lb_elb' for AWS Load Balancing, or 'lb_clb' for Rackspace Cloud" +
+    " Load Balancing. Example: lb_client",
   :required => "recommended",
-  :default => "lb_haproxy",
-  :choice => ["lb_haproxy", "lb_clb", "lb_elb"],
+  :default => "lb_client",
+  :choice => ["lb_client", "lb_clb", "lb_elb"],
   :recipes => [
     "lb::default",
     "lb::do_attach_request",
@@ -216,4 +217,3 @@ attribute "lb/service/account_secret",
     "lb::do_attach_request",
     "lb::do_detach_request"
   ]
-
