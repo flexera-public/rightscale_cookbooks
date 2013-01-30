@@ -19,21 +19,21 @@
 # http://dev.mysql.com/doc/mysql/en/server-system-variables.html
 
 [client]
-port = 3306
+port            = 3306
 socket          = <%= node[:db][:socket] %>
 
 [mysqld_safe]
 socket          = <%= node[:db][:socket] %>
-nice = 0
+nice            = 0
 
 [mysqld]
 #
 # * Basic Settings
 #
-user = mysql
-#pid-file = /var/run/mysqld/mysqld.pid
+user            = mysql
+#pid-file        = /var/run/mysqld/mysqld.pid
 socket          = <%= node[:db][:socket] %>
-port = 3306
+port            = 3306
 datadir         = <%= node[:db_mysql][:datadir] %>
 tmpdir          = <%= node[:db_mysql][:tmpdir] %>
 
@@ -43,10 +43,10 @@ bind-address            = <%= node[:db_mysql][:bind_address] %>
 # * Fine Tuning
 #
 key_buffer              = <%= node[:db_mysql][:tunable][:key_buffer] %>
-max_allowed_packet = 16M
-thread_stack = 192K
+max_allowed_packet      = 16M
+thread_stack            = 192K
 thread_cache_size       = <%= node[:db_mysql][:tunable][:thread_cache_size] %>
-myisam-recover = BACKUP
+myisam-recover          = BACKUP
 max_connections         = <%= node[:db_mysql][:tunable][:max_connections] %>
 wait_timeout            = <%= node[:db_mysql][:tunable][:wait_timeout] %>
 net_read_timeout        = <%= node[:db_mysql][:tunable][:net_read_timeout] %>
@@ -64,7 +64,7 @@ net_buffer_length       = <%= node[:db_mysql][:tunable][:net_buffer_length] %>
 #
 # * Query Cache Configuration
 #
-query_cache_limit = 1M
+query_cache_limit       = 1M
 query_cache_size        = <%= node[:db_mysql][:tunable][:query_cache_size] %>
 
 #
@@ -77,13 +77,13 @@ query_cache_size        = <%= node[:db_mysql][:tunable][:query_cache_size] %>
 log-queries-not-using-indexes
 
 <%= "read_only = 1" unless node[:db_mysql][:tunable][:read_only] == nil %>
-server-id = <%= @server_id %>
+server-id               = <%= @server_id %>
 <% if node[:db_mysql][:log_bin_enabled] %>
 <%= "log_bin = #{node[:db_mysql][:log_bin]}" %>
 <%= "expire_logs_days        = #{node[:db_mysql][:tunable][:expire_logs_days]}" %>
 <% end %>
 binlog_format           = <%= node[:db_mysql][:binlog_format] %>
-max_binlog_size = 100M
+max_binlog_size         = 100M
 #
 # * InnoDB
 #
@@ -104,7 +104,7 @@ innodb_log_buffer_size = <%= node[:db_mysql][:tunable][:innodb_log_buffer_size] 
 innodb_flush_log_at_trx_commit = 2
 innodb_lock_wait_timeout = 50
 innodb_support_xa = 1
-innodb_flush_method = O_DIRECT
+innodb_flush_method=O_DIRECT
 innodb_fast_shutdown = 1
 
 log-bin=<%=node[:db_mysql][:log_bin] %>
@@ -126,7 +126,7 @@ ssl-key = <%= @master_key %>
 [mysqldump]
 quick
 quote-names
-max_allowed_packet = 16M
+max_allowed_packet      = 16M
 
 [mysql]
 
