@@ -419,31 +419,31 @@ action :install_server do
   # Determine whether to enable SSL for MySQL based on provided inputs.
   # SSL will only be enabled if all inputs are populated.
   node[:db_mysql][:ssl_enabled] =
-    !node[:db_mysql][:ca_certificate].to_s.empty? &&
-    !node[:db_mysql][:master_certificate].to_s.empty? &&
-    !node[:db_mysql][:master_key].to_s.empty? &&
-    !node[:db_mysql][:slave_certificate].to_s.empty? &&
-    !node[:db_mysql][:slave_key].to_s.empty?
+    !node[:db_mysql][:ssl][:ca_certificate].to_s.empty? &&
+    !node[:db_mysql][:ssl][:master_certificate].to_s.empty? &&
+    !node[:db_mysql][:ssl][:master_key].to_s.empty? &&
+    !node[:db_mysql][:ssl][:slave_certificate].to_s.empty? &&
+    !node[:db_mysql][:ssl][:slave_key].to_s.empty?
 
   node[:db_mysql][:ssl_credentials] = {
     :ca_certificate => {
-      :credential => node[:db_mysql][:ca_certificate],
+      :credential => node[:db_mysql][:ssl][:ca_certificate],
       :path => "/etc/mysql/certs/ca_cert.pem"
     },
     :master_certificate => {
-      :credential => node[:db_mysql][:master_certificate],
+      :credential => node[:db_mysql][:ssl][:master_certificate],
       :path => "/etc/mysql/certs/master_cert.pem"
     },
     :master_key => {
-      :credential => node[:db_mysql][:master_key],
+      :credential => node[:db_mysql][:ssl][:master_key],
       :path => "/etc/mysql/certs/master_key.pem"
     },
     :slave_certificate => {
-      :credential => node[:db_mysql][:slave_certificate],
+      :credential => node[:db_mysql][:ssl][:slave_certificate],
       :path => "/etc/mysql/certs/slave_cert.pem"
     },
     :slave_key => {
-      :credential => node[:db_mysql][:slave_key],
+      :credential => node[:db_mysql][:ssl][:slave_key],
       :path => "/etc/mysql/certs/slave_key.pem"
     }
   }

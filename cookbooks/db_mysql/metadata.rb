@@ -85,7 +85,7 @@ attribute "db_mysql/tunable/expire_logs_days",
     "db_mysql::setup_server_5_5"
   ]
 
-attribute "db_mysql/compressed_protocol",
+attribute "db_mysql/ssl/compressed_protocol",
   :display_name => "Compression of the slave/master protocol",
   :description =>
     "Use compression of the slave/master protocol if both the slave and the" +
@@ -98,7 +98,7 @@ attribute "db_mysql/compressed_protocol",
     "db_mysql::setup_server_5_5"
   ]
 
-attribute "db_mysql/ca_certificate",
+attribute "db_mysql/ssl/ca_certificate",
   :display_name => "CA SSL Certificate",
   :description =>
     "The name of your CA SSL Certificate." +
@@ -111,7 +111,7 @@ attribute "db_mysql/ca_certificate",
     "db_mysql::setup_server_5_5"
   ]
 
-attribute "db_mysql/master_certificate",
+attribute "db_mysql/ssl/master_certificate",
   :display_name => "Master SSL Certificate",
   :description =>
     "The name of your Master SSL Certificate." +
@@ -124,7 +124,7 @@ attribute "db_mysql/master_certificate",
     "db_mysql::setup_server_5_5"
   ]
 
-attribute "db_mysql/master_key",
+attribute "db_mysql/ssl/master_key",
   :display_name => "Master SSL Key",
   :description =>
     "The name of your Master SSL Key." +
@@ -137,7 +137,7 @@ attribute "db_mysql/master_key",
     "db_mysql::setup_server_5_5"
   ]
 
-attribute "db_mysql/slave_certificate",
+attribute "db_mysql/ssl/slave_certificate",
   :display_name => "Slave SSL Certificate",
   :description =>
     "The name of your Slave SSL Certificate." +
@@ -150,7 +150,7 @@ attribute "db_mysql/slave_certificate",
     "db_mysql::setup_server_5_5"
   ]
 
-attribute "db_mysql/slave_key",
+attribute "db_mysql/ssl/slave_key",
   :display_name => "Slave SSL Key",
   :description =>
     "The name of your Slave SSL Key." +
