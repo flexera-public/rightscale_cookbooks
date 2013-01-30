@@ -45,4 +45,3 @@ attribute "sys_dns/region",
   :required => "optional",
   :choice => ["Chicago", "Dallas", "London"],
   :recipes => ["sys_dns::do_set_private", "sys_dns::default"]
-

@@ -79,7 +79,8 @@ Raise:
 
 === LWRPs:
 
-The 'set' interface is defined by a Lightweight Resource, which can be found in the resources/default.rb file.
+The 'set' interface is defined by a Lightweight Resource, which can be found in
+the resources/default.rb file.
 
 Used to pass data to the helper file and call the corresponding DNS provider. 
 
