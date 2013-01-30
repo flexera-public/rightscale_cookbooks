@@ -51,17 +51,18 @@ define :db_register_slave, :action => :primary_restore do
         # Declare vars before block to persist after 'each do' loop.
         collect = {}
         lineage = ""
-        ip_tag = case node[:db][:replication][:network_interface]
-                 when "private"
-                   "server:private_ip_0"
-                 when "public"
-                   "server:public_ip_0"
-                 when "vpn"
-                   "server:vpn_ip_0"
-                 else
-                   raise "\"#{node[:db][:replication][:network_interface]}\"" +
-                     " is not a valid network interface."
-                 end
+        ip_tag =
+          case node[:db][:replication][:network_interface]
+          when "private"
+           "server:private_ip_0"
+          when "public"
+           "server:public_ip_0"
+          when "vpn"
+           "server:vpn_ip_0"
+          else
+           raise "\"#{node[:db][:replication][:network_interface]}\"" +
+             " is not a valid network interface."
+          end
         # Using reverse order to end with first found master if no DB tagged with lineage.
         node[:server_collection]["master_servers"].reverse_each do |id, tags|
           master_active_tag = tags.select { |s| s =~ /rs_dbrepl:master_active/ }
