@@ -53,7 +53,7 @@ else
     block do
       require "fileutils"
 
-      file_type = Chef::ShellOut.new("file #{dumpfilepath_without_extension}")
+      file_type = Mixlib::ShellOut.new("file #{dumpfilepath_without_extension}")
       file_type.run_command
       file_type.error!
       command_output = file_type.stdout
