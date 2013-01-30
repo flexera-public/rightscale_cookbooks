@@ -164,16 +164,16 @@ action :post_restore_cleanup do
   elsif snap_version == current_version
     Chef::Log.info "  Restore version and provider checks passed."
   elsif snap_version < current_version
-    if node[:db_mysql][:enable_mysql_upgrade] == "false"
-      Chef::Log.warn "WARNING: Attempting to restore #{snap_provider}" +
-        " #{snap_version.version} snapshot to #{current_provider}" +
-        " #{current_version.version} without running mysql_upgrade."
-    else
+    if node[:db_mysql][:enable_mysql_upgrade] == "true"
       run_mysql_upgrade = true
       Chef::Log.info "  Attempting to restore #{snap_provider}" +
         " #{snap_version.version} snapshot to #{current_provider}" +
         " #{current_version.version}." +
         " Will run mysql_upgrade to fix incompatibilities."
+    else
+      raise "ERROR: Attempting to restore #{snap_provider}" +
+        " #{snap_version.version} snapshot to #{current_provider}" +
+        " #{current_version.version} without running mysql_upgrade."
     end
   end
 
