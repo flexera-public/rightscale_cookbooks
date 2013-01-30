@@ -31,7 +31,6 @@ else
   end
 end
 
-
 # Increase connection tracking table sizes
 #
 # Increase the value for the 'conntrack_max' module parameter
@@ -57,19 +56,8 @@ bash "Update #{nf_module_name}" do
     echo "#{nf_conntrack_max}" >> /etc/sysctl.conf
     sysctl -e -p /etc/sysctl.conf > /dev/null
   EOH
-  not_if { ::File.readlines("/etc/sysctl.conf").grep(/^\s*#{nf_conntrack_max}/).any? }
-end
-
-# Update iptables config file to not to reset nf_* modules to its default values
-template "/etc/sysconfig/iptables-config" do
-  source "iptables_config.erb"
-  cookbook "sys_firewall"
-  not_if { node[:platform] == "ubuntu" }
-end
-
-# Rebuild iptables
-execute "rebuild-iptables" do
-  command "/usr/sbin/rebuild-iptables"
+  not_if { ::File.readlines("/etc/sysctl.conf" ).grep(
+    /^\s*#{nf_conntrack_max}/).any? }
 end
 
 rightscale_marker :end
