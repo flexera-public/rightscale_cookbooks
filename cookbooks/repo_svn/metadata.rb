@@ -11,4 +11,5 @@ version          "13.3.0"
 
 depends "repo"
 
-recipe  "repo_svn::default", "Default pattern for loading provided packages and resources."
+recipe  "repo_svn::default",
+  "Installs \"subversion\" package."

@@ -855,7 +855,8 @@ action :restore_from_dump_file do
   ruby_block "checking existing db" do
     block do
       if !db_check.empty?
-        Chef::Log.warn "  WARNING: database '#{db_name}' already exists. No changes will be made to existing database."
+        Chef::Log.warn "  WARNING: database '#{db_name}' already exists." +
+          " No changes will be made to existing database."
       end
     end
   end
@@ -871,7 +872,8 @@ action :restore_from_dump_file do
         exit 1
       fi
       mysqladmin -u root create #{db_name}
-      gunzip < #{dumpfile} | mysql -u root -b #{db_name}
+      #{node[:db][:dump][:uncompress_command]} #{dumpfile} | \
+        mysql -u root -b #{db_name}
     EOH
   end
 
