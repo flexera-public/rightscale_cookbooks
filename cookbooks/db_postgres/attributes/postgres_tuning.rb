@@ -13,7 +13,8 @@ def value_with_units(value, units, usage_factor)
   raise "Error: units must be k, m, g" unless units =~ /[KMG]B/i
   factor = usage_factor.to_f
   if factor > 1.0 || factor <= 0.0
-    raise "Error: usage_factor must be between 1.0 and 0.0. Value used: #{usage_factor}"
+    raise "Error: usage_factor must be between 1.0 and 0.0." +
+     "Value used: #{usage_factor}"
   end
   (value * factor).to_i.to_s + units
 end

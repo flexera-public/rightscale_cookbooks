@@ -63,7 +63,8 @@ servers are allocated %50 of the resources of a dedicated server.
 
 The current implementation sets the following tuning parameters:
 
-* max_connections: Static setting with 400 for a dedicated server and 200 for a shared server
+* max_connections: Static setting with 400 for a dedicated server
+  and 200 for a shared server
 * shared_buffers: Dynamically set to %25 of available memory.
 
 == DETAILS:

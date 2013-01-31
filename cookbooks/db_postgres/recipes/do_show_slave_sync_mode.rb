@@ -17,11 +17,8 @@ db_state_assert :master
 bash "show sync mode status" do
   user "postgres"
   code <<-EOH
-    echo "==================== do_show_slave_mode : Begin =================="
-
-    psql -U postgres -c "select application_name, client_addr, sync_state from pg_stat_replication"
-
-    echo "==================== do_show_slave_mode : End ===================="
+    psql -U postgres -c "select application_name, client_addr," +
+     "sync_state from pg_stat_replication"
   EOH
 end
 
