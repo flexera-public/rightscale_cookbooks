@@ -1,14 +1,35 @@
 #
 # Cookbook Name:: sys_firewall
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 rightscale_marker :begin
 
-if node[:sys_firewall][:enabled] == "enabled"
-  # See https://github.com/rightscale/cookbooks/blob/master/iptables/recipes/default.rb for the "iptables::default" recipe.
+# Setting up Server to work with Rackconnect
+if node[:cloud][:provider] == "rackspace-ng" &&
+  node[:etc][:passwd].has_key?(:rackconnect)
+
+  # If we are using rackconnect, setting sys_firewall/enabled to anything
+  # other than "enable" or "disable" will make no changes to iptables.
+  r = ruby_block "Setting up for Rackconnect" do
+    block do
+      Chef::Log.info("Bypassing sys_firewall::default")
+      node[:sys_firewall][:enabled] = "rackconnect"
+    end
+    action :nothing
+  end
+  r.run_action(:create)
+
+end
+
+case node[:sys_firewall][:enabled]
+when "enabled"
+  log "enabling sys_firewall"
+  # See https://github.com/rightscale/cookbooks/blob/master/iptables/recipes/default.rb
+  # for the "iptables::default" recipe.
   include_recipe "iptables"
   # See cookbooks/sys_firewall/providers/default.rb for the "update" action.
   sys_firewall "22" # SSH
@@ -19,16 +40,21 @@ if node[:sys_firewall][:enabled] == "enabled"
     # Open ports for SoftLayer monitoring agent
     (48000..48020).each do |port|
       sys_firewall port do
-        ip_addr "10.0.0.0" # Net mask to open to all addresses on the internal 10.*.*.*
+        # Net mask to open to all addresses on the internal 10.*.*.*
+        ip_addr "10.0.0.0"
       end
     end
   end
-
-else
+when "disabled"
+  log "disabling sys_firewall"
   service "iptables" do
     supports :status => true
     action [:disable, :stop]
   end
+else
+  # previous recipes could have set the node to anything else
+  # in order to make no changes to iptables.
+  log "making no changes to sys_firewall"
 end
 
 
@@ -56,3 +82,4 @@ bash "Update net.ipv4.ip_conntrack_max" do
 end
 
 rightscale_marker :end
+
