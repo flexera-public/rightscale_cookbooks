@@ -18,7 +18,7 @@ bash "show sync mode status" do
   user "postgres"
   code <<-EOH
     psql -U postgres -c "select application_name, client_addr," +
-     "sync_state from pg_stat_replication"
+     " sync_state from pg_stat_replication"
   EOH
 end
 
