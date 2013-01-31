@@ -36,8 +36,8 @@ then opens 22, 80 and 443 ports by default
 network for the monitoring agent).
 
 <tt>sys_firewall::default</tt> recipe increases the value for the
-'netfilter.nf_conntrack_max' parameter  for Centos images and
-the 'net.ipv4.ip_conntrack_max' for Ubuntu and Rhel images to avoid dropping
+'netfilter.nf_conntrack_max' parameter for CentOS images and
+the 'net.ipv4.ip_conntrack_max' for Ubuntu and RHEL images to avoid dropping
 packets on high-throughput systems.
 
 === Updating firewall rules using tags
