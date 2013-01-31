@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: db_postgres
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 include RightScale::Database::Helper
 include RightScale::Database::PostgreSQL::Helper
@@ -609,8 +610,7 @@ action :generate_dump_file do
   bash "Write the postgres DB backup file" do
     user 'postgres'
     code <<-EOH
-      pg_dump -U postgres -h /var/run/postgresql #{db_name} | \
-        gzip -c > #{dumpfile}
+      pg_dump -U postgres #{db_name} | gzip -c > #{dumpfile}
     EOH
   end
 
@@ -626,7 +626,7 @@ action :restore_from_dump_file do
   ruby_block "checking existing db" do
     block do
       query = "echo \"select datname from pg_database\" |" +
-        " psql -U postgres -h /var/run/postgresql | grep -q  \"#{db_name}\""
+        " psql -U | grep -q  \"#{db_name}\""
       db_check = `#{query}`
       raise "ERROR: database '#{db_name}' already exists" unless db_check.empty?
     end
@@ -641,9 +641,9 @@ action :restore_from_dump_file do
         echo "ERROR: PostgreSQL dumpfile not found! File: '#{dumpfile}'"
         exit 1
       fi
-      createdb -U postgres -h /var/run/postgresql #{db_name}
+      createdb -U postgres #{db_name}
       #{node[:db][:dump][:uncompress_command]} #{dumpfile} | \
-        psql -U postgres -h /var/run/postgresql #{db_name}
+        psql -U postgres #{db_name}
     EOH
   end
 
