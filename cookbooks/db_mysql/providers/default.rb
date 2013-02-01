@@ -212,8 +212,6 @@ action :post_restore_cleanup do
   # Always update the my.cnf file on a restore.
   # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb
   # for the "db_mysql_set_mycnf" definition.
-  # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb
-  # for the "db_mysql_set_mycnf" definition.
   # See cookbooks/db_mysql/libraries/helper.rb
   # for the "RightScale::Database::MySQL::Helper" class.
   db_mysql_set_mycnf "setup_mycnf" do
