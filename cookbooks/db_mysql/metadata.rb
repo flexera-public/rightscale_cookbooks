@@ -85,7 +85,7 @@ attribute "db_mysql/tunable/expire_logs_days",
     "db_mysql::setup_server_5_5"
   ]
 
-attribute "db_mysql/ssl/compressed_protocol",
+attribute "db_mysql/compressed_protocol",
   :display_name => "Compression of the slave/master protocol",
   :description =>
     "Use compression of the slave/master protocol if both the slave and the" +
