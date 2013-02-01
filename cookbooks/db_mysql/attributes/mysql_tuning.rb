@@ -5,6 +5,9 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+# Loads db_mysql/attributes/default.rb which sets attributes
+# needed for processing this file.
+include_attribute "db_mysql"
 
 # Adjust values based on a usage factor and create human readable string
 def value_with_units(value, units, usage_factor)
