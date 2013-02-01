@@ -147,8 +147,8 @@ recipe "db::do_secondary_init_slave",
 recipe "db::do_init_slave_at_boot",
   "Initializes the slave server at boot."
 
-recipe "db::do_set_dns_slave_private_ip",
-  "Sets the slave DNS record to the private IP."
+recipe "db::do_set_dns_slave",
+  "Sets the slave DNS record to the network interface IP."
 
 recipe "db::do_promote_to_master",
   "Promotes a replicating slave to master."

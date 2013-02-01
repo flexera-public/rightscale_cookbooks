@@ -561,7 +561,7 @@
     "db::do_primary_init_slave": "Initializes the slave server from the primary backup location. Authentication information provided by inputs is ignored for slave servers.",
     "db::do_secondary_init_slave": "Initializes the slave server from the secondary backup location. Authentication information provided by inputs is ignored for slave servers.",
     "db::do_init_slave_at_boot": "Initializes the slave server at boot.",
-    "db::do_set_dns_slave_private_ip": "Sets the slave DNS record to the private IP.",
+    "db::do_set_dns_slave": "Sets the slave DNS record to the network interface IP.",
     "db::do_promote_to_master": "Promotes a replicating slave to master.",
     "db::setup_replication_privileges": "Sets up privileges for replication slave servers.",
     "db::request_master_allow": "Sends a request to the master database server tagged with rs_dbrepl:master_instance_uuid=<master_instance_uuid> to allow connections from the server's private IP address. This script should be run on a slave before it sets up replication.",
