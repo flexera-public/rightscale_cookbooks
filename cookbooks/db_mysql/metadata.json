@@ -139,7 +139,6 @@
       ],
       "default": "false",
       "recipes": [
-        "db_mysql::setup_server_5_1",
         "db_mysql::setup_server_5_5"
       ],
       "calculated": false,

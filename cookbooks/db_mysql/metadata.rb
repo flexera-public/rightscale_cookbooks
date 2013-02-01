@@ -111,10 +111,7 @@ attribute "db_mysql/enable_mysql_upgrade",
   :required => "optional",
   :choice => ["true", "false"],
   :default => "false",
-  :recipes => [
-    "db_mysql::setup_server_5_1",
-    "db_mysql::setup_server_5_5"
-  ]
+  :recipes => ["db_mysql::setup_server_5_5"]
 
 attribute "db_mysql/compressed_protocol",
   :display_name => "Compression of the slave/master protocol",
