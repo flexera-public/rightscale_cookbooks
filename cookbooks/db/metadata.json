@@ -315,27 +315,6 @@
       "calculated": false,
       "type": "string"
     },
-    "db/backup/restore_version_check": {
-      "display_name": "Backup restore version check",
-      "description": "A variable for allowing the restoration of a database from a backup that was performed on a different version of the DB software. Make sure you fully understand the implications of cross-version restoration. Set to 'False' to skip version checking. Example: False",
-      "required": "optional",
-      "choice": [
-        "true",
-        "false"
-      ],
-      "default": "true",
-      "recipes": [
-        "db::do_primary_restore",
-        "db::do_secondary_restore",
-        "db::do_primary_init_slave",
-        "db::do_secondary_init_slave",
-        "db::do_init_slave_at_boot",
-        "db::do_primary_restore_and_become_master",
-        "db::do_secondary_restore_and_become_master"
-      ],
-      "calculated": false,
-      "type": "string"
-    },
     "db/backup/primary/master/cron/hour": {
       "display_name": "Master Backup Cron Hour",
       "description": "Defines the hour of the day when the primary backup will be taken of the master database. Backups of the master are taken daily. By default, an hour will be randomly chosen at launch time. Otherwise, the time of the backup is defined by 'Master Backup Cron Hour' and 'Master Backup Cron Minute'. However, if you specify a value in this input (e.g., 23 for 11:00 PM), then backups will occur once per day at the specified hour, rather than hourly. Uses standard crontab format. Example: 23 ",
