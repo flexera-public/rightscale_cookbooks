@@ -34,7 +34,7 @@ define :db_register_slave, :action => :primary_restore do
     # See cookbooks/rightscale/providers/server_collection.rb for the "load" action.
     r = rightscale_server_collection "master_servers" do
       tags 'rs_dbrepl:master_instance_uuid'
-      secondary_tags ['rs_dbrepl:master_active', 'server:private_ip_0']
+      mandatory_tags ['rs_dbrepl:master_active', 'server:private_ip_0']
       action :nothing
     end
     # See cookbooks/rightscale/providers/server_collection.rb for the "load" action.
@@ -49,8 +49,10 @@ define :db_register_slave, :action => :primary_restore do
       block do
 
         # Declare vars before block to persist after 'each do' loop.
-        collect = {}
+        selected_master_info = {}
         lineage = ""
+        # Using reverse order to end with first found master
+        # if no DB tagged with lineage.
         ip_tag =
           case node[:db][:replication][:network_interface]
           when "private"
@@ -65,17 +67,22 @@ define :db_register_slave, :action => :primary_restore do
           end
         # Using reverse order to end with first found master if no DB tagged with lineage.
         node[:server_collection]["master_servers"].reverse_each do |id, tags|
-          master_active_tag = tags.select { |s| s =~ /rs_dbrepl:master_active/ }
+          master_active_tag = tags.detect { |s| s =~ /rs_dbrepl:master_active/ }
 
-          active, lineage = master_active_tag[0].split('-', 2)
+          activation_time, lineage = master_active_tag.split('-', 2)
 
           my_uuid = tags.detect { |u| u =~ /rs_dbrepl:master_instance_uuid/ }
           my_ip_0 = tags.detect { |i| i =~ /#{ip_tag}/ }
 
           # Following used for detecting 11H1 DB servers
-          ec2_instance_id = tags.detect { |each_ec2_instance_id| each_ec2_instance_id =~ /ec2:instance_id/ }
-          most_recent = active.sort.last
-          collect[most_recent] = my_uuid, my_ip_0, ec2_instance_id
+          ec2_instance_id = tags.detect { |e| e =~ /ec2:instance_id/ }
+
+          selected_master_info = {
+            :activation_time => activation_time,
+            :my_uuid => my_uuid,
+            :my_ip_0 => my_ip_0,
+            :ec_instance_id => ec2_instance_id,
+          }
 
           # If this master has the right lineage, break, else continue checking.
           if (lineage && lineage == node[:db][:backup][:lineage])
@@ -90,11 +97,14 @@ define :db_register_slave, :action => :primary_restore do
         # If lineage was not part of the master_active_tag tag
         # use the first (or only) found master
         unless (lineage && lineage == node[:db][:backup][:lineage])
-          Chef::Log.info "  Lineage not found in tags, defaulting to first discovered master"
+          Chef::Log.info "  Lineage not found, using first discovered master"
         end
 
-        most_recent_timestamp = collect.keys.sort.last
-        current_master_uuid, current_master_ip, current_master_ec2_id = collect[most_recent_timestamp]
+        activation_time = selected_master_info[:activation_time]
+        current_master_uuid = selected_master_info[:my_uuid]
+        current_master_ip = selected_master_info[:my_ip_0]
+        current_master_ec2_id = selected_master_info[:ec_instance_id]
+
         if current_master_uuid =~ /#{node[:rightscale][:instance_uuid]}/
           Chef::Log.info "  This instance is the current master"
           node[:db][:this_is_master] = true
@@ -102,13 +112,15 @@ define :db_register_slave, :action => :primary_restore do
           node[:db][:this_is_master] = false
         end
         if current_master_uuid
-          node[:db][:current_master_uuid] = current_master_uuid.split(/=/, 2).last.chomp
+          node[:db][:current_master_uuid] =
+            current_master_uuid.split(/=/, 2).last.chomp
         else
           node[:db][:current_master_uuid] = nil
           Chef::Log.info "  No current master db found"
         end
         if current_master_ip
-          node[:db][:current_master_ip] = current_master_ip.split(/=/, 2).last.chomp
+          node[:db][:current_master_ip] =
+            current_master_ip.split(/=/, 2).last.chomp
         else
           node[:db][:current_master_ip] = nil
           Chef::Log.info "  No current master ip found"
@@ -116,18 +128,22 @@ define :db_register_slave, :action => :primary_restore do
 
         # following used for detecting 11H1 DB servers
         if current_master_ec2_id
-          node[:db][:current_master_ec2_id] = current_master_ec2_id.split(/=/, 2).last.chomp
+          node[:db][:current_master_ec2_id] =
+            current_master_ec2_id.split(/=/, 2).last.chomp
           Chef::Log.info "  Detected #{current_master_ec2_id} - 11H1 migration"
         else
           node[:db][:current_master_ec2_id] = nil
         end
 
-        Chef::Log.info "  Found current master: #{node[:db][:current_master_uuid]} ip: #{node[:db][:current_master_ip]} active at #{most_recent_timestamp}" if current_master_uuid && current_master_ip
+        Chef::Log.info "  Found master: #{node[:db][:current_master_uuid]} " +
+          "ip: #{node[:db][:current_master_ip]} active at #{activation_time}" \
+          if current_master_uuid && current_master_ip
       end
     end
     r.run_action(:create)
 
-    raise "No master DB found" unless node[:db][:current_master_ip] && node[:db][:current_master_uuid]
+    raise "No master DB found" \
+      unless node[:db][:current_master_ip] && node[:db][:current_master_uuid]
 
     # Populate node with master DB info for later reference.
     # See cookbooks/db/definitions/db_state_set.rb for the "db_state_set" definition.

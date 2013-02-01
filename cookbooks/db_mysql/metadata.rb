@@ -14,8 +14,12 @@ depends "block_device"
 depends "sys_dns"
 depends "rightscale"
 
-recipe  "db_mysql::setup_server_5_1", "Set the DB MySQL provider. Sets version 5.1 and node variables specific to MySQL 5.1."
-recipe  "db_mysql::setup_server_5_5", "Set the DB MySQL provider. Sets version 5.5 and node variables specific to MySQL 5.5."
+recipe "db_mysql::setup_server_5_1",
+  "Sets the DB MySQL provider. Sets version 5.1 and node variables specific" +
+  " to MySQL 5.1."
+recipe "db_mysql::setup_server_5_5",
+  "Sets the DB MySQL provider. Sets version 5.5 and node variables specific" +
+  " to MySQL 5.5."
 
 attribute "db_mysql",
   :display_name => "General Database Options",
@@ -25,7 +29,11 @@ attribute "db_mysql",
 #
 attribute "db_mysql/server_usage",
   :display_name => "Server Usage",
-  :description => "When set to 'dedicated' all server resources are allocated to MySQL. When set to 'shared' less resources are allocated for MySQL so that it can be run concurrently with other apps like Apache and Rails for example.  Example: shared",
+  :description =>
+    "When set to 'dedicated' all server resources are allocated to MySQL." +
+    " When set to 'shared' less resources are allocated for MySQL" +
+    " so that it can be run concurrently with other" +
+    " apps like Apache and Rails for example. Example: shared",
   :choice => ["shared", "dedicated"],
   :required => "optional",
   :default => "shared",
@@ -36,7 +44,10 @@ attribute "db_mysql/server_usage",
 
 attribute "db_mysql/log_bin",
   :display_name => "MySQL Binlog Destination",
-  :description => "Defines the filename and location of your MySQL stored binlog files. Sets the 'log-bin' variable in the MySQL config file. Example: /mnt/mysql-binlogs/mysql-bin",
+  :description =>
+    "Defines the filename and location of your MySQL stored binlog files." +
+    " Sets the 'log-bin' variable in the MySQL config file." +
+    " Example: /mnt/mysql-binlogs/mysql-bin",
   :required => "optional",
   :default => "/mnt/ephemeral/mysql-binlogs/mysql-bin",
   :recipes => [
@@ -46,7 +57,10 @@ attribute "db_mysql/log_bin",
 
 attribute "db_mysql/binlog_format",
   :display_name => "MySQL Binlog Format",
-  :description => "Defines the format of your MySQL stored binlog files. Sets the 'binlog_format' option in the MySQL config file. Accepted options: STATEMENT, ROW, and MIXED",
+  :description =>
+    "Defines the format of your MySQL stored binlog files." +
+    " Sets the 'binlog_format' option in the MySQL config file." +
+    " Accepted options: STATEMENT, ROW, and MIXED. Example: MIXED",
   :required => "optional",
   :choice => ["STATEMENT", "ROW", "MIXED"],
   :default => "MIXED",
@@ -57,7 +71,9 @@ attribute "db_mysql/binlog_format",
 
 attribute "db_mysql/tmpdir",
   :display_name => "MySQL Temp Directory Destination",
-  :description => "Defines the location of your MySQL temp directory. Sets the 'tmpdir' variable in the MySQL config file. Example: /tmp",
+  :description =>
+    "Defines the location of your MySQL temp directory." +
+    " Sets the 'tmpdir' variable in the MySQL config file. Example: /tmp",
   :required => "optional",
   :default => "/mnt/ephemeral/mysqltmp",
   :recipes => [
@@ -67,7 +83,8 @@ attribute "db_mysql/tmpdir",
 
 attribute "db_mysql/init_timeout",
   :display_name => "MySQL Init Timeout",
-  :description => "Defines timeout to wait for a MySQL socket connection. Default: 600",
+  :description =>
+    "Defines timeout to wait for a MySQL socket connection. Default: 600",
   :required => "optional",
   :default => "600",
   :recipes => [
@@ -77,9 +94,23 @@ attribute "db_mysql/init_timeout",
 
 attribute "db_mysql/tunable/expire_logs_days",
   :display_name => "MySQL Expire Logs Days",
-  :description => "Defines number of days to wait until the log expires. Default: 2",
+  :description =>
+    "Defines number of days to wait until the log expires. Default: 2",
   :required => "optional",
   :default => "2",
+  :recipes => [
+    "db_mysql::setup_server_5_1",
+    "db_mysql::setup_server_5_5"
+  ]
+
+attribute "db_mysql/enable_mysql_upgrade",
+  :display_name => "Enable mysql_upgrade",
+  :description =>
+    "Run mysql_upgrade if a restore from an older version of MySQL" +
+    " is detected. Default: false",
+  :required => "optional",
+  :choice => ["true", "false"],
+  :default => "false",
   :recipes => [
     "db_mysql::setup_server_5_1",
     "db_mysql::setup_server_5_5"
@@ -105,7 +136,7 @@ attribute "db_mysql/ssl/ca_certificate",
     " This is one of the 5 inputs needed to do secured replication." +
     " Example: cred:CA_CERT",
   :required => "optional",
-  :default =>  "",
+  :default => "",
   :recipes => [
     "db_mysql::setup_server_5_1",
     "db_mysql::setup_server_5_5"
@@ -118,7 +149,7 @@ attribute "db_mysql/ssl/master_certificate",
     " This is one of the 5 inputs needed to do secured replication." +
     " Example: cred:MASTER_CERT",
   :required => "optional",
-  :default =>  "",
+  :default => "",
   :recipes => [
     "db_mysql::setup_server_5_1",
     "db_mysql::setup_server_5_5"
@@ -131,7 +162,7 @@ attribute "db_mysql/ssl/master_key",
     " This is one of the 5 inputs needed to do secured replication." +
     " Example: cred:MASTER_KEY",
   :required => "optional",
-  :default =>  "",
+  :default => "",
   :recipes => [
     "db_mysql::setup_server_5_1",
     "db_mysql::setup_server_5_5"
@@ -144,7 +175,7 @@ attribute "db_mysql/ssl/slave_certificate",
     " This is one of the 5 inputs needed to do secured replication." +
     " Example: cred:SLAVE_CERT",
   :required => "optional",
-  :default =>  "",
+  :default => "",
   :recipes => [
     "db_mysql::setup_server_5_1",
     "db_mysql::setup_server_5_5"
@@ -157,7 +188,7 @@ attribute "db_mysql/ssl/slave_key",
     " This is one of the 5 inputs needed to do secured replication." +
     " Example: cred:SLAVE_KEY",
   :required => "optional",
-  :default =>  "",
+  :default => "",
   :recipes => [
     "db_mysql::setup_server_5_1",
     "db_mysql::setup_server_5_5"

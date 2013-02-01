@@ -26,26 +26,24 @@ db_init_status :check do
 end
 
 log "  Running pre-restore checks..."
+# See cookbooks/db_<provider>/providers/default.rb for the "pre_restore_check" action.
 db DATA_DIR do
-  # See cookbooks/db_<provider>/providers/default.rb for the "pre_restore_check" action
   action :pre_restore_check
 end
 
 log "  Stopping database..."
+# See cookbooks/db_<provider>/providers/default.rb for the "stop" action.
 db DATA_DIR do
-  # See cookbooks/db_<provider>/providers/default.rb for the "stop" action.
   action :stop
 end
 
-lineage = node[:db][:backup][:lineage]
-lineage_override = node[:db][:backup][:lineage_override]
-restore_lineage = lineage_override == nil || lineage_override.empty? ? lineage : lineage_override
-restore_timestamp_override = node[:db][:backup][:timestamp_override]
-log "  Input lineage #{restore_lineage.inspect}"
-log "  Input lineage_override #{lineage_override.inspect}"
-log "  Using lineage #{restore_lineage.inspect}"
-log "  Input timestamp_override #{restore_timestamp_override.inspect}"
-restore_timestamp_override ||= ""
+# See cookbooks/block_device/libraries/block_device.rb for
+# "set_restore_params" and "get_device_or_default" methods.
+restore_lineage, restore_timestamp_override = set_restore_params(
+  node[:db][:backup][:lineage],
+  node[:db][:backup][:lineage_override],
+  node[:db][:backup][:timestamp_override]
+)
 
 secondary_storage_cloud = get_device_or_default(node, :device1, :backup, :secondary, :cloud)
 if secondary_storage_cloud =~ /aws/i
@@ -73,15 +71,15 @@ block_device NICKNAME do
   action :secondary_restore
 end
 
-log "  Setting state of database to be 'initialized'..."
-# See cookbooks/db/definitions/db_init_status.rb for the "db_init_status" definition.
-db_init_status :set
-
 log "  Running post-restore cleanup..."
 # See cookbooks/db_<provider>/providers/default.rb for the "post_restore_cleanup" action.
 db DATA_DIR do
   action :post_restore_cleanup
 end
+
+log "  Setting state of database to be 'initialized'..."
+# See cookbooks/db/definitions/db_init_status.rb for the "db_init_status" definition.
+db_init_status :set
 
 log "  Starting database..."
 # See cookbooks/db_<provider>/providers/default.rb for the "start" and "status" actions.
