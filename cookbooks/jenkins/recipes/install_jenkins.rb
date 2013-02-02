@@ -22,23 +22,32 @@ end
 ## Jenkins package installation ##
 case node[:platform]
 when "centos"
-  # wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo
-  yum_repository "jenkins" do
-    repo_name "Jenkins"
-    description "Jenkins Stable repo"
-    url "http://pkg.jenkins-ci.org/redhat/jenkins.rep"
-    key "jenkins-ci.org.key"
-    action :add
-  end
+  wrpm = Mixlib::ShellOut.new("wget -O ~/jenkins-1.500-1.1.noarch.rpm http://pkg.jenkins-ci.org/redhat/jenkins-1.500-1.1.noarch.rpm")
+  wrpm.run_command
 
-  #see http://jenkins-ci.org/redhat/
-  yum_key "jenkins_key" do
-    url "http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key"
-    action :add
-  end
+  jeninstall = Mixlib::ShellOut.new("rpm -i ~/jenkins-1.500-1.1.noarch.rpm")
+  jeninstall.run_command
 
-  # yum install jenkins -y
-  yum_package "jenkins"
+  javinstall = Mixlib::ShellOut.new("yum install java-1.6.0-openjdk -y")
+  javinstall.run_command
+
+  # #see http://jenkins-ci.org/redhat/
+  # yum_key "jenkins_key" do
+  #   url "http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key"
+  #   action :add
+  # end
+
+  # # wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo
+  # yum_repository "jenkins" do
+  #   repo_name "Jenkins"
+  #   description "Jenkins Stable repo"
+  #   url "http://pkg.jenkins-ci.org/redhat/jenkins.repo"
+  #   key "jenkins-ci.org.key"
+  #   action :add
+  # end
+
+  # # yum install jenkins -y
+  # yum_package "jenkins"
 
 when "ubuntu"
   # See http://jenkins-ci.org/debian/
@@ -60,16 +69,21 @@ service "jenkins" do
 end
 
 # Create the Jenkins user directory
-directory "#{node[:jenkins][:server][:home]}/users/#{node[:jenkins][:server][:user]}" do
+directory "#{node[:jenkins][:server][:home]}/users/#{node[:jenkins][:server][:user_name]}" do
   recursive true
-  action :create
+  mode 0644
+  owner node[:jenkins][:server][:system_user]
+  group node[:jenkins][:server][:system_user]
 end
 
 # Create the Jenkins configuration file to include matrix based security
 template "#{node[:jenkins][:server][:home]}/config.xml" do
   source "jenkins_config.xml.erb"
+  mode 0644
+  owner node[:jenkins][:server][:system_user]
+  group node[:jenkins][:server][:system_user]
   variables(
-    :user => node[:jenkins][:server][:user]
+    :user => node[:jenkins][:server][:user_name]
   )
 end
 
@@ -80,7 +94,7 @@ chef_gem "bcrypt-ruby"
 r = ruby_block "Encrypt Jenkins user password" do
   block do
     require "bcrypt"
-    node[:jenkins][:server][:password_encrypted] = Bcrypt::Password.create(node[:jenkins][:server][:password])
+    node[:jenkins][:server][:password_encrypted] = ::BCrypt::Password.create(node[:jenkins][:server][:password])
   end
   action :nothing
 end
@@ -89,11 +103,14 @@ r.run_action(:create)
 # Create Jenkins user configuration file
 template "#{node[:jenkins][:server][:home]}/users/#{node[:jenkins][:server][:user_name]}/config.xml" do
   source "jenkins_user_config.xml.erb"
-  variables(
+  mode 0644
+  owner node[:jenkins][:server][:system_user]
+  group node[:jenkins][:server][:system_user]
+  variables({
     :user_full_name => node[:jenkins][:server][:user_full_name],
     :password_encrypted => node[:jenkins][:server][:password_encrypted],
     :email => node[:jenkins][:server][:user_email]
-  )
+  })
 end
 
 service "jenkins" do
