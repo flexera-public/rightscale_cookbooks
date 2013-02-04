@@ -8,6 +8,9 @@
 
 require 'mixlib/shellout'
 
+# Loads db_postgres/attributes/default.rb before processing this file.
+include_attribute "db_postgres"
+
 def value_with_units(value, units, usage_factor)
   raise "Error: value must convert to an integer." unless value.to_i
   raise "Error: units must be k, m, g" unless units =~ /[KMG]B/i
