@@ -378,13 +378,12 @@ attribute "db/force_safety",
   :recipes => ["db::do_force_reset"]
 
 attribute "db/force_promote",
-  :display_name => "Force promote to master",
+  :display_name => "Force Promote to Master",
   :description =>
     "Promote a replicating slave to master without any checks." +
     " WARNING: we highly recommend using the standard promotion mechanism." +
     " Make sure you understand what you are doing before changing this value." +
     " Default: false",
-  :required => "optional",
-  :default => "false",
+  :required => "required",
   :choice => ["true", "false"],
   :recipes => ["db::do_promote_to_master"]
