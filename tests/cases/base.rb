@@ -1,8 +1,8 @@
 # suite variables: server_template_type = {chef, rsb}
 
 # Include the helper objects and methods.
-helper_include "cloud"
-helper_include "wait_for_ip_repopulation"
+require_helper "cloud"
+require_helper "wait_for_ip_repopulation"
 
 helpers do
   # Checks if the swapfile is listed in /proc/swaps.
