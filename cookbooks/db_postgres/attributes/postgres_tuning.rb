@@ -8,8 +8,7 @@
 
 require 'mixlib/shellout'
 
-# Loads db_postgres/attributes/default.rb which sets attributes
-# needed for processing this file.
+# Loads db_postgres/attributes/default.rb before processing this file.
 include_attribute "db_postgres"
 
 def value_with_units(value, units, usage_factor)
