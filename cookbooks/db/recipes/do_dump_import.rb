@@ -45,57 +45,11 @@ else
     })
   end
 
-  # Detect the compression type of the downloaded file and set the
-  # extension properly.
-  node[:db][:dump][:filepath] = ""
-  node[:db][:dump][:uncompress_command] = ""
-  ruby_block "Detect compression type" do
-    block do
-      require "fileutils"
-
-      file_type = Mixlib::ShellOut.new("file #{dumpfilepath_without_extension}")
-      file_type.run_command
-      file_type.error!
-      command_output = file_type.stdout
-
-      extension = ""
-      if command_output =~ /Zip archive data/
-        extension = "zip"
-        node[:db][:dump][:uncompress_command] = "unzip -p"
-      elsif command_output =~ /gzip compressed data/
-        extension = "gz"
-        node[:db][:dump][:uncompress_command] = "gunzip <"
-      elsif command_output =~ /bzip2 compressed data/
-        extension = "bz2"
-        node[:db][:dump][:uncompress_command] = "bunzip2 <"
-      end
-      node[:db][:dump][:filepath] = dumpfilepath_without_extension +
-        "." +
-        extension
-      FileUtils.mv(dumpfilepath_without_extension, node[:db][:dump][:filepath])
-
-      # The dumpfile attribute for the db resource's "restore_from_dump_file"
-      # action is evaluated during compile time and when it converges the old
-      # value (the one without the extension) is used. This ruby block runs in
-      # converge phase which updates the value to be used for the dumpfile
-      # attribute. The following code will update the db resource's dumpfile
-      # attribute in converge time.
-      # See cookbooks/db/libraries/helper.rb for the definition of
-      # "set_resource_attribute" method.
-      set_resource_attribute(
-        {:db => node[:db][:data_dir]},
-        :dumpfile,
-        node[:db][:dump][:filepath]
-      )
-    end
-  end
-
-
   # Restore the dump file to db
   # See cookbooks/db_<provider>/providers/default.rb for the
   # "restore_from_dump_file" action.
   db node[:db][:data_dir] do
-    dumpfile node[:db][:dump][:filepath]
+    dumpfile dumpfilepath_without_extension
     db_name db_name
     action :restore_from_dump_file
   end
