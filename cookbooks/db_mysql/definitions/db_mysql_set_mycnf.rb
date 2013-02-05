@@ -9,7 +9,12 @@ define :db_mysql_set_mycnf,
   :server_id => nil,
   :relay_log => nil,
   :innodb_log_file_size => nil,
-  :compressed_protocol => false do
+  :compressed_protocol => false,
+  :slave_net_timeout => nil,
+  :ssl_enabled => nil,
+  :ca_certificate => nil,
+  :master_certificate => nil,
+  :master_key => nil do
 
   log "  Installing my.cnf with server_id = #{params[:server_id]}," +
     " relay_log = #{params[:relay_log]}"
@@ -25,12 +30,16 @@ define :db_mysql_set_mycnf,
       :innodb_log_file_size => params[:innodb_log_file_size]||
         node[:db_mysql][:tunable][:innodb_log_file_size],
       :compressed_protocol => params[:compressed_protocol] ? "1" : "0",
-      :ssl_enabled => node[:db_mysql][:ssl_enabled],
-      :ca_certificate =>
+      :slave_net_timeout => params[:slave_net_timeout]||
+        node[:db_mysql][:tunable][:slave_net_timeout],
+      :ssl_enabled => params[:ssl_enabled]||
+        node[:db_mysql][:ssl_enabled],
+      :ca_certificate => params[:ca_certificate]||
         node[:db_mysql][:ssl_credentials][:ca_certificate][:path],
-      :master_certificate =>
+      :master_certificate => params[:master_certificate]||
         node[:db_mysql][:ssl_credentials][:master_certificate][:path],
-      :master_key => node[:db_mysql][:ssl_credentials][:master_key][:path]
+      :master_key => params[:master_key]||
+        node[:db_mysql][:ssl_credentials][:master_key][:path]
     )
     cookbook "db_mysql"
   end

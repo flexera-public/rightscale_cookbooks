@@ -84,6 +84,9 @@ server-id               = <%= @server_id %>
 <% end %>
 binlog_format           = <%= node[:db_mysql][:binlog_format] %>
 max_binlog_size         = 100M
+
+slave-net-timeout = <%= @slave_net_timeout %>
+
 #
 # * InnoDB
 #
