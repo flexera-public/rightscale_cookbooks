@@ -704,8 +704,8 @@ action :promote do
         RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT
       )
       if log_bin['Value'] == 'OFF'
-        Chef::Log.info "  Detected binlogs were disabled, restarting service " +
-          "to enable them for Master takeover."
+        Chef::Log.info "  Detected binlogs were disabled, restarting service" +
+          " to enable them for Master takeover."
         true
       else
         false
@@ -727,7 +727,11 @@ action :promote do
   )
   previous_master = node[:db][:current_master_ip]
 
-  unless force_promote
+  if force_promote
+    Chef::Log.warn "Forcing the promotion of a slave to master, ignoring" +
+      " checks and changes to any current master. This will bring up a master" +
+      " with NO replication."
+  else
     if previous_master.nil?
       raise "FATAL: could not determine master host from slave status"
     end
@@ -785,13 +789,9 @@ action :promote do
         "SELECT MASTER_POS_WAIT('#{master_file}',#{master_position})"
       )
     rescue => e
-      Chef::Log.info "  WARNING: caught exception #{e} during non-critical " +
-        "operations on the OLD MASTER"
+      Chef::Log.info "  WARNING: caught exception #{e} during non-critical" +
+        " operations on the OLD MASTER"
     end
-  else
-    Chef::Log.warn "Forcing the promotion of a slave to master, ignoring" +
-      " checks and changes to any current master. This will bring up a master" +
-      " with NO replication."
   end
 
   # PHASE2: reset and promote this slave to master.
@@ -830,9 +830,9 @@ action :promote do
           RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT
         ) do
           # Demotes oldmaster.
-          Chef::Log.info "  Calling reconfigure replication with host: " +
-            "#{previous_master} ip: #{node[:cloud][:private_ips][0]} file: " +
-            "#{newmaster_file} position: #{newmaster_position}"
+          Chef::Log.info "  Calling reconfigure replication with host:" +
+            " #{previous_master} ip: #{node[:cloud][:private_ips][0]} file:" +
+            " #{newmaster_file} position: #{newmaster_position}"
           RightScale::Database::MySQL::Helper.reconfigure_replication(
             node,
             previous_master,
@@ -843,14 +843,13 @@ action :promote do
         end
       end
     rescue Timeout::Error => e
-      Chef::Log.info "  WARNING: rescuing SystemTimer exception #{e}, " +
-        "continuing with promote"
+      Chef::Log.info "  WARNING: rescuing SystemTimer exception #{e}," +
+        " continuing with promote"
     rescue => e
-      Chef::Log.info "  WARNING: rescuing exception #{e}, " +
-        "continuing with promote"
+      Chef::Log.info "  WARNING: rescuing exception #{e}," +
+        " continuing with promote"
     end
   end
-
 end
 
 
