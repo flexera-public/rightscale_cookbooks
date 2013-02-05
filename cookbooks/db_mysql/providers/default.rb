@@ -683,6 +683,9 @@ action :promote do
       raise "FATAL: could not determine master host from slave status"
     end
     Chef::Log.info "  host: #{previous_master}}"
+    Chef::Log.warn "Promoting slave and demoting current master. In case" +
+      " recipe fails, please review if using the 'Force Promote to Master'" +
+      " input will help."
 
     # PHASE1: contains non-critical old master operations, if a timeout or
     # error occurs we continue promotion assuming the old master is dead.
@@ -736,6 +739,10 @@ action :promote do
       Chef::Log.info "  WARNING: caught exception #{e} during non-critical " +
         "operations on the OLD MASTER"
     end
+  else
+    Chef::Log.warn "Forcing the promotion of a slave to master, ignoring" +
+      " checks and changes to any current master. This will bring up a master" +
+      " with NO replication."
   end
 
   # PHASE2: reset and promote this slave to master.
