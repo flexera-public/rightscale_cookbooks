@@ -27,6 +27,13 @@ default[:db_mysql][:dump][:storage_account_secret] = ""
 default[:db_mysql][:dump][:container] = ""
 default[:db_mysql][:dump][:prefix] = ""
 
+# SSL attributes
+default[:db_mysql][:ssl][:ca_certificate] = nil
+default[:db_mysql][:ssl][:master_certificate] = nil
+default[:db_mysql][:ssl][:master_key] = nil
+default[:db_mysql][:ssl][:slave_certificate] = nil
+default[:db_mysql][:ssl][:slave_key] = nil
+
 # Platform specific attributes
 
 case platform
