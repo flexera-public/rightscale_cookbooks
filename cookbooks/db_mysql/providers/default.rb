@@ -934,7 +934,6 @@ action :restore_from_dump_file do
         extension = "bz2"
         node[:db][:dump][:uncompress_command] = "bunzip2 <"
       end
-      Chef::Log.info "[DEBUG] File extension: #{extension}"
       node[:db][:dump][:filepath] = dumpfilepath_without_extension +
         "." +
         extension
