@@ -1,7 +1,9 @@
 /*
- * These are the v13.2 regression ServerTemplates which was done 2012-11-29 to 2012-12-14.
+ * These are the v13.2 regression ServerTemplates which was done 2012-11-29 to
+ * 2012-12-14.
  *
- * This uses the latest versions of the ServerTemplates with v13.2 in their name.
+ * This uses the latest versions of the ServerTemplates with v13.2 in their
+ * name.
  */
 {
   "base_chef": {
