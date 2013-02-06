@@ -732,13 +732,13 @@ action :promote do
       " checks and changes to any current master. This will bring up a master" +
       " with NO replication."
   else
+    Chef::Log.warn "Promoting slave and demoting current master. In case" +
+      " recipe fails, please review if using the 'Force Promote to Master'" +
+      " input will help."
     if previous_master.nil?
       raise "FATAL: could not determine master host from slave status"
     end
     Chef::Log.info "  host: #{previous_master}}"
-    Chef::Log.warn "Promoting slave and demoting current master. In case" +
-      " recipe fails, please review if using the 'Force Promote to Master'" +
-      " input will help."
 
     # PHASE1: contains non-critical old master operations, if a timeout or
     # error occurs we continue promotion assuming the old master is dead.
@@ -779,8 +779,8 @@ action :promote do
 
       master_file = masterstatus['File']
       master_position = masterstatus['Position']
-      Chef::Log.info "  Retrieved master info...File: " + master_file +
-        " position: " + master_position
+      Chef::Log.info "  Retrieved master info...File: #{master_file}" +
+        " position: #{master_position}"
 
       Chef::Log.info "  Waiting for slave to catch up with OLDMASTER (if alive)"
       # NEWMASTER localhost:
@@ -806,8 +806,8 @@ action :promote do
   )
   newmaster_file = newmasterstatus['File']
   newmaster_position = newmasterstatus['Position']
-  Chef::Log.info "  Retrieved new master info...File: " + newmaster_file +
-    " position: " + newmaster_position
+  Chef::Log.info "  Retrieved new master info...File: #{newmaster_file}" +
+    " position: #{newmaster_position}"
 
   Chef::Log.info "  Stopping slave and misconfiguring master"
   RightScale::Database::MySQL::Helper.do_query(node, "STOP SLAVE")
