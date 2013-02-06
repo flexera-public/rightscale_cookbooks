@@ -212,10 +212,14 @@ action :post_restore_cleanup do
   # Always update the my.cnf file on a restore.
   # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb
   # for the "db_mysql_set_mycnf" definition.
+  # See cookbooks/db_mysql/libraries/helper.rb
+  # for the "RightScale::Database::MySQL::Helper" class.
   db_mysql_set_mycnf "setup_mycnf" do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
     innodb_log_file_size ::File.stat("/var/lib/mysql/ib_logfile0").size
+    compressed_protocol node[:db_mysql][:compressed_protocol] ==
+      "enabled" ? true : false
   end
 
   # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
@@ -386,6 +390,7 @@ action :install_server do
   platform = node[:platform]
 
   # MySQL server depends on MySQL client.
+  # Calls the "install_client" action.
   action_install_client
 
   # Uninstalls specified server packages.
@@ -458,12 +463,105 @@ action :install_server do
     recursive true
   end
 
+  # Determine whether to enable SSL for MySQL based on provided inputs.
+  # SSL will only be enabled if all inputs are populated.
+  node[:db_mysql][:ssl_enabled] =
+    !node[:db_mysql][:ssl][:ca_certificate].to_s.empty? &&
+    !node[:db_mysql][:ssl][:master_certificate].to_s.empty? &&
+    !node[:db_mysql][:ssl][:master_key].to_s.empty? &&
+    !node[:db_mysql][:ssl][:slave_certificate].to_s.empty? &&
+    !node[:db_mysql][:ssl][:slave_key].to_s.empty?
+
+  node[:db_mysql][:ssl_credentials] = {
+    :ca_certificate => {
+      :credential => node[:db_mysql][:ssl][:ca_certificate],
+      :path => "/etc/mysql/certs/ca_cert.pem"
+    },
+    :master_certificate => {
+      :credential => node[:db_mysql][:ssl][:master_certificate],
+      :path => "/etc/mysql/certs/master_cert.pem"
+    },
+    :master_key => {
+      :credential => node[:db_mysql][:ssl][:master_key],
+      :path => "/etc/mysql/certs/master_key.pem"
+    },
+    :slave_certificate => {
+      :credential => node[:db_mysql][:ssl][:slave_certificate],
+      :path => "/etc/mysql/certs/slave_cert.pem"
+    },
+    :slave_key => {
+      :credential => node[:db_mysql][:ssl][:slave_key],
+      :path => "/etc/mysql/certs/slave_key.pem"
+    }
+  }
+
+  if node[:db_mysql][:ssl_enabled]
+    directory "/etc/mysql/certs" do
+      owner "mysql"
+      group "mysql"
+      mode "0700"
+    end
+
+    node[:db_mysql][:ssl_credentials].each do |name, data|
+      template data[:path] do
+        source "credential.pem.erb"
+        cookbook "db_mysql"
+        owner "mysql"
+        group "mysql"
+        mode "0400"
+        variables(
+          :credential => data[:credential]
+        )
+      end
+    end
+
+    m_cmd = "openssl verify -CAfile"
+    m_cmd << " #{node[:db_mysql][:ssl_credentials][:ca_certificate][:path]}"
+    m_cmd << " #{node[:db_mysql][:ssl_credentials][:master_certificate][:path]}"
+
+    s_cmd = "openssl verify -CAfile"
+    s_cmd << " #{node[:db_mysql][:ssl_credentials][:ca_certificate][:path]}"
+    s_cmd << " #{node[:db_mysql][:ssl_credentials][:slave_certificate][:path]}"
+
+
+    ruby_block "verify_certificates" do
+      block do
+        master = Chef::ShellOut.new(m_cmd)
+        master.run_command
+
+        slave = Chef::ShellOut.new(s_cmd)
+        slave.run_command
+
+        if master.exitstatus == 0 && slave.exitstatus == 0
+          Chef::Log.info master.stdout
+          Chef::Log.info slave.stdout
+          Chef::Log.info "  Master and Slave certificates verified."
+        else
+          Chef::Log.info master.stderr
+          Chef::Log.info slave.stderr
+          raise "FATAL: an error occurred while trying to verify Master and" +
+            " Slave certificates against the CA certificate."
+        end
+      end
+    end
+  end
+
+
+  log "  MySQL SSL enabled: #{node[:db_mysql][:ssl_enabled]}"
+  log "  MySQL SSL will only be enabled if all inputs contain credentials." do
+    not_if { node[:db_mysql][:ssl_enabled] }
+  end
+
   # Sets up my.cnf
-  # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for the "db_mysql_set_mycnf" definition.
-  # See cookbooks/db_mysql/libraries/helper.rb for the "RightScale::Database::MySQL::Helper" class.
+  # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb
+  # for the "db_mysql_set_mycnf" definition.
+  # See cookbooks/db_mysql/libraries/helper.rb
+  # for the "RightScale::Database::MySQL::Helper" class.
   db_mysql_set_mycnf "setup_mycnf" do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
+    compressed_protocol node[:db_mysql][:compressed_protocol] ==
+      "enabled" ? true : false
   end
 
   # Setup read_write_status.cnf
@@ -478,7 +576,7 @@ action :install_server do
     variables(
       :ulimit => mysql_file_ulimit
     )
-    cookbook 'db_mysql'
+    cookbook "db_mysql"
   end
 
   # Changes root's limitations for THIS shell. The entry in the limits.d will be
@@ -494,7 +592,7 @@ action :install_server do
   template "/etc/sysconfig/#{node[:db_mysql][:service_name]}" do
     source "sysconfig-mysqld.erb"
     mode "0755"
-    cookbook 'db_mysql'
+    cookbook "db_mysql"
     only_if { platform =~ /redhat|centos/ }
   end
 
@@ -505,14 +603,14 @@ action :install_server do
     only_if { platform == "ubuntu" }
     mode "0600"
     source "debian.cnf"
-    cookbook 'db_mysql'
+    cookbook "db_mysql"
   end
 
   cookbook_file "/etc/mysql/debian-start" do
     only_if { platform == "ubuntu" }
     mode "0755"
     source "debian-start"
-    cookbook 'db_mysql'
+    cookbook "db_mysql"
   end
 
   # Fixes permissions: during the first startup after installation some of the
@@ -637,7 +735,7 @@ action :setup_monitoring do
     source "collectd-plugin-mysql.conf.erb"
     mode "0644"
     backup false
-    cookbook 'db_mysql'
+    cookbook "db_mysql"
     notifies :restart, resources(:service => "collectd")
   end
 
@@ -654,7 +752,11 @@ action :grant_replication_slave do
 
   Chef::Log.info "GRANT REPLICATION SLAVE to #{node[:db][:replication][:user]}"
   con = Mysql.new('localhost', 'root')
-  con.query("GRANT REPLICATION SLAVE ON *.* TO '#{node[:db][:replication][:user]}'@'%' IDENTIFIED BY '#{node[:db][:replication][:password]}'")
+  grant_query = "GRANT REPLICATION SLAVE ON *.* TO"
+  grant_query << " '#{node[:db][:replication][:user]}'@'%'"
+  grant_query << " IDENTIFIED BY '#{node[:db][:replication][:password]}'"
+  grant_query << " REQUIRE SSL" if node[:db_mysql][:ssl_enabled]
+  con.query(grant_query)
   con.query("FLUSH PRIVILEGES")
   con.close
 end
@@ -681,12 +783,16 @@ action :promote do
   node[:db_mysql][:log_bin_enabled] = true
 
   # Sets up my.cnf
-  # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for the "db_mysql_set_mycnf" definition.
-  # See cookbooks/db_mysql/libraries/helper.rb for the "RightScale::Database::MySQL::Helper" class.
+  # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb
+  # for the "db_mysql_set_mycnf" definition.
+  # See cookbooks/db_mysql/libraries/helper.rb
+  # for the "RightScale::Database::MySQL::Helper" class.
   db_mysql_set_mycnf "setup_mycnf" do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
     innodb_log_file_size ::File.stat("/var/lib/mysql/ib_logfile0").size
+    compressed_protocol node[:db_mysql][:compressed_protocol] ==
+      "enabled" ? true : false
   end
 
   # See cookbooks/db_mysql/providers/default.rb for the "start" action.
@@ -760,8 +866,18 @@ action :promote do
       RightScale::Database::MySQL::Helper.do_query(node, 'UNLOCK TABLES', previous_master)
       SystemTimer.timeout_after(RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT) do
         # Demotes oldmaster.
-        Chef::Log.info "  Calling reconfigure replication with host: #{previous_master} ip: #{node[:cloud][:private_ips][0]} file: #{newmaster_file} position: #{newmaster_position}"
-        RightScale::Database::MySQL::Helper.reconfigure_replication(node, previous_master, node[:cloud][:private_ips][0], newmaster_file, newmaster_position)
+        # See cookbooks/db/libraries/helper.rb
+        # for the "get_local_replication_interface" method.
+        Chef::Log.info "  Calling reconfigure replication with host: " +
+          "#{previous_master} ip: #{get_local_replication_interface} file: " +
+          "#{newmaster_file} position: #{newmaster_position}"
+        RightScale::Database::MySQL::Helper.reconfigure_replication(
+          node,
+          previous_master,
+          get_local_replication_interface,
+          newmaster_file,
+          newmaster_position
+        )
       end
     end
   rescue Timeout::Error => e
@@ -823,11 +939,16 @@ action :enable_replication do
 
   unless current_restore_process == :no_restore
     # Sets up my.cnf
-    # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for the "db_mysql_set_mycnf" definition.
+    # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb
+    # for the "db_mysql_set_mycnf" definition.
+    # See cookbooks/db_mysql/libraries/helper.rb
+    # for the "RightScale::Database::MySQL::Helper" class.
     db_mysql_set_mycnf "setup_mycnf" do
       server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
       relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
       innodb_log_file_size ::File.stat("/var/lib/mysql/ib_logfile0").size
+      compressed_protocol node[:db_mysql][:compressed_protocol] ==
+        "enabled" ? true : false
     end
   end
 

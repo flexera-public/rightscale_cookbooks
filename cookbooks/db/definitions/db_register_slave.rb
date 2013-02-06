@@ -53,13 +53,27 @@ define :db_register_slave, :action => :primary_restore do
         lineage = ""
         # Using reverse order to end with first found master
         # if no DB tagged with lineage.
+        ip_tag =
+          case node[:db][:replication][:network_interface]
+          when "private"
+           "server:private_ip_0"
+          when "public"
+           "server:public_ip_0"
+          when "vpn"
+           "server:vpn_ip_0"
+          else
+           raise "\"#{node[:db][:replication][:network_interface]}\"" +
+             " is not a valid network interface."
+          end
+        # Using reverse order to end with first found master if no DB tagged with lineage.
         node[:server_collection]["master_servers"].reverse_each do |id, tags|
-          master_active_tag = tags.detect{ |s| s =~ /rs_dbrepl:master_active/ }
+          master_active_tag = tags.detect { |s| s =~ /rs_dbrepl:master_active/ }
 
           activation_time, lineage = master_active_tag.split('-', 2)
 
           my_uuid = tags.detect { |u| u =~ /rs_dbrepl:master_instance_uuid/ }
-          my_ip_0 = tags.detect { |i| i =~ /server:private_ip_0/ }
+          my_ip_0 = tags.detect { |i| i =~ /#{ip_tag}/ }
+
           # Following used for detecting 11H1 DB servers
           ec2_instance_id = tags.detect { |e| e =~ /ec2:instance_id/ }
 

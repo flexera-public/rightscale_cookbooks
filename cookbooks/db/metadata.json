@@ -72,7 +72,7 @@
       "description": "The fully qualified domain name for a slave database server. Example: db-slave.example.com",
       "required": "optional",
       "recipes": [
-        "db::do_set_dns_slave_private_ip"
+        "db::do_set_dns_slave"
       ],
       "choice": [
 
@@ -85,7 +85,7 @@
       "description": "The unique identifier that is associated with the DNS A record of a slave server. The unique identifier is assigned by the DNS provider when you create a dynamic DNS A record. This ID is used to update the associated A record with the private IP address of a slave server when this recipe is run. If you are using DNS Made Easy as your DNS provider, a 7-digit number is used (e.g., 4403234). Example:4403234",
       "required": "required",
       "recipes": [
-        "db::do_set_dns_slave_private_ip"
+        "db::do_set_dns_slave"
       ],
       "choice": [
 
@@ -165,6 +165,26 @@
       ],
       "choice": [
 
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "db/replication/network_interface": {
+      "display_name": "Database Replication Network Interface",
+      "description": "The network interface used for replication. WARNING: when selecting 'public' we highly recommend enabling SSL encryption, otherwise data could travel over insecure connections. Make sure you understand what you are doing before changing this value. Default: private",
+      "required": "optional",
+      "choice": [
+        "private",
+        "public",
+        "vpn"
+      ],
+      "default": "private",
+      "recipes": [
+        "db::install_server",
+        "db::do_promote_to_master.rb",
+        "db::request_master_allow.rb",
+        "db::request_master_deny.rb",
+        "db::do_set_dns_slave"
       ],
       "calculated": false,
       "type": "string"
@@ -541,7 +561,7 @@
     "db::do_primary_init_slave": "Initializes the slave server from the primary backup location. Authentication information provided by inputs is ignored for slave servers.",
     "db::do_secondary_init_slave": "Initializes the slave server from the secondary backup location. Authentication information provided by inputs is ignored for slave servers.",
     "db::do_init_slave_at_boot": "Initializes the slave server at boot.",
-    "db::do_set_dns_slave_private_ip": "Sets the slave DNS record to the private IP.",
+    "db::do_set_dns_slave": "Sets the slave DNS record to the network interface IP.",
     "db::do_promote_to_master": "Promotes a replicating slave to master.",
     "db::setup_replication_privileges": "Sets up privileges for replication slave servers.",
     "db::request_master_allow": "Sends a request to the master database server tagged with rs_dbrepl:master_instance_uuid=<master_instance_uuid> to allow connections from the server's private IP address. This script should be run on a slave before it sets up replication.",
