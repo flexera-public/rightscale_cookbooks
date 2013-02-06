@@ -147,8 +147,8 @@ recipe "db::do_secondary_init_slave",
 recipe "db::do_init_slave_at_boot",
   "Initializes the slave server at boot."
 
-recipe "db::do_set_dns_slave_private_ip",
-  "Sets the slave DNS record to the private IP."
+recipe "db::do_set_dns_slave",
+  "Sets the slave DNS record to the network interface IP."
 
 recipe "db::do_promote_to_master",
   "Promotes a replicating slave to master."
@@ -213,7 +213,7 @@ attribute "db/dns/slave/fqdn",
     "The fully qualified domain name for a slave database server." +
     " Example: db-slave.example.com",
   :required => "optional",
-  :recipes => ["db::do_set_dns_slave_private_ip"]
+  :recipes => ["db::do_set_dns_slave"]
 
 attribute "db/dns/slave/id",
   :display_name => "Database Slave DNS Record ID",
@@ -226,7 +226,7 @@ attribute "db/dns/slave/id",
     " If you are using DNS Made Easy as your DNS provider," +
     " a 7-digit number is used (e.g., 4403234). Example:4403234",
   :required => "required",
-  :recipes => ["db::do_set_dns_slave_private_ip"]
+  :recipes => ["db::do_set_dns_slave"]
 
 attribute "db/admin/user",
   :display_name => "Database Admin Username",
@@ -290,6 +290,24 @@ attribute "db/replication/password",
     "db::do_primary_init_slave",
     "db::do_secondary_init_slave",
     "db::do_init_slave_at_boot"
+  ]
+
+attribute "db/replication/network_interface",
+  :display_name => "Database Replication Network Interface",
+  :description =>
+    "The network interface used for replication. WARNING: when selecting" +
+    " 'public' we highly recommend enabling SSL encryption, otherwise data" +
+    " could travel over insecure connections. Make sure you understand what" +
+    " you are doing before changing this value. Default: private",
+  :required => "optional",
+  :choice => ["private", "public", "vpn"],
+  :default => "private",
+  :recipes => [
+    "db::install_server",
+    "db::do_promote_to_master.rb",
+    "db::request_master_allow.rb",
+    "db::request_master_deny.rb",
+    "db::do_set_dns_slave"
   ]
 
 attribute "db/application/user",

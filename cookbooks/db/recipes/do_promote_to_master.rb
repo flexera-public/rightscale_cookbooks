@@ -11,6 +11,10 @@ DATA_DIR = node[:db][:data_dir]
 
 force_promote = node[:db][:force_promote] == "true" ? true : false
 
+class Chef::Resource::RemoteRecipe
+  include RightScale::Database::Helper
+end
+
 # Verify initialized database
 # Check the node state to verify that we have correctly initialized this server.
 # See cookbooks/db/definitions/db_state_assert.rb
@@ -27,7 +31,8 @@ sys_firewall "Open port to the old master which is becoming a slave" do
   not_if { force_promote }
 end
 
-# Set database username and password with permissions to replicate from the new master.
+# Set database username and password with permissions
+# to replicate from the new master.
 # See cookbooks/db/recipes/setup_replication_privileges.rb
 # for the "db::setup_replication_privileges" recipe.
 include_recipe "db::setup_replication_privileges"
@@ -53,21 +58,24 @@ unless force_promote
     recipe "db::do_primary_backup_schedule_enable"
     recipients_tags "rs_dbrepl:master_instance_uuid=#{node[:db][:current_master_uuid]}"
   end
-
+  
   # Demote old master
   # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RemoteRecipe
   # for the "remote_recipe" resource.
   # See cookbooks/db/recipes/handle_demote_master.rb
   # for the "db::handle_demote_master" recipe.
+  # See cookbooks/db/libraries/helper.rb
+  # for the "get_local_replication_interface" method.
   remote_recipe "demote master" do
     recipe "db::handle_demote_master"
     attributes :remote_recipe => {
-      :new_master_ip => node[:cloud][:private_ips][0],
+      :new_master_ip => get_local_replication_interface,
       :new_master_uuid => node[:rightscale][:instance_uuid]
     }
     recipients_tags "rs_dbrepl:master_instance_uuid=#{node[:db][:current_master_uuid]}"
   end
 end
+
 
 # Tag as master
 # Changes master status tags and node state

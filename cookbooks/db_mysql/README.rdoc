@@ -79,7 +79,9 @@ refer to the db cookbook readme.
 * <tt>node[:db_mysql][:port]</tt> - The port on which MySQL server listens.
 * <tt>node[:db_mysql][:log_bin_enabled]</tt> - Determines whether binary logging is enabled or disabled.
 * <tt>node[:db_mysql][:datadir]</tt> - The data directory for MySQL server where the database contents are stored.
-* <tt>node[:db_mysql][:bind_address]</tt> - The IP address that MySQL server uses to bind.
+* <tt>node[:db_mysql][:bind_address]</tt> - The IP address that MySQL server
+  uses to bind. It is set to "0.0.0.0" allowing mysql clients/GUI tools to
+  connect from the outside.
 * <tt>node[:db_mysql][:dump][:storage_account_provider]</tt> - The storage account provided MySQL dump backup.
 * <tt>node[:db_mysql][:dump][:storage_account_id]</tt> - The storage account ID for MySQL dump backup.
 * <tt>node[:db_mysql][:dump][:storage_account_secret]</tt> - The storage account secret for MySQL dump backup.
