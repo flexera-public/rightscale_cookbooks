@@ -131,7 +131,8 @@ attribute "db_mysql/ssl/ca_certificate",
   :description =>
     "The name of your CA SSL Certificate." +
     " This is one of the 5 inputs needed to do secured replication." +
-    " Example: cred:CA_CERT",
+    " Example: cred:CA_CERT. Please DO NOT use this input for LAMP" +
+    " ServerTemplates.",
   :required => "optional",
   :default => "",
   :recipes => [
@@ -144,7 +145,8 @@ attribute "db_mysql/ssl/master_certificate",
   :description =>
     "The name of your Master SSL Certificate." +
     " This is one of the 5 inputs needed to do secured replication." +
-    " Example: cred:MASTER_CERT",
+    " Example: cred:MASTER_CERT. Please DO NOT use this input for LAMP" +
+    " ServerTemplates.",
   :required => "optional",
   :default => "",
   :recipes => [
@@ -157,7 +159,8 @@ attribute "db_mysql/ssl/master_key",
   :description =>
     "The name of your Master SSL Key." +
     " This is one of the 5 inputs needed to do secured replication." +
-    " Example: cred:MASTER_KEY",
+    " Example: cred:MASTER_KEY. Please DO NOT use this input for LAMP" +
+    " ServerTemplates.",
   :required => "optional",
   :default => "",
   :recipes => [
@@ -170,7 +173,8 @@ attribute "db_mysql/ssl/slave_certificate",
   :description =>
     "The name of your Slave SSL Certificate." +
     " This is one of the 5 inputs needed to do secured replication." +
-    " Example: cred:SLAVE_CERT",
+    " Example: cred:SLAVE_CERT. Please DO NOT use this input for LAMP" +
+    " ServerTemplates.",
   :required => "optional",
   :default => "",
   :recipes => [
@@ -183,7 +187,8 @@ attribute "db_mysql/ssl/slave_key",
   :description =>
     "The name of your Slave SSL Key." +
     " This is one of the 5 inputs needed to do secured replication." +
-    " Example: cred:SLAVE_KEY",
+    " Example: cred:SLAVE_KEY. Please DO NOT use this input for LAMP" +
+    " ServerTemplates.",
   :required => "optional",
   :default => "",
   :recipes => [
