@@ -673,7 +673,8 @@ action :restore_from_dump_file do
         create_db.error!
 
         # Import comtents from dump file to the database
-        Chef::Log.info "  Importing contents from dumpfile: #{node[:db][:dump][:filepath]}"
+        Chef::Log.info "  Importing contents from dumpfile:" +
+          " #{node[:db][:dump][:filepath]}"
         import_dump = Mixlib::ShellOut.new(
           "#{node[:db][:dump][:uncompress_command]} #{node[:db][:dump][:filepath]} |" +
           " psql -U postgres #{db_name}"
