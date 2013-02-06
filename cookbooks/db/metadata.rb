@@ -628,3 +628,16 @@ attribute "db/force_safety",
     "Override the dropdown and set to \"off\" to really run this recipe",
   :required => "optional",
   :recipes => ["db::do_force_reset"]
+
+attribute "db/force_promote",
+  :display_name => "Force Promote to Master",
+  :description =>
+    "If true, when promoting a slave to master, ignores making checks and" +
+    " changes to any current master. WARNING: setting this will promote a" +
+    " slave to a master with no replication until a new slave is brought up." +
+    " Make sure you understand what you are doing before changing this value." +
+    " Default: false",
+  :required => "optional",
+  :default => "false",
+  :choice => ["true", "false"],
+  :recipes => ["db::do_promote_to_master"]

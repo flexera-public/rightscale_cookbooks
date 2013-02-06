@@ -9,6 +9,8 @@ rightscale_marker :begin
 
 DATA_DIR = node[:db][:data_dir]
 
+force_promote = node[:db][:force_promote] == "true" ? true : false
+
 class Chef::Resource::RemoteRecipe
   include RightScale::Database::Helper
 end
@@ -26,6 +28,7 @@ sys_firewall "Open port to the old master which is becoming a slave" do
   enable true
   ip_addr node[:db][:current_master_ip]
   action :update
+  not_if { force_promote }
 end
 
 # Set database username and password with permissions
@@ -39,36 +42,40 @@ include_recipe "db::setup_replication_privileges"
 # to demote it later.  Once demoted, then we add master tags.
 # See cookbooks/db_<provider>/providers/default.rb for the "promote" action.
 db DATA_DIR do
+  force force_promote
   action :promote
 end
 
-# Schedule backups on slave
-# This should be done before calling db::do_lookup_master
-# changes current_master from old to new.
-# See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RemoteRecipe
-# for the "remote_recipe" resource.
-# See cookbooks/db/recipes/do_primary_backup_schedule_enable.rb
-# for the "do_primary_backup_schedule_enable" recipe.
-remote_recipe "enable slave backups on oldmaster" do
-  recipe "db::do_primary_backup_schedule_enable"
-  recipients_tags "rs_dbrepl:master_instance_uuid=#{node[:db][:current_master_uuid]}"
+unless force_promote
+  # Schedule backups on slave
+  # This should be done before calling db::do_lookup_master
+  # changes current_master from old to new.
+  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RemoteRecipe
+  # for the "remote_recipe" resource.
+  # See cookbooks/db/recipes/do_primary_backup_schedule_enable.rb
+  # for the "do_primary_backup_schedule_enable" recipe.
+  remote_recipe "enable slave backups on oldmaster" do
+    recipe "db::do_primary_backup_schedule_enable"
+    recipients_tags "rs_dbrepl:master_instance_uuid=#{node[:db][:current_master_uuid]}"
+  end
+  
+  # Demote old master
+  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RemoteRecipe
+  # for the "remote_recipe" resource.
+  # See cookbooks/db/recipes/handle_demote_master.rb
+  # for the "db::handle_demote_master" recipe.
+  # See cookbooks/db/libraries/helper.rb
+  # for the "get_local_replication_interface" method.
+  remote_recipe "demote master" do
+    recipe "db::handle_demote_master"
+    attributes :remote_recipe => {
+      :new_master_ip => get_local_replication_interface,
+      :new_master_uuid => node[:rightscale][:instance_uuid]
+    }
+    recipients_tags "rs_dbrepl:master_instance_uuid=#{node[:db][:current_master_uuid]}"
+  end
 end
 
-# Demote old master
-# See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RemoteRecipe
-# for the "remote_recipe" resource.
-# See cookbooks/db/recipes/handle_demote_master.rb
-# for the "db::handle_demote_master" recipe.
-# See cookbooks/db/libraries/helper.rb
-# for the "get_local_replication_interface" method.
-remote_recipe "demote master" do
-  recipe "db::handle_demote_master"
-  attributes :remote_recipe => {
-    :new_master_ip => get_local_replication_interface,
-    :new_master_uuid => node[:rightscale][:instance_uuid]
-  }
-  recipients_tags "rs_dbrepl:master_instance_uuid=#{node[:db][:current_master_uuid]}"
-end
 
 # Tag as master
 # Changes master status tags and node state
