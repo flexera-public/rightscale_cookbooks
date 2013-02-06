@@ -620,7 +620,7 @@ end
 action :restore_from_dump_file do
 
   db_name = new_resource.db_name
-  dumpfile = new_resource.dumpfile
+  dumpfilepath_without_extension = new_resource.dumpfile
 
   log "  Check if DB already exists"
   ruby_block "checking existing db" do
@@ -632,19 +632,59 @@ action :restore_from_dump_file do
     end
   end
 
-  bash "Import PostgreSQL dump file: #{dumpfile}" do
-    user "postgres"
-    code <<-EOH
-      set -e
-      if [ ! -f #{dumpfile} ]
-      then
-        echo "ERROR: PostgreSQL dumpfile not found! File: '#{dumpfile}'"
-        exit 1
-      fi
-      createdb -U postgres #{db_name}
-      #{node[:db][:dump][:uncompress_command]} #{dumpfile} | \
-        psql -U postgres #{db_name}
-    EOH
+  # Detect the compression type of the downloaded file and set the
+  # extension properly.
+  node[:db][:dump][:filepath] = ""
+  node[:db][:dump][:uncompress_command] = ""
+  ruby_block "Detect compression type" do
+    block do
+      require "fileutils"
+
+      file_type = Mixlib::ShellOut.new("file #{dumpfilepath_without_extension}")
+      file_type.run_command
+      file_type.error!
+      command_output = file_type.stdout
+
+      extension = ""
+      if command_output =~ /Zip archive data/
+        extension = "zip"
+        node[:db][:dump][:uncompress_command] = "unzip -p"
+      elsif command_output =~ /gzip compressed data/
+        extension = "gz"
+        node[:db][:dump][:uncompress_command] = "gunzip <"
+      elsif command_output =~ /bzip2 compressed data/
+        extension = "bz2"
+        node[:db][:dump][:uncompress_command] = "bunzip2 <"
+      end
+      node[:db][:dump][:filepath] = dumpfilepath_without_extension +
+        "." +
+        extension
+      FileUtils.mv(dumpfilepath_without_extension, node[:db][:dump][:filepath])
+    end
+  end
+
+  ruby_block "Import PostgreSQL dump file" do
+    block do
+      if ::File.exists?(node[:db][:dump][:filepath])
+        # Create the database
+        Chef::Log.info "  Creating DB #{db_name}..."
+        create_db = Mixlib::ShellOut.new("createdb -U postgres #{db_name}")
+        create_db.run_command
+        create_db.error!
+
+        # Import comtents from dump file to the database
+        Chef::Log.info "  Importing contents from dumpfile:" +
+          " #{node[:db][:dump][:filepath]}"
+        import_dump = Mixlib::ShellOut.new(
+          "#{node[:db][:dump][:uncompress_command]} #{node[:db][:dump][:filepath]} |" +
+          " psql -U postgres #{db_name}"
+        )
+        import_dump.run_command
+        import_dump.error!
+      else
+        raise "PostgreSQL dump file not found: #{node[:db][:dump][:filepath]}"
+      end
+    end
   end
 
 end
