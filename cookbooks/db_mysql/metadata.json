@@ -242,5 +242,5 @@
     "db_mysql::setup_server_5_1": "Sets the DB MySQL provider. Sets version 5.1 and node variables specific to MySQL 5.1.",
     "db_mysql::setup_server_5_5": "Sets the DB MySQL provider. Sets version 5.5 and node variables specific to MySQL 5.5."
   },
-  "version": "13.3.0"
+  "version": "13.4.0"
 }

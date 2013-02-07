@@ -109,5 +109,5 @@
     "app_passenger::install_required_app_gems": "Installs bundler gems. Gemfile must be present in app directory.",
     "app_passenger::run_custom_rails_commands": "Runs specific user defined commands. Commands will be executed in the app directory."
   },
-  "version": "13.3.0"
+  "version": "13.4.0"
 }

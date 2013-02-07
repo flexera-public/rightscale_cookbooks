@@ -214,5 +214,5 @@
     "rightscale::install_mysql_collectd_plugin": "Installs the mysql collectd plugin for monitoring support.",
     "rightscale::install_file_stats_collectd_plugin": "Installs the file-stats.rb collectd plugin for monitoring support. It is also used for mysql binary backup alerting."
   },
-  "version": "13.3.0"
+  "version": "13.4.0"
 }

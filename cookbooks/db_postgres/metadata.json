@@ -73,5 +73,5 @@
     "db_postgres::do_set_slave_async_mode": "Sets master to do async-based replication with slaves. For more inforefer: http://www.postgresql.org/docs/9.1/static/warm-standby.html#SYNCHRONOUS-REPLICATION",
     "db_postgres::do_show_slave_sync_mode": "Shows the sync mode used for replication."
   },
-  "version": "13.3.0"
+  "version": "13.4.0"
 }

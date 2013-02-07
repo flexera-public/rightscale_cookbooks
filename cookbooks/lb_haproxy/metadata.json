@@ -73,5 +73,5 @@
   "recipes": {
     "lb_haproxy::setup_server": "This loads the required 'lb' resource using the HAProxy provider."
   },
-  "version": "13.3.0"
+  "version": "13.4.0"
 }

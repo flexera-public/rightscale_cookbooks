@@ -90,5 +90,5 @@
     "logging::do_server_restart": "Restarts logging server.",
     "logging::do_server_reload": "Reloads logging server."
   },
-  "version": "13.3.0"
+  "version": "13.4.0"
 }

@@ -92,5 +92,5 @@
     "app::handle_loadbalancers_allow": "Runs remote recipe on app server from loadbalancer requesting access. DO NOT RUN.",
     "app::handle_loadbalancers_deny": "Runs remote recipe on app server from loadbalancer revoking access. DO NOT RUN."
   },
-  "version": "13.3.0"
+  "version": "13.4.0"
 }

@@ -92,5 +92,5 @@
     "app_django::setup_server_1_4": "Installs the Django application server.",
     "app_django::run_custom_django_commands": "Runs specific user defined commands. Commands will be executed in the app directory."
   },
-  "version": "13.3.0"
+  "version": "13.4.0"
 }

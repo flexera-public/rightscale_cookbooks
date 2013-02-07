@@ -30,5 +30,5 @@
   "recipes": {
     "repo_rsync::default": "Installs \"rsync\" package."
   },
-  "version": "13.3.0"
+  "version": "13.4.0"
 }

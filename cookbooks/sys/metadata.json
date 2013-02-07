@@ -75,5 +75,5 @@
     "sys::do_reconverge_list_disable": "Disables recipe reconverge list.",
     "sys::setup_swap": "Installs swap space."
   },
-  "version": "13.3.0"
+  "version": "13.4.0"
 }

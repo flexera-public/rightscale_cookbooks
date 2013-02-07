@@ -27,5 +27,5 @@
   "recipes": {
     "logging_rsyslog::setup_server": "Sets rsyslog logging provider"
   },
-  "version": "13.3.0"
+  "version": "13.4.0"
 }

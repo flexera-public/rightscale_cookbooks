@@ -584,5 +584,5 @@
     "db::handle_demote_master": "Remote recipe executed by do_promote_to_master. DO NOT RUN.",
     "db::do_delete_volumes_and_terminate_server": "Deletes any currently attached volumes from the instance and then terminates the machine."
   },
-  "version": "13.3.0"
+  "version": "13.4.0"
 }

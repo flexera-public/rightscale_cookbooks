@@ -27,5 +27,5 @@
   "recipes": {
     "repo_ros::default": "Checks for ros_util binary availability"
   },
-  "version": "13.3.0"
+  "version": "13.4.0"
 }

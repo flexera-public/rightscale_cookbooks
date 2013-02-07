@@ -28,5 +28,5 @@
   "recipes": {
     "repo_git::default": "Installs \"git\" package."
   },
-  "version": "13.3.0"
+  "version": "13.4.0"
 }

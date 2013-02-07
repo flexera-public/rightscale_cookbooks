@@ -55,5 +55,5 @@
   "recipes": {
     "app_php::setup_server_5_3": "Installs the php application server."
   },
-  "version": "13.3.0"
+  "version": "13.4.0"
 }

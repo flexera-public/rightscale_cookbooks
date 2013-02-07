@@ -104,5 +104,5 @@
     "sys_firewall::setup_rule": "Enables or disables specific firewall ports.",
     "sys_firewall::do_list_rules": "Lists the firewall rules."
   },
-  "version": "13.3.0"
+  "version": "13.4.0"
 }

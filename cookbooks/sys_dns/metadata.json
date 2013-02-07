@@ -102,5 +102,5 @@
     "sys_dns::default": "Installs tools needed by chosen DNS provider.",
     "sys_dns::do_set_private": "Sets the dynamic DNS entry to the first private IP of the server."
   },
-  "version": "13.3.0"
+  "version": "13.4.0"
 }

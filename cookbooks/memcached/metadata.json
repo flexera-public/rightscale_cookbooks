@@ -176,5 +176,5 @@
     "memcached::do_reload": "Reloads memcached service.",
     "memcached::do_stop": "Stops memcached service."
   },
-  "version": "13.3.0"
+  "version": "13.4.0"
 }

@@ -178,5 +178,5 @@
   "recipes": {
     "repo::default": "Sets up repo resource and provider."
   },
-  "version": "13.3.0"
+  "version": "13.4.0"
 }

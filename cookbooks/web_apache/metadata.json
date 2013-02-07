@@ -183,5 +183,5 @@
     "web_apache::do_enable_maintenance_mode": "Enables maintenance mode for Apache2 webserver",
     "web_apache::do_disable_maintenance_mode": "Disables maintenance mode for Apache2 webserver"
   },
-  "version": "13.3.0"
+  "version": "13.4.0"
 }

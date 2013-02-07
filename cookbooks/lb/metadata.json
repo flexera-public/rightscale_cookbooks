@@ -214,5 +214,5 @@
     "lb::setup_monitoring": "Installs the load balancer collectd plugin for monitoring support.",
     "lb::setup_advanced_configuration": "Sets up advanced load balancer configuration."
   },
-  "version": "13.3.0"
+  "version": "13.4.0"
 }

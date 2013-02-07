@@ -27,5 +27,5 @@
   "recipes": {
     "logging_syslog_ng::default": "Sets syslog_ng logging provider"
   },
-  "version": "13.3.0"
+  "version": "13.4.0"
 }

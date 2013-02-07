@@ -28,5 +28,5 @@
   "recipes": {
     "lamp::default": "Sets up LAMP-specific default attributes."
   },
-  "version": "13.3.0"
+  "version": "13.4.0"
 }

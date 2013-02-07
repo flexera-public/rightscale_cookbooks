@@ -151,5 +151,5 @@
     "app_tomcat::setup_server_6": "Sets version 6 and node variables specific to the chosen Tomcat version to install the tomcat application server.",
     "app_tomcat::setup_server_7": "Sets version 7 and node variables specific to the chosen Tomcat version to install the tomcat application server."
   },
-  "version": "13.3.0"
+  "version": "13.4.0"
 }
