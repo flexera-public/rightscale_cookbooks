@@ -1,0 +1,16 @@
+/*
+ * These are the v13.3 regression ServerTemplates which starts 2013-02-08.
+ *
+ * This uses the latest versions of the ServerTemplates with v13.3 in their
+ * name.
+ */
+{
+  "base_chef": {
+    "nickname": "Base ServerTemplate for Linux (v13.3)",
+    "rev": "latest"
+  },
+  "base_rsb": {
+    "nickname": "Base ServerTemplate for Linux (RSB) (v13.3)",
+    "rev": "latest"
+  }
+}

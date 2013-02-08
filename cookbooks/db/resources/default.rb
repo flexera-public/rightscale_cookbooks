@@ -224,6 +224,7 @@ actions :enable_replication
 # This is called when a new master is needed.  If the prior master is still
 # functioning it is demoted and configured as a slave.
 actions :promote
+  attribute :force, :equal_to => [true, false], :default => false
 
 # == Grant Replication Slave
 # Set database replication privileges for a slave.

@@ -26,14 +26,14 @@ db_init_status :check do
 end
 
 log "  Running pre-restore checks..."
+# See cookbooks/db_<provider>/providers/default.rb for the "pre_restore_check" action.
 db DATA_DIR do
-  # See cookbooks/db_<provider>/providers/default.rb for the "pre_restore_check" action
   action :pre_restore_check
 end
 
 log "  Stopping database..."
+# See cookbooks/db_<provider>/providers/default.rb for the "stop" action.
 db DATA_DIR do
-  # See cookbooks/db_<provider>/providers/default.rb for the "stop" action.
   action :stop
 end
 
@@ -71,15 +71,15 @@ block_device NICKNAME do
   action :secondary_restore
 end
 
-log "  Setting state of database to be 'initialized'..."
-# See cookbooks/db/definitions/db_init_status.rb for the "db_init_status" definition.
-db_init_status :set
-
 log "  Running post-restore cleanup..."
 # See cookbooks/db_<provider>/providers/default.rb for the "post_restore_cleanup" action.
 db DATA_DIR do
   action :post_restore_cleanup
 end
+
+log "  Setting state of database to be 'initialized'..."
+# See cookbooks/db/definitions/db_init_status.rb for the "db_init_status" definition.
+db_init_status :set
 
 log "  Starting database..."
 # See cookbooks/db_<provider>/providers/default.rb for the "start" and "status" actions.
