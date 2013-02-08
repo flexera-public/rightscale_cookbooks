@@ -7,7 +7,6 @@
 
 # Set Jboss install dir and version
 set[:app_jboss][:install_target] = "/usr/share/jboss"
-set[:app_jboss][:package_name] = "jboss-5.1.0.GA"
 
 # List of required apache modules
 set[:app][:module_dependencies] = ["proxy", "proxy_http", "deflate", "rewrite"]
