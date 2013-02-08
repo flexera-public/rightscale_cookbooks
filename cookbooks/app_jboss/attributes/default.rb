@@ -11,7 +11,6 @@ set[:app_jboss][:install_target] = "/usr/share/jboss"
 # List of required apache modules
 set[:app][:module_dependencies] = ["proxy", "proxy_http", "deflate", "rewrite"]
 
-
 # Recommended attributes
 set_unless[:app_jboss][:code][:root_war] = ""
 # Defines the initial value of the permanent generation space size

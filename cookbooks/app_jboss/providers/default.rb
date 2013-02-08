@@ -35,11 +35,8 @@ end
 
 # Installing required packages and prepare system for jboss
 action :install do
-
   packages = new_resource.packages
   install_target = node[:app_jboss][:install_target]
-  jboss_package_name = node[:app_jboss][:package_name]
- 
 
   # Creation of Jboss installation directory, group and user
   directory "#{install_target}" do
@@ -120,8 +117,8 @@ action :install do
     )
   end
 
-  # Removing unnecessary services and securing required services installed by default
-  #  with jboss
+  # Removing unnecessary services and securing required services installed
+  # by default with jboss
   jboss_deploy_dir = "#{install_target}/server/default/deploy"
 
   services_d = [
