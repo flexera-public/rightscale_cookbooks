@@ -1,30 +1,45 @@
 directory "#{node[:jenkins][:server][:home]}/plugins" do
+  mode 0755
   owner node[:jenkins][:server][:system_user]
   group node[:jenkins][:server][:system_group]
   only_if { node[:jenkins][:server][:plugins] }
 end
 
 unless node[:jenkins][:server][:plugins].empty?
-  node[:jenkins][:server][:plugins_array] = node[:jenkins][:server][:plugins].split(" ")
+  node[:jenkins][:server][:plugins_array] = node[:jenkins][:server][:plugins].gsub(/\s+/, "").split(",")
+end
+
+service "jenkins" do
+  action :stop
 end
 
 node[:jenkins][:server][:plugins_array].each do |name|
   remote_file "#{node[:jenkins][:server][:home]}/plugins/#{name}.hpi" do
     source "#{node[:jenkins][:mirror]}/latest/#{name}.hpi"
     backup false
+    mode 0644
     owner node[:jenkins][:server][:system_user]
     group node[:jenkins][:server][:system_group]
-    action :nothing
+    # action :nothing
   end
 
+  # BROKEN: http_request: http://tickets.opscode.com/browse/CHEF-3218
+  #
+  # class Chef::REST
+  #   include RightScale::Jenkins::HttpRequestHelper
+  # end
+  #
+  # http_request "HEAD #{node[:jenkins][:mirror]}/latest/#{name}.hpi" do
+  #   message ""
+  #   url "#{node[:jenkins][:mirror]}/latest/#{name}.hpi"
+  #   action :head
+  #   if File.exists?("#{node[:jenkins][:server][:home]}/plugins/#{name}.hpi")
+  #     headers "If-Modified-Since" => File.mtime("#{node[:jenkins][:server][:home]}/plugins/#{name}.hpi").httpdate
+  #   end
+  #   notifies :create, resources(:remote_file => "#{node[:jenkins][:server][:home]}/plugins/#{name}.hpi"), :immediately
+  # end
+end
 
-  http_request "HEAD #{node[:jenkins][:mirror]}/latest/#{name}.hpi" do
-    message ""
-    url "#{node[:jenkins][:mirror]}/latest/#{name}.hpi"
-    action :head
-    if File.exists?("#{node[:jenkins][:server][:home]}/plugins/#{name}.hpi")
-      headers "If-Modified-Since" => File.mtime("#{node[:jenkins][:server][:home]}/plugins/#{name}.hpi").httpdate
-    end
-    notifies :create, resources(:remote_file => "#{node[:jenkins][:server][:home]}/plugins/#{name}.hpi"), :immediately
-  end
+service "jenkins" do
+  action :start
 end
