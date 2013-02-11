@@ -1,18 +1,20 @@
 LoadPlugin postgresql
 <Plugin postgresql>
 # Sample query for exact monitoring values
-# This is an example and must be overrided with user specific values (desired Statement and InstancePrefix, InstancesFrom, ValuesFrom values)
-# For more info please see : http://collectd.org/documentation/manpages/collectd.conf.5.shtml#plugin_postgresql
+# This is an example and must be overrided with user specific values
+# (desired Statement and InstancePrefix, InstancesFrom, ValuesFrom values)
+# For more info please see:
+# http://collectd.org/documentation/manpages/collectd.conf.5.shtml#plugin_postgresql
 #  <Query dummy>
-#  Statement "SELECT * FROM pg_stat_user_tables"
-#        <Result>
-#        Type counter
-#        InstancePrefix "dummy"
-#        InstancesFrom "schemaname"
-#        ValuesFrom "tableowner"
-#      </Result>
+#    Statement "SELECT * FROM pg_stat_user_tables"
+#    <Result>
+#      Type counter
+#      InstancePrefix "dummy"
+#      InstancesFrom "schemaname"
+#      ValuesFrom "tableowner"
+#    </Result>
 #  </Query>
-<Database "<%= node[:db_postgres][:database_name] %>">
+<Database "<%= @database_name %>">
 Host ""
 User "<%=@database_owner%>"
 Password "<%=@database_owner_pass%>"

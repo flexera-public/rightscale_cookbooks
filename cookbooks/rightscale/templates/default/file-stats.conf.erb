@@ -11,5 +11,5 @@
 
 <Plugin exec>
   #    userid    plugin executable                   plugin args
-  Exec "nobody" "<%= node[:rightscale][:collectd_lib] %>/plugins/file-stats.rb" "-h" "<%= node[:rightscale][:instance_uuid] %>" "-i" "20" "<%= node[:rightscale][:db_backup_file] %>"
+  Exec "nobody" "<%= @collectd_lib %>/plugins/file-stats.rb" "-h" "<%= @instance_uuid %>" "-i" "20" "<%= @db_backup_file %>"
 </Plugin>

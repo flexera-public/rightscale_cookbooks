@@ -11,5 +11,5 @@
 
 <Plugin exec>
   #    userid    plugin executable                   plugin args
-  Exec "<%= node[:apache][:user] %>" "<%= node[:rightscale][:collectd_lib] %>/plugins/apache_ps" "-h" "<%= node[:rightscale][:instance_uuid] %>"
+  Exec "<%= @apache_user %>" "<%= @collectd_lib %>/plugins/apache_ps" "-h" "<%= @instance_uuid %>"
 </Plugin>

@@ -259,6 +259,12 @@ action :install_server do
     group "postgres"
     mode "0644"
     cookbook 'db_postgres'
+    variables(
+      :datadir => node[:db_postgres][:datadir],
+      :confdir => node[:db_postgres][:confdir],
+      :max_connections => node[:db_postgres][:tunable][:max_connections],
+      :shared_buffers => node[:db_postgres][:tunable][:shared_buffers]
+    )
     not_if "test -f #{configfile}"
   end
 
@@ -355,6 +361,9 @@ action :install_client_driver do
   else
     raise "Unknown driver type specified: #{type}"
   end
+
+  # Setup Database manager specific listen port to use in app database configs
+  node[:db][:port] = node[:db_postgres][:port]
 end
 
 action :grant_replication_slave do
@@ -514,7 +523,8 @@ action :setup_monitoring do
       source "postgresql_collectd_plugin.conf.erb"
       variables(
         :database_owner => priv_username,
-        :database_owner_pass => priv_password
+        :database_owner_pass => priv_password,
+        :database_name => node[:db_postgres][:database_name]
       )
       notifies :restart, resources(:service => "collectd")
       cookbook 'db_postgres'
@@ -539,6 +549,10 @@ action :setup_monitoring do
       source "postgres_collectd_exec.erb"
       notifies :restart, resources(:service => "collectd")
       cookbook 'db_postgres'
+      variables(
+        :collectd_lib => node[:rightscale][:collectd_lib],
+        :instance_uuid => node[:rightscale][:instance_uuid]
+      )
     end
 
   else
@@ -572,6 +586,12 @@ action :setup_slave_monitoring do
     source "pg_cluster_status_exec.erb"
     notifies :restart, resources(:service => "collectd")
     cookbook 'db_postgres'
+    variables(
+      :collectd_lib => node[:rightscale][:collectd_lib],
+      :current_master_ip => node[:db][:current_master_ip],
+      :private_ip => node[:cloud][:private_ips][0],
+      :instance_uuid => node[:rightscale][:instance_uuid]
+    )
   end
 
   # Install the check_hot_standby_delay collectd script into the collectd library plugins directory
@@ -581,11 +601,19 @@ action :setup_slave_monitoring do
     cookbook 'db_postgres'
   end
 
-  # Add a collectd config file for the check_hot_standby_delay script with the exec plugin and restart collectd if necessary
-  template ::File.join(node[:rightscale][:collectd_plugin_dir], 'check_hot_standby_delay.conf') do
+  # Add a collectd config file for the check_hot_standby_delay script with
+  # the exec plugin and restart collectd if necessary
+  template ::File.join(
+    node[:rightscale][:collectd_plugin_dir], 'check_hot_standby_delay.conf') do
     source "check_hot_standby_delay_exec.erb"
     notifies :restart, resources(:service => "collectd")
     cookbook 'db_postgres'
+    variables(
+      :collectd_lib => node[:rightscale][:collectd_lib],
+      :current_master_ip => node[:db][:current_master_ip],
+      :private_ip => node[:cloud][:private_ips][0],
+      :instance_uuid => node[:rightscale][:instance_uuid]
+    )
   end
 
   # Setting pg_state and pg_data types for pg slave monitoring into types.db

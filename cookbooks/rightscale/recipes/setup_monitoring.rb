@@ -76,6 +76,12 @@ template node[:rightscale][:collectd_config] do
   backup 5
   source "collectd.config.erb"
   notifies :restart, resources(:service => "collectd")
+  variables(
+    :instance_uuid => node[:rightscale][:instance_uuid],
+    :sketchy_hostname => node[:rightscale][:servers][:sketchy][:hostname],
+    :plugin_list_array => node[:rightscale][:plugin_list_array],
+    :collectd_plugin_dir => node[:rightscale][:collectd_plugin_dir]
+  )
 end
 
 # Create plugin conf dir
@@ -102,6 +108,10 @@ template File.join(node[:rightscale][:collectd_plugin_dir], 'processes.conf') do
   backup false
   source "processes.conf.erb"
   notifies :restart, resources(:service => "collectd")
+  variables(
+    :process_list_array => node[:rightscale][:process_list_array],
+    :process_match_list => node[:rightscale][:process_match_list]
+  )
 end
 
 # Patch collectd init script, so it uses collectdmon.

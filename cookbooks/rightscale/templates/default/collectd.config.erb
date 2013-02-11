@@ -12,7 +12,7 @@
 #
 # Config file for collectd, version 4.
 #
-Hostname  "<%= node[:rightscale][:instance_uuid]  %>"
+Hostname  "<%= @instance_uuid %>"
 Interval  20
 ReadThreads 5
 
@@ -23,7 +23,7 @@ LoadPlugin syslog
 
 LoadPlugin network
 <Plugin network>
-  Server "<%= node[:rightscale][:servers][:sketchy][:hostname] %>" "3011"
+  Server "<%= @sketchy_hostname %>" "3011"
 </Plugin>
 
 LoadPlugin interface
@@ -31,9 +31,9 @@ LoadPlugin interface
   Interface "eth0"
 </Plugin>
 
-<% node[:rightscale][:plugin_list_array].each do |plugin| -%>
+<% @plugin_list_array.each do |plugin| -%>
 LoadPlugin <%= plugin %>
 <% end %>
 
 #this is where other configs go (e.g. mysql.conf)
-Include "<%= node[:rightscale][:collectd_plugin_dir] %>/*"
+Include "<%= @collectd_plugin_dir %>/*"

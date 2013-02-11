@@ -7,5 +7,5 @@
 
 <Plugin exec>
   #    userid    plugin executable                   plugin args
-  Exec "haproxy" "<%= node[:rightscale][:collectd_lib] %>/plugins/haproxy" "-d" "<%= node[:rightscale][:instance_uuid] %>" "-s" "/etc/haproxy/status" 10
+  Exec "haproxy" "<%= @collectd_lib %>/plugins/haproxy" "-d" "<%= @instance_uuid %>" "-s" "/etc/haproxy/status" 10
 </Plugin>

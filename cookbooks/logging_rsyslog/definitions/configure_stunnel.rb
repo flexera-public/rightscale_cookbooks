@@ -34,6 +34,9 @@ define :configure_stunnel, :accept => "514", :connect => "515", :client => nil d
     owner owner
     group group
     mode "0400"
+    variables(
+      :logging_certificate => node[:logging][:certificate]
+    )
   end
 
   # Writing stunnel configuration file
@@ -56,7 +59,8 @@ define :configure_stunnel, :accept => "514", :connect => "515", :client => nil d
         ["centos", "redhat"] => {"default" => "/stunnel.pid"}
       ),
       :accept => params[:accept],
-      :connect => params[:connect]
+      :connect => params[:connect],
+      :platform_version => node[:platform_version]
     )
   end
 

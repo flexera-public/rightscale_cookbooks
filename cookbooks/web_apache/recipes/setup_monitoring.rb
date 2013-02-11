@@ -83,6 +83,11 @@ template File.join(node[:rightscale][:collectd_plugin_dir], 'apache_ps.conf') do
   backup false
   source "apache_collectd_exec.erb"
   notifies :restart, resources(:service => "collectd")
+  variables(
+    :collectd_lib => node[:rightscale][:collectd_lib],
+    :instance_uuid => node[:rightscale][:instance_uuid],
+    :apache_user => node[:apache][:user]
+  )
 end
 
 # Update the collectd config file for the processes collectd plugin and restart collectd if necessary.
@@ -91,6 +96,10 @@ template File.join(node[:rightscale][:collectd_plugin_dir], 'processes.conf') do
   cookbook "rightscale"
   source "processes.conf.erb"
   notifies :restart, resources(:service => "collectd")
+  variables(
+    :process_list_array => node[:rightscale][:process_list_array],
+    :process_match_list => node[:rightscale][:process_match_list]
+  )
 end
 
 rightscale_marker :end
