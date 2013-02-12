@@ -65,6 +65,3 @@ default[:db][:backup][:primary][:slave][:cron][:minute] = cron_min + 30
 # DB manager type specific commands array for db_sys_info.log file
 default[:db][:info_file_options] = []
 default[:db][:info_file_location] = "/etc"
-
-# Db manager database port number
-default[:db][:port] = ""
