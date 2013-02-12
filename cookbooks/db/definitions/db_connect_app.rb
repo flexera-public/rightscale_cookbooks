@@ -22,7 +22,6 @@ define :db_connect_app, :template => "db_connection_example.erb", :cookbook => "
     action :install_client_driver
   end
 
-  node.load_attribute_by_short_filename('db', 'client', 'driver')
   log "!! connect app db port is #{node[:db][:port]} and driver #{node[:db][:client][:driver]}"
 
   template params[:name] do
