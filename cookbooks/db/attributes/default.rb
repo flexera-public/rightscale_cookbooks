@@ -27,7 +27,7 @@ default[:db][:backup][:lineage_override] = ""
 default[:db][:dns][:ttl] = "60"
 
 # Database driver class to be used based on the type of driver
-default[:db][:client][:driver] = ""
+set_unless[:db][:client][:driver] = ""
 
 # Server state variables
 #
@@ -66,4 +66,4 @@ default[:db][:backup][:primary][:slave][:cron][:minute] = cron_min + 30
 default[:db][:info_file_options] = []
 default[:db][:info_file_location] = "/etc"
 
-default[:db][:port] = "3307"
+set_unless[:db][:port] = ""

@@ -32,6 +32,6 @@
     <Resource name="<%= @vars[:datasource] %>" auth="Container" type="javax.sql.DataSource"
              maxActive="100" maxIdle="30" maxWait="10000"
              username="<%= @user %>" password="<%= @password %>" driverClassName="<%= @driver %>"
-             url="jdbc:<%= @driver.split(".")[1] %>://<%= @fqdn %>:<%= @listen_port  %>/<%= @database %>"/>
+             url="jdbc:<%= @driver.split(".")[1] %>://<%= @fqdn %>:<%= @listen_port %>/<%= @database %>"/>
 
 </Context>
