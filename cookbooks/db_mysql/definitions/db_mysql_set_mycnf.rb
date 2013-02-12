@@ -6,15 +6,63 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 define :db_mysql_set_mycnf,
+  :hostname => nil,
+
+  # Basic Settings
+  :socket => nil,
+  :datadir => nil,
+  :tmpdir => nil,
+  :bind_address => nil,
+
+  # Fine Tuning
+  :key_buffer => nil,
+  :thread_cache_size => nil,
+  :max_connections => nil,
+  :wait_timeout => nil,
+  :net_read_timeout => nil,
+  :net_write_timeout => nil,
+  :back_log => nil,
+  :table_cache => nil,
+  :max_heap_table_size => nil,
+  :sort_buffer_size => nil,
+  :read_buffer_size => nil,
+  :read_rnd_buffer_size => nil,
+  :myisam_sort_buffer_size => nil,
+  :net_buffer_length => nil,
+
+  # Query Cache Configuration
+  :query_cache_size => nil,
+
+  # Logging and Replication
+  :log => nil,
+  :log_error => nil,
+  :log_slow_queries => nil,
+  :long_query_time => nil,
+  :read_only => nil,
   :server_id => nil,
-  :relay_log => nil,
+  :log_bin_enabled => nil,
+  :log_bin => nil,
+  :expire_logs_days => nil,
+  :binlog_format => nil,
+
+  # InnoDB
+  :innodb_buffer_pool_size => nil,
+  :innodb_additional_mem_pool_size => nil,
   :innodb_log_file_size => nil,
+  :innodb_log_buffer_size =>nil,
+  :data_dir => nil,
+  :relay_log => nil,
+
   :compressed_protocol => false,
-  :slave_net_timeout => nil,
+
+  # SSL
   :ssl_enabled => nil,
   :ca_certificate => nil,
   :master_certificate => nil,
-  :master_key => nil do
+  :master_key => nil,
+  :version => nil,
+  :isamchk_key_buffer => nil,
+  :isamchk_sort_buffer_size => nil do
 
   log "  Installing my.cnf with server_id = #{params[:server_id]}," +
     " relay_log = #{params[:relay_log]}"
@@ -84,8 +132,8 @@ define :db_mysql_set_mycnf,
         node[:db_mysql][:ssl_credentials][:ca_certificate][:path],
       :master_certificate =>
         node[:db_mysql][:ssl_credentials][:master_certificate][:path],
-      :master_key => node[:db_mysql][:ssl_credentials][:master_key][:path],
-
+      :master_key => params[:master_key]||
+        node[:db_mysql][:ssl_credentials][:master_key][:path],
       :version => node[:db][:version],
 
       :isamchk_key_buffer => node[:db_mysql][:tunable][:isamchk][:key_buffer],
