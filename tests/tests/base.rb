@@ -41,7 +41,7 @@ before do
   wait_for_all("operational")
 end
 
-test "smoke_test" do
+test_case "smoke_test" do
   # Single server in deployment.
   server = servers.first
 
@@ -63,7 +63,7 @@ test "smoke_test" do
   check_monitoring
 end
 
-test "ebs_stop_start" do
+test_case "ebs_stop_start" do
   # Current cloud.
   cloud = Cloud.factory
 
