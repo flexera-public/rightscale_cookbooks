@@ -37,4 +37,9 @@ class EC2 < Cloud
       false
     end
   end
+
+  # XXX: stub get_server_metadata
+  def get_server_metadata(server)
+    {:mci_name => "RightImage_CentOS_6.3_x64_v5.8_STAGING"}
+  end
 end
