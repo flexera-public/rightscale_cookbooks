@@ -4,8 +4,8 @@ class Cloud
   #
   # @return [Cloud] Cloud base object.
   def self.factory
-    case test_variables[:cloud]
-    when "EC2"
+    case get_cloud_name
+    when /^AWS /
       EC2.new
     else
       Cloud.new
