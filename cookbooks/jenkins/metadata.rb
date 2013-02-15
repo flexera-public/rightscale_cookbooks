@@ -50,8 +50,8 @@ attribute "jenkins/server/password",
 attribute "jenkins/server/plugins",
   :display_name => "Jenkins Plugins",
   :description => "***",
-  :required => "required",
-  :recipes => [ "jenkins::install_plugins" ]
+  :required => "optional",
+  :recipes => [ "jenkins::install_jenkins" ]
 
 # Slave
 
