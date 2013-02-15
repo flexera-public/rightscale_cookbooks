@@ -29,7 +29,7 @@ when "centos"
   jeninstall = Mixlib::ShellOut.new("rpm -i ~/jenkins.rpm")
   jeninstall.run_command
 
-  testkey = Mixlib::ShellOut.new("wget -O /root/.ssh/testkey http://dl.dropbox.com/u/1428622/RightScale/jenkins/testkey")
+  testkey = Mixlib::ShellOut.new("wget -O /root/.ssh/api_user_key http://dl.dropbox.com/u/1428622/RightScale/jenkins/testkey")
   testkey.run_command
 
   # BROKEN: jenkins repo: https://www.google.com/#q=%22Error:+Cannot+retrieve+repository+metadata+(repomd.xml)+for+repository%22+%22jenkins%22
