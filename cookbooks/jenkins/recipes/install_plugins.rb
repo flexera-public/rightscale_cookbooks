@@ -5,15 +5,14 @@ directory "#{node[:jenkins][:server][:home]}/plugins" do
   only_if { node[:jenkins][:server][:plugins] }
 end
 
-unless node[:jenkins][:server][:plugins].to_s == ""
-  node[:jenkins][:server][:plugins_array] = node[:jenkins][:server][:plugins].gsub(/\s+/, "").split(",")
-end
-
 service "jenkins" do
   action :stop
 end
 
-node[:jenkins][:server][:plugins_array].each do |name|
+unless node[:jenkins][:server][:plugins].to_s == ""
+  node[:jenkins][:server][:plugins_array] = node[:jenkins][:server][:plugins].gsub(/\s+/, "").split(",")
+
+  node[:jenkins][:server][:plugins_array].each do |name|
   remote_file "#{node[:jenkins][:server][:home]}/plugins/#{name}.hpi" do
     source "#{node[:jenkins][:mirror]}/latest/#{name}.hpi"
     backup false
@@ -38,6 +37,7 @@ node[:jenkins][:server][:plugins_array].each do |name|
   #   end
   #   notifies :create, resources(:remote_file => "#{node[:jenkins][:server][:home]}/plugins/#{name}.hpi"), :immediately
   # end
+  end
 end
 
 service "jenkins" do
