@@ -24,7 +24,7 @@ if node[:platform] =~ /centos|redhat/
   # scale very well.
   r = bash "install ruby 1.8" do
     code <<-EOH
-    yum install ruby-irb ruby-1.8.* --assumeyes
+    yum install ruby-irb ruby-1.8.* rubygems --assumeyes
     EOH
     action :nothing
   end
