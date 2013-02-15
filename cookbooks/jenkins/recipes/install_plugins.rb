@@ -5,7 +5,7 @@ directory "#{node[:jenkins][:server][:home]}/plugins" do
   only_if { node[:jenkins][:server][:plugins] }
 end
 
-unless node[:jenkins][:server][:plugins].empty?
+unless node[:jenkins][:server][:plugins].to_s == ""
   node[:jenkins][:server][:plugins_array] = node[:jenkins][:server][:plugins].gsub(/\s+/, "").split(",")
 end
 
