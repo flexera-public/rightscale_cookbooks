@@ -1,5 +1,7 @@
 # Cloud base class.
 class Cloud
+  extend VirtualMonkey::TestCase::Mixin
+
   # Factory method that returns an instance of the right cloud class based on the +:cloud+ variable.
   #
   # @return [Cloud] Cloud base object.
