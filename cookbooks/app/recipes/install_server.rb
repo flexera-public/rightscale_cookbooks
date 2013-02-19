@@ -12,6 +12,7 @@ rightscale_marker :begin
 # User will be notified.
 public_ip = node[:cloud][:public_ips][0]
 private_ip = node[:cloud][:private_ips][0]
+# See cookbooks/rightscale/libraries/helper.rb for the "is_valid_ip?" method.
 if RightScale::Utils::Helper.is_valid_ip?(public_ip)
   node[:app][:backend_ip_type] == "Public" ? node[:app][:ip] = public_ip : node[:app][:ip] = private_ip
 elsif RightScale::Utils::Helper.is_valid_ip?(private_ip)
