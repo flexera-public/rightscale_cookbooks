@@ -33,6 +33,7 @@ class Cloud
   #
   def get_server_mci_name(server)
     # TODO
+    "CentOS"
   end
 end
 
@@ -52,7 +53,7 @@ class EC2 < Cloud
   def supports_start_stop?(server)
     # Only EC2 EBS images support start/stop.
     # All RHEL images are EBS, but may not say so.
-    if (get_mci_name(server).downcase =~ /ebs|rhel/)
+    if (get_server_mci_name(server).downcase =~ /ebs|rhel/)
       true
     else
       false
