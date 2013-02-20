@@ -1,10 +1,13 @@
-# Cloud base class.
+# Represents a cloud with methods that encapsulate cloud specific behavior.
+#
 class Cloud
   extend VirtualMonkey::TestCase::Mixin
 
-  # Factory method that returns an instance of the right cloud class based on the +:cloud+ variable.
+  # Factory that returns an instance of the specific Cloud subclass for a given
+  # test run.
   #
-  # @return [Cloud] Cloud base object.
+  # @return [Cloud] an instance of the specific Cloud subclass
+  #
   def self.factory
     case get_cloud_name
     when /^AWS /
@@ -14,34 +17,45 @@ class Cloud
     end
   end
 
-  # States that non-EC2 clouds do not support start/stop operations.
+  # Checks if a server has stop/start support.
   #
-  # @return [Boolean] False.
+  # @param server [Server] the server to check for stop/start support.
+  #
+  # @return [Boolean] whether the server supports stop/start.
+  #
   def supports_start_stop?(server)
     false
   end
+
+  # Gets the name of the MCI used on a Server.
+  #
+  # @param server [Server]
+  #
+  def get_server_mci_name(server)
+    # TODO
+  end
 end
 
-# EC2 cloud class.
+# Represents the Amazon EC2 cloud specific behavior.
+#
+# @see Cloud
+#
 class EC2 < Cloud
-  # Overrides base function.
-  # Checks if EC2 server supports start/stop operations.
-  # Only supported on EBS images.
+  # Checks if a server has stop/start support.
   #
-  # @return [Boolean] True if EBS image and False otherwise.
+  # @param server [Server] the server to check for stop/start support.
+  #
+  # @return [Boolean] whether the server supports stop/start.
+  #
+  # @see Cloud#supports_start_stop?
+  #
   def supports_start_stop?(server)
-    # Only EC2 EBS images support start/stop operations.
-    mci_data = get_server_metadata(server)
+    # Only EC2 EBS images support start/stop.
     # All RHEL images are EBS, but may not say so.
-    if (mci_data[:mci_name].to_s.downcase =~ /ebs|rhel/)
+    if (get_mci_name(server).downcase =~ /ebs|rhel/)
       true
     else
       false
     end
-  end
-
-  # XXX: stub get_server_metadata
-  def get_server_metadata(server)
-    {:mci_name => "RightImage_CentOS_6.3_x64_v5.8_STAGING"}
   end
 end
