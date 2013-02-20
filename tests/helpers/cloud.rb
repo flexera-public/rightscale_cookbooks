@@ -1,11 +1,13 @@
 # Cloud base class.
 class Cloud
+  extend VirtualMonkey::TestCase::Mixin
+
   # Factory method that returns an instance of the right cloud class based on the +:cloud+ variable.
   #
   # @return [Cloud] Cloud base object.
   def self.factory
-    case test_variables[:cloud]
-    when "EC2"
+    case get_cloud_name
+    when /^AWS /
       EC2.new
     else
       Cloud.new
@@ -36,5 +38,10 @@ class EC2 < Cloud
     else
       false
     end
+  end
+
+  # XXX: stub get_server_metadata
+  def get_server_metadata(server)
+    {:mci_name => "RightImage_CentOS_6.3_x64_v5.8_STAGING"}
   end
 end
