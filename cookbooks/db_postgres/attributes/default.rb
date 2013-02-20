@@ -8,3 +8,4 @@
 
 # Recommended attributes
 default[:db_postgres][:server_usage] = "dedicated" # or "shared"
+default[:db_postgres][:port] = "5432"
