@@ -62,12 +62,7 @@ end
 # Increase the value for the 'conntrack_max' module parameter
 # to avoid dropping packets on high-throughput systems.
 
-nf_module_name = value_for_platform(
-  "centos" => {
-    "default" => "net.netfilter.nf_conntrack_max"
-  },
-  "default" => "net.ipv4.ip_conntrack_max"
-)
+nf_module_name = "net.netfilter.nf_conntrack_max"
 
 # The ip_conntrack_max is calculated based on the RAM available on
 # the VM using this formula: conntrack_max=64*n, where n is the amount
