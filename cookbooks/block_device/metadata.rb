@@ -114,7 +114,7 @@ attribute "block_device/devices/default/backup/primary/cred/user",
   :description =>
     "Primary cloud authentication credentials. For Rackspace Cloud Files," +
     " use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME)." +
-    " For OpenStack Swift the format is: <tenant-id>:<user-name>." +
+    " For OpenStack Swift the format is: 'tenantID:username'." +
     " For clouds that do not require primary credentials (e.g., Amazon)," +
     " set to 'ignore'. Example: cred:CLOUD_ACCOUNT_USERNAME ",
   :required => "recommended",
@@ -149,7 +149,7 @@ attribute "block_device/devices/default/backup/primary/endpoint",
   :description =>
     "The endpoint URL for the primary backup storage cloud. This is used to" +
     " override the default endpoint or for generic storage clouds" +
-    " such as Swift.Example: http://endpoint_ip:5000/v2.0/tokens",
+    " such as Swift. Example: http://endpoint_ip:5000/v2.0/tokens",
   :required => "optional",
   :default => "",
   :recipes => ["block_device::default"]
@@ -159,7 +159,7 @@ attribute "block_device/devices/default/backup/secondary/cred/user",
   :description =>
     "Secondary cloud authentication credentials. For Rackspace Cloud Files," +
     " use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME)." +
-    " For OpenStack Swift the format is: <tenant-id>:<user-name>." +
+    " For OpenStack Swift the format is: 'tenantID:username'. " +
     " For Amazon S3, use your Amazon key ID (e.g., cred:AWS_ACCESS_KEY_ID)." +
     " Example: cred:CLOUD_ACCOUNT_USERNAME",
   :required => "recommended",
