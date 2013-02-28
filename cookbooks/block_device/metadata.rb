@@ -114,7 +114,7 @@ attribute "block_device/devices/default/backup/primary/cred/user",
   :description =>
     "Primary cloud authentication credentials. For Rackspace Cloud Files," +
     " use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME)." +
-    " For OpenStack Swift the format is: <tenant-id>:<user-name>." +
+    " For OpenStack Swift the format is: tenantID:username" +
     " For clouds that do not require primary credentials (e.g., Amazon)," +
     " set to 'ignore'. Example: cred:CLOUD_ACCOUNT_USERNAME ",
   :required => "recommended",
