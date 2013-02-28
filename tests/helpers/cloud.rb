@@ -11,6 +11,9 @@ class Cloud
   def self.factory
     cloud_name = get_cloud_name
     case cloud_name
+    when nil, ""
+      # TODO: raise some sort of exception in the monkey exception hierarchy
+      raise "get_cloud_name returned an invalid value: #{cloud_name}"
     when /^AWS /
       EC2.new cloud_name
     when /^Azure /
