@@ -118,8 +118,15 @@ template "#{node[:jenkins][:server][:home]}/users/#{node[:jenkins][:server][:use
   })
 end
 
-include_recipe "jenkins::install_plugins"
+unless node[:jenkins][:server][:plugins].to_s == ""
+  include_recipe "jenkins::install_plugins"
+end
 
 service "jenkins" do
   action :start
 end
+
+right_link_tag "jenkins:active=true"
+right_link_tag "jenkins:master=true"
+right_link_tag "jenkins:listen_ip=#{node[:jenkins][:ip]}"
+right_link_tag "jenkins:listen_port=#{node[:jenkins][:server][:port]}"

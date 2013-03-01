@@ -17,6 +17,7 @@ default[:jenkins][:server][:port] = "8080"
 default[:jenkins][:slave][:mode] = "normal"
 default[:jenkins][:slave][:executors] = "10"
 default[:jenkins][:slave][:private_key_file] = "/root/.ssh/api_user_key"
+default[:jenkins][:slave][:attach_status] = "unattached"
 
 default[:jenkins][:mirror] = "http://updates.jenkins-ci.org"
 default[:jenkins][:attach_slave_at_boot] == "false"
