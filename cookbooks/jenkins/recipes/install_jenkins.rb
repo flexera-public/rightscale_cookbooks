@@ -40,7 +40,7 @@ when "centos"
   #   action :add
   # end
 
-  # # wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo
+  # wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo
   # yum_repository "jenkins" do
   #   repo_name "Jenkins"
   #   description "Jenkins Stable repo"
@@ -48,9 +48,9 @@ when "centos"
   #   key "jenkins-ci.org.key"
   #   action :add
   # end
-
-  # # yum install jenkins -y
   # yum_package "jenkins"
+
+  # yum install jenkins -y
 
   yum_package "java-1.6.0-openjdk"
 
