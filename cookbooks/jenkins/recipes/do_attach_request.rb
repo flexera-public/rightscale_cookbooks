@@ -35,8 +35,8 @@ master_port = "";
 r = ruby_block "find master" do
   block do
     node[:server_collection]["master_server"].reverse_each do |id, tags|
-      master_ip = tags.detect { |u| u =~ /jenkins:listen_ip/ }
-      master_port = tags.detect { |u| u =~ /jenkins:listen_port/ }
+      master_ip = tags.detect { |u| u =~ /jenkins:listen_ip/ }.split(/=/, 2).last.chomp
+      master_port = tags.detect { |u| u =~ /jenkins:listen_port/ }.split(/=/, 2).last.chomp
     end
   end
 end
