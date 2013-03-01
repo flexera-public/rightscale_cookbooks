@@ -47,7 +47,7 @@ unless node[:jenkins][:server][:plugins].to_s == ""
 #     notifies :create, resources(:remote_file => "#{node[:jenkins][:server][:home]}/plugins/#{name}.hpi"), :immediately
 #   end
 #   end
-# end
+end
 
 service "jenkins" do
   action :start
