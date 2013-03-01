@@ -7,4 +7,6 @@
 
 rightscale_marker :begin
 
+include_recipe "jenkins::install_jenkins"
+
 rightscale_marker :end
