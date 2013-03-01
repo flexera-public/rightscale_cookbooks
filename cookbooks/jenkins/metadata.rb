@@ -7,7 +7,7 @@ version          "13.2.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"
-# supports "ubuntu", "~> 10.04", "~> 12.04" 
+# supports "ubuntu", "~> 10.04", "~> 12.04"
 
 
 depends "rightscale"
@@ -25,31 +25,31 @@ recipe "jenkins::do_attach_slave_at_boot", "Installing Jenkins."
 
 attribute "jenkins/server/user_name",
   :display_name => "Jenkins User Name",
-  :description => "***",
+  :description => "Default user's sign in name.",
   :required => "required",
   :recipes => [ "jenkins::install_jenkins" ]
 
 attribute "jenkins/server/user_email",
   :display_name => "Jenkins User Email",
-  :description => "***",
+  :description => "Default user's email.",
   :required => "required",
   :recipes => [ "jenkins::install_jenkins" ]
 
 attribute "jenkins/server/user_full_name",
-  :display_name => "Jenkins User full Name",
-  :description => "***",
+  :display_name => "Jenkins User Full Name",
+  :description => "Default user's full name.",
   :required => "required",
   :recipes => [ "jenkins::install_jenkins" ]
 
 attribute "jenkins/server/password",
   :display_name => "Jenkins Password",
-  :description => "***",
+  :description => "Default user's password.",
   :required => "required",
   :recipes => [ "jenkins::install_jenkins" ]
 
 attribute "jenkins/server/plugins",
   :display_name => "Jenkins Plugins",
-  :description => "***",
+  :description => "Jenkins plugins to install.",
   :required => "optional",
   :recipes => [ "jenkins::install_jenkins" ]
 
@@ -57,25 +57,26 @@ attribute "jenkins/server/plugins",
 
 attribute "jenkins/slave/name",
   :display_name => "Jenkins Slave Name",
-  :description => "***",
+  :description => "Name of Jenkins slave.",
   :required => "optional",
   :recipes => [ "jenkins::do_attach_request" ]
 
 attribute "jenkins/slave/mode",
   :display_name => "Jenkins Slave Mode",
-  :description => "***",
+  :description => "Mode of Jenkins slave.",
   :required => "optional",
   :recipes => [ "jenkins::do_attach_request" ]
 
 attribute "jenkins/slave/executors",
   :display_name => "Jenkins Slave Executors",
-  :description => "***",
+  :description => "Number of Jenkins executors.",
   :required => "optional",
   :recipes => [ "jenkins::do_attach_request" ]
 
 attribute "jenkins/slave/private_key_file",
   :display_name => "Jenkins Slave Private Key File",
-  :description => "***",
+  :description => "Key that the Jenkins slave will\
+                   request the master to connect with.",
   :required => "optional",
   :recipes => [ "jenkins::do_attach_request" ]
 
@@ -83,7 +84,7 @@ attribute "jenkins/slave/private_key_file",
 
 attribute "jenkins/slave/attach_slave_at_boot",
   :display_name => "Attach Jenkins Slave At Boot?",
-  :description => "***",
+  :description => "Is this box a Jenkins slave?",
   :required => "optional",
   :recipes => [ "jenkins::do_attach_slave_at_boot" ]
 
