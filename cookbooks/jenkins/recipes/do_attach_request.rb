@@ -22,7 +22,7 @@ testpub = Mixlib::ShellOut.new("wget -O ~/testkey.pub http://dl.dropbox.com/u/14
 testcat = Mixlib::ShellOut.new("cat ~/testkey.pub >> ~/.ssh/authorized_keys")
   testcat.run_command
 
-r = server_collection "master_server" do
+r = rightscale_server_collection "master_server" do
   tags "jenkins:master=true"
   secondary_tags "jenkins:active=true"
   action :nothing
