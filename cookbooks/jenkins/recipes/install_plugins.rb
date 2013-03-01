@@ -24,19 +24,25 @@ unless node[:jenkins][:server][:plugins].to_s == ""
 
   # BROKEN: http_request: http://tickets.opscode.com/browse/CHEF-3218
   #
+  # Fix #1:
   # class Chef::REST
   #   include RightScale::Jenkins::HttpRequestHelper
   # end
   #
-  # http_request "HEAD #{node[:jenkins][:mirror]}/latest/#{name}.hpi" do
-  #   message ""
-  #   url "#{node[:jenkins][:mirror]}/latest/#{name}.hpi"
-  #   action :head
-  #   if File.exists?("#{node[:jenkins][:server][:home]}/plugins/#{name}.hpi")
-  #     headers "If-Modified-Since" => File.mtime("#{node[:jenkins][:server][:home]}/plugins/#{name}.hpi").httpdate
-  #   end
-  #   notifies :create, resources(:remote_file => "#{node[:jenkins][:server][:home]}/plugins/#{name}.hpi"), :immediately
-  # end
+  # Fix #2:
+  class Chef::REST
+    def gzip_disabled?; true; end
+  end
+
+  http_request "HEAD #{node[:jenkins][:mirror]}/latest/#{name}.hpi" do
+    message ""
+    url "#{node[:jenkins][:mirror]}/latest/#{name}.hpi"
+    action :head
+    if File.exists?("#{node[:jenkins][:server][:home]}/plugins/#{name}.hpi")
+      headers "If-Modified-Since" => File.mtime("#{node[:jenkins][:server][:home]}/plugins/#{name}.hpi").httpdate
+    end
+    notifies :create, resources(:remote_file => "#{node[:jenkins][:server][:home]}/plugins/#{name}.hpi"), :immediately
+  end
   end
 end
 
