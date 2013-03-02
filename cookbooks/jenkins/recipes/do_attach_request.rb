@@ -34,12 +34,16 @@ master_port = "";
 
 r = ruby_block "find master" do
   block do
-    node[:server_collection]["master_server"].reverse_each do |id, tags|
-      master_ip = tags.detect { |u| u =~ /jenkins:listen_ip/ }.split(/=/, 2).last.chomp
-      master_port = tags.detect { |u| u =~ /jenkins:listen_port/ }.split(/=/, 2).last.chomp
+    node[:server_collection]["master_server"].each do |id, tags|
+      master_ip = tags.detect { |u| u =~ /jenkins:listen_ip/ } #.split(/=/, 2).last.chomp
+      master_port = tags.detect { |u| u =~ /jenkins:listen_port/ } #.split(/=/, 2).last.chomp
     end
   end
 end
+
+log "master ip: #{master_ip}"
+log "master port: #{master_port}"
+
 r.run_action(:create)
 
 if node[:jenkins][:slave][:attach_status] == :attached
