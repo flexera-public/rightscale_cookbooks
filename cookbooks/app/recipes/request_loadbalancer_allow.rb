@@ -15,6 +15,8 @@ end
 # which will allow connection with loadbalancer
 
 attrs = {:app => Hash.new}
+# Grab the public and private IPs of the current instance to send
+# to the remote recipe.
 attrs[:app][:lb_private_ip] = node[:cloud][:private_ips][0]
 attrs[:app][:lb_public_ip] = node[:cloud][:public_ips][0]
 
