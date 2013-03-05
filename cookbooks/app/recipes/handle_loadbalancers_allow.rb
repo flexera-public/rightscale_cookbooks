@@ -19,7 +19,7 @@ else
 end
 port = node[:app][:port]
 
-log "  Adding firewall rules for loadbalancer to connect"
+log "  Adding firewall rules for loadbalancer to connect from #{rule_ip}"
 # See cookbooks/sys_firewall/providers/default.rb for the "update" action.
 sys_firewall port do
   ip_addr rule_ip
