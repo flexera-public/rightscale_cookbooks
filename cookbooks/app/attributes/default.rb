@@ -13,6 +13,8 @@ default[:app][:port] = "8000"
 # By default listen on the first private IP
 default[:app][:ip] = node[:cloud][:private_ips][0]
 # IP addrs of loadbalancer requesting firewall ports to be opened to it
-default[:app][:lb_ip] = ""
+default[:app][:lb_private_ip] = ""
+default[:app][:lb_public_ip] = ""
+
 # The database schema name the app server uses
 default[:app][:database_name] = ""
