@@ -56,11 +56,3 @@ attribute "db_postgres/server_usage",
   :recipes => ["db_postgres::setup_server_9_1"],
   :choice => ["shared", "dedicated"],
   :default => "dedicated"
-
-attribute "db_postgres/database_name",
-  :display_name => "Database Name",
-  :description =>
-    "Enter the name of the PostgreSQL database for setting up monitoring." +
-    " Example: mydbname",
-  :required => true,
-  :recipes => ["db_postgres::setup_server_9_1"]

@@ -297,9 +297,8 @@ end
 action :setup_monitoring do
   plugin_path = "#{node[:rightscale][:collectd_lib]}/plugins/passenger"
 
-  log "  Stopping collectd service"
   service "collectd" do
-    action :stop
+    action :enable
   end
 
   directory "#{node[:rightscale][:collectd_lib]}/plugins/" do
@@ -318,6 +317,7 @@ action :setup_monitoring do
       :passenger_memory_stats => "#{node[:app_passenger][:passenger_bin_dir]}/passenger-memory-stats",
       :passenger_status => "#{node[:app_passenger][:passenger_bin_dir]}/passenger-status"
     )
+    notifies :restart, resources(:service => "collectd")
   end
 
   # Removing previous passenger.conf in case of stop-start
@@ -335,6 +335,7 @@ action :setup_monitoring do
       :apache_user => node[:app][:user],
       :plugin_path => plugin_path
     )
+    notifies :restart, resources(:service => "collectd")
   end
 
   # Collectd exec cannot run scripts under root user, so we need to give ability to use sudo to "apache" user
@@ -358,7 +359,7 @@ action :setup_monitoring do
       :passenger_bin_dir => node[:app_passenger][:passenger_bin_dir]
     )
     not_if { ::File.exists?("/etc/sudoers.d/passenger-status") }
-    notifies :start, resources(:service => "collectd")
+    notifies :restart, resources(:service => "collectd")
   end
 
 end
