@@ -2,6 +2,7 @@
 
 # Include the helper objects and methods.
 require_helper "cloud"
+require_helper "ephemeral"
 require_helper "wait_for_ip_repopulation"
 
 helpers do
@@ -42,11 +43,14 @@ before do
 end
 
 test_case "smoke_test" do
+  # Current cloud.
+  cloud = Cloud.factory
+
   # Single server in deployment.
   server = servers.first
 
   if is_chef?
-    verify_ephemeral_mounted
+    check_ephemeral_mount(server) if cloud.supports_ephemeral?(server)
     test_swapspace(server)
   end
 
@@ -56,14 +60,14 @@ test_case "smoke_test" do
   wait_for_all("operational")
 
   if is_chef?
-    verify_ephemeral_mounted
+    check_ephemeral_mount(server) if cloud.supports_ephemeral?(server)
     test_swapspace(server)
   end
 
   check_monitoring
 end
 
-test_case "ebs_stop_start" do
+test_case "stop_start" do
   # Current cloud.
   cloud = Cloud.factory
 
@@ -72,19 +76,19 @@ test_case "ebs_stop_start" do
 
   skip unless cloud.supports_start_stop?(server)
 
-  # Stop EBS server.
+  # Stop server.
   puts "Stopping current server."
   server.stop_ebs
   wait_for_server_state(server, "stopped")
 
-  # Start EBS server.
+  # Start server.
   puts "Starting current server."
   server.start_ebs
   wait_for_server_state(server, "operational")
   # It takes about a minute for ips to get repopulated.
   wait_for_ip_repopulation(server)
 
-  verify_ephemeral_mounted
-  remove_public_ip_tags
+  server.remove_tags ["server:public_ip_0=#{server.public_ip}"] if cloud.needs_private_ssh?
+  check_ephemeral_mount(server) if cloud.supports_ephemeral?(server)
   check_monitoring
 end
