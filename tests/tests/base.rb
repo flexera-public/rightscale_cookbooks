@@ -102,7 +102,7 @@ test_case "stop_start" do
   server = servers.first
 
   # Only some clouds support stop/start.
-  skip unless cloud.supports_start_stop?(server)
+  skip unless cloud.supports_stop_start?(server)
 
   # Stop server.
   puts "Stopping current server."
