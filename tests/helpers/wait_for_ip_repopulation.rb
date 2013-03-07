@@ -1,10 +1,9 @@
-# Reports when a server's IP address has been repopulated.
-# There is a bug in core to fix the delay in ip population for instances.
-# Will be deprecated when rightsite ticket 13987 is completed.
+# Reports when a server's IP address has been repopulated. There is a bug in
+# core to fix the delay in ip population for instances. Will be deprecated when
+# rightsite ticket 13987 is completed.
 #
-# @param server [Server] Server to monitor for IP repopulation.
+# @param server [Server] server to monitor for IP repopulation
 #
-# @return [Boolean] True when complete.
 def wait_for_ip_repopulation(server)
   puts "Waiting maximum 15 minutes for ips to repopulate"
 
@@ -26,5 +25,4 @@ def wait_for_ip_repopulation(server)
       sleep 2
     end
   end
-  true
 end

@@ -518,18 +518,6 @@ action :setup_monitoring do
       version "#{collectd_version}" unless collectd_version == "latest"
     end
 
-    template ::File.join(node[:rightscale][:collectd_plugin_dir], 'postgresql.conf') do
-      backup false
-      source "postgresql_collectd_plugin.conf.erb"
-      variables(
-        :database_owner => priv_username,
-        :database_owner_pass => priv_password,
-        :database_name => node[:db_postgres][:database_name]
-      )
-      notifies :restart, resources(:service => "collectd")
-      cookbook 'db_postgres'
-    end
-
     template ::File.join(node[:rightscale][:collectd_share], 'postgresql_default.conf') do
       backup false
       source "postgresql_default.conf.erb"

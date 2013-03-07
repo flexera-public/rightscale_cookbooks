@@ -304,9 +304,9 @@ attribute "db/replication/network_interface",
   :default => "private",
   :recipes => [
     "db::install_server",
-    "db::do_promote_to_master.rb",
-    "db::request_master_allow.rb",
-    "db::request_master_deny.rb",
+    "db::do_promote_to_master",
+    "db::request_master_allow",
+    "db::request_master_deny",
     "db::do_set_dns_slave"
   ]
 
