@@ -705,11 +705,6 @@ action :install_client_driver do
   else
     raise "Unknown driver type specified: #{type}"
   end
-
-  # Setup Database manager specific listen port to use in app database configs
-  node[:db][:port] = node[:db_mysql][:port]
-   log "!! db port is #{node[:db][:port]}"
-  log "!! mysql port is #{node[:db_mysql][:port]}"
 end
 
 action :setup_monitoring do
