@@ -155,25 +155,13 @@ action :install do
     end
   end
 
-  # Deleting old jboss log directory
-  directory "#{install_target}/server/default/log" do
-    recursive true
-    action :delete
-  end
-
-
-  # Creating new directory for jboss logs on ephemeral volume
-  directory "/mnt/ephemeral/jboss/log" do
-    owner node[:app][:user]
+  # Moving jboss logs to ephemeral to free memory on root filesystem
+  # See cookbooks/rightscale/definitions/rightscale_move_to_ephemeral.rb
+  # for the "rightscale_move_to_ephemeral" definition.
+  rightscale_move_to_ephemeral "#{install_target}/server/default/log" do
+    location_on_ephemeral "jboss"
+    user node[:app][:user]
     group node[:app][:group]
-    mode "0755"
-    action :create
-    recursive true
-  end
-
-  # Create symlink from /var/log/jboss to ephemeral volume
-  link "#{install_target}/server/default/log" do
-    to "/mnt/ephemeral/jboss/log"
   end
 
 end
@@ -187,7 +175,7 @@ action :setup_vhost do
 
   # Define internal port for jboss. It must be different than apache ports
   jboss_port = port + 1
-  log "  updating server.xml"
+  log "  Updating server.xml"
   template "#{install_target}/server/default/deploy/jbossweb.sar/server.xml" do
     owner node[:app][:user]
     group node[:app][:group]
@@ -201,7 +189,7 @@ action :setup_vhost do
     cookbook "app_jboss"
   end
 
-  #log "  Setup logrotate for jboss"
+  log "  Setup logrotate for jboss"
   rightscale_logrotate_app "jboss" do
     cookbook "rightscale"
     template "logrotate.erb"
@@ -240,19 +228,19 @@ action :setup_vhost do
           retry_delay 2
         end
       end
-    log "  Removing default plugin conf file to avoid conflict"
-    bash "apache stop for conf file deletion" do
-      flags "-ex"
-      code <<-EOH
-        /etc/init.d/apache2 stop
-        rm #{etc_apache}/mods-available/jk.*
-        rm #{etc_apache}/mods-enabled/jk.*
-        /etc/init.d/apache2 start
-      EOH
-    end
+
+      log "  Removing default plugin conf file to avoid conflict"
+      bash "apache stop for conf file deletion" do
+        flags "-ex"
+        code <<-EOH
+          /etc/init.d/apache2 stop
+          rm #{etc_apache}/mods-available/jk.*
+          rm #{etc_apache}/mods-enabled/jk.*
+          /etc/init.d/apache2 start
+        EOH
+      end
 
     when "centos","redhat"
-
       package "apr-devel" do
         options "-y"
       end
