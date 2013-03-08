@@ -23,7 +23,7 @@ TEMPLATE_DEBUG = DEBUG
 # See cookbooks/db_<provider>/providers/default.rb for more information.
 DATABASES = {
   'default': {
-    'ENGINE': '<%= @driver %>',
+    'ENGINE': '<%= node[:db][:client][:driver] %>',
     'NAME': '<%= @database %>',
     'USER': '<%= @user %>',
     'PASSWORD': '<%= @password %>',
