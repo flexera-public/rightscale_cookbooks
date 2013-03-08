@@ -46,23 +46,28 @@ log "master port: #{master_port}"
 
 r.run_action(:create)
 
-if node[:jenkins][:slave][:attach_status] == :attached
-  log "  Already attached to Jenkins master."
-else
-  client = JenkinsApi::Client.new(
-    :server_ip => master_ip,
-    :server_port => master_port,
-    :username => node[:jenkins][:server][:user_name],
-    :password => node[:jenkins][:server][:password]
-  )
+ruby_block "Attach slave using Jenkins api" do
+  block do
+    if node[:jenkins][:slave][:attach_status] == :attached
+      log "  Already attached to Jenkins master."
+    else
+      client = JenkinsApi::Client.new(
+        :server_ip => master_ip,
+        :server_port => master_port,
+        :username => node[:jenkins][:server][:user_name],
+        :password => node[:jenkins][:server][:password]
+      )
 
-  client.node.create_dump_slave(
-    :name => node[:jenkins][:slave][:name],
-    :slave_host => node[:jenkins][:ip],
-    :private_key_file => node[:jenkins][:slave][:private_key_file],
-    :executors => node[:jenkins][:slave][:executors]
-  )
-  node[:jenkins][:slave][:attach_status] = :attached
+      client.node.create_dump_slave(
+        :name => node[:jenkins][:slave][:name],
+        :slave_host => node[:jenkins][:ip],
+        :private_key_file => node[:jenkins][:slave][:private_key_file],
+        :executors => node[:jenkins][:slave][:executors]
+      )
+      node[:jenkins][:slave][:attach_status] = :attached
+    end
+  end
+  action :nothing
 end
 
 right_link_tag "jenkins:slave=true"
