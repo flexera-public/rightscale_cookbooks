@@ -12,7 +12,7 @@
 #
 
 # Load mod_jk module
-<% if node[:platform] == "ubuntu" -%>
+<% if @platform == "ubuntu" -%>
 LoadModule    jk_module  /usr/lib/apache2/modules/mod_jk.so
 <% else -%>
 LoadModule    jk_module  modules/mod_jk.so

@@ -12,16 +12,16 @@
 #
 
 # Listen <%=@params[:vhost_port]%>
-<VirtualHost *:<%=@params[:vhost_port]%>>
+<VirtualHost *:<%= @params[:vhost_port]% >>
 
-     ServerName <%=@params[:server_name]%>
+     ServerName <%= @params[:server_name] %>
      UseCanonicalName On
 
-     DocumentRoot <%=@params[:docroot]%>
+     DocumentRoot <%= @params[:docroot] %>
       <DirectoryMatch  /\.git/|/\.svn/ >
        Deny from all
      </DirectoryMatch>
-     <Directory "<%=@params[:docroot]%>">
+     <Directory "<%= @params[:docroot] %>">
       Options FollowSymLinks
       AllowOverride <%= @params[:allow_override] %>
       Order allow,deny
@@ -69,8 +69,8 @@
      # <CUSTOM RULES BEFORE FORWARDING END>
 
      # Setup the logs in the appropriate directory
-     CustomLog <%=@params[:apache_log_dir]%>/<%=@params[:server_name]%>-access_log combined
-     ErrorLog  <%=@params[:apache_log_dir]%>/<%=@params[:server_name]%>-error_log
+     CustomLog <%= @params[:apache_log_dir] %>/<%= @params[:server_name] %>-access_log combined
+     ErrorLog  <%= @params[:apache_log_dir] %>/<%= @params[:server_name] %>-error_log
 
      LogLevel warn
 

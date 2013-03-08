@@ -23,7 +23,6 @@ action :start do
   end
 end
 
-
 # Restart jboss service
 action :restart do
   log "  Running restart sequence"
@@ -45,18 +44,18 @@ action :install do
   end
 
   group node[:app][:group]
- 
+
   user node[:app][:user] do
-    comment "Jboss User"
-    gid "jboss"
-    home "#{install_target}"
+    comment "JBoss User"
+    gid node[:app][:group]
+    home install_target
     shell "/sbin/nologin"
   end
- 
-  # Download the source and extract.
+
+  # Download the zip file and extract
   touchfile = ::File.expand_path "~/.jboss_installed"
-  bash "extract jboss from source" do
-    not_if { ::File.exists?("#{touchfile}") }
+  bash "extract jboss binaries from zip" do
+    not_if { ::File.exists?(touchfile) }
     flags "-ex"
     code <<-EOH
       cd /tmp
@@ -72,9 +71,9 @@ action :install do
 
   # Install additional packages
   log "  Packages which will be installed: #{packages}"
-  packages.each do |p|
-    log "Installing #{p}"
-    package p
+  packages.each do |pkg|
+    log "Installing #{pkg}"
+    package pkg
   end
 
   # Prepare configuration required for Jboss
@@ -104,7 +103,6 @@ action :install do
     action :nothing
   end
 
-
   template "/etc/init.d/jboss" do
     action :create
     source "jboss_init.erb"
@@ -112,7 +110,7 @@ action :install do
     cookbook "app_jboss"
     notifies :enable, resources(:service => "jboss")
     variables(
-      :install_dir => "#{install_target}",
+      :install_dir => install_target,
       :app_user => node[:app][:user]
     )
   end
@@ -131,8 +129,8 @@ action :install do
     "uuid-key-generator.sar",
     "messaging"
   ]
-  services_d.each do |p|
-    directory "#{jboss_deploy_dir}/#{p}" do
+  services_d.each do |service|
+    directory "#{jboss_deploy_dir}/#{service}" do
       recursive true
       action :delete
     end
@@ -148,14 +146,14 @@ action :install do
     "mail-ra.rar",
     "scheduler-service.xml"
   ]
-  services_f.each do |p|
-    file "#{jboss_deploy_dir}/#{p}" do
+  services_f.each do |service|
+    file "#{jboss_deploy_dir}/#{service}" do
       action :delete
       backup false
     end
   end
 
-  # Moving jboss logs to ephemeral to free memory on root filesystem
+  # Moving jboss logs to ephemeral to free space on root filesystem
   # See cookbooks/rightscale/definitions/rightscale_move_to_ephemeral.rb
   # for the "rightscale_move_to_ephemeral" definition.
   rightscale_move_to_ephemeral "#{install_target}/server/default/log" do
@@ -190,6 +188,8 @@ action :setup_vhost do
   end
 
   log "  Setup logrotate for jboss"
+  # See cookbooks/rightscale/definition/rightscale_logrotate_app.rb for the
+  # "rightscale_logrotate_app" definition.
   rightscale_logrotate_app "jboss" do
     cookbook "rightscale"
     template "logrotate.erb"
@@ -201,8 +201,9 @@ action :setup_vhost do
     rotate 4
   end
 
-  # Restarting jboss service, since action start is not working with chef
-  action_restart
+  # Starting jboss service
+  # Calls the :start action.
+  action_start
 
   log "  Setup mod_jk vhost"
   # Setup mod_jk vhost start
@@ -210,49 +211,51 @@ action :setup_vhost do
 
   # Check if mod_jk is installed
   if !::File.exists?("#{etc_apache}/conf.d/mod_jk.conf")
-
     connectors_source = "tomcat-connectors-1.2.32-src.tar.gz"
 
     # Installing required packages depending on platform
     case node[:platform]
     when "ubuntu"
-      ubuntu_p = [
+      ubuntu_pkgs = [
         "apache2-mpm-prefork",
         "apache2-threaded-dev",
         "libapr1-dev",
         "libapache2-mod-jk"
       ]
-      ubuntu_p.each do |p|
-        package p do
+      ubuntu_pkgs.each do |pkg|
+        package pkg do
           retries 15
           retry_delay 2
         end
       end
 
       log "  Removing default plugin conf file to avoid conflict"
-      bash "apache stop for conf file deletion" do
+      service "apache2" do
+        action :stop
+        persist false
+      end
+
+      bash "conf file deletion" do
         flags "-ex"
         code <<-EOH
-          /etc/init.d/apache2 stop
           rm #{etc_apache}/mods-available/jk.*
           rm #{etc_apache}/mods-enabled/jk.*
-          /etc/init.d/apache2 start
         EOH
       end
 
-    when "centos","redhat"
-      package "apr-devel" do
-        options "-y"
+      service "apache2" do
+        action :start
+        persist false
       end
 
-      package "httpd-devel" do
-        options "-y"
-      end
+    when "centos", "redhat"
+      package "apr-devel"
+      package "httpd-devel"
 
       # Preparing to install tomcat connectors for jboss.
       # Using the same plugin, which already present in app_tomcat cookbook.
       cookbook_file "/tmp/#{connectors_source}" do
-        source "#{connectors_source}"
+        source connectors_source
         cookbook "app_tomcat"
       end
 
@@ -292,7 +295,8 @@ action :setup_vhost do
       source "mod_jk.conf.erb"
       variables(
         :jkworkersfile => "#{etc_apache}/conf.d/jboss_workers.properties",
-        :apache_log_dir => node[:apache][:log_dir]
+        :apache_log_dir => node[:apache][:log_dir],
+        :platform => node[:platform]
       )
       cookbook "app_jboss"
     end
@@ -318,6 +322,8 @@ action :setup_vhost do
   end
 
   log "  Generating new apache ports.conf"
+  # See cookbooks/app/definitions/app_add_listen_port.rb for the
+  # "app_add_listen_port" definition.
   app_add_listen_port port
 
   # Configuring document root for apache
@@ -330,6 +336,8 @@ action :setup_vhost do
   end
 
   log "  Configuring apache vhost for jboss"
+  # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/web_app.rb
+  # for the "web_app" definition.
   web_app "http-#{port}-#{node[:web_apache][:server_name]}.vhost" do
     template        "apache_mod_jk_vhost.erb"
     cookbook        "app_jboss"
@@ -358,6 +366,8 @@ action :setup_db_connection do
   app_libpath = "#{install_target}/server/default/lib"
 
   log "  Creating #{db_adapter}-ds.xml for DB: #{db_name} using adapter #{db_adapter} and datasource #{datasource}"
+  # See cookbooks/db/definitions/db_connect_app.rb for the "db_connect_app"
+  # definition.
   db_connect_app "#{install_target}/server/default/deploy/#{db_adapter}-ds.xml" do
     template      "customdb-ds.xml.erb"
     owner         "#{node[:app][:user]}"
@@ -413,6 +423,7 @@ action :setup_monitoring do
     code <<-EOH
       cat <<'EOF'>>"#{install_target}/bin/run.conf"
 JAVA_OPTS="\$JAVA_OPTS -Djcd.host=#{node[:rightscale][:instance_uuid]} -Djcd.instance=jboss -Djcd.dest=udp://#{node[:rightscale][:servers][:sketchy][:hostname]}:3011 -Djcd.tmpl=javalang -javaagent:#{install_target}/lib/collectd.jar"
+      EOF
     EOH
   end
 

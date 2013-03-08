@@ -28,8 +28,7 @@ set_unless[:app_jboss][:java][:xms] = "1024m"
 # Defines the survivor ratio used by the JVM
 set_unless[:app_jboss][:java][:survivor_ratio] = "6"
 
-# Defining apache user, java alternatives and database adapter parameters 
-# depending on platform.
+# Defining java alternatives command depending on platform.
 case node[:platform]
 when "ubuntu"
   set[:app_jboss][:alternatives_cmd] = "update-alternatives --auto java"

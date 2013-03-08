@@ -12,12 +12,12 @@
 <datasources>
   <local-tx-datasource>
     <jndi-name><%= @vars[:datasource] %></jndi-name>
-    <connection-url>jdbc:<%= @node[:db][:client][:driver].split(".")[1] %>://<%= @fqdn %>:<%= @node[:"#{node[:db][:provider]}"][:port]  %>/<%= @database %></connection-url>
-    <driver-class><%= @node[:db][:client][:driver] %></driver-class>
+    <connection-url>jdbc:<%= @driver.split(".")[1] %>://<%= @fqdn %>:<%= @node[:"#{node[:db][:provider]}"][:port]  %>/<%= @database %></connection-url>
+    <driver-class><%= @driver %></driver-class>
     <user-name><%= @user %></user-name>
     <password><%= @password %></password>
     <metadata>
-      <type-mapping><%= @node[:db][:client][:driver].split(".")[1] %></type-mapping>
+      <type-mapping><%= @driver.split(".")[1] %></type-mapping>
     </metadata>
   </local-tx-datasource>
 </datasources>

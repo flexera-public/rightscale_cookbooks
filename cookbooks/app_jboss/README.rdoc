@@ -3,7 +3,7 @@
 == DESCRIPTION:
 
 * Cookbook provides JBoss application server implementation of the app LWRP.
-* Installs and configures, JBoss application server.
+* Installs and configures the JBoss application server.
 
 == REQUIREMENTS:
 * Requires "app" Lightweight resource cookbook
@@ -35,55 +35,30 @@ There are no known limitations.
 * Set 'jdbc/ConnDB' as your datasource name to set up a database connection with
   the application server.
 
-For more info see:{Release Notes}[http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current]
+For more info see: {Release Notes}[http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current]
 (Section ‘JBoss App Server’ under ServerTemplates)
 
-Please checkout the tutorial:{JBoss App Server}[http://support.rightscale.com/03-Tutorials/JBoss_App_Server]
+Please checkout the tutorial: {JBoss App Server}[http://support.rightscale.com/03-Tutorials/JBoss_App_Server]
 
 == DETAILS:
 === General
 
 The <tt>app_jboss</tt> cookbook will install and set up the Apache web server
-with a mod_jk module and the JBoss application server, with support for
-MySQL or Postgres database servers.
-The Cookbook will create a separate vhost config for the Apache web server,
-which will allow Apache to handle static content,
-such as images and HTML documents,
-and forward all requests for dynamic content to jboss.
+with a mod_jk module and the JBoss application server, with support for MySQL or
+Postgres database servers. The Cookbook will create a separate vhost config for
+the Apache web server, which will allow Apache to handle static content, such as
+images and HTML documents, and forward all requests for dynamic content to
+JBoss.
 
-
-<b>Apache</b>
-
-Server version: Apache/2.2.15 (CentOS)
-Server built: Feb 13 2012 22:31:42
-
-Server version: Apache/2.2.22 (Ubuntu)
-Server built:   Feb 13 2012 01:51:56
-
-<b>JBoss</b>
-
-JBoss Version=5.1.0.GA
-
-mod_jk/1.2.32
-
-<b>Java</b>
-
-Java version "1.6.0_24"
-
-OpenJDK Runtime Environment (IcedTea6 1.11.5)
-  (CentOS: rhel-1.50.1.11.5.el6_3-x86_64, Ubuntu: 6b24-1.11.5-0ubuntu1~12.04.1)
-
-OpenJDK 64-Bit Server VM (build 20.0-b12, mixed mode)
-
-also:
-* <tt>User defined war file support</tt>
-* <tt>Java heap size Xms and Xmx memory limitations tuning</tt>
-* <tt>Java NewSize, MaxNewSize, PermSize, MaxPermSize limitations tuning</tt>
-* <tt>Application code installation from the remote git, svn or ROS repository</tt>
-* <tt>MySQL/Postgesql database jboss connection file configuration</tt>
-* <tt>Automatic application vhost file configuration</tt>
-* <tt>Automatic logrotate file configuration for JBoss logs</tt>
-* <tt>Collectd monitoring support</tt>
+Features currently supported are
+* User defined war file support
+* Java heap size Xms and Xmx memory limitations tuning
+* Java NewSize, MaxNewSize, PermSize, MaxPermSize limitations tuning
+* Application code installation from the remote git, svn or ROS repository
+* MySQL/Postgesql database JBoss connection file configuration
+* Automatic application vhost file configuration
+* Automatic logrotate file configuration for JBoss logs
+* Collectd monitoring support
 
 === Attributes:
 These are settings used in recipes and templates. Default values are noted.
@@ -96,14 +71,19 @@ attributes that are inputs are in the <tt>metadata.rb</tt> cookbook file.
   Path to the directory which will contain the application for JBoss.
 
 ====== Java heap tuning attributes
+"Permanent Generation" space holds Class and Object instances, and their related
+metadata. "Young Generation" space is the location where new objects are
+created. It consists of two survivor spaces called <tt>to space</tt> and
+<tt>from space</tt>.
+
 * <tt>node[:app_jboss][:java][:permsize]</tt> -
-  The initial value of the permanent generation space size.
-* <tt>node[:app_jboss][:java][:maxpermsize]</tt> - The maximum value of
-  the permanent generation space size.
+  The initial size of "permanent generation" space.
+* <tt>node[:app_jboss][:java][:maxpermsize]</tt> -
+  The maximum size of "permanent generation" space.
 * <tt>node[:app_jboss][:java][:newsize]</tt> -
-  The initial size of new space generation.
+  The initial size of "young generation" space.
 * <tt>node[:app_jboss][:java][:maxnewsize]</tt> -
-  The maximum size of new space generation.
+  The maximum size of "young generation" space.
 * <tt>node[:app_jboss][:java][:xmx]</tt> -
   The maximum size of the heap used by the JVM.
 * <tt>node[:app_jboss][:java][:xms]</tt> -
@@ -111,17 +91,17 @@ attributes that are inputs are in the <tt>metadata.rb</tt> cookbook file.
 
 ====== Platform dependent
 * <tt>node[:app][:user]</tt> -
-  Username. Required for changing the owner of created project dirs.
+  Username for changing the owner of created project dirs.
 * <tt>node[:app_jboss][:alternatives_cmd]</tt> -
-  Java alternatives command list.
+  Alternative command for selecting Java.
 
 === Templates:
 
 ==== Defined in <tt>:install</tt> LWRP action for the <tt>app::default</tt> recipe.
 
-* <tt>run_conf.erb</tt> - JBoss configuration template used by jboss start-up
+* <tt>run_conf.erb</tt> - JBoss configuration template used by JBoss start-up
   script.
-* <tt>jboss_init.erb</tt> - Start-up init script for jboss.
+* <tt>jboss_init.erb</tt> - Start-up init script for JBoss.
 
 ==== Defined in <tt>:setup_vhost</tt> LWRP action for the <tt>app::setup_vhost</tt> recipe.
 
@@ -141,38 +121,12 @@ attributes that are inputs are in the <tt>metadata.rb</tt> cookbook file.
 <tt>app_jboss</tt> Lightweight provider is defined in the
 <tt>providers/default.rb</tt> file and contains source for the following actions:
 
-* <tt>:install</tt>
-
-* <tt>:setup_vhost</tt>
-
-* <tt>:start</tt>
-
-* <tt>:stop</tt>
-
-* <tt>:reload</tt>
-
-* <tt>:restart</tt>
-
-* <tt>:code_update</tt>
-
-* <tt>:setup_db_connection</tt>
-
-* <tt>:setup_monitoring</tt>
-
-
-For more info about these actions please see <tt>app</tt> cookbook README.
-
-For normal operations it requires the "app" resource which will act as an
-interface to all <tt>app_jboss</tt> provider logic.
-
-===== Actions
-
 * <tt>:install</tt> -
   Install packages required for application server setup.
 
 * <tt>:setup_vhost</tt> -
-  Set up Apache vhost file, with JBoss module
-  directives included. Install and set up JBoss package dependencies.
+  Set up Apache vhost file with mod_jk. Install and set up JBoss package
+  dependencies. Set up logrotate for JBoss.
 
 * <tt>:start</tt> -
   Start sequence for JBoss application server.
@@ -187,29 +141,33 @@ interface to all <tt>app_jboss</tt> provider logic.
   Restart sequence for JBoss application server.
 
 * <tt>:code_update</tt> -
-  Perform project source code update/download using user
-  selected "repo" LWRP. Set up logrotate config.
+  Perform project source code update/download using user selected "repo" LWRP.
 
 * <tt>:setup_db_connection</tt> -
   Configure <tt>(mysql/postgres)-ds.xml</tt> JBoss db specific configuration
-   file with database connection information.
+  file with database connection information.
 
 * <tt>:setup_monitoring</tt> -
   Install and set up of required monitoring software.
 
+For more info about these actions please see <tt>app</tt> cookbook README.
+
+For normal operations it requires the "app" resource which will act as an
+interface to all <tt>app_jboss</tt> provider logic.
+
 ===== Usage Example:
 
-For usage examples,
-please see corresponding section in <tt>app</tt> cookbook README.
+For usage examples, please see corresponding section in
+<tt>app</tt> cookbook README.
 
 
 ===== Unwanted applications and services
 
 JBoss comes with a lot of services and your enterprise applications may not need
-all of them. Post installation following applications and services are
+all of them. After installation, the following applications and services are
 removed to boost application server performance.
 
-*  Home page server- (deploy/ROOT.war)
+*  Home page server - (deploy/ROOT.war)
 *  JMX Console server - (deploy/jmx-console.war)
 *  Web Console server - (deploy/management)
 *  Unique ID key generator - (deploy/uuid-key-generator.sar)
