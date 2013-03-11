@@ -3,14 +3,19 @@ require_helper "cloud"
 require_helper "ephemeral"
 require_helper "wait_for_ip_repopulation"
 
-# Helpers specific to the Base test.
+# Test specific helpers.
 #
 helpers do
+  # An error with swap file setup.
+  #
+  class SwapFileError < VirtualMonkey::TestCase::ErrorBase
+  end
+
   # Checks if the swap file is set up.
   #
   # @param server [Server] the server to check
   #
-  # @raise [RuntimeError] if the swap file is not set up
+  # @raise [SwapFileError] if the swap file is not set up
   #
   def check_swap_file(server)
     # Get location of swap file from ServerTemplate input.
@@ -21,8 +26,7 @@ helpers do
     #
     probe(servers.first, "grep -c #{swapfile} /proc/swaps") do |result, status|
       puts "Swapfile: #{result.inspect}"
-      # TODO: raise some sort of exception in the monkey exception hierarchy
-      raise "raise swap file not setup correctly" unless ((result).to_i > 0)
+      raise SwapFileError, "raise swap file not setup correctly" unless ((result).to_i > 0)
       true
     end
   end

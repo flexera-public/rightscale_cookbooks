@@ -1,3 +1,5 @@
+require_helper "errors"
+
 # Represents a cloud with methods that encapsulate cloud specific behavior.
 #
 class Cloud
@@ -13,8 +15,7 @@ class Cloud
 
     case cloud_name
     when nil, ""
-      # TODO: raise some sort of exception in the monkey exception hierarchy
-      raise "get_cloud_name returned an invalid value: #{cloud_name}"
+      raise AssertionError, "get_cloud_name returned an invalid value: #{cloud_name}"
     when /^AWS /
       EC2.new cloud_name
     when /^Azure /
@@ -34,7 +35,8 @@ class Cloud
   #
   attr_reader :cloud_name
 
-  # Checks if a server can have ephemeral devices.
+  # Checks if a server can have ephemeral devices. If not overridden by a
+  # subclass this method always returns false.
   #
   # @param server [Server] the server to check for ephemeral support
   #
@@ -44,7 +46,8 @@ class Cloud
     false
   end
 
-  # Checks if a server has stop/start support.
+  # Checks if a server has stop/start support. If not overridden by a subclass
+  # this method always returns false.
   #
   # @param server [Server] the server to check for stop/start support
   #
@@ -55,7 +58,8 @@ class Cloud
   end
 
   # Checks if the cloud is configured in a way where SSH must be done to a
-  # private IP address from within the cloud.
+  # private IP address from within the cloud. If not overridden by a subclass
+  # this method always returns false.
   #
   # @return [Boolean] whether to SSH to a private IP address within the cloud
   #
