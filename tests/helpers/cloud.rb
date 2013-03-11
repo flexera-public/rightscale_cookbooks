@@ -1,3 +1,5 @@
+require_helper "errors"
+
 # Represents a cloud with methods that encapsulate cloud specific behavior.
 #
 class Cloud
@@ -10,10 +12,10 @@ class Cloud
   #
   def self.factory
     cloud_name = get_cloud_name
+
     case cloud_name
     when nil, ""
-      # TODO: raise some sort of exception in the monkey exception hierarchy
-      raise "get_cloud_name returned an invalid value: #{cloud_name}"
+      raise AssertionError, "get_cloud_name returned an invalid value: #{cloud_name}"
     when /^AWS /
       EC2.new cloud_name
     when /^Azure /
@@ -33,7 +35,8 @@ class Cloud
   #
   attr_reader :cloud_name
 
-  # Checks if a server can have ephemeral devices.
+  # Checks if a server can have ephemeral devices. If not overridden by a
+  # subclass this method always returns false.
   #
   # @param server [Server] the server to check for ephemeral support
   #
@@ -43,18 +46,20 @@ class Cloud
     false
   end
 
-  # Checks if a server has stop/start support.
+  # Checks if a server has stop/start support. If not overridden by a subclass
+  # this method always returns false.
   #
   # @param server [Server] the server to check for stop/start support
   #
   # @return [Boolean] whether the server supports stop/start
   #
-  def supports_start_stop?(server)
+  def supports_stop_start?(server)
     false
   end
 
   # Checks if the cloud is configured in a way where SSH must be done to a
-  # private IP address from within the cloud.
+  # private IP address from within the cloud. If not overridden by a subclass
+  # this method always returns false.
   #
   # @return [Boolean] whether to SSH to a private IP address within the cloud
   #
@@ -97,7 +102,8 @@ end
 # @see Cloud
 #
 class EC2 < Cloud
-  # Checks if a server can have ephemeral devices.
+  # Checks if a server can have ephemeral devices. Epehemeral is supported on
+  # the Amazon EC2 cloud except for on HVM instances.
   #
   # @param server [Server] the server to check for ephemeral support
   #
@@ -107,29 +113,22 @@ class EC2 < Cloud
   #
   def supports_ephemeral?(server)
     # Ephemeral is not supported on EC2 HVM instances.
-    if get_server_mci(server).name =~ /hvm/i
-      false
-    else
-      true
-    end
+    get_server_mci(server).name =~ /hvm/i ? true : false
   end
 
-  # Checks if a server has stop/start support.
+  # Checks if a server has stop/start support. Stop/start is supported on EBS
+  # images on the Amazon EC2 cloud.
   #
   # @param server [Server] the server to check for stop/start support
   #
   # @return [Boolean] whether the server supports stop/start
   #
-  # @see Cloud#supports_start_stop?
+  # @see Cloud#supports_stop_start?
   #
-  def supports_start_stop?(server)
-    # Only EC2 EBS images support start/stop.
+  def supports_stop_start?(server)
+    # Only EC2 EBS images support stop/start.
     # All RHEL images are EBS, but may not say so.
-    if get_server_mci(server).name =~ /ebs|rhel/i
-      true
-    else
-      false
-    end
+    get_server_mci(server).name =~ /ebs|rhel/i ? true : false
   end
 end
 
@@ -138,7 +137,8 @@ end
 # @see Cloud
 #
 class Azure < Cloud
-  # Checks if a server can have ephemeral devices.
+  # Checks if a server can have ephemeral devices. Epehemeral is supported on
+  # the Microsoft Azure cloud.
   #
   # @param server [Server] the server to check for ephemeral support
   #
@@ -151,12 +151,13 @@ class Azure < Cloud
   end
 end
 
-# Represents the Apache CloudStack cloud specific behavior. Datapipe,
-# Logicworks, and IDC Frontier are CloudStack clouds.
+# Represents the Apache CloudStack cloud specific behavior. Datapipe, IDC
+# Frontier, and Logicworks are CloudStack clouds.
 #
 class CloudStack < Cloud
   # Checks if the cloud is configured in a way where SSH must be done to a
-  # private IP address from within the cloud.
+  # private IP address from within the cloud. The IDC Frontier and Logicworks
+  # clouds require SSHing from a private IP address.
   #
   # @return [Boolean] whether to SSH to a private IP address within the cloud
   #
@@ -178,7 +179,8 @@ end
 # @see Cloud
 #
 class Openstack < Cloud
-  # Checks if a server can have ephemeral devices.
+  # Checks if a server can have ephemeral devices. Ephemeral is supported on
+  # Openstack clouds.
   #
   # @param server [Server] the server to check for ephemeral support
   #
