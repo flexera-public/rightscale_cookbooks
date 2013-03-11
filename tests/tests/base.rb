@@ -26,7 +26,7 @@ helpers do
     #
     probe(servers.first, "grep -c #{swapfile} /proc/swaps") do |result, status|
       puts "Swapfile: #{result.inspect}"
-      raise SwapFileError, "raise swap file not setup correctly" unless ((result).to_i > 0)
+      raise SwapFileError, "swap file not setup correctly" unless ((result).to_i > 0)
       true
     end
   end
