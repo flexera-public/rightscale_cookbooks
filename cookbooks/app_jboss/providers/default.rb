@@ -38,7 +38,7 @@ action :install do
   install_target = node[:app_jboss][:install_target]
 
   # Creation of Jboss installation directory, group and user
-  directory "#{install_target}" do
+  directory install_target do
     action :create
     recursive true
   end
@@ -279,7 +279,7 @@ action :setup_vhost do
       action :create
       source "jboss_workers.properties.erb"
       variables(
-        :jboss_home => "#{install_target}",
+        :jboss_home => install_target,
         :config_subdir => node[:apache][:config_subdir]
       )
       cookbook "app_jboss"
@@ -376,13 +376,6 @@ action :setup_db_connection do
     vars(
       :datasource => datasource
     )
-  end
-
-  # JBoss requires driver to be present in
-  # "<jboss_install_dir>/server/<config_dir>/lib".
-  # See http://docs.jboss.org/jbossas/docs/Administration_And_Configuration_Guide/5/html/ch13s02.html
-  link "#{app_libpath}/#{node[:db][:client][:jar_file]}" do
-    to "/usr/share/java/#{node[:db][:client][:jar_file]}"
   end
 
   template "#{install_target}/server/default/deployers/jbossweb.deployer/web.xml" do
