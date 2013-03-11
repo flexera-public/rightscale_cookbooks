@@ -19,7 +19,6 @@ define :db_connect_app, :template => "db_connection_example.erb", :cookbook => "
   # The action "install_client_driver" is implemented in db_<provider> cookbook's provider/default.rb
   db node[:db][:data_dir] do
     driver_type params[:driver_type]
-    app_libpath params[:vars][:app_libpath]
     action :install_client_driver
   end
 

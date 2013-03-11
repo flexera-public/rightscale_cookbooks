@@ -648,7 +648,6 @@ end
 action :install_client_driver do
   type = new_resource.driver_type
   log "  Installing mysql support for #{type} driver"
-  app_libpath = new_resource.app_libpath
 
   # Installation of the database client driver for application servers is
   # done here based on the driver type.
@@ -691,12 +690,6 @@ action :install_client_driver do
         }
       )
       action :install
-    end
-    # If application needs driver in specific directory,
-    # it needs to pass library path.
-    link "#{app_libpath}/#{node[:db][:client][:jar_file]}" do
-      to "/usr/share/java/#{node[:db][:client][:jar_file]}"
-      only_if { app_libpath }
     end
   when "ruby"
     # This adapter type is used by Apache Rails Passenger application servers.

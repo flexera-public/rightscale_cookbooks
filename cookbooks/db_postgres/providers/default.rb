@@ -307,7 +307,6 @@ end
 action :install_client_driver do
   type = new_resource.driver_type
   log "  Installing postgres support for #{type} driver"
-  app_libpath = new_resource.app_libpath
 
   # Installation of the database client driver for application servers is
   # done here based on the client driver type
@@ -345,12 +344,6 @@ action :install_client_driver do
       group "root"
       mode "0644"
       cookbook 'app_tomcat'
-    end
-    # If application needs driver in specific directory,
-    # it needs to pass library path.
-    link "#{app_libpath}/#{node[:db][:client][:jar_file]}" do
-      to "/usr/share/java/#{node[:db][:client][:jar_file]}"
-      only_if { app_libpath }
     end
 
   when "ruby"

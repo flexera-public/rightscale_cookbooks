@@ -171,8 +171,6 @@ action :setup_vhost do
   app_root = new_resource.root
   install_target = node[:app_jboss][:install_target]
 
-  # Define internal port for jboss. It must be different than apache ports
-  jboss_port = port + 1
   log "  Updating server.xml"
   template "#{install_target}/server/default/deploy/jbossweb.sar/server.xml" do
     owner node[:app][:user]
@@ -181,8 +179,7 @@ action :setup_vhost do
     action :create
     source "server.xml.erb"
     variables(
-      :doc_root => app_root,
-      :app_port => jboss_port.to_s
+      :doc_root => app_root
     )
     cookbook "app_jboss"
   end
@@ -377,9 +374,15 @@ action :setup_db_connection do
     cookbook      "app_jboss"
     driver_type   "java"
     vars(
-      :datasource => datasource,
-      :app_libpath => app_libpath
+      :datasource => datasource
     )
+  end
+
+  # JBoss requires driver to be present in
+  # "<jboss_install_dir>/server/<config_dir>/lib".
+  # See http://docs.jboss.org/jbossas/docs/Administration_And_Configuration_Guide/5/html/ch13s02.html
+  link "#{app_libpath}/#{node[:db][:client][:jar_file]}" do
+    to "/usr/share/java/#{node[:db][:client][:jar_file]}"
   end
 
   template "#{install_target}/server/default/deployers/jbossweb.deployer/web.xml" do

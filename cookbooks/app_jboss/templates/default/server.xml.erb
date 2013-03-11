@@ -19,7 +19,7 @@
    <Service name="jboss.web">
 
       <!-- A HTTP/1.1 Connector on port 8080 -->
-      <Connector protocol="HTTP/1.1" port="<%= @app_port %>" address="${jboss.bind.address}"
+      <Connector protocol="HTTP/1.1" port="8080" address="${jboss.bind.address}"
                connectionTimeout="20000" redirectPort="8443" />
 
       <!-- Add this option to the connector to avoid problems with
