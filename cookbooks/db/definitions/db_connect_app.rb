@@ -36,6 +36,7 @@ define :db_connect_app, :template => "db_connection_example.erb", :cookbook => "
       :socket => node[:db][:socket],
       :driver => node[:db][:client][:driver],
       :database => params[:database],
+      :port => node[:"#{node[:db][:provider]}"][:port],
       :vars => params[:vars]
     )
   end

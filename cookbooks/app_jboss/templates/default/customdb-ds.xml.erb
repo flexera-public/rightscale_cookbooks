@@ -12,7 +12,7 @@
 <datasources>
   <local-tx-datasource>
     <jndi-name><%= @vars[:datasource] %></jndi-name>
-    <connection-url>jdbc:<%= @driver.split(".")[1] %>://<%= @fqdn %>:<%= @node[:"#{node[:db][:provider]}"][:port]  %>/<%= @database %></connection-url>
+    <connection-url>jdbc:<%= @driver.split(".")[1] %>://<%= @fqdn %>:<%= @port  %>/<%= @database %></connection-url>
     <driver-class><%= @driver %></driver-class>
     <user-name><%= @user %></user-name>
     <password><%= @password %></password>
