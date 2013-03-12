@@ -390,6 +390,15 @@ action :setup_db_connection do
     )
   end
 
+  # Setup jboss-service.xml to include /usr/share/java in JBoss classpath
+  template "#{install_target}/server/default/conf/jboss-service.xml" do
+    action :create
+    source "jboss-service.xml.erb"
+    owner node[:app][:user]
+    group node[:app][:group]
+    mode "0644"
+    cookbook "app_jboss"
+  end
 end
 
 # Setup monitoring tools for jboss
@@ -419,7 +428,7 @@ action :setup_monitoring do
     code <<-EOH
       cat <<'EOF'>>"#{install_target}/bin/run.conf"
 JAVA_OPTS="\$JAVA_OPTS -Djcd.host=#{node[:rightscale][:instance_uuid]} -Djcd.instance=jboss -Djcd.dest=udp://#{node[:rightscale][:servers][:sketchy][:hostname]}:3011 -Djcd.tmpl=javalang -javaagent:#{install_target}/lib/collectd.jar"
-      EOF
+EOF
     EOH
   end
 
