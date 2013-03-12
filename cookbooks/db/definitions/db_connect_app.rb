@@ -22,7 +22,7 @@ define(:db_connect_app,
   :owner => nil,
   :group => nil,
   :vars => {}
-)do
+) do
 
   # The action "install_client_driver" is implemented in db_<provider> cookbook's provider/default.rb
   db node[:db][:data_dir] do
