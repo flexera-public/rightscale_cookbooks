@@ -392,7 +392,7 @@ action :setup_db_connection do
   end
 
   # Setup jboss-service.xml to include /usr/share/java in JBoss classpath
-  java_classpath = "usr/share/java"
+  java_classpath = "/usr/share/java"
   template "#{install_target}/server/default/conf/jboss-service.xml" do
     action :create
     source "jboss-service.xml.erb"
