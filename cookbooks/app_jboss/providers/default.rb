@@ -200,7 +200,7 @@ action :setup_vhost do
 
   # Starting jboss service
   # Calls the :start action.
-  action_start
+  action_restart
 
   log "  Setup mod_jk vhost"
   # Setup mod_jk vhost start
