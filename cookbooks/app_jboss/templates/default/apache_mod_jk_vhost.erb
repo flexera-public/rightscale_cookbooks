@@ -11,18 +11,18 @@
 # HTTP-only virtual host template with mod_jk
 #
 
-<VirtualHost *:<%= @vhost_port %>>
+<VirtualHost *:<%= @params[:vhost_port] %>>
 
-     ServerName <%= @server_name %>
+     ServerName <%= @params[:server_name] %>
      UseCanonicalName On
 
-     DocumentRoot <%= @docroot %>
+     DocumentRoot <%= @params[:docroot] %>
       <DirectoryMatch  /\.git/|/\.svn/ >
        Deny from all
      </DirectoryMatch>
-     <Directory "<%= @docroot %>">
+     <Directory "<%= @params[:docroot] %>">
       Options FollowSymLinks
-      AllowOverride <%= @allow_override %>
+      AllowOverride <%= @params[:allow_override] %>
       Order allow,deny
       Allow from all
      </Directory>
@@ -68,8 +68,8 @@
      # <CUSTOM RULES BEFORE FORWARDING END>
 
      # Setup the logs in the appropriate directory
-     CustomLog <%= @apache_log_dir %>/<%= @server_name %>-access_log combined
-     ErrorLog  <%= @apache_log_dir %>/<%= @server_name %>-error_log
+     CustomLog <%= @params[:apache_log_dir] %>/<%= @params[:server_name] %>-access_log combined
+     ErrorLog  <%= @params[:apache_log_dir] %>/<%= @params[:server_name] %>-error_log
 
      LogLevel warn
 
