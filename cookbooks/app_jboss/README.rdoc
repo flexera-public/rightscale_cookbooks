@@ -38,7 +38,7 @@ There are no known limitations.
 For more info see: {Release Notes}[http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current]
 (Section ‘JBoss App Server’ under ServerTemplates)
 
-Please checkout the tutorial: {JBoss App Server}[http://support.rightscale.com/03-Tutorials/JBoss_App_Server]
+Please check out the tutorial: {JBoss App Server}[http://support.rightscale.com/03-Tutorials/JBoss_App_Server]
 
 == DETAILS:
 === General
@@ -88,6 +88,9 @@ created. It consists of two survivor spaces called <tt>to space</tt> and
   The maximum size of the heap used by the JVM.
 * <tt>node[:app_jboss][:java][:xms]</tt> -
   The initial size of the heap used by the JVM.
+
+For more information about the Java tuning parameters check out {Java Heap Tuning
+Parameters}[http://docs.oracle.com/cd/E19528-01/819-4742/abeik/index.html]
 
 ====== Platform dependent
 * <tt>node[:app][:user]</tt> -

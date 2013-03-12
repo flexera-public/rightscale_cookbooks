@@ -46,7 +46,7 @@ JAVA_OPTS="$JAVA_OPTS -Xms<%= @java_xms %> -Xmx<%= @java_xmx %>"
 JAVA_OPTS="$JAVA_OPTS -XX:PermSize=<%= @java_permsize %> -XX:MaxPermSize=<%= @java_maxpermsize %>"
 
 # NewSize, MaxNewSize and SurvivorRatio
-JAVA_OPTS="$JAVA_OPTS -XX:NewSize=<%= @java_newsize %> -XX:MaxNewSize=<%= @java_maxnewsize %> -XX:SurvivorRatio=<%=@java_survivor_ratio%>"
+JAVA_OPTS="$JAVA_OPTS -XX:NewSize=<%= @java_newsize %> -XX:MaxNewSize=<%= @java_maxnewsize %> -XX:SurvivorRatio=<%= @java_survivor_ratio %>"
 
 # Garbage collector
 JAVA_OPTS="$JAVA_OPTS -XX:+UseConcMarkSweepGC"

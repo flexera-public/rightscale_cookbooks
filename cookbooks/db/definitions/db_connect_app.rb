@@ -14,7 +14,15 @@
 # @param [String] owner The name of the owner.
 # @param [String] group The name of the group the owner belongs to.
 # @param [Hash] vars Additional variables required in the template.
-define :db_connect_app, :template => "db_connection_example.erb", :cookbook => "db", :database => nil, :driver_type => nil, :owner => nil, :group => nil, :vars => {} do
+define(:db_connect_app,
+  :template => "db_connection_example.erb",
+  :cookbook => "db",
+  :database => nil,
+  :driver_type => nil,
+  :owner => nil,
+  :group => nil,
+  :vars => {}
+)do
 
   # The action "install_client_driver" is implemented in db_<provider> cookbook's provider/default.rb
   db node[:db][:data_dir] do
@@ -35,7 +43,7 @@ define :db_connect_app, :template => "db_connection_example.erb", :cookbook => "
       :fqdn => node[:db][:dns][:master][:fqdn],
       :socket => node[:db][:socket],
       :database => params[:database],
-      :port => node[:"#{node[:db][:provider]}"][:port],
+      :port => node[node[:db][:provider]][:port],
       :vars => params[:vars]
     )
   end

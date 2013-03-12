@@ -12,21 +12,21 @@ set[:app_jboss][:install_target] = "/usr/share/jboss"
 set[:app][:module_dependencies] = ["proxy", "proxy_http", "deflate", "rewrite"]
 
 # Recommended attributes
-set_unless[:app_jboss][:code][:root_war] = ""
+default[:app_jboss][:code][:root_war] = ""
 # Defines the initial value of the permanent generation space size
-set_unless[:app_jboss][:java][:permsize] = "256m"
+default[:app_jboss][:java][:permsize] = "256m"
 # Defines the maximum value of the permanent generation space size
-set_unless[:app_jboss][:java][:maxpermsize] = "512m"
+default[:app_jboss][:java][:maxpermsize] = "512m"
 # Defines the initial size of new space generation
-set_unless[:app_jboss][:java][:newsize] = "448m"
+default[:app_jboss][:java][:newsize] = "448m"
 # Defines the maximum size of new space generation
-set_unless[:app_jboss][:java][:maxnewsize] = "448m"
+default[:app_jboss][:java][:maxnewsize] = "448m"
 # Defines the maximum size of the heap used by the JVM
-set_unless[:app_jboss][:java][:xmx] = "1024m"
+default[:app_jboss][:java][:xmx] = "1024m"
 # Defines the initial size of the heap used by the JVM
-set_unless[:app_jboss][:java][:xms] = "1024m"
+default[:app_jboss][:java][:xms] = "1024m"
 # Defines the survivor ratio used by the JVM
-set_unless[:app_jboss][:java][:survivor_ratio] = "6"
+default[:app_jboss][:java][:survivor_ratio] = "6"
 
 # Defining java alternatives command depending on platform.
 case node[:platform]

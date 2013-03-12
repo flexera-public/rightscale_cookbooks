@@ -23,7 +23,7 @@
    -->
    <classpath codebase="${jboss.server.lib.url}" archives="*"/>
    <classpath codebase="${jboss.common.lib.url}" archives="*"/>
-   <classpath codebase="file:/usr/share/java/" archives="*"/>
+   <classpath codebase="file:<%= @java_classpath %>" archives="*"/>
 
    <!-- ==================================================================== -->
    <!-- Main Deployer                                                        -->

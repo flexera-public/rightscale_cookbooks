@@ -119,7 +119,7 @@ action :install do
   # by default with jboss
   jboss_deploy_dir = "#{install_target}/server/default/deploy"
 
-  services_d = [
+  service_dirs = [
     "ROOT.war",
     "admin-console.war",
     "http-invoker.sar",
@@ -129,14 +129,14 @@ action :install do
     "uuid-key-generator.sar",
     "messaging"
   ]
-  services_d.each do |service|
+  service_dirs.each do |service|
     directory "#{jboss_deploy_dir}/#{service}" do
       recursive true
       action :delete
     end
   end
 
-  services_f = [
+  service_files = [
     "mail-service.xml",
     "monitoring-service.xml",
     "schedule-manager-service.xml",
@@ -146,7 +146,7 @@ action :install do
     "mail-ra.rar",
     "scheduler-service.xml"
   ]
-  services_f.each do |service|
+  service_files.each do |service|
     file "#{jboss_deploy_dir}/#{service}" do
       action :delete
       backup false
@@ -179,7 +179,8 @@ action :setup_vhost do
     action :create
     source "server.xml.erb"
     variables(
-      :doc_root => app_root
+      :doc_root => app_root,
+      :listen_port => port
     )
     cookbook "app_jboss"
   end
@@ -391,6 +392,7 @@ action :setup_db_connection do
   end
 
   # Setup jboss-service.xml to include /usr/share/java in JBoss classpath
+  java_classpath = "usr/share/java"
   template "#{install_target}/server/default/conf/jboss-service.xml" do
     action :create
     source "jboss-service.xml.erb"
@@ -398,6 +400,9 @@ action :setup_db_connection do
     group node[:app][:group]
     mode "0644"
     cookbook "app_jboss"
+    variables(
+      :java_classpath => java_classpath
+    )
   end
 end
 
