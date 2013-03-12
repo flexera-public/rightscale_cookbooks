@@ -263,7 +263,7 @@ The only grouping that is currently an exception is the "sys" grouping of
 cookbooks. These are distinct system related cookbooks.
 
 For more information, please see: {Abstract Cookbook
-Pattern}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-RightScale_Support_of_Chef/RightScale_Cookbook_Design_Conventions#Abstract_Cookbook_Pattern
+Pattern}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-RightScale_Support_of_Chef/RightScale_Cookbook_Design_Conventions#Abstract_Cookbook_Pattern]
 
 === Definitions
 
