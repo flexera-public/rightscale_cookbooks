@@ -36,9 +36,6 @@ else
    echo "JAVA_OPTS already set in environment; overriding default settings with values: $JAVA_OPTS"
 fi
 
-# User-defined library path
-JAVA_OPTS="$JAVA_OPTS -Djboss.server.lib.url=file:/usr/share/java"
-
 # JVM tuning options
 # see http://www.mastertheboss.com/jboss-performance/jboss-as-7-performance-tuning
 
