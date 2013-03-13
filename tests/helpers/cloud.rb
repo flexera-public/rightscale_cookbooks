@@ -92,6 +92,14 @@ class Cloud
   end
 
 private
+  # Constructs a cloud object. This method should not be used directly. Instead
+  # {.factory} will create an instance of the correct Cloud subclass based on
+  # which cloud a specific test is being run on.
+  #
+  # @see .factory
+  #
+  # @param cloud_name [String] the name of the cloud
+  #
   def initialize(cloud_name)
     @cloud_name = cloud_name
   end
