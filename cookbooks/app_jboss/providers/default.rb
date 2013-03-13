@@ -180,6 +180,7 @@ action :setup_vhost do
     source "server.xml.erb"
     variables(
       :doc_root => app_root,
+      :app_ip => node[:app][:ip],
       :listen_port => port
     )
     cookbook "app_jboss"

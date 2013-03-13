@@ -11,7 +11,7 @@
 # HTTP-only virtual host template with mod_jk
 #
 
-<VirtualHost *:<%= @params[:vhost_port] %>>
+<VirtualHost <%= @app_ip %>:<%= @params[:vhost_port] %>>
 
      ServerName <%= @params[:server_name] %>
      UseCanonicalName On
