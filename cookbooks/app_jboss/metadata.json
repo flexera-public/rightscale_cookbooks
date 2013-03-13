@@ -49,6 +49,20 @@
       "display_name": "JBoss Java NewSize",
       "description": "The java NewSize argument. Example: 448m"
     },
+    "app_jboss/internal_port": {
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+
+      ],
+      "default": "8080",
+      "type": "string",
+      "recipes": [
+        "app_jboss::setup_server_5_1"
+      ],
+      "display_name": "JBoss Internal Port",
+      "description": "Sets the internal port on which JBoss listens. By default, JBoss listens on localhost port 8080. WARNING: The value for this input should NOT be the same as the value in 'app/port' input as it would conflict with the apache listen port and would cause a fatal error when the apache service is started."
+    },
     "app_jboss/java/survivor_ratio": {
       "required": "optional",
       "calculated": false,

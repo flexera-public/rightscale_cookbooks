@@ -84,11 +84,23 @@ attribute "app_jboss/java/survivor_ratio",
 
 attribute "app_jboss/datasource_name",
   :display_name => "Container datasource name",
-  :description => 
+  :description =>
     "This name is used to set up the database connection with the application" +
     " server. You should set the attribute if your application is compiled to" +
     " use a different datasource name. To set custom datasource you must" +
     " override input value. Example: jdbc/ConnDB",
   :required => "optional",
   :default => "jdbc/ConnDB",
+  :recipes => ["app_jboss::setup_server_5_1"]
+
+attribute "app_jboss/internal_port",
+  :display_name => "JBoss Internal Port",
+  :description =>
+    "Sets the internal port on which JBoss listens. By default, JBoss listens" +
+    " on localhost port 8080. WARNING: The value for this input should NOT be" +
+    " the same as the value in 'app/port' input as it would conflict with" +
+    " the apache listen port and would cause a fatal error when the apache" +
+    " service is started.",
+  :required => "optional",
+  :default => "8080",
   :recipes => ["app_jboss::setup_server_5_1"]

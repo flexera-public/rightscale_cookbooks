@@ -23,4 +23,6 @@ else
   raise "Unrecognized distro #{node[:platform]}, exiting"
 end
 
+log "  Setting JBoss internal port to #{node[:app_jboss][:internal_port]}"
+
 rightscale_marker :end

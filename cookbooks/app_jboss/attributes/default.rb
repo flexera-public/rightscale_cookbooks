@@ -28,6 +28,9 @@ default[:app_jboss][:java][:xms] = "1024m"
 # Defines the survivor ratio used by the JVM
 default[:app_jboss][:java][:survivor_ratio] = "6"
 
+# Internal port for JBoss
+default[:app_jboss][:internal_port] = "8080"
+
 # Defining java alternatives command depending on platform.
 case node[:platform]
 when "ubuntu"

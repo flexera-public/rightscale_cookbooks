@@ -35,6 +35,7 @@ end
 # Installing required packages and prepare system for jboss
 action :install do
   packages = new_resource.packages
+  app_root = new_resource.root
   install_target = node[:app_jboss][:install_target]
 
   # Creation of Jboss installation directory, group and user
@@ -95,6 +96,20 @@ action :install do
       :java_maxnewsize => node[:app_jboss][:java][:maxnewsize],
       :java_survivor_ratio => node[:app_jboss][:java][:survivor_ratio]
     )
+  end
+
+  log "  Updating server.xml"
+  template "#{install_target}/server/default/deploy/jbossweb.sar/server.xml" do
+    owner node[:app][:user]
+    group node[:app][:group]
+    mode "0644"
+    action :create
+    source "server.xml.erb"
+    variables(
+      :doc_root => app_root,
+      :listen_port => node[:app_jboss][:internal_port]
+    )
+    cookbook "app_jboss"
   end
 
   # Installation of init script and Jboss service
@@ -171,21 +186,6 @@ action :setup_vhost do
   app_root = new_resource.root
   install_target = node[:app_jboss][:install_target]
 
-  log "  Updating server.xml"
-  template "#{install_target}/server/default/deploy/jbossweb.sar/server.xml" do
-    owner node[:app][:user]
-    group node[:app][:group]
-    mode "0644"
-    action :create
-    source "server.xml.erb"
-    variables(
-      :doc_root => app_root,
-      :app_ip => node[:app][:ip],
-      :listen_port => port
-    )
-    cookbook "app_jboss"
-  end
-
   log "  Setup logrotate for jboss"
   # See cookbooks/rightscale/definition/rightscale_logrotate_app.rb for the
   # "rightscale_logrotate_app" definition.
@@ -202,7 +202,7 @@ action :setup_vhost do
 
   # Starting jboss service
   # Calls the :start action.
-  action_restart
+  action_start
 
   log "  Setup mod_jk vhost"
   # Setup mod_jk vhost start
@@ -352,7 +352,6 @@ action :setup_vhost do
     action :restart
     persist false
   end
-
 end
 
 # Setup project db connection
