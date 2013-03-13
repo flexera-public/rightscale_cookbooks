@@ -71,9 +71,10 @@ fi
 rh_status() {
     if [ `ps aux | grep -c ^jboss` != "0" ]; then
       echo "Jboss is running... "
-      exit 0
+      return 0
     else
       echo "Jboss is stopped..."
+      return 3
     fi
 }
 

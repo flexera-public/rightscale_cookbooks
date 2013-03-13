@@ -472,6 +472,7 @@ action :code_update do
 
   log "  Downloading project repo"
   # Calling "repo" LWRP to download remote project repository
+  # See cookbooks/repo/resources/default.rb for the "repo" resource.
   repo "default" do
     destination deploy_dir
     action node[:repo][:default][:perform_action].to_sym
@@ -501,5 +502,9 @@ action :code_update do
     EOH
     only_if { node[:app_jboss][:code][:root_war] != "ROOT.war" }
   end
+
+  # Restart application server
+  # Calls action :restart
+  action_restart
 
 end
