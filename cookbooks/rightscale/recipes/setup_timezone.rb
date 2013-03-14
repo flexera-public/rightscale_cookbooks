@@ -13,10 +13,8 @@ if node[:rightscale][:timezone]
   
   # Restart cron if timezone changes
   cron_service = value_for_platform(
-    ["debian", "ubuntu", "suse"] => {
-      "default" => "cron"},
+    ["debian", "ubuntu", "suse"] => {"default" => "cron"},
     "default" => "crond"
-    }
   )
 
   service "crond" do
