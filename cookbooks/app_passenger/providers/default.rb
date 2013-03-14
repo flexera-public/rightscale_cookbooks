@@ -223,7 +223,7 @@ action :setup_db_connection do
     group node[:app][:group]
     database db_name
     driver_type "ruby"
-    vars(
+    variables(
       :environment => node[:app_passenger][:project][:environment]
     )
   end

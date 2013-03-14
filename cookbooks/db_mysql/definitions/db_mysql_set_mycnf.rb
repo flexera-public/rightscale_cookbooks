@@ -5,7 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-define :db_mysql_set_mycnf,
+define(:db_mysql_set_mycnf,
   :hostname => nil,
 
   # Basic Settings
@@ -62,7 +62,8 @@ define :db_mysql_set_mycnf,
   :master_key => nil,
   :version => nil,
   :isamchk_key_buffer => nil,
-  :isamchk_sort_buffer_size => nil do
+  :isamchk_sort_buffer_size => nil
+) do
 
   log "  Installing my.cnf with server_id = #{params[:server_id]}," +
     " relay_log = #{params[:relay_log]}"

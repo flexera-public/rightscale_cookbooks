@@ -19,54 +19,54 @@
 # http://dev.mysql.com/doc/mysql/en/server-system-variables.html
 
 [client]
-port = 3306
-socket = <%= @socket %>
+port            = 3306
+socket          = <%= @socket %>
 
 [mysqld_safe]
-socket = <%= @socket %>
-nice = 0
+socket          = <%= @socket %>
+nice            = 0
 
 [mysqld]
 #
 # * Basic Settings
 #
-user = mysql
-#pid-file = /var/run/mysqld/mysqld.pid
-socket = <%= @socket %>
-port = 3306
-datadir = <%= @datadir %>
-tmpdir = <%= @tmpdir %>
+user            = mysql
+#pid-file       = /var/run/mysqld/mysqld.pid
+socket          = <%= @socket %>
+port            = 3306
+datadir         = <%= @datadir %>
+tmpdir          = <%= @tmpdir %>
 
 skip-external-locking
-bind-address = <%= @bind_address %>
+bind-address                  = <%= @bind_address %>
 
 #
 # * Fine Tuning
 #
-key_buffer = <%= @key_buffer %>
-max_allowed_packet = 16M
-thread_stack = 192K
-thread_cache_size = <%= @thread_cache_size %>
-myisam-recover = BACKUP
-max_connections = <%= @max_connections %>
-wait_timeout = <%= @wait_timeout %>
-net_read_timeout = <%= @net_read_timeout %>
-net_write_timeout = <%= @net_write_timeout %>
-back_log = <%= @back_log %>
-table_cache = <%= @table_cache %>
-max_heap_table_size = <%= @max_heap_table_size %>
+key_buffer                    = <%= @key_buffer %>
+max_allowed_packet            = 16M
+thread_stack                  = 192K
+thread_cache_size             = <%= @thread_cache_size %>
+myisam-recover                = BACKUP
+max_connections               = <%= @max_connections %>
+wait_timeout                  = <%= @wait_timeout %>
+net_read_timeout              = <%= @net_read_timeout %>
+net_write_timeout             = <%= @net_write_timeout %>
+back_log                      = <%= @back_log %>
+table_cache                   = <%= @table_cache %>
+max_heap_table_size           = <%= @max_heap_table_size %>
 
-sort_buffer_size = <%= @sort_buffer_size %>
-read_buffer_size = <%= @read_buffer_size %>
-read_rnd_buffer_size = <%= @read_rnd_buffer_size %>
-myisam_sort_buffer_size = <%= @myisam_sort_buffer_size %>
-net_buffer_length = <%= @net_buffer_length %>
+sort_buffer_size              = <%= @sort_buffer_size %>
+read_buffer_size              = <%= @read_buffer_size %>
+read_rnd_buffer_size          = <%= @read_rnd_buffer_size %>
+myisam_sort_buffer_size       = <%= @myisam_sort_buffer_size %>
+net_buffer_length             = <%= @net_buffer_length %>
 
 #
 # * Query Cache Configuration
 #
-query_cache_limit = 1M
-query_cache_size = <%= @query_cache_size %>
+query_cache_limit             = 1M
+query_cache_size              = <%= @query_cache_size %>
 
 #
 # * Logging and Replication
@@ -78,61 +78,61 @@ query_cache_size = <%= @query_cache_size %>
 log-queries-not-using-indexes
 
 <%= "read_only = 1" unless @read_only == nil %>
-server-id = <%= @server_id %>
+server-id               = <%= @server_id %>
 <% if @log_bin_enabled %>
-<%= "log_bin = #{@log_bin}" %>
-<%= "expire_logs_days = #{@expire_logs_days}" %>
+<%= "log_bin            = #{@log_bin}" %>
+<%= "expire_logs_days   = #{@expire_logs_days}" %>
 <% end %>
-binlog_format = <%= @binlog_format %>
-max_binlog_size = 100M
+binlog_format           = <%= @binlog_format %>
+max_binlog_size         = 100M
 
 #
 # * InnoDB
 #
-innodb_data_home_dir = /var/lib/mysql/
-innodb_data_file_path = ibdata1:10M:autoextend
-innodb_log_group_home_dir = /var/lib/mysql
+innodb_data_home_dir            = /var/lib/mysql/
+innodb_data_file_path           = ibdata1:10M:autoextend
+innodb_log_group_home_dir       = /var/lib/mysql
 innodb_file_per_table
-innodb_buffer_pool_size = <%= @innodb_buffer_pool_size %>
+innodb_buffer_pool_size         = <%= @innodb_buffer_pool_size %>
 innodb_additional_mem_pool_size = <%= @innodb_additional_mem_pool_size %>
-innodb_log_file_size = <%= @innodb_log_file_size %>
-innodb_log_buffer_size = <%= @innodb_log_buffer_size %>
-innodb_flush_log_at_trx_commit = 2
-innodb_lock_wait_timeout = 50
-innodb_support_xa = 1
-innodb_flush_method = O_DIRECT
-innodb_fast_shutdown = 1
+innodb_log_file_size            = <%= @innodb_log_file_size %>
+innodb_log_buffer_size          = <%= @innodb_log_buffer_size %>
+innodb_flush_log_at_trx_commit  = 2
+innodb_lock_wait_timeout        = 50
+innodb_support_xa               = 1
+innodb_flush_method             = O_DIRECT
+innodb_fast_shutdown            = 1
 
-log-bin = <%= @log_bin %>
-relay-log-index = <%= @data_dir %>/<%= @relay_log %>-relay-log.index
-relay-log = <%= @data_dir %>/<%= @relay_log %>-relay-bin
+log-bin                 = <%= @log_bin %>
+relay-log-index         = <%= @data_dir %>/<%= @relay_log %>-relay-log.index
+relay-log               = <%= @data_dir %>/<%= @relay_log %>-relay-bin
 
-slave_compressed_protocol = <%= @compressed_protocol %>
+slave_compressed_protocol       = <%= @compressed_protocol %>
 
 <% if @ssl_enabled %>
 #
 # * SSL
 #
 ssl
-ssl-ca = <%= @ca_certificate %>
-ssl-cert = <%= @master_certificate %>
-ssl-key = <%= @master_key %>
+ssl-ca                  = <%= @ca_certificate %>
+ssl-cert                = <%= @master_certificate %>
+ssl-key                 = <%= @master_key %>
 <% end %>
 
 [mysqldump]
 quick
 quote-names
-max_allowed_packet = 16M
+max_allowed_packet      = 16M
 
 [mysql]
 <% if @version == '5.1' %>
 # isam dropped after version 5.1
 
 [isamchk]
-key_buffer = <%= @isamchk_key_buffer %>
-sort_buffer_size = <%= @isamchk_sort_buffer_size %>
+key_buffer              = <%= @isamchk_key_buffer %>
+sort_buffer_size        = <%= @isamchk_sort_buffer_size %>
 <% end %>
 
 [myisamchk]
-key_buffer = <%= @isamchk_key_buffer %>
-sort_buffer_size = <%= @isamchk_sort_buffer_size %>
+key_buffer              = <%= @isamchk_key_buffer %>
+sort_buffer_size        = <%= @isamchk_sort_buffer_size %>

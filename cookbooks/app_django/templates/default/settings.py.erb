@@ -16,13 +16,14 @@ import os
 PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
-DEBUG = <%= @vars[:django_debug_mode] %>
+DEBUG = <%= @django_debug_mode %>
 TEMPLATE_DEBUG = DEBUG
 
 # The database engine used here is set by the "install_client_driver" action of db provider.
 # See cookbooks/db_<provider>/providers/default.rb for more information.
 DATABASES = {
   'default': {
+    <%# The db/client/driver node variable isn't available during compile time  so it can't be passed via the resource %>
     'ENGINE': '<%= node[:db][:client][:driver] %>',
     'NAME': '<%= @database %>',
     'USER': '<%= @user %>',
