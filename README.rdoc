@@ -299,6 +299,9 @@ cookbook and recipe name showing the beginning and end of the recipe run.
   12:12:42: *RS>  Running rightscale::default   *******
   ...
 
+Including these log lines at the beginning and end of every recipe run allows
+grouping of recipe logs in "Audit Entries" tab in the RightScale UI.
+
 If you include the <tt>rightscale</tt> cookbook as dependency of your own
 cookbook, you can use the <tt>rightscale_marker</tt> definition as well:
 
