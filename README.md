@@ -1,6 +1,6 @@
 # RightScale Cookbooks
 
-Welcome to the RightScale cookbooks - your infrastructure, codified!
+Welcome to the RightScale cookbooks -- your infrastructure, codified!
 
 ## OVERVIEW:
 
@@ -14,7 +14,7 @@ RightScale's [ServerTemplates](http://support.rightscale.com/12-Guides/Dashboard
 to create [3-tier deployment architectures for High Availability in the
 cloud](http://support.rightscale.com/ServerTemplates/v12.11_LTS/Supplemental/3_Tier_Deployment_Setup_%28PHP%29#Overview).
 These deployments fit the requirements for many auto-scaling HA
-deployments, however no single infrastructure need is exactly the same - the
+deployments, however no single infrastructure need is exactly the same -- the
 source code is provided here to give you the control over how much (or how
 little) customization you want.
 
@@ -22,7 +22,7 @@ These are *your* cookbooks!
 
 As a good starting point, the **COOKBOOK LIST** section below will give you a
 summary of what each cookbook does. From there, each cookbook has its own README
-file that goes into depth about what it does and how to use it - this is the
+file that goes into depth about what it does and how to use it -- this is the
 information you need if you want to create a runlist or ServerTemplate by mixing
 and matching recipes.
 
@@ -41,7 +41,7 @@ release, then please feel free to contribute it back. For more information about
 how to do this see the guidelines under the **CONTRIBUTING** section.
 
 Some of these cookbooks leverage Chef resources that are specific to the
-RightScale Platform - these resources are used for such things as managing
+RightScale Platform -- these resources are used for such things as managing
 machine tags associated with the node, running recipes in parallel and the
 ability to trigger a "remote recipe" to run on one node to from another. For
 more information, please see the **RIGHTSCALE RESOURCES** section below.
