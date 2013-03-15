@@ -1,6 +1,6 @@
 # RightScale Cookbooks
 
-Welcome to the RightScale cookbooks -- your infrastructure, codified!
+Welcome to the RightScale cookbooks - your infrastructure, codified!
 
 ## OVERVIEW:
 
@@ -12,9 +12,9 @@ They can be used without modification by mixing-and-matching recipes or as a
 starting point for your own creations. These cookbooks are built for use within
 RightScale's [ServerTemplates](http://support.rightscale.com/12-Guides/Dashboard_Users_Guide/Design/ServerTemplates/Concepts/About_ServerTemplates)
 to create [3-tier deployment architectures for High Availability in the
-cloud](http://support.rightscale.com/03-Tutorials/02-AWS/E2E_Examples/3_Tier_Deployment_(11H1)#Introduction).
+cloud](http://support.rightscale.com/ServerTemplates/v12.11_LTS/Supplemental/3_Tier_Deployment_Setup_%28PHP%29#Overview).
 These deployments fit the requirements for many auto-scaling HA
-deployments, however no single infrastructure need is exactly the same -- the
+deployments, however no single infrastructure need is exactly the same - the
 source code is provided here to give you the control over how much (or how
 little) customization you want.
 
@@ -22,7 +22,7 @@ These are *your* cookbooks!
 
 As a good starting point, the **COOKBOOK LIST** section below will give you a
 summary of what each cookbook does. From there, each cookbook has its own README
-file that goes into depth about what it does and how to use it -- this is the
+file that goes into depth about what it does and how to use it - this is the
 information you need if you want to create a runlist or ServerTemplate by mixing
 and matching recipes.
 
@@ -41,7 +41,7 @@ release, then please feel free to contribute it back. For more information about
 how to do this see the guidelines under the **CONTRIBUTING** section.
 
 Some of these cookbooks leverage Chef resources that are specific to the
-RightScale Platform -- these resources are used for such things as managing
+RightScale Platform - these resources are used for such things as managing
 machine tags associated with the node, running recipes in parallel and the
 ability to trigger a "remote recipe" to run on one node to from another. For
 more information, please see the **RIGHTSCALE RESOURCES** section below.
@@ -102,9 +102,9 @@ systems using ServerTemplates on the RightScale Cloud Management Platform.
   interface.</dd>
 
   <dt>lb_clb</dt>
-  <dd>RightScale load balancer cookbook for Rackspace Cloud Load Balancing(CLB).
-  This cookbook provides recipes for attaching and detaching application servers
-  to and from an existing Rackspace Cloud Load Balancer (CLB).</dd>
+  <dd>RightScale load balancer cookbook for Rackspace Cloud Load Balancing
+  (CLB). This cookbook provides recipes for attaching and detaching application
+  servers to and from an existing Rackspace Cloud Load Balancer (CLB).</dd>
 
   <dt>lb_elb</dt>
   <dd>RightScale load balancer cookbook for AWS Elastic Load Balancer (ELB).
