@@ -57,24 +57,24 @@ systems using ServerTemplates on the RightScale Cloud Management Platform.
   <dd>RightScale application server management cookbook. This cookbook contains
  recipes that are generally applicable to all applications.</dd>
 
-  <dt>app\_django</dt>
+  <dt>app_django</dt>
   <dd>Cookbook provides Apache + Django implementation of the 'app' Lightweight
  Resource Provider (LWRP). Installs and configures an Apache + Django
  application server.</dd>
 
-  <dt>app\_passenger</dt>
+  <dt>app_passenger</dt>
   <dd>Cookbook provides an Apache + Passenger implementation of the 'app' LWRP.
  Installs and configures an Apache + Passenger application server.</dd>
 
-  <dt>app\_php</dt>
+  <dt>app_php</dt>
   <dd>Cookbook provides Apache + PHP implementation of the 'app' LWRP. Installs
   and configures, Apache + PHP application server.</dd>
 
-  <dt>app\_tomcat</dt>
+  <dt>app_tomcat</dt>
   <dd>Cookbook provides Tomcat application server implementation of the 'app'
   LWRP.  Installs and configures, Tomcat application server.</dd>
 
-  <dt>block\_device</dt>
+  <dt>block_device</dt>
   <dd>This cookbook provides the building blocks for Multi-Cloud backup/restore
   support.</dd>
 
@@ -83,11 +83,11 @@ systems using ServerTemplates on the RightScale Cloud Management Platform.
   Database Manager ServerTemplates. This cookbook does not contain a specific
   database implementation, but generic recipes that use the LWRP interface.</dd>
 
-  <dt>db\_mysql</dt>
+  <dt>db_mysql</dt>
   <dd>Provides the MySQL implementation of the 'db' resource to install and
   manage MySQL database stand-alone servers and clients.</dd>
 
-  <dt>db\_postgres</dt>
+  <dt>db_postgres</dt>
   <dd>Provides the PostgreSQL implementation of the 'db' resource to install and
   manage PostgreSQL database stand-alone servers and clients.</dd>
 
@@ -101,17 +101,17 @@ systems using ServerTemplates on the RightScale Cloud Management Platform.
   specific load balancer implementation, but generic recipes that use the LWRP
   interface.</dd>
 
-  <dt>lb\_clb</dt>
+  <dt>lb_clb</dt>
   <dd>RightScale load balancer cookbook for Rackspace Cloud Load Balancing(CLB).
   This cookbook provides recipes for attaching and detaching application servers
   to and from an existing Rackspace Cloud Load Balancer (CLB).</dd>
 
-  <dt>lb\_elb</dt>
+  <dt>lb_elb</dt>
   <dd>RightScale load balancer cookbook for AWS Elastic Load Balancer (ELB).
   This cookbook provides recipes for attaching and detaching application servers
   to and from an existing AWS Elastic Load Balancer (ELB).</dd>
 
-  <dt>lb\_haproxy</dt>
+  <dt>lb_haproxy</dt>
   <dd>RightScale load balancer cookbook for Apache/HAProxy. This cookbook
   provides recipes for setting up and running an Apache/HAProxy load balancer
   server as well as recipes for attaching and detaching application
@@ -123,13 +123,13 @@ systems using ServerTemplates on the RightScale Cloud Management Platform.
   not contain a specific logging server implementation but generic recipes that
   use the LWRP interface.</dd>
 
-  <dt>logging\_rsyslog</dt>
+  <dt>logging_rsyslog</dt>
   <dd>Provides 'rsyslog' implementation of the 'logging' resource to configure
   'rsyslog' to log to a remote server or use default local file logging.</dd>
 
-  <dt>logging\_syslog\_ng</dt>
-  <dd>Provides 'syslog\_ng' implementation of the 'logging' resource to
-  configure 'syslog\_ng' to log to a remote server or use default local file
+  <dt>logging_syslog_ng</dt>
+  <dd>Provides 'syslog_ng' implementation of the 'logging' resource to
+  configure 'syslog_ng' to log to a remote server or use default local file
   logging.</dd>
 
   <dt>memcached</dt>
@@ -140,24 +140,24 @@ systems using ServerTemplates on the RightScale Cloud Management Platform.
   <dd>This cookbook provides abstract 'repo' resource for managing code download
   from Git, Subversion or Remote Object Store (ROS) code repositories.</dd>
 
-  <dt>repo\_ftp</dt>
+  <dt>repo_ftp</dt>
   <dd>Provides the FTP implementation of the 'repo' resource to manage source
   code downloaded from FTP.</dd>
 
-  <dt>repo\_git</dt>
+  <dt>repo_git</dt>
   <dd>Provides the Git implementation of the 'repo' resource to manage source
   code download from Git repositories.</dd>
 
-  <dt>repo\_ros</dt>
+  <dt>repo_ros</dt>
   <dd>Provides the Remote Object Store implementation of the 'repo' resource to
   manage the downloading of source code from Remote Object Store repositories
   such as Amazon S3, Rackspace Cloud Files, and OpenStack Swift.</dd>
 
-  <dt>repo\_rsync</dt>
+  <dt>repo_rsync</dt>
   <dd>Provides the rsync implementation of the 'repo' resource to manage source
   code downloaded via rsync.</dd>
 
-  <dt>repo\_svn</dt>
+  <dt>repo_svn</dt>
   <dd>Provides the Subversion implementation of the 'repo' resource to manage
   source code download from Subversion repositories.</dd>
 
@@ -168,21 +168,21 @@ systems using ServerTemplates on the RightScale Cloud Management Platform.
   <dt>sys</dt>
   <dd>Provides RightScale system utilities.</dd>
 
-  <dt>sys\_dns</dt>
+  <dt>sys_dns</dt>
   <dd>This cookbook provides a set of dynamic DNS recipes used by RightScale
   ServerTemplates including Database Manager ServerTemplates. Cookbook currently
   supports DNSMadeEasy, DynDns, CloudDNS, and Amazon Route53 DNS service
   providers.</dd>
 
-  <dt>sys\_firewall</dt>
+  <dt>sys_firewall</dt>
   <dd>RightScale firewall cookbook. This cookbook provides a LWRP for managing
   access to multiple servers in a deployment using machine.</dd>
 
-  <dt>sys\_ntp</dt>
+  <dt>sys_ntp</dt>
   <dd>This cookbook provides a recipe for setting up time synchronization using
   NTP.</dd>
 
-  <dt>web\_apache</dt>
+  <dt>web_apache</dt>
   <dd>This cookbook installs and configures an Apache2 web server.</dd>
 </dl>
 
@@ -292,7 +292,7 @@ example the `rightscale_marker` definition is defined in the
 in the `db` cookbook).
 
 
-#### rightscale\_marker
+#### rightscale_marker
 
 All of the recipes in the RightScale cookbooks begin and end with a call to the
 `rightscale_marker` definition which is defined in the
