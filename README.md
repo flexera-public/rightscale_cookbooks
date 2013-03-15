@@ -18,33 +18,33 @@ deployments, however no single infrastructure need is exactly the same -- the
 source code is provided here to give you the control over how much (or how
 little) customization you want.
 
-These are _your_ cookbooks!
+These are *your* cookbooks!
 
-As a good starting point, the <b>COOKBOOK LIST</b> section below will give you a
+As a good starting point, the **COOKBOOK LIST** section below will give you a
 summary of what each cookbook does. From there, each cookbook has its own README
 file that goes into depth about what it does and how to use it -- this is the
 information you need if you want to create a runlist or ServerTemplate by mixing
 and matching recipes.
 
 For a deeper understanding of how to navigate and find things in these
-cookbooks, be sure to take a look at the <b>DESIGN DETAILS</b> section.
+cookbooks, be sure to take a look at the **DESIGN DETAILS** section.
 This will give you an intro into some of the design patterns and conventions
 used throughout this collection. NOTE: This section is not for the faint of
 heart as it deals with some advanced Chef topics.
 
 Whether you are looking to write your own cookbooks or to just make some minor
-tweaks to these, please see the <b>CUSTOMIZATION</b> section for some best
+tweaks to these, please see the **CUSTOMIZATION** section for some best
 practices regarding overriding vs. forking.  We are happy if you modify and make
 these cookbooks your own, however, if you ever implement a change that you think
 will be useful to others or would like to see the change folded in to next
 release, then please feel free to contribute it back. For more information about
-how to do this see the guidelines under the <b>CONTRIBUTING</b> section.
+how to do this see the guidelines under the **CONTRIBUTING** section.
 
 Some of these cookbooks leverage Chef resources that are specific to the
 RightScale Platform -- these resources are used for such things as managing
 machine tags associated with the node, running recipes in parallel and the
 ability to trigger a "remote recipe" to run on one node to from another. For
-more information, please see the <b>RIGHTSCALE RESOURCES</b> section below.
+more information, please see the **RIGHTSCALE RESOURCES** section below.
 
 These cookbooks have been tested on multiple clouds and multiple operating
 systems using ServerTemplates on the RightScale Cloud Management Platform.
@@ -62,125 +62,129 @@ systems using ServerTemplates on the RightScale Cloud Management Platform.
  Resource Provider (LWRP). Installs and configures an Apache + Django
  application server.</dd>
 
-[app_passenger]
- Cookbook provides an Apache + Passenger implementation of the 'app' LWRP.
- Installs and configures an Apache + Passenger application server.
+  <dt>app\_passenger</dt>
+  <dd>Cookbook provides an Apache + Passenger implementation of the 'app' LWRP.
+ Installs and configures an Apache + Passenger application server.</dd>
 
-[app_php]
- Cookbook provides Apache + PHP implementation of the 'app' LWRP. Installs and
- configures, Apache + PHP application server.
+  <dt>app\_php</dt>
+  <dd>Cookbook provides Apache + PHP implementation of the 'app' LWRP. Installs
+  and configures, Apache + PHP application server.</dd>
 
-[app_tomcat]
- Cookbook provides Tomcat application server implementation of the 'app' LWRP.
- Installs and configures, Tomcat application server.
+  <dt>app\_tomcat</dt>
+  <dd>Cookbook provides Tomcat application server implementation of the 'app'
+  LWRP.  Installs and configures, Tomcat application server.</dd>
 
-[block_device]
- This cookbook provides the building blocks for Multi-Cloud backup/restore
- support.
+  <dt>block\_device</dt>
+  <dd>This cookbook provides the building blocks for Multi-Cloud backup/restore
+  support.</dd>
 
-[db]
- This cookbook provides a set of database recipes used by the RightScale
- Database Manager ServerTemplates. This cookbook does not contain a specific
- database implementation, but generic recipes that use the LWRP interface.
+  <dt>db</dt>
+  <dd>This cookbook provides a set of database recipes used by the RightScale
+  Database Manager ServerTemplates. This cookbook does not contain a specific
+  database implementation, but generic recipes that use the LWRP interface.</dd>
 
-[db_mysql]
- Provides the MySQL implementation of the 'db' resource to install and manage
- MySQL database stand-alone servers and clients.
+  <dt>db\_mysql</dt>
+  <dd>Provides the MySQL implementation of the 'db' resource to install and
+  manage MySQL database stand-alone servers and clients.</dd>
 
-[db_postgres]
- Provides the PostgreSQL implementation of the 'db' resource to install and
- manage PostgreSQL database stand-alone servers and clients.
+  <dt>db\_postgres</dt>
+  <dd>Provides the PostgreSQL implementation of the 'db' resource to install and
+  manage PostgreSQL database stand-alone servers and clients.</dd>
 
-[lamp]
- This is a basic all-in-one LAMP (Linux, Apache, MySQL, PHP) cookbook designed
- to work in a hybrid cloud setting.
+  <dt>lamp</dt>
+  <dd>This is a basic all-in-one LAMP (Linux, Apache, MySQL, PHP) cookbook
+  designed to work in a hybrid cloud setting.</dd>
 
-[lb]
- This cookbook provides a set of load balancer recipes used by the RightScale
- Load Balancer ServerTemplates. This cookbook does not contain a specific load
- balancer implementation, but generic recipes that use the LWRP interface.
+  <dt>lb</dt>
+  <dd>This cookbook provides a set of load balancer recipes used by the
+  RightScale Load Balancer ServerTemplates. This cookbook does not contain a
+  specific load balancer implementation, but generic recipes that use the LWRP
+  interface.</dd>
 
-[lb_clb]
- RightScale load balancer cookbook for Rackspace Cloud Load Balancing (CLB).
- This cookbook provides recipes for attaching and detaching application servers
- to and from an existing Rackspace Cloud Load Balancer (CLB).
+  <dt>lb\_clb</dt>
+  <dd>RightScale load balancer cookbook for Rackspace Cloud Load Balancing(CLB).
+  This cookbook provides recipes for attaching and detaching application servers
+  to and from an existing Rackspace Cloud Load Balancer (CLB).</dd>
 
-[lb_elb]
- RightScale load balancer cookbook for AWS Elastic Load Balancer (ELB). This
- cookbook provides recipes for attaching and detaching application servers to
- and from an existing AWS Elastic Load Balancer (ELB).
+  <dt>lb\_elb</dt>
+  <dd>RightScale load balancer cookbook for AWS Elastic Load Balancer (ELB).
+  This cookbook provides recipes for attaching and detaching application servers
+  to and from an existing AWS Elastic Load Balancer (ELB).</dd>
 
-[lb_haproxy]
- RightScale load balancer cookbook for Apache/HAProxy. This cookbook provides
- recipes for setting up and running an Apache/HAProxy load balancer server as
- well as recipes for attaching and detaching application servers.
+  <dt>lb\_haproxy</dt>
+  <dd>RightScale load balancer cookbook for Apache/HAProxy. This cookbook
+  provides recipes for setting up and running an Apache/HAProxy load balancer
+  server as well as recipes for attaching and detaching application
+  servers.</dd>
 
-[logging]
- This cookbook provides a set of recipes used by the RightScale ServerTemplates
- to configure the logging service provider. This cookbook does not contain a
- specific logging server implementation but generic recipes that use the LWRP
- interface.
+  <dt>logging</dt>
+  <dd>This cookbook provides a set of recipes used by the RightScale
+  ServerTemplates to configure the logging service provider. This cookbook does
+  not contain a specific logging server implementation but generic recipes that
+  use the LWRP interface.</dd>
 
-[logging_rsyslog]
- Provides 'rsyslog' implementation of the 'logging' resource to configure
- 'rsyslog' to log to a remote server or use default local file logging.
+  <dt>logging\_rsyslog</dt>
+  <dd>Provides 'rsyslog' implementation of the 'logging' resource to configure
+  'rsyslog' to log to a remote server or use default local file logging.</dd>
 
-[logging_syslog_ng]
- Provides 'syslog_ng' implementation of the 'logging' resource to configure
- 'syslog_ng' to log to a remote server or use default local file logging.
+  <dt>logging\_syslog\_ng</dt>
+  <dd>Provides 'syslog\_ng' implementation of the 'logging' resource to
+  configure 'syslog\_ng' to log to a remote server or use default local file
+  logging.</dd>
 
-[memcached]
- This cookbook provides a set of recipes used by the RightScale Memcached
- ServerTemplates to install and configure a Memcached server.
+  <dt>memcached</dt>
+  <dd>This cookbook provides a set of recipes used by the RightScale Memcached
+  ServerTemplates to install and configure a Memcached server.</dd>
 
-[repo]
- This cookbook provides abstract 'repo' resource for managing code download from
- Git, Subversion or Remote Object Store (ROS) code repositories.
+  <dt>repo</dt>
+  <dd>This cookbook provides abstract 'repo' resource for managing code download
+  from Git, Subversion or Remote Object Store (ROS) code repositories.</dd>
 
-[repo_ftp]
- Provides the FTP implementation of the 'repo' resource to manage source code
- downloaded from FTP.
+  <dt>repo\_ftp</dt>
+  <dd>Provides the FTP implementation of the 'repo' resource to manage source
+  code downloaded from FTP.</dd>
 
-[repo_git]
- Provides the Git implementation of the 'repo' resource to manage source code
- download from Git repositories.
+  <dt>repo\_git</dt>
+  <dd>Provides the Git implementation of the 'repo' resource to manage source
+  code download from Git repositories.</dd>
 
-[repo_ros]
- Provides the Remote Object Store implementation of the 'repo' resource to
- manage the downloading of source code from Remote Object Store repositories
- such as Amazon S3, Rackspace Cloud Files, and OpenStack Swift.
+  <dt>repo\_ros</dt>
+  <dd>Provides the Remote Object Store implementation of the 'repo' resource to
+  manage the downloading of source code from Remote Object Store repositories
+  such as Amazon S3, Rackspace Cloud Files, and OpenStack Swift.</dd>
 
-[repo_rsync]
- Provides the rsync implementation of the 'repo' resource to manage source code
- downloaded via rsync.
+  <dt>repo\_rsync</dt>
+  <dd>Provides the rsync implementation of the 'repo' resource to manage source
+  code downloaded via rsync.</dd>
 
-[repo_svn]
- Provides the Subversion implementation of the 'repo' resource to manage source
- code download from Subversion repositories.
+  <dt>repo\_svn</dt>
+  <dd>Provides the Subversion implementation of the 'repo' resource to manage
+  source code download from Subversion repositories.</dd>
 
-[rightscale]
- Base recipes used to set up services used by the RightScale Cloud Management
- Platform.
+  <dt>rightscale</dt>
+  <dd>Base recipes used to set up services used by the RightScale Cloud
+  Management Platform.</dd>
 
-[sys]
- Provides RightScale system utilities.
+  <dt>sys</dt>
+  <dd>Provides RightScale system utilities.</dd>
 
-[sys_dns]
- This cookbook provides a set of dynamic DNS recipes used by RightScale
- ServerTemplates including Database Manager ServerTemplates. Cookbook currently
- supports DNSMadeEasy, DynDns, CloudDNS, and Amazon Route53 DNS service
- providers.
+  <dt>sys\_dns</dt>
+  <dd>This cookbook provides a set of dynamic DNS recipes used by RightScale
+  ServerTemplates including Database Manager ServerTemplates. Cookbook currently
+  supports DNSMadeEasy, DynDns, CloudDNS, and Amazon Route53 DNS service
+  providers.</dd>
 
-[sys_firewall]
- RightScale firewall cookbook. This cookbook provides a LWRP for managing access
- to multiple servers in a deployment using machine.
+  <dt>sys\_firewall</dt>
+  <dd>RightScale firewall cookbook. This cookbook provides a LWRP for managing
+  access to multiple servers in a deployment using machine.</dd>
 
-[sys_ntp]
- This cookbook provides a recipe for setting up time synchronization using NTP.
+  <dt>sys\_ntp</dt>
+  <dd>This cookbook provides a recipe for setting up time synchronization using
+  NTP.</dd>
 
-[web_apache]
- This cookbook installs and configures an Apache2 web server.
-
+  <dt>web\_apache</dt>
+  <dd>This cookbook installs and configures an Apache2 web server.</dd>
+</dl>
 
 ## DESIGN DETAILS:
 
@@ -193,24 +197,24 @@ light weight resources, or definitions. Built-in resources are part of Chef and
 are documented in [Chef Resources](http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources).
 Light weight resources are often named the same as one of the cookbooks, but
 several are just prefixed with the cookbook name such as
-<tt>rightscale_server_collection</tt>; they are defined in the
-<tt>resources/</tt> directory (for example the <tt>sys_firewall</tt> resource
-is defined in <tt>cookbooks/sys_firewall/resources/default.rb</tt> and the
-<tt>rightscale_server_collection</tt> resource is defined in
-<tt>cookbooks/rightscale/resources/server_collection.rb</tt>. Light weight
+`rightscale_server_collection`; they are defined in the
+`resources/` directory (for example the `sys_firewall` resource
+is defined in `cookbooks/sys_firewall/resources/default.rb` and the
+`rightscale_server_collection` resource is defined in
+`cookbooks/rightscale/resources/server_collection.rb`. Light weight
 resources have accompanying providers; these are located in the
-<tt>providers/</tt> subdirectories of cookbooks and will either be in the same
+`providers/` subdirectories of cookbooks and will either be in the same
 cookbook as the resource or, in the case of the Abstract Cookbooks (see below)
 pattern, in the each of the implementation cookbooks. In the RightScale
 cookbooks, definitions are prefixed with the cookbook name; they are located in
-the <tt>definitions/</tt> directory in the cookbook (for example
-<tt>rightscale_marker</tt> is defined in
-<tt>cookbooks/rightscale/definitions/rightscale_marker.rb</tt>).
+the `definitions/` directory in the cookbook (for example
+`rightscale_marker` is defined in
+`cookbooks/rightscale/definitions/rightscale_marker.rb`).
 
 ### Dependency Resolution
 
 Typically cookbooks depend on other cookbooks for resources, providers, and
-definitions. If a dependency is not specified in the <tt>metadata.rb</tt> for a
+definitions. If a dependency is not specified in the `metadata.rb` for a
 cookbook, its recipes may load without the cookbooks they depend on and will
 fail to execute. In addition, there are also resources that are set up in
 recipes from other cookbooks; when setting up a ServerTemplate with these kinds
@@ -219,7 +223,7 @@ earlier in the boot scripts. This pattern is explained in "The Default Recipe"
 and "Abstract Cookbooks and LWRPs" below.
 
 ### The Default Recipe
-Some of our cookbooks contains a <tt>default.rb</tt> recipe. In this recipe
+Some of our cookbooks contains a `default.rb` recipe. In this recipe
 we install packages, setup configurations and initialize Chef resources that
 other cookbooks may depend on. We also setup any prerequisites and attributes
 that might be needed for the other recipes in the cookbook. Be sure to add the
@@ -233,19 +237,19 @@ Pattern](http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/
 
 ### Abstract Cookbooks and LWRPs
 
-Another convention used in the RightScale cookbooks is the _Abstract_ _Cookbook_
+Another convention used in the RightScale cookbooks is the *Abstract* *Cookbook*
 pattern. Typically, this pattern is used to distinguish and decouple server and
 client installation.
 
-In this pattern the _abstract_ cookbook contains a resource that defines a set
+In this pattern the *abstract* cookbook contains a resource that defines a set
 of general actions (for example initializing, backing up, and restoring a
-database) and a set of recipes that use these actions. The <tt>default.rb</tt>
-recipe in _abstract_ cookbooks sets up the provider and all provider-specific
-inputs, and installs the client. The <tt>install_server.rb</tt> recipe sets all
-generic server inputs, includes the <tt>default.rb</tt> recipe and installs the
-server. The _concrete_ cookbooks contain providers that implement the actions
+database) and a set of recipes that use these actions. The `default.rb`
+recipe in *abstract* cookbooks sets up the provider and all provider-specific
+inputs, and installs the client. The `install_server.rb` recipe sets all
+generic server inputs, includes the `default.rb` recipe and installs the
+server. The *concrete* cookbooks contain providers that implement the actions
 for a specific variety of the abstract cookbook (for example a MySQL or
-PostgreSQL database) and a <tt>setup_server.rb</tt> recipe that sets up server
+PostgreSQL database) and a `setup_server.rb` recipe that sets up server
 specific inputs and hard codes the provider name and version of the server.
 
 This differs slightly from the typical use of Chef Resources and Providers,
@@ -270,54 +274,52 @@ Pattern](http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/
 
 Definitions are often used for common sequences of resources in recipes that are
 used in multiple recipes but do not warrant a separate recipe that could be
-called with <tt>include_recipe</tt> (for example the
-<tt>db::do_primary_backup</tt> and <tt>db::do_secondary_backup</tt> recipes use
-the <tt>db_do_backup</tt> definition that uses a set of resources from the
-<tt>db</tt> and <tt>block_device</tt> cookbooks to perform a database backup).
+called with `include_recipe` (for example the
+`db::do_primary_backup` and `db::do_secondary_backup` recipes use
+the `db_do_backup` definition that uses a set of resources from the
+`db` and `block_device` cookbooks to perform a database backup).
 
 In addition to housing reusable recipe snippets used within the cookbook, we
 also use definitions as external methods that other cookbooks can call.
-For example, <tt>rightscale_logrotate_app</tt> which allows other cookbooks to
+For example, `rightscale_logrotate_app` which allows other cookbooks to
 add their logrotate configurations while deferring details of logrotate to the
-<tt>rightscale</tt> cookbook.
+`rightscale` cookbook.
 
 In the RightScale cookbooks, definitions are named with the cookbook name as a
 prefix so you can easily find which cookbook a definition comes from (for
-example the <tt>rightscale_marker</tt> definition is defined in the
-<tt>rightscale</tt> cookbook and the <tt>db_do_backup</tt> definition is defined
-in the <tt>db</tt> cookbook).
+example the `rightscale_marker` definition is defined in the
+`rightscale` cookbook and the `db_do_backup` definition is defined
+in the `db` cookbook).
 
 
-#### rightscale_marker
+#### rightscale\_marker
 
 All of the recipes in the RightScale cookbooks begin and end with a call to the
-<tt>rightscale_marker</tt> definition which is defined in the
-<tt>rightscale</tt> cookbook. It is used for better readability and debugging of
+`rightscale_marker` definition which is defined in the
+`rightscale` cookbook. It is used for better readability and debugging of
 the logs of Chef recipe runs. The definition prints log messages with the
 cookbook and recipe name showing the beginning and end of the recipe run.
 
-  12:12:42: *******************************************
-  12:12:42: *RS>  Running rightscale::default   *******
-  ...
+    12:12:42: *******************************************
+    12:12:42: *RS>  Running rightscale::default   *******
+    ...
 
 Including these log lines at the beginning and end of every recipe run allows
 grouping of recipe logs in "Audit Entries" tab in the RightScale UI.
 
-If you include the <tt>rightscale</tt> cookbook as dependency of your own
-cookbook, you can use the <tt>rightscale_marker</tt> definition as well:
+If you include the `rightscale` cookbook as dependency of your own
+cookbook, you can use the `rightscale_marker` definition as well:
 
-  rightscale_marker :begin
-
-  ...
-
-  rightscale_marker :end
+    rightscale_marker :begin
+    ...
+    rightscale_marker :end
 
 ## RIGHTSCALE RESOURCES:
 
 RightScale provides some custom Chef resources that are available when running a
 RightImage launched from the RightScale platform. These resources include
-<tt>remote_recipe</tt>, <tt>right_link_tag</tt>, <tt>server_collection</tt>,
-<tt>rs_shutdown</tt>, and <tt>executable_schedule</tt>.
+`remote_recipe`, `right_link_tag`, `server_collection`, `rs_shutdown`, and
+`executable_schedule`.
 
 For documentation, see [Chef Resources](http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources).
 
@@ -332,16 +334,15 @@ cookbook override. For more information see [Override Chef Cookbooks](http://sup
 The dependencies for working with the RightScale Cookbooks can be installed with
 Bundler:
 
-  bundle install
+    bundle install
 
 ### Rake Tasks:
 
 * There are several Rake tasks to check the cookbooks with [Foodcritic](http://acrmp.github.com/foodcritic/)
   (Foodcritic currently only works with Ruby 1.9.2 and higher):
-
-  * <tt>foodcritic</tt> Runs Foodcritic with the standard suite of rules
-  * <tt>foodcritic_correctness</tt> Runs Foodcritic with just the correctness rules
-  * <tt>foodcritic_syntax</tt> Runs Foodcritic with just the syntax rules
+  * `foodcritic` Runs Foodcritic with the standard suite of rules
+  * `foodcritic_correctness` Runs Foodcritic with just the correctness rules
+  * `foodcritic_syntax` Runs Foodcritic with just the syntax rules
 
 ## CONTRIBUTING:
 
@@ -358,7 +359,7 @@ To contribute changes back to the RightScale cookbooks:
 
 ## LICENSE:
 
-<b>RightScale Cookbooks</b>
+**RightScale Cookbooks**
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to
 the RightScale Terms of Service available at http://www.rightscale.com/terms.php
