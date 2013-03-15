@@ -138,23 +138,45 @@ end
 
 action :post_restore_cleanup do
   # Performs checks for snapshot compatibility with current server.
-  # See cookbooks/db_mysql/libraries/helper.rb for the "RightScale::Database::MySQL::Helper" class.
+  # See cookbooks/db_mysql/libraries/helper.rb
+  # for the "RightScale::Database::MySQL::Helper" class.
   master_info = RightScale::Database::MySQL::Helper.load_replication_info(node)
 
   # Checks version matches because not all 11H2 snapshots (prior to 5.5 release)
   # saved provider or version. Assume MySQL 5.1 if nil.
-  snap_version = master_info['DB_Version'] ||= '5.1'
   snap_provider = master_info['DB_Provider'] ||= 'db_mysql'
-  current_version = new_resource.db_version
-  current_provider = master_info['DB_Provider'] ||= node[:db][:provider]
+  current_provider = node[:db][:provider]
+  snap_version = master_info['DB_Version'] ||= '5.1'
   Chef::Log.info "  Snapshot from #{snap_provider} version #{snap_version}"
 
-  if node[:db][:backup][:restore_version_check] == "true"
-    unless (snap_version == current_version) && (snap_provider == current_provider)
-      raise "FATAL: Attempting to restore #{snap_provider} #{snap_version} snapshot to #{current_provider} #{current_version} with :restore_version_check enabled."
+
+  # mysql_upgrade should only be run if corresponding input is set and snapshot
+  # restore from an older version of MySQL is detected.
+  run_mysql_upgrade = false
+
+  if snap_provider != current_provider
+    raise "FATAL: Wrong snapshot provider detected: #{snap_provider}." +
+      " Expected #{current_provider}."
+  end
+
+  snap_version = Gem::Version.new(snap_version)
+  current_version = Gem::Version.new(new_resource.db_version)
+  if snap_version > current_version
+    raise "FATAL: Cannot restore snapshot from a newer version of MySQL."
+  elsif snap_version == current_version
+    Chef::Log.info "  Restore version and provider checks passed."
+  elsif snap_version < current_version
+    if node[:db_mysql][:enable_mysql_upgrade] == "true"
+      run_mysql_upgrade = true
+      Chef::Log.info "  Attempting to restore #{snap_provider}" +
+        " #{snap_version.version} snapshot to #{current_provider}" +
+        " #{current_version.version}." +
+        " Will run mysql_upgrade to fix incompatibilities."
+    else
+      raise "ERROR: Attempting to restore #{snap_provider}" +
+        " #{snap_version.version} snapshot to #{current_provider}" +
+        " #{current_version.version} without running mysql_upgrade."
     end
-  else # skip check if restore version check is false
-    Chef::Log.info "  Skipping #{snap_provider} restore version check"
   end
 
   # Creates symlink from package default MySQL datadir to restored datadir.
@@ -166,18 +188,19 @@ action :post_restore_cleanup do
 
   # Compares size of node[:db_mysql][:tunable][:innodb_log_file_size] to
   # actual size of restored /var/lib/mysql/ib_logfile0 (symlink).
-  innodb_log_file_size_to_bytes = case node[:db_mysql][:tunable][:innodb_log_file_size]
-                                  when /^(\d+)[Kk]$/
-                                    $1.to_i * 1024
-                                  when /^(\d+)[Mm]$/
-                                    $1.to_i * 1024**2
-                                  when /^(\d+)[Gg]$/
-                                    $1.to_i * 1024**3
-                                  when /^(\d+)$/
-                                    $1
-                                  else
-                                    raise "FATAL: unknown log file size"
-                                  end
+  innodb_log_file_size_to_bytes =
+    case node[:db_mysql][:tunable][:innodb_log_file_size]
+    when /^(\d+)[Kk]$/
+      $1.to_i * 1024
+    when /^(\d+)[Mm]$/
+      $1.to_i * 1024**2
+    when /^(\d+)[Gg]$/
+      $1.to_i * 1024**3
+    when /^(\d+)$/
+      $1
+    else
+      raise "FATAL: unknown log file size"
+    end
 
   if ::File.stat("/var/lib/mysql/ib_logfile0").size == innodb_log_file_size_to_bytes
     Chef::Log.info "  innodb log file sizes the same... OK."
@@ -189,17 +212,47 @@ action :post_restore_cleanup do
   end
 
   # Always update the my.cnf file on a restore.
-  # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for the "db_mysql_set_mycnf" definition.
+  # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb
+  # for the "db_mysql_set_mycnf" definition.
+  # See cookbooks/db_mysql/libraries/helper.rb
+  # for the "RightScale::Database::MySQL::Helper" class.
   db_mysql_set_mycnf "setup_mycnf" do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
     innodb_log_file_size ::File.stat("/var/lib/mysql/ib_logfile0").size
+    compressed_protocol node[:db_mysql][:compressed_protocol] ==
+      "enabled" ? true : false
   end
 
   # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "post_restore_cleanup" method.
   @db = init(new_resource)
   @db.post_restore_cleanup
+
+  if run_mysql_upgrade
+    # Calls the "start" action.
+    db node[:db][:data_dir] do
+      action :nothing
+      persist false
+    end.run_action(:start)
+
+    output = %x[mysql_upgrade]
+    exitstatus = $?
+    Chef::Log.info output
+
+    if exitstatus.success?
+      Chef::Log.info "  mysql_upgrade ran successfully."
+    else
+      raise "FATAL: mysql_upgrade execution failed!"
+    end
+
+    # Calls the "stop" action.
+    db node[:db][:data_dir] do
+      action :nothing
+      persist false
+    end.run_action(:stop)
+  end
+
 end
 
 action :pre_backup_check do
@@ -339,6 +392,7 @@ action :install_server do
   platform = node[:platform]
 
   # MySQL server depends on MySQL client.
+  # Calls the "install_client" action.
   action_install_client
 
   # Uninstalls specified server packages.
@@ -411,12 +465,105 @@ action :install_server do
     recursive true
   end
 
+  # Determine whether to enable SSL for MySQL based on provided inputs.
+  # SSL will only be enabled if all inputs are populated.
+  node[:db_mysql][:ssl_enabled] =
+    !node[:db_mysql][:ssl][:ca_certificate].to_s.empty? &&
+    !node[:db_mysql][:ssl][:master_certificate].to_s.empty? &&
+    !node[:db_mysql][:ssl][:master_key].to_s.empty? &&
+    !node[:db_mysql][:ssl][:slave_certificate].to_s.empty? &&
+    !node[:db_mysql][:ssl][:slave_key].to_s.empty?
+
+  node[:db_mysql][:ssl_credentials] = {
+    :ca_certificate => {
+      :credential => node[:db_mysql][:ssl][:ca_certificate],
+      :path => "/etc/mysql/certs/ca_cert.pem"
+    },
+    :master_certificate => {
+      :credential => node[:db_mysql][:ssl][:master_certificate],
+      :path => "/etc/mysql/certs/master_cert.pem"
+    },
+    :master_key => {
+      :credential => node[:db_mysql][:ssl][:master_key],
+      :path => "/etc/mysql/certs/master_key.pem"
+    },
+    :slave_certificate => {
+      :credential => node[:db_mysql][:ssl][:slave_certificate],
+      :path => "/etc/mysql/certs/slave_cert.pem"
+    },
+    :slave_key => {
+      :credential => node[:db_mysql][:ssl][:slave_key],
+      :path => "/etc/mysql/certs/slave_key.pem"
+    }
+  }
+
+  if node[:db_mysql][:ssl_enabled]
+    directory "/etc/mysql/certs" do
+      owner "mysql"
+      group "mysql"
+      mode "0700"
+    end
+
+    node[:db_mysql][:ssl_credentials].each do |name, data|
+      template data[:path] do
+        source "credential.pem.erb"
+        cookbook "db_mysql"
+        owner "mysql"
+        group "mysql"
+        mode "0400"
+        variables(
+          :credential => data[:credential]
+        )
+      end
+    end
+
+    m_cmd = "openssl verify -CAfile"
+    m_cmd << " #{node[:db_mysql][:ssl_credentials][:ca_certificate][:path]}"
+    m_cmd << " #{node[:db_mysql][:ssl_credentials][:master_certificate][:path]}"
+
+    s_cmd = "openssl verify -CAfile"
+    s_cmd << " #{node[:db_mysql][:ssl_credentials][:ca_certificate][:path]}"
+    s_cmd << " #{node[:db_mysql][:ssl_credentials][:slave_certificate][:path]}"
+
+
+    ruby_block "verify_certificates" do
+      block do
+        master = Chef::ShellOut.new(m_cmd)
+        master.run_command
+
+        slave = Chef::ShellOut.new(s_cmd)
+        slave.run_command
+
+        if master.exitstatus == 0 && slave.exitstatus == 0
+          Chef::Log.info master.stdout
+          Chef::Log.info slave.stdout
+          Chef::Log.info "  Master and Slave certificates verified."
+        else
+          Chef::Log.info master.stderr
+          Chef::Log.info slave.stderr
+          raise "FATAL: an error occurred while trying to verify Master and" +
+            " Slave certificates against the CA certificate."
+        end
+      end
+    end
+  end
+
+
+  log "  MySQL SSL enabled: #{node[:db_mysql][:ssl_enabled]}"
+  log "  MySQL SSL will only be enabled if all inputs contain credentials." do
+    not_if { node[:db_mysql][:ssl_enabled] }
+  end
+
   # Sets up my.cnf
-  # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for the "db_mysql_set_mycnf" definition.
-  # See cookbooks/db_mysql/libraries/helper.rb for the "RightScale::Database::MySQL::Helper" class.
+  # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb
+  # for the "db_mysql_set_mycnf" definition.
+  # See cookbooks/db_mysql/libraries/helper.rb
+  # for the "RightScale::Database::MySQL::Helper" class.
   db_mysql_set_mycnf "setup_mycnf" do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
+    compressed_protocol node[:db_mysql][:compressed_protocol] ==
+      "enabled" ? true : false
   end
 
   # Setup read_write_status.cnf
@@ -431,7 +578,7 @@ action :install_server do
     variables(
       :ulimit => mysql_file_ulimit
     )
-    cookbook 'db_mysql'
+    cookbook "db_mysql"
   end
 
   # Changes root's limitations for THIS shell. The entry in the limits.d will be
@@ -447,7 +594,7 @@ action :install_server do
   template "/etc/sysconfig/#{node[:db_mysql][:service_name]}" do
     source "sysconfig-mysqld.erb"
     mode "0755"
-    cookbook 'db_mysql'
+    cookbook "db_mysql"
     only_if { platform =~ /redhat|centos/ }
   end
 
@@ -458,14 +605,14 @@ action :install_server do
     only_if { platform == "ubuntu" }
     mode "0600"
     source "debian.cnf"
-    cookbook 'db_mysql'
+    cookbook "db_mysql"
   end
 
   cookbook_file "/etc/mysql/debian-start" do
     only_if { platform == "ubuntu" }
     mode "0755"
     source "debian-start"
-    cookbook 'db_mysql'
+    cookbook "db_mysql"
   end
 
   # Fixes permissions: during the first startup after installation some of the
@@ -590,7 +737,7 @@ action :setup_monitoring do
     source "collectd-plugin-mysql.conf.erb"
     mode "0644"
     backup false
-    cookbook 'db_mysql'
+    cookbook "db_mysql"
     notifies :restart, resources(:service => "collectd")
   end
 
@@ -607,7 +754,11 @@ action :grant_replication_slave do
 
   Chef::Log.info "GRANT REPLICATION SLAVE to #{node[:db][:replication][:user]}"
   con = Mysql.new('localhost', 'root')
-  con.query("GRANT REPLICATION SLAVE ON *.* TO '#{node[:db][:replication][:user]}'@'%' IDENTIFIED BY '#{node[:db][:replication][:password]}'")
+  grant_query = "GRANT REPLICATION SLAVE ON *.* TO"
+  grant_query << " '#{node[:db][:replication][:user]}'@'%'"
+  grant_query << " IDENTIFIED BY '#{node[:db][:replication][:password]}'"
+  grant_query << " REQUIRE SSL" if node[:db_mysql][:ssl_enabled]
+  con.query(grant_query)
   con.query("FLUSH PRIVILEGES")
   con.close
 end
@@ -615,14 +766,15 @@ end
 action :promote do
   # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
   db_state_get node
+  force_promote = new_resource.force
 
   x = node[:db_mysql][:log_bin]
   logbin_dir = x.gsub(/#{::File.basename(x)}$/, "")
   directory logbin_dir do
     action :create
     recursive true
-    owner 'mysql'
-    group 'mysql'
+    owner "mysql"
+    group "mysql"
   end
 
   # Set read/write in read_write_status.cnf
@@ -634,12 +786,16 @@ action :promote do
   node[:db_mysql][:log_bin_enabled] = true
 
   # Sets up my.cnf
-  # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for the "db_mysql_set_mycnf" definition.
-  # See cookbooks/db_mysql/libraries/helper.rb for the "RightScale::Database::MySQL::Helper" class.
+  # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb
+  # for the "db_mysql_set_mycnf" definition.
+  # See cookbooks/db_mysql/libraries/helper.rb
+  # for the "RightScale::Database::MySQL::Helper" class.
   db_mysql_set_mycnf "setup_mycnf" do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
     innodb_log_file_size ::File.stat("/var/lib/mysql/ib_logfile0").size
+    compressed_protocol node[:db_mysql][:compressed_protocol] ==
+      "enabled" ? true : false
   end
 
   # See cookbooks/db_mysql/providers/default.rb for the "start" action.
@@ -647,9 +803,15 @@ action :promote do
     action :start
     persist false
     only_if do
-      log_bin = RightScale::Database::MySQL::Helper.do_query(node, "show variables like 'log_bin'", 'localhost', RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT)
+      log_bin = RightScale::Database::MySQL::Helper.do_query(
+        node,
+        "show variables like 'log_bin'",
+        'localhost',
+        RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT
+      )
       if log_bin['Value'] == 'OFF'
-        Chef::Log.info "  Detected binlogs were disabled, restarting service to enable them for Master takeover."
+        Chef::Log.info "  Detected binlogs were disabled, restarting service" +
+          " to enable them for Master takeover."
         true
       else
         false
@@ -657,48 +819,101 @@ action :promote do
     end
   end
 
-  RightScale::Database::MySQL::Helper.do_query(node, "SET GLOBAL READ_ONLY=0", 'localhost', RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT)
-  newmasterstatus = RightScale::Database::MySQL::Helper.do_query(node, 'SHOW SLAVE STATUS', 'localhost', RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT)
+  RightScale::Database::MySQL::Helper.do_query(
+    node,
+    "SET GLOBAL READ_ONLY=0",
+    'localhost',
+    RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT
+  )
+  newmasterstatus = RightScale::Database::MySQL::Helper.do_query(
+    node,
+    'SHOW SLAVE STATUS',
+    'localhost',
+    RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT
+  )
   previous_master = node[:db][:current_master_ip]
-  raise "FATAL: could not determine master host from slave status" if previous_master.nil?
-  Chef::Log.info "  host: #{previous_master}}"
 
-  # PHASE1: contains non-critical old master operations, if a timeout or
-  # error occurs we continue promotion assuming the old master is dead.
-  begin
-    # OLDMASTER: query with terminate (STOP SLAVE)
-    RightScale::Database::MySQL::Helper.do_query(node, 'STOP SLAVE', previous_master, RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT, 2)
+  if force_promote
+    Chef::Log.warn "Forcing the promotion of a slave to master, ignoring" +
+      " checks and changes to any current master. This will bring up a master" +
+      " with NO replication."
+  else
+    Chef::Log.warn "Promoting slave and demoting current master. In case" +
+      " recipe fails, please review if using the 'Force Promote to Master'" +
+      " input will help."
+    if previous_master.nil?
+      raise "FATAL: could not determine master host from slave status"
+    end
+    Chef::Log.info "  host: #{previous_master}}"
 
-    # OLDMASTER: flush_and_lock_db
-    RightScale::Database::MySQL::Helper.do_query(node, 'FLUSH TABLES WITH READ LOCK', previous_master, 5, 12)
+    # PHASE1: contains non-critical old master operations, if a timeout or
+    # error occurs we continue promotion assuming the old master is dead.
+    begin
+      # OLDMASTER: query with terminate (STOP SLAVE)
+      RightScale::Database::MySQL::Helper.do_query(
+        node,
+        'STOP SLAVE',
+        previous_master,
+        RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT,
+        2
+      )
 
+      # OLDMASTER: flush_and_lock_db
+      RightScale::Database::MySQL::Helper.do_query(
+        node,
+        'FLUSH TABLES WITH READ LOCK',
+        previous_master,
+        5,
+        12
+      )
 
-    # OLDMASTER:
-    masterstatus = RightScale::Database::MySQL::Helper.do_query(node, 'SHOW MASTER STATUS', previous_master, RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT)
+      # OLDMASTER:
+      masterstatus = RightScale::Database::MySQL::Helper.do_query(
+        node,
+        'SHOW MASTER STATUS',
+        previous_master,
+        RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT
+      )
 
-    # OLDMASTER: unconfigure source of replication
-    RightScale::Database::MySQL::Helper.do_query(node, "CHANGE MASTER TO MASTER_HOST=''", previous_master, RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT)
+      # OLDMASTER: unconfigure source of replication
+      RightScale::Database::MySQL::Helper.do_query(
+        node,
+        "CHANGE MASTER TO MASTER_HOST=''",
+        previous_master,
+        RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT
+      )
 
-    master_file = masterstatus['File']
-    master_position = masterstatus['Position']
-    Chef::Log.info "  Retrieved master info...File: " + master_file + " position: " + master_position
+      master_file = masterstatus['File']
+      master_position = masterstatus['Position']
+      Chef::Log.info "  Retrieved master info...File: #{master_file}" +
+        " position: #{master_position}"
 
-    Chef::Log.info "  Waiting for slave to catch up with OLDMASTER (if alive).."
-    # NEWMASTER localhost:
-    RightScale::Database::MySQL::Helper.do_query(node, "SELECT MASTER_POS_WAIT('#{master_file}',#{master_position})")
-  rescue => e
-    Chef::Log.info "  WARNING: caught exception #{e} during non-critical operations on the OLD MASTER"
+      Chef::Log.info "  Waiting for slave to catch up with OLDMASTER (if alive)"
+      # NEWMASTER localhost:
+      RightScale::Database::MySQL::Helper.do_query(
+        node,
+        "SELECT MASTER_POS_WAIT('#{master_file}',#{master_position})"
+      )
+    rescue => e
+      Chef::Log.info "  WARNING: caught exception #{e} during non-critical" +
+        " operations on the OLD MASTER"
+    end
   end
 
   # PHASE2: reset and promote this slave to master.
-  # Critical operations on newmaster, if a failure occurs here we allow it to halt promote operations.
+  # Critical operations on newmaster, if a failure occurs here we allow it
+  # to halt promote operations.
   Chef::Log.info "  Promoting slave.."
   RightScale::Database::MySQL::Helper.do_query(node, 'RESET MASTER')
 
-  newmasterstatus = RightScale::Database::MySQL::Helper.do_query(node, 'SHOW MASTER STATUS')
+  newmasterstatus = RightScale::Database::MySQL::Helper.do_query(
+    node,
+    'SHOW MASTER STATUS'
+  )
   newmaster_file = newmasterstatus['File']
   newmaster_position = newmasterstatus['Position']
-  Chef::Log.info "  Retrieved new master info...File: " + newmaster_file + " position: " + newmaster_position
+  Chef::Log.info "  Retrieved new master info...File: #{newmaster_file}" +
+    " position: #{newmaster_position}"
 
   Chef::Log.info "  Stopping slave and misconfiguring master"
   RightScale::Database::MySQL::Helper.do_query(node, "STOP SLAVE")
@@ -706,21 +921,42 @@ action :promote do
   action_grant_replication_slave
   RightScale::Database::MySQL::Helper.do_query(node, 'SET GLOBAL READ_ONLY=0')
 
-  # PHASE3: more non-critical operations, have already made assumption oldmaster is dead.
-  begin
-    unless previous_master.nil?
-      # Unlocks oldmaster.
-      RightScale::Database::MySQL::Helper.do_query(node, 'UNLOCK TABLES', previous_master)
-      SystemTimer.timeout_after(RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT) do
-        # Demotes oldmaster.
-        Chef::Log.info "  Calling reconfigure replication with host: #{previous_master} ip: #{node[:cloud][:private_ips][0]} file: #{newmaster_file} position: #{newmaster_position}"
-        RightScale::Database::MySQL::Helper.reconfigure_replication(node, previous_master, node[:cloud][:private_ips][0], newmaster_file, newmaster_position)
+  unless force_promote
+    # PHASE3: more non-critical operations, have already made assumption
+    # oldmaster is dead.
+    begin
+      unless previous_master.nil?
+        # Unlocks oldmaster.
+        RightScale::Database::MySQL::Helper.do_query(
+          node,
+          'UNLOCK TABLES',
+          previous_master
+        )
+        SystemTimer.timeout_after(
+          RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT
+        ) do
+          # Demotes oldmaster.
+          # See cookbooks/db/libraries/helper.rb
+          # for the "get_local_replication_interface" method.
+          Chef::Log.info "  Calling reconfigure replication with host:" +
+            " #{previous_master} ip: #{get_local_replication_interface} file:" +
+            " #{newmaster_file} position: #{newmaster_position}"
+          RightScale::Database::MySQL::Helper.reconfigure_replication(
+            node,
+            previous_master,
+            get_local_replication_interface,
+            newmaster_file,
+            newmaster_position
+          )
+        end
       end
+    rescue Timeout::Error => e
+      Chef::Log.info "  WARNING: rescuing SystemTimer exception #{e}," +
+        " continuing with promote"
+    rescue => e
+      Chef::Log.info "  WARNING: rescuing exception #{e}," +
+        " continuing with promote"
     end
-  rescue Timeout::Error => e
-    Chef::Log.info("  WARNING: rescuing SystemTimer exception #{e}, continuing with promote")
-  rescue => e
-    Chef::Log.info("  WARNING: rescuing exception #{e}, continuing with promote")
   end
 end
 
@@ -776,11 +1012,16 @@ action :enable_replication do
 
   unless current_restore_process == :no_restore
     # Sets up my.cnf
-    # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb for the "db_mysql_set_mycnf" definition.
+    # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb
+    # for the "db_mysql_set_mycnf" definition.
+    # See cookbooks/db_mysql/libraries/helper.rb
+    # for the "RightScale::Database::MySQL::Helper" class.
     db_mysql_set_mycnf "setup_mycnf" do
       server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
       relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
       innodb_log_file_size ::File.stat("/var/lib/mysql/ib_logfile0").size
+      compressed_protocol node[:db_mysql][:compressed_protocol] ==
+        "enabled" ? true : false
     end
   end
 
@@ -850,31 +1091,72 @@ end
 action :restore_from_dump_file do
 
   db_name = new_resource.db_name
-  dumpfile = new_resource.dumpfile
+  dumpfilepath_without_extension = new_resource.dumpfile
   db_check = `mysql -e "SHOW DATABASES LIKE '#{db_name}'"`
 
   Chef::Log.info "  Check if DB already exists"
   ruby_block "checking existing db" do
     block do
       if !db_check.empty?
-        Chef::Log.warn "  WARNING: database '#{db_name}' already exists. No changes will be made to existing database."
+        Chef::Log.warn "  WARNING: database '#{db_name}' already exists." +
+          " No changes will be made to existing database."
       end
     end
   end
 
-  bash "Import MySQL dump file: #{dumpfile}" do
-    only_if { db_check.empty? }
-    user "root"
-    flags "-ex"
-    code <<-EOH
-      if [ ! -f #{dumpfile} ]
-      then
-        echo "ERROR: MySQL dumpfile not found! File: '#{dumpfile}'"
-        exit 1
-      fi
-      mysqladmin -u root create #{db_name}
-      gunzip < #{dumpfile} | mysql -u root -b #{db_name}
-    EOH
+  # Detect the compression type of the downloaded file and set the
+  # extension properly.
+  node[:db][:dump][:filepath] = ""
+  node[:db][:dump][:uncompress_command] = ""
+  ruby_block "Detect compression type" do
+    block do
+      require "fileutils"
+
+      file_type = Mixlib::ShellOut.new("file #{dumpfilepath_without_extension}")
+      file_type.run_command
+      file_type.error!
+      command_output = file_type.stdout
+
+      extension = ""
+      if command_output =~ /Zip archive data/
+        extension = "zip"
+        node[:db][:dump][:uncompress_command] = "unzip -p"
+      elsif command_output =~ /gzip compressed data/
+        extension = "gz"
+        node[:db][:dump][:uncompress_command] = "gunzip <"
+      elsif command_output =~ /bzip2 compressed data/
+        extension = "bz2"
+        node[:db][:dump][:uncompress_command] = "bunzip2 <"
+      end
+      node[:db][:dump][:filepath] = dumpfilepath_without_extension +
+        "." +
+        extension
+      FileUtils.mv(dumpfilepath_without_extension, node[:db][:dump][:filepath])
+    end
   end
 
+  ruby_block "Import MySQL dump file" do
+    block do
+      if ::File.exists?(node[:db][:dump][:filepath])
+        # Create the database
+        Chef::Log.info "  Creating DB #{db_name}..."
+        create_db = Mixlib::ShellOut.new("mysqladmin -u root create #{db_name}")
+        create_db.run_command
+        create_db.error!
+
+        # Import comtents from dump file to the database
+        Chef::Log.info "  Importing contents from dumpfile:" +
+          " #{node[:db][:dump][:filepath]}"
+        import_dump = Mixlib::ShellOut.new(
+          "#{node[:db][:dump][:uncompress_command]} #{node[:db][:dump][:filepath]} |" +
+          " mysql -u root -b #{db_name}"
+        )
+        import_dump.run_command
+        import_dump.error!
+      else
+        raise "MySQL dump file not found: #{node[:db][:dump][:filepath]}"
+      end
+    end
+    only_if { db_check.empty? }
+  end
 end

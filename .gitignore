@@ -6,6 +6,5 @@
 .idea
 .rake_test_cache
 .yardoc
-doc
 Gemfile.lock
 chefignoredoc

@@ -5,6 +5,8 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+# Loads db_mysql/attributes/default.rb before processing this file.
+include_attribute "db_mysql"
 
 # Adjust values based on a usage factor and create human readable string
 def value_with_units(value, units, usage_factor)
@@ -50,7 +52,7 @@ default[:db_mysql][:tunable][:read_rnd_buffer_size] = value_with_units(4, "M", u
 default[:db_mysql][:tunable][:log_slow_queries] = "log_slow_queries = /var/log/mysqlslow.log"
 default[:db_mysql][:tunable][:long_query_time] = "long_query_time = 5"
 default[:db_mysql][:tunable][:expire_logs_days] = 2
-
+default[:db_mysql][:tunable][:slave_net_timeout] = 60
 
 # Adjust based on memory range.
 #

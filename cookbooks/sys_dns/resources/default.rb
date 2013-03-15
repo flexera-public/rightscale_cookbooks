@@ -6,7 +6,7 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
 # Used to pass data to the helper file and call the corresponding dns provider
-actions :set_private
+actions :set
 #
 # The unique identifier that is associated with the DNS A record of the server.
 attribute :id, :kind_of => String

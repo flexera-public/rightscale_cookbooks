@@ -26,7 +26,6 @@ db_init_status :check do
 end
 
 log "  Running pre-restore checks..."
-
 # See cookbooks/db_<provider>/providers/default.rb for the "pre_restore_check" action.
 db DATA_DIR do
   action :pre_restore_check
@@ -76,6 +75,7 @@ db DATA_DIR do
 end
 
 log "  Setting state of database to be 'initialized'..."
+# See cookbooks/db/definitions/db_init_status.rb for the "db_init_status" definition.
 db_init_status :set
 
 log "  Starting database..."

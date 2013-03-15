@@ -5,6 +5,25 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+default[:rightscale][:collectd_packages_version] = "latest"
+default[:rightscale][:collectd_lib] = "/usr/lib64/collectd"
+default[:rightscale][:collectd_share] = "/usr/share/collectd"
+
+default[:rightscale][:plugin_list] = ""
+default[:rightscale][:plugin_list_array] = [
+  "cpu",
+  "df",
+  "disk",
+  "load",
+  "memory",
+  "processes",
+  "users",
+  "ping"
+]
+
+default[:rightscale][:process_list] = ""
+default[:rightscale][:process_list_array] = []
+
 case platform
 when "ubuntu"
   default[:rightscale][:collectd_packages] = ["collectd", "collectd-core", "collectd-utils", "libcollectdclient0"]
@@ -28,22 +47,3 @@ when "centos", "redhat"
 else
   raise "Unrecognized distro #{node[:platform]} for monitoring attributes , exiting "
 end
-
-default[:rightscale][:collectd_packages_version] = "latest"
-default[:rightscale][:collectd_lib] = "/usr/lib64/collectd"
-default[:rightscale][:collectd_share] = "/usr/share/collectd"
-
-default[:rightscale][:plugin_list] = ""
-default[:rightscale][:plugin_list_array] = [
-  "cpu",
-  "df",
-  "disk",
-  "load",
-  "memory",
-  "processes",
-  "users",
-  "ping"
-]
-
-default[:rightscale][:process_list] = ""
-default[:rightscale][:process_list_array] = []

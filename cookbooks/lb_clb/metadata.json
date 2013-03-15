@@ -1,31 +1,31 @@
 {
+  "name": "lb_clb",
+  "description": "Adds application servers to CLB",
+  "long_description": "= RightScale Rackspace Cloud Load Balancers (CLB) Cookbook\n\n== DESCRIPTION:\n\nRightScale load balancer cookbook for Rackspace Cloud Load Balancing (CLB).\n\nThis cookbook provides recipes for attaching and detaching application servers\nto and from an existing Rackspace Cloud Load Balancer (CLB).\n\n== DETAILS:\n\nThe recipes in this cookbook are designed to enable an application server to\nattach itself to or detach itself from an existing Rackspace Cloud Load Balancer\n(CLB). The name of the existing CLB is provided as an input. The application\nserver is then associated with the CLB on Rackspace. Administrators create and\nedit CLBs using the Rackspace web interface.\n\n== REQUIREMENTS:\n\n* Requires a virtual machine launched from a RightScale-managed RightImage\n\n* Requires an existing Rackspace Cloud Load Balancer\n\n== SETUP/USAGE:\n\n=== Application Server Attach\n\n==== do_attach_request\n\nThis recipe is used by application servers to request that a Rackspace CLB\nattach the application server to its configuration. The recipe sends\nthe server's internal IP address as a parameter to the CLB.\n\n=== Application Server Detach\n\n==== do_detach_request\n\nThis recipe is used by application servers to request that a Rackspace CLB\ndetach the application server from its configuration. The recipe sends the\nserver's internal IP address as a parameter to the CLB. Note: If this is the\nonly application server in the CLB configuration, it will not detach. This is a\nknown limitation of Rackspace CLB, and is disallowed in the Rackspace web\ninterface as well.\n\n== KNOWN LIMITATIONS:\n\n* If an application server is the only attached item for a CLB, it cannot be\n  detached. This appears to be by design, as attempting to do this manually from\n  the Rackspace web interface also fails.\n\n== LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to\nthe RightScale Terms of Service available at http://www.rightscale.com/terms.php\nand, if applicable, other agreements such as a RightScale Master Subscription\nAgreement.\n",
   "maintainer": "RightScale, Inc.",
-  "dependencies": {
-    "lb": ">= 0.0.0",
-    "rightscale": ">= 0.0.0"
-  },
-  "replacing": {
-  },
-  "providing": {
-  },
-  "recipes": {
-  },
-  "groupings": {
-  },
-  "suggestions": {
-  },
+  "maintainer_email": "support@rightscale.com",
+  "license": "Copyright RightScale, Inc. All rights reserved.",
   "platforms": {
   },
-  "attributes": {
+  "dependencies": {
+    "rightscale": ">= 0.0.0",
+    "lb": ">= 0.0.0"
   },
   "recommendations": {
   },
-  "long_description": "= RightScale Rackspace Cloud Load Balancers (CLB) Cookbook\n\n== DESCRIPTION:\n\nRightScale load balancer cookbook for Rackspace Cloud Load Balancing (CLB).\n\nThis cookbook provides recipes for attaching and detaching application servers\nto and from an existing Rackspace Cloud Load Balancer (CLB).\n\n== DETAILS:\n\nThe recipes in this cookbook are designed to enable an application server to\nattach itself to or detach itself from an existing Rackspace Cloud Load Balancer\n(CLB). The name of the existing CLB is provided as an input. The application\nserver is then associated with the CLB on Rackspace. Administrators create and\nedit CLBs using the Rackspace web interface.\n\n== REQUIREMENTS:\n\n* Requires a virtual machine launched from a RightScale-managed RightImage\n\n* Requires an existing Rackspace Cloud Load Balancer\n\n== SETUP/USAGE:\n\n=== Application Server Attach\n\n==== do_attach_request\n\nThis recipe is used by application servers to request that a Rackspace CLB\nattach the application server to its configuration. The recipe sends\nthe server's internal IP address as a parameter to the CLB.\n\n=== Application Server Detach\n\n==== do_detach_request\n\nThis recipe is used by application servers to request that a Rackspace CLB\ndetach the application server from its configuration. The recipe sends the\nserver's internal IP address as a parameter to the CLB. Note: If this is the\nonly application server in the CLB configuration, it will not detach. This is a\nknown limitation of Rackspace CLB, and is disallowed in the Rackspace web\ninterface as well.\n\n== KNOWN LIMITATIONS:\n\n* If an application server is the only attached item for a CLB, it cannot be\n  detached. This appears to be by design, as attempting to do this manually from\n  the Rackspace web interface also fails.\n\n== LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to\nthe RightScale Terms of Service available at http://www.rightscale.com/terms.php\nand, if applicable, other agreements such as a RightScale Master Subscription\nAgreement.\n",
-  "description": "Adds application servers to CLB",
-  "version": "13.3.0",
-  "name": "lb_clb",
-  "license": "Copyright RightScale, Inc. All rights reserved.",
-  "maintainer_email": "support@rightscale.com",
+  "suggestions": {
+  },
   "conflicting": {
-  }
+  },
+  "providing": {
+  },
+  "replacing": {
+  },
+  "attributes": {
+  },
+  "groupings": {
+  },
+  "recipes": {
+  },
+  "version": "13.4.0"
 }

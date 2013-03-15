@@ -9,15 +9,26 @@
 # The tasks include setting up DNS, setting tags, and setting node attributes.
 define :db_register_master do
 
+  class Chef::Recipe
+    include RightScale::Database::Helper
+  end
+
+  class Chef::Resource::Db
+    include RightScale::Database::Helper
+  end
+
   # Set master DNS
   # Do this first so that DNS can propagate while the recipe runs
-  private_ip = node[:cloud][:private_ips][0]
-  log "  Setting master database #{node[:db][:dns][:master][:fqdn]} to #{private_ip}"
-  # See cookbooks/sys_dns/providers/*.rb for the "set_private" action.
+  # See cookbooks/db/libraries/helper.rb
+  # for the "get_local_replication_interface" method.
+  bind_ip = get_local_replication_interface
+  log "  Setting master database #{node[:db][:dns][:master][:fqdn]}" +
+    " to #{bind_ip}"
+  # See cookbooks/sys_dns/providers/*.rb for the "set" action.
   sys_dns "default" do
     id node[:db][:dns][:master][:id]
-    address private_ip
-    action :set_private
+    address bind_ip
+    action :set
   end
 
   # Set master tags
@@ -25,7 +36,8 @@ define :db_register_master do
   # and rs_dbrepl:master_instance_uuid
 
   begin
-    # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RightLinkTag for the "right_link_tag" resource.
+    # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RightLinkTag
+    # for the "right_link_tag" resource.
     right_link_tag "rs_dbrepl:slave_instance_uuid=#{node[:rightscale][:instance_uuid]}" do
       action :remove
     end
@@ -42,10 +54,11 @@ define :db_register_master do
   right_link_tag unique_tag
 
   # Set master node variables
-  # See cookbooks/db/definitions/db_state_set.rb for the "db_state_set" definition.
+  # See cookbooks/db/definitions/db_state_set.rb
+  # for the "db_state_set" definition.
   db_state_set "Set master state" do
     master_uuid node[:rightscale][:instance_uuid]
-    master_ip node[:cloud][:private_ips][0]
+    master_ip bind_ip
     is_master true
   end
 

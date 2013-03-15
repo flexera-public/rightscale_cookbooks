@@ -17,14 +17,22 @@ default[:db_mysql][:log_bin] = "/mnt/ephemeral/mysql-binlogs/mysql-bin"
 default[:db_mysql][:binlog_format] = "MIXED"
 default[:db_mysql][:tmpdir] = "/mnt/ephemeral/tmp"
 default[:db_mysql][:datadir] = "/var/lib/mysql"
+default[:db_mysql][:enable_mysql_upgrade] == "false"
 # Always set to support stop/start
-set[:db_mysql][:bind_address] = cloud[:private_ips][0]
+set[:db_mysql][:bind_address] = "0.0.0.0"
 
 default[:db_mysql][:dump][:storage_account_provider] = ""
 default[:db_mysql][:dump][:storage_account_id] = ""
 default[:db_mysql][:dump][:storage_account_secret] = ""
 default[:db_mysql][:dump][:container] = ""
 default[:db_mysql][:dump][:prefix] = ""
+
+# SSL attributes
+default[:db_mysql][:ssl][:ca_certificate] = nil
+default[:db_mysql][:ssl][:master_certificate] = nil
+default[:db_mysql][:ssl][:master_key] = nil
+default[:db_mysql][:ssl][:slave_certificate] = nil
+default[:db_mysql][:ssl][:slave_key] = nil
 
 # Platform specific attributes
 
