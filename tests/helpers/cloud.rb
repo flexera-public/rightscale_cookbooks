@@ -24,6 +24,8 @@ class Cloud
       CloudStack.new cloud_name
     when /Openstack/i, "HP Cloud", "Rackspace Private"
       Openstack.new cloud_name
+    when "Google"
+      Google.new cloud_name
     else
       Cloud.new cloud_name
     end
@@ -89,6 +91,15 @@ class Cloud
     end
 
     MultiCloudImage.find mci_id
+  end
+
+  # Checks if the cloud supports reboot. If not overridden by a subclass this
+  # method always returns true.
+  #
+  # @return [Boolean] whether the cloud supports reboot
+  #
+  def supports_reboot?
+    true
   end
 
 private
@@ -198,5 +209,21 @@ class Openstack < Cloud
   #
   def supports_ephemeral?(server)
     true
+  end
+end
+
+# Represents the Google cloud specific behavior.
+#
+# @see Cloud
+#
+class Google < Cloud
+  # Checks if the cloud supports reboot. Google does not support reboot.
+  #
+  # @return [Boolean] whether the cloud supports reboot
+  #
+  # @see Cloud#supports_reboot?
+  #
+  def supports_reboot?
+    false
   end
 end
