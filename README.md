@@ -223,6 +223,7 @@ earlier in the boot scripts. This pattern is explained in "The Default Recipe"
 and "Abstract Cookbooks and LWRPs" below.
 
 ### The Default Recipe
+
 Some of our cookbooks contains a `default.rb` recipe. In this recipe
 we install packages, setup configurations and initialize Chef resources that
 other cookbooks may depend on. We also setup any prerequisites and attributes
