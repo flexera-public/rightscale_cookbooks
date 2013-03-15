@@ -217,8 +217,7 @@ end
 # @see Cloud
 #
 class Google < Cloud
-  # Checks if the cloud supports reboot. If not overridden by a subclass this
-  # method always returns true.
+  # Checks if the cloud supports reboot. Google does not support reboot.
   #
   # @return [Boolean] whether the cloud supports reboot
   #
