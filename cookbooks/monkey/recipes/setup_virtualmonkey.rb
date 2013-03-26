@@ -73,8 +73,6 @@ bash "Building virtualmonkey gem" do
   code <<-EOH
     cd /root/virtualmonkey
     bundle install --no-color --system
-    rake build
-    gem install pkg/virtualmonkey-*.gem --no-rdoc --no-ri
   EOH
 end
 
