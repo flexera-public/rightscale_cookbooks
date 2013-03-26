@@ -10,22 +10,13 @@
 
 set[:monkey][:rest][:packages] = []
 set[:monkey][:rest][:gem_packages] = [
-  "rake",
-  "bundler",
-  "jeweler",
-  "ruby-debug",
-  "gemedit",
-  "diff-lcs",
-  "rspec"
+  {:name => "rake", :version => "10.0.3"},
+  {:name => "bundler", :version => "1.2.3"},
+  {:name => "jeweler", :version => "1.8.4"},
+  {:name => "ruby-debug", :version => "0.10.4"},
+  {:name => "gemedit", :version => "1.0.1"},
+  {:name => "diff-lcs", :version => "1.1.3"},
+  {:name => "rspec", :version => "2.12.0"}
 ]
 
 set[:monkey][:virtualmonkey][:packages] = []
-set[:monkey][:virtualmonkey][:gem_packages] = [
-  "rake",
-  "hoe",
-  "rcov",
-  "chef",
-  "daemons",
-  "right_http_connection",
-  "right_aws"
-]

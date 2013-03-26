@@ -36,9 +36,10 @@ end
 
 log "  Installing gems requierd by rest_connection"
 gems = node[:monkey][:rest][:gem_packages]
-gems.each do |gem|
-  gem_package gem do
+gems.each do |gem_name, gem_version|
+  gem_package gem_name do
     gem_binary "/usr/bin/gem"
+    version gem_version
     action :install
   end
 end unless gems.empty?
