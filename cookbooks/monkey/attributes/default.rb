@@ -8,8 +8,8 @@
 # Recommended attributes
 #
 
-set[:monkey][:rest][:packages] = []
-set[:monkey][:rest][:gem_packages] = [
+set_unless[:monkey][:rest][:packages] = []
+set_unless[:monkey][:rest][:gem_packages] = [
   {:name => "rake", :version => "10.0.3"},
   {:name => "bundler", :version => "1.2.3"},
   {:name => "jeweler", :version => "1.8.4"},
@@ -19,4 +19,4 @@ set[:monkey][:rest][:gem_packages] = [
   {:name => "rspec", :version => "2.12.0"}
 ]
 
-set[:monkey][:virtualmonkey][:packages] = []
+set_unless[:monkey][:virtualmonkey][:packages] = []
