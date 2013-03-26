@@ -7,6 +7,7 @@
 
 # @resource sys_dns
 
+# Set Route53 service
 action :set do
   log "==================== sys_dns(:set) Route53 BEGIN ==================== "
 

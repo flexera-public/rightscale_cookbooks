@@ -5,11 +5,11 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-# @resource Chef::Resource::SysFirewall
-# @resource Chef::Resource::Sys
+# @resource sys_firewall
 
 require "timeout"
 
+# Update firewall rules on a server
 action :update do
 
   # Set local variables from attributes
@@ -99,6 +99,7 @@ action :update do
 
 end
 
+# Update request to server to update its firewall rules
 action :update_request do
 
   # Deal with attributes

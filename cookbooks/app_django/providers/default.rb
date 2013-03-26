@@ -5,6 +5,8 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+# @resource app
+
 # Stop apache
 action :stop do
   log "  Running stop sequence"
@@ -42,6 +44,7 @@ action :restart do
   action_start
 end
 
+# Install Django server
 action :install do
   # Installing required packages
   packages = new_resource.packages

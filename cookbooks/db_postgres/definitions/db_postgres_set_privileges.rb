@@ -6,6 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
+# Sets privileges for Postgres database.
 define :db_postgres_set_privileges, :preset => "administrator", :username => nil, :password => nil do
 
 

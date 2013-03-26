@@ -8,3 +8,4 @@
 .yardoc
 Gemfile.lock
 chefignoredoc
+doc/*

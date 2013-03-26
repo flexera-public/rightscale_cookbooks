@@ -7,6 +7,7 @@
 
 # @resource sys_reconverge
 
+# Enable cookbook reconverge
 action :enable do
   recipe = new_resource.recipe_name
 
@@ -23,7 +24,7 @@ action :enable do
 
 end
 
-
+# Disable cookbook reconverge
 action :disable do
   recipe = new_resource.recipe_name
   log "  Removing #{recipe} from reconverge via cron"

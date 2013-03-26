@@ -5,6 +5,10 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+# Sets 'readonly' value in "/etc/mysql/conf.d/read_write_status.cnf".
+#
+# @param read_only [Boolean] Set read_only value
+#
 define :db_mysql_set_mysql_read_only, :read_only => false do
 
   read_only = params[:read_only] ? 1 : 0

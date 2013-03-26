@@ -7,6 +7,7 @@
 
 # @resource sys_dns
 
+# Set DNSMadeEasy service
 action :set do
   log "==================== sys_dns(:set) DNSMadeEasy BEGIN ==================== "
 

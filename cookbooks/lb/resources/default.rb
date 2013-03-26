@@ -10,21 +10,41 @@
 # Below are the attributes defined by the LB resource interface.
 #
 
+# Pool name for the load balancer
 attribute :pool_name, :kind_of => String, :name_attribute => true
 
 # Attaching/Detaching options
+
+# Backend server ID
 attribute :backend_id, :kind_of => String, :default => ""
+
+# IP of the backend server
 attribute :backend_ip, :kind_of => String, :default => ""
+
+# Port on which the backend server is listening on
 attribute :backend_port, :kind_of => Integer, :default => 8000
+
+# Timeout value for load balancer actions
 attribute :timeout, :kind_of => Integer, :default => 60 * 5
+
+# Session stickiness
 attribute :session_sticky, :kind_of => String, :default => "true"
 
 # Specific to cloud loadbalancing services
+
+# Load balancer service region
 attribute :service_region, :kind_of => String, :default => ""
+
+# Load balancer name
 attribute :service_lb_name, :kind_of => String, :default => ""
+
+# Account ID for the service region
 attribute :service_account_id, :kind_of => String, :default => ""
+
+# Account secret for the service region
 attribute :service_account_secret, :kind_of => String, :default => ""
 
+# Full name for the load balancer pool
 attribute :pool_name_full, :kind_of => String, :default => ""
 
 # General LoadBalance Actions

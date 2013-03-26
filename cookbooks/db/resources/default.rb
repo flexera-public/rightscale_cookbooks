@@ -11,32 +11,70 @@
 #
 
 # == General options
+
+# Database user
 attribute :user, :kind_of => String, :default => "root"
+
+# Password for database user
 attribute :password, :kind_of => String, :default => ""
+
+# Database location
 attribute :data_dir, :kind_of => String, :default => "/mnt/storage"
+
+# Database driver type. Example: MySQL, Postgresql
 attribute :driver_type, :kind_of => String
 
 # == Backup/Restore options
+
+# Lineage of the database
 attribute :lineage, :kind_of => String
+
+# Override default timestamp when restoring database from backup
 attribute :timestamp_override, :kind_of => String, :default => nil
+
+# Attribute to specify whether backup was taken from master database
 attribute :from_master, :kind_of => String, :default => nil
+
+# Type of database restore. Example: primary or secondary
 attribute :restore_process, :kind_of => Symbol, :default => :primary_restore
+
+# Timeout value for actions on database
 attribute :timeout, :kind_of => String, :default => "60"
 
 # == Privilege options
+
+# Types of privileges for the database. Example: admininstrator, user
 attribute :privilege, :equal_to => ["administrator", "user"], :default => "administrator"
+
+# Username to set privileges on a database
 attribute :privilege_username, :kind_of => String
+
+# Password to set privileges on a database
 attribute :privilege_password, :kind_of => String
+
+# Database to set privileges
 attribute :privilege_database, :kind_of => String, :default => "*.*"
 
 # == Firewall options
+
+# Enable firewall on database server
 attribute :enable, :equal_to => [true, false], :default => true
+
+# IP Address of the database server
 attribute :ip_addr, :kind_of => String
+
+# Machine tags on a database server
 attribute :machine_tag, :kind_of => String, :regex => /^([^:]+):(.+)=.+/
 
 # == Import/Export options
+
+# Database dump file
 attribute :dumpfile, :kind_of => String
+
+# Name of the database
 attribute :db_name, :kind_of => String
+
+# Database version
 attribute :db_version, :kind_of => String
 
 # = General Database Actions
@@ -223,6 +261,8 @@ actions :enable_replication
 # This is called when a new master is needed.  If the prior master is still
 # functioning it is demoted and configured as a slave.
 actions :promote
+
+  # Force a slave to promote to master
   attribute :force, :equal_to => [true, false], :default => false
 
 # == Grant Replication Slave

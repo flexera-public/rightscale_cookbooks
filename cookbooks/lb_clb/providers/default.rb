@@ -7,11 +7,12 @@
 
 # @resource lb
 
+# Installs the load balancer software on the local instance
 action :install do
   log "  Install does not apply to CLB"
 end
 
-
+# Attaches an application server to the local load balancer
 action :attach do
 
   log "  Attaching #{new_resource.backend_id} / #{new_resource.backend_ip}"
@@ -70,7 +71,7 @@ action :attach do
 
 end
 
-
+# Attach request from an application server
 action :attach_request do
 
   log "  Attach request for #{new_resource.backend_ip}"
@@ -89,7 +90,7 @@ action :attach_request do
 
 end
 
-
+# Detaches an application server from the local load balancer
 action :detach do
 
   log "  Attaching #{new_resource.backend_ip}"
@@ -147,7 +148,7 @@ action :detach do
 
 end
 
-
+# Detach request from an application server
 action :detach_request do
 
   log "  Detach request for #{new_resource.backend_ip}"
@@ -166,12 +167,12 @@ action :detach_request do
 
 end
 
-
+# Install and configure collectd plugins for the server
 action :setup_monitoring do
   log "  Setup monitoring does not apply to CLB"
 end
 
-
+# Restart the load balancer service
 action :restart do
   log "  Restart does not apply to CLB"
 end

@@ -7,6 +7,7 @@
 
 # @resource sys_dns
 
+# Set DynDNS service
 action :set do
   log "==================== sys_dns(:set) DynDNS BEGIN ==================== "
 

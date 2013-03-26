@@ -10,12 +10,14 @@
 include RightScale::Database::Helper
 include RightScale::Database::MySQL::Helper
 
+# Stop MySQL service
 action :stop do
   service node[:db_mysql][:service_name] do
     action :stop
   end
 end
 
+# Start MySQL service
 action :start do
   begin
     SystemTimer.timeout_after(node[:db_mysql][:init_timeout].to_i) do
@@ -30,12 +32,14 @@ action :start do
   end
 end
 
+# Restart MySQL service
 action :restart do
   service node[:db_mysql][:service_name] do
     action :restart
   end
 end
 
+# Check status of MySQL service
 action :status do
   # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "status" method.
@@ -44,6 +48,7 @@ action :status do
   Chef::Log.info "  Database Status:\n#{status}"
 end
 
+# Lock MySQL database
 action :lock do
   # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "lock" method.
@@ -51,6 +56,7 @@ action :lock do
   @db.lock
 end
 
+# Unlock MySQL database
 action :unlock do
   # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "unlock" method.
@@ -58,6 +64,7 @@ action :unlock do
   @db.unlock
 end
 
+# Relocate MySQL database data directory
 action :move_data_dir do
   # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "move_datadir" method.
@@ -65,6 +72,7 @@ action :move_data_dir do
   @db.move_datadir(new_resource.name, node[:db_mysql][:datadir])
 end
 
+# Wipes the current MySQL database to a pristine state
 action :reset do
   # Set read/write in read_write_status.cnf
   db_mysql_set_mysql_read_only "setup mysql read/write" do
@@ -77,6 +85,8 @@ action :reset do
   @db.reset(new_resource.name, node[:db_mysql][:datadir])
 end
 
+# Sends a remote_recipe that requests a MySQL database to update it's firewall
+# rules
 action :firewall_update_request do
   # See cookbooks/sys_firewall/providers/default.rb for the "update_request" action.
   sys_firewall "Sending request to open port 3306 (MySQL) allowing this server to connect" do
@@ -88,6 +98,7 @@ action :firewall_update_request do
   end
 end
 
+# Updates MySQL database firewall rules
 action :firewall_update do
   # See cookbooks/sys_firewall/providers/default.rb for the "update" action.
   sys_firewall "Opening port 3306 (MySQL) for tagged '#{new_resource.machine_tag}' to connect" do
@@ -98,7 +109,7 @@ action :firewall_update do
   end
 end
 
-
+# Write backup information needed during restore
 action :write_backup_info do
   # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
   # See cookbooks/db/libraries/helper.rb for the "RightScale::Database::MySQL::Helper" class.
@@ -129,6 +140,7 @@ action :write_backup_info do
   end
 end
 
+# Verify whether MySQL database is in a good state before preforming a restore
 action :pre_restore_check do
   # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "pre_restore_sanity_check" method.
@@ -136,6 +148,7 @@ action :pre_restore_check do
   @db.pre_restore_sanity_check
 end
 
+# Used to validate backup and cleanup VM after restore
 action :post_restore_cleanup do
   # Performs checks for snapshot compatibility with current server.
   # See cookbooks/db_mysql/libraries/helper.rb
@@ -255,6 +268,7 @@ action :post_restore_cleanup do
 
 end
 
+# Verify whether the MySQL database is in a good state for taking a snapshot.
 action :pre_backup_check do
   # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "pre_backup_check" method.
@@ -262,6 +276,7 @@ action :pre_backup_check do
   @db.pre_backup_check
 end
 
+# Used to cleanup VM after backup
 action :post_backup_cleanup do
   # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "post_backup_steps" method.
@@ -269,6 +284,7 @@ action :post_backup_cleanup do
   @db.post_backup_steps
 end
 
+# Set MySQL database user privileges
 action :set_privileges do
   priv = new_resource.privilege
   priv_username = new_resource.privilege_username
@@ -283,6 +299,7 @@ action :set_privileges do
   end
 end
 
+# Remove anonymous users from MySQL database
 action :remove_anonymous do
   require 'mysql'
   con = Mysql.new('localhost', 'root')
@@ -292,6 +309,7 @@ action :remove_anonymous do
   con.close
 end
 
+# Install MySQL database client
 action :install_client do
 
   version = new_resource.db_version
@@ -387,6 +405,7 @@ action :install_client do
 
 end
 
+# Install MySQL database server
 action :install_server do
 
   platform = node[:platform]
@@ -647,6 +666,8 @@ action :install_server do
 
 end
 
+# Installs the driver packages for applications servers based on their
+# driver type
 action :install_client_driver do
   type = new_resource.driver_type
   log "  Installing mysql support for #{type} driver"
@@ -706,6 +727,7 @@ action :install_client_driver do
   end
 end
 
+# Install and configure collectd plugins for the MySQL database server
 action :setup_monitoring do
   # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
   db_state_get node
@@ -749,6 +771,7 @@ action :setup_monitoring do
 
 end
 
+# Set database replication privileges for a slave
 action :grant_replication_slave do
   require 'mysql'
 
@@ -763,6 +786,7 @@ action :grant_replication_slave do
   con.close
 end
 
+# Promote slave database to master
 action :promote do
   # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
   db_state_get node
@@ -960,7 +984,7 @@ action :promote do
   end
 end
 
-
+# Configures and start a slave replicating from master
 action :enable_replication do
   # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
   db_state_get node
@@ -1077,6 +1101,7 @@ action :enable_replication do
 
 end
 
+# Generate dump file
 action :generate_dump_file do
 
   db_name = new_resource.db_name
@@ -1088,6 +1113,7 @@ action :generate_dump_file do
 
 end
 
+# Restore MySQL database from dump file
 action :restore_from_dump_file do
 
   db_name = new_resource.db_name

@@ -5,6 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+# Sets up HAProxy backend configuration file in "/etc/haproxy".
 define :lb_haproxy_backend, :pool_name => "" do
 
   backend_name = params[:pool_name] + "_backend"

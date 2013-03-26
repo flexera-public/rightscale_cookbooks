@@ -7,11 +7,12 @@
 
 # @resource lb
 
+# Installs the load balancer software on the local instance
 action :install do
   log "  Install does not apply to ELB"
 end
 
-
+# Attaches an application server to the local load balancer
 action :attach do
 
   log "  Attaching #{node[:ec2][:instance_id]} to #{new_resource.service_lb_name}"
@@ -50,7 +51,7 @@ action :attach do
 
 end
 
-
+# Attach request from an application server
 action :attach_request do
 
   log "  Attach request for #{node[:ec2][:instance_id]}"
@@ -67,7 +68,7 @@ action :attach_request do
 
 end
 
-
+# Detaches an application server from the local load balancer
 action :detach do
 
   log "  Detaching #{node[:ec2][:instance_id]}"
@@ -95,7 +96,7 @@ action :detach do
 
 end
 
-
+# Detach request from an application server
 action :detach_request do
 
   log "  Detach request for #{node[:ec2][:instance_id]}"
@@ -112,12 +113,12 @@ action :detach_request do
 
 end
 
-
+# Install and configure collectd plugins for the server
 action :setup_monitoring do
   log "  Setup monitoring does not apply to ELB"
 end
 
-
+# Restart the load balancer service
 action :restart do
   log "  Restart does not apply to ELB"
 end
