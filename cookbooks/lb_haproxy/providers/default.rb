@@ -163,8 +163,8 @@ action :attach do
     action :create
   end
 
-  # Create a firewall rule to drop packets going to the haproxy service while
-  # it is being reloaded.
+  # Create a firewall rule to drop packets internally going to the haproxy
+  # service while it is being reloaded.
   execute "insert localhost firewall rule" do
     user "root"
     group "root"
@@ -304,8 +304,8 @@ action :detach do
     action :nothing
   end
 
-  # Create a firewall rule to drop packets going to the haproxy service while
-  # it is being reloaded.
+  # Create a firewall rule to drop packets internally going to the haproxy
+  # service while it is being reloaded.
   execute "insert localhost firewall rule" do
     user "root"
     group "root"
