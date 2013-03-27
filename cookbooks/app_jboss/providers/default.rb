@@ -317,7 +317,6 @@ action :setup_vhost do
   file "/etc/httpd/conf.d/ssl.conf" do
     action :delete
     backup false
-    only_if { ::File.exists?("/etc/httpd/conf.d/ssl.conf") }
   end
 
   log "  Generating new apache ports.conf"
@@ -363,7 +362,8 @@ action :setup_db_connection do
   install_target = node[:app_jboss][:install_target]
   app_libpath = "#{install_target}/server/default/lib"
 
-  log "  Creating #{db_adapter}-ds.xml for DB: #{db_name} using adapter #{db_adapter} and datasource #{datasource}"
+  log "  Creating #{db_adapter}-ds.xml for DB: #{db_name} using" +
+    " adapter #{db_adapter} and datasource #{datasource}"
   # See cookbooks/db/definitions/db_connect_app.rb for the "db_connect_app"
   # definition.
   db_connect_app "#{install_target}/server/default/deploy/#{db_adapter}-ds.xml" do
@@ -424,7 +424,6 @@ action :setup_monitoring do
   # Linking collectd
   link "#{install_target}/lib/collectd.jar" do
     to "/usr/share/java/collectd.jar"
-    not_if { !::File.exists?("/usr/share/java/collectd.jar") }
   end
 
   # Add collectd support to run.conf
@@ -490,7 +489,8 @@ action :code_update do
     code <<-EOH
       cd #{deploy_dir}
 
-      if [ ! -z "#{node[:app_jboss][:code][:root_war]}" -a -e "#{deploy_dir}/#{node[:app_jboss][:code][:root_war]}" ] ; then
+      if [ ! -z "#{node[:app_jboss][:code][:root_war]}" -a -e \
+            "#{deploy_dir}/#{node[:app_jboss][:code][:root_war]}" ] ; then
         mv #{deploy_dir}/#{node[:app_jboss][:code][:root_war]} #{deploy_dir}/ROOT.war
         unzip -d #{deploy_dir}/ROOT #{deploy_dir}/ROOT.war
         # Coping root.war to jboss deploy directory
