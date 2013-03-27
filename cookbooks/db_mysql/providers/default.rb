@@ -679,7 +679,6 @@ action :install_client_driver do
   when "java"
     # This adapter type is used by Tomcat application servers.
     node[:db][:client][:driver] = "com.mysql.jdbc.Driver"
-
     package "#{type} mysql integration" do
       package_name value_for_platform(
         ["centos", "redhat"] => {

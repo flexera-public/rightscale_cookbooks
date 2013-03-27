@@ -36,19 +36,20 @@ end
 
 log "  Installing #{node[:app][:packages]}" if node[:app][:packages]
 
+if node[:app][:provider] == "app_passenger"
+  node[:app][:root] = node[:app][:destination] + "/public"
+else
+  node[:app][:root]="#{node[:app][:destination]}"
+end
+
 # Setup default values for application resource and install required packages
 # See cookbooks/app_<providers>/providers/default.rb for the "install" action.
 app "default" do
   persist true
   provider node[:app][:provider]
   packages node[:app][:packages]
+  root node[:app][:root]
   action :install
-end
-
-if node[:app][:provider] == "app_passenger"
-  node[:app][:root] = node[:app][:destination] + "/public"
-else
-  node[:app][:root]="#{node[:app][:destination]}"
 end
 
 # Let others know we are an appserver

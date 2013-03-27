@@ -5,7 +5,8 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-#Definition designed to move any directory to ephemeral drive and create symlink to it
+# Definition designed to move any directory to ephemeral drive and create
+# symlink to it
 define :rightscale_move_to_ephemeral, :location_on_ephemeral => nil, :user => "root", :group => "root", :move_content => false do
   default_dir = params[:name]
   ephemeral_dir = "/mnt/ephemeral/#{params[:location_on_ephemeral]}"
