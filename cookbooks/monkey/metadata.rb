@@ -105,6 +105,18 @@ attribute "monkey/fog/rackspace_managed_username",
   :required => "required",
   :recipes => ["monkey::update_fog_credentials"]
 
+attribute "monkey/fog/rackspace_managed_uk_auth_key",
+  :display_name => "RACKSPACE_MANAGED_AUTH_KEY_UK_TEST",
+  :description => "",
+  :required => "required",
+  :recipes => ["monkey::update_fog_credentials"]
+
+attribute "monkey/fog/rackspace_managed_uk_username",
+  :display_name => "RACKSPACE_MANAGED_USERNAME_UK_TEST",
+  :description => "",
+  :required => "required",
+  :recipes => ["monkey::update_fog_credentials"]
+
 attribute "monkey/fog/rackspace_auth_url_uk_test",
   :display_name => "RACKSPACE_AUTH_URL_UK_TEST",
   :description => "",
@@ -137,6 +149,42 @@ attribute "monkey/fog/azure_secret_access_key",
 
 attribute "monkey/fog/s3_bucket",
   :display_name => "S3_BUCKET_NAME",
+  :description => "",
+  :required => "required",
+  :recipes => ["monkey::update_fog_credentials"]
+
+attribute "monkey/fog/openstack_access_key_id",
+  :display_name => "OPENSTACK_FOLSOM_ACCESS_KEY_ID",
+  :description => "",
+  :required => "required",
+  :recipes => ["monkey::update_fog_credentials"]
+
+attribute "monkey/fog/openstack_secret_access_key",
+  :display_name => "OPENSTACK_FOLSOM_SECRET_ACCESS_KEY",
+  :description => "",
+  :required => "required",
+  :recipes => ["monkey::update_fog_credentials"]
+
+attribute "monkey/fog/openstack_auth_url",
+  :display_name => "OPENSTACK_AUTH_URL",
+  :description => "",
+  :required => "required",
+  :recipes => ["monkey::update_fog_credentials"]
+
+attribute "monkey/fog/raxprivatev3_access_key_id",
+  :display_name => "RACKSPACE_PRIVATEV3_ACCESS_KEY_ID",
+  :description => "",
+  :required => "required",
+  :recipes => ["monkey::update_fog_credentials"]
+
+attribute "monkey/fog/raxprivatev3_secret_access_key",
+  :display_name => "RACKSPACE_PRIVATEV3_SECRET_ACCESS_KEY",
+  :description => "",
+  :required => "required",
+  :recipes => ["monkey::update_fog_credentials"]
+
+attribute "monkey/fog/raxprivatev3_auth_url",
+  :display_name => "RACKSPACE_PRIVATEV3_AUTH_URL",
   :description => "",
   :required => "required",
   :recipes => ["monkey::update_fog_credentials"]
@@ -242,4 +290,3 @@ attribute "monkey/rocketmonkey/repo_branch",
   :description => "Git branch for VirtualMonkey project",
   :required => "required",
   :recipes => ["monkey::setup_rocketmonkey"]
-
