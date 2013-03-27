@@ -13,7 +13,7 @@ if node[:rightscale][:timezone]
   
   # Restart cron if timezone changes
   cron_service = value_for_platform(
-    ["debian", "ubuntu", "suse"] => {"default" => "cron"},
+    ["ubuntu"] => {"default" => "cron"},
     "default" => "crond"
   )
 
@@ -28,8 +28,6 @@ if node[:rightscale][:timezone]
   end
   
   log "  Timezone set to #{node[:rightscale][:timezone]}"
-  
-
 else
 
   # If this attribute is not set leave unchanged and use localtime.
