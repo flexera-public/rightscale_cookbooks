@@ -77,9 +77,14 @@ test_case "smoke_test" do
   # Check if the server's basic monitoring is working.
   check_monitoring
 
-  # Reboot to check if functionality works after a reboot.
-  reboot_all
-  wait_for_all("operational")
+  # Reboot to check if functionality works after a reboot on clouds that
+  # support reboot.
+  if cloud.supports_reboot?
+    reboot_all
+    wait_for_all("operational")
+  else
+    puts "Reboot is not supported in this cloud. Skipping..."
+  end
 
   # Ephemeral and swap file support are currently only implemented on the Chef
   # ServerTemplate.
