@@ -83,7 +83,7 @@ fi
 
 case "$1" in
 start)
-    rh_status
+    echo "Starting Jboss..."
     if [ -e /etc/redhat-release ]; then
         daemon  --user $JBOSS_USER $JBOSS_CMD_START >${JBOSS_CONSOLE} 2>&1 &
     else
@@ -93,6 +93,7 @@ start)
     rh_status
     ;;
 stop)
+    echo "Stopping Jboss..."
     if [ -e /etc/redhat-release ]; then
         $JBOSS_CMD_STOP
     else
