@@ -361,9 +361,6 @@ action :install_client_driver do
   else
     raise "Unknown driver type specified: #{type}"
   end
-
-  # Setup Database manager specific listen port to use in app database configs
-  node[:db][:port] = node[:db_postgres][:port]
 end
 
 action :grant_replication_slave do
@@ -589,10 +586,8 @@ action :setup_slave_monitoring do
     cookbook 'db_postgres'
   end
 
-  # Add a collectd config file for the check_hot_standby_delay script with
-  # the exec plugin and restart collectd if necessary
-  template ::File.join(
-    node[:rightscale][:collectd_plugin_dir], 'check_hot_standby_delay.conf') do
+  # Add a collectd config file for the check_hot_standby_delay script with the exec plugin and restart collectd if necessary
+  template ::File.join(node[:rightscale][:collectd_plugin_dir], 'check_hot_standby_delay.conf') do
     source "check_hot_standby_delay_exec.erb"
     notifies :restart, resources(:service => "collectd")
     cookbook 'db_postgres'

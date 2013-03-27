@@ -32,7 +32,9 @@
     <Resource name="<%= @vars[:datasource] %>" auth="Container"
         type="javax.sql.DataSource" maxActive="100" maxIdle="30" maxWait="10000"
         username="<%= @user %>" password="<%= @password %>"
-        <%# The db/client/driver node variable isn't available during compile time so it can't be passed via the resource %>
+
+        <%# The db/client/driver node variable isn't available during compile time %>
+        <%# so it can't be passed via the resource %>
         driverClassName="<%= node[:db][:client][:driver] %>"
         url="jdbc:<%= node[:db][:client][:driver].split(".")[1] %>://<%= @fqdn %>:<%= @listen_port %>/<%= @database %>"/>
 
