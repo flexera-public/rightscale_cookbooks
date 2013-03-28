@@ -1,0 +1,148 @@
+{
+  "recipes": {
+    "chef::do_detach": "Detach Chef client and remove configuration.",
+    "chef::do_attach": "Attach Chef client and deploy configuration.",
+    "chef::install_client": "Installs and configures Chef client.",
+    "chef::execute_runlist": "Execute Chef client."
+  },
+  "groupings": {
+  },
+  "version": "13.4.0",
+  "providing": {
+  },
+  "recommendations": {
+  },
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "attributes": {
+    "chef/client/validation_name": {
+      "recipes": [
+        "chef::install_client",
+        "chef::do_attach"
+      ],
+      "display_name": "Chef client validation name",
+      "required": "required",
+      "type": "string",
+      "description": "The name of the server that along with the private ssh key is used to determine whether the Chef client may register with the Chef server. The validation_name located in the server and client configuration files must match. Example: ORG-validator",
+      "choice": [
+
+      ],
+      "calculated": false
+    },
+    "chef/client/private_ssh_key": {
+      "recipes": [
+        "chef::install_client",
+        "chef::do_attach"
+      ],
+      "display_name": "Chef client private ssh key",
+      "required": "required",
+      "type": "string",
+      "description": "Private ssh key which will be used to authenticate the client on the remote Chef server.",
+      "choice": [
+
+      ],
+      "calculated": false
+    },
+    "chef/client/company": {
+      "recipes": [
+        "chef::install_client",
+        "chef::do_attach"
+      ],
+      "display_name": "Chef company name",
+      "required": "optional",
+      "type": "string",
+      "description": "The name of the company which is defined on the Chef server. If nothing specified, this attribute will be blank. Example: MyCompany",
+      "choice": [
+
+      ],
+      "calculated": false
+    },
+    "chef/client/node_name": {
+      "recipes": [
+        "chef::install_client",
+        "chef::do_attach"
+      ],
+      "display_name": "The node's name",
+      "required": "optional",
+      "type": "string",
+      "description": "The node's name to register on Chef server.",
+      "choice": [
+
+      ],
+      "calculated": false
+    },
+    "chef/client/server_url": {
+      "recipes": [
+        "chef::install_client",
+        "chef::do_attach"
+      ],
+      "display_name": "The URL for the Chef server",
+      "required": "required",
+      "type": "string",
+      "description": "Enter the url to connect to remote Chef server. To connect Opscode Hosted Chef use the following syntax https://api.opscode.com/organizations/ORGNAME Example: http://example.com:4000/chef",
+      "choice": [
+
+      ],
+      "calculated": false
+    },
+    "chef/client/environment": {
+      "recipes": [
+        "chef::install_client",
+        "chef::do_attach"
+      ],
+      "display_name": "Chef client environment",
+      "default": "_default",
+      "required": "optional",
+      "type": "string",
+      "description": "Specify environment type for the Chef client configs. Example: development",
+      "choice": [
+
+      ],
+      "calculated": false
+    },
+    "chef/client/roles": {
+      "recipes": [
+        "chef::install_client",
+        "chef::do_attach",
+        "chef::execute_runlist"
+      ],
+      "display_name": "Set of client roles",
+      "required": "optional",
+      "type": "string",
+      "description": "Comma separated list of roles which will be applied to this instance. Example: webserver, monitoring",
+      "choice": [
+
+      ],
+      "calculated": false
+    },
+    "chef/client/version": {
+      "recipes": [
+        "chef::install_client"
+      ],
+      "display_name": "Chef client version",
+      "default": "10.18.2-2",
+      "required": "optional",
+      "type": "string",
+      "description": "Specify the Chef client version to match requirements of your Chef server. Example: 10.18.2-2",
+      "choice": [
+
+      ],
+      "calculated": false
+    }
+  },
+  "conflicting": {
+  },
+  "maintainer_email": "support@rightscale.com",
+  "suggestions": {
+  },
+  "description": "Common utilities for RightScale managed application servers",
+  "name": "chef",
+  "replacing": {
+  },
+  "platforms": {
+  },
+  "maintainer": "RightScale, Inc.",
+  "long_description": "= RightScale Chef Client Template\n\n== DESCRIPTION:\n\nThis cookbook provides recipes for setting up and running a Chef Client.\n\n== REQUIREMENTS:\n\n* Requires a VM launched from a RightScale managed RightImage\n\n* Tested on the following RightImages: CentOS 6.3, Ubuntu 12.04\n\n* Tested Chef Client version 10.18.2-2\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n* <tt>rightscale</tt>\n\n== KNOWN LIMITATIONS:\nThere are no known limitations.\n\n== SETUP/USAGE:\n\n* Choose image and cloud.\n* Fill required input fields.\n* When using a RightScale Server Template, place <tt>chef::install_client</tt>\nrecipe into your runlist to setup the Chef Client.\n\nFor more info see: {Release Notes}[http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/v13.4#Chef_Client_(v13.4)]\n\n== DETAILS:\n\n=== General\n\nThe cookbook installs the Chef Client with needed configuration for CentOS and \nUbuntu.\n\n=== Attributes:\n\nThese are the settings used in recipes and templates. Default values are noted.\n* node[:chef][:client][:version]\nThe package version. Default: \"10.18.2-2\"\n* node[:chef][:client][:config_dir]\nThe Chef Client config directory. Default: \"/etc/chef\"\n* node[:chef][:client][:log_file]\nThe Chef Client log location. Default: \"/var/log/chef-client.log\"\n* node[:chef][:client][:server_url]\nThe url to connect to the remote Chef Server.\n* node[:chef][:client][:private_ssh_key]\nPrivate ssh key to register the Chef Client with the Chef Server.\n* node[:chef][:client][:validation_name]\nThe name of the server that along with the private ssh key is used to determine\nwhether the Chef Client may register with the Chef Server. The validation_name\nlocated in the server and the client configuration files must match.\n* node[:chef][:client][:node_name]\nThe node's name to register on the Chef Server.\n* node[:chef][:client][:roles]\nComma separated list of roles which will be applied to this instance. Roles \nshould be defined on the Chef Server else recipe will fail.\n* node[:chef][:client][:environment]\nThe Chef Server environment name, by default the Chef Client environment\nvariable is set to \"_default\"\n* node[:chef][:client][:company]\nThe name of the company which is defined on the Chef Server.\n\n=== Templates:\n\n* chef_client_conf.erb\nThe Chef Client configuration file. Used in <tt>chef::do_attach</tt> recipe.\n* private_ssh_key.erb \nThe Chef Client private ssh key. Used in <tt>chef::do_attach</tt> recipe.\n* runlist.json.erb\nThe Chef Client runlist.json file. Defined in setup_runlist definition and used\nin<tt>chef::do_attach</tt> and <tt>chef::execute_runlist</tt> recipe.\n\n=== Usage Example:\n* <tt>chef::do_attach</tt>\nThis recipe is used in boot phase to register the Chef Client on the Chef\nServer. It is also available in operational phase. Before using this recipe in\noperational phase user need to execute <tt>chef::detach</tt> recipe, to remove\nall the configuration files from the client. To use a different Chef server,\nuser should change the server_url input. To reconnect to the same Chef Server,\nuser need to remove the node and client registration entries from the server.\n\nNote : Above usage example is not applicable to connect to the Rightscale Chef\nServer template.\n\n* <tt>chef::execute_runlist</tt>\nThis recipe is used in operational phase only. To update runlist user can\nprovide new roles as input. To use the new roles they should be available on\nthe Chef Server.\n\n== LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
+  "dependencies": {
+    "rightscale": ">= 0.0.0"
+  }
+}

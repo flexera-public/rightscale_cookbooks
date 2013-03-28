@@ -1,0 +1,97 @@
+= RightScale Chef Client Template
+
+== DESCRIPTION:
+
+This cookbook provides recipes for setting up and running a Chef Client.
+
+== REQUIREMENTS:
+
+* Requires a VM launched from a RightScale managed RightImage
+
+* Tested on the following RightImages: CentOS 6.3, Ubuntu 12.04
+
+* Tested Chef Client version 10.18.2-2
+
+== COOKBOOKS DEPENDENCIES:
+
+Please see <tt>metadata.rb</tt> file for the latest dependencies.
+* <tt>rightscale</tt>
+
+== KNOWN LIMITATIONS:
+There are no known limitations.
+
+== SETUP/USAGE:
+
+* Choose image and cloud.
+* Fill required input fields.
+* When using a RightScale Server Template, place <tt>chef::install_client</tt>
+  recipe into your runlist to setup the Chef Client.
+
+For more info see: {Release Notes}[http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/v13.4#Chef_Client_(v13.4)]
+
+== DETAILS:
+
+=== General
+
+The cookbook installs the Chef Client with needed configuration for CentOS and
+Ubuntu.
+
+=== Attributes:
+
+These are the settings used in recipes and templates. Default values are noted.
+* <tt>node[:chef][:client][:version]</tt> -
+  The package version. Default: "10.18.2-2"
+* <tt>node[:chef][:client][:config_dir]</tt> -
+  The Chef Client config directory. Default: "/etc/chef"
+* <tt>node[:chef][:client][:server_url]</tt> -
+  The url to connect to the remote Chef Server.
+* <tt>node[:chef][:client][:private_ssh_key]</tt> -
+  Private ssh key to register the Chef Client with the Chef Server.
+* <tt>node[:chef][:client][:validation_name]</tt> -
+  validation name, along with the private ssh key, is used to determine whether
+  the Chef Client may register with the Chef Server. The validation_name located
+  on the server and in the client configuration file must match.
+* <tt>node[:chef][:client][:node_name]</tt> -
+  The node's name to register on the Chef Server.
+* <tt>node[:chef][:client][:roles]</tt> -
+  Comma separated list of roles which will be applied to this instance. Roles
+  should be defined on the Chef Server else recipe will fail.
+* <tt>node[:chef][:client][:environment]</tt> -
+  The Chef Server environment name, by default the Chef Client environment
+  variable is set to "_default".
+* <tt>node[:chef][:client][:company]</tt> -
+  The name of the company which is defined on the Chef Server.
+
+=== Templates:
+
+* <tt>chef_client_conf.erb</tt> -
+  The Chef Client configuration file. Used in <tt>chef::do_attach</tt> recipe.
+* <tt>private_ssh_key.erb</tt> -
+  The Chef Client private ssh key. Used in <tt>chef::do_attach</tt> recipe.
+* <tt>runlist.json.erb</tt> -
+  The Chef Client runlist.json file. Defined in setup_runlist definition and
+  used in<tt>chef::do_attach</tt> and <tt>chef::execute_runlist</tt> recipes.
+
+=== Usage Example:
+* <tt>chef::do_attach</tt>
+  This recipe is used in boot phase to register the Chef Client on the Chef
+  Server. It is also available in operational phase. Before using this recipe in
+  operational phase user need to execute <tt>chef::detach</tt> recipe, to remove
+  all the configuration files from the client. To use a different Chef server,
+  user should change the server_url input. To reconnect to the same Chef Server,
+  user need to remove the node and client registration entries from the server.
+
+Note : Above usage example is not applicable to connect to the Rightscale Chef
+Server template.
+
+* <tt>chef::execute_runlist</tt>
+  This recipe is used in operational phase only. This recipe re-runs runlist
+  received from chef server. To update roles and run runlist user can provide
+  new roles as input. Roles should be available on the Chef Server.
+
+== LICENSE:
+
+Copyright RightScale, Inc. All rights reserved.
+All access and use subject to the RightScale Terms of Service available at
+http://www.rightscale.com/terms.php and, if applicable, other agreements
+such as a RightScale Master Subscription Agreement.
