@@ -48,7 +48,7 @@ These are the settings used in recipes and templates. Default values are noted.
 * <tt>node[:chef][:client][:private_ssh_key]</tt> -
   Private ssh key to register the Chef Client with the Chef Server.
 * <tt>node[:chef][:client][:validation_name]</tt> -
-  validation name, along with the private ssh key, is used to determine whether
+  Validation name, along with the private ssh key, is used to determine whether
   the Chef Client may register with the Chef Server. The validation_name located
   on the server and in the client configuration file must match.
 * <tt>node[:chef][:client][:node_name]</tt> -
@@ -76,18 +76,19 @@ These are the settings used in recipes and templates. Default values are noted.
 * <tt>chef::do_attach</tt>
   This recipe is used in boot phase to register the Chef Client on the Chef
   Server. It is also available in operational phase. Before using this recipe in
-  operational phase user need to execute <tt>chef::detach</tt> recipe, to remove
-  all the configuration files from the client. To use a different Chef server,
+  operational phase user need to execute <tt>chef::detach</tt> recipe to remove
+  all the configuration files from the client. To use a different Chef Server,
   user should change the server_url input. To reconnect to the same Chef Server,
-  user need to remove the node and client registration entries from the server.
+  user need to either change the node name input or remove the node and client
+  registration entries from the server.
 
 Note : Above usage example is not applicable to connect to the Rightscale Chef
 Server template.
 
 * <tt>chef::execute_runlist</tt>
-  This recipe is used in operational phase only. This recipe re-runs runlist
-  received from chef server. To update roles and run runlist user can provide
-  new roles as input. Roles should be available on the Chef Server.
+  This recipe is used in operational phase only. It re-runs runlist received
+  from the Chef Server. To update the roles user can provide new roles as input
+  and run the recipe. Roles to be used should be available on the Chef Server.
 
 == LICENSE:
 
