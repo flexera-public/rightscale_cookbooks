@@ -1,148 +1,148 @@
 {
-  "recipes": {
-    "chef::do_detach": "Detach Chef client and remove configuration.",
-    "chef::do_attach": "Attach Chef client and deploy configuration.",
-    "chef::install_client": "Installs and configures Chef client.",
-    "chef::execute_runlist": "Execute Chef client."
+  "platforms": {
   },
-  "groupings": {
+  "dependencies": {
+    "rightscale": ">= 0.0.0"
   },
-  "version": "13.4.0",
-  "providing": {
+  "name": "chef",
+  "replacing": {
   },
   "recommendations": {
   },
-  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "maintainer": "RightScale, Inc.",
+  "recipes": {
+    "chef::install_client": "Installs and configures the Chef client.",
+    "chef::execute_runlist": "Execute the Chef client.",
+    "chef::do_detach": "Detach the Chef client and remove configuration.",
+    "chef::do_attach": "Attach the Chef client and deploy configuration."
+  },
+  "groupings": {
+  },
+  "conflicting": {
+  },
+  "long_description": "= RightScale Chef Client Template\n\n== DESCRIPTION:\n\nThis cookbook provides recipes for setting up and running a Chef Client.\n\n== REQUIREMENTS:\n\n* Requires a VM launched from a RightScale managed RightImage\n\n* Tested on the following RightImages: CentOS 6.3, Ubuntu 12.04\n\n* Tested Chef Client version 10.24.0-1\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n* <tt>rightscale</tt>\n\n== KNOWN LIMITATIONS:\nThere are no known limitations.\n\n== SETUP/USAGE:\n\n* Choose image and cloud.\n* Fill required input fields.\n* When using a RightScale Server Template, place <tt>chef::install_client</tt>\n  recipe into your runlist to setup the Chef Client.\n\nFor more info see: {Release Notes}[http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/v13.4#Chef_Client_(v13.4)]\n\n== DETAILS:\n\n=== General\n\nThe cookbook installs the Chef Client with needed configuration for CentOS and\nUbuntu.\n\n=== Attributes:\n\nThese are the settings used in recipes and templates. Default values are noted.\n* <tt>node[:chef][:client][:version]</tt> -\n  The package version. Default: \"10.24.0-1\"\n* <tt>node[:chef][:client][:config_dir]</tt> -\n  The Chef Client config directory. Default: \"/etc/chef\"\n* <tt>node[:chef][:client][:server_url]</tt> -\n  The url to connect to the remote Chef Server.\n* <tt>node[:chef][:client][:private_ssh_key]</tt> -\n  Private ssh key to register the Chef Client with the Chef Server.\n* <tt>node[:chef][:client][:validation_name]</tt> -\n  Validation name, along with the private ssh key, is used to determine whether\n  the Chef Client may register with the Chef Server. The validation_name located\n  on the server and in the client configuration file must match.\n* <tt>node[:chef][:client][:node_name]</tt> -\n  The node's name to register on the Chef Server.\n* <tt>node[:chef][:client][:roles]</tt> -\n  Comma separated list of roles which will be applied to this instance. Roles\n  should be defined on the Chef Server else recipe will fail.\n* <tt>node[:chef][:client][:environment]</tt> -\n  The Chef Server environment name, by default the Chef Client environment\n  variable is set to \"_default\".\n* <tt>node[:chef][:client][:company]</tt> -\n  The name of the company which is defined on the Chef Server.\n\n=== Templates:\n\n* <tt>chef_client_conf.erb</tt> -\n  The Chef Client configuration file. Used in <tt>chef::do_attach</tt> recipe.\n* <tt>private_ssh_key.erb</tt> -\n  The Chef Client private ssh key. Used in <tt>chef::do_attach</tt> recipe.\n* <tt>runlist.json.erb</tt> -\n  The Chef Client runlist.json file. Defined in setup_runlist definition and\n  used in<tt>chef::do_attach</tt> and <tt>chef::execute_runlist</tt> recipes.\n\n=== Usage Example:\n* <tt>chef::do_attach</tt>\n  This recipe is used in boot phase to register the Chef Client on the Chef\n  Server. It is also available in operational phase. Before using this recipe in\n  operational phase user need to execute <tt>chef::detach</tt> recipe to remove\n  all the configuration files from the client. To use a different Chef Server,\n  user should change the server_url input. To reconnect to the same Chef Server,\n  user need to either change the node name input or remove the node and client\n  registration entries from the server.\n\nNote : Above usage example is not applicable to connect to the Rightscale Chef\nServer template.\n\n* <tt>chef::execute_runlist</tt>\n  This recipe is used in operational phase only. It re-runs runlist received\n  from the Chef Server. To update the roles user can provide new roles as input\n  and run the recipe. Roles to be used should be available on the Chef Server.\n\n== LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
   "attributes": {
-    "chef/client/validation_name": {
-      "recipes": [
-        "chef::install_client",
-        "chef::do_attach"
-      ],
-      "display_name": "Chef client validation name",
-      "required": "required",
-      "type": "string",
-      "description": "The name of the server that along with the private ssh key is used to determine whether the Chef client may register with the Chef server. The validation_name located in the server and client configuration files must match. Example: ORG-validator",
-      "choice": [
-
-      ],
-      "calculated": false
-    },
-    "chef/client/private_ssh_key": {
-      "recipes": [
-        "chef::install_client",
-        "chef::do_attach"
-      ],
-      "display_name": "Chef client private ssh key",
-      "required": "required",
-      "type": "string",
-      "description": "Private ssh key which will be used to authenticate the client on the remote Chef server.",
-      "choice": [
-
-      ],
-      "calculated": false
-    },
     "chef/client/company": {
+      "required": "optional",
+      "type": "string",
+      "choice": [
+
+      ],
       "recipes": [
         "chef::install_client",
         "chef::do_attach"
       ],
       "display_name": "Chef company name",
-      "required": "optional",
-      "type": "string",
-      "description": "The name of the company which is defined on the Chef server. If nothing specified, this attribute will be blank. Example: MyCompany",
-      "choice": [
-
-      ],
-      "calculated": false
-    },
-    "chef/client/node_name": {
-      "recipes": [
-        "chef::install_client",
-        "chef::do_attach"
-      ],
-      "display_name": "The node's name",
-      "required": "optional",
-      "type": "string",
-      "description": "The node's name to register on Chef server.",
-      "choice": [
-
-      ],
-      "calculated": false
-    },
-    "chef/client/server_url": {
-      "recipes": [
-        "chef::install_client",
-        "chef::do_attach"
-      ],
-      "display_name": "The URL for the Chef server",
-      "required": "required",
-      "type": "string",
-      "description": "Enter the url to connect to remote Chef server. To connect Opscode Hosted Chef use the following syntax https://api.opscode.com/organizations/ORGNAME Example: http://example.com:4000/chef",
-      "choice": [
-
-      ],
-      "calculated": false
+      "calculated": false,
+      "description": "The name of the company which is defined on the Chef server. If not specified, this attribute will set to blank. Example: MyCompany"
     },
     "chef/client/environment": {
+      "default": "_default",
+      "required": "optional",
+      "type": "string",
+      "choice": [
+
+      ],
       "recipes": [
         "chef::install_client",
         "chef::do_attach"
       ],
       "display_name": "Chef client environment",
-      "default": "_default",
+      "calculated": false,
+      "description": "Specify the environment type for the Chef client configs. Example: development"
+    },
+    "chef/client/node_name": {
       "required": "optional",
       "type": "string",
-      "description": "Specify environment type for the Chef client configs. Example: development",
       "choice": [
 
       ],
-      "calculated": false
+      "recipes": [
+        "chef::install_client",
+        "chef::do_attach"
+      ],
+      "display_name": "Chef client node name",
+      "calculated": false,
+      "description": "Name which will be used to authenticate the client on the remote Chef server. If nothing specified, the instance fqdn will be used. Example: client_101.example.com"
+    },
+    "chef/client/server_url": {
+      "required": "required",
+      "type": "string",
+      "choice": [
+
+      ],
+      "recipes": [
+        "chef::install_client",
+        "chef::do_attach"
+      ],
+      "display_name": "Chef server url",
+      "calculated": false,
+      "description": "Enter the url to connect to the remote Chef server. To connect the Opscode Hosted Chef use the following syntax https://api.opscode.com/organizations/ORGNAME. Example: http://example.com:4000/chef"
+    },
+    "chef/client/private_ssh_key": {
+      "required": "required",
+      "type": "string",
+      "choice": [
+
+      ],
+      "recipes": [
+        "chef::install_client",
+        "chef::do_attach"
+      ],
+      "display_name": "Chef client private ssh key",
+      "calculated": false,
+      "description": "SSH private key which will be used to authenticate the client on the remote Chef server."
     },
     "chef/client/roles": {
+      "required": "optional",
+      "type": "string",
+      "choice": [
+
+      ],
       "recipes": [
         "chef::install_client",
         "chef::do_attach",
         "chef::execute_runlist"
       ],
       "display_name": "Set of client roles",
-      "required": "optional",
+      "calculated": false,
+      "description": "Comma separated list of roles, which will be applied to this instance. Example: webserver, monitoring"
+    },
+    "chef/client/validation_name": {
+      "required": "required",
       "type": "string",
-      "description": "Comma separated list of roles which will be applied to this instance. Example: webserver, monitoring",
       "choice": [
 
       ],
-      "calculated": false
+      "recipes": [
+        "chef::install_client",
+        "chef::do_attach"
+      ],
+      "display_name": "Chef client validation name",
+      "calculated": false,
+      "description": "validation name, along with the private ssh key, is used to determine whether the Chef client may register with the Chef server. The validation_name located on the server and in the client configuration file must match. Example: ORG-validator"
     },
     "chef/client/version": {
+      "default": "10.24.0-1",
+      "required": "optional",
+      "type": "string",
+      "choice": [
+
+      ],
       "recipes": [
         "chef::install_client"
       ],
       "display_name": "Chef client version",
-      "default": "10.18.2-2",
-      "required": "optional",
-      "type": "string",
-      "description": "Specify the Chef client version to match requirements of your Chef server. Example: 10.18.2-2",
-      "choice": [
-
-      ],
-      "calculated": false
+      "calculated": false,
+      "description": "Specify the Chef client version to match requirements of your Chef server. Example: 10.24.0-1"
     }
   },
-  "conflicting": {
-  },
   "maintainer_email": "support@rightscale.com",
+  "description": "Installs and configures the Chef client",
+  "version": "13.4.0",
+  "providing": {
+  },
   "suggestions": {
   },
-  "description": "Common utilities for RightScale managed application servers",
-  "name": "chef",
-  "replacing": {
-  },
-  "platforms": {
-  },
-  "maintainer": "RightScale, Inc.",
-  "long_description": "= RightScale Chef Client Template\n\n== DESCRIPTION:\n\nThis cookbook provides recipes for setting up and running a Chef Client.\n\n== REQUIREMENTS:\n\n* Requires a VM launched from a RightScale managed RightImage\n\n* Tested on the following RightImages: CentOS 6.3, Ubuntu 12.04\n\n* Tested Chef Client version 10.18.2-2\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n* <tt>rightscale</tt>\n\n== KNOWN LIMITATIONS:\nThere are no known limitations.\n\n== SETUP/USAGE:\n\n* Choose image and cloud.\n* Fill required input fields.\n* When using a RightScale Server Template, place <tt>chef::install_client</tt>\nrecipe into your runlist to setup the Chef Client.\n\nFor more info see: {Release Notes}[http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/v13.4#Chef_Client_(v13.4)]\n\n== DETAILS:\n\n=== General\n\nThe cookbook installs the Chef Client with needed configuration for CentOS and \nUbuntu.\n\n=== Attributes:\n\nThese are the settings used in recipes and templates. Default values are noted.\n* node[:chef][:client][:version]\nThe package version. Default: \"10.18.2-2\"\n* node[:chef][:client][:config_dir]\nThe Chef Client config directory. Default: \"/etc/chef\"\n* node[:chef][:client][:log_file]\nThe Chef Client log location. Default: \"/var/log/chef-client.log\"\n* node[:chef][:client][:server_url]\nThe url to connect to the remote Chef Server.\n* node[:chef][:client][:private_ssh_key]\nPrivate ssh key to register the Chef Client with the Chef Server.\n* node[:chef][:client][:validation_name]\nThe name of the server that along with the private ssh key is used to determine\nwhether the Chef Client may register with the Chef Server. The validation_name\nlocated in the server and the client configuration files must match.\n* node[:chef][:client][:node_name]\nThe node's name to register on the Chef Server.\n* node[:chef][:client][:roles]\nComma separated list of roles which will be applied to this instance. Roles \nshould be defined on the Chef Server else recipe will fail.\n* node[:chef][:client][:environment]\nThe Chef Server environment name, by default the Chef Client environment\nvariable is set to \"_default\"\n* node[:chef][:client][:company]\nThe name of the company which is defined on the Chef Server.\n\n=== Templates:\n\n* chef_client_conf.erb\nThe Chef Client configuration file. Used in <tt>chef::do_attach</tt> recipe.\n* private_ssh_key.erb \nThe Chef Client private ssh key. Used in <tt>chef::do_attach</tt> recipe.\n* runlist.json.erb\nThe Chef Client runlist.json file. Defined in setup_runlist definition and used\nin<tt>chef::do_attach</tt> and <tt>chef::execute_runlist</tt> recipe.\n\n=== Usage Example:\n* <tt>chef::do_attach</tt>\nThis recipe is used in boot phase to register the Chef Client on the Chef\nServer. It is also available in operational phase. Before using this recipe in\noperational phase user need to execute <tt>chef::detach</tt> recipe, to remove\nall the configuration files from the client. To use a different Chef server,\nuser should change the server_url input. To reconnect to the same Chef Server,\nuser need to remove the node and client registration entries from the server.\n\nNote : Above usage example is not applicable to connect to the Rightscale Chef\nServer template.\n\n* <tt>chef::execute_runlist</tt>\nThis recipe is used in operational phase only. To update runlist user can\nprovide new roles as input. To use the new roles they should be available on\nthe Chef Server.\n\n== LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
-  "dependencies": {
-    "rightscale": ">= 0.0.0"
-  }
+  "license": "Copyright RightScale, Inc. All rights reserved."
 }

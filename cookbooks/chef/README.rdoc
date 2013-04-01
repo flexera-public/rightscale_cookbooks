@@ -10,7 +10,7 @@ This cookbook provides recipes for setting up and running a Chef Client.
 
 * Tested on the following RightImages: CentOS 6.3, Ubuntu 12.04
 
-* Tested Chef Client version 10.18.2-2
+* Tested Chef Client version 10.24.0-1
 
 == COOKBOOKS DEPENDENCIES:
 
@@ -40,7 +40,7 @@ Ubuntu.
 
 These are the settings used in recipes and templates. Default values are noted.
 * <tt>node[:chef][:client][:version]</tt> -
-  The package version. Default: "10.18.2-2"
+  The package version. Default: "10.24.0-1"
 * <tt>node[:chef][:client][:config_dir]</tt> -
   The Chef Client config directory. Default: "/etc/chef"
 * <tt>node[:chef][:client][:server_url]</tt> -
