@@ -188,9 +188,9 @@ action :attach do
     umask "0077"
     action :nothing
     # A firewall rule is added to drop packets internally to haproxy, the
-    # service is reloaded, and the rule is removed. This helps us to prevent
-    # the web server to send 5xx responses as haproxy will not be responding
-    # while is it being reloaded.
+    # service is reloaded, and the rule is removed. This helps to prevent the
+    # web server from sending 5xx responses as HAProxy will not be responding
+    # while it is being reloaded.
     notifies :run, resources(
       :execute => "insert localhost firewall rule"
     )
@@ -329,9 +329,9 @@ action :detach do
     umask "0077"
     action :nothing
     # A firewall rule is added to drop packets internally to haproxy, the
-    # service is reloaded, and the rule is removed. This helps us to prevent
-    # the web server to send 5xx responses as haproxy will not be responding
-    # while is it being reloaded.
+    # service is reloaded, and the rule is removed. This helps to prevent the
+    # web server from sending 5xx responses as HAProxy will not be responding
+    # while it is being reloaded.
     notifies :run, resources(
       :execute => "insert localhost firewall rule"
     )
