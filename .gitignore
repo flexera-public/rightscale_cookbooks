@@ -8,3 +8,5 @@
 .yardoc
 Gemfile.lock
 chefignoredoc
+
+tests/config/servertemplate_mapping/acu.*.json
