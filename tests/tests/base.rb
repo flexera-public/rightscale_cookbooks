@@ -64,7 +64,7 @@ helpers do
       %Q{sh -c "grep "#{conntrack_module_name}" /etc/sysctl.conf"}) do |result, status|
       raise FailedProbeCommandError, "Can't probe the server to obtain conntrack_max value from /etc/sysctl.conf" unless status == 0
       puts "conntrack_max value in /etc/sysctl.conf: #{result}"
-      sysctl_conntrack_max = result
+      conf_conntrack_max = result
       true
     end
     conf_conntrack_max
@@ -201,13 +201,13 @@ end
 #
 test_case "conntrack_max" do
   # This test is only applicable to ServerTemplates that use Chef.
-  return unless is_chef?
+  skip unless is_chef?
 
   # Single server in deployment
   server = servers.first
 
   # Test 1: Verify that correct conntrack_max value is set in sysctl from conf.
-  conntrack_module_name = "net.netfilter.nf_conntrack_max"
+  #
   # Obtain the conntrack_max value set in the /etc/sysctl.conf
   conf_conntrack_max = obtain_conf_conntrack_max(server)
 
@@ -217,29 +217,36 @@ test_case "conntrack_max" do
   if conf_conntrack_max == sysctl_conntrack_max_test1
     puts "conntrack_max value is set properly"
   else
-    raise ConntrackMaxError, "conntrack_max value is not set properly"
+    raise ConntrackMaxError, "conntrack_max value is not set properly." +
+      " #{conf_conntrack_max} != #{sysctl_conntrack_max_test1}"
   end
 
   # Test 2: Verify that the value doesn't get reset when an iptables rule is
   # added or removed (iptables gets reloaded).
-
+  #
   # Set a new port as input for sys_firewall::setup_rule. A port that is not
   # already opened should be used for the setup_rule recipe to rebuild
   # iptables. Port 8088 is not used anywhere and commonly used for test
   # purposes.
+  #
   @deployment.set_input("sys_firewall/rule/port", "text:8088")
 
   # Run sys_firewall::setup_rule recipe. Running this recipe will rebuild
   # iptables.
+  #
   run_recipe("sys_firewall::setup_rule", s_one)
 
   # Vefify that conntrack_max value is unchanged (not reset).
-  # Obtain the conntrack_max value returned by the sysctl command
-  sysctl_conntrack_max_test2 = ""
+  # Obtain the conntrack_max value returned by the sysctl command after running
+  # the sys_firewall::setup_rule recipe.
+  #
+  sysctl_conntrack_max_test2 = obtain_sysctl_conntrack_max(server)
 
   if sysctl_conntrack_max_test1 == sysctl_conntrack_max_test2
-    puts "conntrack_max value is unchanged"
+    puts "conntrack_max value is unchanged after running" +
+      " sys_firewall::setup_rule recipe"
   else
-    raise ConntrackMaxError, "conntrack_max value is changed after running setup_rule"
+    raise ConntrackMaxError, "conntrack_max value is changed after running" +
+      " sys_firewall::setup_rule recipe"
   end
 end
