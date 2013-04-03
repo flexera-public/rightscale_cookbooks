@@ -2,6 +2,7 @@
 require_helper "cloud"
 require_helper "ephemeral"
 require_helper "wait_for_ip_repopulation"
+require_helper "errors"
 
 # Test specific helpers.
 #
@@ -9,6 +10,11 @@ helpers do
   # An error with swap file setup.
   #
   class SwapFileError < VirtualMonkey::TestCase::ErrorBase
+  end
+
+  # An error with conntrack_max setup
+  #
+  class ConntrackMaxError < VirtualMonkey::TestCase::ErrorBase
   end
 
   # Checks if the swap file is set up.
@@ -38,6 +44,52 @@ helpers do
   #
   def is_chef?
     suite_variables[:server_template_type] == "chef"
+  end
+
+  # Obtains the conntrack_max value from /etc/sysctl.conf configuration file
+  #
+  # @param server [Server] the server to obtain value from
+  #
+  # @return [String] conntrack_max value from configuration file
+  #
+  # @raise [FailedProbeCommandError] if probe fails to obtain conntrack_max value from
+  # configuration file
+  #
+  def obtain_conf_conntrack_max(server)
+    conntrack_module_name = "net.netfilter.nf_conntrack_max"
+    conf_conntrack_max = ""
+    # SSH to the server and obtain the conntrack_max value from
+    # /etc/sysctl.conf file
+    probe(server,
+      %Q{sh -c "grep "#{conntrack_module_name}" /etc/sysctl.conf"}) do |result, status|
+      raise FailedProbeCommandError, "Can't probe the server to obtain conntrack_max value from /etc/sysctl.conf" unless status == 0
+      puts "conntrack_max value in /etc/sysctl.conf: #{result}"
+      sysctl_conntrack_max = result
+      true
+    end
+    conf_conntrack_max
+  end
+
+  # Obtains the conntrack_max value using sysctl command
+  #
+  # @param server [Server] the server to obtain value from
+  #
+  # @return [String] conntrack_max value from sysctl commann
+  #
+  # @raise [FailedProbeCommandError] if probe fails to obtain conntrack_max value from
+  # sysctl command
+  #
+  def obtain_sysctl_conntrack_max(server)
+    conntrack_module_name = "net.netfilter.nf_conntrack_max"
+    sysctl_conntrack_max = ""
+    probe(server,
+      %Q{sh -c "sysctl #{conntrack_module_name}"}) do |result, status|
+      raise FailedProbeCommandError, "Can't probe the server to obtain conntrack_max value using sysctl" unless status == 0
+      puts "conntrack_max value returned by sysctl: #{result}"
+      sysctl_conntrack_max = result
+      true
+    end
+    sysctl_conntrack_max
   end
 end
 
@@ -140,4 +192,54 @@ test_case "stop_start" do
 
   # Check if the server's basic monitoring is working.
   check_monitoring
+end
+
+# The Base conntrack_max test verifies that the sysctl value for conntrack_max
+# is loaded properly from the /etc/sysctl.conf. It also validates that the
+# value for conntrack_max doesn't get reset after running
+# sys_firewall::setup_rule recipe.
+#
+test_case "conntrack_max" do
+  # This test is only applicable to ServerTemplates that use Chef.
+  return unless is_chef?
+
+  # Single server in deployment
+  server = servers.first
+
+  # Test 1: Verify that correct conntrack_max value is set in sysctl from conf.
+  conntrack_module_name = "net.netfilter.nf_conntrack_max"
+  # Obtain the conntrack_max value set in the /etc/sysctl.conf
+  conf_conntrack_max = obtain_conf_conntrack_max(server)
+
+  # Obtain the conntrack_max value returned by the sysctl command
+  sysctl_conntrack_max_test1 = obtain_sysctl_conntrack_max(server)
+
+  if conf_conntrack_max == sysctl_conntrack_max_test1
+    puts "conntrack_max value is set properly"
+  else
+    raise ConntrackMaxError, "conntrack_max value is not set properly"
+  end
+
+  # Test 2: Verify that the value doesn't get reset when an iptables rule is
+  # added or removed (iptables gets reloaded).
+
+  # Set a new port as input for sys_firewall::setup_rule. A port that is not
+  # already opened should be used for the setup_rule recipe to rebuild
+  # iptables. Port 8088 is not used anywhere and commonly used for test
+  # purposes.
+  @deployment.set_input("sys_firewall/rule/port", "text:8088")
+
+  # Run sys_firewall::setup_rule recipe. Running this recipe will rebuild
+  # iptables.
+  run_recipe("sys_firewall::setup_rule", s_one)
+
+  # Vefify that conntrack_max value is unchanged (not reset).
+  # Obtain the conntrack_max value returned by the sysctl command
+  sysctl_conntrack_max_test2 = ""
+
+  if sysctl_conntrack_max_test1 == sysctl_conntrack_max_test2
+    puts "conntrack_max value is unchanged"
+  else
+    raise ConntrackMaxError, "conntrack_max value is changed after running setup_rule"
+  end
 end
