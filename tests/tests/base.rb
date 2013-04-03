@@ -229,7 +229,7 @@ test_case "conntrack_max" do
   # iptables. Port 8088 is not used anywhere and commonly used for test
   # purposes.
   #
-  @deployment.set_input("sys_firewall/rule/port", "text:8088")
+  server.set_inputs("sys_firewall/rule/port" => "text:8088")
 
   # Run sys_firewall::setup_rule recipe. Running this recipe will rebuild
   # iptables.
