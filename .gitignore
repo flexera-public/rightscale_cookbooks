@@ -9,4 +9,4 @@
 Gemfile.lock
 chefignoredoc
 
-tests/config/servertemplate_mapping/acu.*.json
+tests/config/servertemplate_mapping/acu*.json
