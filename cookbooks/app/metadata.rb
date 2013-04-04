@@ -127,3 +127,4 @@ attribute "app/backend_ip_type",
   :default => "Private",
   :recipes => ["app::install_server"],
   :required => "optional"
+
