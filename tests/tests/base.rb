@@ -108,13 +108,13 @@ helpers do
     conf_conntrack_max = obtain_conf_conntrack_max(server)
 
     # Obtain the conntrack_max value returned by the sysctl command
-    sysctl_conntrack_max_test1 = obtain_sysctl_conntrack_max(server)
+    sysctl_conntrack_max_before = obtain_sysctl_conntrack_max(server)
 
-    if conf_conntrack_max == sysctl_conntrack_max_test1
+    if conf_conntrack_max == sysctl_conntrack_max_before
       puts "conntrack_max value is set properly"
     else
       raise ConntrackMaxError, "conntrack_max value is not set properly." +
-        " #{conf_conntrack_max} != #{sysctl_conntrack_max_test1}"
+        " #{conf_conntrack_max} != #{sysctl_conntrack_max_before}"
     end
 
     # Test 2: Verify that the value doesn't get reset when an iptables rule is
@@ -136,9 +136,9 @@ helpers do
     # Obtain the conntrack_max value returned by the sysctl command after
     # running the sys_firewall::setup_rule recipe.
     #
-    sysctl_conntrack_max_test2 = obtain_sysctl_conntrack_max(server)
+    sysctl_conntrack_max_after = obtain_sysctl_conntrack_max(server)
 
-    if sysctl_conntrack_max_test1 == sysctl_conntrack_max_test2
+    if sysctl_conntrack_max_before == sysctl_conntrack_max_after
       puts "conntrack_max value is unchanged after running" +
         " sys_firewall::setup_rule recipe"
     else
