@@ -35,13 +35,6 @@ action :update do
   unless node[:sys_firewall][:enabled] == "enabled"
     log "Firewall not enabled. Not adding rule for #{port}."
   else
-
-    # Setup iptables rebuild resource
-    execute "rebuild-iptables" do
-      command "/usr/sbin/rebuild-iptables"
-      action :nothing
-    end
-
     if machine_tag
       # See cookbooks/rightscale/providers/server_collection.rb for the "rightscale_server_collection" resource.
       rightscale_server_collection collection_name do
@@ -75,7 +68,7 @@ action :update do
 
           # Programatically execute template resource
           # See cookbooks/sys/libraries/helper.rb for the "run_template" definition.
-          RightScale::System::Helper.run_template(
+          template_updated = RightScale::System::Helper.run_template(
             "/etc/iptables.d/#{rule}", # target_file
             "iptables_port.erb", # source
             "sys_firewall", # cookbook
@@ -89,6 +82,10 @@ action :update do
             node,
             @run_context
           )
+          # Reload sysctl if the template is updated. Reloading sysctl is
+          # required here as rebuilding iptables resets certain sysctl values
+          # that were changed from the default value.
+          RightScale::System::Helper.reload_sysctl if template_updated
         end
       end
     end
