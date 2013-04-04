@@ -249,6 +249,22 @@ action :install_server do
     action :stop
   end
 
+  ruby_block "postgres_tuning" do
+    block do
+      # Shared servers get %50 of the resources allocated to a dedicated server.
+      usage = node[:db_postgres][:server_usage] == "shared" ? 0.5 : 1
+
+      # Converts memory from kB to MB.
+      mem = memory[:total].to_i / 1024
+      Chef::Log.info "  Auto-tuning PostgreSQL parameters." +
+        " Total memory: #{mem}MB"
+
+      # Sets tuning parameters.
+      node[:db_postgres][:tunable][:max_connections] = (400 * usage).to_i
+      node[:db_postgres][:tunable][:shared_buffers] =
+        value_with_units((mem * 0.25).to_i, "MB", usage)
+    end
+  end
 
   # Setup postgresql.conf
   # template_source = "postgresql.conf.erb"
@@ -280,14 +296,16 @@ action :install_server do
   # Setup PostgreSQL user limits
   #
   # Set the postgres and root users max open files to a really large number.
-  # 1/3 of the overall system file max should be large enough.  The percentage can be
-  # adjusted if necessary.
-  postgres_file_ulimit = node[:db_postgres][:tunable][:ulimit]
+  # 1/3 of the overall system file max should be large enough.
+  # The percentage can be adjusted if necessary.
+  ulimit = Mixlib::ShellOut.new("sysctl -n fs.file-max")
+  ulimit.run_command.error!
+  node[:db_postgres][:tunable][:ulimit] = ulimit.stdout.to_i / 33
 
   template "/etc/security/limits.d/postgres.limits.conf" do
     source "postgres.limits.conf.erb"
     variables({
-      :ulimit => postgres_file_ulimit
+      :ulimit => node[:db_postgres][:tunable][:ulimit]
     })
     cookbook 'db_postgres'
   end
@@ -295,7 +313,7 @@ action :install_server do
   # Change root's limitations for THIS shell.  The entry in the limits.d will be
   # used for future logins.
   # The setting needs to be in place before postgresql-9 is started.
-  execute "ulimit -n #{postgres_file_ulimit}"
+  execute "ulimit -n #{node[:db_postgres][:tunable][:ulimit]}"
 
   # Start PostgreSQL
   service "postgresql-#{version}" do
@@ -668,7 +686,7 @@ action :restore_from_dump_file do
           " #{node[:db][:dump][:filepath]}"
         import_dump = Mixlib::ShellOut.new(
           "#{node[:db][:dump][:uncompress_command]} #{node[:db][:dump][:filepath]} |" +
-          " psql -U postgres #{db_name}"
+            " psql -U postgres #{db_name}"
         )
         import_dump.run_command
         import_dump.error!

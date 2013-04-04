@@ -19,18 +19,6 @@ define :db_mysql_set_mycnf,
 
   ruby_block "mysql_tuning" do
     block do
-      # Adjusts values based on a usage factor and create human readable string.
-      def value_with_units(value, units, usage_factor)
-        raise "Error: value must convert to an integer." unless value.to_i
-        raise "Error: units must be k, m, g" unless units =~ /[KMG]/i
-        factor = usage_factor.to_f
-        if factor > 1.0 || factor <= 0.0
-          raise "Error: usage_factor must be between 1.0 and 0.0." +
-            " Value used: #{usage_factor}"
-        end
-        (value * factor).to_i.to_s + units
-      end
-
       # Sets tuning parameters in the my.cnf file.
       #
       # Shared servers get %50 of the resources allocated to a dedicated server.
@@ -42,17 +30,16 @@ define :db_mysql_set_mycnf,
       # Converts memory from kB to MB.
       mem = memory[:total].to_i / 1024
       Chef::Log.info "  Auto-tuning MySQL parameters. Total memory: #{mem}M"
-      one_percent_mem = (mem * 0.01).to_i
-      one_percent_str = value_with_units(one_percent_mem, "M", usage)
-      eighty_percent_mem = (mem * 0.80).to_i
-      eighty_percent_str = value_with_units(eighty_percent_mem, "M", usage)
 
-      Chef::Log.info "  Setting query_cache_size to: #{one_percent_str}"
-      node[:db_mysql][:tunable][:query_cache_size] = one_percent_str
+      node[:db_mysql][:tunable][:query_cache_size] =
+        value_with_units((mem * 0.01).to_i, "M", usage)
+      Chef::Log.info "  Setting query_cache_size" +
+        " to: #{node[:db_mysql][:tunable][:query_cache_size]}"
+
+      node[:db_mysql][:tunable][:innodb_buffer_pool_size] =
+        value_with_units((mem * 0.8).to_i, "M", usage)
       Chef::Log.info "  Setting innodb_buffer_pool_size" +
-        " to: #{eighty_percent_str}"
-      node[:db_mysql][:tunable][:innodb_buffer_pool_size] = eighty_percent_str
-
+        " to: #{node[:db_mysql][:tunable][:innodb_buffer_pool_size]}"
 
       # Fixed parameters, common value for all instance sizes
       #
