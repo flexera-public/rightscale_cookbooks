@@ -28,7 +28,7 @@ define :db_mysql_set_mycnf,
       GB = 1024
 
       # Converts memory from kB to MB.
-      mem = memory[:total].to_i / 1024
+      mem = node[:memory][:total].to_i / 1024
       Chef::Log.info "  Auto-tuning MySQL parameters. Total memory: #{mem}M"
 
       node[:db_mysql][:tunable][:query_cache_size] =

@@ -255,7 +255,7 @@ action :install_server do
       usage = node[:db_postgres][:server_usage] == "shared" ? 0.5 : 1
 
       # Converts memory from kB to MB.
-      mem = memory[:total].to_i / 1024
+      mem = node[:memory][:total].to_i / 1024
       Chef::Log.info "  Auto-tuning PostgreSQL parameters." +
         " Total memory: #{mem}MB"
 
@@ -263,6 +263,13 @@ action :install_server do
       node[:db_postgres][:tunable][:max_connections] = (400 * usage).to_i
       node[:db_postgres][:tunable][:shared_buffers] =
         value_with_units((mem * 0.25).to_i, "MB", usage)
+
+      # Set the postgres and root users max open files to a really large number.
+      # 1/3 of the overall system file max should be large enough.
+      # The percentage can be adjusted if necessary.
+      ulimit = Mixlib::ShellOut.new("sysctl -n fs.file-max")
+      ulimit.run_command.error!
+      node[:db_postgres][:tunable][:ulimit] = ulimit.stdout.to_i / 33
     end
   end
 
@@ -295,13 +302,6 @@ action :install_server do
 
   # Setup PostgreSQL user limits
   #
-  # Set the postgres and root users max open files to a really large number.
-  # 1/3 of the overall system file max should be large enough.
-  # The percentage can be adjusted if necessary.
-  ulimit = Mixlib::ShellOut.new("sysctl -n fs.file-max")
-  ulimit.run_command.error!
-  node[:db_postgres][:tunable][:ulimit] = ulimit.stdout.to_i / 33
-
   template "/etc/security/limits.d/postgres.limits.conf" do
     source "postgres.limits.conf.erb"
     variables({
