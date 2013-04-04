@@ -19,6 +19,10 @@ define :db_mysql_set_mycnf,
 
   ruby_block "mysql_tuning" do
     block do
+      class Chef::Resource::RubyBlock
+        include RightScale::Database::Helper
+      end
+
       # Sets tuning parameters in the my.cnf file.
       #
       # Shared servers get %50 of the resources allocated to a dedicated server.

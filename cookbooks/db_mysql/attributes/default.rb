@@ -31,6 +31,8 @@ default[:db_mysql][:dump][:prefix] = ""
 default[:db_mysql][:server_usage] = "shared"
 default[:db_mysql][:init_timeout] = "600"
 default[:db_mysql][:tunable][:expire_logs_days] = "2"
+default[:db_mysql][:tunable][:isamchk] = {}
+default[:db_mysql][:tunable][:myisamchk] = {}
 
 # SSL attributes
 default[:db_mysql][:ssl][:ca_certificate] = nil

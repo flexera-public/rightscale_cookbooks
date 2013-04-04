@@ -251,6 +251,10 @@ action :install_server do
 
   ruby_block "postgres_tuning" do
     block do
+      class Chef::Resource::RubyBlock
+        include RightScale::Database::Helper
+      end
+
       # Shared servers get %50 of the resources allocated to a dedicated server.
       usage = node[:db_postgres][:server_usage] == "shared" ? 0.5 : 1
 
