@@ -26,8 +26,8 @@
         "app::handle_loadbalancers_allow",
         "app::handle_loadbalancers_deny"
       ],
-      "description": "The port that the application service is listening on. Example: 8000",
-      "display_name": "Application Listen Port"
+      "display_name": "Application Listen Port",
+      "description": "The port that the application service is listening on. Example: 8000"
     },
     "app/backend_ip_type": {
       "required": "optional",
@@ -41,8 +41,8 @@
       "recipes": [
         "app::install_server"
       ],
-      "description": "The ip type that the application service is listening on. Example: Private",
-      "display_name": "Application ip type given to loadbalancer"
+      "display_name": "Application IP Type Given to Load Balancer",
+      "description": "Specify the IP type where the application server is listening. Example: Private"
     },
     "app/database_name": {
       "required": "required",
@@ -54,8 +54,8 @@
       "recipes": [
         "app::setup_db_connection"
       ],
-      "description": "Enter the name of the database schema to which applications will connect to.The database schema should have been created when the initial database was first set up. This input will be used to set the application server's database configuration file so that applications can connect to the correct schema within the database. NOTE: LAMP servers use this input for database dump backups in order to determine which schema will be backed up. Example: mydbschema",
-      "display_name": "Database Schema Name"
+      "display_name": "Database Schema Name",
+      "description": "Enter the name of the database schema to which applications will connect to.The database schema should have been created when the initial database was first set up. This input will be used to set the application server's database configuration file so that applications can connect to the correct schema within the database. NOTE: LAMP servers use this input for database dump backups in order to determine which schema will be backed up. Example: mydbschema"
     }
   },
   "license": "Copyright RightScale, Inc. All rights reserved.",
@@ -95,3 +95,4 @@
   "providing": {
   }
 }
+
