@@ -19,8 +19,8 @@ recipe "chef::execute_runlist",
 attribute "chef/client/version",
   :display_name => "Chef client version",
   :description =>
-  "Specify the Chef client version to match requirements of your Chef server." +
-  " Example: 10.24.0-1",
+    "Specify the Chef client version to match requirements of your Chef" +
+    " server. Example: 10.24.0-1",
   :required => "optional",
   :default => "10.24.0-1",
   :recipes => ["chef::install_client"]
@@ -28,10 +28,10 @@ attribute "chef/client/version",
 attribute "chef/client/server_url",
   :display_name => "Chef server url",
   :description =>
-  "Enter the url to connect to the remote Chef server. To connect the Opscode" +
-  " Hosted Chef use the following syntax" +
-  " https://api.opscode.com/organizations/ORGNAME." +
-  " Example: http://example.com:4000/chef",
+    "Enter the url to connect to the remote Chef server. To connect the" +
+    " Opscode Hosted Chef use the following syntax" +
+    " https://api.opscode.com/organizations/ORGNAME." +
+    " Example: http://example.com:4000/chef",
   :required => "required",
   :recipes => ["chef::install_client", "chef::do_attach"]
 
@@ -46,7 +46,7 @@ attribute "chef/client/private_ssh_key",
 attribute "chef/client/validation_name",
   :display_name => "Chef client validation name",
   :description =>
-    "validation name, along with the private ssh key, is used to determine" +
+    "Validation name, along with the private ssh key, is used to determine" +
     " whether the Chef client may register with the Chef server. The" +
     " validation_name located on the server and in the client configuration" +
     " file must match. Example: ORG-validator",

@@ -8,7 +8,7 @@
 
 # Creates runlist and runs the Chef client using the same.
 
-define :setup_runlist do
+define :chef_setup_runlist do
 
   # Creates runlist.json file.
   template "#{node[:chef][:client][:config_dir]}/runlist.json" do

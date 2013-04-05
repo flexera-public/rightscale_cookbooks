@@ -14,7 +14,7 @@ if node[:chef][:client][:current_roles] != node[:chef][:client][:roles]
   # Updates runlist.json file with new roles.
   # See cookbooks/chef/definitions/setup_runlist.rb for the "setup_runlist"
   # definition.
-  setup_runlist
+  chef_setup_runlist
 else
   # Runs the Chef client.
   execute "chef-client"

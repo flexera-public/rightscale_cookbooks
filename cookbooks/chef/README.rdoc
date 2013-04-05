@@ -1,4 +1,4 @@
-= RightScale Chef Client Template
+= RightScale Chef Server and Client Cookbook
 
 == DESCRIPTION:
 
@@ -18,6 +18,7 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 * <tt>rightscale</tt>
 
 == KNOWN LIMITATIONS:
+
 There are no known limitations.
 
 == SETUP/USAGE:
@@ -57,7 +58,7 @@ These are the settings used in recipes and templates. Default values are noted.
   Comma separated list of roles which will be applied to this instance. Roles
   should be defined on the Chef Server else recipe will fail.
 * <tt>node[:chef][:client][:environment]</tt> -
-  The Chef Server environment name, by default the Chef Client environment
+  The Chef Server environment name. By default the Chef Client environment
   variable is set to "_default".
 * <tt>node[:chef][:client][:company]</tt> -
   The name of the company which is defined on the Chef Server.
@@ -73,6 +74,7 @@ These are the settings used in recipes and templates. Default values are noted.
   used in<tt>chef::do_attach</tt> and <tt>chef::execute_runlist</tt> recipes.
 
 === Usage Example:
+
 * <tt>chef::do_attach</tt>
   This recipe is used in boot phase to register the Chef Client on the Chef
   Server. It is also available in operational phase. Before using this recipe in

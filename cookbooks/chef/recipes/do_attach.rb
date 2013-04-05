@@ -27,7 +27,7 @@ end
 # Creates the Chef client private ssh key.
 template "#{node[:chef][:client][:config_dir]}/validation.pem" do
   source "private_ssh_key.erb"
-  mode "0644"
+  mode "0600"
   backup false
   cookbook "chef"
   variables :private_ssh_key => node[:chef][:client][:private_ssh_key]
@@ -36,7 +36,7 @@ end
 # Creates the Chef client runlist.json file.
 # See cookbooks/chef/definitions/setup_runlist.rb for the "setup_runlist"
 # definition.
-setup_runlist
+chef_setup_runlist
 
 log "  Chef client configuration is completed"
 
