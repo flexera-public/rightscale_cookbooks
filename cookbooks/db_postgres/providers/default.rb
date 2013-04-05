@@ -249,33 +249,24 @@ action :install_server do
     action :stop
   end
 
-  ruby_block "postgres_tuning" do
-    block do
-      class Chef::Resource::RubyBlock
-        include RightScale::Database::Helper
-      end
+  # Shared servers get 50% of the resources allocated to a dedicated server.
+  usage = node[:db_postgres][:server_usage] == "shared" ? 0.5 : 1
 
-      # Shared servers get %50 of the resources allocated to a dedicated server.
-      usage = node[:db_postgres][:server_usage] == "shared" ? 0.5 : 1
+  # Converts memory from kB to MB.
+  mem = node[:memory][:total].to_i / 1024
+  log "  Auto-tuning PostgreSQL parameters. Total memory: #{mem}MB"
 
-      # Converts memory from kB to MB.
-      mem = node[:memory][:total].to_i / 1024
-      Chef::Log.info "  Auto-tuning PostgreSQL parameters." +
-        " Total memory: #{mem}MB"
+  # Sets tuning parameters.
+  node[:db_postgres][:tunable][:max_connections] = (400 * usage).to_i
+  node[:db_postgres][:tunable][:shared_buffers] =
+    value_with_units((mem * 0.25).to_i, "MB", usage)
 
-      # Sets tuning parameters.
-      node[:db_postgres][:tunable][:max_connections] = (400 * usage).to_i
-      node[:db_postgres][:tunable][:shared_buffers] =
-        value_with_units((mem * 0.25).to_i, "MB", usage)
-
-      # Set the postgres and root users max open files to a really large number.
-      # 1/3 of the overall system file max should be large enough.
-      # The percentage can be adjusted if necessary.
-      ulimit = Mixlib::ShellOut.new("sysctl -n fs.file-max")
-      ulimit.run_command.error!
-      node[:db_postgres][:tunable][:ulimit] = ulimit.stdout.to_i / 33
-    end
-  end
+  # Set the postgres and root users max open files to a really large number.
+  # 1/3 of the overall system file max should be large enough.
+  # The percentage can be adjusted if necessary.
+  ulimit = Mixlib::ShellOut.new("sysctl -n fs.file-max")
+  ulimit.run_command.error!
+  node[:db_postgres][:tunable][:ulimit] = ulimit.stdout.to_i / 33
 
   # Setup postgresql.conf
   # template_source = "postgresql.conf.erb"
@@ -286,7 +277,7 @@ action :install_server do
     group "postgres"
     mode "0644"
     cookbook 'db_postgres'
-    not_if "test -f #{configfile}"
+    not_if { ::File.exists?(configfile) }
   end
 
   # Setup pg_hba.conf
@@ -501,16 +492,16 @@ action :promote do
 
   begin
     # Promote the slave into the new master
-    Chef::Log.info "  Promoting slave.."
+    log "  Promoting slave.."
     # See cookbooks/db_postgres/libraries/helper.rb for the "RightScale::Database::PostgreSQL::Helper" class.
     RightScale::Database::PostgreSQL::Helper.write_trigger(node)
     sleep 10
 
     # Let the new slave loose and thus let him become the new master
-    Chef::Log.info "  New master is ReadWrite."
+    log "  New master is ReadWrite."
 
   rescue => e
-    Chef::Log.info "  WARNING: caught exception #{e} during critical operations on the MASTER"
+    log "  WARNING: caught exception #{e} during critical operations on the MASTER"
   end
 end
 
