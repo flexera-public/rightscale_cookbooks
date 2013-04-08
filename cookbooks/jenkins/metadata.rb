@@ -16,7 +16,7 @@ depends "logrotate"
 
 
 recipe "jenkins::default", "Default recipe for Jenkins setup."
-recipe "jenkins::install_jenkins", "Install Jenkins."
+recipe "jenkins::install_server", "Install Jenkins."
 recipe "jenkins::install_plugins", "Install Jenkins plugins."
 recipe "jenkins::do_attach_request", "Installing Jenkins."
 recipe "jenkins::do_attach_slave_at_boot", "Installing Jenkins."
@@ -27,31 +27,31 @@ attribute "jenkins/server/user_name",
   :display_name => "Jenkins User Name",
   :description => "Default user's sign in name.",
   :required => "required",
-  :recipes => [ "jenkins::install_jenkins" ]
+  :recipes => [ "jenkins::install_server" ]
 
 attribute "jenkins/server/user_email",
   :display_name => "Jenkins User Email",
   :description => "Default user's email.",
   :required => "required",
-  :recipes => [ "jenkins::install_jenkins" ]
+  :recipes => [ "jenkins::install_server" ]
 
 attribute "jenkins/server/user_full_name",
   :display_name => "Jenkins User Full Name",
   :description => "Default user's full name.",
   :required => "required",
-  :recipes => [ "jenkins::install_jenkins" ]
+  :recipes => [ "jenkins::install_server" ]
 
 attribute "jenkins/server/password",
   :display_name => "Jenkins Password",
   :description => "Default user's password.",
   :required => "required",
-  :recipes => [ "jenkins::install_jenkins" ]
+  :recipes => [ "jenkins::install_server" ]
 
 attribute "jenkins/server/plugins",
   :display_name => "Jenkins Plugins",
   :description => "Jenkins plugins to install.",
   :required => "optional",
-  :recipes => [ "jenkins::install_jenkins" ]
+  :recipes => [ "jenkins::install_server" ]
 
 # Slave
 
