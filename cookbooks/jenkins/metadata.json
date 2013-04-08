@@ -1,167 +1,167 @@
 {
+  "maintainer_email": "support@rightscale.com",
+  "maintainer": "RightScale, Inc.",
   "name": "jenkins",
   "description": "Installs/Configures Jenkins",
-  "long_description": "\n",
-  "maintainer": "RightScale, Inc.",
-  "maintainer_email": "support@rightscale.com",
-  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "dependencies": {
+    "logrotate": ">= 0.0.0",
+    "rightscale": ">= 0.0.0",
+    "sys_firewall": ">= 0.0.0"
+  },
+  "recipes": {
+    "jenkins::do_attach_request": "Installing Jenkins.",
+    "jenkins::do_attach_slave_at_boot": "Installing Jenkins.",
+    "jenkins::install_plugins": "Install Jenkins plugins.",
+    "jenkins::default": "Default recipe for Jenkins setup.",
+    "jenkins::install_server": "Install Jenkins."
+  },
   "platforms": {
   },
-  "dependencies": {
-    "rightscale": ">= 0.0.0",
-    "sys_firewall": ">= 0.0.0",
-    "logrotate": ">= 0.0.0"
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "attributes": {
+    "jenkins/server/password": {
+      "choice": [
+
+      ],
+      "display_name": "Jenkins Password",
+      "description": "Default user's password.",
+      "recipes": [
+        "jenkins::install_server"
+      ],
+      "type": "string",
+      "required": "required",
+      "calculated": false
+    },
+    "jenkins/server/user_email": {
+      "choice": [
+
+      ],
+      "display_name": "Jenkins User Email",
+      "description": "Default user's email.",
+      "recipes": [
+        "jenkins::install_server"
+      ],
+      "type": "string",
+      "required": "required",
+      "calculated": false
+    },
+    "jenkins/slave/attach_slave_at_boot": {
+      "choice": [
+
+      ],
+      "display_name": "Attach Jenkins Slave At Boot?",
+      "description": "Is this box a Jenkins slave?",
+      "recipes": [
+        "jenkins::do_attach_slave_at_boot"
+      ],
+      "type": "string",
+      "required": "optional",
+      "calculated": false
+    },
+    "jenkins/slave/name": {
+      "choice": [
+
+      ],
+      "display_name": "Jenkins Slave Name",
+      "description": "Name of Jenkins slave.",
+      "recipes": [
+        "jenkins::do_attach_request"
+      ],
+      "type": "string",
+      "required": "optional",
+      "calculated": false
+    },
+    "jenkins/slave/mode": {
+      "choice": [
+
+      ],
+      "display_name": "Jenkins Slave Mode",
+      "description": "Mode of Jenkins slave.",
+      "recipes": [
+        "jenkins::do_attach_request"
+      ],
+      "type": "string",
+      "required": "optional",
+      "calculated": false
+    },
+    "jenkins/slave/private_key_file": {
+      "choice": [
+
+      ],
+      "display_name": "Jenkins Slave Private Key File",
+      "description": "Key that the Jenkins slave will                   request the master to connect with.",
+      "recipes": [
+        "jenkins::do_attach_request"
+      ],
+      "type": "string",
+      "required": "optional",
+      "calculated": false
+    },
+    "jenkins/slave/executors": {
+      "choice": [
+
+      ],
+      "display_name": "Jenkins Slave Executors",
+      "description": "Number of Jenkins executors.",
+      "recipes": [
+        "jenkins::do_attach_request"
+      ],
+      "type": "string",
+      "required": "optional",
+      "calculated": false
+    },
+    "jenkins/server/plugins": {
+      "choice": [
+
+      ],
+      "display_name": "Jenkins Plugins",
+      "description": "Jenkins plugins to install.",
+      "recipes": [
+        "jenkins::install_server"
+      ],
+      "type": "string",
+      "required": "optional",
+      "calculated": false
+    },
+    "jenkins/server/user_name": {
+      "choice": [
+
+      ],
+      "display_name": "Jenkins User Name",
+      "description": "Default user's sign in name.",
+      "recipes": [
+        "jenkins::install_server"
+      ],
+      "type": "string",
+      "required": "required",
+      "calculated": false
+    },
+    "jenkins/server/user_full_name": {
+      "choice": [
+
+      ],
+      "display_name": "Jenkins User Full Name",
+      "description": "Default user's full name.",
+      "recipes": [
+        "jenkins::install_server"
+      ],
+      "type": "string",
+      "required": "required",
+      "calculated": false
+    }
+  },
+  "providing": {
   },
   "recommendations": {
   },
   "suggestions": {
   },
-  "conflicting": {
-  },
-  "providing": {
-  },
   "replacing": {
   },
-  "attributes": {
-    "jenkins/server/user_name": {
-      "display_name": "Jenkins User Name",
-      "description": "Default user's sign in name.",
-      "required": "required",
-      "recipes": [
-        "jenkins::install_jenkins"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "jenkins/server/user_email": {
-      "display_name": "Jenkins User Email",
-      "description": "Default user's email.",
-      "required": "required",
-      "recipes": [
-        "jenkins::install_jenkins"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "jenkins/server/user_full_name": {
-      "display_name": "Jenkins User Full Name",
-      "description": "Default user's full name.",
-      "required": "required",
-      "recipes": [
-        "jenkins::install_jenkins"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "jenkins/server/password": {
-      "display_name": "Jenkins Password",
-      "description": "Default user's password.",
-      "required": "required",
-      "recipes": [
-        "jenkins::install_jenkins"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "jenkins/server/plugins": {
-      "display_name": "Jenkins Plugins",
-      "description": "Jenkins plugins to install.",
-      "required": "optional",
-      "recipes": [
-        "jenkins::install_jenkins"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "jenkins/slave/name": {
-      "display_name": "Jenkins Slave Name",
-      "description": "Name of Jenkins slave.",
-      "required": "optional",
-      "recipes": [
-        "jenkins::do_attach_request"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "jenkins/slave/mode": {
-      "display_name": "Jenkins Slave Mode",
-      "description": "Mode of Jenkins slave.",
-      "required": "optional",
-      "recipes": [
-        "jenkins::do_attach_request"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "jenkins/slave/executors": {
-      "display_name": "Jenkins Slave Executors",
-      "description": "Number of Jenkins executors.",
-      "required": "optional",
-      "recipes": [
-        "jenkins::do_attach_request"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "jenkins/slave/private_key_file": {
-      "display_name": "Jenkins Slave Private Key File",
-      "description": "Key that the Jenkins slave will                   request the master to connect with.",
-      "required": "optional",
-      "recipes": [
-        "jenkins::do_attach_request"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "jenkins/slave/attach_slave_at_boot": {
-      "display_name": "Attach Jenkins Slave At Boot?",
-      "description": "Is this box a Jenkins slave?",
-      "required": "optional",
-      "recipes": [
-        "jenkins::do_attach_slave_at_boot"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    }
+  "conflicting": {
   },
+  "version": "13.2.0",
   "groupings": {
   },
-  "recipes": {
-    "jenkins::default": "Default recipe for Jenkins setup.",
-    "jenkins::install_jenkins": "Install Jenkins.",
-    "jenkins::install_plugins": "Install Jenkins plugins.",
-    "jenkins::do_attach_request": "Installing Jenkins.",
-    "jenkins::do_attach_slave_at_boot": "Installing Jenkins."
-  },
-  "version": "13.2.0"
+  "long_description": "\n"
 }
