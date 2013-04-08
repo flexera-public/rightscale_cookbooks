@@ -38,7 +38,7 @@ gem_package "rubygems-update" do
   version "1.8.24"
 end
 
-update_rubygems = Mixlib::ShellOut("/usr/bin/update_rubygems")
+update_rubygems = Mixlib::ShellOut.new("/usr/bin/update_rubygems")
 update_rubygems.run_command
 update_rubygems.error!
 
