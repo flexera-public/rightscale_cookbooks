@@ -32,8 +32,19 @@ bash "Update Rubygems" do
   not_if { node[:platform] == "ubuntu"  }
 end
 
-# Installing gem dependencies
+# Install rubygems 1.8.24. By default rubygems 2.x.x gets installed.
+gem_package "rubygems-update" do
+  gem_binary "/usr/bin/gem"
+  version "1.8.24"
+end
 
+update_rubygems = Mixlib::ShellOut("/usr/bin/update_rubygems")
+update_rubygems.run_command
+update_rubygems.error!
+
+log update_rubygems.stdout
+
+# Installing gem dependencies
 log "  Installing gems requierd by rest_connection"
 gems = node[:monkey][:rest][:gem_packages]
 gems.each do |gem|
