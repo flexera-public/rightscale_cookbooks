@@ -257,8 +257,8 @@ action :install_server do
   log "  Auto-tuning PostgreSQL parameters. Total memory: #{mem}MB"
 
   # Sets tuning parameters.
-  node[:db_postgres][:tunable][:max_connections] = (400 * usage).to_i
-  node[:db_postgres][:tunable][:shared_buffers] =
+  node[:db_postgres][:tunable][:max_connections] ||= (400 * usage).to_i
+  node[:db_postgres][:tunable][:shared_buffers] ||=
     value_with_units((mem * 0.25).to_i, "MB", usage)
 
   # Set the postgres and root users max open files to a really large number.
@@ -266,7 +266,7 @@ action :install_server do
   # The percentage can be adjusted if necessary.
   ulimit = Mixlib::ShellOut.new("sysctl -n fs.file-max")
   ulimit.run_command.error!
-  node[:db_postgres][:tunable][:ulimit] = ulimit.stdout.to_i / 33
+  node[:db_postgres][:tunable][:ulimit] ||= ulimit.stdout.to_i / 33
 
   # Setup postgresql.conf
   # template_source = "postgresql.conf.erb"
