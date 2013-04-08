@@ -12,7 +12,7 @@ sys_dns "default" do
   id node[:sys_dns][:id]
   address node[:cloud][:private_ips][0]
   region node[:sys_dns][:region]
-  action :set_private
+  action :set
 end
 
 rightscale_marker :end

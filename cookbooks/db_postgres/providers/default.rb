@@ -1,50 +1,66 @@
 #
 # Cookbook Name:: db_postgres
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 include RightScale::Database::Helper
 include RightScale::Database::PostgreSQL::Helper
 
 action :stop do
+  # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "stop" method.
   @db = init(new_resource)
   @db.stop
 end
 
 action :start do
+  # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "start" method.
   @db = init(new_resource)
   @db.start
 end
 
 action :status do
+  # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "status" method.
   @db = init(new_resource)
   status = @db.status
   log "Database Status:\n#{status}"
 end
 
 action :lock do
+  # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "lock" method.
   @db = init(new_resource)
   @db.lock
 end
 
 action :unlock do
+  # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "unlock" method.
   @db = init(new_resource)
   @db.unlock
 end
 
 action :move_data_dir do
+  # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "move_datadir" method.
   @db = init(new_resource)
   @db.move_datadir(new_resource.name, node[:db_postgres][:datadir])
 end
 
 action :reset do
+  # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "reset" method.
   @db = init(new_resource)
   @db.reset(new_resource.name, node[:db_postgres][:datadir])
 end
 
 action :firewall_update_request do
+  # See cookbooks/sys_firewall/providers/default.rb for the "update_request" action.
   sys_firewall "Request database open port 5432 (PostgreSQL) to this server" do
     machine_tag new_resource.machine_tag
     port 5432
@@ -55,6 +71,7 @@ action :firewall_update_request do
 end
 
 action :firewall_update do
+  # See cookbooks/sys_firewall/providers/default.rb for the "update" action.
   sys_firewall "Request database open port 5432 (PostgrSQL) to this server" do
     machine_tag new_resource.machine_tag
     port 5432
@@ -64,6 +81,7 @@ action :firewall_update do
 end
 
 action :write_backup_info do
+  # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
   db_state_get node
   File_position = `#{node[:db_postgres][:bindir]}/pg_controldata #{node[:db_postgres][:datadir]} | grep "Latest checkpoint location:" | awk '{print $NF}'`
   masterstatus = Hash.new
@@ -78,27 +96,36 @@ action :write_backup_info do
     masterstatus['File_position'] = slavestatus['File_position']
   end
   log "  Saving master info...:\n#{masterstatus.to_yaml}"
+  # See cookbooks/db_postgres/libraries/helper.rb for the "RightScale::Database::PostgreSQL::Helper" class.
   ::File.open(::File.join(node[:db][:data_dir], RightScale::Database::PostgreSQL::Helper::SNAPSHOT_POSITION_FILENAME), ::File::CREAT|::File::TRUNC|::File::RDWR) do |out|
     YAML.dump(masterstatus, out)
   end
 end
 
 action :pre_restore_check do
+  # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "pre_restore_sanity_check" method.
   @db = init(new_resource)
   @db.pre_restore_sanity_check
 end
 
 action :post_restore_cleanup do
+  # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "restore_snapshot" method.
   @db = init(new_resource)
   @db.restore_snapshot
 end
 
 action :pre_backup_check do
+  # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "pre_backup_check" method.
   @db = init(new_resource)
   @db.pre_backup_check
 end
 
 action :post_backup_cleanup do
+  # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
+  # See "rightscale_tools" gem for the "post_backup_steps" method.
   @db = init(new_resource)
   @db.post_backup_steps
 end
@@ -111,6 +138,7 @@ action :set_privileges do
     priv_username = new_resource.privilege_username
     priv_password = new_resource.privilege_password
     priv_database = new_resource.privilege_database
+    # See cookbooks/db_postgres/definitions/db_postgres_set_privileges.rb for the "db_postgres_set_privileges" definition.
     db_postgres_set_privileges "setup db privileges" do
       preset priv
       username priv_username
@@ -122,16 +150,9 @@ end
 
 action :install_client do
 
-  node[:db_postgres][:version] = new_resource.db_version
+  version = new_resource.db_version
 
   # Install PostgreSQL package(s)
-
-  node[:db][:socket] = value_for_platform(
-    ["centos", "redhat"] => {
-      "default" => "/var/run/postgresql"
-    },
-    "default" => ""
-  )
 
   node[:db_postgres][:client_packages_install] = value_for_platform(
     ["centos", "redhat"] => {
@@ -152,7 +173,7 @@ action :install_client do
     "default" => ""
   )
 
-  raise "Platform not supported for PostgreSQL #{node[:db_postgres][:version]}" if node[:db_postgres][:client_packages_install].empty?
+  raise "Platform not supported for PostgreSQL #{version}" if node[:db_postgres][:client_packages_install].empty?
 
   # Install PostgreSQL package(s)
   if node[:platform] =~ /redhat|centos/
@@ -164,7 +185,7 @@ action :install_client do
     end
 
     packages = node[:db_postgres][:client_packages_install]
-    log  "Packages to install: #{packages.join(", ")}"
+    log "  Packages to install: #{packages.join(", ")}"
     packages.each do |p|
       package p do
         action :install
@@ -178,22 +199,24 @@ action :install_client do
 
   # Link postgresql pg_config to default system bin path - required by app servers
   link "/usr/bin/pg_config" do
-    to "/usr/pgsql-#{node[:db_postgres][:version]}/bin/pg_config"
+    to "/usr/pgsql-#{version}/bin/pg_config"
     not_if { ::File.exists?("/usr/bin/pg_config") }
   end
 
   # Install PostgreSQL client gem
+  node[:db_postgres][:bindir] = "/usr/pgsql-#{version}/bin"
   gem_package("pg") do
     gem_binary("/opt/rightscale/sandbox/bin/gem")
     options("-- --with-pg-config=#{node[:db_postgres][:bindir]}/pg_config")
   end
+
 end
 
 action :install_server do
 
   arch = node[:kernel][:machine]
   raise "Unsupported platform detected!" unless arch == "x86_64"
-  node[:db_postgres][:version] = new_resource.db_version
+  version = new_resource.db_version
   package "uuid" do
     action :install
   end
@@ -207,14 +230,14 @@ action :install_server do
     end
   end
 
-  service "postgresql-#{node[:db_postgres][:version]}" do
+  service "postgresql-#{version}" do
     supports :status => true, :restart => true, :reload => true
     action :stop
   end
 
   # Initialize PostgreSQL server and create system tables
   touchfile = ::File.expand_path "~/.postgresql_installed"
-  execute "/etc/init.d/postgresql-#{node[:db_postgres][:version]} initdb ; touch #{touchfile}" do
+  execute "/etc/init.d/postgresql-#{version} initdb ; touch #{touchfile}" do
     creates touchfile
     not_if "test -f #{touchfile}"
   end
@@ -222,19 +245,10 @@ action :install_server do
   # Configure system for PostgreSQL
   #
   # Stop PostgreSQL
-  service "postgresql-#{node[:db_postgres][:version]}" do
+  service "postgresql-#{version}" do
     action :stop
   end
 
-
-  # Create the Socket directory
-  #directory "/var/run/postgresql" do
-  directory "#{node[:db][:socket]}" do
-    owner "postgres"
-    group "postgres"
-    mode 0770
-    recursive true
-  end
 
   # Setup postgresql.conf
   # template_source = "postgresql.conf.erb"
@@ -284,18 +298,71 @@ action :install_server do
   execute "ulimit -n #{postgres_file_ulimit}"
 
   # Start PostgreSQL
-  service "postgresql-#{node[:db_postgres][:version]}" do
+  service "postgresql-#{version}" do
     action :start
   end
 
+end
+
+action :install_client_driver do
+  type = new_resource.driver_type
+  log "  Installing postgres support for #{type} driver"
+
+  # Installation of the database client driver for application servers is
+  # done here based on the client driver type
+  case type
+  when "php"
+    # This adapter type is used by php application servers
+    node[:db][:client][:driver] = "postgres"
+    package "#{type} postgres integration" do
+      package_name value_for_platform(
+        ["centos", "redhat"] => {
+          "default" => "php53u-pgsql"
+        },
+        "ubuntu" => {
+          "default" => "php5-pgsql"
+        },
+        "default" => "php5-pgsql"
+      )
+      action :install
+    end
+  when "python"
+    # This adapter type is used by Django application servers
+    node[:db][:client][:driver] = "django.db.backends.postgresql_psycopg2"
+    python_pip "psycopg2" do
+      version "2.4.5"
+      action :install
+    end
+  when "java"
+    # This adapter type is used by tomcat application servers
+    node[:db][:client][:driver] = "org.postgresql.Driver"
+    node[:db][:client][:jar_file] = "postgresql-9.1-901.jdbc4.jar"
+    # Copy to /usr/share/java/postgresql-9.1-901.jdbc4.jar
+    cookbook_file "/usr/share/java/#{node[:db][:client][:jar_file]}" do
+      source "#{node[:db][:client][:jar_file]}"
+      owner "root"
+      group "root"
+      mode "0644"
+      cookbook 'app_tomcat'
+    end
+
+  when "ruby"
+    # This adapter type is used by Apache Rails Passenger application servers
+    node[:db][:client][:driver] = "postgresql"
+    postgres_bin_dir = "/usr/pgsql-#{node[:db][:version]}/bin"
+    gem_package 'pg' do
+      gem_binary "/usr/bin/gem"
+      options "-- --with-pg-config=#{postgres_bin_dir}/pg_config"
+    end
+  else
+    raise "Unknown driver type specified: #{type}"
+  end
 end
 
 action :grant_replication_slave do
   require 'rubygems'
   Gem.clear_paths
   require 'pg'
-
-
 
   # Opening connection for pg operation
   conn = PGconn.open("localhost", nil, nil, nil, nil, "postgres", nil)
@@ -311,18 +378,19 @@ action :grant_replication_slave do
   # Enable admin/replication user
   # Check if server is in read_only mode, if found skip this...
   res = conn.exec("show transaction_read_only")
-  slavestatus = res.getvalue(0,0)
-  if ( slavestatus == 'off' )
+  slavestatus = res.getvalue(0, 0)
+  if (slavestatus == 'off')
     log "  Detected Master server."
     result = conn.exec("SELECT COUNT(*) FROM pg_user WHERE usename='#{username_esc}'")
-    userstat = result.getvalue(0,0)
-    if ( userstat == '1' )
+    userstat = result.getvalue(0, 0)
+    if (userstat == '1')
       log "  User #{username} already exists, updating user using current inputs"
       conn.exec("ALTER USER #{username} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password}'")
     else
       log "  Creating replication user #{username}"
       conn.exec("CREATE USER #{username} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password}'")
       # Setup pg_hba.conf for replication user allow
+      # See cookbooks/db_postgres/libraries/helper.rb for the "RightScale::Database::PostgreSQL::Helper" class.
       RightScale::Database::PostgreSQL::Helper.configure_pg_hba(node)
       # Reload postgresql to read new updated pg_hba.conf
       RightScale::Database::PostgreSQL::Helper.do_query('select pg_reload_conf()')
@@ -333,11 +401,11 @@ action :grant_replication_slave do
   conn.finish
 end
 
-
 action :enable_replication do
+  # See cookbooks/db/libraries/helper.rb for "db_state_get" method.
   db_state_get node
   current_restore_process = new_resource.restore_process
-  node[:db_postgres][:version] = new_resource.db_version
+  version = new_resource.db_version
   newmaster_host = node[:db][:current_master_ip]
   rep_user = node[:db][:replication][:user]
   rep_pass = node[:db][:replication][:password]
@@ -346,6 +414,7 @@ action :enable_replication do
   # Check the volume before performing any actions.  If invalid raise error and exit.
   ruby_block "validate_master" do
     not_if { current_restore_process == :no_restore }
+    # See cookbooks/db_postgres/libraries/helper.rb for the "RightScale::Database::PostgreSQL::Helper" class.
     block do
       master_info = RightScale::Database::PostgreSQL::Helper.load_replication_info(node)
 
@@ -356,7 +425,7 @@ action :enable_replication do
   end
 
   # Stopping Postgresql service
-  service "postgresql-#{node[:db_postgres][:version]}" do
+  service "postgresql-#{version}" do
     not_if { current_restore_process == :no_restore }
     action :stop
   end
@@ -380,9 +449,9 @@ action :enable_replication do
   bash "wipe_existing_runtime_config" do
     not_if { current_restore_process == :no_restore }
     flags "-ex"
-     code <<-EOH
+    code <<-EOH
        rm -rf #{node[:db_postgres][:datadir]}/pg_xlog/*
-     EOH
+    EOH
   end
 
   # Ensure that database started
@@ -398,9 +467,10 @@ action :enable_replication do
 
   # Setup slave monitoring
   action_setup_slave_monitoring
-end  
+end
 
 action :promote do
+  # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
   db_state_get node
 
   previous_master = node[:db][:current_master_ip]
@@ -410,11 +480,12 @@ action :promote do
   begin
     # Promote the slave into the new master
     Chef::Log.info "  Promoting slave.."
+    # See cookbooks/db_postgres/libraries/helper.rb for the "RightScale::Database::PostgreSQL::Helper" class.
     RightScale::Database::PostgreSQL::Helper.write_trigger(node)
     sleep 10
 
     # Let the new slave loose and thus let him become the new master
-    Chef::Log.info  "  New master is ReadWrite."
+    Chef::Log.info "  New master is ReadWrite."
 
   rescue => e
     Chef::Log.info "  WARNING: caught exception #{e} during critical operations on the MASTER"
@@ -422,6 +493,7 @@ action :promote do
 end
 
 action :setup_monitoring do
+  # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
   db_state_get node
 
   priv_username = new_resource.privilege_username
@@ -437,17 +509,6 @@ action :setup_monitoring do
     package "collectd-postgresql" do
       action :install
       version "#{collectd_version}" unless collectd_version == "latest"
-    end
-
-    template ::File.join(node[:rightscale][:collectd_plugin_dir], 'postgresql.conf') do
-      backup false
-      source "postgresql_collectd_plugin.conf.erb"
-      variables(
-        :database_owner => priv_username,
-        :database_owner_pass => priv_password
-      )
-      notifies :restart, resources(:service => "collectd")
-      cookbook 'db_postgres'
     end
 
     template ::File.join(node[:rightscale][:collectd_share], 'postgresql_default.conf') do
@@ -481,6 +542,7 @@ action :setup_monitoring do
 end
 
 action :setup_slave_monitoring do
+  # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
   db_state_get node
 
   service "collectd" do
@@ -533,14 +595,14 @@ end
 
 action :generate_dump_file do
 
-  db_name     = new_resource.db_name
-  dumpfile    = new_resource.dumpfile
+  db_name = new_resource.db_name
+  dumpfile = new_resource.dumpfile
 
   bash "Write the postgres DB backup file" do
-      user 'postgres'
-      code <<-EOH
-        pg_dump -U postgres -h /var/run/postgresql #{db_name} | gzip -c > #{dumpfile}
-      EOH
+    user 'postgres'
+    code <<-EOH
+      pg_dump -U postgres #{db_name} | gzip -c > #{dumpfile}
+    EOH
   end
 
 
@@ -548,31 +610,72 @@ end
 
 action :restore_from_dump_file do
 
-  db_name     = new_resource.db_name
-  dumpfile    = new_resource.dumpfile
+  db_name = new_resource.db_name
+  dumpfilepath_without_extension = new_resource.dumpfile
 
   log "  Check if DB already exists"
   ruby_block "checking existing db" do
     block do
-      db_check = `echo "select datname from pg_database" | psql -U postgres -h /var/run/postgresql | grep -q  "#{db_name}"`
-      if ! db_check.empty?
-        raise "ERROR: database '#{db_name}' already exists"
-      end
+      query = "echo \"select datname from pg_database\" |" +
+        " psql -U | grep -q  \"#{db_name}\""
+      db_check = `#{query}`
+      raise "ERROR: database '#{db_name}' already exists" unless db_check.empty?
     end
   end
 
-  bash "Import PostgreSQL dump file: #{dumpfile}" do
-    user "postgres"
-    code <<-EOH
-      set -e
-      if [ ! -f #{dumpfile} ]
-      then
-        echo "ERROR: PostgreSQL dumpfile not found! File: '#{dumpfile}'"
-        exit 1
-      fi
-      createdb -U postgres -h /var/run/postgresql #{db_name}
-      gunzip < #{dumpfile} | psql -U postgres -h /var/run/postgresql #{db_name}
-    EOH
+  # Detect the compression type of the downloaded file and set the
+  # extension properly.
+  node[:db][:dump][:filepath] = ""
+  node[:db][:dump][:uncompress_command] = ""
+  ruby_block "Detect compression type" do
+    block do
+      require "fileutils"
+
+      file_type = Mixlib::ShellOut.new("file #{dumpfilepath_without_extension}")
+      file_type.run_command
+      file_type.error!
+      command_output = file_type.stdout
+
+      extension = ""
+      if command_output =~ /Zip archive data/
+        extension = "zip"
+        node[:db][:dump][:uncompress_command] = "unzip -p"
+      elsif command_output =~ /gzip compressed data/
+        extension = "gz"
+        node[:db][:dump][:uncompress_command] = "gunzip <"
+      elsif command_output =~ /bzip2 compressed data/
+        extension = "bz2"
+        node[:db][:dump][:uncompress_command] = "bunzip2 <"
+      end
+      node[:db][:dump][:filepath] = dumpfilepath_without_extension +
+        "." +
+        extension
+      FileUtils.mv(dumpfilepath_without_extension, node[:db][:dump][:filepath])
+    end
+  end
+
+  ruby_block "Import PostgreSQL dump file" do
+    block do
+      if ::File.exists?(node[:db][:dump][:filepath])
+        # Create the database
+        Chef::Log.info "  Creating DB #{db_name}..."
+        create_db = Mixlib::ShellOut.new("createdb -U postgres #{db_name}")
+        create_db.run_command
+        create_db.error!
+
+        # Import comtents from dump file to the database
+        Chef::Log.info "  Importing contents from dumpfile:" +
+          " #{node[:db][:dump][:filepath]}"
+        import_dump = Mixlib::ShellOut.new(
+          "#{node[:db][:dump][:uncompress_command]} #{node[:db][:dump][:filepath]} |" +
+          " psql -U postgres #{db_name}"
+        )
+        import_dump.run_command
+        import_dump.error!
+      else
+        raise "PostgreSQL dump file not found: #{node[:db][:dump][:filepath]}"
+      end
+    end
   end
 
 end

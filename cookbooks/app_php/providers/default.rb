@@ -9,7 +9,7 @@
 action :stop do
   log "  Running stop sequence"
   service "apache2" do
-    action :start
+    action :stop
     persist false
   end
 end
@@ -34,8 +34,10 @@ end
 
 # Restart apache
 action :restart do
+  # Calls the :stop action.
   action_stop
   sleep 5
+  # Calls the :start action.
   action_start
 end
 
@@ -43,8 +45,8 @@ end
 action :install do
   # Installing required packages
   packages = new_resource.packages
- 
-  if not packages.nil?
+
+  unless packages.nil?
     log "  Packages which will be installed #{packages}"
 
     packages.each do |p|
@@ -58,9 +60,10 @@ action :install do
     package p
   end
 
-  # Installing php modules dependencies
   log "  Module dependencies which will be installed: #{node[:app][:module_dependencies]}"
+  # Installing php modules dependencies
   node[:app][:module_dependencies].each do |mod|
+    # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_module.rb for the "apache_module" definition.
     apache_module mod
   end
 
@@ -74,20 +77,24 @@ action :setup_vhost do
   php_port = new_resource.port
 
   # Disable default vhost
+  # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_site.rb for the "apache_site" definition.
   apache_site "000-default" do
     enable false
   end
 
   # Adds php port to list of ports for webserver to listen on
+  # See cookbooks/app/definitions/app_add_listen_port.rb for the "app_add_listen_port" definition.
   app_add_listen_port php_port
 
   # Configure apache vhost for PHP
+  # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/web_app.rb for the "web_app" definition.
   web_app node[:web_apache][:application_name] do
     template "app_server.erb"
     docroot project_root
     vhost_port php_port.to_s
     server_name node[:web_apache][:server_name]
-    cookbook "web_apache"
+    allow_override node[:web_apache][:allow_override]
+    cookbook "app_php"
   end
 
 end
@@ -105,12 +112,14 @@ action :setup_db_connection do
   end
 
   # Tells selected db_adapter to fill in it's specific connection template
+  # See cookbooks/db/definitions/db_connect_app.rb for the "db_connect_app" definition.
   db_connect_app ::File.join(project_root, "config", "db.php") do
     template "db.php.erb"
     cookbook "app_php"
     database db_name
     owner node[:app][:user]
     group node[:app][:group]
+    driver_type "php"
   end
 end
 
@@ -124,6 +133,7 @@ action :code_update do
   log "  Downloading project repo"
 
   # Calling "repo" LWRP to download remote project repository
+  # See cookbooks/repo/resources/default.rb for the "repo" resource.
   repo "default" do
     destination deploy_dir
     action node[:repo][:default][:perform_action].to_sym
@@ -133,6 +143,7 @@ action :code_update do
   end
 
   # Restarting apache
+  # Calls the :restart action.
   action_restart
 
 end

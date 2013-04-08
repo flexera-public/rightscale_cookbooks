@@ -37,11 +37,11 @@ lvm_device = "lvol0"
 
 # The default mount point for ephemeral device in image.
 # Azure mounts the ephemeral drive at '/mnt/resource' while EC2 and openstack mount the ephemeral drive at
-# '/mnt' by default.
+# '/mnt/ephemeral' by default.
 if cloud == 'azure'
   ephemeral_mount_point = '/mnt/resource'
 else
-  ephemeral_mount_point = '/mnt'
+  ephemeral_mount_point = '/mnt/ephemeral'
 end
 
 # Ubuntu systems using upstart require the 'bootwait' option, otherwise
@@ -58,9 +58,9 @@ else
   filesystem_type = "xfs"
 end
 
-root_device = `mount`.find {|dev| dev.include? " on / "}.split[0]
+root_device = `mount`.find { |dev| dev.include? " on / " }.split[0]
 
-current_mnt_device = `mount`.find {|dev| dev.include? " on #{ephemeral_mount_point} "}
+current_mnt_device = `mount`.find { |dev| dev.include? " on #{ephemeral_mount_point} " }
 current_mnt_device = current_mnt_device ? current_mnt_device.split[0] : nil
 
 # Only EC2, Azure, and openstack clouds are currently supported
@@ -68,6 +68,7 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
 
   # Get a list of ephemeral devices
   # Make sure to skip EBS volumes attached on boot
+  # See rightscale_tools gem for implementation of API.factory method
   @api = RightScale::Tools::API.factory('1.0', {:cloud => cloud}) if cloud == 'ec2'
   my_devices = []
   dev_index = 0
@@ -75,12 +76,14 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
     if node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
       device = node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
       device = '/dev/' + device if device !~ /^\/dev\//
+      # See rightscale_tools gem for implementation of unmap_device_for_ec2
+      # method.
       device = @api.unmap_device_for_ec2(device) if cloud == 'ec2'
       # for HVM: /dev/xvdb is symlinked to /dev/sda, though it shows up as
       # /dev/xvdb in /proc/partitions.  unmap function returns that
       device = Pathname.new(device).realpath.to_s if File.exists?(device)
       # verify that device is actually on the instance and is a blockSpecial
-      if ( File.exists?(device) && File.ftype(device) == "blockSpecial" )
+      if (File.exists?(device) && File.ftype(device) == "blockSpecial")
         my_devices << device
       else
         log "  WARNING: Cannot use device #{device} - skipping"
@@ -95,7 +98,7 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
   if cloud == 'azure'
     device = '/dev/sdb1'
     device = Pathname.new(device).realpath.to_s if File.exists?(device)
-    if ( File.exists?(device) && File.ftype(device) == "blockSpecial" )
+    if (File.exists?(device) && File.ftype(device) == "blockSpecial")
       my_devices << device
     else
       log "  WARNING: Cannot use device #{device} - skipping"
@@ -109,18 +112,18 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
   else
     # determine mnt_device from root_device name
     mnt_device = current_mnt_device ||
-                 case root_device
-                 when /sda/
-                   "/dev/sdb"
-                 when /sde/
-                   "/dev/sdf"
-                 when /vda/
-                   "/dev/vdb"
-                 when /xvda/
-                   "/dev/xvdb"
-                 when /xvde/
-                   (node[:platform] == "redhat") ? "/dev/xvdj" : "/dev/xvdf"
-                 end
+      case root_device
+      when /sda/
+        "/dev/sdb"
+      when /sde/
+        "/dev/sdf"
+      when /vda/
+        "/dev/vdb"
+      when /xvda/
+        "/dev/xvdb"
+      when /xvde/
+        (node[:platform] == "redhat") ? "/dev/xvdj" : "/dev/xvdf"
+      end
 
     # Generate fstab entry here
     fstab_entry = "/dev/vg-data/#{lvm_device}\t#{mount_point}\t#{filesystem_type}\t#{options}\t0 0"
@@ -153,9 +156,9 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
 
     # Create the mount point
     directory mount_point do
-      owner 'root'
-      group 'root'
-      mode 0755
+      owner "root"
+      group "root"
+      mode "0755"
       recursive true
       not_if { ephemeral_fstab_and_mtab_checks(fstab_entry, mount_point, filesystem_type) }
     end
@@ -179,7 +182,7 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
           Chef::Log.info "  No ephemeral devices attached"
         else
           run_command("vgcreate vg-data #{my_devices.join(' ')}")
-          run_command("lvcreate vg-data -n #{lvm_device} -i #{my_devices.size} -I 256 -l 100%VG")
+          run_command("lvcreate vg-data -n #{lvm_device} -i #{my_devices.size} -I 256 -l #{node[:block_device][:ephemeral][:vg_data_percentage]}%VG")
           run_command("mkfs.#{filesystem_type} /dev/vg-data/#{lvm_device}")
 
           # Add the fstab_entry to fstab if it does not already exists.
@@ -197,7 +200,7 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
             end
           end
           run_command("mount /dev/vg-data/#{lvm_device}")
-          Chef::Log.info "Done setting up LVM on ephemeral drives"
+          Chef::Log.info "  Done setting up LVM on ephemeral drives"
         end
       end
       not_if { ephemeral_fstab_and_mtab_checks(fstab_entry, mount_point, filesystem_type) }
@@ -207,7 +210,7 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
     directory ephemeral_mount_point do
       recursive false
       action :delete
-      only_if {cloud == 'azure'}
+      only_if { cloud == 'azure' }
     end
   end
 else

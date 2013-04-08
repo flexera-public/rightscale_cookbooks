@@ -109,13 +109,13 @@ end
 if node[:platform] =~ /redhat|centos/
   cookbook_file "/etc/init.d/collectd" do
     source "collectd-init-centos-with-monitor"
-    mode 0755
+    mode "0755"
     notifies :restart, resources(:service => "collectd")
   end
 end
 
 # Tag required to enable monitoring
-#
+# See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RightLinkTag for the "right_link_tag" resource.
 right_link_tag "rs_monitoring:state=active"
 
 # Start monitoring

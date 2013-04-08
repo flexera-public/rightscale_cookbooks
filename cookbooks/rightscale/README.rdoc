@@ -35,7 +35,7 @@ volumes, and remote object storage providers.
 
 * Accepts only one parameter "name" which is the name of the collectd plugin to
   enable.
-* The plugin name is added to node[:rightscale][:plugin_list_array] which is used
+* The plugin name is added to <tt>node[:rightscale][:plugin_list_array]</tt> which is used
   to create the list of plugins in the <tt>/etc/collectd/collectd.conf</tt>
   file.
 * The <tt>node[:rightscale][:plugin_list_array]</tt> will have any plugins listed
@@ -86,18 +86,20 @@ Syntax:
 The server collection resource finds a set of servers in a deployment with a set
 of tags. The <tt>tags</tt> attribute specifies the tag or tags to search for (if
 multiple tags are specified, servers with any of the tags will match) and the
-optional <tt>secondary_tags</tt> attribute specifies tags that need to also
-appear on the servers, it will wait one minute for the <tt>secondary_tags</tt>
+optional <tt>mandatory_tags</tt> attribute specifies tags that need to also
+appear on the servers, it will wait one minute for the <tt>mandatory_tags</tt>
 to appear, which can be overridden with the <tt>timeout</tt> attribute.
 
 Syntax:
 
   rightscale_server_collection "rightscale_servers" do
     tags "rs_login:state=active"
-    secondary_tags "server:uuid=*"
+    mandatory_tags "server:uuid=*"
   end
 
-= LICENSE:
+NOTE: The <tt>secondary_tags</tt> attribute is deprecated in favor of <tt>mandatory_tags</tt>.
+
+== LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to
 the RightScale Terms of Service available at http://www.rightscale.com/terms.php

@@ -6,8 +6,16 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
+# This lightweight resource only defines the interface for repo providers.  This file
+# defines the actions and attributes that make up the repo interface (or abstraction).
+# Please see the action details found in the lightweight providers of other implementing
+# cookbooks: cookbooks/repo_<provider>/providers/default.rb
+
+# Pull code from a determined repository to a specified destination.
 actions :pull
+# Pull code from a determined repository to a specified destination and create a capistrano-style deployment.
 actions :capistrano_pull
+# Setup repository URL and other attributes.
 actions :setup_attributes
 
 
@@ -30,6 +38,9 @@ attribute :account, :kind_of => String
 attribute :credential, :kind_of => String
 
 
+# ssh_hostkey to be added to known hosts
+attribute :ssh_host_key, :kind_of => String
+
 # SVN
 #
 
@@ -51,7 +62,7 @@ attribute :storage_account_provider, :kind_of => String
 attribute :container, :kind_of => String
 
 # Unpack downloaded source or not Source file must be kind of tar archive
-attribute :unpack_source, :equal_to => [ true, false ], :default => true
+attribute :unpack_source, :equal_to => [true, false], :default => true
 
 
 # Capistrano

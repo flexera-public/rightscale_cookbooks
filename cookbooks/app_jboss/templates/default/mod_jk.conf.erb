@@ -1,0 +1,34 @@
+#
+# Cookbook Name:: app_jboss
+#
+# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
+# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
+# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+#
+# Managed by RightScale
+# DO NOT EDIT BY HAND
+#
+# Mod_jk settings
+#
+
+# Load mod_jk module
+<% if @platform == "ubuntu" -%>
+LoadModule    jk_module  /usr/lib/apache2/modules/mod_jk.so
+<% else -%>
+LoadModule    jk_module  modules/mod_jk.so
+<% end -%>
+
+# Where to find workers.properties
+JkWorkersFile <%= @jkworkersfile %>
+# Where to put jk shared memory
+JkShmFile     <%= @apache_log_dir %>/mod_jk.shm
+# Where to put jk logs
+JkLogFile     <%= @apache_log_dir %>/mod_jk.log
+# Set the jk log level [debug/error/info]
+JkLogLevel    info
+# Select the log format
+JkLogStampFormat "[%a %b %d %H:%M:%S %Y] "
+# JkOptions indicate to send SSL KEY SIZE,
+JkOptions     +ForwardKeySize +ForwardURICompat -ForwardDirectories
+# JkRequestLogFormat set the request format
+JkRequestLogFormat     "%w %V %T"

@@ -11,8 +11,11 @@
 #   to the main backup.  If 'secondary' will do a secondary backup using node attributes for
 #   secondary.  Secondary uses 'ROS'.
 define :db_request_backup, :backup_type => 'primary' do
-  do_backup_type  = params[:backup_type] == "primary" ? "primary" : "secondary"
+  do_backup_type = params[:backup_type] == "primary" ? "primary" : "secondary"
 
+  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RemoteRecipe for the "remote_recipe" resource.
+  # See cookbooks/db/recipes/do_primary_backup.rb for the "db::do_primary_backup" recipe.
+  # See cookbooks/db/recipes/do_secondary_backup.rb for the "db::do_secondary_backup" recipe.
   remote_recipe "Request #{do_backup_type} backup" do
     recipe "db::do_#{do_backup_type}_backup"
     recipients_tags "server:uuid=#{node[:rightscale][:instance_uuid]}"

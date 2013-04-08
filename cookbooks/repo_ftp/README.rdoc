@@ -26,12 +26,9 @@ There are no known limitations.
 
 * Provider will be automatically initialized when you add "repo:default" recipe
   to your ServerTemplate runlist
-
 * Once set up, use the recipes in the 'repo' cookbook to manage downloading from
   your code repository. See the repo/README.rdoc for usage details.
-
 * Select the 'repo_ftp' option for the repo/default/provider input.
-
 * To perform correct operations, values for the repo/url and others must be provided. FTP username and password
   inputs are optional - connection may be anonymous.
 
@@ -55,6 +52,7 @@ The <tt>repo_ftp</tt> provider allows the retrieval of source code from FTP serv
 For normal operations, it requires the 'repo' resource, which acts as the interface to all <tt>repo_ftp</tt> provider logic.
 
 ===== Actions:
+
 <tt>:pull</tt>
 Standard repository pull. Pull source code from a remote repository by specifying its location with a URL.
 
@@ -65,7 +63,7 @@ Perform standard pull and then a capistrano deployment style will be applied.
 
 For usage examples, please see the corresponding section in <tt>repo</tt> cookbook's README.
 
-= LICENSE:
+== LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 RightScale Terms of Service available at http://www.rightscale.com/terms.php and,

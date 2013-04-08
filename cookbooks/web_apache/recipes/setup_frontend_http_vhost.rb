@@ -11,7 +11,8 @@ rightscale_marker :begin
 
 http_port = "80"
 
-# Disable default vhost
+# Disable default vhost.
+# See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_site.rb for the "apache_site" definition.
 apache_site "000-default" do
   enable false
 end
@@ -24,11 +25,13 @@ template "#{node[:apache][:dir]}/ports.conf" do
 end
 
 # Configure apache vhost
+# See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/web_app.rb for the "web_app" definition.
 web_app "#{node[:web_apache][:application_name]}.frontend" do
   template "apache.conf.erb"
   docroot node[:web_apache][:docroot]
   vhost_port http_port
   server_name node[:web_apache][:server_name]
+  allow_override node[:web_apache][:allow_override]
   notifies :restart, resources(:service => "apache2")
 end
 

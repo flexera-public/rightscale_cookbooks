@@ -29,9 +29,16 @@ There are no known limitations.
 == DETAILS:
 
 === General information
-When the firewall is enabled it is completely closed for incoming connections - only outbound connections are allowed.
-<tt>sys_firewall::default</tt> then opens 22, 80 and 443 ports by default (additionally on SoftLayer 48000..48020 ports
-are opened on the private 10.* network for the monitoring agent).
+When the firewall is enabled it is completely closed for incoming connections -
+only outbound connections are allowed. <tt>sys_firewall::default</tt>
+then opens 22, 80 and 443 ports by default
+(additionally on SoftLayer 48000..48020 ports are opened on the private 10.*
+network for the monitoring agent).
+
+<tt>sys_firewall::default</tt> recipe increases the value for the
+'netfilter.nf_conntrack_max' parameter for CentOS images and
+the 'net.ipv4.ip_conntrack_max' for Ubuntu and RHEL images to avoid dropping
+packets on high-throughput systems.
 
 === Updating firewall rules using tags
 
@@ -53,7 +60,8 @@ at once.
 
 ==== Update Request Action
 
-To request that all servers with a given tag close a port to a given IP address use:
+To request that all servers with a given tag close a port to a given IP address
+use:
 
   sys_firewall "Request all app servers close ports to this load balancer" do
     machine_tag "loadbalancer:app=www"
@@ -66,7 +74,7 @@ To request that all servers with a given tag close a port to a given IP address 
 This can be useful when decommissioning a running server that had previously
 requested ports opened.
 
-= LICENSE:
+== LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to
 the RightScale Terms of Service available at http://www.rightscale.com/terms.php

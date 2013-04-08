@@ -1,0 +1,16 @@
+/*
+ * These are the v13.2 ServerTemplates which were released on 2012-12-20.
+ *
+ * This is a snapshot of the exact versions that were released.
+ */
+{
+  "base_chef": {
+    "nickname": "Base ServerTemplate for Linux (v13.2)",
+    "rev": 118
+  },
+  "base_rsb": {
+    // The nickname contained two spaces between "(RSB)" and "(v13.2)"
+    "nickname": "Base ServerTemplate for Linux (RSB)  (v13.2)",
+    "rev": 90
+  }
+}

@@ -17,7 +17,7 @@ to_enable = (node[:sys_firewall][:rule][:enable] == "enable") ? true : false
 
 # Create protocol array here to handle with "both" input
 if node[:sys_firewall][:rule][:protocol] == "both"
-  rule_protocol = ["tcp","udp"]
+  rule_protocol = ["tcp", "udp"]
 else
   rule_protocol = [node[:sys_firewall][:rule][:protocol]]
 end
@@ -27,6 +27,7 @@ end
 if node[:sys_firewall][:enabled] == "enabled"
   # generate separate rules to each of rule_protocol element
   rule_protocol.each do |proto|
+    # See cookbooks/sys_firewall/providers/default.rb for the "update" action.
     sys_firewall rule_port do
       ip_addr rule_ip
       protocol proto

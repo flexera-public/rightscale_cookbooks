@@ -14,6 +14,7 @@
 attribute :user, :kind_of => String, :default => "root"
 attribute :password, :kind_of => String, :default => ""
 attribute :data_dir, :kind_of => String, :default => "/mnt/storage"
+attribute :driver_type, :kind_of => String
 
 # == Backup/Restore options
 attribute :lineage, :kind_of => String
@@ -23,13 +24,13 @@ attribute :restore_process, :kind_of => Symbol, :default => :primary_restore
 attribute :timeout, :kind_of => String, :default => "60"
 
 # == Privilege options
-attribute :privilege, :equal_to => [ "administrator", "user" ], :default => "administrator"
+attribute :privilege, :equal_to => ["administrator", "user"], :default => "administrator"
 attribute :privilege_username, :kind_of => String
 attribute :privilege_password, :kind_of => String
 attribute :privilege_database, :kind_of => String, :default => "*.*"
 
 # == Firewall options
-attribute :enable, :equal_to => [ true, false ], :default => true
+attribute :enable, :equal_to => [true, false], :default => true
 attribute :ip_addr, :kind_of => String
 attribute :machine_tag, :kind_of => String, :regex => /^([^:]+):(.+)=.+/
 
@@ -198,6 +199,11 @@ actions :install_client
 #
 actions :install_server
 
+# == Install Client Driver
+# Installs the driver packages for applications servers based on their driver type
+#
+actions :install_client_driver
+
 # == Setup Monitoring
 # Install and configure collectd plugins for the server.
 #
@@ -217,6 +223,7 @@ actions :enable_replication
 # This is called when a new master is needed.  If the prior master is still
 # functioning it is demoted and configured as a slave.
 actions :promote
+  attribute :force, :equal_to => [true, false], :default => false
 
 # == Grant Replication Slave
 # Set database replication privileges for a slave.

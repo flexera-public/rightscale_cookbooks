@@ -5,4 +5,8 @@
 .DS_Store
 .idea
 .rake_test_cache
+.yardoc
+Gemfile.lock
 chefignoredoc
+
+tests/config/servertemplate_mapping/acu*.json

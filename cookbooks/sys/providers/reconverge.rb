@@ -7,6 +7,8 @@
 
 action :enable do
   recipe = new_resource.recipe_name
+
+  # Calls the randomize_reconverge_minutes in helper class which is found in cookbooks/rightscale/libraries/helper.rb
   minute_list = RightScale::System::Helper.randomize_reconverge_minutes
   log "  Adding #{recipe} to reconverge via cron on minutes [#{minute_list}]"
 

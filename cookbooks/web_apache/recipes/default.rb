@@ -7,6 +7,7 @@
 
 rightscale_marker :begin
 
+# Calls the cookbooks/web_apache/recipes/install_apache.rb recipe.
 include_recipe "web_apache::install_apache"
 
 rightscale_marker :end

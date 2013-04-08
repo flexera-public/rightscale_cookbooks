@@ -7,30 +7,38 @@
 
 rightscale_marker :begin
 
+class Chef::Resource::RubyBlock
+  include RightScale::Database::Helper
+end
+
 # Check for valid prefix / dump filename
 dump_file_regex = '(^\w+)(-\d{1,12})*$'
 raise "Prefix: #{node[:db][:dump][:prefix]} invalid.  It is restricted to word characters (letter, number, underscore) and an optional partial timestamp -YYYYMMDDHHMM.  (=~/#{dump_file_regex}/ is the ruby regex used). ex: myapp_prod_dump, myapp_prod_dump-201203080035 or myapp_prod_dump-201203" unless node[:db][:dump][:prefix] =~ /#{dump_file_regex}/ || node[:db][:dump][:prefix] == ""
 
 # Check variables and log/skip if not set
-skip, reason = true, "DB/Schema name not provided"           if node[:db][:dump][:database_name] == ""
-skip, reason = true, "Prefix not provided"                   if node[:db][:dump][:prefix] == ""
+skip, reason = true, "DB/Schema name not provided" if node[:db][:dump][:database_name] == ""
+skip, reason = true, "Prefix not provided" if node[:db][:dump][:prefix] == ""
 skip, reason = true, "Storage account provider not provided" if node[:db][:dump][:storage_account_provider] == ""
-skip, reason = true, "Container not provided"                if node[:db][:dump][:container] == ""
+skip, reason = true, "Container not provided" if node[:db][:dump][:container] == ""
 
 if skip
   log "  Skipping import: #{reason}"
 else
 
-  db_name      = node[:db][:dump][:database_name]
-  prefix       = node[:db][:dump][:prefix]
-  dumpfilepath = "/tmp/" + prefix + ".gz"
-  container    = node[:db][:dump][:container]
-  cloud        = node[:db][:dump][:storage_account_provider]
+  db_name = node[:db][:dump][:database_name]
+  prefix = node[:db][:dump][:prefix]
+  dumpfilepath_without_extension = "/tmp/" + prefix
+  container = node[:db][:dump][:container]
+  cloud = node[:db][:dump][:storage_account_provider]
+  command_to_execute = "/opt/rightscale/sandbox/bin/ros_util get" +
+    " --cloud #{cloud} --container #{container}" +
+    " --dest #{dumpfilepath_without_extension}" +
+    " --source #{prefix} --latest"
 
   # Obtain the dumpfile from ROS
   execute "Download dumpfile from Remote Object Store" do
-    command "/opt/rightscale/sandbox/bin/ros_util get --cloud #{cloud} --container #{container} --dest #{dumpfilepath} --source #{prefix} --latest"
-    creates dumpfilepath
+    command command_to_execute
+    creates dumpfilepath_without_extension
     environment ({
       'STORAGE_ACCOUNT_ID' => node[:db][:dump][:storage_account_id],
       'STORAGE_ACCOUNT_SECRET' => node[:db][:dump][:storage_account_secret]
@@ -38,16 +46,20 @@ else
   end
 
   # Restore the dump file to db
+  # See cookbooks/db_<provider>/providers/default.rb for the
+  # "restore_from_dump_file" action.
   db node[:db][:data_dir] do
-    dumpfile dumpfilepath
+    dumpfile dumpfilepath_without_extension
     db_name db_name
     action :restore_from_dump_file
   end
 
   # Delete the local file.
-  file dumpfilepath do
-    backup false
-    action :delete
+  ruby_block "Delete the local file" do
+    block do
+      require "fileutils"
+      FileUtils.rm_f node[:db][:dump][:filepath]
+    end
   end
 
 end

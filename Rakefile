@@ -40,3 +40,23 @@ task :spell do
     sh "aspell -x -c #{readme}"
   end
 end
+
+begin
+  require 'foodcritic'
+
+  FoodCritic::Rake::LintTask.new do |task|
+    task.files = File.join(Dir.pwd, 'cookbooks')
+  end
+
+  FoodCritic::Rake::LintTask.new(:foodcritic_correctness) do |task|
+    task.files = File.join(Dir.pwd, 'cookbooks')
+    task.options = {:tags => ['correctness']}
+  end
+
+  FoodCritic::Rake::LintTask.new(:foodcritic_syntax) do |task|
+    task.files = File.join(Dir.pwd, 'cookbooks')
+    task.options = {:tags => ['syntax']}
+  end
+rescue LoadError
+  # since foodcritic is not available for Ruby 1.8.7, don't try to load its rules if it is not available
+end

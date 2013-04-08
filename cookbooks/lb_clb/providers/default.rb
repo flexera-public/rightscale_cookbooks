@@ -18,7 +18,7 @@ action :attach do
   script_directory = "/home/lb"
   attach_script = script_directory + "/clb_attach.sh"
 
-  # Create directory for script
+  # Creates directory for script
   directory script_directory do
     owner "root"
     group "root"
@@ -26,7 +26,8 @@ action :attach do
     recursive true
   end
 
-  # Open backend_port.
+  # Opens the backend_port.
+  # See cookbooks/sys_firewall/providers/default.rb for the "update" action.
   sys_firewall "Open backend_port to allow CLB to connect" do
     port new_resource.backend_port
     enable true
@@ -34,12 +35,12 @@ action :attach do
     action :update
   end
 
-  # Generate script to add to CLB.
+  # Generates script to add to CLB.
   template attach_script do
     source 'clb_attach_exec.erb'
     owner 'root'
     group 'root'
-    mode 0700
+    mode "0700"
     backup false
     cookbook "lb_clb"
     variables(
@@ -50,7 +51,7 @@ action :attach do
     )
   end
 
-  # Run the script to connect server to CLB.
+  # Runs the script to connect server to CLB.
   execute "attach_script" do
     command attach_script
     action :run
@@ -60,7 +61,7 @@ action :attach do
     })
   end
 
-  # Clean up script.
+  # Cleans up script.
   file attach_script do
     action :delete
     backup false
@@ -73,6 +74,7 @@ action :attach_request do
 
   log "  Attach request for #{new_resource.backend_ip}"
 
+  # Calls the "attach" action
   lb "Attaching to CLB" do
     provider "lb_clb"
     backend_ip new_resource.backend_ip
@@ -94,7 +96,7 @@ action :detach do
   script_directory = "/home/lb"
   detach_script = script_directory + "/clb_detach.sh"
 
-  # Create directory for script
+  # Creates directory for script
   directory script_directory do
     owner "root"
     group "root"
@@ -102,12 +104,12 @@ action :detach do
     recursive true
   end
 
-  # Generate script to remote from CLB.
+  # Generates script to remote from CLB.
   template detach_script do
     source 'clb_detach_exec.erb'
     owner 'root'
     group 'root'
-    mode 0700
+    mode "0700"
     backup false
     cookbook "lb_clb"
     variables(
@@ -117,7 +119,7 @@ action :detach do
     )
   end
 
-  # Run the script to connect server to CLB.
+  # Runs the script to connect server to CLB.
   execute "detach_script" do
     command detach_script
     action :run
@@ -127,13 +129,14 @@ action :detach do
     })
   end
 
-  # Clean up script.
+  # Cleans up script.
   file detach_script do
     action :delete
     backup false
   end
 
-  # Close backend_port.
+  # Closes the backend_port.
+  # See cookbooks/sys_firewall/providers/default.rb for the "update" action.
   sys_firewall "Close backend_port allowing CLB to connect" do
     port new_resource.backend_port
     enable false
@@ -148,7 +151,9 @@ action :detach_request do
 
   log "  Detach request for #{new_resource.backend_ip}"
 
+  # Calls the "detach" action
   lb "Detaching from CLB" do
+    provider "lb_clb"
     backend_ip new_resource.backend_ip
     backend_port new_resource.backend_port
     service_region new_resource.service_region

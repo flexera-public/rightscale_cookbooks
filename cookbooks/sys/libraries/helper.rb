@@ -33,7 +33,20 @@ module RightScale
       end
 
       # Use the template resource programatically
-      def self.run_template(target_file, source, cookbook, variables, enable, command, node, run_context)
+      #
+      # @param target_file [String] target file to be created from the template
+      # @param source [String] source erb file
+      # @param cookbook [String] name of the cookbook
+      # @param variables [Hash] variables to be passed to the template resource
+      # @param enable [Boolean] whether to enable the template or disable it
+      # @param command [String] command to run if the template is updated
+      # @param node [Hash] chef node
+      # @param run_context [Chef::RunContext] chef's run context
+      #
+      # @return [Boolean] whether the target file is updated
+      #
+      def self.run_template(target_file, source, cookbook, variables, enable,
+        command, node, run_context)
         resrc = Chef::Resource::Template.new(target_file)
         resrc.source source
         resrc.cookbook cookbook
@@ -50,13 +63,29 @@ module RightScale
           provider.send("action_delete")
         end
 
-        Chef::Log.info `/usr/sbin/rebuild-iptables` if resrc.updated
+        if resrc.updated
+          shell_command = Mixlib::ShellOut.new(command)
+          shell_command.run_command
+          shell_command.error!
+
+          Chef::Log.info shell_command.stdout
+        end
+        resrc.updated
       end
 
       def self.calculate_exponential_backoff(value)
         ((value == 1) ? 2 : (value*value))
       end
 
+      # Reload sysctl
+      def self.reload_sysctl
+        reload_command = Mixlib::ShellOut.new(
+          "/sbin/sysctl -e -p /etc/sysctl.conf"
+        )
+        reload_command.run_command
+        reload_command.error!
+        Chef::Log.info reload_command.stdout
+      end
     end
   end
 end

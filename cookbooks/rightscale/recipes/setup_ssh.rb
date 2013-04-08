@@ -16,7 +16,7 @@ if "#{node[:rightscale][:private_ssh_key]}" != ""
   end
   template "/root/.ssh/id_rsa" do
     source "id_rsa.erb"
-    mode 0600
+    mode "0600"
   end
 
 else

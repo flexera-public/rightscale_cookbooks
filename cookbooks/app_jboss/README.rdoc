@@ -1,0 +1,192 @@
+= RightScale App JBoss Cookbook
+
+== DESCRIPTION:
+
+* Cookbook provides JBoss application server implementation of the app LWRP.
+* Installs and configures the JBoss application server.
+
+== REQUIREMENTS:
+* Requires "app" Lightweight resource cookbook
+  https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
+  or your own implementation of "app" resource. See the "app" cookbook README
+  for details.
+* Requires a VM launched from a RightScale managed RightImage
+* Tested on the following RightImages:
+  * CentOS 6.2
+  * Ubuntu 12.04
+
+== COOKBOOKS DEPENDENCIES:
+Please see the <tt>metadata.rb</tt> file for the latest dependencies.
+
+* <tt>app</tt>
+* <tt>repo</tt>
+* <tt>rightscale</tt>
+
+== KNOWN LIMITATIONS:
+
+There are no known limitations.
+
+== SETUP/USAGE:
+
+* Place <tt>app_jboss::setup_server</tt> recipe into your runlist to set up the
+  application server specific attributes.
+* Place <tt>app::install_server</tt> after setup_server recipe to install the
+  application server.
+* Set 'jdbc/ConnDB' as your datasource name to set up a database connection with
+  the application server.
+
+For more info see: {Release Notes}[http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current]
+(Section ‘JBoss App Server’ under ServerTemplates)
+
+Please check out the tutorial: {JBoss App Server}[http://support.rightscale.com/03-Tutorials/JBoss_App_Server]
+
+== DETAILS:
+=== General
+
+The <tt>app_jboss</tt> cookbook will install and set up the Apache web server
+with a mod_jk module and the JBoss application server, with support for MySQL or
+Postgres database servers. The Cookbook will create a separate vhost config for
+the Apache web server, which will allow Apache to handle static content, such as
+images and HTML documents, and forward all requests for dynamic content to
+JBoss.
+
+Features currently supported are
+* User defined war file support
+* Java heap size Xms and Xmx memory limitations tuning
+* Java NewSize, MaxNewSize, PermSize, MaxPermSize limitations tuning
+* Application code installation from the remote git, svn or ROS repository
+* MySQL/Postgesql database JBoss connection file configuration
+* Automatic application vhost file configuration
+* Automatic logrotate file configuration for JBoss logs
+* Collectd monitoring support
+
+=== Attributes:
+These are settings used in recipes and templates. Default values are noted.
+
+Note: Only "internal" cookbook attributes are described here. Descriptions of
+attributes that are inputs are in the <tt>metadata.rb</tt> cookbook file.
+
+====== General attributes
+* <tt>node[:app_jboss][:code][:root_war]</tt> -
+  Path to the directory which will contain the application for JBoss.
+
+====== Java heap tuning attributes
+"Permanent Generation" space holds Class and Object instances, and their related
+metadata. "Young Generation" space is the location where new objects are
+created. It consists of two survivor spaces called <tt>to space</tt> and
+<tt>from space</tt>.
+
+* <tt>node[:app_jboss][:java][:permsize]</tt> -
+  The initial size of "permanent generation" space.
+* <tt>node[:app_jboss][:java][:maxpermsize]</tt> -
+  The maximum size of "permanent generation" space.
+* <tt>node[:app_jboss][:java][:newsize]</tt> -
+  The initial size of "young generation" space.
+* <tt>node[:app_jboss][:java][:maxnewsize]</tt> -
+  The maximum size of "young generation" space.
+* <tt>node[:app_jboss][:java][:xmx]</tt> -
+  The maximum size of the heap used by the JVM.
+* <tt>node[:app_jboss][:java][:xms]</tt> -
+  The initial size of the heap used by the JVM.
+
+For more information about the Java tuning parameters check out {Java Heap Tuning
+Parameters}[http://docs.oracle.com/cd/E19528-01/819-4742/abeik/index.html]
+
+====== Platform dependent
+* <tt>node[:app][:user]</tt> -
+  Username for changing the owner of created project dirs.
+* <tt>node[:app_jboss][:alternatives_cmd]</tt> -
+  Alternative command for selecting Java.
+
+=== Templates:
+
+==== Defined in <tt>:install</tt> LWRP action for the <tt>app::default</tt> recipe.
+
+* <tt>run_conf.erb</tt> - JBoss configuration template used by JBoss start-up
+  script.
+* <tt>jboss_init.erb</tt> - Start-up init script for JBoss.
+
+==== Defined in <tt>:setup_vhost</tt> LWRP action for the <tt>app::setup_vhost</tt> recipe.
+
+* <tt>server_xml.erb</tt> - JBoss server.xml configuration template.
+* <tt>apache_mod_jk_vhost.erb</tt> - Configuration for apache vhost file.
+* <tt>mod_jk.conf.erb</tt> - Mod_jk configuration template.
+* <tt>jboss_workers.properties.erb</tt> - JBoss worker configuration template.
+
+==== Defined in <tt>:setup_db_connection</tt> LWRP action for the <tt>app::setup_db_connection</tt> recipe.
+
+* <tt>customdb-ds.xml.erb</tt> - Configuration for project database connection
+  configuration file.
+* <tt>web.xml.erb</tt> - JBoss Content configuration template.
+
+=== LWRPs:
+
+<tt>app_jboss</tt> Lightweight provider is defined in the
+<tt>providers/default.rb</tt> file and contains source for the following actions:
+
+* <tt>:install</tt> -
+  Install packages required for application server setup.
+
+* <tt>:setup_vhost</tt> -
+  Set up Apache vhost file with mod_jk. Install and set up JBoss package
+  dependencies. Set up logrotate for JBoss.
+
+* <tt>:start</tt> -
+  Start sequence for JBoss application server.
+
+* <tt>:stop</tt> -
+  Stop sequence for JBoss application server.
+
+* <tt>:reload</tt> -
+  Reload sequence for JBoss application server.
+
+* <tt>:restart</tt> -
+  Restart sequence for JBoss application server.
+
+* <tt>:code_update</tt> -
+  Perform project source code update/download using user selected "repo" LWRP.
+
+* <tt>:setup_db_connection</tt> -
+  Configure <tt>(mysql/postgres)-ds.xml</tt> JBoss db specific configuration
+  file with database connection information.
+
+* <tt>:setup_monitoring</tt> -
+  Install and set up of required monitoring software.
+
+For more info about these actions please see <tt>app</tt> cookbook README.
+
+For normal operations it requires the "app" resource which will act as an
+interface to all <tt>app_jboss</tt> provider logic.
+
+===== Usage Example:
+
+For usage examples, please see corresponding section in
+<tt>app</tt> cookbook README.
+
+
+===== Unwanted applications and services
+
+JBoss comes with a lot of services and your enterprise applications may not need
+all of them. After installation, the following applications and services are
+removed to boost application server performance.
+
+*  Home page server - (deploy/ROOT.war)
+*  JMX Console server - (deploy/jmx-console.war)
+*  Web Console server - (deploy/management)
+*  Unique ID key generator - (deploy/uuid-key-generator.sar)
+*  HTTP Invoker service - (deploy/http-invoker.sar)
+*  Quartz scheduler service - (deploy/quartz-ra.rar)
+*  Mail service - (deploy/mail-service.xml, deploy/mail-ra.rar)
+*  Monitoring service - (deploy/monitoring-service.xml)
+*  Scheduler service - (deploy/scheduler-service.xml,
+   deploy/schedule-manager-service.xml)
+*  Messaging (JMS) service - (deploy/messaging, deploy/jms-ds.xml,
+   deploy/jms-ra.rar)
+*  Admin console - (deploy/admin-console.war)
+*  JBoss Web Services - (deploy/jbossws.sar)
+
+= LICENSE:
+
+Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
+RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
+if applicable, other agreements such as a RightScale Master Subscription Agreement.

@@ -13,15 +13,15 @@ package "subversion" do
 end
 
 extra_packages = case node[:platform]
-  when "ubuntu"
-    if node[:platform_version].to_f < 8.04
-      %w{subversion-tools libsvn-core-perl}
-    else
-      %w{subversion-tools libsvn-perl}
-    end
-  when "centos", "redhat"
-    %w{subversion-devel subversion-perl}
-end
+                 when "ubuntu"
+                   if node[:platform_version].to_f < 8.04
+                     %w{subversion-tools libsvn-core-perl}
+                   else
+                     %w{subversion-tools libsvn-perl}
+                   end
+                 when "centos", "redhat"
+                   %w{subversion-devel subversion-perl}
+                 end
 
 # Install additional svn packages
 extra_packages.each do |pkg|

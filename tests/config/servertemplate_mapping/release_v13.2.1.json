@@ -1,0 +1,16 @@
+/*
+ * These are the v13.2.1 ServerTemplates which were released on 2013-01-15.
+ *
+ * This is a snapshot of the exact versions that were released.
+ */
+{
+  "base_chef": {
+    "nickname": "Base ServerTemplate for Linux (v13.2.1)",
+    "rev": 121
+  },
+  "base_rsb": {
+    // The nickname contained two spaces between "(RSB)" and "(v13.2.1)"
+    "nickname": "Base ServerTemplate for Linux (RSB)  (v13.2.1)",
+    "rev": 94
+  }
+}

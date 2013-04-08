@@ -1,0 +1,15 @@
+/*
+ * These are the STAGING ServerTemplates which are used for development.
+ *
+ * This uses the HEAD revisions of the ServerTemplates.
+ */
+{
+  "base_chef": {
+    "nickname": "Base ServerTemplate for Linux STAGING",
+    "rev": "head"
+  },
+  "base_rsb": {
+    "nickname": "Base ServerTemplate for Linux (RSB) STAGING",
+    "rev": "head"
+  }
+}

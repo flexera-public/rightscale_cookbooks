@@ -23,15 +23,10 @@
 
 <Directory "<%=@params[:docroot]%>">
   Options FollowSymLinks
-  AllowOverride None
+  AllowOverride <%= @params[:allow_override] %>
   Order allow,deny
   Allow from all
 </Directory>
-
-RewriteEngine On
-# Uncomment for rewrite debugging
-#RewriteLog <%= @params[:apache_log_dir]%>/<%=@params[:server_name]%>-http_rewrite_log
-#RewriteLogLevel 9
 
 <% @params[:ruby_base_dir]=%x[/usr/bin/gem environment gemdir] %>
 <% passenger_dir=%x[/bin/bash -c "ls -d #{@params[:ruby_base_dir].chomp}/gems/passenger*"] %>
@@ -48,26 +43,19 @@ PassengerAppRoot <%="#{@params[:destination].chomp}"%>
 PassengerUser <%=@params[:passenger_user]%>
 PassengerGroup <%=@params[:passenger_group]%>
 
+RewriteEngine On
+# Uncomment for rewrite debugging
+#RewriteLog <%= @params[:apache_log_dir]%>/<%=@params[:server_name]%>-http_rewrite_log
+#RewriteLogLevel 9
+
+# Include Rewrite rules from server config for maintenance mode.
+# Rewrite rules are not inherited in VirtualHost Directive, so must
+# explicitly include it here.
+Include conf.d/maintenance.conf
+
 # Enable status page for monitoring purposes
 RewriteCond %{REMOTE_ADDR} ^(127.0.0.1)
 RewriteRule ^(/server-status) $1 [H=server-status,L]
-
-
-<%  if (@params[:apache_maintenance_page].empty?) %>
-<%    @params[:apache_maintenance_page]="/system/maintenance.html" %>
-<%  else %>
-<%    @params[:apache_maintenance_page]=@params[:apache_maintenance_page].strip %>
-<%  end %>
-
-# Redirects to a maintenance page if the specified file below exists
-# ...but it still allows images to be served
-RewriteCond %{DOCUMENT_ROOT}<%=@params[:apache_maintenance_page]%> -f
-RewriteCond %{SCRIPT_FILENAME} !<%=@params[:apache_maintenance_page]%>
-RewriteCond %{SCRIPT_FILENAME} !^(.+).(gif|png|jpg|css|js|swf)$
-RewriteRule ^.*$ <%=@params[:apache_maintenance_page]%> [L]
-
-
-
 
 <% if (@params[:apache_serve_local_files]=="true") %>
 # Serve any existing local files directly (except actionable ones)

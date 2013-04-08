@@ -1,4 +1,4 @@
-# 
+#
 # Cookbook Name:: lb
 #
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
@@ -13,8 +13,9 @@ end
 
 log "  Setup default load balancer resource."
 
-# Set provider for each pool name.
-pool_names(node[:lb][:pools]).each do | pool_name |
+# Sets provider for each pool name.
+# See cookbooks/app/libraries/helper.rb for the "pool_names" method.
+pool_names(node[:lb][:pools]).each do |pool_name|
   lb pool_name do
     provider node[:lb][:service][:provider]
     persist true # Store this resource in node between converges.
@@ -22,13 +23,14 @@ pool_names(node[:lb][:pools]).each do | pool_name |
   end
 end
 
+# Installs the right_aws gem
 r = gem_package "right_aws" do
   gem_binary "/opt/rightscale/sandbox/bin/gem"
   action :nothing
 end
 r.run_action(:install)
 
-# Reload newly install gem.
+# Reloads newly install gem.
 Gem.clear_paths
 
 rightscale_marker :end

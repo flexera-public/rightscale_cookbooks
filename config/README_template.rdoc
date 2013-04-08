@@ -16,7 +16,6 @@ section below.
 
 This cookbook provides abstract 'repo' resource for managing code download from
 GIT, SVN or ROS code repositories.
--------------
 
 == REQUIREMENTS:
 
@@ -33,7 +32,6 @@ Replace this text with a description of cookbook requirements:
   <tt>repo_ros</tt> cookbooks must be present in your cookbook repository ROS
   implementation depends on the <tt>rightscale::install_tools</tt> recipe.
 * Requires a virtual machine launched from a RightScale-managed RightImage.
--------------
 
 == COOKBOOKS DEPENDENCIES:
 
@@ -48,7 +46,6 @@ Be sure to include a ticket number.
 
 Currently only primary backups to Remote Object Storage (ROS) are supported for
 KVM hypervisors (w-1234).
--------------
 
 == SETUP/USAGE:
 
@@ -62,7 +59,6 @@ application server. When using a RightScale ServerTemplate, this will also
 automatically add the common attributes to your ServerTemplate inputs. Set
 'jdbc/ConnDB' as your datasource name to set up database connection with the
 application server.
--------------
 
 == DETAILS:
 
@@ -76,7 +72,6 @@ else that users need to know in order to properly use this cookbook.
 This cookbook is intended to be used in conjunction with cookbooks that contain
 Lightweight Providers which implement the <tt>repo</tt> interface. See the
 RightScale repo_git cookbook for an example.
--------------
 
 === Attributes:
 
@@ -102,7 +97,6 @@ file.
   processes to start. Default is 16.
 * <tt>node[:apache][:prefork][:minspareservers]</tt> - minimum number of spare
   server processes. Default 16.
--------------
 
 === Templates:
 
@@ -120,7 +114,6 @@ Add link to the production templates that use this cookbook.
 
 Configuration for the server and server components used in the
 <tt>chef-server::rubygems-install</tt> recipe.
--------------
 
 === Definitions:
 
@@ -158,7 +151,6 @@ Enable the ssl module, which also has a configuration template in
     apache_module "ssl" do
       conf true
     end
--------------
 
 === Libraries-helpers:
 
@@ -186,7 +178,6 @@ Returns:
 Raise:
 
 <tt>RuntimeError::</tt> If nether a valid private nor public ip can be found
--------------
 
 === LWRPs:
 
@@ -219,9 +210,7 @@ http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_D
 Common attributes
 
 <tt>:destination</tt> - Path to where project repo will be pulled
-
 <tt>:repository</tt> - Repository Url
-
 <tt>:revision</tt> - Remote repo Branch or revision
 
 * Give provider usage examples.
@@ -258,7 +247,6 @@ This can be useful when decommissioning a running server that had previously
 requested ports opened.
 
 * All tag based actions are scoped to the deployment.
--------------
 
 = LICENSE:
 

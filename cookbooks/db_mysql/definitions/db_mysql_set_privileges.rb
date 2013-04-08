@@ -19,12 +19,11 @@ define :db_mysql_set_privileges, :preset => "administrator", :username => nil, :
       require 'rubygems'
       require 'mysql'
 
-      con = Mysql.new("", "root",nil,nil,nil,"#{node[:db][:socket]}")
+      con = Mysql.new("", "root", nil, nil, nil, "#{node[:db][:socket]}")
 
       # Now that we have a Mysql object, let's sanitize our inputs
       username = con.escape_string(username)
       password = con.escape_string(password)
-
 
       # Remove anonymous access via the server hostname.
       # Some cloud sets hostname to DNS FQDN name which causes problems for replication.
@@ -36,7 +35,7 @@ define :db_mysql_set_privileges, :preset => "administrator", :username => nil, :
         con.query("GRANT ALL PRIVILEGES on *.* TO '#{username}'@'%' IDENTIFIED BY '#{password}' WITH GRANT OPTION")
         con.query("GRANT ALL PRIVILEGES on *.* TO '#{username}'@'localhost' IDENTIFIED BY '#{password}' WITH GRANT OPTION")
       when 'user'
-        # Grant only the appropriate privs
+        # Grant only the appropriate privileges
         con.query("GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, RELOAD, SHUTDOWN, PROCESS, FILE, REFERENCES, INDEX, ALTER, SHOW DATABASES, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, REPLICATION SLAVE, REPLICATION CLIENT, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, CREATE USER, EVENT, TRIGGER on #{db_name} TO '#{username}'@'%' IDENTIFIED BY '#{password}'")
         con.query("GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, RELOAD, SHUTDOWN, PROCESS, FILE, REFERENCES, INDEX, ALTER, SHOW DATABASES, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, REPLICATION SLAVE, REPLICATION CLIENT, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, CREATE USER, EVENT, TRIGGER on #{db_name} TO '#{username}'@'localhost' IDENTIFIED BY '#{password}'")
       else
