@@ -126,6 +126,9 @@ service "jenkins" do
   action :start
 end
 
+# Open Jenkins server port
+sys_firewall "8080"
+
 right_link_tag "jenkins:active=true"
 right_link_tag "jenkins:master=true"
 right_link_tag "jenkins:listen_ip=#{node[:jenkins][:ip]}"
