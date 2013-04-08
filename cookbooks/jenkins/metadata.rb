@@ -27,7 +27,7 @@ attribute "jenkins/server/user_name",
   :display_name => "Jenkins User Name",
   :description => "Default user's sign in name.",
   :required => "required",
-  :recipes => [ "jenkins::install_server" ]
+  :recipes => [ "jenkins::install_server", "jenkins::do_attach_request" ]
 
 attribute "jenkins/server/user_email",
   :display_name => "Jenkins User Email",
@@ -45,7 +45,7 @@ attribute "jenkins/server/password",
   :display_name => "Jenkins Password",
   :description => "Default user's password.",
   :required => "required",
-  :recipes => [ "jenkins::install_server" ]
+  :recipes => [ "jenkins::install_server", "jenkins::do_attach_request" ]
 
 attribute "jenkins/server/plugins",
   :display_name => "Jenkins Plugins",

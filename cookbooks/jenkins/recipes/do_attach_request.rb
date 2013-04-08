@@ -29,20 +29,22 @@ r = rightscale_server_collection "master_server" do
 end
 r.run_action(:load)
 
-master_ip = "";
-master_port = "";
+master_ip = ""
+master_port = ""
 
 r = ruby_block "find master" do
   block do
     node[:server_collection]["master_server"].each do |id, tags|
-      master_ip = tags.detect { |u| u =~ /jenkins:listen_ip/ } #.split(/=/, 2).last.chomp
-      master_port = tags.detect { |u| u =~ /jenkins:listen_port/ } #.split(/=/, 2).last.chomp
+      master_ip_tag = tags.detect { |u| u =~ /jenkins:listen_ip/ } #.split(/=/, 2).last.chomp
+      master_port_tag = tags.detect { |u| u =~ /jenkins:listen_port/ } #.split(/=/, 2).last.chomp
+      master_ip = master_ip_tag.split(/=/, 2).last.chomp
+      master_port = master_port_tag.split(/=/, 2).last.chomp
+
+      Chef::Log.info "Master IP: #{master_ip}"
+      Chef::Log.info "Master Port: #{master_port}"
     end
   end
 end
-
-log "master ip: #{master_ip}"
-log "master port: #{master_port}"
 
 r.run_action(:create)
 
