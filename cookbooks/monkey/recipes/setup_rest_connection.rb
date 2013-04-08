@@ -24,18 +24,11 @@ packages.each do |pkg|
   package pkg
 end unless packages.empty?
 
-bash "Update Rubygems" do
-  flags "-ex"
-  code <<-EOH
-    gem update --system --no-rdoc --no-ri
-  EOH
-  not_if { node[:platform] == "ubuntu"  }
-end
-
 # Install rubygems 1.8.24. By default rubygems 2.x.x gets installed.
 gem_package "rubygems-update" do
   gem_binary "/usr/bin/gem"
   version "1.8.24"
+  action :install
 end
 
 update_rubygems = Mixlib::ShellOut.new("/usr/bin/update_rubygems")
