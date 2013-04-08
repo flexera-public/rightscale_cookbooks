@@ -31,11 +31,9 @@ gem_package "rubygems-update" do
   action :install
 end
 
-update_rubygems = Mixlib::ShellOut.new("/usr/bin/update_rubygems")
-update_rubygems.run_command
-update_rubygems.error!
-
-log update_rubygems.stdout
+execute "update rubygems" do
+  command "/usr/bin/update_rubygems"
+end
 
 # Installing gem dependencies
 log "  Installing gems requierd by rest_connection"
