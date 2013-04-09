@@ -416,9 +416,5 @@ action :code_update do
     EOH
     only_if { node[:app_tomcat][:code][:root_war] != "ROOT.war" }
   end
-  # Restarting tomcat service.
-  # This will automatically deploy ROOT.war if it is available in application root directory
-  # Calls the :restart action.
-  action_restart
 
 end

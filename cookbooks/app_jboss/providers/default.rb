@@ -503,8 +503,4 @@ action :code_update do
     only_if { node[:app_jboss][:code][:root_war] != "ROOT.war" }
   end
 
-  # Restart application server
-  # Calls action :restart
-  action_restart
-
 end

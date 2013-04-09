@@ -142,10 +142,6 @@ action :code_update do
     persist false
   end
 
-  # Restarting apache
-  # Calls the :restart action.
-  action_restart
-
 end
 
 action :setup_monitoring do

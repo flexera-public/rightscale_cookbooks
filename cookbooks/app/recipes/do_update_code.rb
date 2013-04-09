@@ -14,4 +14,20 @@ app "default" do
   action :code_update
 end
 
+log "  Creating database config for application"
+# See cookbooks/app/providers/default.rb for the "setup_db_connection" action.
+app "default" do
+  database_name node[:app][:database_name]
+  database_user node[:app][:database_user]
+  database_password node[:app][:database_password]
+  database_server_fqdn node[:app][:database_server_fqdn]
+  action :setup_db_connection
+end
+
+log "  Restarting application server"
+# See cookbooks/app_<providers>/providers/default.rb for the "restart" action.
+app "default" do
+  action :restart
+end
+
 rightscale_marker :end

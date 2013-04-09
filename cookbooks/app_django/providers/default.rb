@@ -200,10 +200,6 @@ action :code_update do
     only_if { ::File.exists?("#{deploy_dir}/requirements.txt") }
   end
 
-  # Restarting apache
-  # Calls the :restart action.
-  action_restart
-
 end
 
 # Set monitoring tools for Django application. Not implemented.
