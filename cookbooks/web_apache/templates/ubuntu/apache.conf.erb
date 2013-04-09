@@ -47,7 +47,7 @@
   RewriteCond %{REQUEST_FILENAME} !\.php|\.jsp|\.do|\.action$ [NC]
   RewriteRule ^/(.*)$ /$1 [QSA,L]
 
-  # Next hop is HaProxy
+  # Next hop is HAProxy
   RewriteRule ^/(.*)$ http://127.0.0.1:85%{REQUEST_URI} [P,QSA,L]
 
   # Special rule to forward "/" directly to haproxy
