@@ -9,22 +9,24 @@ rightscale_marker :begin
 
 case node[:platform]
 when "centos"
-  yum_package "java-1.6.0-openjdk"
+  package "java-1.6.0-openjdk"
 end
 
 chef_gem "jenkins_api_client"
 
 require "jenkins_api_client"
 
-testpub = Mixlib::ShellOut.new("wget -O ~/testkey.pub http://dl.dropbox.com/u/1428622/RightScale/jenkins/testkey.pub")
-  testpub.run_command
+# Add the jenkins public key to allow master to connect to the slave
+execute "add jenkins public key to authorized keys" do
+  command "echo #{node[:jenkins][:public_key]}" +
+    " >> #{ENV['HOME']}/.ssh/authorized_keys"
+  not_if { File.open("#{ENV['HOME']}/.ssh/authorized_keys").lines.any? { |line| line.chomp == node[:jenkins][:public_key]} }
+end
 
-testcat = Mixlib::ShellOut.new("cat ~/testkey.pub >> ~/.ssh/authorized_keys")
-  testcat.run_command
-
+# Obtain information about Jenkins master by querying for its tags
 r = rightscale_server_collection "master_server" do
   tags "jenkins:master=true"
-  secondary_tags "jenkins:active=true"
+  mandatory_tags "jenkins:active=true"
   action :nothing
 end
 r.run_action(:load)
@@ -35,8 +37,8 @@ master_port = ""
 r = ruby_block "find master" do
   block do
     node[:server_collection]["master_server"].each do |id, tags|
-      master_ip_tag = tags.detect { |u| u =~ /jenkins:listen_ip/ } #.split(/=/, 2).last.chomp
-      master_port_tag = tags.detect { |u| u =~ /jenkins:listen_port/ } #.split(/=/, 2).last.chomp
+      master_ip_tag = tags.detect { |u| u =~ /jenkins:listen_ip/ }
+      master_port_tag = tags.detect { |u| u =~ /jenkins:listen_port/ }
       master_ip = master_ip_tag.split(/=/, 2).last.chomp
       master_port = master_port_tag.split(/=/, 2).last.chomp
 
@@ -48,7 +50,8 @@ end
 
 r.run_action(:create)
 
-ruby_block "Attach slave using Jenkins api" do
+# Attach the slave to the master using the API
+ruby_block "Attach slave using Jenkins API" do
   block do
     if node[:jenkins][:slave][:attach_status] == :attached
       log "  Already attached to Jenkins master."
@@ -62,16 +65,17 @@ ruby_block "Attach slave using Jenkins api" do
 
       client.node.create_dump_slave(
         :name => node[:jenkins][:slave][:name],
+        :slave_user => node[:jenkins][:slave][:user],
         :slave_host => node[:jenkins][:ip],
-        :private_key_file => node[:jenkins][:slave][:private_key_file],
+        :private_key_file => node[:jenkins][:private_key_file],
         :executors => node[:jenkins][:slave][:executors]
       )
       node[:jenkins][:slave][:attach_status] = :attached
     end
   end
-  action :nothing
 end
 
+# Add slave tags with the information unique to the slave
 right_link_tag "jenkins:slave=true"
 right_link_tag "jenkins:slave_name=#{node[:jenkins][:slave][:name]}"
 right_link_tag "jenkins:slave_mode=#{node[:jenkins][:slave][:mode]}"

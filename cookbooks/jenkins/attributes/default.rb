@@ -24,8 +24,8 @@ default[:jenkins][:mirror] = "http://updates.jenkins-ci.org"
 
 # Attributes for Jenkins slave
 
+default[:jenkins][:slave][:user] = "root"
 default[:jenkins][:slave][:mode] = "normal"
 default[:jenkins][:slave][:executors] = "10"
-default[:jenkins][:slave][:private_key_file] = "/root/.ssh/api_user_key"
+default[:jenkins][:private_key_file] = "#{node[:jenkins][:server][:home]}/jenkins_key"
 default[:jenkins][:slave][:attach_status] = "unattached"
-default[:jenkins][:attach_slave_at_boot] == "false"

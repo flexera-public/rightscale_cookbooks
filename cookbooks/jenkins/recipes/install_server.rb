@@ -20,40 +20,35 @@ directory node[:jenkins][:server][:home] do
   group node[:jenkins][:server][:system_group]
 end
 
-##Jenkins package installation.
+# Create Jenkins private key file
+file "#{node[:jenkins][:private_key_file]}" do
+  content node[:jenkins][:private_key]
+  mode 0600
+  owner node[:jenkins][:server][:system_user]
+  group node[:jenkins][:server][:system_group]
+  action :create
+end
+
+# Jenkins package installation based on platform
 case node[:platform]
 when "centos"
-  wrpm = Mixlib::ShellOut.new("wget -O ~/jenkins.rpm #{node[:jenkins][:mirror]}/latest/redhat/jenkins.rpm")
-  wrpm.run_command
+  # Add Jenkins repo
+  execute "add jenkins repo" do
+    command "wget -O /etc/yum.repos.d/jenkins.repo" +
+      " http://pkg.jenkins-ci.org/redhat/jenkins.repo"
+  end
 
-  jeninstall = Mixlib::ShellOut.new("rpm -i ~/jenkins.rpm")
-  jeninstall.run_command
+  # Import Jenkins RPM key
+  execute "import jenkins key" do
+    command "rpm --import http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key"
+  end
 
-  testkey = Mixlib::ShellOut.new("wget -O /root/.ssh/api_user_key http://dl.dropbox.com/u/1428622/RightScale/jenkins/testkey")
-  testkey.run_command
+  # Install Jenkins package
+  package "jenkins" do
+    version node[:jenkins][:server][:version]
+  end
 
-  # BROKEN: jenkins repo: https://www.google.com/#q=%22Error:+Cannot+retrieve+repository+metadata+(repomd.xml)+for+repository%22+%22jenkins%22
-  #
-  # #see http://jenkins-ci.org/redhat/
-  # yum_key "jenkins_key" do
-  #   url "http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key"
-  #   action :add
-  # end
-
-  # wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo
-  # yum_repository "jenkins" do
-  #   repo_name "Jenkins"
-  #   description "Jenkins Stable repo"
-  #   url "http://pkg.jenkins-ci.org/redhat/jenkins.repo"
-  #   key "jenkins-ci.org.key"
-  #   action :add
-  # end
-  # yum_package "jenkins"
-
-  # yum install jenkins -y
-
-  yum_package "java-1.6.0-openjdk"
-
+  package "java-1.6.0-openjdk"
 when "ubuntu"
   # See http://jenkins-ci.org/debian/
   apt_repository "jenkins" do
@@ -99,7 +94,9 @@ chef_gem "bcrypt-ruby"
 r = ruby_block "Encrypt Jenkins user password" do
   block do
     require "bcrypt"
-    node[:jenkins][:server][:password_encrypted] = ::BCrypt::Password.create(node[:jenkins][:server][:password])
+    node[:jenkins][:server][:password_encrypted] = ::BCrypt::Password.create(
+      node[:jenkins][:server][:password]
+    )
   end
   action :nothing
 end
@@ -116,10 +113,6 @@ template "#{node[:jenkins][:server][:home]}/users/#{node[:jenkins][:server][:use
     :password_encrypted => node[:jenkins][:server][:password_encrypted],
     :email => node[:jenkins][:server][:user_email]
   })
-end
-
-unless node[:jenkins][:server][:plugins].to_s == ""
-  include_recipe "jenkins::install_plugins"
 end
 
 service "jenkins" do

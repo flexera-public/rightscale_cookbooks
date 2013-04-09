@@ -21,7 +21,7 @@ recipe "jenkins::install_plugins", "Install Jenkins plugins."
 recipe "jenkins::do_attach_request", "Installing Jenkins."
 recipe "jenkins::do_attach_slave_at_boot", "Installing Jenkins."
 
-# Server
+# Server/Master Attributes
 
 attribute "jenkins/server/user_name",
   :display_name => "Jenkins User Name",
@@ -47,13 +47,21 @@ attribute "jenkins/server/password",
   :required => "required",
   :recipes => [ "jenkins::install_server", "jenkins::do_attach_request" ]
 
+attribute "jenkins/server/version",
+  :display_name => "Jenkins Version",
+  :description => "Jenkins version to install. Leave it blank to get the" +
+    " latest version. It should be in the format of version-release." +
+    " Example. 1.500-1.1 where '1.500' is the version and '1.1' is the release.",
+  :required => "optional",
+  :recipes => [ "jenkins::install_server" ]
+
 attribute "jenkins/server/plugins",
   :display_name => "Jenkins Plugins",
   :description => "Jenkins plugins to install.",
   :required => "optional",
   :recipes => [ "jenkins::install_server" ]
 
-# Slave
+# Slave Attributes
 
 attribute "jenkins/slave/name",
   :display_name => "Jenkins Slave Name",
@@ -73,25 +81,28 @@ attribute "jenkins/slave/executors",
   :required => "optional",
   :recipes => [ "jenkins::do_attach_request" ]
 
-attribute "jenkins/slave/private_key_file",
-  :display_name => "Jenkins Slave Private Key File",
-  :description => "Key that the Jenkins slave will\
-                   request the master to connect with.",
+
+# Attributes shared between master and slave
+
+attribute "jenkins/public_key",
+  :display_name => "Jenkins Public Key",
+  :description => "This public key will be used by Jenkins slave to allow" +
+    " connections from the master/server",
   :required => "optional",
   :recipes => [ "jenkins::do_attach_request" ]
 
-# Switch
-
-attribute "jenkins/slave/attach_slave_at_boot",
-  :display_name => "Attach Jenkins Slave At Boot?",
-  :description => "Is this box a Jenkins slave?",
+attribute "jenkins/private_key",
+  :display_name => "Jenkins Private Key",
+  :description => "This key is used by Jenkins master/server to connect to" +
+    " the slave using SSH.",
   :required => "optional",
-  :recipes => [ "jenkins::do_attach_slave_at_boot" ]
+  :recipes => [ "jenkins::install_server" ]
 
-#attribute "memcached/tcp_port",
-#  :display_name => "Memcached TCP Port",
-#  :description => "The TCP port to use for connections. Default : 11211",
-#  :required => "recommended",
-#  :default => "11211",
-#  :recipes => ["memcached::install_server", "memcached::default"]
+attribute "jenkins/attach_slave_at_boot",
+  :display_name => "Attach Jenkins Slave At Boot",
+  :description => "Set this input to 'true' if this is a Jenkins slave and" +
+    " should be connected as a slave to the Jenkins server/master at boot.",
+  :default => "false",
+  :choice => ["true", "false"],
+  :recipes => [ "jenkins::do_attach_slave_at_boot" ]
 
