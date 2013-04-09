@@ -24,7 +24,7 @@ app "default" do
   action :setup_db_connection
 end
 
-log "  Restarting applicatoin server"
+log "  Restarting application server"
 # See cookbooks/app_<providers>/providers/default.rb for the "restart" action.
 app "default" do
   action :restart
