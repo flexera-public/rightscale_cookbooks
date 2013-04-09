@@ -8,50 +8,31 @@
 
 rightscale_marker :begin
 
-version = Mixlib::ShellOut.new("ruby -v")
+version = Mixlib::ShellOut.new("ruby --version")
 version.run_command.error!
 
 if version.stdout =~ /1.9/
-  log "  Ruby 1.9 is already installed on this system."
-else
-  case node[:platform]
-  when /centos|redhat/
+  log "  Ruby #{version} is already installed on this system."
+elsif node[:platform] =~ /ubuntu/
 
-    ["ruby", "ruby-libs"].each do |name|
-      package name do
-        action :remove
-      end
-    end
+  packages = [
+    "ruby1.9.1-full",
+    "rubygems"
+  ]
 
-    # Installs ruby 1.9 using bash block instead of package resource because
-    # a wildcard is used to install the latest ruby 1.9 patch level.
-    # Package resource requires ruby version to be hardcoded which won't
-    # scale very well.
-    bash "Install ruby 1.9" do
-      code <<-EOH
-      yum install ruby-1.9.* --assumeyes
-      EOH
-    end
-
-    # Installs rubygems.
-    package "rubygems"
-
-  when /ubuntu/
-
-    ["ruby1.9", "rubygems"].each do |name|
-      package name
-    end
-
-    bash "Use ruby 1.9" do
-      code <<-EOH
-      update-alternatives --set ruby "/usr/bin/ruby1.9"
-      update-alternatives --set gem "/usr/bin/gem1.9"
-      EOH
-    end
-
-  else
-    raise "Platform #{node[:platform]} is not supported by this recipe."
+  packages.each do |pkg|
+    package pkg
   end
+
+  bash "Use ruby 1.9" do
+    code <<-EOH
+      update-alternatives --set ruby "/usr/bin/ruby1.9.1"
+      update-alternatives --set gem "/usr/bin/gem1.9.1"
+    EOH
+  end
+
+else
+  raise "Platform #{node[:platform]} is not supported by this recipe."
 end
 
 rightscale_marker :end

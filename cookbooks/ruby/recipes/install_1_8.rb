@@ -8,17 +8,17 @@
 
 rightscale_marker :begin
 
-version = Mixlib::ShellOut.new("ruby -v")
+version = Mixlib::ShellOut.new("ruby --version")
 version.run_command.error!
 
 if version.stdout =~ /1.8/
-  log "  Ruby 1.8 is already installed on this system."
+  log "  Ruby #{version} is already installed on this system."
 else
   case node[:platform]
   when /centos|redhat/
 
-    ["ruby", "ruby-libs"].each do |name|
-      package name do
+    ["ruby", "ruby-libs"].each do |pkg|
+      package pkg do
         action :remove
       end
     end
@@ -38,8 +38,8 @@ else
 
   when /ubuntu/
 
-    ["ruby1.8", "rubygems"].each do |name|
-      package name
+    ["ruby1.8", "rubygems"].each do |pkg|
+      package pkg
     end
 
     bash "Use ruby 1.8" do
