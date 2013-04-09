@@ -1,167 +1,169 @@
 {
-  "maintainer_email": "support@rightscale.com",
-  "maintainer": "RightScale, Inc.",
-  "name": "jenkins",
-  "description": "Installs/Configures Jenkins",
-  "dependencies": {
-    "logrotate": ">= 0.0.0",
-    "rightscale": ">= 0.0.0",
-    "sys_firewall": ">= 0.0.0"
-  },
   "recipes": {
     "jenkins::do_attach_request": "Installing Jenkins.",
     "jenkins::do_attach_slave_at_boot": "Installing Jenkins.",
-    "jenkins::install_plugins": "Install Jenkins plugins.",
+    "jenkins::install_server": "Install Jenkins.",
     "jenkins::default": "Default recipe for Jenkins setup.",
-    "jenkins::install_server": "Install Jenkins."
+    "jenkins::install_plugins": "Install Jenkins plugins."
   },
-  "platforms": {
-  },
-  "license": "Copyright RightScale, Inc. All rights reserved.",
   "attributes": {
-    "jenkins/server/password": {
+    "jenkins/slave/private_key_file": {
+      "recipes": [
+        "jenkins::do_attach_request"
+      ],
+      "type": "string",
+      "required": "optional",
+      "calculated": false,
+      "description": "Key that the Jenkins slave will                   request the master to connect with.",
       "choice": [
 
       ],
-      "display_name": "Jenkins Password",
-      "description": "Default user's password.",
+      "display_name": "Jenkins Slave Private Key File"
+    },
+    "jenkins/slave/executors": {
       "recipes": [
-        "jenkins::install_server"
+        "jenkins::do_attach_request"
       ],
       "type": "string",
-      "required": "required",
-      "calculated": false
+      "required": "optional",
+      "calculated": false,
+      "description": "Number of Jenkins executors.",
+      "choice": [
+
+      ],
+      "display_name": "Jenkins Slave Executors"
     },
     "jenkins/server/user_email": {
-      "choice": [
-
-      ],
-      "display_name": "Jenkins User Email",
-      "description": "Default user's email.",
       "recipes": [
         "jenkins::install_server"
       ],
       "type": "string",
       "required": "required",
-      "calculated": false
-    },
-    "jenkins/slave/attach_slave_at_boot": {
+      "calculated": false,
+      "description": "Default user's email.",
       "choice": [
 
       ],
-      "display_name": "Attach Jenkins Slave At Boot?",
-      "description": "Is this box a Jenkins slave?",
+      "display_name": "Jenkins User Email"
+    },
+    "jenkins/slave/attach_slave_at_boot": {
       "recipes": [
         "jenkins::do_attach_slave_at_boot"
       ],
       "type": "string",
       "required": "optional",
-      "calculated": false
-    },
-    "jenkins/slave/name": {
+      "calculated": false,
+      "description": "Is this box a Jenkins slave?",
       "choice": [
 
       ],
-      "display_name": "Jenkins Slave Name",
-      "description": "Name of Jenkins slave.",
+      "display_name": "Attach Jenkins Slave At Boot?"
+    },
+    "jenkins/server/password": {
       "recipes": [
+        "jenkins::install_server",
         "jenkins::do_attach_request"
       ],
       "type": "string",
-      "required": "optional",
-      "calculated": false
-    },
-    "jenkins/slave/mode": {
+      "required": "required",
+      "calculated": false,
+      "description": "Default user's password.",
       "choice": [
 
       ],
-      "display_name": "Jenkins Slave Mode",
-      "description": "Mode of Jenkins slave.",
-      "recipes": [
-        "jenkins::do_attach_request"
-      ],
-      "type": "string",
-      "required": "optional",
-      "calculated": false
-    },
-    "jenkins/slave/private_key_file": {
-      "choice": [
-
-      ],
-      "display_name": "Jenkins Slave Private Key File",
-      "description": "Key that the Jenkins slave will                   request the master to connect with.",
-      "recipes": [
-        "jenkins::do_attach_request"
-      ],
-      "type": "string",
-      "required": "optional",
-      "calculated": false
-    },
-    "jenkins/slave/executors": {
-      "choice": [
-
-      ],
-      "display_name": "Jenkins Slave Executors",
-      "description": "Number of Jenkins executors.",
-      "recipes": [
-        "jenkins::do_attach_request"
-      ],
-      "type": "string",
-      "required": "optional",
-      "calculated": false
-    },
-    "jenkins/server/plugins": {
-      "choice": [
-
-      ],
-      "display_name": "Jenkins Plugins",
-      "description": "Jenkins plugins to install.",
-      "recipes": [
-        "jenkins::install_server"
-      ],
-      "type": "string",
-      "required": "optional",
-      "calculated": false
+      "display_name": "Jenkins Password"
     },
     "jenkins/server/user_name": {
+      "recipes": [
+        "jenkins::install_server",
+        "jenkins::do_attach_request"
+      ],
+      "type": "string",
+      "required": "required",
+      "calculated": false,
+      "description": "Default user's sign in name.",
       "choice": [
 
       ],
-      "display_name": "Jenkins User Name",
-      "description": "Default user's sign in name.",
+      "display_name": "Jenkins User Name"
+    },
+    "jenkins/server/plugins": {
       "recipes": [
         "jenkins::install_server"
       ],
       "type": "string",
-      "required": "required",
-      "calculated": false
+      "required": "optional",
+      "calculated": false,
+      "description": "Jenkins plugins to install.",
+      "choice": [
+
+      ],
+      "display_name": "Jenkins Plugins"
+    },
+    "jenkins/slave/name": {
+      "recipes": [
+        "jenkins::do_attach_request"
+      ],
+      "type": "string",
+      "required": "optional",
+      "calculated": false,
+      "description": "Name of Jenkins slave.",
+      "choice": [
+
+      ],
+      "display_name": "Jenkins Slave Name"
     },
     "jenkins/server/user_full_name": {
-      "choice": [
-
-      ],
-      "display_name": "Jenkins User Full Name",
-      "description": "Default user's full name.",
       "recipes": [
         "jenkins::install_server"
       ],
       "type": "string",
       "required": "required",
-      "calculated": false
+      "calculated": false,
+      "description": "Default user's full name.",
+      "choice": [
+
+      ],
+      "display_name": "Jenkins User Full Name"
+    },
+    "jenkins/slave/mode": {
+      "recipes": [
+        "jenkins::do_attach_request"
+      ],
+      "type": "string",
+      "required": "optional",
+      "calculated": false,
+      "description": "Mode of Jenkins slave.",
+      "choice": [
+
+      ],
+      "display_name": "Jenkins Slave Mode"
     }
   },
+  "maintainer": "RightScale, Inc.",
+  "groupings": {
+  },
+  "version": "13.2.0",
   "providing": {
-  },
-  "recommendations": {
-  },
-  "suggestions": {
-  },
-  "replacing": {
   },
   "conflicting": {
   },
-  "version": "13.2.0",
-  "groupings": {
+  "suggestions": {
   },
-  "long_description": "\n"
+  "dependencies": {
+    "sys_firewall": ">= 0.0.0",
+    "rightscale": ">= 0.0.0",
+    "logrotate": ">= 0.0.0"
+  },
+  "platforms": {
+  },
+  "replacing": {
+  },
+  "long_description": "\n",
+  "description": "Installs/Configures Jenkins",
+  "recommendations": {
+  },
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "name": "jenkins",
+  "maintainer_email": "support@rightscale.com"
 }
