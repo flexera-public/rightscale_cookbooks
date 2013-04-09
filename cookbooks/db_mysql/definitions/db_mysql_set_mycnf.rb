@@ -110,7 +110,6 @@ define :db_mysql_set_mycnf,
       value_with_units(50, "M", usage)
     node[:db_mysql][:tunable][:myisam_sort_buffer_size] ||=
       value_with_units(64, "M", usage)
-    node[:db_mysql][:init_timeout] ||= (600 * usage).to_i
   elsif mem < 10 * GB
     node[:db_mysql][:tunable][:table_cache] ||= (512 * usage).to_i
     node[:db_mysql][:tunable][:sort_buffer_size] ||=
@@ -119,7 +118,6 @@ define :db_mysql_set_mycnf,
       value_with_units(200, "M", usage)
     node[:db_mysql][:tunable][:myisam_sort_buffer_size] ||=
       value_with_units(96, "M", usage)
-    node[:db_mysql][:init_timeout] ||= (1200 * usage).to_i
   elsif mem < 25 * GB
     node[:db_mysql][:tunable][:table_cache] ||= (1024 * usage).to_i
     node[:db_mysql][:tunable][:sort_buffer_size] ||=
@@ -128,7 +126,6 @@ define :db_mysql_set_mycnf,
       value_with_units(300, "M", usage)
     node[:db_mysql][:tunable][:myisam_sort_buffer_size] ||=
       value_with_units(128, "M", usage)
-    node[:db_mysql][:init_timeout] ||= (1800 * usage).to_i
   elsif mem < 50 * GB
     node[:db_mysql][:tunable][:table_cache] ||= (2048 * usage).to_i
     node[:db_mysql][:tunable][:sort_buffer_size] ||=
@@ -137,7 +134,6 @@ define :db_mysql_set_mycnf,
       value_with_units(400, "M", usage)
     node[:db_mysql][:tunable][:myisam_sort_buffer_size] ||=
       value_with_units(256, "M", usage)
-    node[:db_mysql][:init_timeout] ||= (2400 * usage).to_i
   else
     node[:db_mysql][:tunable][:table_cache] ||= (4096 * usage).to_i
     node[:db_mysql][:tunable][:sort_buffer_size] ||=
@@ -146,7 +142,6 @@ define :db_mysql_set_mycnf,
       value_with_units(500, "M", usage)
     node[:db_mysql][:tunable][:myisam_sort_buffer_size] ||=
       value_with_units(512, "M", usage)
-    node[:db_mysql][:init_timeout] ||= (3000 * usage).to_i
   end
 
   log "  Installing my.cnf with server_id = #{params[:server_id]}," +
