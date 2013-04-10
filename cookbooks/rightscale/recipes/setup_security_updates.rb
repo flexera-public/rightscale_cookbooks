@@ -27,16 +27,20 @@ if "#{node[:rightscale][:security_update]}" == "Enabled"
       EOH
     end
   when "centos", "redhat"
-    # Set all repos to latest
-    files = Dir.glob("/etc/yum.repos.d/*")
+    ruby_block "evaluate db type" do
+      block do
+        # Set all repos to latest
+        files = Dir.glob("/etc/yum.repos.d/*.repo")
 
-    repo_regex = /\/archive\/20[0-9]{6}$/
-    latest = "/archive/latest"
+        repo_regex = /\/archive\/20[0-9]{6}$/
+        latest = "/archive/latest"
 
-    files.each do |file_name|
-      text = File.read(file_name)
-      replace = text.gsub!(repo_regex, latest)
-      File.open(file_name, "w") { |file| file.puts replace }
+        files.each do |file_name|
+          text = File.read(file_name)
+          text.gsub!(repo_regex, latest)
+          File.open(file_name, "w") { |file| file.puts text }
+        end
+      end
     end
 
     # Update packages
@@ -44,7 +48,7 @@ if "#{node[:rightscale][:security_update]}" == "Enabled"
       flags "-ex"
       code <<-EOH
         # Assume we want to ignore output for the same reason as apt-get update
-        yum --security update || true
+        yum -y --security update || true
       EOH
     end
   end
