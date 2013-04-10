@@ -241,7 +241,7 @@ attribute "block_device/ephemeral/vg_data_percentage",
   :recipes => ["block_device::setup_ephemeral"]
 
 attribute "block_device/ephemeral/file_system_type",
-  :display => "Ephemeral File System Type",
+  :display_name => "Ephemeral File System Type",
   :description =>
     "The type of file system that will be installed on the ephemeral device." +
     " By default, this input will be set to 'xfs'. This input is ignored on" +
