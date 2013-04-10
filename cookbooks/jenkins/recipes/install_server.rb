@@ -60,6 +60,24 @@ when "ubuntu"
     source "http://pkg.jenkins-ci.org/debian/binary/jenkins_#{node[:jenkins][:server][:version]}_all.deb"
   end
 
+  # dpkg doesn't resolve and install all dependencies and some of the packages
+  # that jenkins depends are virtual packages provided by some other packages.
+  # So Install all the dependencies before attempting to install jenkins deb
+  # package. This complex setup is only required to install a specific version
+  # of jenkins as the latest version might break the existing monkey
+  # configuration.
+  jenkins_dependencies = %w(
+    ca-certificates-java daemon java-common libasyncns0 libatk-wrapper-java
+    libatk-wrapper-java-jni libatk1.0-0 libatk1.0-data libavahi-client3
+    libavahi-common-data libavahi-common3 libcups2 libflac8 libgtk2.0-0
+    libgtk2.0-common libjson0 libnspr4 libnss3 libnss3-1d libogg0 libpulse0
+    libsndfile1 libvorbis0a libvorbisenc2 libxcursor1 libxrandr2 openjdk-6-jre
+    openjdk-6-jre-headless openjdk-6-jre-lib tzdata-java
+  )
+  execute "install jenkins dependencies" do
+    command "apt-get install #{jenkins_dependencies.join(" ")}"
+  end
+
   # Install Jenkins
   execute "install jenkins" do
     command "dpkg --install /tmp/jenkins_#{node[:jenkins][:server][:version]}_all.deb"
