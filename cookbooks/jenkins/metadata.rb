@@ -75,7 +75,7 @@ attribute "jenkins/slave/mode",
   :description => "Mode of Jenkins slave. Choose 'normal' if this slave can" +
     " be used for running any jobs or choose 'exclusive' if this slave should" +
     " be used only for tied jobs.",
-  :default => "normal"
+  :default => "normal",
   :choice => ["normal", "exclusive"],
   :recipes => ["jenkins::do_attach_request"]
 
