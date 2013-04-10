@@ -27,7 +27,11 @@ attribute "jenkins/server/user_name",
   :display_name => "Jenkins User Name",
   :description => "Default user's sign in name.",
   :required => "required",
-  :recipes => ["jenkins::install_server", "jenkins::do_attach_request"]
+  :recipes => [
+    "jenkins::install_server",
+    "jenkins::do_attach_request",
+    "jenkins::do_attach_slave_at_boot"
+  ]
 
 attribute "jenkins/server/user_email",
   :display_name => "Jenkins User Email",
@@ -45,7 +49,11 @@ attribute "jenkins/server/password",
   :display_name => "Jenkins Password",
   :description => "Default user's password.",
   :required => "required",
-  :recipes => ["jenkins::install_server", "jenkins::do_attach_request"]
+  :recipes => [
+    "jenkins::install_server",
+    "jenkins::do_attach_request",
+    "jenkins::do_attach_slave_at_boot"
+  ]
 
 attribute "jenkins/server/version",
   :display_name => "Jenkins Version",
@@ -68,7 +76,7 @@ attribute "jenkins/slave/name",
     " RightScale instance uuid will be used as the name if this input is" +
     " left blank",
   :required => "optional",
-  :recipes => ["jenkins::do_attach_request"]
+  :recipes => ["jenkins::do_attach_request", "jenkins::do_attach_slave_at_boot"]
 
 attribute "jenkins/slave/mode",
   :display_name => "Jenkins Slave Mode",
@@ -77,13 +85,13 @@ attribute "jenkins/slave/mode",
     " be used only for tied jobs.",
   :default => "normal",
   :choice => ["normal", "exclusive"],
-  :recipes => ["jenkins::do_attach_request"]
+  :recipes => ["jenkins::do_attach_request", "jenkins::do_attach_slave_at_boot"]
 
 attribute "jenkins/slave/executors",
   :display_name => "Jenkins Slave Executors",
   :description => "Number of Jenkins executors.",
   :required => "optional",
-  :recipes => ["jenkins::do_attach_request"]
+  :recipes => ["jenkins::do_attach_request", "jenkins::do_attach_slave_at_boot"]
 
 
 # Attributes shared between master and slave
@@ -93,7 +101,7 @@ attribute "jenkins/public_key",
   :description => "This public key will be used by Jenkins slave to allow" +
     " connections from the master/server",
   :required => "required",
-  :recipes => ["jenkins::do_attach_request"]
+  :recipes => ["jenkins::do_attach_request", "jenkins::do_attach_slave_at_boot"]
 
 attribute "jenkins/private_key",
   :display_name => "Jenkins Private Key",
