@@ -37,7 +37,7 @@ recipe "rightscale::install_file_stats_collectd_plugin",
   "Installs the file-stats.rb collectd plugin for monitoring support." +
   " It is also used for mysql binary backup alerting."
 
-recipe "rightscale::do_security_update",
+recipe "rightscale::do_security_updates",
   "Do a system package update to pull in the latest security patches."
 
 recipe "rightscale::setup_security_updates",
@@ -54,7 +54,7 @@ attribute "rightscale/security_update",
   :choice => [ "Enabled", "Disabled" ],
   :default => "Disabled",
   :recipes => [
-    "rightscale::do_security_update",
+    "rightscale::do_security_updates",
     "rightscale::setup_security_updates",
     "rightscale::setup_security_update_monitoring"
   ]

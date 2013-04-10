@@ -194,7 +194,7 @@
       "default": "Disabled",
       "type": "string",
       "recipes": [
-        "rightscale::do_security_update",
+        "rightscale::do_security_updates",
         "rightscale::setup_security_updates",
         "rightscale::setup_security_update_monitoring"
       ],
@@ -218,7 +218,7 @@
     "rightscale::setup_ssh": "Installs the private ssh key.",
     "rightscale::setup_hostname": "Sets the system hostname.",
     "rightscale::setup_security_update_monitoring": "Sets up collectd plugin to monitor for available security updates.",
-    "rightscale::do_security_update": "Do a system package update to pull in the latest security patches.",
+    "rightscale::do_security_updates": "Do a system package update to pull in the latest security patches.",
     "rightscale::setup_monitoring": "Installs and configures RightScale dashboard monitoring features.",
     "rightscale::setup_server_tags": "Sets machine tags that are common to all RightScale managed servers.",
     "rightscale::setup_security_updates": "Sets up package manager software for security updates.",
