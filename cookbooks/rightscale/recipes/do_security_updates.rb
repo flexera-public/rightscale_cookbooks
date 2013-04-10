@@ -9,8 +9,6 @@ rightscale_marker :begin
 
 if "#{node[:rightscale][:security_update]}" == "Enabled"
 
-# TODO These should be in a helper method since this code is duplicate
-# of the setup_security
   case node[:platform]
   when "ubuntu"
     bash "Apply Ubuntu security updates" do

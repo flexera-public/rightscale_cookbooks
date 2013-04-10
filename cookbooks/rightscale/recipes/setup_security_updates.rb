@@ -16,14 +16,9 @@ if "#{node[:rightscale][:security_update]}" == "Enabled"
       flags "-ex"
       code <<-EOH
         # This is the Red teams bash script
-        # Set all security repos to latest
+        # Set all Ubuntu security repos to latest
+# TODO - except rightscale - which doesn't exist???
         sed -i "s%ubuntu_daily/.* $(lsb_release -cs)-security%ubuntu_daily/latest $(lsb_release -cs)-security%" /etc/apt/sources.list.d/rightscale.sources.list
-
-        # Update the local package index
-        # Make sure we DON'T check the output of this, as apt-get update
-        # may return a non-zero error code when one server is down but all
-        # the others are up, and a partial update was successful!
-        apt-get update || true
       EOH
     end
   when "centos", "redhat"
@@ -41,15 +36,6 @@ if "#{node[:rightscale][:security_update]}" == "Enabled"
           File.open(file_name, "w") { |file| file.puts text }
         end
       end
-    end
-
-    # Update packages
-    bash "Yum security updates" do
-      flags "-ex"
-      code <<-EOH
-        # Assume we want to ignore output for the same reason as apt-get update
-        yum -y --security update || true
-      EOH
     end
   end
 
