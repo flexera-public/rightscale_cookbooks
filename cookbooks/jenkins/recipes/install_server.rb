@@ -43,6 +43,10 @@ when "centos"
     command "rpm --import http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key"
   end
 
+  # If a version is specified, include the release information. This is only
+  # required for CentOS. The release appears to be the same for all Jenkins
+  # versions available.
+  node[:jenkins][:server][:version] += "-1.1" if node[:jenkins][:server][:version]
   # Install Jenkins package
   package "jenkins" do
     version node[:jenkins][:server][:version]
@@ -50,27 +54,19 @@ when "centos"
 
   package "java-1.6.0-openjdk"
 when "ubuntu"
-  # Import Jenkins key
-  execute "import jenkins key" do
-    command "wget -q -O - http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add -"
+  # Download the deb package file for the specified version
+  remote_file "/tmp/jenkins_#{node[:jenkins][:server][:version]}_all.deb" do
+    source "http://pkg.jenkins-ci.org/debian/binary/jenkins_#{node[:jenkins][:server][:version]}_all.deb"
   end
 
-  # Add Jenkins repo to repo list
-  file "/etc/apt/sources.list.d/jenkins.sources.list" do
-    content "deb http://pkg.jenkins-ci.org/debian binary/"
-    mode 0644
-    owner "root"
-    group "root"
-    action :create
+  # Install Jenkins
+  execute "install jenkins" do
+    command "dpkg --install jenkins_#{node[:jenkins][:server][:version]}_all.deb"
   end
 
-  # Update package local index
-  execute "update package local index" do
-    command "apt-get update"
-  end
-
-  package "jenkins" do
-    version node[:jenkins][:server][:version]
+  # Remove the downloaded deb package
+  file "/tmp/jenkins_#{node[:jenkins][:server][:version]}_all.deb" do
+    action :delete
   end
 end
 

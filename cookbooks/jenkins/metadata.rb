@@ -50,8 +50,7 @@ attribute "jenkins/server/password",
 attribute "jenkins/server/version",
   :display_name => "Jenkins Version",
   :description => "Jenkins version to install. Leave it blank to get the" +
-    " latest version. It should be in the format of version-release." +
-    " Example. 1.500-1.1 where '1.500' is the version and '1.1' is the release.",
+    " latest version. Example: 1.500",
   :required => "optional",
   :recipes => [ "jenkins::install_server" ]
 
