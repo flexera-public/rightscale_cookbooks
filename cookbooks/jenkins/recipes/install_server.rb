@@ -10,7 +10,7 @@ rightscale_marker :begin
 # Create the jenkins system user.
 user node[:jenkins][:server][:system_user] do
   home "/root"
-  group node[:jenkins][:server][:system_user]
+  group node[:jenkins][:server][:system_group]
 end
 
 # Create the home directory for Jenkins.
