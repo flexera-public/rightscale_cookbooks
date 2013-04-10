@@ -8,7 +8,9 @@
 rightscale_marker :begin
 
 case node[:platform]
-when "centos"
+when "ubuntu"
+  package "openjdk-6-jre"
+else
   package "java-1.6.0-openjdk"
 end
 
