@@ -59,7 +59,7 @@ when "ubuntu"
   # Add Jenkins repo to repo list
   execute "add jenkins repo" do
     command "echo #{node[:jenkins][:apt_repo]} >> /etc/apt/sources.list"
-    not_if { File.open("/etc/apt/sources.list").lines.any? { |line| line.chomp == node[:jenkins][:apt_repo] }
+    not_if { File.open("/etc/apt/sources.list").lines.any? { |line| line.chomp == node[:jenkins][:apt_repo] } }
   end
 
   package "jenkins" do

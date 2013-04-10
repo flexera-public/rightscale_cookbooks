@@ -20,7 +20,7 @@ require "jenkins_api_client"
 execute "add jenkins public key to authorized keys" do
   command "echo #{node[:jenkins][:public_key]}" +
     " >> #{ENV['HOME']}/.ssh/authorized_keys"
-  not_if { File.open("#{ENV['HOME']}/.ssh/authorized_keys").lines.any? { |line| line.chomp == node[:jenkins][:public_key]} }
+  not_if { File.open("#{ENV['HOME']}/.ssh/authorized_keys").lines.any? { |line| line.chomp == node[:jenkins][:public_key] } }
 end
 
 # Obtain information about Jenkins master by querying for its tags
