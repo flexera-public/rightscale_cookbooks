@@ -5,7 +5,7 @@ description      "RightScale Cookbooks"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "13.4.0"
 
-# supports "centos", "~> 5.8", "~> 6"
+# supports "centos", "~> 5.8", "~> 6.2"
 # supports "redhat", "~> 5.8"
 # supports "ubuntu", "~> 10.04", "~> 12.04"
 
@@ -36,6 +36,28 @@ recipe "rightscale::install_mysql_collectd_plugin",
 recipe "rightscale::install_file_stats_collectd_plugin",
   "Installs the file-stats.rb collectd plugin for monitoring support." +
   " It is also used for mysql binary backup alerting."
+
+recipe "rightscale::do_security_update",
+  "Do a system package update to pull in the latest security patches."
+
+recipe "rightscale::setup_security_updates",
+  "Sets up package manager software for security updates."
+
+recipe "rightscale::setup_security_update_monitoring",
+  "Sets up collectd plugin to monitor for available security updates."
+ 
+
+attribute "rightscale/security_update",
+  :display_name => "Enable security updates",
+  :description => "Enable security updates.",
+  :required => "optional",
+  :choice => [ "Enabled", "Disabled" ],
+  :default => "Enabled",
+  :recipes => [
+    "sys::do_security_update",
+    "sys::setup_security_updates",
+    "sys::setup_security_update_monitoring"
+  ]
 
 attribute "rightscale/timezone",
   :display_name => "Timezone",
