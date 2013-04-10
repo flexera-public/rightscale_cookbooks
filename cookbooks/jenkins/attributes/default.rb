@@ -25,6 +25,7 @@ default[:jenkins][:mirror] = "http://updates.jenkins-ci.org"
 # Attributes for Jenkins slave
 
 default[:jenkins][:slave][:user] = "root"
+default[:jenkins][:slave][:name] = node[:rightscale][:instance_uuid]
 default[:jenkins][:slave][:mode] = "normal"
 default[:jenkins][:slave][:executors] = "10"
 default[:jenkins][:private_key_file] = "#{node[:jenkins][:server][:home]}/jenkins_key"
