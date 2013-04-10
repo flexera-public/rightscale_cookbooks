@@ -50,17 +50,20 @@ when "centos"
 
   package "java-1.6.0-openjdk"
 when "ubuntu"
-  # See http://jenkins-ci.org/debian/
-  apt_repository "jenkins" do
-    uri "http://pkg.jenkins-ci.org/debian"
-    distribution "binary/"
-    components [""]
-    key "http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key"
-    action :add
+  # Import Jenkins key
+  execute "import jenkins key" do
+    command "wget -q -O - http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add -"
   end
 
-  apt_package "jenkins" do
-    action :install
+  node[:jenkins][:apt_repo] = "deb http://pkg.jenkins-ci.org/debian binary/"
+  # Add Jenkins repo to repo list
+  execute "add jenkins repo" do
+    command "echo #{node[:jenkins][:apt_repo]} >> /etc/apt/sources.list"
+    not_if { File.open("/etc/apt/sources.list").lines.any? { |line| line.chomp == node[:jenkins][:apt_repo] }
+  end
+
+  package "jenkins" do
+    version node[:jenkins][:server][:version]
   end
 end
 
