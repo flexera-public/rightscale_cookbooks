@@ -194,9 +194,9 @@
       "default": "Disabled",
       "type": "string",
       "recipes": [
-        "sys::do_security_update",
-        "sys::setup_security_updates",
-        "sys::setup_security_update_monitoring"
+        "rightscale::do_security_update",
+        "rightscale::setup_security_updates",
+        "rightscale::setup_security_update_monitoring"
       ],
       "display_name": "Enable security updates",
       "description": "Enable security updates."

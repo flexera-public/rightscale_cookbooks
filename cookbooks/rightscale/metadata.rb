@@ -54,9 +54,9 @@ attribute "rightscale/security_update",
   :choice => [ "Enabled", "Disabled" ],
   :default => "Disabled",
   :recipes => [
-    "sys::do_security_update",
-    "sys::setup_security_updates",
-    "sys::setup_security_update_monitoring"
+    "rightscale::do_security_update",
+    "rightscale::setup_security_updates",
+    "rightscale::setup_security_update_monitoring"
   ]
 
 attribute "rightscale/timezone",
