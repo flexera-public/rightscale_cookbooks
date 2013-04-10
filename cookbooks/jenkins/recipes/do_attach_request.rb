@@ -68,6 +68,7 @@ ruby_block "Attach slave using Jenkins API" do
         :slave_user => node[:jenkins][:slave][:user],
         :slave_host => node[:jenkins][:ip],
         :private_key_file => node[:jenkins][:private_key_file],
+        :mode => node[:jenkins][:slave][:mode],
         :executors => node[:jenkins][:slave][:executors]
       )
       node[:jenkins][:slave][:attach_status] = :attached
