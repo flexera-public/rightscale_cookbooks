@@ -31,8 +31,17 @@ gem_package "rubygems-update" do
   action :install
 end
 
+# Set the update rubygems command based on the platform
+update_rubygems_cmd =
+  case node[:platform]
+  when "ubuntu"
+    "/usr/local/bin/update_rubygems"
+  else
+    "/usr/bin/update_rubygems"
+  end
+
 execute "update rubygems" do
-  command "/usr/bin/update_rubygems"
+  command update_rubygems_cmd
 end
 
 # Installing gem dependencies
