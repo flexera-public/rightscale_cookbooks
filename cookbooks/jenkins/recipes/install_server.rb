@@ -61,7 +61,7 @@ when "ubuntu"
 
   # Install Jenkins
   execute "install jenkins" do
-    command "dpkg --install jenkins_#{node[:jenkins][:server][:version]}_all.deb"
+    command "dpkg --install /tmp/jenkins_#{node[:jenkins][:server][:version]}_all.deb"
   end
 
   # Remove the downloaded deb package
