@@ -50,7 +50,7 @@ recipe "rightscale::setup_security_update_monitoring",
 attribute "rightscale/security_update",
   :display_name => "Enable security updates",
   :description => "Enable security updates.",
-  :required => "optional",
+  :required => "required",
   :choice => [ "Enabled", "Disabled" ],
   :default => "Enabled",
   :recipes => [

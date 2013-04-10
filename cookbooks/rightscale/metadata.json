@@ -185,7 +185,7 @@
       "description": "The domain search suffix you would like this node to have. Example: example.com"
     },
     "rightscale/security_update": {
-      "required": "optional",
+      "required": "required",
       "calculated": false,
       "choice": [
         "Enabled",
