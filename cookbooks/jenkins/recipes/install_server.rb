@@ -55,11 +55,18 @@ when "ubuntu"
     command "wget -q -O - http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add -"
   end
 
-  node[:jenkins][:apt_repo] = "deb http://pkg.jenkins-ci.org/debian binary/"
   # Add Jenkins repo to repo list
-  execute "add jenkins repo" do
-    command "echo #{node[:jenkins][:apt_repo]} >> /etc/apt/sources.list"
-    not_if { File.open("/etc/apt/sources.list").lines.any? { |line| line.chomp == node[:jenkins][:apt_repo] } }
+  file "/etc/apt/sources.list.d/jenkins.sources.list" do
+    content "deb http://pkg.jenkins-ci.org/debian binary/"
+    mode 0644
+    owner "root"
+    group "root"
+    action :create
+  end
+
+  # Update package local index
+  execute "update package local index" do
+    command "apt-get update"
   end
 
   package "jenkins" do
