@@ -232,6 +232,14 @@ action :code_update do
     to "/mnt/ephemeral/log/rails/#{node[:web_apache][:application_name]}"
   end
 
+  # Sets permissions for the code to be owned by the application user.
+  bash "chown_home" do
+    flags "-ex"
+    code <<-EOH
+      chown -R #{node[:app][:user]}:#{node[:app][:group]} #{deploy_dir}
+    EOH
+  end
+
   log "  Generating new logrotate config for rails application"
   # See cookbooks/rightscale/definitions/rightscale_logrotate_app.rb for the "rightscale_logrotate_app" definition.
   rightscale_logrotate_app "rails" do
