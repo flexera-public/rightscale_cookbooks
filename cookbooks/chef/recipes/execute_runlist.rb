@@ -8,7 +8,7 @@
 
 rightscale_marker :begin
 
-log "  Chef client current role/s: #{node[:chef][:client][:current_roles]}"
+log "  Current Chef Client role(s) are: #{node[:chef][:client][:current_roles]}"
 
 if node[:chef][:client][:current_roles] != node[:chef][:client][:roles]
   # Updates runlist.json file with new roles.
@@ -16,7 +16,7 @@ if node[:chef][:client][:current_roles] != node[:chef][:client][:roles]
   # definition.
   chef_setup_runlist
 else
-  # Runs the Chef client.
+  # Runs the Chef Client.
   execute "chef-client"
 end
 

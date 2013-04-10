@@ -8,10 +8,10 @@
 
 rightscale_marker :begin
 
-# Creates the Chef client configuration directory.
+# Creates the Chef Client configuration directory.
 directory node[:chef][:client][:config_dir]
 
-# Creates the Chef client configuration file.
+# Creates the Chef Client configuration file.
 template "#{node[:chef][:client][:config_dir]}/client.rb" do
   source "chef_client_conf.erb"
   mode "0644"
@@ -24,20 +24,22 @@ template "#{node[:chef][:client][:config_dir]}/client.rb" do
   )
 end
 
-# Creates the Chef client private ssh key.
+# Creates the Chef Client private SSH key.
 template "#{node[:chef][:client][:config_dir]}/validation.pem" do
   source "private_ssh_key.erb"
   mode "0600"
   backup false
   cookbook "chef"
-  variables :private_ssh_key => node[:chef][:client][:private_ssh_key]
+  variables(
+    :private_ssh_key => node[:chef][:client][:private_ssh_key]
+  )
 end
 
-# Creates the Chef client runlist.json file.
+# Creates the Chef Client runlist.json file.
 # See cookbooks/chef/definitions/setup_runlist.rb for the "setup_runlist"
 # definition.
 chef_setup_runlist
 
-log "  Chef client configuration is completed"
+log "  Chef Client configuration is completed."
 
 rightscale_marker :end

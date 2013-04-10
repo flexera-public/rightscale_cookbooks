@@ -13,8 +13,7 @@ log_level              :info
 log_location           "/var/log/chef-client.log"
 chef_server_url        "<%= @server_url %>"
 validation_client_name "<%= @validation_name %>"
-<%# Includes node_name if set, else Ohai will detect fqdn automatically %>
-<% if @node_name != "" -%>
-  <% node_name = "node_name              \"#{@node_name}\"" %>
-  <%= node_name %>
+<%# Includes node_name if set, else Ohai will detect FQDN automatically %>
+<% unless @node_name.empty? %>
+node_name              "<%= @node_name %>"
 <% end %>
