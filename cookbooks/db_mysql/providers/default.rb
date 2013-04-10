@@ -370,10 +370,11 @@ action :install_client do
 
   # Installs MySQL client gem in compile phase.
   # It is required by rightscale_tools gem for MySQL operations.
-  gem_package 'mysql' do
-    gem_binary '/opt/rightscale/sandbox/bin/gem'
-    version '2.7'
-    options '-- --build-flags --with-mysql-config'
+  gem_package "mysql sandbox gem" do
+    package_name "mysql"
+    version "2.7"
+    gem_binary "/opt/rightscale/sandbox/bin/gem"
+    options "-- --build-flags --with-mysql-config"
   end
 
   ruby_block 'clear gem paths for mysql' do
@@ -695,9 +696,10 @@ action :install_client_driver do
     # This adapter type is used by Apache Rails Passenger application servers.
     node[:db][:client][:driver] = "mysql"
 
-    gem_package 'mysql' do
+    gem_package "mysql system gem" do
+      package_name "mysql"
       gem_binary "/usr/bin/gem"
-      options '-- --build-flags --with-mysql-config'
+      options "-- --build-flags --with-mysql-config"
     end
   else
     raise "Unknown driver type specified: #{type}"
