@@ -185,13 +185,13 @@
       "description": "The domain search suffix you would like this node to have. Example: example.com"
     },
     "rightscale/security_update": {
-      "required": "required",
+      "required": "optional",
       "calculated": false,
       "choice": [
         "Enabled",
         "Disabled"
       ],
-      "default": "Enabled",
+      "default": "Disabled",
       "type": "string",
       "recipes": [
         "sys::do_security_update",
