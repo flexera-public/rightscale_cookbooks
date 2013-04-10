@@ -17,7 +17,7 @@ else
   default[:jenkins][:ip] = "127.0.0.1"
 end
 default[:jenkins][:server][:home] = "/var/lib/jenkins"
-default[:jenkins][:server][:system_user] = "jenkins"
+default[:jenkins][:server][:system_user] = "root"
 default[:jenkins][:server][:system_group] = "root"
 default[:jenkins][:server][:port] = "8080"
 default[:jenkins][:mirror] = "http://updates.jenkins-ci.org"

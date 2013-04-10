@@ -7,12 +7,6 @@
 
 rightscale_marker :begin
 
-# Create the jenkins system user.
-user node[:jenkins][:server][:system_user] do
-  home "/root"
-  group node[:jenkins][:server][:system_group]
-end
-
 # Create the home directory for Jenkins.
 directory node[:jenkins][:server][:home] do
   mode 0755
@@ -93,6 +87,40 @@ service "jenkins" do
   action :stop
 end
 
+# Change the jenkins user to root. Virtualmonkey doesn't allow running jenkins
+# jobs as jenkins user or any other regular user. So jenkins should run as
+# root. The following ticket is filed with virtualmonkey
+# https://wush.net/trac/rightscale/ticket/5651
+# Once this ticket is fixed, a new 'monkey' group can be created and any user
+# belonging to that group will be allowed to run monkey tests.
+jenkins_system_config_file =
+  case node[:platform]
+  when "ubuntu"
+    "/etc/default/jenkins"
+  else
+    "/etc/sysconfig/jenkins"
+  end
+
+template jenkins_system_config_file do
+  source "jenkins_system_config.erb"
+  cookbook "jenkins"
+  owner node[:jenkins][:server][:system_user]
+  group node[:jenkins][:server][:system_group]
+  mode 0644
+  variables(
+    :jenkins_home => node[:jenkins][:server][:home],
+    :jenkins_user => node[:jenkins][:server][:system_user],
+    :jenkins_port => node[:jenkins][:server][:port]
+  )
+end
+
+# Make sure the permission for jenkins log directory set correctly
+directory "/var/log/jenkins" do
+  mode 0750
+  owner node[:jenkins][:server][:system_user]
+  group node[:jenkins][:server][:system_group]
+end
+
 # Create the Jenkins user directory
 directory "#{node[:jenkins][:server][:home]}/users/#{node[:jenkins][:server][:user_name]}" do
   recursive true
@@ -133,11 +161,11 @@ template "#{node[:jenkins][:server][:home]}/users/#{node[:jenkins][:server][:use
   mode 0644
   owner node[:jenkins][:server][:system_user]
   group node[:jenkins][:server][:system_group]
-  variables({
+  variables(
     :user_full_name => node[:jenkins][:server][:user_full_name],
     :password_encrypted => node[:jenkins][:server][:password_encrypted],
     :email => node[:jenkins][:server][:user_email]
-  })
+  )
 end
 
 service "jenkins" do
