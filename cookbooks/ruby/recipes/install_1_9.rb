@@ -12,7 +12,7 @@ version = Mixlib::ShellOut.new("ruby --version")
 version.run_command.error!
 
 if version.stdout =~ /1.9/
-  log "  Ruby #{version} is already installed on this system."
+  log "  Ruby #{version.stdout} is already installed on this system."
 elsif node[:platform] =~ /ubuntu/
 
   packages = [
@@ -31,6 +31,8 @@ elsif node[:platform] =~ /ubuntu/
     EOH
   end
 
+  version.run_command.error!
+  log "  Installed system ruby version is: #{version.stdout}"
 else
   raise "Platform #{node[:platform]} is not supported by this recipe."
 end

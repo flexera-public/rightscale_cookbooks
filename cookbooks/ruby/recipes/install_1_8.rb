@@ -12,8 +12,9 @@ version = Mixlib::ShellOut.new("ruby --version")
 version.run_command.error!
 
 if version.stdout =~ /1.8/
-  log "  Ruby #{version} is already installed on this system."
+  log "  Ruby #{version.stdout} is already installed on this system."
 else
+
   case node[:platform]
   when /centos|redhat/
 
@@ -29,7 +30,7 @@ else
     # scale very well.
     bash "Install ruby 1.8" do
       code <<-EOH
-      yum install ruby-1.8.* --assumeyes
+        yum install ruby-1.8.* --assumeyes
       EOH
     end
 
@@ -44,14 +45,17 @@ else
 
     bash "Use ruby 1.8" do
       code <<-EOH
-      update-alternatives --set ruby "/usr/bin/ruby1.8"
-      update-alternatives --set gem "/usr/bin/gem1.8"
+        update-alternatives --set ruby "/usr/bin/ruby1.8"
+        update-alternatives --set gem "/usr/bin/gem1.8"
       EOH
     end
 
   else
     raise "Platform #{node[:platform]} is not supported by this recipe."
   end
+
+  version.run_command.error!
+  log "  Installed system ruby version is: #{version.stdout}"
 end
 
 rightscale_marker :end
