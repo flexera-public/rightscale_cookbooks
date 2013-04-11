@@ -15,7 +15,6 @@ if "#{node[:rightscale][:security_update]}" == "Enabled"
     bash "Unfreeze Ubuntu security repositories" do
       flags "-ex"
       code <<-EOH
-        # This is the Red teams bash script
         # Set all Ubuntu security repos to latest
 # TODO - except rightscale - which doesn't exist???
         sed -i "s%ubuntu_daily/.* $(lsb_release -cs)-security%ubuntu_daily/latest $(lsb_release -cs)-security%" /etc/apt/sources.list.d/rightscale.sources.list
@@ -31,6 +30,8 @@ if "#{node[:rightscale][:security_update]}" == "Enabled"
         latest = "/archive/latest"
 
         files.each do |file_name|
+          # Skip non-upstream repositories
+          next if file_name =~ /RightScale/
           text = File.read(file_name)
           text.gsub!(repo_regex, latest)
           File.open(file_name, "w") { |file| file.puts text }
