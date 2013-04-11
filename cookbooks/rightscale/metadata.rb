@@ -9,6 +9,9 @@ version          "13.4.0"
 # supports "redhat", "~> 5.8"
 # supports "ubuntu", "~> 10.04", "~> 12.04"
 
+depends "driveclient"
+depends "cloudmonitoring"
+
 recipe "rightscale::default",
   "Installs the utilities that are required for RightScale support."
 
