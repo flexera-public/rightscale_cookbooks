@@ -694,10 +694,22 @@ action :install_client_driver do
     end
   when "ruby"
     # This adapter type is used by Apache Rails Passenger application servers.
-    node[:db][:client][:driver] = "mysql"
+    version = Mixlib::ShellOut.new("ruby --version")
+    version.run_command.error!
+
+    case version.stdout
+    when /1.8/
+      node[:db][:client][:driver] = "mysql"
+    when /1.9/
+      node[:db][:client][:driver] = "mysql2"
+    else
+      raise "Ruby #{version.stdout} is not supported."
+    end
+
+    log "  Setting database adapter to #{node[:db][:client][:driver]}."
 
     gem_package "mysql system gem" do
-      package_name "mysql"
+      package_name node[:db][:client][:driver]
       gem_binary "/usr/bin/gem"
       options "-- --build-flags --with-mysql-config"
     end
