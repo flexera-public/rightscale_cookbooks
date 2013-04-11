@@ -96,7 +96,7 @@ module RightScale
 
         # Check for the role "rax_managed". This role will only be set on a
         # Rackspace Managed Cloud.
-        matched_data = xenstore_ls.match(/roles = (.*)/)
+        matched_data = xenstore_ls.stdout.match(/roles = (.*)/)
         !matched_data.nil? && matched_data[1].include?("rax_managed")
       end
 
@@ -111,7 +111,7 @@ module RightScale
 
         # Obtain the region from the xenstore.
         region = ""
-        matched_data = xenstore_ls.match(/region = \"(.*)\"/)
+        matched_data = xenstore_ls.stdout.match(/region = \"(.*)\"/)
         region = matched_data[1] unless matched_data.nil?
         region
       end
