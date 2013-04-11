@@ -12,9 +12,9 @@ rightscale_marker :begin
 # cookbooks/rightscale/libraries/helper.rb for the "is_rackspace_managed_cloud"
 # method.
 if RightScale::Utils::Helper.is_rackspace_managed_cloud?
-  if node[:rightscale][:rackspace_username].empty? ||
-    node[:rightscale][:rackspace_api_key].empty? ||
-    node[:rightscale][:rackspace_tenant_id].empty?
+  if node[:rightscale][:rackspace_username].nil? ||
+    node[:rightscale][:rackspace_api_key].nil? ||
+    node[:rightscale][:rackspace_tenant_id].nil?
     raise "Inputs Rackspace Username, Rackspace API Key, and" +
       " Rackspace Tenant ID are required for setting up the Rackspace Managed" +
       " Cloud."
