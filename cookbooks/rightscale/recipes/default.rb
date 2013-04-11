@@ -24,4 +24,6 @@ include_recipe "rightscale::setup_timezone"
 # See cookbooks/rightscale/recipes/setup_monitoring.rb for the "rightscale::setup_monitoring" recipe.
 include_recipe "rightscale::setup_monitoring"
 
-rightscale_marker :end
+if RightScale::Utils::Helper.is_rackspace_managed_cloud?
+  include_recipe "rightscale::setup_cloud"
+end

@@ -77,9 +77,43 @@ module RightScale
       #
       # @param [String] ip IP addres
       #
-      # @return [Bool] True if the IP address is valid and false if it is invalid
+      # @return [Boolean] True if the IP address is valid and false if it is
+      #   invalid
       def self.is_valid_ip?(ip)
         ip =~ /^#{IPADDRESS_REGEX}$/
+      end
+
+      # Returns true of the cloud is a rackspace managed cloud and false
+      # otherwise
+      #
+      # @return [Boolean] True if the cloud is a rackspace managed cloud and
+      #   false otherwise
+      #
+      def self.is_rackspace_managed_cloud?
+        xenstore_ls = Mixlib::ShellOut.new("xenstore-ls vm-data")
+        xenstore_ls.run_command
+        xenstore_ls.error!
+
+        # Check for the role "rax_managed". This role will only be set on a
+        # Rackspace Managed Cloud.
+        matched_data = xenstore_ls.match(/roles = (.*)/)
+        !matched_data.nil? && matched_data[1].include?("rax_managed")
+      end
+
+      # Obtains the rackspace region name
+      #
+      # @return [String] rackspace region name
+      #
+      def self.get_rackspace_region
+        xenstore_ls = Mixlib::ShellOut.new("xenstore-ls vm-data")
+        xenstore_ls.run_command
+        xenstore_ls.error!
+
+        # Obtain the region from the xenstore.
+        region = ""
+        matched_data = xenstore_ls.match(/region = \"(.*)\"/)
+        region = matched_data[1] unless matched_data.nil?
+        region
       end
     end
   end

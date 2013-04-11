@@ -27,6 +27,9 @@ recipe "rightscale::setup_timezone",
 recipe "rightscale::setup_server_tags",
   "Sets machine tags that are common to all RightScale managed servers."
 
+recipe "rightscale::setup_cloud",
+  "Sets up cloud specific functions."
+
 recipe "rightscale::install_tools",
   "Installs RightScale's instance tools."
 
@@ -194,6 +197,42 @@ attribute "rightscale/search_suffix",
   :default => "",
   :recipes => [
     "rightscale::setup_hostname"
+  ]
+
+attribute "rightscale/rackspace_username",
+  :display_name => "Rackspace Username",
+  :description =>
+    "The username for Rackspace cloud account. This is required for" +
+    " registering instances with Rackspace Managed Cloud.",
+  :required => "optional",
+  :default => "",
+  :recipes => [
+    "rightscale::default",
+    "rightscale::setup_cloud"
+  ]
+
+attribute "rightscale/rackspace_api_key",
+  :display_name => "Rackspace API Key",
+  :description =>
+    "The API Key for Rackspace cloud account. This is required for" +
+    " registering instances with Rackspace Managed Cloud.",
+  :required => "optional",
+  :default => "",
+  :recipes => [
+    "rightscale::default",
+    "rightscale::setup_cloud"
+  ]
+
+attribute "rightscale/rackspace_tenant_id",
+  :display_name => "Rackspace Tenant ID",
+  :description =>
+    "The tenant ID for Rackspace cloud account. This is required for" +
+    " registering instances with Rackspace Managed Cloud.",
+  :required => "optional",
+  :default => "",
+  :recipes => [
+    "rightscale::default",
+    "rightscale::setup_cloud"
   ]
 
 # RightScale ENV attributes.
