@@ -27,3 +27,5 @@ include_recipe "rightscale::setup_monitoring"
 if RightScale::Utils::Helper.is_rackspace_managed_cloud?
   include_recipe "rightscale::setup_cloud"
 end
+
+rightscale_marker :end

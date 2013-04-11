@@ -9,3 +9,5 @@
 rightscale_marker :begin
 
 log "  Setting up cloud-related functions for #{node[:cloud][:provider]}"
+
+rightscale_marker :end
