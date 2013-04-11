@@ -23,15 +23,23 @@ if RightScale::Utils::Helper.is_rackspace_managed_cloud?
 
   # TODO: Remove this code after RightImages are updated to remove the
   # /root/.noupdate file.
-  file "/root/.noupdate" do
-    action :delete
+  r = file "/root/.noupdate" do
+    backup false
+    action :nothing
   end
+  r.run_action(:delete)
 
   # TODO: Remove these debug statements once development is complete
   log "  DEBUG: Rackspace Username: #{node[:rightscale][:rackspace_username]}"
   log "  DEBUG: Rackspace API Key: #{node[:rightscale][:rackspace_api_key]}"
   log "  DEBUG: Rackspace Tenant ID: #{node[:rightscale][:rackspace_tenant_id]}"
   log "  DEBUG: Region name: #{RightScale::Utils::Helper.get_rackspace_region}"
+
+  # The driveclient::default recipe creates a file in /var/chef/cache so this
+  # directory should be created prior to running the recipe.
+  directory "/var/chef/cache" do
+    recursive true
+  end
 
   # Obtains the region of the Rackspace Managed Cloud. See
   # cookbooks/rightscale/libraries/helper.rb for the "get_rackspace_region"
