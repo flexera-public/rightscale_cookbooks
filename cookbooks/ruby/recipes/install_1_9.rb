@@ -31,8 +31,6 @@ elsif node[:platform] =~ /ubuntu/
     EOH
   end
 
-  version.run_command.error!
-  log "  Installed system ruby version is: #{version.stdout}"
 else
   raise "Platform #{node[:platform]} is not supported by this recipe."
 end

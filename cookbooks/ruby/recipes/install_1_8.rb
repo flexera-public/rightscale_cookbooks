@@ -14,7 +14,6 @@ version.run_command.error!
 if version.stdout =~ /1.8/
   log "  Ruby #{version.stdout} is already installed on this system."
 else
-
   case node[:platform]
   when /centos|redhat/
 
@@ -53,9 +52,6 @@ else
   else
     raise "Platform #{node[:platform]} is not supported by this recipe."
   end
-
-  version.run_command.error!
-  log "  Installed system ruby version is: #{version.stdout}"
 end
 
 rightscale_marker :end
