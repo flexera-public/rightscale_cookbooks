@@ -14,7 +14,9 @@ Please see the `metadata.rb` for the latest dependencies.
 
 ## KNOWN LIMITATIONS:
 
-There are no known limitations.
+Jenkins currently runs as root user. This is required for using the
+VirtualMonkey test framework. Once the test framework is fixed, this limitation
+can be removed.
 
 ## SETUP/USAGE:
 
@@ -34,10 +36,6 @@ This recipe installs the Jenkins server from the mirrors provided by
 jenkins-ci.org. This recipe also allows a particular version of Jenkins
 installed based on the `jenkins/server/version` input (Please refer to the
 `metadata.rb` for more information about this input).
-
-Jenkins currently runs as root user. This is required for using the
-VirtualMonkey test framework. Once the test framework is fixed, this limitation
-can be removed.
 
 The master node will add tags to announce itself as a master with information
 about its listen IP address and Port number. Jenkins slaves will use this
