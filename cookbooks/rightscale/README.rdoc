@@ -32,14 +32,14 @@ the package manager to apply security updates by unfreezing the
 servers repositories.  On apt based systems this unfreezes the security
 repository.  On yum based systems this unfreezes all repositories except
 the RightScale-Epel repository.  Runs if the <tt>rightscale/security_update</tt>
-input is set to "Enabled", otherwise this action is skipped.  Note: once
+input is set to "enable", otherwise this action is skipped.  Note: once
 security updates are enabled they can not be disabled.
 
 The <tt>rightscale::do_security_updates</tt> recipe updates a server with
 the latest available security patches.  Non-security related software updates
-are not installed.  Runs as the last operational script to ensure a new server
+are not installed.  It runs as the last operational script to ensure a new server
 has all available security updates applied.  Runs if the 
-<tt>rightscale/security_update</tt> input is set to "Enabled", otherwise 
+<tt>rightscale/security_update</tt> input is set to "enable", otherwise 
 this action is skipped.  Note: once security updates are enabled they can 
 not be disabled.
 
@@ -47,8 +47,8 @@ not be disabled.
 
 === Update a server with latest security patches
 
-1. Prior to launching a sever set the advanced input
-   <tt>rightscale/security_update</tt> to <tt>Enabled</tt>
+1. Prior to launching a server set the advanced input
+   <tt>rightscale/security_update</tt> to <tt>enable</tt>
 2. When the server is operational all current security updates are applied.
 3. Apply security updates using:
   
@@ -58,9 +58,9 @@ not be disabled.
 
 === Enable security updates on a running server
 
-1. On a running a sever set the advanced input <tt>rightscale/security_update</tt>
-   to <tt>Enabled</tt>
-2. Setup the package manger for security updates using:
+1. On a running a server set the advanced input <tt>rightscale/security_update</tt>
+   to <tt>enable</tt>
+2. Setup the package manager for security updates using:
 
     "rightscale::setup_security_updates"
 
