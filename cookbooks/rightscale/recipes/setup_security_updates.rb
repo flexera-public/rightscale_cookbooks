@@ -16,12 +16,11 @@ if "#{node[:rightscale][:security_update]}" == "enable"
       flags "-ex"
       code <<-EOH
         # Set all Ubuntu security repos to latest
-# TODO - except rightscale - which doesn't exist???
         sed -i "s%ubuntu_daily/.* $(lsb_release -cs)-security%ubuntu_daily/latest $(lsb_release -cs)-security%" /etc/apt/sources.list.d/rightscale.sources.list
       EOH
     end
   when "centos", "redhat"
-    ruby_block "evaluate db type" do
+    ruby_block "Unfreeze CentOS repositories" do
       block do
         # Set all repos to latest
         files = Dir.glob("/etc/yum.repos.d/*.repo")
