@@ -32,14 +32,16 @@ the package manager to apply security updates by unfreezing the
 servers repositories.  On apt based systems this unfreezes the security
 repository.  On yum based systems this unfreezes all repositories except
 the RightScale-Epel repository.  Runs if the <tt>rightscale/security_update</tt>
-input is set to "Enabled", otherwise this action is skipped.
+input is set to "Enabled", otherwise this action is skipped.  Note: once
+security updates are enabled they can not be disabled.
 
 The <tt>rightscale::do_security_updates</tt> recipe updates a server with
 the latest available security patches.  Non-security related software updates
 are not installed.  Runs as the last operational script to ensure a new server
 has all available security updates applied.  Runs if the 
 <tt>rightscale/security_update</tt> input is set to "Enabled", otherwise 
-this action is skipped.
+this action is skipped.  Note: once security updates are enabled they can 
+not be disabled.
 
 == USAGE:
 
