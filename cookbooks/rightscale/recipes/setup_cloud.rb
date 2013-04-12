@@ -29,12 +29,8 @@ if RightScale::Utils::Helper.is_rackspace_managed_cloud?
   end
   r.run_action(:delete)
 
-  # TODO: Remove these debug statements once development is complete
-  log "  DEBUG: Rackspace Username: #{node[:rightscale][:rackspace_username]}"
-  log "  DEBUG: Rackspace API Key: #{node[:rightscale][:rackspace_api_key]}"
-  log "  DEBUG: Rackspace Tenant ID: #{node[:rightscale][:rackspace_tenant_id]}"
-  log "  DEBUG: Region name: #{RightScale::Utils::Helper.get_rackspace_region}"
-
+  # TODO: This directory should be created by rackspace on their cookbooks. It
+  # should be take out once they fix this.
   # The driveclient::default recipe creates a file in /var/chef/cache so this
   # directory should be created prior to running the recipe.
   directory "/var/chef/cache" do
@@ -79,7 +75,7 @@ if RightScale::Utils::Helper.is_rackspace_managed_cloud?
     end
   include_recipe "cloudmonitoring::default"
 else
-  log "  Cloud setup not required for this cloud #{node[:cloud][:provider]}." +
+  log "  Cloud setup is not required for this cloud #{node[:cloud][:provider]}." +
     " Skipping..."
 end
 
