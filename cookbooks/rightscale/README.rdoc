@@ -47,21 +47,22 @@ not be disabled.
 
 === Update a server with latest security patches
 
-1. Prior to launching a sever set the advanced input "rightscale/security_update"
-   to "Enabled"
+1. Prior to launching a sever set the advanced input
+   <tt>rightscale/security_update</tt> to <tt>Enabled</tt>
 2. When the server is operational all current security updates are applied.
 3. Apply security updates using:
   
-    "rightscale/security_update"
+    "rightscale::do_security_updates"
+
    to bring the server to the latest patch level.
 
 === Enable security updates on a running server
 
-1. On a running a sever set the advanced input "rightscale/security_update"
-   to "Enabled"
+1. On a running a sever set the advanced input <tt>rightscale/security_update</tt>
+   to <tt>Enabled</tt>
 2. Setup the package manger for security updates using:
 
-    "rightscale::rightscale::setup_security_updates"
+    "rightscale::setup_security_updates"
 
    to unfreeze the security related repositories.
 3. To update the server with the latest security updates follow the steps above.
