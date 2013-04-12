@@ -15,8 +15,8 @@ Please see the `metadata.rb` for the latest dependencies.
 ## KNOWN LIMITATIONS:
 
 Jenkins currently runs as root user. This is required for using the
-VirtualMonkey test framework. Once the test framework is fixed, this limitation
-can be removed.
+VirtualMonkey test framework. Once the test framework is fixed to run as a
+regular user, this limitation can be removed.
 
 ## SETUP/USAGE:
 
