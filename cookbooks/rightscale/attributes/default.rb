@@ -24,7 +24,7 @@ default[:rightscale][:short_hostname] = nil
 default[:rightscale][:domain_name] = ""
 default[:rightscale][:search_suffix] = ""
 
-default[:rightscale][:security_update] = "Disabled"
+default[:rightscale][:security_update] = "disable"
 
 # Cloud specific attributes
 #
