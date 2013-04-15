@@ -253,3 +253,49 @@ test_case "stop_start" do
   # Check if the server's basic monitoring is working.
   check_monitoring
 end
+
+# The Base ephemeral_file_system_type test makes sure the file system type
+# installed on ephemeral drive is same as the type set in
+# "block_device/ephemeral/file_system_type" input in the advanced inputs
+# category of block device in Base Chef ServerTemplate.
+#
+test_case "ephemeral_file_system_type" do
+  # Get the current cloud.
+  cloud = Cloud.factory
+
+  # Get the single server in the deployment.
+  server = servers.first
+
+  # Skip this test if the cloud does not support ephemeral drives and if the
+  # ServerTemplate is not chef based. Ephemeral drives are supported only on
+  # Chef ServerTemplates.
+  skip unless cloud.supports_ephemeral?(server) && is_chef?
+
+  # Get the MCI used by the server
+  mci = cloud.get_server_mci(server)
+
+  # RHEL does not support xfs file system. So ext3 is set by default.
+  # On CentOS and Ubuntu get the expected file system type from the
+  # "block_device/ephemeral/file_system_type" input.
+  if mci.name =~ /rhel/
+    fs_type = "ext3"
+  else
+    input = get_input_from_server(server)["block_device/ephemeral/file_system_type"]
+    fs_type = input.split("text:")[1]
+  end
+
+  # Verify file system type on the ephemeral
+  check_ephemeral_file_system_type(server, fs_type)
+
+  # Set the "block_device/ephemeral/file_system_type" input in the next instance
+  # to 'ext3' and relaunch the server. On RHEL we don't need to do this step as
+  # it supports only 'ext3'.
+  unless mci.name =~ /rhel/
+    fs_type = "ext3"
+    server.set_next_inputs({
+      "block_device/ephemeral/file_system_type" => "text:#{fs_type}"
+    })
+    relaunch_all
+    check_ephemeral_file_system_type(server, fs_type)
+  end
+end
