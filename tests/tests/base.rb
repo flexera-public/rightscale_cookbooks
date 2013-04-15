@@ -277,7 +277,7 @@ test_case "ephemeral_file_system_type" do
   # RHEL does not support xfs file system. So ext3 is set by default.
   # On CentOS and Ubuntu get the expected file system type from the
   # "block_device/ephemeral/file_system_type" input.
-  if mci.name =~ /rhel/
+  if mci.name =~ /rhel/i
     fs_type = "ext3"
   else
     input = get_input_from_server(server)["block_device/ephemeral/file_system_type"]
@@ -285,17 +285,17 @@ test_case "ephemeral_file_system_type" do
   end
 
   # Verify file system type on the ephemeral
-  check_ephemeral_file_system_type(server, fs_type)
+  verify_ephemeral_file_system_type(server, fs_type)
 
   # Set the "block_device/ephemeral/file_system_type" input in the next instance
   # to 'ext3' and relaunch the server. On RHEL we don't need to do this step as
   # it supports only 'ext3'.
-  unless mci.name =~ /rhel/
+  unless mci.name =~ /rhel/i
     fs_type = "ext3"
     server.set_next_inputs({
       "block_device/ephemeral/file_system_type" => "text:#{fs_type}"
     })
     relaunch_all
-    check_ephemeral_file_system_type(server, fs_type)
+    verify_ephemeral_file_system_type(server, fs_type)
   end
 end

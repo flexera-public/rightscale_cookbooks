@@ -132,7 +132,7 @@ class EC2 < Cloud
   #
   def supports_ephemeral?(server)
     # Ephemeral is not supported on EC2 HVM instances.
-    get_server_mci(server).name =~ /hvm/i ? true : false
+    get_server_mci(server).name =~ /hvm/i ? false : true
   end
 
   # Checks if a server has stop/start support. Stop/start is supported on EBS
@@ -217,6 +217,19 @@ end
 # @see Cloud
 #
 class Google < Cloud
+  # Checks if a server can have ephemeral devices. Ephemeral is supported on
+  # Google clouds.
+  #
+  # @param server [Server] the server to check for ephemeral support
+  #
+  # @return [Boolean] whether the cloud supports ephemeral devices
+  #
+  # @see Cloud#supports_ephemeral?
+  #
+  def supports_ephemeral?(server)
+    true
+  end
+
   # Checks if the cloud supports reboot. Google does not support reboot.
   #
   # @return [Boolean] whether the cloud supports reboot
