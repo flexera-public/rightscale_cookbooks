@@ -72,6 +72,15 @@ Mix and match recipes to get the right combination for your deployments.
 1. Delete the attached volumes and terminate the server.  Note: if this script
    is not used to terminate the server the volumes will persist.
 
+=== Set up ephemeral device
+1. To set up ephemeral file systems on clouds supporting ephemeral devices,
+   place the <tt>block_device::setup_ephemeral</tt> recipe in your runlist.
+2. The file system type set up in the ephemeral device can be configured by
+   setting the "Ephemeral File System Type" input. By default, this input is
+   set to 'xfs'. NOTE: On RedHat images, this input is ignored and 'ext3' file
+   system is installed by default (RedHat does not support the 'xfs' file system
+   type).
+
 == DETAILS:
 
 Multiple block device support is controlled by the
