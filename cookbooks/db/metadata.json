@@ -409,6 +409,7 @@
         "cloudfilesuk",
         "google",
         "azure",
+        "swift",
         "SoftLayer_Dallas",
         "SoftLayer_Singapore",
         "SoftLayer_Amsterdam"
@@ -423,7 +424,7 @@
     },
     "db/dump/storage_account_id": {
       "display_name": "Dump Storage Account ID",
-      "description": "In order to write the dump file to the specified cloud storage location, you need to provide cloud authentication credentials. For Amazon S3, use your Amazon access key ID (e.g., cred:AWS_ACCESS_KEY_ID). For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME). Example: cred:AWS_ACCESS_KEY_ID",
+      "description": "In order to write the dump file to the specified cloud storage location, you need to provide cloud authentication credentials. For Amazon S3, use your Amazon access key ID (e.g., cred:AWS_ACCESS_KEY_ID). For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME). For OpenStack Swift the format is: 'tenantID:username'. Example: cred:AWS_ACCESS_KEY_ID",
       "required": "required",
       "recipes": [
         "db::do_dump_import",

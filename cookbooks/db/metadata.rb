@@ -519,6 +519,7 @@ attribute "db/dump/storage_account_provider",
     "cloudfilesuk",
     "google",
     "azure",
+    "swift",
     "SoftLayer_Dallas",
     "SoftLayer_Singapore",
     "SoftLayer_Amsterdam"
@@ -537,6 +538,7 @@ attribute "db/dump/storage_account_id",
     " For Amazon S3, use your Amazon access key ID" +
     " (e.g., cred:AWS_ACCESS_KEY_ID). For Rackspace Cloud Files, use your" +
     " Rackspace login username (e.g., cred:RACKSPACE_USERNAME)." +
+    " For OpenStack Swift the format is: 'tenantID:username'." +
     " Example: cred:AWS_ACCESS_KEY_ID",
   :required => "required",
   :recipes => [
