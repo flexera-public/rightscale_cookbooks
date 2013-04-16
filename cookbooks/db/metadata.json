@@ -452,6 +452,22 @@
       "calculated": false,
       "type": "string"
     },
+    "db/dump/storage_account_endpoint": {
+      "display_name": "Dump Storage Endpoint URL",
+      "description": "The endpoint URL for the storage cloud. This is used to override the default endpoint or for generic storage clouds such as Swift. Example: http://endpoint_ip:5000/v2.0/tokens",
+      "required": "optional",
+      "default": "",
+      "recipes": [
+        "db::do_dump_import",
+        "db::do_dump_export",
+        "db::do_dump_schedule_enable"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    },
     "db/dump/container": {
       "display_name": "Dump Container",
       "description": "The cloud storage location where the dump file will be saved to or restored from. For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name. Example: db_dump_bucket",

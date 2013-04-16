@@ -563,6 +563,20 @@ attribute "db/dump/storage_account_secret",
     "db::do_dump_schedule_enable"
   ]
 
+attribute "db/dump/storage_account_endpoint",
+  :display_name => "Dump Storage Endpoint URL",
+  :description =>
+    "The endpoint URL for the storage cloud. This is used to override the" +
+    " default endpoint or for generic storage clouds such as Swift." +
+    " Example: http://endpoint_ip:5000/v2.0/tokens",
+  :required => "optional",
+  :default => "",
+  :recipes => [
+    "db::do_dump_import",
+    "db::do_dump_export",
+    "db::do_dump_schedule_enable"
+  ]
+
 attribute "db/dump/container",
   :display_name => "Dump Container",
   :description =>
