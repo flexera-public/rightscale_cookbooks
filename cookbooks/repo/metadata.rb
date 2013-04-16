@@ -74,6 +74,16 @@ attribute "repo/default/credential",
   :required => "recommended",
   :recipes => ["repo::default"]
 
+attribute "repo/default/endpoint",
+  :display_name => "Storage Cloud Endpoint URL",
+  :description =>
+    "The endpoint URL for the storage cloud. This is used to override the" +
+    " default endpoint or for generic storage clouds such as Swift." +
+    " Example: http://endpoint_ip:5000/v2.0/tokens",
+  :required => "optional",
+  :default => "",
+  :recipes => ["repo::default"]
+
 attribute "repo/default/ssh_host_key",
   :display_name => "Known hosts ssh key",
   :description =>

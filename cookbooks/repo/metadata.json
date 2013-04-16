@@ -97,6 +97,20 @@
       "calculated": false,
       "type": "string"
     },
+    "repo/default/endpoint": {
+      "display_name": "Storage Cloud Endpoint URL",
+      "description": "The endpoint URL for the storage cloud. This is used to override the default endpoint or for generic storage clouds such as Swift. Example: http://endpoint_ip:5000/v2.0/tokens",
+      "required": "optional",
+      "default": "",
+      "recipes": [
+        "repo::default"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    },
     "repo/default/ssh_host_key": {
       "display_name": "Known hosts ssh key",
       "description": "A valid SSH key which will be appended to /root/.ssh/known_hosts file. This input will allow to verify the destination host, by comparing its IP,FQDN, SSH-RSA with the record in /root/.ssh/known_hosts file. Use this input if you want to improve security and for MiTM attacks prevention. Example: cred:SSH_KNOWN_HOST_KEY.",

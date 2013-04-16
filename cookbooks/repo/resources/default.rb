@@ -2,9 +2,10 @@
 # Cookbook Name:: repo
 #
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 # This lightweight resource only defines the interface for repo providers.  This file
 # defines the actions and attributes that make up the repo interface (or abstraction).
@@ -37,6 +38,8 @@ attribute :account, :kind_of => String
 # Account credential
 attribute :credential, :kind_of => String
 
+# ROS endpoint
+attribute :endpoint, :kind_of => String
 
 # ssh_hostkey to be added to known hosts
 attribute :ssh_host_key, :kind_of => String

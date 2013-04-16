@@ -2,9 +2,10 @@
 # Cookbook Name:: repo
 #
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 rightscale_marker :begin
 
@@ -14,6 +15,7 @@ node[:repo].each do |resource_name, entry|
   branch = entry[:revision] || ""
   account = entry[:account] || ""
   credential = entry[:credential] || ""
+  endpoint = entry[:endpoint] || ""
   ssh_host_key = entry[:ssh_host_key] || ""
   storage_account_provider = entry[:storage_account_provider] || ""
   prefix = entry[:prefix] || ""
@@ -27,6 +29,7 @@ node[:repo].each do |resource_name, entry|
     revision branch
     account account
     credential credential
+    endpoint endpoint
     ssh_host_key ssh_host_key
     storage_account_provider storage_account_provider
     prefix prefix
