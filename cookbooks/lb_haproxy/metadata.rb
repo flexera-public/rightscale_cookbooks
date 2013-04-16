@@ -49,3 +49,47 @@ attribute "lb_haproxy/timeout_client",
   :recipes => [
     "lb_haproxy::setup_server"
   ]
+
+attribute "lb_haproxy/global_maxconn",
+  :display_name => "Global section maxconn",
+  :description =>
+    "The maxconn value in the global haproxy configuration section." +
+    " Example: 20000",
+  :required => "optional",
+  :default => "20000",
+  :recipes => [
+    "lb_haproxy::setup_server"
+  ]
+
+attribute "lb_haproxy/default_maxconn",
+  :display_name => "Default section maxconn",
+  :description =>
+    "The maxconn value in the default haproxy configuration section." +
+    " Example: 20000",
+  :required => "optional",
+  :default => "20000",
+  :recipes => [
+    "lb_haproxy::setup_server"
+  ]
+
+attribute "lb_haproxy/httpclose",
+  :display_name => "Global httpclose option",
+  :description =>
+    "Sets or unsets the httpclose option.  Example: 'on'",
+  :required => "optional",
+  :choice => ["on", "off"],
+  :default => "on",
+  :recipes => [
+    "lb_haproxy::setup_server"
+  ]
+
+attribute "lb_haproxy/abortonclose",
+  :display_name => "Global abortonclose option",
+  :description =>
+    "Sets or unsets the abortonclose option.  Example: 'on'",
+  :required => "optional",
+  :choice => ["on", "off"],
+  :default => "on",
+  :recipes => [
+    "lb_haproxy::setup_server"
+  ]
