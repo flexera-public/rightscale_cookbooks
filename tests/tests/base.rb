@@ -274,27 +274,34 @@ test_case "ephemeral_file_system_type" do
   # Get the MCI used by the server
   mci = cloud.get_server_mci(server)
 
-  # RHEL does not support xfs file system. So, it is enough to test ext3.
+  # List all file system types supported on the ephemeral device
+  supported_fs_types = ["xfs", "ext3"]
+
+  # Remove file system types that are not supported on the ephemeral device
+  # based on the platform
   if mci.name =~ /rhel/i
-    fs_type = "ext3"
-    verify_ephemeral_file_system_type(server, fs_type)
+    unsupported_types = ["xfs"]
   else
-    # Known file system types supported on the ephemeral drive on CentOS and
-    # Ubuntu. If more file system types are supported in future add them to the
-    # back of the list. The default file system type should be the first item
-    # in the list.
-    supported_fs_types = ["xfs", "ext3"]
+    unsupported_types = []
+  end
 
-    # xfs is already set as default. So verify that first and then iterate
-    # through the rest of the supported file system types.
-    verify_ephemeral_file_system_type(server, supported_fs_types.shift)
+  # Get the list of supported file system types on the ephemeral device
+  # based on the platform
+  supported_fs_types = supported_fs_types - unsupported_types
 
-    supported_fs_types.each do |type|
-      server.set_next_inputs({
-        "block_device/ephemeral/file_system_type" => "text:#{type}"
-      })
-      relaunch_all
-      verify_ephemeral_file_system_type(server, type)
-    end
+  # Verify the default file system type that will be installed on the
+  # ephemeral device
+  default_fs_type = mci.name =~ /rhel/i ? "ext3" : "xfs"
+  verify_ephemeral_file_system_type(server, default_fs_type)
+  supported_fs_types.delete(default_fs_type)
+
+  # Iterate through the rest of the supported file system types and verify the
+  # installation of each type
+  supported_fs_types.each do |type|
+    server.set_next_inputs({
+      "block_device/ephemeral/file_system_type" => "text:#{type}"
+    })
+    relaunch_all
+    verify_ephemeral_file_system_type(server, type)
   end
 end
