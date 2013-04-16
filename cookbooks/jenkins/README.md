@@ -30,6 +30,32 @@ regular user, this limitation can be removed.
 
 ### Recipes:
 
+### Attributes:
+
+These are settings used in recipes and tempaltes. Default values are noted.
+
+Note: Only "internal" cookbook attributes are described here. Descriptions of
+attributes which have inputs can be found in the metadata.rb file.
+
+#### Jenkins master attributes
+
+* `node[:jenkins][:ip]` - The system IP address to be used for Jenkins server.
+* `node[:jenkins][:server][:home]` - The home directory for Jenkins.
+* `node[:jenkins][:server][:system_user]` - The system user name for Jenkins.
+* `node[:jenkins][:server][:system_group]` - The system group for Jenkins.
+* `node[:jenkins][:server][:port]` - The port number for Jenkins server.
+* `node[:jenkins][:mirror]` - The mirror for downloading jenkins plugins and
+  other resources.
+
+#### Jenkins slave attributes
+
+* `node[:jenkins][:slave][:user]` - The slave username to be used for
+  connecting to the Jenkins master server.
+  The RightScale Instance UUID is used if the name is not specified.
+* `node[:jenkins][:private_key_file]` - The private key file used by the master
+  for SSH communications with the slave.
+* `node[:jenkins][:slave][:attach_status]` - The status of slave attachment.
+
 #### `jenkins::install_server`
 
 This recipe installs the Jenkins server from the mirrors provided by
@@ -60,6 +86,12 @@ will be 'normal' unless otherwise overridden.
 Jenkins master uses the name to identify slaves and restrict jobs to a
 particular slave. This name will be chosen to be the RightScale Instance UUID
 if it is not specified in the inputs.
+
+### Templates:
+
+* `jenkins_user_config.xml.erb` - The Jenkins user configuration XML.
+* `jenkins_system_config.erb` - The Jenkins system configuration file.
+* `jenkins_config.xml.erb` - The main Jenkins configuration XML.
 
 ## LICENSE:
 
