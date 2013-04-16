@@ -121,6 +121,7 @@ attribute "repo/default/storage_account_provider",
     "cloudfilesuk",
     "google",
     "azure",
+    "swift",
     "SoftLayer_Dallas",
     "SoftLayer_Singapore",
     "SoftLayer_Amsterdam"

@@ -149,6 +149,7 @@
         "cloudfilesuk",
         "google",
         "azure",
+        "swift",
         "SoftLayer_Dallas",
         "SoftLayer_Singapore",
         "SoftLayer_Amsterdam"
