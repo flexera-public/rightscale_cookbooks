@@ -23,6 +23,7 @@ end
 #
 def verify_ephemeral_file_system_type(server, fs_type)
   probe(server, "df -T /mnt/ephemeral | grep -c #{fs_type}") do |result, status|
+    puts result
     raise "Ephemeral file system type is not '#{fs_type}'" unless status == 0
     puts "Ephemeral file system type is '#{fs_type}'"
     true
