@@ -65,12 +65,9 @@ define :db_mysql_set_mycnf,
   node[:db_mysql][:tunable][:long_query_time] ||= "long_query_time = 5"
   node[:db_mysql][:tunable][:slave_net_timeout] ||= 60
 
-  # Adjust based on memory range.
-  #
-  # The memory ranges used are:
-  # < 1GB, 1GB - 3GB, 3GB - 10GB, 10GB - 25GB, 25GB - 50GB, > 50GB.
+  # Sets the buffer sizes and InnoDB log properties.
+  # Overrides buffer sizes for really small servers.
   if mem < 1 * GB
-    # Override buffer sizes for really small servers
     node[:db_mysql][:tunable][:key_buffer] ||=
       value_with_units(16, "M", usage)
     node[:db_mysql][:tunable][:isamchk][:key_buffer] ||=
@@ -102,6 +99,14 @@ define :db_mysql_set_mycnf,
       value_with_units(8, "M", usage)
   end
 
+  # Adjusts tunable values based on memory range.
+  #
+  # The memory ranges used are:
+  # < 3GB
+  # 3GB - 10GB
+  # 10GB - 25GB
+  # 25GB - 50GB
+  # >50GB
   if mem < 3 * GB
     node[:db_mysql][:tunable][:table_cache] ||= (256 * usage).to_i
     node[:db_mysql][:tunable][:sort_buffer_size] ||=
