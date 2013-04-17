@@ -1,9 +1,12 @@
-maintainer       "RightScale, Inc."
+maintainer "RightScale, Inc."
 maintainer_email "support@rightscale.com"
-license          "Copyright RightScale, Inc. All rights reserved."
-description      "RighScale LB Manager"
+license "Copyright RightScale, Inc. All rights reserved."
+description "This cookbook provides a set of load balancer recipes used by" +
+  " the RightScale Load Balancer ServerTemplates. This cookbook does not" +
+  " contain a specific load balancer implementation, but generic recipes that" +
+  " use the LWRP interface."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "13.4.0"
+version "13.4.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"

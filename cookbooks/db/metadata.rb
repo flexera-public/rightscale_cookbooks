@@ -1,9 +1,12 @@
-maintainer       "RightScale, Inc."
+maintainer "RightScale, Inc."
 maintainer_email "support@rightscale.com"
-license          "Copyright RightScale, Inc. All rights reserved."
-description      "RightScale Database Manager"
+license "Copyright RightScale, Inc. All rights reserved."
+description "This cookbook provides a set of database recipes used by the" +
+  " RightScale Database Manager ServerTemplates. This cookbook does not" +
+  " contain a specific database implementation, but generic recipes that use" +
+  " the Lightweight Resource Provider (LWRP) interface."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "13.4.0"
+version "13.4.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"

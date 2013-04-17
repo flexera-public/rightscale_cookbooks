@@ -1,9 +1,11 @@
-maintainer       "RightScale, Inc."
+maintainer "RightScale, Inc."
 maintainer_email "support@rightscale.com"
-license          "Copyright RightScale, Inc. All rights reserved."
-description      "Abstract cookbook for managing source code repositories."
+license "Copyright RightScale, Inc. All rights reserved."
+description "This cookbook provides abstract 'repo' resource for managing" +
+  " code download from Git, Subversion or Remote Object Store (ROS) code" +
+  " repositories."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "13.4.0"
+version "13.4.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"

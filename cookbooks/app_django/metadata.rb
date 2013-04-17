@@ -1,9 +1,11 @@
-maintainer       "RightScale, Inc."
+maintainer "RightScale, Inc."
 maintainer_email "support@rightscale.com"
-license          "Copyright RightScale, Inc. All rights reserved."
-description      "Installs the Django application server."
+license "Copyright RightScale, Inc. All rights reserved."
+description "Cookbook provides Apache + Django implementation of the 'app'" +
+  " Lightweight Resource Provider (LWRP). Installs and configures an" +
+  " Apache + Django application server."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "13.4.0"
+version "13.4.0"
 
 # supports "centos", "~> 5.8", "~> 6.2"
 # supports "redhat", "~> 5.8"

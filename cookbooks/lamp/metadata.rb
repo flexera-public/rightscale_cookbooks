@@ -1,9 +1,10 @@
-maintainer       "RightScale, Inc."
+maintainer "RightScale, Inc."
 maintainer_email "support@rightscale.com"
-license          "Copyright RightScale, Inc. All rights reserved."
-description      "Installs/Configures lamp"
+license "Copyright RightScale, Inc. All rights reserved."
+description "This is a basic all-in-one LAMP (Linux, Apache, MySQL, PHP)" +
+  " cookbook designed to work in a hybrid cloud setting."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "13.4.0"
+version "13.4.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"

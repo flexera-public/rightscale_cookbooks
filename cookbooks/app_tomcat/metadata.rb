@@ -1,9 +1,11 @@
-maintainer       "RightScale, Inc."
+maintainer "RightScale, Inc."
 maintainer_email "support@rightscale.com"
-license          "Copyright RightScale, Inc. All rights reserved."
-description      "Installs the tomcat application server."
+license "Copyright RightScale, Inc. All rights reserved."
+description "Cookbook provides Tomcat application server implementation of" +
+  " the 'app' Lightweight Resource Provider (LWRP). Installs and configures a" +
+  " Tomcat application server."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "13.4.0"
+version "13.4.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"

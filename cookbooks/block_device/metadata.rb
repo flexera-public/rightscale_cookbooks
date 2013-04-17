@@ -1,9 +1,10 @@
-maintainer       "RightScale, Inc."
+maintainer "RightScale, Inc."
 maintainer_email "support@rightscale.com"
-license          "Copyright RightScale, Inc. All rights reserved."
-description      "Installs/Configures block device storage."
+license "Copyright RightScale, Inc. All rights reserved."
+description "This cookbook provides the building blocks for Multi-Cloud" +
+  "backup/restore support."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "13.4.0"
+version "13.4.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"

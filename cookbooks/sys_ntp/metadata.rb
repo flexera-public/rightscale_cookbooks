@@ -1,9 +1,10 @@
-maintainer       "RightScale, Inc."
+maintainer "RightScale, Inc."
 maintainer_email "support@rightscale.com"
-license          "Copyright RightScale, Inc. All rights reserved."
-description      "Installs and configures ntp as a client or server"
+license "Copyright RightScale, Inc. All rights reserved."
+description "This cookbook provides a recipe for setting up time" +
+  " synchronization using NTP."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "13.4.0"
+version "13.4.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"

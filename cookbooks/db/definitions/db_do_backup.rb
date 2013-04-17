@@ -5,7 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-# Does a snapshot backup of the filesystem containing the database
+# Does a database backup of the filesystem containing the database
 # Since this backup is a snapshot of a filesystem, it will check if the database has
 # been 'initialized', else it will fail.
 #

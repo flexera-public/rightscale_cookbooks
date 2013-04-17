@@ -1,9 +1,12 @@
-maintainer       "RightScale, Inc."
+maintainer "RightScale, Inc."
 maintainer_email "support@rightscale.com"
-license          "Copyright RightScale, Inc. All rights reserved."
-description      "Installs/Configures lb_haproxy"
+license "Copyright RightScale, Inc. All rights reserved."
+description "RightScale load balancer cookbook for Apache/HAProxy. This" +
+  " cookbook provides recipes for setting up and running an Apache/HAProxy" +
+  " load balancer server as well as recipes for attaching and detaching" +
+  " application servers."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "13.4.0"
+version "13.4.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"

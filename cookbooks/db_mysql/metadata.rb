@@ -1,9 +1,10 @@
-maintainer       "RightScale, Inc."
+maintainer "RightScale, Inc."
 maintainer_email "support@rightscale.com"
-license          "Copyright RightScale, Inc. All rights reserved."
-description      "Installs/configures a MySQL database client and server."
+license "Copyright RightScale, Inc. All rights reserved."
+description "Provides the MySQL implementation of the 'db' resource to" +
+  " install and manage MySQL database stand-alone servers and clients."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "13.4.0"
+version "13.4.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"
