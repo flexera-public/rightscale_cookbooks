@@ -13,5 +13,5 @@ version "13.4.0"
 
 depends "logging"
 
-recipe "logging_syslog_ng::default",
+recipe "logging_syslog_ng::setup_server",
   "Sets syslog_ng logging provider"
