@@ -81,9 +81,12 @@ attributes</b> which are used internally in recipes.
 ===== ROS attributes
 
 * <tt>node[:repo][:default][:storage_account_provider]</tt> - Location where the
-  source file is saved. Used by recipes to download from Amazon S3, Rackspace, Google,
-  Azure and  SoftLayer.
+  source file is saved. Used by recipes to download from Amazon S3, Rackspace,
+  Google, Azure, Swift and SoftLayer.
   Cloud Files. Default is: "S3".
+* <tt>node[:repo][:default][:endpoint]</tt> - Is used to override the default
+  endpoint or for generic storage clouds such as Swift. Example:
+  "http://endpoint_ip:5000/v2.0/tokens"
 * <tt>node[:repo][:default][:prefix]</tt> - Filename of required source
   repository archive. Example: "source.tar.gz".
 
