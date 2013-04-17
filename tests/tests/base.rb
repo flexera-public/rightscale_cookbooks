@@ -12,9 +12,14 @@ helpers do
   class SwapFileError < VirtualMonkey::TestCase::ErrorBase
   end
 
-  # An error with conntrack_max setup
+  # An error with conntrack_max setup.
   #
   class ConntrackMaxError < VirtualMonkey::TestCase::ErrorBase
+  end
+
+  # An error with Rackspace Managed agents not running properly.
+  #
+  class RackspaceManagedError < VirtualMonkey::TestCase::ErrorBase
   end
 
   # Checks if the swap file is set up.
@@ -146,6 +151,46 @@ helpers do
         " sys_firewall::setup_rule recipe"
     end
   end
+
+  # Setup the credentials required for Rackspace Managed Open Cloud as advanced
+  # inputs.
+  #
+  # @param server [Server] the server to check
+  #
+  def setup_rackspace_managed_credentials(server)
+    server.set_inputs(
+      "rightscale/rackspace_api_key" => "cred:RACKSPACE_RACKMANAGED_API_KEY",
+      "rightscale/rackspace_tenant_id" => "cred:RACKSPACE_RACKMANAGED_TENANT_ID",
+      "rightscale/rackspace_username" => "cred:RACKSPACE_RACKMANAGED_USERNAME"
+    )
+  end
+
+  # Verify that the Rackspace Managed Open Cloud agents are running properly.
+  #
+  # @param server [Server] the server to check
+  #
+  # @raise [RackspaceRackManagedError] if the rackspace agents are not running
+  #   properly.
+  #
+  def verify_rackspace_managed_agents(server)
+    rackspace_agents = ["driveclient", "rackspace-monitoring-agent"]
+    # Verify the agents functionality on all servers
+    rackspace_agents.each do |agent|
+      probe(server, "service #{agent} status") do |response, status|
+        unless status == 0
+          raise FailedProbeCommandError, "Unable to verify that #{agent} is" +
+            " running on #{server.nickname}"
+        end
+        if response.include?("running")
+          puts "The #{agent} agent is running on #{server.nickname}"
+        else
+          raise RackspaceRackManagedError, "The #{agent} agent is not running" +
+            " on #{server.nickname} Current status is #{response}"
+        end
+        true
+      end
+    end
+  end
 end
 
 # When rerunning a test, shutdown all of the servers.
@@ -157,6 +202,13 @@ end
 # Before all of the test cases, launch all of the servers in the deployment.
 #
 before do
+  # Get the current cloud.
+  cloud = Cloud.factory
+
+  # Single server in deployment.
+  server = servers.first
+
+  setup_rackspace_managed_credentials(server) if cloud.cloud_name =~ /Rackmanaged/
   launch_all
   wait_for_all("operational")
 end
@@ -181,6 +233,7 @@ test_case "smoke_test" do
     check_ephemeral_mount(server) if cloud.supports_ephemeral?(server)
     check_swap_file(server)
     verify_conntrack_max(server)
+    verify_rackspace_managed_agents(server) if cloud.cloud_name =~ /Rackmanaged/
   end
 
   # Check if the server's basic monitoring is working.
@@ -202,6 +255,7 @@ test_case "smoke_test" do
     check_ephemeral_mount(server) if cloud.supports_ephemeral?(server)
     check_swap_file(server)
     verify_conntrack_max(server)
+    verify_rackspace_managed_agents(server) if cloud.cloud_name =~ /Rackmanaged/
   end
 
   # Check if the server's basic monitoring is working.
