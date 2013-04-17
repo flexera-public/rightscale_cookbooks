@@ -4,7 +4,7 @@ license "Copyright RightScale, Inc. All rights reserved."
 description "Cookbook provides Apache + PHP implementation of the 'app' LWRP." +
   " Installs and configures, Apache + PHP application server."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "13.4.0"
+version "13.4.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"
