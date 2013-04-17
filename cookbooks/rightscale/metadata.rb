@@ -47,7 +47,7 @@ recipe "rightscale::setup_security_update_monitoring",
   "Sets up collectd plugin to monitor for available security updates."
  
 
-attribute "rightscale/security_update",
+attribute "rightscale/security_updates",
   :display_name => "Enable security updates",
   :description => "Enable security updates.",
   :required => "optional",

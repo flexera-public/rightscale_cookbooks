@@ -7,7 +7,7 @@
 
 rightscale_marker :begin
 
-if "#{node[:rightscale][:security_update]}" == "enable"
+if "#{node[:rightscale][:security_updates]}" == "enable"
 
   log "  Enabling security updates."
   case node[:platform]
