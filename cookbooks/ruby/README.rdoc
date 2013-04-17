@@ -2,7 +2,7 @@
 
 == DESCRIPTION:
 
-This cookbook provides a recipe for setting up Ruby.
+This cookbook provides recipes for setting up specific versions of Ruby.
 
 == REQUIREMENTS:
 
@@ -18,7 +18,11 @@ There are no known limitations.
 
 == SETUP/USAGE:
 
-Place the <tt>ruby::default</tt> recipe into the boot recipes.
+Place the <tt>ruby::install_1_8</tt> recipe into the boot recipes to install
+ruby 1.8 with rubygems.
+
+Place the <tt>ruby::install_1_9</tt> recipe into the boot recipes to install
+ruby 1.9 with rubygems.
 
 == LICENSE:
 
