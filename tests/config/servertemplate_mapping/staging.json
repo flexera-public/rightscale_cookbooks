@@ -11,5 +11,9 @@
   "base_rsb": {
     "nickname": "Base ServerTemplate for Linux (RSB) STAGING",
     "rev": "head"
+  },
+  "memcached": {
+    "nickname": "Memcached Server STAGING",
+    "rev": "head"
   }
 }
