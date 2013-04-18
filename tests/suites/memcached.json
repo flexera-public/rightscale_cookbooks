@@ -1,0 +1,6 @@
+{
+  "description": "Tests the functionality of the Memcached ServerTemplate",
+  "server_templates": ["memcached"],
+  "tests": ["memcached.rb"],
+  "variables": {}
+}
