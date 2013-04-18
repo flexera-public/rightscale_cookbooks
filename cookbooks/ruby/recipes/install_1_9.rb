@@ -11,19 +11,17 @@ rightscale_marker :begin
 version = Mixlib::ShellOut.new("ruby --version")
 version.run_command.error!
 
-if version.stdout =~ /1.9/
+if version.stdout =~ /1\.9/
   log "  Ruby #{version.stdout} is already installed on this system."
 elsif node[:platform] =~ /ubuntu/
 
-  packages = [
-    "ruby1.9.1-full",
-    "rubygems"
-  ]
-
-  packages.each do |pkg|
+  # Installs ruby 1.9 with rubygems.
+  ["ruby1.9.1-full", "rubygems"].each do |pkg|
     package pkg
   end
 
+  # Ubuntu can have multiple versions of ruby installed. Just need to run
+  # 'update-alternatives' to have the OS know which version to use.
   bash "Use ruby 1.9" do
     code <<-EOH
       update-alternatives --set ruby "/usr/bin/ruby1.9.1"
