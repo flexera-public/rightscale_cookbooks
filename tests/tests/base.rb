@@ -46,6 +46,15 @@ helpers do
     suite_variables[:server_template_type] == "chef"
   end
 
+  # Returns the security_updates input setting for the server.
+  #
+  # @return [String] "enable" or "disable"
+  #
+  def security_updates_input(server)
+    result = get_input_from_server(server)
+    result["rightscale/security_updates"].to_s.split("text:")[1]
+  end
+
   # Obtains the conntrack_max value from /etc/sysctl.conf configuration file
   #
   # @param server [Server] the server to obtain value from
@@ -146,6 +155,33 @@ helpers do
         " sys_firewall::setup_rule recipe"
     end
   end
+
+  # Verfies the security repositories are unfrozen.
+  # For apt based systems (Ubuntu) it checks repositories in
+  # /etc/apt/sources.list.d/rightscale.sources.list
+  # For yum based systems (CentOS) it checks repositories in
+  # /etc/yum.repos.d/*.repo
+  #
+  def verify_security_repositories_unfrozen(server)
+    # Check that unforzen repos exist in the package repo dir
+    #
+    cloud = Cloud.factory
+    os = cloud.get_server_mci(server).name
+    puts "  Testing OS: #{os}"
+    case os
+    when /ubuntu/i
+      latest = "/ubuntu_daily/latest"
+      repo_dirs = "/etc/apt/sources.list.d/rightscale.sources.list "
+    when /centos|rhel/i
+      latest = "/archive/latest"
+      repo_dirs = "/etc/yum.repos.d/*.repo"
+    end
+
+    probe(server, "grep #{latest} #{repo_dirs}") do |response, status|
+      raise "Unfrozen repo not found in #{repo_dirs}" unless status == 0
+      true
+    end
+  end
 end
 
 # When rerunning a test, shutdown all of the servers.
@@ -154,9 +190,39 @@ hard_reset do
   stop_all
 end
 
-# Before all of the test cases, launch all of the servers in the deployment.
+# There are two before tests for ensuring the required enable/disable
+# security update state.  Each before checks the current state, does
+# a hard reset if it is in the wrong state, sets the input variable
+# to the desired state and launches all (the)  server(s) in the deployment.
 #
-before do
+
+# Before tests that require security updates disabled.
+#
+before "smoke_test", "stop_start", "enable_security_updates_on_running_server" do
+  puts "Running before with security updates disabled"
+  # Assume a single sever in the deployment
+  server = servers.first
+  if security_updates_input(server) != "disable"
+    server.set_inputs("rightscale/security_updates" => "text:disable")
+    relaunch_all
+    wait_for_all("operational")
+  end
+  
+  launch_all
+  wait_for_all("operational")
+end
+
+# Before tests that require security updates enabled.
+#
+before "verify_unfrozen_repositories" do
+  # Assume a single sever in the deployment
+  server = servers.first
+  if security_updates_input(server) != "enable"
+    server.set_inputs("rightscale/security_updates" => "text:enable")
+    relaunch_all
+    wait_for_all("operational")
+  end
+  
   launch_all
   wait_for_all("operational")
 end
@@ -206,6 +272,11 @@ test_case "smoke_test" do
 
   # Check if the server's basic monitoring is working.
   check_monitoring
+
+  # Check if security updates are disabled can not be done.  Servers can
+  # can be launched with unfrozen repositories.  This case was considered
+  # and it was decided to ignore it.
+  #
 end
 
 # The Base stop/start test makes sure the Base (Chef or RSB) ServerTemplate has
@@ -252,4 +323,25 @@ test_case "stop_start" do
 
   # Check if the server's basic monitoring is working.
   check_monitoring
+end
+
+# The Base "enable security updates on running a running server" tests if
+# security updates are applied after enabling them.  It enables the updates
+# runs the script to perform the security updates setup and runs the script
+# to perform the updates.
+#
+test_case "enable_security_updates_on_running_server" do
+  server = servers.first
+  puts "NOT IMPLEMENTED"
+  run_recipe("rightscale::setup_security_updates", server)
+  verify_security_reposiotries_unfrozen(server)
+  run_recipe("rightscale::do_security_updates", server)
+end
+
+# The Base "verify repository unfrozen" test verfies the package mangers
+# upstream security repositories are set to "latest".
+#
+test_case "verify_unfrozen_repositories" do
+  server = servers.first
+  verify_security_repositories_unfrozen(server)
 end
