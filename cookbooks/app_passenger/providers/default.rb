@@ -235,9 +235,7 @@ action :code_update do
   # Sets permissions for the code to be owned by the application user.
   bash "chown_home" do
     flags "-ex"
-    code <<-EOH
-      chown -R #{node[:app][:user]}:#{node[:app][:group]} #{deploy_dir}
-    EOH
+    code "chown -R #{node[:app][:user]}:#{node[:app][:group]} #{deploy_dir}"
   end
 
   log "  Generating new logrotate config for rails application"
