@@ -698,9 +698,9 @@ action :install_client_driver do
     version.run_command.error!
 
     case version.stdout
-    when /1.8/
+    when /1\.8/
       node[:db][:client][:driver] = "mysql"
-    when /1.9/
+    when /1\.9/
       node[:db][:client][:driver] = "mysql2"
     else
       raise "Ruby #{version.stdout} is not supported."
