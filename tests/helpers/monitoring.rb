@@ -1,6 +1,9 @@
 # Include helper objects and methods.
 require_helper "errors"
 
+# Include generic ruby libraries and gems.
+require "timeout"
+
 # Verifies the monitoring of the given plugin in the given server during the
 # time period provided.
 #
@@ -35,15 +38,15 @@ def check_monitoring(server, plugin_name = "cpu-0", plugin_type = "cpu-idle",
     raise MonitoringError, "Failed to verify that monitoring is operational"
   end
   monitoring_verified = false
+
   monitoring_values = []
-  require "timeout"
   Timeout::timeout(300) do
     until monitoring_verified
       monitor = server.get_sketchy_data(
-          "start" => start_time,
-          "end" => end_time,
-          "plugin_name" => plugin_name,
-          "plugin_type" => plugin_type
+        "start" => start_time,
+        "end" => end_time,
+        "plugin_name" => plugin_name,
+        "plugin_type" => plugin_type
       )
 
       # The values array consists of data points of the specified monitoring
