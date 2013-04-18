@@ -48,11 +48,13 @@ helpers do
 
   # Returns the security_updates input setting for the server.
   #
+  # @param server [Server] the server to obtain value from
+  #
   # @return [String] "enable" or "disable"
   #
-  def security_updates_input(server)
+  def get_security_updates_input(server)
     result = get_input_from_server(server)
-    result["rightscale/security_updates"].to_s.split("text:")[1]
+    result["rightscale/security_updates"].split("text:")[1]
   end
 
   # Obtains the conntrack_max value from /etc/sysctl.conf configuration file
@@ -156,11 +158,15 @@ helpers do
     end
   end
 
-  # Verfies the security repositories are unfrozen.
+  # Verifies the security repositories are unfrozen.
   # For apt based systems (Ubuntu) it checks repositories in
   # /etc/apt/sources.list.d/rightscale.sources.list
   # For yum based systems (CentOS) it checks repositories in
   # /etc/yum.repos.d/*.repo
+  #
+  # @param server [Server] the server to obtain value from
+  #
+  # @raise [FrozenRepoError] if unfrozen repositories not found
   #
   def verify_security_repositories_unfrozen(server)
     # Check that unforzen repos exist in the package repo dir
@@ -178,7 +184,8 @@ helpers do
     end
 
     probe(server, "grep #{latest} #{repo_dirs}") do |response, status|
-      raise "Unfrozen repo not found in #{repo_dirs}" unless status == 0
+      raise FrozenRepoError, "Unfrozen repo not found in " +
+        "#{repo_dirs}" unless status == 0
       true
     end
   end
@@ -190,19 +197,17 @@ hard_reset do
   stop_all
 end
 
-# There are two before tests for ensuring the required enable/disable
-# security update state.  Each before checks the current state, does
-# a hard reset if it is in the wrong state, sets the input variable
-# to the desired state and launches all (the)  server(s) in the deployment.
-#
-
 # Before tests that require security updates disabled.
+# 
+# Check the current input setting for "rightscale/security_updates".
+# If set to "enable" update the input to "disable" and relaunch all
+# of the servers.
 #
 before "smoke_test", "stop_start", "enable_security_updates_on_running_server" do
   puts "Running before with security updates disabled"
   # Assume a single sever in the deployment
   server = servers.first
-  if security_updates_input(server) != "disable"
+  if get_security_updates_input(server) != "disable"
     server.set_inputs("rightscale/security_updates" => "text:disable")
     relaunch_all
     wait_for_all("operational")
@@ -214,10 +219,14 @@ end
 
 # Before tests that require security updates enabled.
 #
+# Check the current input setting for "rightscale/security_updates".
+# If set to "disable" update the input to "enable" and relaunch all
+# of the servers.
+#
 before "verify_unfrozen_repositories" do
   # Assume a single sever in the deployment
   server = servers.first
-  if security_updates_input(server) != "enable"
+  if get_security_updates_input(server) != "enable"
     server.set_inputs("rightscale/security_updates" => "text:enable")
     relaunch_all
     wait_for_all("operational")
@@ -338,10 +347,10 @@ test_case "enable_security_updates_on_running_server" do
   run_recipe("rightscale::do_security_updates", server)
 end
 
-# The Base "verify repository unfrozen" test verfies the package mangers
+# The Base "verify repository unfrozen" test verfies the package managers
 # upstream security repositories are set to "latest".
 #
-test_case "verify_unfrozen_repositories" do
+test_case "enable_security_updates_on_boot" do
   server = servers.first
   verify_security_repositories_unfrozen(server)
 end
