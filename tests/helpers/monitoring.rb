@@ -37,8 +37,8 @@ def check_monitoring(server, plugin_name = "cpu-0", plugin_type = "cpu-idle",
   unless response
     raise MonitoringError, "Failed to verify that monitoring is operational"
   end
-  monitoring_verified = false
 
+  monitoring_verified = false
   monitoring_values = []
   Timeout::timeout(300) do
     until monitoring_verified
