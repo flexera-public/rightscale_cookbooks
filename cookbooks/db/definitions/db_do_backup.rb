@@ -5,13 +5,13 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-# Does a database backup of the filesystem containing the database
-# Since this backup is a snapshot of a filesystem, it will check if the database has
+# Does a database backup of the filesystem containing the database. Since this
+# backup is a snapshot of a filesystem, it will check if the database has
 # been 'initialized', else it will fail.
 #
-# @param [String] backup_type If 'primary' will do a primary backup using node attributes specific
-#   to the main backup.  If 'secondary' will do a secondary backup using node attributes for
-#   secondary.  Secondary uses 'ROS'.
+# @param backup_type [String] If 'primary' will do a primary backup using node
+# attributes specific to the main backup. If 'secondary' will do a secondary backup using node attributes for
+# secondary.  Secondary uses 'ROS'.
 #
 # @raise [RuntimeError] If database is not 'initialized'
 define :db_do_backup, :backup_type => "primary" do

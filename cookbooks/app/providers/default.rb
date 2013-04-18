@@ -8,8 +8,6 @@
 # = Default application server provider
 #
 
-# @resource app
-
 # Stop application
 action :stop do
   raise 'Using "default" application provider.  Action is not implemented'
