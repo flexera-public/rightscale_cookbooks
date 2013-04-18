@@ -12,12 +12,16 @@ set[:chef][:client][:config_dir] = "/etc/chef"
 # Recommended attributes
 default[:chef][:client][:version] = "10.24.0-1"
 default[:chef][:client][:environment] = "_default"
+default[:chef][:client][:interval] = "30"
+default[:chef][:client][:splay] = "5"
 
 # Required attributes
 default[:chef][:client][:server_url] = ""
-default[:chef][:client][:private_ssh_key] = ""
+default[:chef][:client][:validator_pem] = ""
 default[:chef][:client][:validation_name] = ""
 
 # Optional attributes
 default[:chef][:client][:node_name] = ""
+default[:chef][:client][:company] = ""
 default[:chef][:client][:roles] = ""
+default[:chef][:client][:json_attributes] = ""

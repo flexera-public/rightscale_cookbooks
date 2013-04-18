@@ -22,4 +22,60 @@ execute "/tmp/install.sh -v #{node[:chef][:client][:version]}"
 log "  Chef Client version #{node[:chef][:client][:version]} installation is" +
   " completed."
 
+# Creates the Chef Client configuration directory.
+directory node[:chef][:client][:config_dir]
+
+# Creates the Chef Client configuration file.
+template "#{node[:chef][:client][:config_dir]}/client.rb" do
+  source "chef_client_conf.erb"
+  mode "0644"
+  backup false
+  cookbook "chef"
+  variables(
+    :server_url => node[:chef][:client][:server_url],
+    :validation_name => node[:chef][:client][:validation_name],
+    :node_name => node[:chef][:client][:node_name]
+  )
+end
+
+# Creates the private key to register the Chef Client with the Chef Server.
+template "#{node[:chef][:client][:config_dir]}/validation.pem" do
+  source "validation_key.erb"
+  mode "0600"
+  backup false
+  cookbook "chef"
+  variables(
+    :validation_key => node[:chef][:client][:validator_pem]
+  )
+end
+
+# Creates runlist.json file.
+template "#{node[:chef][:client][:config_dir]}/runlist.json" do
+  source "runlist.json.erb"
+  cookbook "chef"
+  mode "0440"
+  backup false
+  variables(
+    :node_name => node[:chef][:client][:node_name],
+    :environment => node[:chef][:client][:environment],
+    :company => node[:chef][:client][:company],
+    :roles => node[:chef][:client][:roles]
+  )
+end
+
+# Sets current roles for future validation. See recipe chef::do_client_converge.
+node[:chef][:client][:current_roles] = node[:chef][:client][:roles]
+
+log " Chef Client configuration is completed."
+
+# Sets command extensions and attributes.
+extension = "-j #{node[:chef][:client][:config_dir]}/runlist.json"
+extension = extension + " -o #{node[:chef][:client][:json_attributes]}" \
+unless node[:chef][:client][:json_attributes].empty?
+
+# Runs the Chef Client using command extensions.
+execute "chef-client #{extension}"
+
+log " Chef Client role(s) are: #{node[:chef][:client][:current_roles]}"
+
 rightscale_marker :end

@@ -6,9 +6,12 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-# Creates runlist and runs the Chef Client using the same.
+rightscale_marker :begin
 
-define :chef_setup_runlist do
+log "  Current Chef Client role(s) are: #{node[:chef][:client][:current_roles]}"
+
+# Updates runlist.json file with new roles.
+if node[:chef][:client][:current_roles] != node[:chef][:client][:roles] 
 
   # Creates runlist.json file.
   template "#{node[:chef][:client][:config_dir]}/runlist.json" do
@@ -24,12 +27,11 @@ define :chef_setup_runlist do
     )
   end
 
-  # Runs the Chef Client using runlist.json file.
-  execute "chef-client -j #{node[:chef][:client][:config_dir]}/runlist.json"
-
-  # Sets current roles for future validation. See recipe chef::execute_runlist.
+  # Sets current roles for future validation.
   node[:chef][:client][:current_roles] = node[:chef][:client][:roles]
-
-  log "  Active Chef Client role(s) are: #{node[:chef][:client][:current_roles]}"
-
 end
+
+# Runs the Chef Client using runlist.json file.
+execute "chef-client -j #{node[:chef][:client][:config_dir]}/runlist.json"
+
+rightscale_marker :end
