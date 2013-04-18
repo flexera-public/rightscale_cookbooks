@@ -332,9 +332,9 @@ end
 #
 test_case "enable_security_updates_on_running_server" do
   server = servers.first
-  puts "NOT IMPLEMENTED"
+  server.set_inputs("rightscale/security_updates" => "text:enable")
   run_recipe("rightscale::setup_security_updates", server)
-  verify_security_reposiotries_unfrozen(server)
+  verify_security_repositories_unfrozen(server)
   run_recipe("rightscale::do_security_updates", server)
 end
 
