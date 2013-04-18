@@ -20,12 +20,15 @@ class Cloud
       EC2.new cloud_name
     when /^Azure /
       Azure.new cloud_name
-    when /^CS /, /^Datapipe /, /^IDC Frontier /, "Logicworks"
+    when /^CS /, /^Datapipe /, /^IDC Frontier /, "Logicworks",
+      "TATA InstaCompute"
       CloudStack.new cloud_name
-    when /Openstack/i, "HP Cloud", "Rackspace Private"
+    when /Openstack/i, "HP Cloud", "Rackspace Private V3"
       Openstack.new cloud_name
     when "Google"
       Google.new cloud_name
+    when /^Rackspace Open Cloud /
+      RackspaceOpenCloud.new cloud_name
     else
       Cloud.new cloud_name
     end
@@ -102,6 +105,19 @@ class Cloud
     true
   end
 
+  # Checks if the cloud supports creating and attaching volumes to servers. If
+  # not overridden by a subclass this method will always return false.
+  #
+  # @return [Boolean] whether the cloud supports volumes
+  #
+  def supports_volumes?
+    false
+  end
+
+  def supports_snapshots?
+    false
+  end
+
 private
   # Constructs a cloud object. This method should not be used directly. Instead
   # {.factory} will create an instance of the correct Cloud subclass based on
@@ -149,6 +165,21 @@ class EC2 < Cloud
     # All RHEL images are EBS, but may not say so.
     get_server_mci(server).name =~ /ebs|rhel/i ? true : false
   end
+
+  # Checks if the cloud supports creating and attaching volumes to servers.
+  # EC2  Clouds support volumes.
+  #
+  # @return [Boolean] whether the cloud supports volumes
+  #
+  # @see Cloud#supports_volumes?
+  #
+  def supports_volumes?
+    true
+  end
+
+  def supports_snapshots?
+    true
+  end
 end
 
 # Represents the Microsoft Azure cloud specific behavior.
@@ -168,6 +199,21 @@ class Azure < Cloud
   def supports_ephemeral?(server)
     true
   end
+
+  # Checks if the cloud supports creating and attaching volumes to servers.
+  # Azure Cloud supports volumes.
+  #
+  # @return [Boolean] whether the cloud supports volumes
+  #
+  # @see Cloud#supports_volumes?
+  #
+  def supports_volumes?
+    true
+  end
+
+  def supports_snapshots?
+    true
+  end
 end
 
 # Represents the Apache CloudStack cloud specific behavior. Datapipe, IDC
@@ -185,6 +231,27 @@ class CloudStack < Cloud
   def needs_private_ssh?
     case @cloud_name
     when /^IDC Frontier /, "Logicworks"
+      true
+    else
+      false
+    end
+  end
+
+  # Checks if the cloud supports creating and attaching volumes to servers.
+  # Cloudstack clouds supports volumes.
+  #
+  # @return [Boolean] whether the cloud supports volumes
+  #
+  # @see Cloud#supports_volumes?
+  #
+  def supports_volumes?
+    true
+  end
+
+  def supports_snapshots?
+    case @cloud_name
+    when /VMware/, /XenServer/, /^IDC Frontier /, "Logicworks",
+      "TATA InstaCompute"
       true
     else
       false
@@ -210,6 +277,17 @@ class Openstack < Cloud
   def supports_ephemeral?(server)
     true
   end
+
+  # Checks if the cloud supports creating and attaching volumes to servers.
+  # Openstack clouds supports volumes.
+  #
+  # @return [Boolean] whether the cloud supports volumes
+  #
+  # @see Cloud#supports_volumes?
+  #
+  def supports_volumes?
+    true
+  end
 end
 
 # Represents the Google cloud specific behavior.
@@ -225,5 +303,39 @@ class Google < Cloud
   #
   def supports_reboot?
     false
+  end
+end
+
+# Represents the Rackspace Open Cloud specific behavior.
+#
+# @see Cloud
+#
+class RackspaceOpenCloud < Cloud
+  # Checks if a server can have ephemeral devices. Ephemeral is supported on
+  # Rackspace Open clouds.
+  #
+  # @param server [Server] the server to check for ephemeral support
+  #
+  # @return [Boolean] whether the cloud supports ephemeral devices
+  #
+  # @see Cloud#supports_ephemeral?
+  #
+  def supports_ephemeral?(server)
+    true
+  end
+
+  # Checks if the cloud supports creating and attaching volumes to servers.
+  # Rackspace Open Cloud supports volumes.
+  #
+  # @return [Boolean] whether the cloud supports volumes
+  #
+  # @see Cloud#supports_volumes?
+  #
+  def supports_volumes?
+    true
+  end
+
+  def supports_snapshots?
+    true
   end
 end
