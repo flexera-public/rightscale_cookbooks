@@ -240,6 +240,19 @@ attribute "block_device/ephemeral/vg_data_percentage",
   :default => "100",
   :recipes => ["block_device::setup_ephemeral"]
 
+attribute "block_device/ephemeral/file_system_type",
+  :display_name => "Ephemeral File System Type",
+  :description =>
+    "The type of file system that will be installed on the ephemeral device." +
+    " By default, this input will be set to 'xfs'. This input is ignored on" +
+    " Redhat and 'ext3' file system will be set up by default since Redhat" +
+    " does not support the 'xfs' file system. Example: xfs",
+  :type => "string",
+  :required => "optional",
+  :choice => ["xfs", "ext3"],
+  :default => "xfs",
+  :recipes => ["block_device::setup_ephemeral"]
+
 # Multiple Block Devices
 device_count = 2
 devices = 1.upto(device_count).map { |number| "device#{number}" }

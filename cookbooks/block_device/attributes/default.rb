@@ -34,3 +34,6 @@ end
 
 # block_device/first_server_uuid will be used to generate unique block device nicknames
 default[:block_device][:first_server_uuid] = node[:rightscale][:instance_uuid]
+
+# Type of file system set up on ephemeral devices
+default[:block_device][:ephemeral][:file_system_type] = "xfs"

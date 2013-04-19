@@ -28,9 +28,6 @@ recipe "memcached::do_start",
 recipe "memcached::do_restart",
   "Restarts memcached service."
 
-recipe "memcached::do_reload",
-  "Reloads memcached service."
-
 recipe "memcached::do_stop",
   "Stops memcached service."
 

@@ -3,6 +3,7 @@ require_helper "cloud"
 require_helper "ephemeral"
 require_helper "wait_for_ip_repopulation"
 require_helper "errors"
+require_helper "os"
 
 # Test specific helpers.
 #
@@ -176,8 +177,7 @@ helpers do
   def verify_security_repositories_unfrozen(server)
     # Check that unforzen repos exist in the package repo dir
     #
-    cloud = Cloud.factory
-    os = cloud.get_server_mci(server).name
+    os = get_operating_system(server)
     puts "  Testing OS: #{os}"
     case os
     when /ubuntu/i
