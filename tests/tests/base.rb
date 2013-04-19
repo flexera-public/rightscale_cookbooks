@@ -17,6 +17,11 @@ helpers do
   class ConntrackMaxError < VirtualMonkey::TestCase::ErrorBase
   end
 
+  # An error with unfrozen repo check
+  #
+  class FrozenRepoError < VirtualMonkey::TestCase::ErrorBase
+  end
+
   # Checks if the swap file is set up.
   #
   # @param server [Server] the server to check
