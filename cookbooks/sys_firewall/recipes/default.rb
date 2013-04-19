@@ -32,9 +32,10 @@ when "enabled"
   # for the "iptables::default" recipe.
   include_recipe "iptables"
 
-  # Enable the iptables service
+  # Enable the iptables service for CentOS/RedHat
   service "iptables" do
     action :enable
+    not_if { node[:platform] == "ubuntu" }
   end
 
   # See cookbooks/sys_firewall/providers/default.rb for the "update" action.
