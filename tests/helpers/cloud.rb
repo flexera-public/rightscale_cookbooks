@@ -114,6 +114,11 @@ class Cloud
     false
   end
 
+  # Checks if the cloud supports the creation of live volume snapshots. If not
+  # overridden by a subclass this method will always return false.
+  #
+  # @return [Boolean] whether the cloud supports volume snapshots
+  #
   def supports_snapshots?
     false
   end
@@ -167,7 +172,7 @@ class EC2 < Cloud
   end
 
   # Checks if the cloud supports creating and attaching volumes to servers.
-  # EC2  Clouds support volumes.
+  # EC2 Clouds support volumes.
   #
   # @return [Boolean] whether the cloud supports volumes
   #
@@ -177,6 +182,13 @@ class EC2 < Cloud
     true
   end
 
+  # Checks if the cloud supports the creation of live volume snapshots. EC2
+  # clouds support volume snapshots.
+  #
+  # @return [Boolean] whether the cloud supports volume snapshots
+  #
+  # @see Cloud#supports_snapshots?
+  #
   def supports_snapshots?
     true
   end
@@ -211,6 +223,13 @@ class Azure < Cloud
     true
   end
 
+  # Checks if the cloud supports the creation of live volume snapshots. Azure
+  # Cloud supports volume snapshots.
+  #
+  # @return [Boolean] whether the cloud supports volume snapshots
+  #
+  # @see Cloud#supports_snapshots?
+  #
   def supports_snapshots?
     true
   end
@@ -248,6 +267,14 @@ class CloudStack < Cloud
     true
   end
 
+  # Checks if the cloud supports the creation of live volume snapshots.
+  # Cloudstack clouds with VMware and XenServer hypervisors support volume
+  # snapshots.
+  #
+  # @return [Boolean] whether the cloud supports volume snapshots
+  #
+  # @see Cloud#supports_snapshots?
+  #
   def supports_snapshots?
     case @cloud_name
     when /VMware/, /XenServer/, /^IDC Frontier /, "Logicworks",
@@ -335,6 +362,13 @@ class RackspaceOpenCloud < Cloud
     true
   end
 
+  # Checks if the cloud supports the creation of live volume snapshots.
+  # Rackspace Open Cloud supports volume snapshots.
+  #
+  # @return [Boolean] whether the cloud supports volume snapshots
+  #
+  # @see Cloud#supports_snapshots?
+  #
   def supports_snapshots?
     true
   end

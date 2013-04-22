@@ -15,5 +15,9 @@
   "memcached": {
     "nickname": "Memcached Server STAGING",
     "rev": "head"
+  },
+  "api_tester": {
+    "nickname": "TESTING BlockDevice API Tester STAGING",
+    "rev": "head"
   }
 }
