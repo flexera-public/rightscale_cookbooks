@@ -1,30 +1,30 @@
-= RightScale Ruby Cookbook
+# RightScale Ruby Cookbook
 
-== DESCRIPTION:
+## DESCRIPTION:
 
 This cookbook provides recipes for setting up specific versions of Ruby.
 
-== REQUIREMENTS:
+## REQUIREMENTS:
 
 Requires a virtual machine launched from a RightScale-managed RightImage.
 
-== COOKBOOKS DEPENDENCIES:
+## COOKBOOKS DEPENDENCIES:
 
-Please see <tt>metadata.rb</tt> file for the latest dependencies.
+Please see `metadata.rb` file for the latest dependencies.
 
-== KNOWN LIMITATIONS:
+## KNOWN LIMITATIONS:
 
 There are no known limitations.
 
-== SETUP/USAGE:
+## SETUP/USAGE:
 
-Place the <tt>ruby::install_1_8</tt> recipe into the boot recipes to install
-ruby 1.8 with rubygems.
+Place the `ruby::install_1_8` recipe into the boot recipes to install ruby 1.8
+with rubygems.
 
-Place the <tt>ruby::install_1_9</tt> recipe into the boot recipes to install
-ruby 1.9 with rubygems.
+Place the `ruby::install_1_9` recipe into the boot recipes to install ruby 1.9
+with rubygems.
 
-== LICENSE:
+## LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to
 the RightScale Terms of Service available at http://www.rightscale.com/terms.php
