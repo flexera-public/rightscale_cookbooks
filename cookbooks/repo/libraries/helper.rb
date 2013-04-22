@@ -42,7 +42,7 @@ module RightScale
         host_file_dir = "/root/.ssh"
         ::Dir.mkdir(host_file_dir, 0700) unless ::File.exists?(host_file_dir)
         host_file = "#{host_file_dir}/known_hosts"
-        if ::File.exists?("#{host_file}") && ::File.readlines(host_file).grep("#{host_key}\n").any?
+        if ::File.exists?(host_file) && ::File.readlines(host_file).grep("#{host_key}\n").any?
           Chef::Log.info("  Skipping key installation. Looks like the key already exists.")
         else
           Chef::Log.info("  Installing ssh host key for root.")
