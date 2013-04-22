@@ -13,3 +13,5 @@ default[:db_postgres][:server_usage] = "dedicated" # or "shared"
 
 # Port on which postgres listens. Used by app servers to connect.
 default[:db_postgres][:port] = "5432"
+
+default[:db_postgres][:tunable] = {}
