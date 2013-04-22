@@ -4,6 +4,5 @@
     "logging",
     "base_chef"
   ],
-  "tests": ["logging.rb"],
-  "variables": {}
+  "tests": ["logging.rb"]
 }
