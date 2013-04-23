@@ -194,51 +194,69 @@ helpers do
       true
     end
   end
+
+  # Ensure server is running with the correct rightscale/security_updates
+  # input setting.
+  #
+  # @param server [Server] the server to obtain value from
+  #
+  # @param desired_state [String].  The desired input setting.
+  #   Either "enable" or "disable"
+  #
+  def ensure_security_updates_input_setting(server, desired_setting)
+    input = get_security_updates_input(server)
+    state = server.state
+    puts "  Current server state: #{state}"
+    puts "  Current security updates input setting: #{input}"
+    puts "  Setting security updates input to #{desired_setting}"
+    server.set_inputs("rightscale/security_updates" => "text:#{desired_setting}")
+    if state == "stopped"
+      puts "  Servers in stopped state.  Launch all"
+      launch_all
+    elsif input != desired_setting
+      puts "  Servers running with incorrect security input.  Relaunch all"
+      relaunch_all
+    end
+    
+    wait_for_all("operational")
+  end
 end
 
 # When rerunning a test, shutdown all of the servers.
 #
-hard_reset do
-  stop_all
-end
+#hard_reset do
+#  stop_all
+#end
 
 # Before tests that require security updates disabled.
 # 
 # Check the current input setting for "rightscale/security_updates".
+# If the server is stopped set the input to "disable" and launch all
 # If set to "enable" update the input to "disable" and relaunch all
 # of the servers.
+# If the server is running and the input is set to "disable" ensure
+# the servers are operational.
 #
 before "smoke_test", "stop_start", "enable_security_updates_on_running_server" do
   puts "Running before with security updates disabled"
   # Assume a single sever in the deployment
   server = servers.first
-  if get_security_updates_input(server) != "disable"
-    server.set_inputs("rightscale/security_updates" => "text:disable")
-    relaunch_all
-    wait_for_all("operational")
-  end
-  
-  launch_all
-  wait_for_all("operational")
+  ensure_security_updates_input_setting(server, "disable")
 end
 
 # Before tests that require security updates enabled.
 #
 # Check the current input setting for "rightscale/security_updates".
-# If set to "disable" update the input to "enable" and relaunch all
+# If the server is stopped set the input to "enable" and launch all
+# If set to "enable" update the input to "enable" and relaunch all
 # of the servers.
+# If the server is running and the input is set to "enable" ensure
+# the servers are operational.
 #
 before "verify_unfrozen_repositories" do
   # Assume a single sever in the deployment
   server = servers.first
-  if get_security_updates_input(server) != "enable"
-    server.set_inputs("rightscale/security_updates" => "text:enable")
-    relaunch_all
-    wait_for_all("operational")
-  end
-  
-  launch_all
-  wait_for_all("operational")
+  ensure_security_updates_input_setting(server, "enable")
 end
 
 # The Base smoke test makes sure the Base (Chef or RSB) ServerTemplate has its

@@ -10,6 +10,7 @@ require_helper "errors"
 # @return [String] Operating system type: "CentOS", "ubuntu", "RHEL", etc. 
 #
 def get_operating_system(server)
+  os = ""
   probe(server, "lsb_release -si") do |response, status|
     raise FailedProbeCommandError, "System call to get OS failed" unless 
       status == 0
