@@ -31,12 +31,10 @@ if RightScale::Utils::Helper.is_rackspace_managed_cloud?
   node[:driveclient] ||= {}
   node[:driveclient][:apihostname] =
     case region
-    when "ord", "dfw"
-      "api.drivesrvr.com"
     when "lon"
       "api.drivesrvr.co.uk"
     else
-      raise "Unable to detect Rackspace region"
+      "api.drivesrvr.com"
     end
   node[:driveclient][:username] = node[:rightscale][:rackspace_username]
   node[:driveclient][:password] = node[:rightscale][:rackspace_api_key]
@@ -52,12 +50,10 @@ if RightScale::Utils::Helper.is_rackspace_managed_cloud?
     node[:rightscale][:rackspace_api_key]
   node[:cloud_monitoring][:rackspace_auth_region] =
     case region
-    when "ord", "dfw"
-      "us"
     when "lon"
       "uk"
     else
-      raise "Unable to detect Rackspace region"
+      "us"
     end
   include_recipe "cloudmonitoring::default"
 else
