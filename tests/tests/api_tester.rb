@@ -16,8 +16,8 @@ before do
 end
 
 # This test case will run the "tester::do_block_device_api_tests" recipe on the
-# server which will run the functional tests on rightscale_tools to test the
-# API with volume based API calls.
+# server which will run the block device functional tests on rightscale_tools
+# to test the API with volume based API calls.
 #
 test_case "run_api_tests" do
   # Get the current cloud
@@ -40,12 +40,13 @@ test_case "run_api_tests" do
     end
   else
     raise UnsupportedCloudError, "This cloud #{cloud.cloud_name} doesn't" +
-      " volumes and volume snapshots. API tester requires at least volume" +
-      " support for testing."
+      " support volumes and volume snapshots. API tester requires at least" +
+      " volume support for testing."
   end
 
-  # Run the tester::do_block_device_api_tests recipe which runs all the
-  # functional tests available in the rightscale_tools to test the API calls.
+  # Run the tester::do_block_device_api_tests recipe which runs all the block
+  # device functional tests available in the rightscale_tools to test the API
+  # calls.
   #
   run_recipe("tester::do_block_device_api_tests", server)
 end

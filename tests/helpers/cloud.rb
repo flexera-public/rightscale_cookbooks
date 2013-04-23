@@ -172,7 +172,7 @@ class EC2 < Cloud
   end
 
   # Checks if the cloud supports creating and attaching volumes to servers.
-  # EC2 Clouds support volumes.
+  # EC2 clouds support volumes.
   #
   # @return [Boolean] whether the cloud supports volumes
   #
