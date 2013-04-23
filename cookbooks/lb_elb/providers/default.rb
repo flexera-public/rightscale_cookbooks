@@ -16,8 +16,8 @@ action :attach do
   require "right_cloud_api"
   require "cloud/aws/elb/manager"
 
-  log "  Attaching #{node[:ec2][:instance_id]} to " +
-    "#{new_resource.service_lb_name}"
+  log "  Attaching #{node[:ec2][:instance_id]} to" +
+    " #{new_resource.service_lb_name}"
 
   # Creates an interface handle to ELB.
   elb = RightScale::CloudApi::AWS::ELB::Manager::new(
@@ -36,15 +36,15 @@ action :attach do
 
   if selected_elb = existing_elbs.detect { |f|
     f["LoadBalancerName"] == new_resource.service_lb_name }
-    log "  ELB #{new_resource.service_lb_name} exists"
+    log "ELB '#{new_resource.service_lb_name}' exists"
   else
-    raise "ERROR: ELB named #{new_resource.service_lb_name} does not exist"
+    raise "ERROR: ELB '#{new_resource.service_lb_name}' does not exist"
   end
 
   # Checks if this instance's zone is part of the lb. If not, add it.
   if selected_elb["AvailabilityZones"]["member"].
     include?(node[:ec2][:placement][:availability_zone])
-    log "...instance part of ELB zone"
+    log "...instance already part of ELB zone"
   else
     log "...activating zone #{node[:ec2][:placement][:availability_zone]}"
     elb.EnableAvailabilityZonesForLoadBalancer({
@@ -62,10 +62,10 @@ action :attach do
   end
 
   # Connects the server to ELB.
-  log ".. registering with ELB"
+  log "...registering with ELB"
   elb.RegisterInstancesWithLoadBalancer({
     "LoadBalancerName" => new_resource.service_lb_name,
-    "Instances.member" => node[:ec2][:instance_id]})
+    "Instances.member" => {"InstanceID" => node[:ec2][:instance_id]})
 end
 
 action :attach_request do
@@ -87,19 +87,26 @@ end
 
 action :detach do
 
-  log "  Detaching #{node[:ec2][:instance_id]}"
+  log "  Detaching #{node[:ec2][:instance_id]} from" +
+    " #{new_resource.service_lb_name}"
 
-  require "right_aws"
+  require "right_cloud_api"
+  require "cloud/aws/elb/manager"
 
   # Creates an interface handle to ELB.
-  elb = RightAws::ElbInterface.new(
-    new_resource.service_account_id, new_resource.service_account_secret,
-    {:endpoint_url => "https://elasticloadbalancing." + node[:ec2][:placement][:availability_zone].gsub(/[a-z]+$/, '') + ".amazonaws.com"}
-  )
+  elb = RightScale::CloudApi::AWS::ELB::Manager::new(
+    new_resource.service_account_id,
+    new_resource.service_account_secret,
+    "https://elasticloadbalancing." +
+    node[:ec2][:placement][:availability_zone].gsub(/[a-z]+$/, '') +
+    ".amazonaws.com"
+    )
 
-  # Disconnects the server from ELB.
-  log ".. detaching from ELB"
-  elb.deregister_instances_with_load_balancer(new_resource.service_lb_name, node[:ec2][:instance_id])
+  # Deregister the server to ELB.
+  log "...DE-registering with ELB"
+  elb.DeregisterInstancesFromLoadBalancer({
+    "LoadBalancerName" => new_resource.service_lb_name,
+    "Instances.member" => {"InstanceID" => node[:ec2][:instance_id]})
 
   # Closes the backend_port.
   # See cookbooks/sys_firewall/providers/default.rb for the "update" action.
