@@ -4,7 +4,7 @@ require_helper "ephemeral"
 require_helper "wait_for_ip_repopulation"
 require_helper "errors"
 require_helper "os"
-require_helper "inputs"
+require_helper "input"
 
 # Test specific helpers.
 #
@@ -186,25 +186,34 @@ helpers do
   end
 end
 
+# Generic before all
+#
+# This does nothing at this time.  It is here to make it easier
+# to debug missing specific test befores.
+#
+before do
+  puts "  No before all actions"
+end
+
 # Before tests that require security updates disabled.
 # 
 # Ensure the server input rightscale/security_updates is set to "disable"
 #
 before "smoke_test", "stop_start", "enable_security_updates_on_running_server" do
   puts "Running before with security updates disabled"
-  # Assume a single sever in the deployment
+  # Assume a single server in the deployment
   server = servers.first
-  ensure_input_setting(server, "rightscale/security_updates", "disable")
+  ensure_input_setting(server, "rightscale/security_updates", "text", "disable")
 end
 
 # Before tests that require security updates enabled.
 #
 # Ensure the server input rightscale/security_updates is set to "enable"
 #
-before "verify_unfrozen_repositories" do
-  # Assume a single sever in the deployment
+before "enable_security_updates_on_boot" do
+  # Assume a single server in the deployment
   server = servers.first
-  ensure_input_setting(server, "rightscale/security_updates", "enable")
+  ensure_input_setting(server, "rightscale/security_updates", "text", "enable")
 end
 
 # The Base smoke test makes sure the Base (Chef or RSB) ServerTemplate has its

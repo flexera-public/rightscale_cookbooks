@@ -1,4 +1,5 @@
 # Include helper objects and methods.
+require_helper "cloud"
 require_helper "errors"
 
 # Returns the current value for input name on the given the server.
@@ -18,8 +19,9 @@ end
 # Ensure server is running with the correct setting for the
 # input.
 #
-# Check the current input setting. If the server is stopped 
-# set the input to the desired state and launch all.
+# If the server is stopped we can't (yet) get the current input
+# so set the input to the desired state and launch all.
+# If the server is not stopped then get the current input.
 # If set to other than the desired state update the input to
 # the desired state and relaunch all.
 # If the server is running and the input is set to the desired
@@ -36,20 +38,24 @@ end
 # @param desired_state [String].  The desired input setting
 #
 def ensure_input_setting(server, input_name, input_type, desired_setting)
-  current_type, current_value = get_sever_input(server, input_name)
   input_string = "#{input_type}:#{desired_setting}"
   state = server.state
   puts "  Current server state: #{state}"
   puts "  Input name: #{input_name}"
-  puts "  Current security updates input setting: #{current_type}:#{current_value}"
   puts "  Setting security updates input to #{input_string}"
-  server.set_inputs(input_name => "#{input_string}")
-  if state == "stopped"
+  if state == "stopped" || state == "inactive"
+    server.set_inputs(input_name => "#{input_string}")
     puts "  Servers in stopped state.  Launch all"
     launch_all
-  elsif current_input != desired_setting
-    puts "  Servers running with incorrect input setting.  Relaunch all"
-    relaunch_all
+  else
+    current_type, current_value = get_server_input_value(server, input_name)
+    puts "  Current security updates input setting: #{current_type}:#{current_value}"
+    if current_value != desired_setting
+      puts "  Servers running with incorrect input setting."
+      puts "  Update input and relaunch all"
+      server.set_inputs(input_name => "#{input_string}")
+      relaunch_all
+    end
   end
   
   wait_for_all("operational")
