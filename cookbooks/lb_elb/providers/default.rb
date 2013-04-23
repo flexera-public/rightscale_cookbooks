@@ -49,7 +49,8 @@ action :attach do
     log "...activating zone #{node[:ec2][:placement][:availability_zone]}"
     elb.EnableAvailabilityZonesForLoadBalancer({
       "LoadBalancerName" => new_resource.service_lb_name,
-      "AvailabilityZones.member" => node[:ec2][:placement][:availability_zone]})
+      "AvailabilityZones.member" => node[:ec2][:placement][:availability_zone]
+    })
   end
 
   # Opens the backend_port.
@@ -65,7 +66,9 @@ action :attach do
   log "...registering with ELB"
   elb.RegisterInstancesWithLoadBalancer({
     "LoadBalancerName" => new_resource.service_lb_name,
-    "Instances.member" => {"InstanceID" => node[:ec2][:instance_id]})
+    "Instances.member" => {"InstanceID" => node[:ec2][:instance_id]}
+  })
+
 end
 
 action :attach_request do
@@ -87,11 +90,11 @@ end
 
 action :detach do
 
-  log "  Detaching #{node[:ec2][:instance_id]} from" +
-    " #{new_resource.service_lb_name}"
-
   require "right_cloud_api"
   require "cloud/aws/elb/manager"
+
+  log "  Detaching #{node[:ec2][:instance_id]} from" +
+    " #{new_resource.service_lb_name}"
 
   # Creates an interface handle to ELB.
   elb = RightScale::CloudApi::AWS::ELB::Manager::new(
@@ -106,7 +109,8 @@ action :detach do
   log "...DE-registering with ELB"
   elb.DeregisterInstancesFromLoadBalancer({
     "LoadBalancerName" => new_resource.service_lb_name,
-    "Instances.member" => {"InstanceID" => node[:ec2][:instance_id]})
+    "Instances.member" => {"InstanceID" => node[:ec2][:instance_id]}
+  })
 
   # Closes the backend_port.
   # See cookbooks/sys_firewall/providers/default.rb for the "update" action.
