@@ -338,19 +338,6 @@ end
 # @see Cloud
 #
 class RackspaceOpenCloud < Cloud
-  # Checks if a server can have ephemeral devices. Ephemeral is supported on
-  # Rackspace Open clouds.
-  #
-  # @param server [Server] the server to check for ephemeral support
-  #
-  # @return [Boolean] whether the cloud supports ephemeral devices
-  #
-  # @see Cloud#supports_ephemeral?
-  #
-  def supports_ephemeral?(server)
-    true
-  end
-
   # Checks if the cloud supports creating and attaching volumes to servers.
   # Rackspace Open Cloud supports volumes.
   #
