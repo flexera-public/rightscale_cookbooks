@@ -19,7 +19,7 @@
       "recipes": [
         "lb_haproxy::setup_server"
       ],
-      "display_name": "Global abortonclose option",
+      "display_name": "Global abortonclose Option",
       "description": "Sets or unsets the abortonclose option.  Example: 'on'"
     },
     "lb_haproxy/timeout_server": {
@@ -77,7 +77,7 @@
       "recipes": [
         "lb_haproxy::setup_server"
       ],
-      "display_name": "Global section maxconn",
+      "display_name": "Global Section maxconn",
       "description": "The maxconn value in the global haproxy configuration section. Example: 20000"
     },
     "lb_haproxy/httpclose": {
@@ -92,7 +92,7 @@
       "recipes": [
         "lb_haproxy::setup_server"
       ],
-      "display_name": "Global httpclose option",
+      "display_name": "Global httpclose Option",
       "description": "Sets or unsets the httpclose option.  Example: 'on'"
     },
     "lb_haproxy/default_maxconn": {
@@ -101,13 +101,13 @@
       "choice": [
 
       ],
-      "default": "20000",
+      "default": "5000",
       "type": "string",
       "recipes": [
         "lb_haproxy::setup_server"
       ],
-      "display_name": "Default section maxconn",
-      "description": "The maxconn value in the default haproxy configuration section. Example: 20000"
+      "display_name": "Default Section maxconn",
+      "description": "The maxconn value in the default haproxy configuration section. Example: 5000"
     }
   },
   "license": "Copyright RightScale, Inc. All rights reserved.",

@@ -29,7 +29,7 @@ defaults
         option  dontlognull
         retries 3
         option  redispatch
-        maxconn <%= default_maxconn %>
+        maxconn <%= @default_maxconn %>
         contimeout        5000
         timeout client <%= @timeout_client %>
 
