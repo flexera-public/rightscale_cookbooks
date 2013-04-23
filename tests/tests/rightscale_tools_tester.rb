@@ -12,13 +12,6 @@ before do
   wait_for_all("operational")
 end
 
-before "unit_tests", "functional_tests" do
-  # Single server in deployment
-  server = servers.first
-
-  run_script("tester::do_update_code", server)
-end
-
 test_case "unit_tests" do
   # Single server in deployment
   server = servers.first
