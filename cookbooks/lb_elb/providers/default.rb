@@ -66,7 +66,7 @@ action :attach do
   log "...registering with ELB"
   elb.RegisterInstancesWithLoadBalancer({
     "LoadBalancerName" => new_resource.service_lb_name,
-    "Instances.member" => {"InstanceID" => node[:ec2][:instance_id]}
+    "Instances.member" => {"InstanceId" => node[:ec2][:instance_id]}
   })
 
 end
@@ -109,7 +109,7 @@ action :detach do
   log "...DE-registering with ELB"
   elb.DeregisterInstancesFromLoadBalancer({
     "LoadBalancerName" => new_resource.service_lb_name,
-    "Instances.member" => {"InstanceID" => node[:ec2][:instance_id]}
+    "Instances.member" => {"InstanceId" => node[:ec2][:instance_id]}
   })
 
   # Closes the backend_port.
