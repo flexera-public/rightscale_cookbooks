@@ -13,10 +13,11 @@ end
 
 action :attach do
 
+  require "right_cloud_api"
+  require "cloud/aws/elb/manager"
+
   log "  Attaching #{node[:ec2][:instance_id]} to " +
     "#{new_resource.service_lb_name}"
-
-  require "right_cloud_api"
 
   # Creates an interface handle to ELB.
   elb = RightScale::CloudApi::AWS::ELB::Manager::new(
@@ -27,19 +28,28 @@ action :attach do
     ".amazonaws.com"
     )
 
-  # Verifies that the ELB exists.
-  balancers = elb.describe_load_balancers
-  existing_elbs = balancers.detect { |b| b[:load_balancer_name] ==
-    new_resource.service_lb_name }
+  # Verify that the ELB exists.
+  existing_elbs = elb.DescribeLoadBalancers["DescribeLoadBalancersResponse"]\
+    ["DescribeLoadBalancersResult"]\
+    ["LoadBalancerDescriptions"]\
+    ["member"]
 
-  if existing_elbs.nil?
+  if selected_elb = existing_elbs.detect { |f|
+    f["LoadBalancerName"] == new_resource.service_lb_name }
+    log "  ELB #{new_resource.service_lb_name} exists"
+  else
     raise "ERROR: ELB named #{new_resource.service_lb_name} does not exist"
   end
 
   # Checks if this instance's zone is part of the lb. If not, add it.
-  unless existing_elbs[:availability_zones].include?(node[:ec2][:placement][:availability_zone])
-    log ".. activating zone #{node[:ec2][:placement][:availability_zone]}"
-    elb.enable_availability_zones_for_load_balancer(new_resource.service_lb_name, node[:ec2][:placement][:availability_zone])
+  if selected_elb["AvailabilityZones"]["member"].
+    include?(node[:ec2][:placement][:availability_zone])
+    log "...instance part of ELB zone"
+  else
+    log "...activating zone #{node[:ec2][:placement][:availability_zone]}"
+    elb.EnableAvailabilityZonesForLoadBalancer({
+      "LoadBalancerName" => new_resource.service_lb_name,
+      "AvailabilityZones.member" => node[:ec2][:placement][:availability_zone]})
   end
 
   # Opens the backend_port.
@@ -53,10 +63,10 @@ action :attach do
 
   # Connects the server to ELB.
   log ".. registering with ELB"
-  elb.register_instances_with_load_balancer(new_resource.service_lb_name, node[:ec2][:instance_id])
-
+  elb.RegisterInstancesWithLoadBalancer({
+    "LoadBalancerName" => new_resource.service_lb_name,
+    "Instances.member" => node[:ec2][:instance_id]})
 end
-
 
 action :attach_request do
 
