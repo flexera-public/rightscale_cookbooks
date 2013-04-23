@@ -3,9 +3,9 @@ require_helper "errors"
 
 # Returns the operating system type for an operatinal server.
 #
-# @param server [Server] the server to get operating system type.
+# @param server [Server] the server to get operating system type
 #
-# @raise [FailedProbeCommandError] if the get operating system probe fails.
+# @raise [FailedProbeCommandError] if the get operating system probe fails
 #
 # @return [String] Operating system type: "CentOS", "Ubuntu", "RHEL", etc. 
 #
