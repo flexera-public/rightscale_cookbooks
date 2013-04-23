@@ -66,7 +66,7 @@ end
 # Sets current roles for future validation. See recipe chef::do_client_converge.
 node[:chef][:client][:current_roles] = node[:chef][:client][:roles]
 
-log " Chef Client configuration is completed."
+log "  Chef Client configuration is completed."
 
 # Sets command extensions and attributes.
 extension = "-j #{node[:chef][:client][:config_dir]}/runlist.json"
@@ -76,6 +76,6 @@ unless node[:chef][:client][:json_attributes].empty?
 # Runs the Chef Client using command extensions.
 execute "chef-client #{extension}"
 
-log " Chef Client role(s) are: #{node[:chef][:client][:current_roles]}"
+log "  Chef Client role(s) are: #{node[:chef][:client][:current_roles]}"
 
 rightscale_marker :end

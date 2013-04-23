@@ -32,7 +32,7 @@ attribute "chef/client/server_url",
   :recipes => ["chef::install_client"]
 
 attribute "chef/client/validator_pem",
-  :display_name => "Private key to register the Chef Client with the Chef" +
+  :display_name => "Private Key to Register the Chef Client with the Chef" +
     " Server.",
   :description =>
     "Private SSH key which will be used to authenticate the Chef Client on" +
@@ -88,7 +88,7 @@ attribute "chef/client/roles",
   :recipes => ["chef::install_client", "chef::do_client_converge"]
 
 attribute "chef/client/json_attributes",
-  :display_name => "JSON string to be added to chef-client run",
+  :display_name => "JSON String to be Added to Chef Client Run",
   :description =>
     "A custom JSON string to be added to the first run of chef-client",
   :required => "optional",
