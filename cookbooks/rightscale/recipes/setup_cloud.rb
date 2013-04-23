@@ -21,22 +21,6 @@ if RightScale::Utils::Helper.is_rackspace_managed_cloud?
   end
   log "  Setting up cloud-related functions for #{node[:cloud][:provider]}"
 
-  # TODO: Remove this code after RightImages are updated to remove the
-  # /root/.noupdate file.
-  r = file "/root/.noupdate" do
-    backup false
-    action :nothing
-  end
-  r.run_action(:delete)
-
-  # TODO: This directory should be created by rackspace on their cookbooks. It
-  # should be take out once they fix this.
-  # The driveclient::default recipe creates a file in /var/chef/cache so this
-  # directory should be created prior to running the recipe.
-  directory "/var/chef/cache" do
-    recursive true
-  end
-
   # Obtains the region of the Rackspace Managed Cloud. See
   # cookbooks/rightscale/libraries/helper.rb for the "get_rackspace_region"
   # method.
@@ -62,8 +46,10 @@ if RightScale::Utils::Helper.is_rackspace_managed_cloud?
   # Prepare the attributes required for the cloudmonitoring cookbook and
   # include the cloudmonitoring::default recipe.
   node[:cloud_monitoring] ||= {}
-  node[:cloud_monitoring][:rackspace_username] = node[:rightscale][:rackspace_username]
-  node[:cloud_monitoring][:rackspace_api_key] = node[:rightscale][:rackspace_api_key]
+  node[:cloud_monitoring][:rackspace_username] =
+    node[:rightscale][:rackspace_username]
+  node[:cloud_monitoring][:rackspace_api_key] =
+    node[:rightscale][:rackspace_api_key]
   node[:cloud_monitoring][:rackspace_auth_region] =
     case region
     when "ord", "dfw"
@@ -75,8 +61,8 @@ if RightScale::Utils::Helper.is_rackspace_managed_cloud?
     end
   include_recipe "cloudmonitoring::default"
 else
-  log "  Cloud setup is not required for this cloud #{node[:cloud][:provider]}." +
-    " Skipping..."
+  log "  Cloud setup is not required for this cloud" +
+    " #{node[:cloud][:provider]}. Skipping..."
 end
 
 rightscale_marker :end
