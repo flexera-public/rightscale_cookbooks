@@ -14,7 +14,12 @@ end
 class MonitoringError < VirtualMonkey::TestCase::ErrorBase
 end
 
-# An error with selecting a set of servers
+# An error with selecting a set of servers.
 #
 class SelectSetError < VirtualMonkey::TestCase::ErrorBase
+end
+
+# An error when a timeout occurs.
+#
+class TimeoutError < VirtualMonkey::TestCase::ErrorBase
 end

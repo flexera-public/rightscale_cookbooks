@@ -10,41 +10,6 @@ helpers do
   class MissingLogMessageError < VirtualMonkey::TestCase::ErrorBase
   end
 
-  # Gets the array of Logging servers in the deployment.
-  #
-  # @return [Array] an Array of ServerInterfaces of Logging servers
-  #
-  # @raise [SelectSetError] if no Logging servers found
-  #
-  def logging_servers
-    result = select_set(/Logging/)
-    raise SelectSetError, "No Logging servers found." unless result.length > 0
-    result
-  end
-
-  # Gets the array of Base servers in the deployment.
-  #
-  # @return [Array] an Array of ServerInterfaces of Base servers
-  #
-  # @raise [SelectSetError] if no Base servers found
-  #
-  def base_servers
-    result = select_set(/Base/)
-    raise SelectSetError, "No Base servers found." unless result.length > 0
-    result
-  end
-
-  # Sets the server 'logging/remote_server' input to the Logging server IP
-  #
-  # @param server [ServerInterface] the server to set the input for
-  # @param logging_server [ServerInterface] the Logging server
-  #
-  def set_input_to_logging_server_ip(server, logging_server)
-    logging_server_ip = logging_server.private_ip
-    logging_server_ip = logging_server.reachable_ip unless logging_server_ip
-    server.set_input('logging/remote_server', "text:#{logging_server_ip}")
-  end
-
   # Tests whether the Logging server receives the clients log messages.
   #
   # @param server [ServerInterface] the client server
@@ -62,11 +27,6 @@ helpers do
       end
       true
     end
-
-    # Sleeping for 5s: this time is needed for the log message to leave the
-    # client server, be sent to the logging server, get processed and added to
-    # the /var/log/messages|syslog file of the server.
-    sleep(5)
 
     # Gets logging server OS.
     operating_system = ""
@@ -88,15 +48,34 @@ helpers do
         "/var/log/messages"
       end
 
-    # Checks whether the log with the test string is on the Logging server.
-    probe(logging_server, "grep \"#{test_string}\" #{log_file_path}") do
-    |result, status|
-      if result.empty?
-        raise MissingLogMessageError, "Log meaasge\"#{test_string}\" not" +
-          " found on the Logging server"
+    require "timeout"
+    begin
+      Timeout::timeout(300) do
+        while true
+          result = ""
+          # Checks whether the log with the test string is on the
+          # Logging server.
+          probe(logging_server, "grep \"#{test_string}\" #{log_file_path}") do
+          |responce, status|
+            unless status == 0
+              raise FailedProbeCommandError, "Probe error: #{responce}"
+            end
+            result = responce
+            true
+          end
+          if result.empty?
+            # Sleeping: time is needed for the log message to leave the client
+            # server, be sent to the logging server, get processed and added to
+            # the log file of the server.
+            sleep(10)
+          else
+            puts "Log message \"#{test_string}\" found on the Logging server"
+            break
+          end
+        end
       end
-      raise FailedProbeCommandError, "Probe error: #{result}" unless status == 0
-      true
+    rescue Timeout::Error
+      raise TimeoutError, "ERROR: Timeout while looking for log message."
     end
   end
 
@@ -112,6 +91,16 @@ helpers do
     stop_all
 
     # Defines the Logging server and client Base server used for the test.
+    logging_servers = select_set(/Logging/)
+    unless logging_servers.length > 0
+      raise SelectSetError, "No Logging servers found."
+    end
+
+    base_servers = select_set(/Base/)
+    unless base_servers.length > 0
+      raise SelectSetError, "No Base servers found."
+    end
+
     logging_server = logging_servers.first
     base_server = base_servers.first
 
@@ -122,7 +111,9 @@ helpers do
     check_monitoring(logging_server)
 
     # Sets up the client server.
-    set_input_to_logging_server_ip(base_server, logging_server)
+    logging_server_ip = logging_server.private_ip
+    logging_server_ip = logging_server.reachable_ip unless logging_server_ip
+    base_server.set_input('logging/remote_server', "text:#{logging_server_ip}")
     base_server.set_input('logging/protocol', "text:#{protocol}")
     launch_set(base_server)
     wait_for_set(base_server, "operational")
@@ -131,7 +122,6 @@ helpers do
     check_remote_logging(base_server, logging_server)
   end
 end
-
 
 # The 'smoke_test' test_case for the Logging with rsyslog ServerTemplate ensures
 # that the basic UDP logging functionality is working correctly.
