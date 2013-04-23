@@ -1,5 +1,4 @@
 # Include helper objects and methods.
-require_helper "cloud"
 require_helper "errors"
 
 # Returns the current value for input name on the given the server.
