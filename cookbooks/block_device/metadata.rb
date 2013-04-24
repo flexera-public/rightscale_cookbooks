@@ -89,6 +89,7 @@ ros_clouds = [
   "google",
   "azure",
   "swift",
+  "hp",
   "SoftLayer_Dallas",
   "SoftLayer_Singapore",
   "SoftLayer_Amsterdam"
