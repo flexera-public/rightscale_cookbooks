@@ -217,6 +217,19 @@ end
 # @see Cloud
 #
 class Google < Cloud
+  # Checks if a server can have ephemeral devices. Ephemeral is supported on
+  # Google cloud.
+  #
+  # @param server [Server] the server to check for ephemeral support
+  #
+  # @return [Boolean] whether the cloud supports ephemeral devices
+  #
+  # @see Cloud#supports_ephemeral?
+  #
+  def supports_ephemeral?(server)
+    true
+  end
+
   # Checks if the cloud supports reboot. Google does not support reboot.
   #
   # @return [Boolean] whether the cloud supports reboot

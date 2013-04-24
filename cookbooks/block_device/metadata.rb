@@ -245,8 +245,9 @@ attribute "block_device/ephemeral/file_system_type",
   :description =>
     "The type of file system that will be installed on the ephemeral device." +
     " By default, this input will be set to 'xfs'. This input is ignored on" +
-    " Redhat and 'ext3' file system will be set up by default since Redhat" +
-    " does not support the 'xfs' file system. Example: xfs",
+    " Redhat and Google cloud since 'xfs' is not supported. 'ext3' file" +
+    " system will be set up by default on Redhat and Google cloud." +
+    " Example: xfs",
   :type => "string",
   :required => "optional",
   :choice => ["xfs", "ext3"],
