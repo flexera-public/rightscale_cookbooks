@@ -3,6 +3,8 @@ require_helper "cloud"
 require_helper "ephemeral"
 require_helper "wait_for_ip_repopulation"
 require_helper "errors"
+require_helper "os"
+require_helper "input"
 
 # Test specific helpers.
 #
@@ -15,6 +17,11 @@ helpers do
   # An error with conntrack_max setup
   #
   class ConntrackMaxError < VirtualMonkey::TestCase::ErrorBase
+  end
+
+  # An error with unfrozen repo check
+  #
+  class FrozenRepoError < VirtualMonkey::TestCase::ErrorBase
   end
 
   # Checks if the swap file is set up.
@@ -146,19 +153,67 @@ helpers do
         " sys_firewall::setup_rule recipe"
     end
   end
+
+  # Verifies the security repositories are unfrozen.
+  # For apt based systems (Ubuntu) it checks repositories in
+  # /etc/apt/sources.list.d/rightscale.sources.list
+  # For yum based systems (CentOS) it checks repositories in
+  # /etc/yum.repos.d/*.repo
+  #
+  # @param server [Server] the server to obtain value from
+  #
+  # @raise [FrozenRepoError] if unfrozen repositories not found
+  #
+  def verify_security_repositories_unfrozen(server)
+    # Check that unforzen repos exist in the package repo dir
+    #
+    os = get_operating_system(server)
+    puts "  Testing OS: #{os}"
+    case os
+    when /ubuntu/i
+      latest = "/ubuntu_daily/latest"
+      repo_dirs = "/etc/apt/sources.list.d/rightscale.sources.list "
+    when /centos|rhel/i
+      latest = "/archive/latest"
+      repo_dirs = "/etc/yum.repos.d/*.repo"
+    end
+
+    probe(server, "grep #{latest} #{repo_dirs}") do |response, status|
+      raise FrozenRepoError, "Unfrozen repo not found in " +
+        "#{repo_dirs}" unless status == 0
+      true
+    end
+  end
 end
 
-# When rerunning a test, shutdown all of the servers.
+# Generic before all
 #
-hard_reset do
-  stop_all
-end
-
-# Before all of the test cases, launch all of the servers in the deployment.
+# This does nothing at this time.  It is here to make it easier
+# to debug missing specific test befores.
 #
 before do
-  launch_all
-  wait_for_all("operational")
+  puts "  No before all actions"
+end
+
+# Before tests that require security updates disabled.
+# 
+# Ensure the server input rightscale/security_updates is set to "disable"
+#
+before "smoke_test", "stop_start", "enable_security_updates_on_running_server" do
+  puts "Running before with security updates disabled"
+  # Assume a single server in the deployment
+  server = servers.first
+  ensure_input_setting(server, "rightscale/security_updates", "text", "disable")
+end
+
+# Before tests that require security updates enabled.
+#
+# Ensure the server input rightscale/security_updates is set to "enable"
+#
+before "enable_security_updates_on_boot" do
+  # Assume a single server in the deployment
+  server = servers.first
+  ensure_input_setting(server, "rightscale/security_updates", "text", "enable")
 end
 
 # The Base smoke test makes sure the Base (Chef or RSB) ServerTemplate has its
@@ -206,6 +261,11 @@ test_case "smoke_test" do
 
   # Check if the server's basic monitoring is working.
   check_monitoring
+
+  # Check if security updates are disabled can not be done.  Servers can
+  # can be launched with unfrozen repositories.  This case was considered
+  # and it was decided to ignore it.
+  #
 end
 
 # The Base stop/start test makes sure the Base (Chef or RSB) ServerTemplate has
@@ -252,4 +312,25 @@ test_case "stop_start" do
 
   # Check if the server's basic monitoring is working.
   check_monitoring
+end
+
+# The Base "enable security updates on running a running server" tests if
+# security updates are applied after enabling them.  It enables the updates
+# runs the script to perform the security updates setup and runs the script
+# to perform the updates.
+#
+test_case "enable_security_updates_on_running_server" do
+  server = servers.first
+  server.set_inputs("rightscale/security_updates" => "text:enable")
+  run_recipe("rightscale::setup_security_updates", server)
+  verify_security_repositories_unfrozen(server)
+  run_recipe("rightscale::do_security_updates", server)
+end
+
+# The Base "verify repository unfrozen" test verfies the package managers
+# upstream security repositories are set to "latest".
+#
+test_case "enable_security_updates_on_boot" do
+  server = servers.first
+  verify_security_repositories_unfrozen(server)
 end

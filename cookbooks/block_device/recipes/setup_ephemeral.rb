@@ -25,10 +25,6 @@ require 'pathname'
 
 package "lvm2"
 
-package "xfsprogs" do
-  not_if { node[:platform] == "redhat" }
-end
-
 cloud = node[:cloud][:provider]
 
 # Generate fstab entry and check if entry already in fstab - assuming a reboot
@@ -55,7 +51,11 @@ end
 if node[:platform] == "redhat"
   filesystem_type = "ext3"
 else
-  filesystem_type = "xfs"
+  filesystem_type = node[:block_device][:ephemeral][:file_system_type]
+end
+
+package "xfsprogs" do
+  only_if { filesystem_type == "xfs" }
 end
 
 root_device = `mount`.find { |dev| dev.include? " on / " }.split[0]

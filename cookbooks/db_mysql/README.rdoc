@@ -49,9 +49,9 @@ details.
 
 === MySQL Tuning and my.cnf
 
-Custom tuning parameters can be applied by overriding the
-<tt>mysql_tuning.rb</tt> attributes file. For more information and an example
-override repository please see: {Override Chef Cookbooks}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Override_Chef_Cookbooks].
+Custom tuning parameters can be applied by overriding the <tt>my.cnf.erb</tt>
+template or by setting the values in the attributes file. For more information
+and an example override repository, please see: {Override Chef Cookbooks}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Override_Chef_Cookbooks].
 
 == DETAILS:
 

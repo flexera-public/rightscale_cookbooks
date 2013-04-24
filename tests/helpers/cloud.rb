@@ -132,7 +132,7 @@ class EC2 < Cloud
   #
   def supports_ephemeral?(server)
     # Ephemeral is not supported on EC2 HVM instances.
-    get_server_mci(server).name =~ /hvm/i ? true : false
+    get_server_mci(server).name =~ /hvm/i ? false : true
   end
 
   # Checks if a server has stop/start support. Stop/start is supported on EBS
