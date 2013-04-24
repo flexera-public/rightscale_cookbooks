@@ -29,13 +29,13 @@ module RightScale
         region = node[:ec2][:placement][:availability_zone].gsub(/[a-z]+$/, '')
 
         url_endpoint = "https://elasticloadbalancing.#{region}.amazonaws.com"
-    
+
         # Create and return ELB interface object.
         RightScale::CloudApi::AWS::ELB::Manager::new(
           account_id,
           account_secret,
           url_endpoint
-          )
+        )
 
       end
 

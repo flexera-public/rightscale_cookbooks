@@ -24,7 +24,7 @@ action :attach do
   elb = get_elb_object(
     new_resource.service_account_id,
     new_resource.service_account_secret
-    )
+  )
 
   # Verify that the ELB exists.
   existing_elbs = elb.DescribeLoadBalancers["DescribeLoadBalancersResponse"]\
@@ -85,7 +85,6 @@ action :attach_request do
 
 end
 
-
 action :detach do
 
   require "right_cloud_api"
@@ -98,7 +97,7 @@ action :detach do
   elb = get_elb_object(
     new_resource.service_account_id,
     new_resource.service_account_secret
-    )
+  )
 
   # Deregister the server to ELB.
   log "...DE-registering with ELB"
@@ -118,7 +117,6 @@ action :detach do
 
 end
 
-
 action :detach_request do
 
   log "  Detach request for #{node[:ec2][:instance_id]}"
@@ -135,11 +133,9 @@ action :detach_request do
 
 end
 
-
 action :setup_monitoring do
   log "  Setup monitoring does not apply to ELB"
 end
-
 
 action :restart do
   log "  Restart does not apply to ELB"
