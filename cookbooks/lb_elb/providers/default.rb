@@ -6,10 +6,11 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
+include RightScale::ELB::Helper
+
 action :install do
   log "  Install does not apply to ELB"
 end
-
 
 action :attach do
 
@@ -20,12 +21,9 @@ action :attach do
     " #{new_resource.service_lb_name}"
 
   # Creates an interface handle to ELB.
-  elb = RightScale::CloudApi::AWS::ELB::Manager::new(
+  elb = get_elb_object(
     new_resource.service_account_id,
-    new_resource.service_account_secret,
-    "https://elasticloadbalancing." +
-    node[:ec2][:placement][:availability_zone].gsub(/[a-z]+$/, '') +
-    ".amazonaws.com"
+    new_resource.service_account_secret
     )
 
   # Verify that the ELB exists.
@@ -97,12 +95,9 @@ action :detach do
     " #{new_resource.service_lb_name}"
 
   # Creates an interface handle to ELB.
-  elb = RightScale::CloudApi::AWS::ELB::Manager::new(
+  elb = get_elb_object(
     new_resource.service_account_id,
-    new_resource.service_account_secret,
-    "https://elasticloadbalancing." +
-    node[:ec2][:placement][:availability_zone].gsub(/[a-z]+$/, '') +
-    ".amazonaws.com"
+    new_resource.service_account_secret
     )
 
   # Deregister the server to ELB.
