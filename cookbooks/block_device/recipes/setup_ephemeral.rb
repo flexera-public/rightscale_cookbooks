@@ -92,7 +92,7 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure' || cloud == 'googl
       break
     end
     dev_index += 1
-  end if cloud != 'azure'
+  end if cloud != 'azure' || cloud != 'google'
 
   # Azure doesn't have block_device_mapping in the node so the device is hard-coded at the moment
   if cloud == 'azure'
@@ -103,6 +103,14 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure' || cloud == 'googl
     else
       log "  WARNING: Cannot use device #{device} - skipping"
     end
+  elsif cloud == 'google'
+    eph_link = "/dev/disk/by-id/scsi-0Google_EphemeralDisk_ephemeral-disk-0"
+    unless File.symlink?(eph_link)
+      raise "Link to ephemeral disk '#{link}' does not exist"
+    end
+    disk = File.readlink(eph_link)
+    device = File.basename(disk)
+    my_devices << "/dev/#{device}"
   end
 
   # Check if /mnt is actually on a seperate device.
