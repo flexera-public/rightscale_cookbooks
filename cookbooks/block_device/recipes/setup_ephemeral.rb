@@ -92,7 +92,7 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure' || cloud == 'googl
       break
     end
     dev_index += 1
-  end if cloud != 'azure' || cloud != 'google'
+  end if cloud != 'azure' && cloud != 'google'
 
   # Azure doesn't have block_device_mapping in the node so the device is hard-coded at the moment
   if cloud == 'azure'
