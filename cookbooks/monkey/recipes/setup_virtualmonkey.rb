@@ -9,10 +9,10 @@ rightscale_marker :begin
 
 node[:monkey][:virtualmonkey][:packages] = value_for_platform(
   "centos" => {
-    "default" => [ "libxml2-devel", "libxslt-devel", "file" ]
+    "default" => ["libxml2-devel", "libxslt-devel", "file"]
   },
   "ubuntu" => {
-    "default" => [ "libxml2-dev", "libxml-ruby", "libxslt1-dev", "libmagic-dev" ]
+    "default" => ["libxml2-dev", "libxml-ruby", "libxslt1-dev", "libmagic-dev"]
   }
 )
 
@@ -35,15 +35,18 @@ bash "Update Rubygems" do
 end
 
 # Checking out VirtualMonkey repository
-log "  Checking out VirtualMonkey repository from: #{node[:monkey][:virtualmonkey][:monkey_repo_url]}"
+log "  Checking out VirtualMonkey repository from:" +
+  " #{node[:monkey][:virtualmonkey][:monkey_repo_url]}"
 git "/root/virtualmonkey" do
   repository node[:monkey][:virtualmonkey][:monkey_repo_url]
   reference node[:monkey][:virtualmonkey][:monkey_repo_branch]
   action :sync
 end
 
-# By default chef changes the checked out branch to a branch named 'deploy' locally
-# To make sure we can pull/push changes, let's checkout the correct branch again!
+# By default chef changes the checked out branch to a branch named 'deploy'
+# locally. To make sure we can pull/push changes, let's checkout the correct
+# branch again!
+#
 log "  Making super sure that we're on the right branch"
 execute "git checkout" do
   cwd "/root/virtualmonkey"
@@ -60,8 +63,15 @@ bash "Building virtualmonkey gem" do
   EOH
 end
 
-# Installing right_cloud_api gem from the template file found in rightscale cookbook
-# The rightscale::install_tools installs this gem in sandbox ruby and I want it in system ruby
+# Copy the virtualmonkey configuration file
+execute "copy virtualmonkey configuration" do
+  command "cp /root/virtualmonkey/config.yaml /root/virtualmonkey/.config.yaml"
+end
+
+# Installing right_cloud_api gem from the template file found in rightscale
+# cookbook. The rightscale::install_tools installs this gem in sandbox ruby
+# and I want it in system ruby
+#
 log "  Installing the right_cloud_api gem"
 gem_package "right_cloud_api" do
   gem_binary "/usr/bin/gem"
@@ -79,7 +89,8 @@ end
 
 log "  Obtaining collateral project name from repo URL"
 ruby "Obtaining Collateral Project name" do
-  node[:monkey][:virtualmonkey][:collateral_name] = `basename "#{node[:monkey][:virtualmonkey][:collateral_repo_url]}" ".git"`.chomp
+  node[:monkey][:virtualmonkey][:collateral_name] =
+    `basename "#{node[:monkey][:virtualmonkey][:collateral_repo_url]}" ".git"`.chomp
 end
 
 log "  Checking out collateral repo to #{node[:monkey][:virtualmonkey][:collateral_name]}"
