@@ -10,23 +10,23 @@ module RightScale
   module System
     module Helper
 
-      # Calculates schedule for cron minute setting based user provided interval
-      # Uses a random start offset from given splay to avoid all systems from
-      # reconverging at the same time.
+      # Calculates schedule for cron minute setting based user provided
+      # cron_interval. Uses a random start offset from given cron_splay
+      # to avoid all systems from reconverging at the same time.
       # @return [String] randomized schedule time
-      def self.randomize_reconverge_minutes(interval, splay)
+      def self.randomize_reconverge_minutes(cron_interval, cron_splay)
         # Check parameters
-        err = ArgumentError.new("ERROR: re-converge interval must be between " +
-                          "> 0 and < 60 minutes. You requested '#{interval}'.")
-        raise err if interval > 60 || interval <= 0
+        err = ArgumentError.new("ERROR: re-converge interval must be between" +
+          " > 0 and < 60 minutes. You requested '#{cron_interval}'.")
+        raise err if cron_interval > 60 || cron_interval <= 0
 
         # Calculate random start minute offset
-        offset = rand(splay)
+        offset = rand(cron_splay)
 
         # Create cron minute schedule string
         shed = []
-        (60/interval).times do |q|
-          min = (offset + (q*interval)) % 60
+        (60/cron_interval).times do |q|
+          min = (offset + (q*cron_interval)) % 60
           shed << min
         end
         shed.sort! * ","

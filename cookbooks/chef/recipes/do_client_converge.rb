@@ -32,6 +32,8 @@ if node[:chef][:client][:current_roles] != node[:chef][:client][:roles]
 end
 
 # Runs the Chef Client using runlist.json file.
-execute "chef-client -j #{node[:chef][:client][:config_dir]}/runlist.json"
+execute "run chef client" do
+  command "chef-client -j #{node[:chef][:client][:config_dir]}/runlist.json"
+end
 
 rightscale_marker :end

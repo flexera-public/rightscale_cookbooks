@@ -17,7 +17,9 @@ cookbook_file "/tmp/install.sh" do
 end
 
 # Installs the Chef Client using user selected version.
-execute "/tmp/install.sh -v #{node[:chef][:client][:version]}"
+execute "install chef client" do
+  command "/tmp/install.sh -v #{node[:chef][:client][:version]}"
+end
 
 log "  Chef Client version #{node[:chef][:client][:version]} installation is" +
   " completed."
@@ -70,8 +72,8 @@ log "  Chef Client configuration is completed."
 
 # Sets command extensions and attributes.
 extension = "-j #{node[:chef][:client][:config_dir]}/runlist.json"
-extension = extension + " -o #{node[:chef][:client][:json_attributes]}" \
-unless node[:chef][:client][:json_attributes].empty?
+extension << " -o #{node[:chef][:client][:json_attributes]}" \
+  unless node[:chef][:client][:json_attributes].empty?
 
 # Runs the Chef Client using command extensions.
 execute "chef-client #{extension}"
