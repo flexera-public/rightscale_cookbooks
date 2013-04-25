@@ -17,15 +17,55 @@ Please see the <tt>metadata.rb</tt> file for the latest dependencies.
 
 There are no known limitations.
 
-== SETUP/USAGE:
+== SETUP:
 
 The <tt>rightscale::default</tt> recipe performs common server configuration
-steps such as enabling monitoring on an instance so that graphs cane be
+steps such as enabling monitoring on an instance so that graphs can be
 displayed in the RightScale Dashboard.
 
 The <tt>rightscale::install_tools</tt> recipe installs the
 <tt>rightscale_tools</tt> gem which provides tools for dealing with databases,
 volumes, and remote object storage providers.
+
+The <tt>rightscale::rightscale::setup_security_updates</tt> recipe configures
+the package manager to apply security updates by unfreezing the
+servers repositories.  On apt based systems this unfreezes the security
+repository.  On yum based systems this unfreezes all repositories except
+the RightScale-Epel repository.  Runs if the <tt>rightscale/security_updates</tt>
+input is set to "enable", otherwise this action is skipped.  Note: once
+security updates are enabled they can not be disabled.
+
+The <tt>rightscale::do_security_updates</tt> recipe updates a server with
+the latest available security patches.  Non-security related software updates
+are not installed.  It runs as the last operational script to ensure a new server
+has all available security updates applied.  Runs if the 
+<tt>rightscale/security_updates</tt> input is set to "enable", otherwise 
+this action is skipped.  Note: once security updates are enabled they can 
+not be disabled.
+
+== USAGE:
+
+=== Update a server with latest security patches
+
+1. Prior to launching a server set the advanced input
+   <tt>rightscale/security_updates</tt> to <tt>enable</tt>
+2. When the server is operational all current security updates are applied.
+3. Apply security updates using:
+  
+    "rightscale::do_security_updates"
+
+   to bring the server to the latest patch level.
+
+=== Enable security updates on a running server
+
+1. On a running a server set the advanced input <tt>rightscale/security_updates</tt>
+   to <tt>enable</tt>
+2. Setup the package manager for security updates using:
+
+    "rightscale::setup_security_updates"
+
+   to unfreeze the security related repositories.
+3. To update the server with the latest security updates follow the steps above.
 
 == DETAILS:
 

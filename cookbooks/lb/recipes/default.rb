@@ -23,14 +23,4 @@ pool_names(node[:lb][:pools]).each do |pool_name|
   end
 end
 
-# Installs the right_aws gem
-r = gem_package "right_aws" do
-  gem_binary "/opt/rightscale/sandbox/bin/gem"
-  action :nothing
-end
-r.run_action(:install)
-
-# Reloads newly install gem.
-Gem.clear_paths
-
 rightscale_marker :end
