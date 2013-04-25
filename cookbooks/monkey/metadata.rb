@@ -33,6 +33,18 @@ attribute "monkey/fog/aws_secret_access_key",
   :required => "required",
   :recipes => ["monkey::update_fog_credentials"]
 
+attribute "monkey/fog/aws_publish_key",
+  :display_name => "AWS_PUBLISH_KEY",
+  :description => "",
+  :required => "required",
+  :recipes => ["monkey::update_fog_credentials"]
+
+attribute "monkey/fog/aws_publish_secret_key",
+  :display_name => "AWS_PUBLISH_SECRET_KEY",
+  :description => "",
+  :required => "required",
+  :recipes => ["monkey::update_fog_credentials"]
+
 attribute "monkey/fog/aws_access_key_id_test",
   :display_name => "AWS_ACCESS_KEY_ID_TEST_ACCT",
   :description => "",
