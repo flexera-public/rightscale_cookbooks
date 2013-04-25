@@ -11,7 +11,8 @@ rightscale_marker :begin
 # This recipe will run only on the Rackspace Managed Cloud. See
 # cookbooks/rightscale/libraries/helper.rb for the "is_rackspace_managed_cloud"
 # method.
-if RightScale::Utils::Helper.is_rackspace_managed_cloud?
+if node[:cloud][:provider] == "rackspace-ng" &&
+  RightScale::Utils::Helper.is_rackspace_managed_cloud?
   if node[:rightscale][:rackspace_username].nil? ||
     node[:rightscale][:rackspace_api_key].nil? ||
     node[:rightscale][:rackspace_tenant_id].nil?
