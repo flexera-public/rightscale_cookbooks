@@ -124,7 +124,11 @@ before "smoke_test" do
     base_servers.first,
     [
       {:name => "logging/protocol", :value => "text:udp"},
-      {:name => "logging/remote_server", :value => logging_ip(logging_server)}
+      {
+        :name => "logging/remote_server",
+        :value => "text:#{logging_ip(logging_server)}"
+      }
+
     ]
   )
   check_monitoring(logging_server)
@@ -150,7 +154,11 @@ before "relp" do
     base_servers.first,
     [
       {:name => "logging/protocol", :value => "text:relp"},
-      {:name => "logging/remote_server", :value => logging_ip(logging_server)}
+      {
+        :name => "logging/remote_server",
+        :value => "text:#{logging_ip(logging_server)}"
+      }
+
     ]
   )
   check_monitoring(logging_server)
@@ -180,7 +188,11 @@ before "relp-secured" do
     [
       {:name => "logging/protocol", :value => "text:relp-secured"},
       {:name => "logging/certificate", :value => "cred:LOGGING_SSL_CRED"},
-      {:name => "logging/remote_server", :value => logging_ip(logging_server)}
+      {
+        :name => "logging/remote_server",
+        :value => "text:#{logging_ip(logging_server)}"
+      }
+
     ]
   )
   check_monitoring(logging_server)
