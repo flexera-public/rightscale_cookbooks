@@ -118,18 +118,14 @@ before "smoke_test" do
 
   ensure_input_setting(
     logging_server,
-    [{:name => "logging/protocol", :value => "text:udp"}]
+    {"logging/protocol" => "text:udp"}
   )
   ensure_input_setting(
     base_servers.first,
-    [
-      {:name => "logging/protocol", :value => "text:udp"},
-      {
-        :name => "logging/remote_server",
-        :value => "text:#{logging_ip(logging_server)}"
-      }
-
-    ]
+    {
+      "logging/protocol" => "text:udp",
+      "logging/remote_server" => "text:#{logging_ip(logging_server)}"
+    }
   )
   check_monitoring(logging_server)
 end
@@ -148,18 +144,14 @@ before "relp" do
 
   ensure_input_setting(
     logging_server,
-    [{:name => "logging/protocol", :value => "text:relp"}]
+    {"logging/protocol" => "text:relp"}
   )
   ensure_input_setting(
     base_servers.first,
-    [
-      {:name => "logging/protocol", :value => "text:relp"},
-      {
-        :name => "logging/remote_server",
-        :value => "text:#{logging_ip(logging_server)}"
-      }
-
-    ]
+    {
+      "logging/protocol" => "text:relp",
+      "logging/remote_server" => "text:#{logging_ip(logging_server)}"
+    }
   )
   check_monitoring(logging_server)
 end
@@ -178,22 +170,18 @@ before "relp-secured" do
 
   ensure_input_setting(
     logging_server,
-    [
-      {:name => "logging/protocol", :value => "text:relp-secured"},
-      {:name => "logging/certificate", :value => "cred:LOGGING_SSL_CRED"}
-    ]
+    {
+      "logging/protocol" => "text:relp-secured",
+      "logging/certificate" => "cred:LOGGING_SSL_CRED"
+    }
   )
   ensure_input_setting(
     base_servers.first,
-    [
-      {:name => "logging/protocol", :value => "text:relp-secured"},
-      {:name => "logging/certificate", :value => "cred:LOGGING_SSL_CRED"},
-      {
-        :name => "logging/remote_server",
-        :value => "text:#{logging_ip(logging_server)}"
-      }
-
-    ]
+    {
+      "logging/protocol" => "text:relp-secured",
+      "logging/certificate" => "cred:LOGGING_SSL_CRED",
+      "logging/remote_server" => "text:#{logging_ip(logging_server)}"
+    }
   )
   check_monitoring(logging_server)
 end
