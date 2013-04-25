@@ -23,22 +23,6 @@ packages.each do |pkg|
   package pkg
 end unless packages.empty?
 
-# Creating rubyforge configuration directory
-log "  Creating rubyforge configutation directory"
-directory "/root/.rubyforge" do
-  owner "root"
-  group "root"
-  mode "0755"
-  action :create
-end
-
-# Creating rubyforge configuration file from template
-log "  Creating rubyforge config file from template"
-template "/root/.rubyforge/user-config.yml" do
-  source "rubyforge_user_config.erb"
-  cookbook "monkey"
-end
-
 # Updating rubygems
 log "  Updating rubygems"
 bash "Update Rubygems" do
