@@ -3,28 +3,47 @@ require_helper "errors"
 require_helper "monitoring"
 require_helper "os"
 require_helper "input"
-require_helper "server"
-
-# Assumes there is a single Logging server in the deployment.
-@logging_server = logging_servers.first
-# Assumes there is a single client Base server in the deployment.
-@base_server = base_servers.first
 
 # Test specific helpers.
 #
 helpers do
+
   # Missing log entries error.
   #
   class MissingLogMessageError < VirtualMonkey::TestCase::ErrorBase
+  end
+
+  # Gets the array of Logging servers in the deployment.
+  #
+  # @return [Array] an Array of ServerInterfaces of Logging servers
+  #
+  # @raise [SelectSetError] if no Logging servers found
+  #
+  def logging_servers
+    result = select_set(/Logging/)
+    raise SelectSetError, "No Logging servers found." unless result.length > 0
+    result
+  end
+
+  # Gets the array of Base servers in the deployment.
+  #
+  # @return [Array] an Array of ServerInterfaces of Base servers
+  #
+  # @raise [SelectSetError] if no Base servers found
+  #
+  def base_servers
+    result = select_set(/Base/)
+    raise SelectSetError, "No Base servers found." unless result.length > 0
+    result
   end
 
   # Gets the IP of the Logging server in the deployment.
   #
   # @return [String] the Logging server IP
   #
-  def logging_server_ip
-    ip = @logging_server.private_ip
-    ip = @logging_server.reachable_ip unless ip
+  def logging_ip(server)
+    ip = server.private_ip
+    ip = server.reachable_ip unless ip
     ip
   end
 
@@ -60,6 +79,7 @@ helpers do
       Timeout::timeout(300) do
         while true
           result = ""
+
           # Checks whether the log with the test string is on the
           # Logging server.
           probe(logging_server, "grep \"#{test_string}\" #{log_file_path}") do
@@ -70,6 +90,7 @@ helpers do
             result = responce
             true
           end
+
           if result.empty?
             # Sleeping: time is needed for the log message to leave the client
             # server, be sent to the logging server, get processed and added to
@@ -85,78 +106,84 @@ helpers do
       raise TimeoutError, "ERROR: Timeout while looking for log message."
     end
   end
+
 end
 
 # Before tests that require UDP protocol.
 #
-# Ensure the server input logging/protocol is set to "udp"
-#
 before "smoke_test" do
-  ensure_input_setting(@logging_server, "logging/protocol", "text", "udp")
-  ensure_input_setting(@base_server, "logging/protocol", "text", "udp")
+  # Assumes there is a single Logging server in the deployment and a single
+  # client Base server in the deployment.
+  logging_server = logging_servers.first
+
   ensure_input_setting(
-    @base_server,
-    "logging/remote_server",
-    "text",
-    logging_server_ip
+    logging_server,
+    [{:name => "logging/protocol", :value => "text:udp"}]
   )
-  check_monitoring(@logging_server)
+  ensure_input_setting(
+    base_servers.first,
+    [
+      {:name => "logging/protocol", :value => "text:udp"},
+      {:name => "logging/remote_server", :value => logging_ip(logging_server)}
+    ]
+  )
+  check_monitoring(logging_server)
 end
 
 # The 'smoke_test' test_case for the Logging with rsyslog ServerTemplate ensures
 # that the basic UDP logging functionality is working correctly.
 #
 test_case "smoke_test" do
-  check_remote_logging(@base_server, @logging_server)
+  check_remote_logging(base_servers.first, logging_servers.first)
 end
 
 # Before tests that require RELP protocol.
 #
-# Ensure the server input logging/protocol is set to "relp"
-#
 before "relp" do
-  ensure_input_setting(@logging_server, "logging/protocol", "text", "relp")
-  ensure_input_setting(@base_server, "logging/protocol", "text", "relp")
+  logging_server = logging_servers.first
+
   ensure_input_setting(
-    @base_server,
-    "logging/remote_server",
-    "text",
-    logging_server_ip
+    logging_server,
+    [{:name => "logging/protocol", :value => "text:relp"}]
   )
-  check_monitoring(@logging_server)
+  ensure_input_setting(
+    base_servers.first,
+    [
+      {:name => "logging/protocol", :value => "text:relp"},
+      {:name => "logging/remote_server", :value => logging_ip(logging_server)}
+    ]
+  )
+  check_monitoring(logging_server)
 end
 
 # The 'relp' test_case for the Logging with rsyslog ServerTemplate ensures that
 # the remote logging functionality over the RELP protocol is working correctly.
 #
 test_case "relp" do
-  check_remote_logging(@base_server, @logging_server)
+  check_remote_logging(base_servers.first, logging_servers.first)
 end
 
 # Before tests that require RELP protocol with SSL encryption.
 #
-# Ensure the server input logging/protocol is set to "relp-secured"
-#
 before "relp-secured" do
+  logging_server = logging_servers.first
+
   ensure_input_setting(
-    @logging_server,
-    "logging/protocol",
-    "text",
-    "relp-secured"
+    logging_server,
+    [
+      {:name => "logging/protocol", :value => "text:relp-secured"},
+      {:name => "logging/certificate", :value => "cred:LOGGING_SSL_CRED"}
+    ]
   )
   ensure_input_setting(
-    @base_server,
-    "logging/protocol",
-    "text",
-    "relp-secured"
+    base_servers.first,
+    [
+      {:name => "logging/protocol", :value => "text:relp-secured"},
+      {:name => "logging/certificate", :value => "cred:LOGGING_SSL_CRED"},
+      {:name => "logging/remote_server", :value => logging_ip(logging_server)}
+    ]
   )
-  ensure_input_setting(
-    @base_server,
-    "logging/remote_server",
-    "text",
-    logging_server_ip
-  )
-  check_monitoring(@logging_server)
+  check_monitoring(logging_server)
 end
 
 # The 'relp-secured' test_case for the Logging with rsyslog ServerTemplate
@@ -164,5 +191,5 @@ end
 # encryption is working correctly.
 #
 test_case "relp-secured" do
-  check_remote_logging(@base_server, @logging_server)
+  check_remote_logging(base_servers.first, logging_servers.first)
 end

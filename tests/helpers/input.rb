@@ -7,12 +7,11 @@ require_helper "errors"
 #
 # @param input_name [String] the input name to obtain the value for
 #
-# @return [Array] Current setting [type, value]
-#  type is one of "text", "cred", "env", key"
+# @return [String] current input setting "input_type:input_value"
 #
 def get_server_input_value(server, input_name)
   result = get_input_from_server(server)
-  result[input_name].split(":", 2)
+  result[input_name]
 end
 
 # Ensure server is running with the correct setting for the input.
@@ -27,26 +26,36 @@ end
 # In all cases wait til the servers are operational.
 #
 # @param server [ServerInterface] the server to obtain value from
-# @param input_name [String] the the name of the input
-# @param input_type [String] the the type of the input "text", "cred", "env",
-#   and "key"
-# @param desired_value [String] the desired input setting
+# @param inputs [Array] of Hashes in a format of
+#   {:name => "input_name", :value => "input_type:input_value"}
+#   representing inputs to be ensured to be set on the server
 #
-def ensure_input_setting(server, input_name, input_type, desired_value)
-  input_string = "#{input_type}:#{desired_value}"
-
+def ensure_input_setting(server, inputs)
   puts "  #{server.nickname} state: #{server.state}"
+
   if server.state == "stopped" || server.state == "inactive"
-    puts "  Setting #{input_name} input to #{input_string} and launching."
-    server.set_inputs(input_name => "#{input_string}")
+    inputs.each do |input|
+      puts "  Setting #{input[:name]} input to #{input[:value]}."
+      server.set_inputs(input[:name] => input[:value])
+    end
+    puts "  Launching #{server.nickname}"
     relaunch_server(server)
   else
-    current_type, current_value = get_server_input_value(server, input_name)
-    puts "  #{input_name} input is set to: #{current_type}:#{current_value}"
+    do_relaunch = false
 
-    if current_value != desired_value
-      puts "  Setting #{input_name} input to #{input_string} and relaunching."
-      server.set_inputs(input_name => "#{input_string}")
+    inputs.each do |input|
+      current_value = get_server_input_value(server, input[:name])
+      puts "  #{input[:name]} input is set to: #{current_value}"
+
+      if current_value != input[:value]
+        puts "  Setting #{input[:name]} input to #{input[:value]}."
+        server.set_inputs(input[:name] => input[:value])
+        do_relaunch = true
+      end
+    end
+
+    if do_relaunch
+      puts "  Relaunching #{server.nickname}"
       relaunch_server(server)
     end
   end
