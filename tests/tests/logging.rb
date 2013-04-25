@@ -1,6 +1,14 @@
 # Include helper objects and methods.
 require_helper "errors"
 require_helper "monitoring"
+require_helper "os"
+require_helper "input"
+require_helper "server"
+
+# Assumes there is a single Logging server in the deployment.
+@logging_server = logging_servers.first
+# Assumes there is a single client Base server in the deployment.
+@base_server = base_servers.first
 
 # Test specific helpers.
 #
@@ -8,6 +16,16 @@ helpers do
   # Missing log entries error.
   #
   class MissingLogMessageError < VirtualMonkey::TestCase::ErrorBase
+  end
+
+  # Gets the IP of the Logging server in the deployment.
+  #
+  # @return [String] the Logging server IP
+  #
+  def logging_server_ip
+    ip = @logging_server.private_ip
+    ip = @logging_server.reachable_ip unless ip
+    ip
   end
 
   # Tests whether the Logging server receives the clients log messages.
@@ -28,20 +46,9 @@ helpers do
       true
     end
 
-    # Gets logging server OS.
-    operating_system = ""
-    probe(logging_server, "lsb_release -a | grep -ir description") do
-    |result, status|
-      unless status == 0
-        raise FailedProbeCommandError, "Failed to get server OS: #{result}"
-      end
-      operating_system = result.to_s
-      true
-    end
-
     # Sets server log file path depending on the OS.
     log_file_path =
-      case operating_system
+      case get_operating_system(logging_server)
       when /ubuntu.*12/i
         "/var/log/syslog"
       else
@@ -78,63 +85,78 @@ helpers do
       raise TimeoutError, "ERROR: Timeout while looking for log message."
     end
   end
+end
 
-  # Launches a Logging server listening on a specified protocol, waits until
-  # it is operational and checks its monitoring, then sets up the inputs for the
-  # client server, launches the client and checks remote logging.
-  # The test assumes there is one Logging server and one client Base server.
-  #
-  # @param protocol [String] the protocol used to pass log messages
-  #
-  def run_log_test(protocol)
-    # Stops the servers in the deployment for the test.
-    stop_all
-
-    # Defines the Logging server and client Base server used for the test.
-    logging_servers = select_set(/Logging/)
-    unless logging_servers.length > 0
-      raise SelectSetError, "No Logging servers found."
-    end
-
-    base_servers = select_set(/Base/)
-    unless base_servers.length > 0
-      raise SelectSetError, "No Base servers found."
-    end
-
-    logging_server = logging_servers.first
-    base_server = base_servers.first
-
-    # Sets up the Logging server, checks its monitoring.
-    logging_server.set_input('logging/protocol', "text:#{protocol}")
-    launch_set(logging_server)
-    wait_for_set(logging_server, "operational")
-    check_monitoring(logging_server)
-
-    # Sets up the client server.
-    logging_server_ip = logging_server.private_ip
-    logging_server_ip = logging_server.reachable_ip unless logging_server_ip
-    base_server.set_input('logging/remote_server', "text:#{logging_server_ip}")
-    base_server.set_input('logging/protocol', "text:#{protocol}")
-    launch_set(base_server)
-    wait_for_set(base_server, "operational")
-
-    # Tests whether the Logging server receives the clients log messages.
-    check_remote_logging(base_server, logging_server)
-  end
+# Before tests that require UDP protocol.
+#
+# Ensure the server input logging/protocol is set to "udp"
+#
+before "smoke_test" do
+  ensure_input_setting(@logging_server, "logging/protocol", "text", "udp")
+  ensure_input_setting(@base_server, "logging/protocol", "text", "udp")
+  ensure_input_setting(
+    @base_server,
+    "logging/remote_server",
+    "text",
+    logging_server_ip
+  )
+  check_monitoring(@logging_server)
 end
 
 # The 'smoke_test' test_case for the Logging with rsyslog ServerTemplate ensures
 # that the basic UDP logging functionality is working correctly.
 #
 test_case "smoke_test" do
-  run_log_test("udp")
+  check_remote_logging(@base_server, @logging_server)
+end
+
+# Before tests that require RELP protocol.
+#
+# Ensure the server input logging/protocol is set to "relp"
+#
+before "relp" do
+  ensure_input_setting(@logging_server, "logging/protocol", "text", "relp")
+  ensure_input_setting(@base_server, "logging/protocol", "text", "relp")
+  ensure_input_setting(
+    @base_server,
+    "logging/remote_server",
+    "text",
+    logging_server_ip
+  )
+  check_monitoring(@logging_server)
 end
 
 # The 'relp' test_case for the Logging with rsyslog ServerTemplate ensures that
 # the remote logging functionality over the RELP protocol is working correctly.
 #
 test_case "relp" do
-  run_log_test("relp")
+  check_remote_logging(@base_server, @logging_server)
+end
+
+# Before tests that require RELP protocol with SSL encryption.
+#
+# Ensure the server input logging/protocol is set to "relp-secured"
+#
+before "relp-secured" do
+  ensure_input_setting(
+    @logging_server,
+    "logging/protocol",
+    "text",
+    "relp-secured"
+  )
+  ensure_input_setting(
+    @base_server,
+    "logging/protocol",
+    "text",
+    "relp-secured"
+  )
+  ensure_input_setting(
+    @base_server,
+    "logging/remote_server",
+    "text",
+    logging_server_ip
+  )
+  check_monitoring(@logging_server)
 end
 
 # The 'relp-secured' test_case for the Logging with rsyslog ServerTemplate
@@ -142,5 +164,5 @@ end
 # encryption is working correctly.
 #
 test_case "relp-secured" do
-  run_log_test("relp-secured")
+  check_remote_logging(@base_server, @logging_server)
 end
