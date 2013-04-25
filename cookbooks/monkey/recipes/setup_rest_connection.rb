@@ -91,7 +91,8 @@ template "/root/.rest_connection/rest_api_config.yaml" do
   variables(
     :right_passwd => node[:monkey][:rest][:right_passwd],
     :right_email => node[:monkey][:rest][:right_email],
-    :right_acct_id => node[:monkey][:rest][:right_acct_id]
+    :right_acct_id => node[:monkey][:rest][:right_acct_id],
+    :right_subdomain => node[:monkey][:rest][:right_subdomain]
   )
   cookbook "monkey"
 end
