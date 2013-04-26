@@ -208,7 +208,7 @@ attribute "rightscale/rackspace_username",
     "The username for Rackspace cloud account. This is required for" +
     " registering instances with Rackspace Managed Cloud.",
   :required => "optional",
-  :default => nil,
+  :default => "",
   :recipes => [
     "rightscale::default",
     "rightscale::setup_cloud"
@@ -220,7 +220,7 @@ attribute "rightscale/rackspace_api_key",
     "The API Key for Rackspace cloud account. This is required for" +
     " registering instances with Rackspace Managed Cloud.",
   :required => "optional",
-  :default => nil,
+  :default => "",
   :recipes => [
     "rightscale::default",
     "rightscale::setup_cloud"
@@ -232,7 +232,7 @@ attribute "rightscale/rackspace_tenant_id",
     "The tenant ID for Rackspace cloud account. This is required for" +
     " registering instances with Rackspace Managed Cloud.",
   :required => "optional",
-  :default => nil,
+  :default => "",
   :recipes => [
     "rightscale::default",
     "rightscale::setup_cloud"
