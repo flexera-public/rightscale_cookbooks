@@ -22,6 +22,7 @@ helpers do
   # An error with Rackspace Managed agents not running properly.
   #
   class RackspaceManagedError < VirtualMonkey::TestCase::ErrorBase
+  end
 
   # An error with unfrozen repo check
   #
