@@ -13,9 +13,9 @@ rightscale_marker :begin
 # method.
 if node[:cloud][:provider] == "rackspace-ng" &&
   RightScale::Utils::Helper.is_rackspace_managed_cloud?
-  if node[:rightscale][:rackspace_username].empty? ||
-    node[:rightscale][:rackspace_api_key].empty? ||
-    node[:rightscale][:rackspace_tenant_id].empty?
+  if node[:rightscale][:rackspace_username].to_s.empty? ||
+    node[:rightscale][:rackspace_api_key].to_s.empty? ||
+    node[:rightscale][:rackspace_tenant_id].to_s.empty?
     raise "Inputs Rackspace Username, Rackspace API Key, and" +
       " Rackspace Tenant ID are required for setting up the Rackspace Managed" +
       " Cloud."
