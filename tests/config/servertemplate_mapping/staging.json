@@ -19,5 +19,9 @@
   "rightscale_tools_tester": {
     "nickname": "TESTING RightScale Tools Tester STAGING",
     "rev": "head"
+  },
+  "logging": {
+    "nickname": "Logging with rsyslog STAGING",
+    "rev": "head"
   }
 }

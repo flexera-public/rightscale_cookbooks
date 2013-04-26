@@ -15,11 +15,11 @@ RACKSPACE_VERSION = "0.0.0.20111110"
 
 # right_cloud_api gem
 RIGHT_CLOUD_API_GEM = "right_cloud_api"
-RIGHT_CLOUD_API_VERSION = "0.0.0"
+RIGHT_CLOUD_API_VERSION = "0.0.1"
 
 # rightscale_tools gem
 RS_TOOLS_GEM = "rightscale_tools"
-RS_TOOLS_VERSION = "1.6.1"
+RS_TOOLS_VERSION = "1.6.2"
 
 COOKBOOK_DEFAULT_GEMS = ::File.join(::File.dirname(__FILE__), "..", "files", "default")
 

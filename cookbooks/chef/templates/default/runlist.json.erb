@@ -1,0 +1,28 @@
+/*
+ Cookbook Name:: chef
+
+ Copyright RightScale, Inc. All rights reserved.
+ All access and use subject to the RightScale Terms of Service available at
+ http://www.rightscale.com/terms.php and, if applicable, other agreements
+ such as a RightScale Master Subscription Agreement.
+
+ Managed by RightScale
+ DO NOT EDIT BY HAND
+*/
+{
+  "name": "<%= @node_name %>",
+  "normal": {
+    "company": "<%= @company %>",
+    "tags": [
+    ]
+  },
+  "chef_environment": "<%= @environment %>",
+<%# Prepares list of roles in json format. eg. role["default"] %>
+<% roles_list = [] %>
+<% unless @roles.empty? %>
+  <% @roles.delete(" ").split(",").each do |role| %>
+    <% roles_list.push("\"role[#{role}]\"") %>
+  <% end %>
+<% end %>
+  "run_list": [<%= roles_list.join(",") %>]
+}
