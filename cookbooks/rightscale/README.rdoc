@@ -27,6 +27,9 @@ The <tt>rightscale::install_tools</tt> recipe installs the
 <tt>rightscale_tools</tt> gem which provides tools for dealing with databases,
 volumes, and remote object storage providers.
 
+The <tt>rightscale::setup_cloud</tt> recipe performs cloud specific setup such
+as setting up the monitoring agents for the Rackspace Managed Open cloud.
+
 == DETAILS:
 
 === Definitions:
@@ -39,7 +42,7 @@ volumes, and remote object storage providers.
   to create the list of plugins in the <tt>/etc/collectd/collectd.conf</tt>
   file.
 * The <tt>node[:rightscale][:plugin_list_array]</tt> will have any plugins listed
-  in the <tt>node[:rightscale][:plugin_list]</tt> merged into it, which 
+  in the <tt>node[:rightscale][:plugin_list]</tt> merged into it, which
   supports any legacy recipes, as well as allow the input to be manipulated in
   the RightScale Dashboard.
 
@@ -65,8 +68,8 @@ Syntax:
 
 ==== rightscale_marker
 
-* Accepts only one parameter, "location" which can be used to denote 
-  the :start or :end of a recipe. It can also be :begin, :stop, and 
+* Accepts only one parameter, "location" which can be used to denote
+  the :start or :end of a recipe. It can also be :begin, :stop, and
   the string versions.
 * Used to log the start and end of a recipe using the 'Chef::Log.info' Chef Logger class.
   Should be added at the beginning and end of a recipe.
