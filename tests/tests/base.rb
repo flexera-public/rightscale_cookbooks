@@ -203,7 +203,10 @@ before "smoke_test", "stop_start", "enable_security_updates_on_running_server" d
   puts "Running before with security updates disabled"
   # Assume a single server in the deployment
   server = servers.first
-  ensure_input_setting(server, "rightscale/security_updates", "text", "disable")
+  ensure_input_setting(
+    server,
+    {"rightscale/security_updates" => "text:disable"}
+  )
 end
 
 # Before tests that require security updates enabled.
@@ -213,7 +216,10 @@ end
 before "enable_security_updates_on_boot" do
   # Assume a single server in the deployment
   server = servers.first
-  ensure_input_setting(server, "rightscale/security_updates", "text", "enable")
+  ensure_input_setting(
+    server,
+    {"rightscale/security_updates" => "text:enable"}
+  )
 end
 
 # The Base smoke test makes sure the Base (Chef or RSB) ServerTemplate has its
