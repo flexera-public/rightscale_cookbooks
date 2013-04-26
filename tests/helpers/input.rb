@@ -1,61 +1,50 @@
 # Include helper objects and methods.
 require_helper "errors"
 
-# Returns the current value for input name on the given the server.
+# Ensure server is running with the correct setting for the input.
 #
-# @param server [Server] the server to obtain value from
-#
-# @param input_name [String] the input name to obtain the value for
-#
-# @return [Array] Current setting [type, value]
-#  type is one of "text", "cred", "env", key"
-#
-def get_server_input_value(server, input_name)
-  result = get_input_from_server(server)
-  result[input_name].split(":", 2)
-end
-
-# Ensure server is running with the correct setting for the
-# input.
-#
-# If the server is stopped we can't (yet) get the current input
-# so set the input to the desired state and launch all.
+# If the server is stopped we can't (yet) get the current input so set the input
+# to the desired state and launch all.
 # If the server is not stopped then get the current input.
-# If set to other than the desired state update the input to
-# the desired state and relaunch all.
-# If the server is running and the input is set to the desired
-# state make no changes.
+# If set to other than the desired state update the input to the desired state
+# and relaunch all.
+# If the server is running and the input is set to the desired state make
+# no changes.
 # In all cases wait til the servers are operational.
 #
-# @param server [Server] the server to obtain value from
+# @param server [ServerInterface] the server to obtain value from
+# @param inputs [Hash] representing inputs to be ensured to be set on the server
 #
-# @param input_name [String].  The the name of the input
-#
-# @param input_type [String].  The the type of the input
-#  "text", "cred", "env", and "key"
-#
-# @param desired_state [String].  The desired input setting
-#
-def ensure_input_setting(server, input_name, input_type, desired_setting)
-  input_string = "#{input_type}:#{desired_setting}"
-  state = server.state
-  puts "  Current server state: #{state}"
-  puts "  Input name: #{input_name}"
-  puts "  Setting security updates input to #{input_string}"
-  if state == "stopped" || state == "inactive"
-    server.set_inputs(input_name => "#{input_string}")
-    puts "  Servers in stopped state.  Launch all"
-    launch_all
+def ensure_input_setting(server, inputs)
+  puts "  #{server.nickname} state: '#{server.state}'"
+
+  if server.state == "stopped" || server.state == "inactive"
+    inputs.each do |name, value|
+      puts "  Setting '#{name}' input to '#{value}'"
+      server.set_inputs(name => value)
+    end
+    puts "  Launching #{server.nickname}"
+    relaunch_server(server)
   else
-    current_type, current_value = get_server_input_value(server, input_name)
-    puts "  Current security updates input setting: #{current_type}:#{current_value}"
-    if current_value != desired_setting
-      puts "  Servers running with incorrect input setting."
-      puts "  Update input and relaunch all"
-      server.set_inputs(input_name => "#{input_string}")
-      relaunch_all
+    do_relaunch = false
+
+    inputs.each do |name, value|
+      # Returns the current value for input name on the given the server.
+      current_value = get_input_from_server(server)[name]
+      puts "  Currently '#{name}' input is set to '#{current_value}'"
+
+      if current_value != value
+        puts "  Setting '#{name}' input to '#{value}'"
+        server.set_inputs(name => value)
+        do_relaunch = true
+      end
+    end
+
+    if do_relaunch
+      puts "  Relaunching #{server.nickname}"
+      relaunch_server(server)
     end
   end
-  
-  wait_for_all("operational")
+
+  wait_for_server_state(server, "operational")
 end

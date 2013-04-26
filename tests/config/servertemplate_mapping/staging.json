@@ -15,5 +15,9 @@
   "memcached": {
     "nickname": "Memcached Server STAGING",
     "rev": "head"
+  },
+  "logging": {
+    "nickname": "Logging with rsyslog STAGING",
+    "rev": "head"
   }
 }
