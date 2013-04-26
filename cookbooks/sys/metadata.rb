@@ -35,7 +35,7 @@ attribute "sys/reconverge_list",
     "sys::do_reconverge_list_disable"
   ]
 
-attribute "sys/interval",
+attribute "sys/cron_interval",
   :display_name => "Interval in Minutes to Run Reconverge List",
   :description =>
     "Defines the interval in minutes to run recipe(s) of reconverge list." +

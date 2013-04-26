@@ -8,6 +8,4 @@
 
 # Required attributes
 
-default[:sys][:reconverge_list] = ""
-default[:sys][:interval] = "15"
-default[:sys][:splay] = "10"
+default[:sys][:cron_splay] = "10"

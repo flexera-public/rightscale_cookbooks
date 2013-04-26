@@ -12,7 +12,7 @@ actions :enable, :disable
 # Name of the recipe
 attribute :recipe_name, :kind_of => String, :regex => /[A-Za-z0-9_-]+::[A-Za-z0-9_-]+/
 # Interval in minutes
-attribute :interval, :kind_of => Integer
+attribute :cron_interval, :kind_of => Integer
 
 # Defines a default action
 def initialize(*args)

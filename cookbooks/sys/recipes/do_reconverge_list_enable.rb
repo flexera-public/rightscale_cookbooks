@@ -18,7 +18,7 @@ node[:sys][:reconverge_list].split(" ").each do |recipe|
   # by passing in the recipe name and optional interval as the parameter.
   sys_reconverge "Enable recipe re-converge" do
     recipe_name recipe
-    interval node[:sys][:interval].to_i
+    cron_interval node[:sys][:cron_interval].to_i
     action :enable
   end
 

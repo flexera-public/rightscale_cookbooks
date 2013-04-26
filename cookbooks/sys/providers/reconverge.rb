@@ -8,20 +8,23 @@
 
 action :enable do
   recipe = new_resource.recipe_name
-  interval = new_resource.interval
-  splay = node[:sys][:splay].to_i
+  cron_interval = new_resource.cron_interval
+  cron_splay = node[:sys][:cron_splay].to_i
 
   # Calls the randomize_reconverge_minutes in helper class which is found in
   # cookbooks/rightscale/libraries/helper.rb
-  minute_list =
-    RightScale::System::Helper.randomize_reconverge_minutes(interval, splay)
+  minute_list = RightScale::System::Helper.randomize_reconverge_minutes(
+    cron_interval,
+    cron_splay
+  )
+
   log "  Adding #{recipe} to reconverge via cron on minutes [#{minute_list}]"
 
   cron "reconverge_#{recipe.gsub("::", "_")}" do
     minute minute_list
     user "root"
-    command "rs_run_recipe --policy '#{recipe}' --name '#{recipe}' 2>&1 >> " +
-      "/var/log/rs_sys_reconverge.log"
+    command "rs_run_recipe --policy '#{recipe}' --name '#{recipe}' 2>&1 >>" +
+      " /var/log/rs_sys_reconverge.log"
     action :create
   end
 
