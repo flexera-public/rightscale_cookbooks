@@ -83,11 +83,11 @@ helpers do
           # Checks whether the log with the test string is on the
           # Logging server.
           probe(logging_server, "grep \"#{test_string}\" #{log_file_path}") do
-          |responce, status|
+          |response, status|
             unless status == 0
-              raise FailedProbeCommandError, "Probe error: #{responce}"
+              raise FailedProbeCommandError, "Probe error: #{response}"
             end
-            result = responce
+            result = response
             true
           end
 
