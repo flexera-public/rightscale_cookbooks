@@ -257,6 +257,8 @@ before "smoke_test", "stop_start", "enable_security_updates_on_running_server" d
   setup_rackspace_managed_credentials(server) \
     if cloud.cloud_name =~ /Rackmanaged/
 
+  # The "ensure_input_setting" method sets the inputs and launches the server
+  # at the moment. This method will be refactored later.
   ensure_input_setting(
     server,
     {"rightscale/security_updates" => "text:disable"}
