@@ -76,7 +76,9 @@ extension << " -o #{node[:chef][:client][:json_attributes]}" \
   unless node[:chef][:client][:json_attributes].empty?
 
 # Runs the Chef Client using command extensions.
-execute "chef-client #{extension}"
+execute "run chef-client" do
+  command "chef-client #{extension}"
+end
 
 log "  Chef Client role(s) are: #{node[:chef][:client][:current_roles]}"
 
