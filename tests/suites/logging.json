@@ -1,0 +1,8 @@
+{
+  "description": "Tests the functionality of the Logging ServerTemplate",
+  "server_templates": [
+    "logging",
+    "base_chef"
+  ],
+  "tests": ["logging.rb"]
+}

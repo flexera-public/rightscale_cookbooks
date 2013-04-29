@@ -35,6 +35,15 @@ attribute "sys/reconverge_list",
     "sys::do_reconverge_list_disable"
   ]
 
+attribute "sys/cron_interval",
+  :display_name => "Interval in Minutes to Run Reconverge List",
+  :description =>
+    "Defines the interval in minutes to run recipe(s) of reconverge list." +
+    " Example: 15",
+  :required => "optional",
+  :default => "15",
+  :recipes => ["sys::do_reconverge_list_enable"]
+
 attribute "sys/swap_size",
   :display_name => "Swap size in GB",
   :description =>
