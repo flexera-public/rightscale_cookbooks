@@ -245,7 +245,8 @@ end
 # Ensure the server input rightscale/security_updates is set to "disable"
 # Rackspace Managed Open clouds should have Rackspace credentials set.
 #
-before "smoke_test", "stop_start", "enable_security_updates_on_running_server" do
+before "smoke_test", "stop_start", "enable_security_updates_on_running_server",
+  "ephemeral_file_system_type" do
   puts "Running before with security updates disabled"
   # Assume a single server in the deployment
   server = servers.first
