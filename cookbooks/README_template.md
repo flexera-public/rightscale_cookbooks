@@ -106,7 +106,7 @@ Add link to the production templates that use this cookbook.
 
 #### Example:
 
-*server.rb.erb*
+__server.rb.erb__
 
 Configuration for the server and server components used in the
 `chef-server::rubygems-install` recipe.
@@ -120,7 +120,7 @@ how it's used in recipes.
 
 #### Example:
 
-*apache\_module*
+__apache\_module__
 
 Enable or disable an Apache module in
 `#{node['apache']['dir']}/mods-available` by calling `a2enmod` or
@@ -156,7 +156,7 @@ used in recipes.
 
 #### Example:
 
-*RightScale::App::Helper.bind_ip(private_ips = [], public_ips = [])*
+__RightScale::App::Helper.bind_ip(private_ips = [], public_ips = [])__
 
 Return the IP address of the interface that this application server listens on.
 
@@ -214,7 +214,7 @@ Common attributes
 
 #### Example:
 
-*Update Action*
+__Update Action__
 
 To open a local port to all servers with a given tag use:
 
@@ -228,7 +228,7 @@ To open a local port to all servers with a given tag use:
 This can be useful as a server is booting to open up access for multiple systems
 at once.
 
-*Update Request Action*
+__Update Request Action__
 
 To request all servers with a given tag close a port to a given IP address use:
 
