@@ -66,8 +66,7 @@
       "description": "Validation name, along with the private SSH key, is used to determine whether the Chef Client may register with the Chef Server. The validation_name located on the Server and in the Client configuration file must match. Example: ORG-validator",
       "required": "required",
       "recipes": [
-        "chef::install_client",
-        "chef::do_unregister_request"
+        "chef::install_client"
       ],
       "choice": [
 
@@ -80,8 +79,7 @@
       "description": "Name which will be used to authenticate the Chef Client on the remote Chef Server. If nothing specified, the instance FQDN will be used. Example: client_101.example.com",
       "required": "optional",
       "recipes": [
-        "chef::install_client",
-        "chef::do_unregister_request"
+        "chef::install_client"
       ],
       "choice": [
 
@@ -148,8 +146,7 @@
   },
   "recipes": {
     "chef::install_client": "Installs and configures the Chef Client",
-    "chef::do_client_converge": "Allows manual update/re-run of runlist on the Chef Client",
-    "chef::do_unregister_request": "Unregisters Chef Client from Chef server"
+    "chef::do_client_converge": "Allows manual update/re-run of runlist on the Chef Client"
   },
   "version": "13.4.0"
 }

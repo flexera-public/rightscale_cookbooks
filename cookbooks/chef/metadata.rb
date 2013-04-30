@@ -11,8 +11,6 @@ recipe "chef::install_client",
   "Installs and configures the Chef Client"
 recipe "chef::do_client_converge",
   "Allows manual update/re-run of runlist on the Chef Client"
-recipe "chef::do_unregister_request",
-  "Unregisters Chef Client from Chef server"
 
 attribute "chef/client/version",
   :display_name => "Chef Client Version",
@@ -50,7 +48,7 @@ attribute "chef/client/validation_name",
     " validation_name located on the Server and in the Client configuration" +
     " file must match. Example: ORG-validator",
   :required => "required",
-  :recipes => ["chef::install_client", "chef::do_unregister_request"]
+  :recipes => ["chef::install_client"]
 
 attribute "chef/client/node_name",
   :display_name => "Chef Client Node Name",
@@ -59,7 +57,7 @@ attribute "chef/client/node_name",
     " Chef Server. If nothing specified, the instance FQDN will be used." +
     " Example: client_101.example.com",
   :required => "optional",
-  :recipes => ["chef::install_client", "chef::do_unregister_request"]
+  :recipes => ["chef::install_client"]
 
 attribute "chef/client/environment",
   :display_name => "Chef Client Environment",
