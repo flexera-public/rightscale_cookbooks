@@ -1,23 +1,19 @@
+README.md template
 
-README.rdoc template
+# RightScale XXX Cookbook
 
-For Rdoc markup syntax and options please see: http://rdoc.sourceforge.net/doc/
-EXAMPLE and MARKUP sections.
-
-= RightScale *** Cookbook
-
-== DESCRIPTION:
+## DESCRIPTION:
 
 Replace this text with a high-level overview of what this cookbook configures
 or manages. Don't go into too much detail here, save that for the 'details'
 section below.
 
-==== Example:
+#### Example:
 
 This cookbook provides abstract 'repo' resource for managing code download from
 GIT, SVN or ROS code repositories.
 
-== REQUIREMENTS:
+## REQUIREMENTS:
 
 Replace this text with a description of cookbook requirements:
 
@@ -26,54 +22,54 @@ Replace this text with a description of cookbook requirements:
 * What OSs does this support?
 * Is this cloud specific? If so, which clouds?
 
-==== Example:
+#### Example:
 
-* One of 'repo' provider: <tt>repo_git</tt>, <tt>repo_svn</tt> or
-  <tt>repo_ros</tt> cookbooks must be present in your cookbook repository ROS
-  implementation depends on the <tt>rightscale::install_tools</tt> recipe.
+* One of 'repo' provider: `repo_git`, `repo_svn` or `repo_ros` cookbooks must be
+  present in your cookbook repository ROS implementation depends on the
+  `rightscale::install_tools` recipe.
 * Requires a virtual machine launched from a RightScale-managed RightImage.
 
-== COOKBOOKS DEPENDENCIES:
+## COOKBOOKS DEPENDENCIES:
 
-Please see <tt>metadata.rb</tt> file for the latest dependencies.
+Please see `metadata.rb` file for the latest dependencies.
 
-== KNOWN LIMITATIONS:
+## KNOWN LIMITATIONS:
 
 List any known limitation here that might affect functionality and usability.
 Be sure to include a ticket number.
 
-==== Example:
+#### Example:
 
 Currently only primary backups to Remote Object Storage (ROS) are supported for
 KVM hypervisors (w-1234).
 
-== SETUP/USAGE:
+## SETUP/USAGE:
 
 Describe minimum required set of actions required for correct work of recipes
 from this cookbook.
 
-==== Example:
+#### Example:
 
-Place the <tt>app_tomcat::default</tt> recipe into your runlist to setup the
+Place the `app_tomcat::default` recipe into your runlist to setup the
 application server. When using a RightScale ServerTemplate, this will also
 automatically add the common attributes to your ServerTemplate inputs. Set
 'jdbc/ConnDB' as your datasource name to set up database connection with the
 application server.
 
-== DETAILS:
+## DETAILS:
 
-=== General
+### General
 
 Replace this text with a common information about cookbook elements and anything
 else that users need to know in order to properly use this cookbook.
 
-==== Example:
+#### Example:
 
 This cookbook is intended to be used in conjunction with cookbooks that contain
-Lightweight Providers which implement the <tt>repo</tt> interface. See the
+Lightweight Providers which implement the `repo` interface. See the
 RightScale repo_git cookbook for an example.
 
-=== Attributes:
+### Attributes:
 
 Describe cookbook attributes here.
 
@@ -81,24 +77,24 @@ Please create description only for "internal" attributes here e.g those which
 have no inputs. 'set' directive in attributes/default.rb cookbook file.
 
 You can create subsections to split attributes by their specs Ex:
-<tt>General</tt> <tt>Apache common</tt>, <tt>Apache worker</tt> etc.
+`General` `Apache common`, `Apache worker` etc.
 
-==== Example:
+#### Example:
 
 These are settings used in recipes and templates. Default values are noted.
 
 Note: Only "internal" cookbook attributes are described here. Descriptions of
-attributes which have inputs you can find in the <tt>metadata.rb</tt> cookbook
+attributes which have inputs you can find in the `metadata.rb` cookbook
 file.
 
-* <tt>node[:apache][:dir]</tt> - Location for the Apache configuration
-* <tt>node[:apache][:log_dir]</tt> - Location for Apache logs
-* <tt>node[:apache][:prefork][:startservers]</tt> - initial number of server
-  processes to start. Default is 16.
-* <tt>node[:apache][:prefork][:minspareservers]</tt> - minimum number of spare
-  server processes. Default 16.
+* `node[:apache][:dir]` - Location for the Apache configuration
+* `node[:apache][:log_dir]` - Location for Apache logs
+* `node[:apache][:prefork][:startservers]` - initial number of server processes
+  to start. Default is 16.
+* `node[:apache][:prefork][:minspareservers]` - minimum number of spare server
+  processes. Default 16.
 
-=== Templates:
+### Templates:
 
 Describe cookbook templates here.
 
@@ -108,27 +104,27 @@ template name - description - recipe/recipes where this template is called.
 
 Add link to the production templates that use this cookbook.
 
-==== Example:
+#### Example:
 
-<b>server.rb.erb</b>
+*server.rb.erb*
 
 Configuration for the server and server components used in the
-<tt>chef-server::rubygems-install</tt> recipe.
+`chef-server::rubygems-install` recipe.
 
-=== Definitions:
+### Definitions:
 
 Use this section only if your cookbook contains definitions.
 
 Give complete description of definition functionality and provide examples of
 how it's used in recipes.
 
-==== Example:
+#### Example:
 
-<b>apache\_module</b>
+*apache\_module*
 
 Enable or disable an Apache module in
-<tt>#{node['apache']['dir']}/mods-available</tt> by calling <tt>a2enmod</tt> or
-<tt>a2dismod</tt> to manage the symbolic link in
+`#{node['apache']['dir']}/mods-available` by calling `a2enmod` or
+`a2dismod` to manage the symbolic link in
 `#{node['apache']['dir']}/mods-enabled`. If the module has a configuration
 file, a template should be created in the cookbook where the definition is
 used. See __Examples__.
@@ -152,103 +148,104 @@ Enable the ssl module, which also has a configuration template in
       conf true
     end
 
-=== Libraries-helpers:
+### Libraries-helpers:
 
 Use this section only if your cookbook contains any libraries. Give complete
 description of library purpose and functionality. Provide examples of how it is
 used in recipes.
 
-==== Example:
+#### Example:
 
-<b>RightScale::App::Helper.bind_ip(private_ips = [], public_ips = [])</b>
+*RightScale::App::Helper.bind_ip(private_ips = [], public_ips = [])*
 
 Return the IP address of the interface that this application server listens on.
 
 Parameters:
 
-* <tt>private_ips(Array)::</tt> List of private ips assigned to the application
+* `private_ips(Array)::` List of private ips assigned to the application
   server
-* <tt>public_ips(Array)::</tt> List of public ips assigned to the application
+* `public_ips(Array)::` List of public ips assigned to the application
   server
 
 Returns:
 
-<tt>String::</tt> IP Address
+`String::` IP Address
 
 Raise:
 
-<tt>RuntimeError::</tt> If nether a valid private nor public ip can be found
+`RuntimeError::` If nether a valid private nor public ip can be found
 
-=== LWRPs:
+### LWRPs:
 
 Use this section only if your cookbook contain resources and/or providers.
 
 * Give common information about existing LWRPs in your cookbook, and point user
   to common info about RightScale LWRPs.
 
-==== Example:
+#### Example:
 
 The 'db' interface is defined by a Lightweight Resource, which can be found
 in the resources/default.rb file.
 
 For now we have:
 
-* <tt>db_mysql</tt> https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/db_mysql
-* <tt>db_postgres</tt> https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/db_postgres
+* `db_mysql` https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/db_mysql
+* `db_postgres` https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/db_postgres
 
 Each of them contain implementation of corresponding db_* LightWeight Provider
 which can be called using this resource.
 
 For more information about Lightweight Resources and Providers (LWRPs), please
-see:
-http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)
+see: [Chef Cookbooks Developer Guide][LWRP]
+
+[LWRP]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)
 
 * Describe resource purpose and functionality. Describe its attributes
 
-==== Example:
+#### Example:
 
 Common attributes
 
-<tt>:destination</tt> - Path to where project repo will be pulled
-<tt>:repository</tt> - Repository Url
-<tt>:revision</tt> - Remote repo Branch or revision
+`:destination` - Path to where project repo will be pulled
+`:repository` - Repository Url
+`:revision` - Remote repo Branch or revision
 
 * Give provider usage examples.
 
-==== Example:
+#### Example:
 
-<b>Update Action</b>
+*Update Action*
 
 To open a local port to all servers with a given tag use:
 
-  sys_firewall "Open this database's ports to all appservers" do
-    machine_tag "appserver:active=true"
-    port 3306
-    enable true
-    action :update
-  end
+    sys_firewall "Open this database's ports to all appservers" do
+      machine_tag "appserver:active=true"
+      port 3306
+      enable true
+      action :update
+    end
 
 This can be useful as a server is booting to open up access for multiple systems
 at once.
 
-<b>Update Request Action</b>
+*Update Request Action*
 
 To request all servers with a given tag close a port to a given IP address use:
 
-  sys_firewall "Request all appservers close ports to this loadbalancer" do
-    machine_tag "loadbalancer:app=www"
-    port 8000
-    enable false
-    ip_addr node[:cloud][:private_ips][0]
-    action :update_request
-  end
+    sys_firewall "Request all appservers close ports to this loadbalancer" do
+      machine_tag "loadbalancer:app=www"
+      port 8000
+      enable false
+      ip_addr node[:cloud][:private_ips][0]
+      action :update_request
+    end
 
 This can be useful when decommissioning a running server that had previously
 requested ports opened.
 
 * All tag based actions are scoped to the deployment.
 
-= LICENSE:
+# LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.  All access and use subject to
 the RightScale Terms of Service available at http://www.rightscale.com/terms.php
