@@ -1,4 +1,4 @@
-# 
+#
 # Cookbook Name:: lb
 #
 # Copyright RightScale, Inc. All rights reserved.
