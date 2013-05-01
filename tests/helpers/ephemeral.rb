@@ -1,4 +1,4 @@
-require_helpers 'error'
+require_helper "errors"
 
 # Checks if an ephemeral drive is mounted to /mnt/ephemeral on a server.
 #
