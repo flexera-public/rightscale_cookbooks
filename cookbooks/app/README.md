@@ -5,7 +5,7 @@
 RightScale's cookbook for application server management.
 
 This is an abstract cookbook that defines the recipes and interface to
-application provider cookbooks.  It is not a standalone cookbook and must be
+application provider cookbooks. It is not a standalone cookbook and must be
 used in conjunction with an application provider cookbook (i.e.
 `app_php`, `app_tomcat`, `app_passenger`, `app_django` or a user created
 application provider).
@@ -217,7 +217,7 @@ be found in the `do_*` and `setup_*` recipes in the cookbook.
       action :setup_vhost
     end
 
-== LICENSE:
+## LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.
 All access and use subject to the RightScale Terms of Service available at
