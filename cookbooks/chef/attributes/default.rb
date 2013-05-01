@@ -19,7 +19,7 @@ default[:chef][:client][:validator_pem] = ""
 default[:chef][:client][:validation_name] = ""
 
 # Optional attributes
-default[:chef][:client][:node_name] = ""
+default[:chef][:client][:node_name] = node[:fqdn]
 default[:chef][:client][:company] = ""
 default[:chef][:client][:roles] = ""
 default[:chef][:client][:json_attributes] = ""
