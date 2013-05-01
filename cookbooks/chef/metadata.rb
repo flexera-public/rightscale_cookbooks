@@ -33,7 +33,7 @@ attribute "chef/client/server_url",
 
 attribute "chef/client/validator_pem",
   :display_name => "Private Key to Register the Chef Client with the Chef" +
-    " Server.",
+    " Server",
   :description =>
     "Private SSH key which will be used to authenticate the Chef Client on" +
     " the remote Chef Server.",
@@ -54,8 +54,8 @@ attribute "chef/client/node_name",
   :display_name => "Chef Client Node Name",
   :description =>
     "Name which will be used to authenticate the Chef Client on the remote" +
-    " Chef Server. If nothing specified, the instance FQDN will be used." +
-    " Example: client_101.example.com",
+    " Chef Server. If nothing is specified, the instance FQDN will be used." +
+    " Example: chef-client-host1",
   :required => "optional",
   :recipes => ["chef::install_client"]
 
@@ -81,7 +81,7 @@ attribute "chef/client/company",
 attribute "chef/client/roles",
   :display_name => "Set of Client Roles",
   :description =>
-    "Comma separated list of roles which will be applied to this instance." +
+    "Comma-separated list of roles which will be applied to this instance." +
     " The Chef Client will execute the roles in the order specified here." +
     " Example: webserver, monitoring",
   :required => "optional",
@@ -90,6 +90,7 @@ attribute "chef/client/roles",
 attribute "chef/client/json_attributes",
   :display_name => "JSON String to be Added to Chef Client Run",
   :description =>
-    "A custom JSON string to be added to the first run of chef-client",
+    "A custom JSON string to be added to the first run of chef-client." +
+    " Example: recipe[ntp::default]",
   :required => "optional",
   :recipes => ["chef::install_client"]
