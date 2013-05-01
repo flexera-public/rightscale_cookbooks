@@ -417,15 +417,17 @@ test_case "ephemeral_file_system_type" do
   # Chef ServerTemplates.
   skip unless cloud.supports_ephemeral?(server) && is_chef?
 
-  # Get the MCI used by the server
-  mci = cloud.get_server_mci(server)
+  # Get the OS used by the server
+  os = get_operating_system(server)
 
   # List all file system types supported on the ephemeral device
   supported_fs_types = ["xfs", "ext3"]
 
-  # xfs file system is not supported on the ephemeral device on Google cloud
-  # and the Redhat platform
-  xfs_unsupported = mci.name =~ /rhel/i || cloud.cloud_name == "Google"
+  # We do not support xfs on Google cloud and Redhat due to these reasons
+  # * Google uses a statically compiled kernel built without xfs support
+  # * Redhat charges for using xfs. Hence we don't install it through our
+  # cookbooks and tools.
+  xfs_unsupported = os =~ /rhel/i || cloud.cloud_name == "Google"
 
   # Remove file system types that are not supported on the ephemeral device
   # based on the platform

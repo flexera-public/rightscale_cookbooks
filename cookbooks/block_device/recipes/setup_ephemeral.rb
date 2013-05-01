@@ -47,7 +47,8 @@ if node[:platform] == "ubuntu"
   options += ",bootwait,noauto"
 end
 
-# RedHat does not support xfs, so set ext3 to be the default.
+# We do not support xfs on RedHat as we have to pay for it. So set ext3 to be
+# the default.
 # On Google cloud, irrespective of the image (CentOS or Ubuntu) used, xfs is not
 # recognized by /proc/filesystem even after installing xfsprogs. So, set ext3
 # to be the default file system type on google.
