@@ -6,6 +6,7 @@
 * Installs and configures the JBoss application server.
 
 ## REQUIREMENTS:
+
 * Requires ["app" Lightweight resource cookbook][app] or your own implementation
   of the "app" resource. See "app" cookbook README for details.
 * Requires a VM launched from a RightScale managed RightImage
