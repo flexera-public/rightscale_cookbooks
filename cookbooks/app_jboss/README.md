@@ -1,49 +1,55 @@
-= RightScale App JBoss Cookbook
+# RightScale App JBoss Cookbook
 
-== DESCRIPTION:
+## DESCRIPTION:
 
 * Cookbook provides JBoss application server implementation of the app LWRP.
 * Installs and configures the JBoss application server.
 
-== REQUIREMENTS:
-* Requires "app" Lightweight resource cookbook
-  https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
-  or your own implementation of "app" resource. See the "app" cookbook README
-  for details.
+## REQUIREMENTS:
+* Requires ["app" Lightweight resource cookbook][app] or your own implementation
+  of the "app" resource. See "app" cookbook README for details.
 * Requires a VM launched from a RightScale managed RightImage
 * Tested on the following RightImages:
   * CentOS 6.2
   * Ubuntu 12.04
 
-== COOKBOOKS DEPENDENCIES:
-Please see the <tt>metadata.rb</tt> file for the latest dependencies.
+[app]: https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app
 
-* <tt>app</tt>
-* <tt>repo</tt>
-* <tt>rightscale</tt>
+## COOKBOOKS DEPENDENCIES:
 
-== KNOWN LIMITATIONS:
+Please see the `metadata.rb` file for the latest dependencies.
+
+* `app`
+* `repo`
+* `rightscale`
+
+## KNOWN LIMITATIONS:
 
 There are no known limitations.
 
-== SETUP/USAGE:
+## SETUP/USAGE:
 
-* Place <tt>app_jboss::setup_server</tt> recipe into your runlist to set up the
+* Place `app_jboss::setup_server` recipe into your runlist to set up the
   application server specific attributes.
-* Place <tt>app::install_server</tt> after setup_server recipe to install the
+* Place `app::install_server` after setup_server recipe to install the
   application server.
 * Set 'jdbc/ConnDB' as your datasource name to set up a database connection with
   the application server.
 
-For more info see: {Release Notes}[http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current]
-(Section ‘JBoss App Server’ under ServerTemplates)
+For more info see: [Release Notes][Notes] (Section ‘JBoss App Server’ under
+ServerTemplates)
 
-Please check out the tutorial: {JBoss App Server}[http://support.rightscale.com/03-Tutorials/JBoss_App_Server]
+[Notes]: http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current
 
-== DETAILS:
-=== General
+Please check out the tutorial: [JBoss App Server][Tutorial]
 
-The <tt>app_jboss</tt> cookbook will install and set up the Apache web server
+[Tutorial]: http://support.rightscale.com/03-Tutorials/JBoss_App_Server
+
+## DETAILS:
+
+### General
+
+The `app_jboss` cookbook will install and set up the Apache web server
 with a mod_jk module and the JBoss application server, with support for MySQL or
 Postgres database servers. The Cookbook will create a separate vhost config for
 the Apache web server, which will allow Apache to handle static content, such as
@@ -60,111 +66,109 @@ Features currently supported are
 * Automatic logrotate file configuration for JBoss logs
 * Collectd monitoring support
 
-=== Attributes:
+### Attributes:
+
 These are settings used in recipes and templates. Default values are noted.
 
 Note: Only "internal" cookbook attributes are described here. Descriptions of
-attributes that are inputs are in the <tt>metadata.rb</tt> cookbook file.
+attributes that are inputs are in the `metadata.rb` cookbook file.
 
-====== General attributes
-* <tt>node[:app_jboss][:code][:root_war]</tt> -
+###### General attributes
+
+* `node[:app_jboss][:code][:root_war]` -
   Path to the directory which will contain the application for JBoss.
 
-====== Java heap tuning attributes
+###### Java heap tuning attributes
+
 "Permanent Generation" space holds Class and Object instances, and their related
 metadata. "Young Generation" space is the location where new objects are
-created. It consists of two survivor spaces called <tt>to space</tt> and
-<tt>from space</tt>.
+created. It consists of two survivor spaces called `to space` and
+`from space`.
 
-* <tt>node[:app_jboss][:java][:permsize]</tt> -
+* `node[:app_jboss][:java][:permsize]` -
   The initial size of "permanent generation" space.
-* <tt>node[:app_jboss][:java][:maxpermsize]</tt> -
+* `node[:app_jboss][:java][:maxpermsize]` -
   The maximum size of "permanent generation" space.
-* <tt>node[:app_jboss][:java][:newsize]</tt> -
+* `node[:app_jboss][:java][:newsize]` -
   The initial size of "young generation" space.
-* <tt>node[:app_jboss][:java][:maxnewsize]</tt> -
+* `node[:app_jboss][:java][:maxnewsize]` -
   The maximum size of "young generation" space.
-* <tt>node[:app_jboss][:java][:xmx]</tt> -
+* `node[:app_jboss][:java][:xmx]` -
   The maximum size of the heap used by the JVM.
-* <tt>node[:app_jboss][:java][:xms]</tt> -
+* `node[:app_jboss][:java][:xms]` -
   The initial size of the heap used by the JVM.
 
-For more information about the Java tuning parameters check out {Java Heap Tuning
-Parameters}[http://docs.oracle.com/cd/E19528-01/819-4742/abeik/index.html]
+For more information about the Java tuning parameters check out [Java Heap
+Tuning Parameters][Doc]
 
-====== Platform dependent
-* <tt>node[:app][:user]</tt> -
+[Doc]: http://docs.oracle.com/cd/E19528-01/819-4742/abeik/index.html
+
+###### Platform dependent
+
+* `node[:app][:user]` -
   Username for changing the owner of created project dirs.
-* <tt>node[:app_jboss][:alternatives_cmd]</tt> -
+* `node[:app_jboss][:alternatives_cmd]` -
   Alternative command for selecting Java.
 
-=== Templates:
+### Templates:
 
-==== Defined in <tt>:install</tt> LWRP action for the <tt>app::default</tt> recipe.
+#### Defined in `:install` LWRP action for the `app::default` recipe.
 
-* <tt>run_conf.erb</tt> - JBoss configuration template used by JBoss start-up
+* `run_conf.erb` - JBoss configuration template used by JBoss start-up
   script.
-* <tt>jboss_init.erb</tt> - Start-up init script for JBoss.
+* `jboss_init.erb` - Start-up init script for JBoss.
 
-==== Defined in <tt>:setup_vhost</tt> LWRP action for the <tt>app::setup_vhost</tt> recipe.
+#### Defined in `:setup_vhost` LWRP action for the `app::setup_vhost` recipe.
 
-* <tt>server_xml.erb</tt> - JBoss server.xml configuration template.
-* <tt>apache_mod_jk_vhost.erb</tt> - Configuration for apache vhost file.
-* <tt>mod_jk.conf.erb</tt> - Mod_jk configuration template.
-* <tt>jboss_workers.properties.erb</tt> - JBoss worker configuration template.
+* `server_xml.erb` - JBoss server.xml configuration template.
+* `apache_mod_jk_vhost.erb` - Configuration for apache vhost file.
+* `mod_jk.conf.erb` - Mod_jk configuration template.
+* `jboss_workers.properties.erb` - JBoss worker configuration template.
 
-==== Defined in <tt>:setup_db_connection</tt> LWRP action for the <tt>app::setup_db_connection</tt> recipe.
+#### Defined in `:setup_db_connection` LWRP action for the
+`app::setup_db_connection` recipe.
 
-* <tt>customdb-ds.xml.erb</tt> - Configuration for project database connection
+* `customdb-ds.xml.erb` - Configuration for project database connection
   configuration file.
-* <tt>web.xml.erb</tt> - JBoss Content configuration template.
+* `web.xml.erb` - JBoss Content configuration template.
 
-=== LWRPs:
+### LWRPs:
 
-<tt>app_jboss</tt> Lightweight provider is defined in the
-<tt>providers/default.rb</tt> file and contains source for the following actions:
+`app_jboss` Lightweight provider is defined in the `providers/default.rb` file
+and contains source for the following actions:
 
-* <tt>:install</tt> -
+* `:install` -
   Install packages required for application server setup.
-
-* <tt>:setup_vhost</tt> -
+* `:setup_vhost` -
   Set up Apache vhost file with mod_jk. Install and set up JBoss package
   dependencies. Set up logrotate for JBoss.
-
-* <tt>:start</tt> -
+* `:start` -
   Start sequence for JBoss application server.
-
-* <tt>:stop</tt> -
+* `:stop` -
   Stop sequence for JBoss application server.
-
-* <tt>:reload</tt> -
+* `:reload` -
   Reload sequence for JBoss application server.
-
-* <tt>:restart</tt> -
+* `:restart` -
   Restart sequence for JBoss application server.
-
-* <tt>:code_update</tt> -
+* `:code_update` -
   Perform project source code update/download using user selected "repo" LWRP.
-
-* <tt>:setup_db_connection</tt> -
-  Configure <tt>(mysql/postgres)-ds.xml</tt> JBoss db specific configuration
+* `:setup_db_connection` -
+  Configure `(mysql/postgres)-ds.xml` JBoss db specific configuration
   file with database connection information.
-
-* <tt>:setup_monitoring</tt> -
+* `:setup_monitoring` -
   Install and set up of required monitoring software.
 
-For more info about these actions please see <tt>app</tt> cookbook README.
+For more info about these actions please see `app` cookbook README.
 
 For normal operations it requires the "app" resource which will act as an
-interface to all <tt>app_jboss</tt> provider logic.
+interface to all `app_jboss` provider logic.
 
-===== Usage Example:
+##### Usage Example:
 
 For usage examples, please see corresponding section in
-<tt>app</tt> cookbook README.
+`app` cookbook README.
 
-
-===== Unwanted applications and services
+##### Unwanted applications and services
 
 JBoss comes with a lot of services and your enterprise applications may not need
 all of them. After installation, the following applications and services are
@@ -185,8 +189,9 @@ removed to boost application server performance.
 *  Admin console - (deploy/admin-console.war)
 *  JBoss Web Services - (deploy/jbossws.sar)
 
-= LICENSE:
+## LICENSE:
 
-Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-if applicable, other agreements such as a RightScale Master Subscription Agreement.
+Copyright RightScale, Inc. All rights reserved.
+All access and use subject to the RightScale Terms of Service available at
+http://www.rightscale.com/terms.php and, if applicable, other agreements
+such as a RightScale Master Subscription Agreement.
