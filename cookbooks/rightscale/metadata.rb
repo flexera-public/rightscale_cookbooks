@@ -197,7 +197,7 @@ attribute "rightscale/short_hostname",
     "The short hostname that you would like this node to have." +
     " Example: myhost",
   :required => "required",
-  :default => nil,
+  :default => "",
   :recipes => [
     "rightscale::setup_hostname"
   ]
