@@ -1,6 +1,6 @@
-= RightScale Database Manager
+# RightScale Database Cookbook
 
-== DESCRIPTION:
+## DESCRIPTION:
 
 This cookbook provides a set of database recipes used by the RightScale
 Database Manager ServerTemplates.
@@ -8,31 +8,31 @@ Database Manager ServerTemplates.
 This cookbook does not contain a specific database implementation, rather
 it provides an interface for general database actions and parameters.
 
-== REQUIREMENTS:
+## REQUIREMENTS:
 
 * Must be used with a 'db' provider in the cookbook path.
-* Depends on a <tt>block_device</tt> resource for backup and restore recipes.
+* Depends on a `block_device` resource for backup and restore recipes.
 * Requires a virtual machine launched from a RightScale-managed RightImage.
 
-== COOKBOOKS DEPENDENCIES:
+## COOKBOOKS DEPENDENCIES:
 
-Please see <tt>metadata.rb</tt> file for the latest dependencies.
+Please see `metadata.rb` file for the latest dependencies.
 
-== KNOWN LIMITATIONS:
+## KNOWN LIMITATIONS:
 
 * Only one db provider should be present in your cookbook path.
 
-== SETUP:
+## SETUP:
 
-* To setup only the database client, place <tt>db::default</tt> recipe into
+* To setup only the database client, place `db::default` recipe into
   your runlist. This will pull in generic client inputs, provide provider
   selection input and install client. Set db/provider_type input in
   RightScale ServerTemplate to set provider and version for 'db' resource.
   Packages specific to the database for application servers will be installed by
-  the <tt>install_client_driver</tt> action of the db_<provider> based on the type
+  the `install_client_driver` action of the db_<provider> based on the type
   of driver. The driver type should be set by the application servers and
   passed to the db_<provider> cookbook. This action also sets the
-  <tt>node[:db][:client][:driver]</tt> attribute which is used to perform
+  `node[:db][:client][:driver]` attribute which is used to perform
   database specific actions.
 * To setup a database client and server, place the following recipes
   in order to your runlist:
@@ -50,9 +50,9 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
     db_mysql::setup_server_5_5
     db::install_server
 
-== USAGE:
+## USAGE:
 
-=== Initialize a master database:
+### Initialize a master database:
 
 1. Once your server is operational, run the:
 
@@ -73,7 +73,7 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
    so that you can restore the master database in the event 
    of a failure or planned termination.
 
-=== Restore a master database:
+### Restore a master database:
 
 1. Once your server is operational, run the:
 
@@ -87,7 +87,7 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
    to allow your application servers to start making connections.
 
-=== Setup database client:
+### Setup database client:
 
 1. Put "db::default" into database client ServerTemplate runlist.
    Use db/provider_type input to select from existing clients or override this
@@ -97,13 +97,13 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
    client will connect to. (e.g. 5.1, 5.5, 9.1). This affects what connector
    package to install. Syntax for this input is
    <cookbook>_<version> (i.e. db_mydatabase_1.0)
-2. Fill <tt>db/application/password</tt> , <tt>db/application/user</tt> and
-   <tt>db/dns/master/fqdn</tt> inputs which are necessary to connect client to
+2. Fill `db/application/password` , `db/application/user` and
+   `db/dns/master/fqdn` inputs which are necessary to connect client to
    Database Manager.
 
-== DETAILS:
+## DETAILS:
 
-=== General
+### General
 
 The 'db' interface is defined by a Lightweight Resource, which can be found in
 the 'resources/default.rb' file.
@@ -112,12 +112,15 @@ This cookbook is intended to be used in conjunction with cookbooks that contain
 Lightweight Providers which implement the 'db' interface. See RightScale's
 'db_mysql' cookbook for an example.
 
-For more information about Lightweight Resources and Providers (LWRPs), please see: {Lightweight Resources and Providers}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)]
+For more information about Lightweight Resources and Providers (LWRPs), please
+see: [Lightweight Resources and Providers][LWRP]
 
-=== Backup/Restore
+[LWRP]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)
+
+### Backup/Restore
 
 This cookbook depends on the block_device LWRP for backup and restore actions.
-See <tt>db::do_backup</tt> and <tt>db::do_restore</tt> recipes for examples. The
+See `db::do_backup` and `db::do_restore` recipes for examples. The
 'block_device' cookbook provides primary and secondary persistence solutions for
 multiple clouds.
 
@@ -127,11 +130,11 @@ instead.
 Please see the 'block_device' cookbook for the list of available actions,
 attributes and usage.
 
-=== Providers:
+### Providers:
 
 When writing your own database Lightweight Provider:
 
-* The database provider to use is defined by the <tt>node[:db][:provider]</tt>
+* The database provider to use is defined by the `node[:db][:provider]`
   attribute. You will need to override this attribute by adding the following
   code in the attributes file of your provider cookbook.
 
@@ -139,15 +142,18 @@ When writing your own database Lightweight Provider:
 
 * Any database-specific attributes that you wish to make into user-configurable
   inputs should be added to the cookbook metadata with the default recipe included in
-  the attribute's 'recipes' array. For more about Chef metadata, please see: {Chef Metadata}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-RightScale_Support_of_Chef/Chef_Metadata]
+  the attribute's 'recipes' array. For more about Chef metadata, please see:
+  [Chef Metadata][Guide]
 * Your provider cookbook metadata should depend on this cookbook by adding a
   'depends' line to its metadata. For example:
 
     depends "db"
 
-== LICENSE:
+[Guide]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-RightScale_Support_of_Chef/Chef_Metadata
 
-Copyright RightScale, Inc. All rights reserved.  All access and use subject to
-the RightScale Terms of Service available at http://www.rightscale.com/terms.php
-and, if applicable, other agreements such as a RightScale Master Subscription
-Agreement.
+## LICENSE:
+
+Copyright RightScale, Inc. All rights reserved.
+All access and use subject to the RightScale Terms of Service available at
+http://www.rightscale.com/terms.php and, if applicable, other agreements
+such as a RightScale Master Subscription Agreement.
