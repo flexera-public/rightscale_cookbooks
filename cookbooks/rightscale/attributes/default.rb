@@ -20,7 +20,7 @@ default[:rightscale][:private_ssh_key] = ""
 
 default[:rightscale][:db_backup_file] = "/var/run/db-backup"
 
-default[:rightscale][:short_hostname] = nil
+default[:rightscale][:short_hostname] = ""
 default[:rightscale][:domain_name] = ""
 default[:rightscale][:search_suffix] = ""
 

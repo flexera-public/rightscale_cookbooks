@@ -58,7 +58,6 @@
       "choice": [
 
       ],
-      "default": "",
       "type": "string",
       "recipes": [
         "rightscale::setup_hostname"
