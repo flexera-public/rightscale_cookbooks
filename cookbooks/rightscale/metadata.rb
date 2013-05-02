@@ -49,8 +49,8 @@ recipe "rightscale::setup_security_update_monitoring",
 
 attribute "rightscale/security_updates",
   :display_name => "Enable security updates",
-  :description => "Unfreezes software repositories after boot and installing" +
-    " packages allowing for security updates to be installed.",
+  :description => "Unfreezes software repositories after booting and" +
+    " installing packages, allowing for security updates to be installed.",
   :required => "optional",
   :choice => [ "enable", "disable" ],
   :default => "disable",
