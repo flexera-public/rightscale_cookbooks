@@ -27,6 +27,9 @@ The <tt>rightscale::install_tools</tt> recipe installs the
 <tt>rightscale_tools</tt> gem which provides tools for dealing with databases,
 volumes, and remote object storage providers.
 
+The <tt>rightscale::setup_cloud</tt> recipe performs cloud specific setup such
+as setting up the monitoring agents for the Rackspace Managed Open cloud.
+
 The <tt>rightscale::rightscale::setup_security_updates</tt> recipe configures
 the package manager to apply security updates by unfreezing the
 servers repositories.  On apt based systems this unfreezes the security
@@ -38,9 +41,9 @@ security updates are enabled they can not be disabled.
 The <tt>rightscale::do_security_updates</tt> recipe updates a server with
 the latest available security patches.  Non-security related software updates
 are not installed.  It runs as the last operational script to ensure a new server
-has all available security updates applied.  Runs if the 
-<tt>rightscale/security_updates</tt> input is set to "enable", otherwise 
-this action is skipped.  Note: once security updates are enabled they can 
+has all available security updates applied.  Runs if the
+<tt>rightscale/security_updates</tt> input is set to "enable", otherwise
+this action is skipped.  Note: once security updates are enabled they can
 not be disabled.
 
 == USAGE:
@@ -51,7 +54,7 @@ not be disabled.
    <tt>rightscale/security_updates</tt> to <tt>enable</tt>
 2. When the server is operational all current security updates are applied.
 3. Apply security updates using:
-  
+
     "rightscale::do_security_updates"
 
    to bring the server to the latest patch level.
@@ -79,7 +82,7 @@ not be disabled.
   to create the list of plugins in the <tt>/etc/collectd/collectd.conf</tt>
   file.
 * The <tt>node[:rightscale][:plugin_list_array]</tt> will have any plugins listed
-  in the <tt>node[:rightscale][:plugin_list]</tt> merged into it, which 
+  in the <tt>node[:rightscale][:plugin_list]</tt> merged into it, which
   supports any legacy recipes, as well as allow the input to be manipulated in
   the RightScale Dashboard.
 
@@ -105,8 +108,8 @@ Syntax:
 
 ==== rightscale_marker
 
-* Accepts only one parameter, "location" which can be used to denote 
-  the :start or :end of a recipe. It can also be :begin, :stop, and 
+* Accepts only one parameter, "location" which can be used to denote
+  the :start or :end of a recipe. It can also be :begin, :stop, and
   the string versions.
 * Used to log the start and end of a recipe using the 'Chef::Log.info' Chef Logger class.
   Should be added at the beginning and end of a recipe.
