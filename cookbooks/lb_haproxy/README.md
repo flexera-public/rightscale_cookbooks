@@ -1,6 +1,6 @@
-= RightScale Apache/HAProxy Load Balancer Cookbook 
+# RightScale Apache/HAProxy Load Balancer Cookbook 
 
-== DESCRIPTION:
+## DESCRIPTION:
 
 This is RightScale's load balancer cookbook for Apache/HAProxy. 
 
@@ -10,7 +10,7 @@ servers to and from load balancers. There is also support for automatically
 detecting and reconfiguring when an application server has disappeared or
 reappeared without attaching itself.
 
-== DETAILS:
+## DETAILS:
 
 The load balancer and application server attach/detach recipes are designed so
 the servers can locate each other using RightScale machine tags. The load
@@ -27,40 +27,41 @@ servers use these tags to find which application servers are currently
 available. This mechanism was chosen to support machines in multiple
 availability zones where in the case of failures, load balancers and application 
 servers may start while some machines, including RightScale, are not reachable 
-and thus the configuration cannot be fully determined. For this reason, the automatic 
-detection recipe is configured to run every 15 minutes by default.
+and thus the configuration cannot be fully determined. For this reason, the
+automatic detection recipe is configured to run every 15 minutes by default.
 
-== REQUIREMENTS:
+## REQUIREMENTS:
 
 * Requires a virtual machine launched from a RightScale managed RightImage
 
-== SETUP:
+## SETUP:
 
-By default load balancer has only one pool called "default", which act as a default pool for
-all application servers which has "loadbalancer::app=default" tag.
-To setup multiple pools configuration, lb/pools input value must be overridden with
-comma-separated list of URIs or FQDNs for which the load balancer will create server 
-pools to answer website requests.
+By default load balancer has only one pool called "default", which act as a
+default pool for all application servers which has "loadbalancer::app=default"
+tag.
+To setup multiple pools configuration, lb/pools input value must be overridden
+with comma-separated list of URIs or FQDNs for which the load balancer will
+create server pools to answer website requests.
 Last entry will be the default backend and will answer for all URIs and FQDNs
 not listed in lb/pools input.
 Any combination of URIs or FQDNs or web root relative path can be entered.
 
-Application servers can provide any numbers of URIs or FQDNs to join corresponding 
-server pool backends.
+Application servers can provide any numbers of URIs or FQDNs to join
+corresponding server pool backends.
 
-== USAGE:
+## USAGE:
 
-=== Application Server Attach
+### Application Server Attach
 
-==== do_attach_request
+#### do_attach_request
 
 This recipe is used by application servers to request that load balancer servers
 configure themselves to attach to the application server. It requests that
 servers with the "loadbalancer:lb=APPLISTENER_NAME" tag run the corresponding
-'handle_attach' recipe. The recipe sends the server's IP address and instance UUID
-as parameters to the remote recipe.
+'handle_attach' recipe. The recipe sends the server's IP address and instance
+UUID as parameters to the remote recipe.
 
-==== handle_attach recipes
+#### handle_attach recipes
 
 This recipe is used by the load balancer servers to reconfigure HAProxy and
 reload it, if necessary, when an application server requests to be attached. It
@@ -72,17 +73,17 @@ main HAProxy configuration information and all of the files in the haproxy.d
 directory are concatenated into the HAProxy configuration file and HAProxy is
 restarted.
 
-=== Application Server Detach
+### Application Server Detach
 
-==== do_detach_request
+#### do_detach_request
 
 This recipe is used by application servers to request that load balancer servers
 configure themselves to detach from the application server. It request that
 servers with the "loadbalancer:lb=APPLISTENER_NAME" tag run the corresponding
-'handle_detach' recipe. The recipe sends the server's IP address and instance UUID
-as parameters to the remote recipe.
+'handle_detach' recipe. The recipe sends the server's IP address and instance
+UUID as parameters to the remote recipe.
 
-==== handle_detach recipes
+#### handle_detach recipes
 
 This recipe is used by the load balancer servers to reconfigure HAProxy and
 reload it, if necessary, when an application server requests to be detached. It
@@ -93,13 +94,13 @@ was deleted, the main HAProxy configuration information and all of the remaining
 files in the haproxy.d directory are concatenated into the HAProxy configuration
 file and HAProxy is restarted.
 
-=== Automatic Server Detection
+### Automatic Server Detection
 
-==== do_attach_all recipe
+#### do_attach_all recipe
 
 This recipe is used by the load balancer to automatically detect if application
-servers have disappeared or reappeared without detaching or reattaching using the
-other recipes. This recipe is set to run in the periodic reconverge which
+servers have disappeared or reappeared without detaching or reattaching using
+the other recipes. This recipe is set to run in the periodic reconverge which
 defaults to a period of 15 minutes between runs. It uses the
 "loadbalancer:app=APPLISTENER_NAME", "server:uuid=UUID", and
 "loadbalancer:backend_ip=IP_ADDRESS" tags to get a list of all of the
@@ -110,10 +111,13 @@ haproxy.d directory have been created, changed, or deleted, the main HAProxy
 configuration and the new set of files in the haproxy.d directory are
 concatenated into the HAProxy configuration file and HAProxy is restarted.
 
-== KNOWN LIMITATIONS:
+## KNOWN LIMITATIONS:
 
-== LICENSE
+There are no known limitations.
 
-Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-if applicable, other agreements such as a RightScale Master Subscription Agreement.
+## LICENSE
+
+Copyright RightScale, Inc. All rights reserved.
+All access and use subject to the RightScale Terms of Service available at
+http://www.rightscale.com/terms.php and, if applicable, other agreements
+such as a RightScale Master Subscription Agreement.
