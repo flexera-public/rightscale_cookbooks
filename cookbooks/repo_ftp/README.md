@@ -29,7 +29,7 @@ There are no known limitations.
 * Provider will be automatically initialized when you add "repo:default" recipe
   to your ServerTemplate runlist
 * Once set up, use the recipes in the 'repo' cookbook to manage downloading from
-  your code repository. See the repo/README.rdoc for usage details.
+  your code repository. See the repo/README.md for usage details.
 * Select the 'repo_ftp' option for the repo/default/provider input.
 * To perform correct operations, values for the repo/url and others must be
   provided. FTP username and password inputs are optional - connection may be

@@ -44,7 +44,7 @@ There are no known limitations.
 ### Basic usage
 
 Once setup, use the recipes in the 'db' cookbook to install and manage your
-MySQL database servers and clients. See the `db/README.rdoc` for usage details.
+MySQL database servers and clients. See the `db/README.md` for usage details.
 
 ### MySQL Tuning and my.cnf
 

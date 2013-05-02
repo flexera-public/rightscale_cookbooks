@@ -49,7 +49,7 @@ There are no known limitations.
 ### Basic usage
 
 Once setup, use the recipes in the 'db' cookbook to install and manage your
-PostgreSQL database servers and clients. See the `db/README.rdoc` for usage
+PostgreSQL database servers and clients. See the `db/README.md` for usage
 details.
 
 ### PostgreSQL Tuning and postgresql.conf and pg_hba.conf
