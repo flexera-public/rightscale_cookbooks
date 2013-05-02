@@ -1,31 +1,31 @@
-= RightScale Database Manager for PostgreSQL (Beta)
+# RightScale PostgreSQL Database Cookbook
 
-== DESCRIPTION:
+## DESCRIPTION:
 
 Provides the PostgreSQL implementation of the 'db' resource to install and
 manage PostgreSQL database stand-alone servers and clients.
 
-== DETAILS
+## DETAILS
 
 The 'db' implementation is defined by a Lightweight Provider, which can be
 found in the providers/default.rb file.
 
-== REQUIREMENTS:
+## REQUIREMENTS:
 
 * Requires a VM launched from a RightScale managed RightImage
 * Needs RightScale ServerTemplate tools gem installed on system.
 
-== COOKBOOKS DEPENDENCIES:
+## COOKBOOKS DEPENDENCIES:
 
-Please see <tt>metadata.rb</tt> file for the latest dependencies.
+Please see `metadata.rb` file for the latest dependencies.
 
-== KNOWN LIMITATIONS:
+## KNOWN LIMITATIONS:
 
 There are no known limitations.
 
-== SETUP:
+## SETUP:
 
-* To setup only the database client, place <tt>db::default</tt> recipe into
+* To setup only the database client, place `db::default` recipe into
   your runlist. This will pull in generic client inputs, provide
   provider selection input and install client. Set db/provider_type input in
   RightScale ServerTemplate to set provider and version for 'db' resource.
@@ -44,22 +44,22 @@ There are no known limitations.
     db_postgres::setup_server_9_1
     db::install_server
 
-== USAGE:
+## USAGE:
 
-=== Basic usage
+### Basic usage
 
 Once setup, use the recipes in the 'db' cookbook to install and manage your
-PostgreSQL database servers and clients.  See the <tt>db/README.rdoc</tt> for
-usage details.
+PostgreSQL database servers and clients. See the `db/README.rdoc` for usage
+details.
 
-=== PostgreSQL Tuning and postgresql.conf and pg_hba.conf
+### PostgreSQL Tuning and postgresql.conf and pg_hba.conf
 
 Custom tuning parameters can be applied by overriding the
-<tt>postgresql.conf.erb</tt> template or by setting the values in the attributes
+`postgresql.conf.erb` template or by setting the values in the attributes
 file. For more information and an example override repository, please see:
-{Override Chef Cookbooks}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Override_Chef_Cookbooks].
+[Override Chef Cookbooks][http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Override_Chef_Cookbooks].
 
-The tuning parameters are adjusted based on the database server usage.  Shared
+The tuning parameters are adjusted based on the database server usage. Shared
 servers are allocated %50 of the resources of a dedicated server.
 
 The current implementation sets the following tuning parameters:
@@ -68,14 +68,14 @@ The current implementation sets the following tuning parameters:
   and 200 for a shared server
 * shared_buffers: Dynamically set to %25 of available memory.
 
-== DETAILS:
+## DETAILS:
 
 The 'db' implementation is defined by a Lightweight Provider, which can be
-found in the <tt>providers/default.rb</tt> file.
+found in the `providers/default.rb` file.
 
-== LICENSE:
+## LICENSE:
 
-Copyright RightScale, Inc. All rights reserved.  All access and use subject to
-the RightScale Terms of Service available at http://www.rightscale.com/terms.php
-and, if applicable, other agreements such as a RightScale Master Subscription
-Agreement.
+Copyright RightScale, Inc. All rights reserved.
+All access and use subject to the RightScale Terms of Service available at
+http://www.rightscale.com/terms.php and, if applicable, other agreements
+such as a RightScale Master Subscription Agreement.
