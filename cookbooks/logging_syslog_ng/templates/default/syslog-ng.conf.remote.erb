@@ -1,13 +1,20 @@
+#
+# Cookbook Name:: logging_syslog_ng
+#
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
+#
+# Managed by RightScale
+# DO NOT EDIT BY HAND
+#
 # syslog-ng configuration file.
 #
 # This should behave pretty much like the original syslog on RedHat. But
 # it could be configured a lot smarter.
 #
 # See syslog-ng(8) and syslog-ng.conf(5) for more information.
-#
-# Managed by RightScale
-# DO NOT EDIT BY HAND
-#
 
 options {
 	sync (0);
@@ -65,4 +72,3 @@ log { source(s_sys); filter(f_cron); destination(d_cron); };
 destination logserver { udp("<%= @remote_server %>" port(514)); };
 log { source(s_sys); filter(f_default); destination(logserver); };
 # Make sure there is a line after the last configuration line
-

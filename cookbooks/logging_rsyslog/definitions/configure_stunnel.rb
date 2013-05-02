@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: logging_rsyslog
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 # This definition configures an stunnel used to pass log messages from a client server
 # to a logging server. This solution provides data encryption with an SSL certificate
