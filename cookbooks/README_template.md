@@ -245,7 +245,7 @@ requested ports opened.
 
 * All tag based actions are scoped to the deployment.
 
-# LICENSE:
+## LICENSE:
 
 Copyright RightScale, Inc. All rights reserved.
 All access and use subject to the RightScale Terms of Service available at
