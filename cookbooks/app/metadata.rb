@@ -121,10 +121,10 @@ attribute "app/backend_ip_type",
   :display_name => "Application IP Type Given to Load Balancer",
   :description =>
     "Specify the IP type where the application server is listening." +
-    " Example: Private",
-  :choice => ["Public", "Private"],
+    " Example: private",
+  :choice => ["public", "private"],
   :required => "optional",
-  :default => "Private",
+  :default => "private",
   :recipes => ["app::install_server"],
   :required => "optional"
 

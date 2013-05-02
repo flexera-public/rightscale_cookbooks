@@ -33,16 +33,16 @@
       "required": "optional",
       "calculated": false,
       "choice": [
-        "Public",
-        "Private"
+        "public",
+        "private"
       ],
-      "default": "Private",
+      "default": "private",
       "type": "string",
       "recipes": [
         "app::install_server"
       ],
       "display_name": "Application IP Type Given to Load Balancer",
-      "description": "Specify the IP type where the application server is listening. Example: Private"
+      "description": "Specify the IP type where the application server is listening. Example: private"
     },
     "app/database_name": {
       "required": "required",
@@ -95,4 +95,3 @@
   "providing": {
   }
 }
-

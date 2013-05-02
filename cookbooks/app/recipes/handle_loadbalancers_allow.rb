@@ -12,7 +12,7 @@ rightscale_marker :begin
 
 # Setup attributes
 # If we are using public IP/interface, use the corresponding IP on the LB
-if node[:app][:backend_ip_type] == "Public"
+if node[:app][:backend_ip_type] == "public"
   rule_ip = node[:app][:lb_public_ip]
 else
   rule_ip = node[:app][:lb_private_ip]
