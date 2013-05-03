@@ -15,7 +15,8 @@ require_helper "errors"
 # @param server [ServerInterface] the server to obtain value from
 # @param inputs [Hash] representing inputs to be ensured to be set on the server
 #
-def ensure_input_setting(server, inputs)
+def verify_instance_input_settings?(server, inputs)
+  correct_settings = true
   puts "  #{server.nickname} state: '#{server.state}'"
 
   if server.state == "stopped" || server.state == "inactive"
@@ -23,28 +24,20 @@ def ensure_input_setting(server, inputs)
       puts "  Setting '#{name}' input to '#{value}'"
       server.set_inputs(name => value)
     end
-    puts "  Launching #{server.nickname}"
-    relaunch_server(server)
+    correct_settings = false
   else
-    do_relaunch = false
-
     inputs.each do |name, value|
       # Returns the current value for input name on the given the server.
       current_value = get_input_from_server(server)[name]
       puts "  Currently '#{name}' input is set to '#{current_value}'"
 
       if current_value != value
+        correct_settings = false
         puts "  Setting '#{name}' input to '#{value}'"
         server.set_inputs(name => value)
-        do_relaunch = true
       end
-    end
-
-    if do_relaunch
-      puts "  Relaunching #{server.nickname}"
-      relaunch_server(server)
     end
   end
 
-  wait_for_server_state(server, "operational")
+  correct_settings
 end

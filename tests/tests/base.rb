@@ -218,7 +218,7 @@ helpers do
     when /ubuntu/i
       latest = "/ubuntu_daily/latest"
       repo_dirs = "/etc/apt/sources.list.d/rightscale.sources.list "
-    when /centos|rhel/i
+    when /centos|rhel|redhat/i
       latest = "/archive/latest"
       repo_dirs = "/etc/yum.repos.d/*.repo"
     end
@@ -257,12 +257,20 @@ before "smoke_test", "stop_start", "enable_security_updates_on_running_server" d
   setup_rackspace_managed_credentials(server) \
     if cloud.cloud_name =~ /Rackmanaged/
 
-  # The "ensure_input_setting" method sets the inputs and launches the server
-  # at the moment. This method will be refactored later.
-  ensure_input_setting(
-    server,
-    {"rightscale/security_updates" => "text:disable"}
-  )
+  if is_chef?
+    # The "ensure_input_setting" method sets the inputs and launches the server
+    # at the moment. This method will be refactored later.
+    status = verify_instance_input_settings?(
+      server,
+      {"rightscale/security_updates" => "text:disable"}
+    )
+
+    relaunch_server(server) unless status
+  else
+    relaunch_server(server) if server.state != "operational"
+  end
+
+  wait_for_server_state(server, "operational")
 end
 
 # Before tests that require security updates enabled.
@@ -272,10 +280,28 @@ end
 before "enable_security_updates_on_boot" do
   # Assume a single server in the deployment
   server = servers.first
-  ensure_input_setting(
-    server,
-    {"rightscale/security_updates" => "text:enable"}
-  )
+
+  # Get the current cloud.
+  cloud = Cloud.factory
+
+  # Set the required credential inputs for Rackspace Managed cloud.
+  setup_rackspace_managed_credentials(server) \
+    if cloud.cloud_name =~ /Rackmanaged/
+
+  if is_chef?
+    # The "ensure_input_setting" method sets the inputs and launches the server
+    # at the moment. This method will be refactored later.
+    status = verify_instance_input_settings?(
+      server,
+      {"rightscale/security_updates" => "text:enable"}
+    )
+
+    relaunch_server(server) unless status
+  else
+    relaunch_server(server) if server.state != "operational"
+  end
+
+  wait_for_server_state(server, "operational")
 end
 
 # The Base smoke test makes sure the Base (Chef or RSB) ServerTemplate has its
@@ -384,17 +410,25 @@ end
 # to perform the updates.
 #
 test_case "enable_security_updates_on_running_server" do
-  server = servers.first
-  server.set_inputs("rightscale/security_updates" => "text:enable")
-  run_recipe("rightscale::setup_security_updates", server)
-  verify_security_repositories_unfrozen(server)
-  run_recipe("rightscale::do_security_updates", server)
+  if is_chef?
+    server = servers.first
+    server.set_inputs("rightscale/security_updates" => "text:enable")
+    run_recipe("rightscale::setup_security_updates", server)
+    verify_security_repositories_unfrozen(server)
+    run_recipe("rightscale::do_security_updates", server)
+  else
+    puts "  RSB template - skipping enable_security_updates_on_running_server test"
+  end
 end
 
 # The Base "verify repository unfrozen" test verfies the package managers
 # upstream security repositories are set to "latest".
 #
 test_case "enable_security_updates_on_boot" do
-  server = servers.first
-  verify_security_repositories_unfrozen(server)
+  if is_chef?
+    server = servers.first
+    verify_security_repositories_unfrozen(server)
+  else
+    puts "  RSB template - skipping enable_security_updates_on_boot test"
+  end
 end
