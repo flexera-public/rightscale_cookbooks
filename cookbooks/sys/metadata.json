@@ -37,7 +37,7 @@
       "calculated": false,
       "type": "string"
     },
-    "sys/cron_interval": {
+    "sys/reconverge/interval": {
       "display_name": "Interval in Minutes to Run Reconverge List",
       "description": "Defines the interval in minutes to run recipe(s) of reconverge list. Example: 15",
       "required": "optional",

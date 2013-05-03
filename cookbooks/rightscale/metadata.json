@@ -24,7 +24,7 @@
   "attributes": {
     "rightscale/security_updates": {
       "display_name": "Enable security updates",
-      "description": "Enable security updates.",
+      "description": "Unfreezes software repositories after booting and installing packages, allowing for security updates to be installed.",
       "required": "optional",
       "choice": [
         "enable",
@@ -169,7 +169,6 @@
       "display_name": "Short Hostname",
       "description": "The short hostname that you would like this node to have. Example: myhost",
       "required": "required",
-      "default": null,
       "recipes": [
         "rightscale::setup_hostname"
       ],

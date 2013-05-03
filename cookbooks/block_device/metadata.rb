@@ -230,8 +230,8 @@ attribute "block_device/ephemeral/vg_data_percentage",
   :display_name => "Percentage of the ephemeral LVM used for data",
   :description =>
     "The percentage of the total ephemeral Volume Group extents (LVM) that is" +
-    " used for data. (e.g. 50 percent - 1/2 used for data 100 percent - all" +
-    " space is allocated for data. WARNING: Using a non-default value it not" +
+    " used for data (e.g. 50 percent - 1/2 used for data, 100 percent - all" +
+    " space is allocated for data). WARNING: Using a non-default value is not" +
     " recommended. Make sure you understand what you are doing before" +
     " changing this value. Example: 100",
   :type => "string",
