@@ -200,6 +200,7 @@ helpers do
   end
 
   # Verifies the security repositories are unfrozen.
+  #
   # For apt based systems (Ubuntu) it checks repositories in
   # /etc/apt/sources.list.d/rightscale.sources.list
   # For yum based systems (CentOS) it checks repositories in
@@ -211,7 +212,6 @@ helpers do
   #
   def verify_security_repositories_unfrozen(server)
     # Check that unforzen repos exist in the package repo dir
-    #
     os = get_operating_system(server)
     puts "  Testing OS: #{os}"
     case os
@@ -242,7 +242,7 @@ end
 
 # Before tests that require security updates disabled.
 #
-# Ensure the server input rightscale/security_updates is set to "disable"
+# Verfiy the server input rightscale/security_updates is set to "disable"
 # Rackspace Managed Open clouds should have Rackspace credentials set.
 #
 before "smoke_test", "stop_start", "enable_security_updates_on_running_server" do
@@ -258,8 +258,7 @@ before "smoke_test", "stop_start", "enable_security_updates_on_running_server" d
     if cloud.cloud_name =~ /Rackmanaged/
 
   if is_chef?
-    # The "ensure_input_setting" method sets the inputs and launches the server
-    # at the moment. This method will be refactored later.
+    # Verify the instance launched with the correct inputs.
     status = verify_instance_input_settings?(
       server,
       {"rightscale/security_updates" => "text:disable"}
@@ -267,6 +266,8 @@ before "smoke_test", "stop_start", "enable_security_updates_on_running_server" d
 
     relaunch_server(server) unless status
   else
+    # RSB does not require input settings.  Just ensure the server
+    # is operational.
     relaunch_server(server) if server.state != "operational"
   end
 
@@ -275,7 +276,7 @@ end
 
 # Before tests that require security updates enabled.
 #
-# Ensure the server input rightscale/security_updates is set to "enable"
+# Verfiy the server input rightscale/security_updates is set to "enable"
 #
 before "enable_security_updates_on_boot" do
   # Assume a single server in the deployment
@@ -289,8 +290,7 @@ before "enable_security_updates_on_boot" do
     if cloud.cloud_name =~ /Rackmanaged/
 
   if is_chef?
-    # The "ensure_input_setting" method sets the inputs and launches the server
-    # at the moment. This method will be refactored later.
+    # Verify the instance launched with the correct inputs.
     status = verify_instance_input_settings?(
       server,
       {"rightscale/security_updates" => "text:enable"}
@@ -298,6 +298,8 @@ before "enable_security_updates_on_boot" do
 
     relaunch_server(server) unless status
   else
+    # RSB does not require input settings.  Just ensure the server
+    # is operational.
     relaunch_server(server) if server.state != "operational"
   end
 

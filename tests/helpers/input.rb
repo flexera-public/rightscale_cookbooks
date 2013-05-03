@@ -1,19 +1,15 @@
-# Include helper objects and methods.
-require_helper "errors"
-
-# Ensure server is running with the correct setting for the input.
+# Vefiry the server is running with the correct inputs.
 #
-# If the server is stopped we can't (yet) get the current input so set the input
-# to the desired state and launch all.
-# If the server is not stopped then get the current input.
-# If set to other than the desired state update the input to the desired state
-# and relaunch all.
-# If the server is running and the input is set to the desired state make
-# no changes.
-# In all cases wait til the servers are operational.
+# If the inputs are correct return true - no relaunch is required.
+# If the inputs are incorrect set them and return false indicating
+# the server requires (re)launch.
 #
 # @param server [ServerInterface] the server to obtain value from
 # @param inputs [Hash] representing inputs to be ensured to be set on the server
+#
+# @return [Boolean] true is the servers are in the correct state.  False
+#   if the inputs are not in the correct state and the server requires
+#   relaunch.
 #
 def verify_instance_input_settings?(server, inputs)
   correct_settings = true
