@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: app_jboss
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 # Set Jboss install dir and version
 set[:app_jboss][:install_target] = "/usr/share/jboss"

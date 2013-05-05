@@ -15,5 +15,13 @@
   "memcached": {
     "nickname": "Memcached Server STAGING",
     "rev": "head"
+  },
+  "rightscale_tools_tester": {
+    "nickname": "TESTING RightScale Tools Tester STAGING",
+    "rev": "head"
+  },
+  "logging": {
+    "nickname": "Logging with rsyslog STAGING",
+    "rev": "head"
   }
 }
