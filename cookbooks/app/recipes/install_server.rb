@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Set ip address that the application service is listening on.
 # If instance has no public ip's first private ip will be used.
@@ -60,5 +60,3 @@ end
 right_link_tag "appserver:active=true"
 right_link_tag "appserver:listen_ip=#{node[:app][:ip]}"
 right_link_tag "appserver:listen_port=#{node[:app][:port]}"
-
-rightscale_marker :end

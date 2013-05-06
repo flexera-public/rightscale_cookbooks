@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 version = "6"
 log "  Setting provider specific settings for tomcat"
@@ -66,5 +66,3 @@ node[:app][:packages] = value_for_platform(
 if node[:app][:packages].empty?
   raise "Unrecognized distro #{node[:platform]} for tomcat#{version}, exiting"
 end
-
-rightscale_marker :end

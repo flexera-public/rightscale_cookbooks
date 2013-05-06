@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 if node[:web_apache][:ssl_enable] == "true"
   log "  Enabling SSL"
@@ -19,5 +19,3 @@ else
   # Calls the cookbooks/web_apache/recipes/setup_frontend_http_vhost.rb recipe.
   include_recipe "web_apache::setup_frontend_http_vhost"
 end
-
-rightscale_marker :end

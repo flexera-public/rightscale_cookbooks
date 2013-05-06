@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 log "  Restarting logging server"
 # Calls the logging service restart command
@@ -14,5 +14,3 @@ log "  Restarting logging server"
 logging "default" do
   action :restart
 end
-
-rightscale_marker :end

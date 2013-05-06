@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 log "  Setting provider specific settings for Django."
 version = "1.4"
@@ -56,5 +56,3 @@ end
 
 # Set debug mode django style (https://docs.djangoproject.com/en/dev/ref/settings/#debug)
 node[:app_django][:app][:debug_mode].gsub!(/^./) { |a| a.upcase }
-
-rightscale_marker :end

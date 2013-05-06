@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # See cookbooks/db_<provider>/providers/default.rb for the "setup_monitoring" action.
 db node[:db][:data_dir] do
@@ -64,5 +64,3 @@ ruby_block "db backup info file" do
 
   end
 end
-
-rightscale_marker :end

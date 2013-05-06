@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 log "  memcached: starting"
 
@@ -14,5 +14,3 @@ log "  memcached: starting"
 service "memcached" do
   action :start
 end
-
-rightscale_marker :end

@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 log "  Setting provider specific settings for php application server."
 node[:app][:provider] = "app_php"
@@ -32,5 +32,3 @@ when "centos", "redhat"
     "php53u-zts"
   ]
 end
-
-rightscale_marker :end

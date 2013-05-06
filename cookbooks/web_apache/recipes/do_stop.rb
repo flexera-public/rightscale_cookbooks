@@ -6,12 +6,10 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 log "  Stopping apache"
 
 service "apache2" do
   action :stop
 end
-
-rightscale_marker :end

@@ -9,7 +9,7 @@
 # This recipe will disable firewall rules on the app server that allowed
 # loadbalancers to connect to the correct port.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Setup attributes
 # If we are using public IP/interface, use the corresponding IP on the LB
@@ -28,5 +28,3 @@ sys_firewall port do
   enable false
   action :update
 end
-
-rightscale_marker :end

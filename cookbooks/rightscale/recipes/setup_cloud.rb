@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # This recipe will run only on the Rackspace Managed Cloud. See
 # cookbooks/rightscale/libraries/helper.rb for the "is_rackspace_managed_cloud"
@@ -61,5 +61,3 @@ else
   log "  Cloud setup is not required for this cloud" +
     " #{node[:cloud][:provider]}. Skipping..."
 end
-
-rightscale_marker :end

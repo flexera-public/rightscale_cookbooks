@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # These are not conditional assignments, but array joins.
 node[:rightscale][:plugin_list_array] = node[:rightscale][:plugin_list].split | node[:rightscale][:plugin_list_array]
@@ -126,5 +126,3 @@ service "collectd" do
 end
 
 log "  RightScale monitoring setup complete."
-
-rightscale_marker :end
