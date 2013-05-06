@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 class Chef::Recipe
   include RightScale::BlockDeviceHelper
@@ -37,5 +37,3 @@ do_for_block_devices node[:block_device] do |device|
     action :create
   end
 end
-
-rightscale_marker :end

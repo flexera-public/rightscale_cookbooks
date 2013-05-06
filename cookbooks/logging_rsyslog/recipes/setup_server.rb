@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # This is needed for the server setup - not used for client.  The client provider
 # is set via the provider input.
@@ -17,5 +17,3 @@ log "  Setting provider specific settings for rsyslog server."
 raise "ERROR: Rsyslog is not installed!" unless system("which rsyslogd > /dev/null 2>&1")
 
 node[:logging][:provider] = "logging_rsyslog"
-
-rightscale_marker :end

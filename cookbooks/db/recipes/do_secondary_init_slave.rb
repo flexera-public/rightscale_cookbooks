@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 log "  Checking if state of database is 'uninitialized'..."
 # See cookbooks/db/definitions/db_init_status.rb for the "db_init_status" definition.
@@ -19,5 +19,3 @@ end
 db_register_slave "restore from secondary" do
   action :secondary_restore
 end
-
-rightscale_marker :end

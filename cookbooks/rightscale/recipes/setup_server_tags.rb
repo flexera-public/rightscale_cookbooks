@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # RightScale unique identifier
 uuid = node[:rightscale][:instance_uuid]
@@ -33,5 +33,3 @@ while node[:cloud][:public_ips] && RightScale::Utils::Helper.is_valid_ip?(node[:
   right_link_tag "server:public_ip_#{i}=#{ip}"
   i += 1
 end
-
-rightscale_marker :end

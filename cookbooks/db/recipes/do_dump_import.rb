@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 class Chef::Resource::RubyBlock
   include RightScale::Database::Helper
@@ -64,5 +64,3 @@ else
   end
 
 end
-
-rightscale_marker :end

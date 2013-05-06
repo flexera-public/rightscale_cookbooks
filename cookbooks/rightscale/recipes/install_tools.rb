@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 SANDBOX_BIN_GEM = "/opt/rightscale/sandbox/bin/gem"
 
@@ -51,5 +51,3 @@ end
 r.run_action(:install)
 
 Gem.clear_paths
-
-rightscale_marker :end

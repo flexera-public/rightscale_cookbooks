@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 log "  Setting provider specific settings for rails-passenger."
 version = "3.0"
@@ -54,5 +54,3 @@ node[:app_passenger][:passenger_bin_dir] = $1
 # Path to Ruby gem directory
 gemenv.stdout =~ /INSTALLATION DIRECTORY: (.*)$/
 node[:app_passenger][:ruby_gem_base_dir] = $1
-
-rightscale_marker :end

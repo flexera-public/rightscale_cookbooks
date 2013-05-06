@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Master DNS TTL Check - HA Only
 #
@@ -88,5 +88,3 @@ db_set_privileges [
   {:role => "administrator", :username => node[:db][:admin][:user], :password => node[:db][:admin][:password]},
   {:role => "user", :username => node[:db][:application][:user], :password => node[:db][:application][:password]}
 ]
-
-rightscale_marker :end

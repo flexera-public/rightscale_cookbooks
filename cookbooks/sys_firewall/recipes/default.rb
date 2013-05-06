@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Setting up Server to work with Rackconnect
 if node[:cloud][:provider] == "rackspace-ng" &&
@@ -87,6 +87,3 @@ bash "Update #{nf_module_name}" do
   not_if { ::File.readlines("/etc/sysctl.conf" ).grep(
     /^\s*#{nf_conntrack_max}/).any? }
 end
-
-rightscale_marker :end
-

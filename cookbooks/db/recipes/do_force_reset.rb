@@ -10,7 +10,7 @@
 # This is for development and test purpose and should not be used on
 # production servers.
 
-rightscale_marker :begin
+rightscale_marker
 
 raise "Force reset safety not off.  Override db/force_safety to run this recipe" unless node[:db][:force_safety] == "off"
 
@@ -80,5 +80,3 @@ log "  Resetting collectd config..."
 db DATA_DIR do
   action :setup_monitoring
 end
-
-rightscale_marker :end

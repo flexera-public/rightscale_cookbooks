@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Set Slave DNS Record
 # Sets the Slave DNS record to the private ip of the server.
@@ -35,5 +35,3 @@ sys_dns "default" do
   address bind_ip
   action :set
 end
-
-rightscale_marker :end

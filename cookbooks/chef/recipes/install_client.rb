@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Copy Chef Client installation script from cookbook files.
 # Sourced from https://www.opscode.com/chef/install.sh
@@ -81,5 +81,3 @@ execute "run chef-client" do
 end
 
 log "  Chef Client role(s) are: #{node[:chef][:client][:current_roles]}"
-
-rightscale_marker :end

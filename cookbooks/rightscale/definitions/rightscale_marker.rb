@@ -6,13 +6,18 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-# Marks the beginning and end of a Chef recipe converge in RightScale Audit Entries and logs.
+# Marks the beginning and end of a Chef recipe converge in RightScale
+# Audit Entries and logs.
 #
-# @param [String, Symbol] name The marker to use; can be +:begin+ or +:end+. Also, +:start+ and +:stop+ will work.
+# @param [String, Symbol] name The marker to use; can be +:begin+ or +:end+.
+#   Also, +:start+ and +:stop+ will work. Default: start
+#
 define :rightscale_marker do
 
   recipe_name = "#{self.cookbook_name}" + "::" + "#{self.recipe_name}"
 
+  # The default marker is "start". If none is specified, it will be considered
+  # as the start of the recipe.
   location = params[:name] ? params[:name] : "start"
 
   case location.to_s

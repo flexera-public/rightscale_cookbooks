@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 class Chef::Resource::Db
   include RightScale::Database::Helper
@@ -29,5 +29,3 @@ db node[:db][:data_dir] do
   ip_addr get_local_replication_interface
   action :firewall_update_request
 end
-
-rightscale_marker :end

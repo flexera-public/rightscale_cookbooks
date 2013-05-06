@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Installing packages depending on platform
 package value_for_platform(
@@ -54,5 +54,3 @@ sys_dns "default" do
   persist true
   action :nothing
 end
-
-rightscale_marker :end

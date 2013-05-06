@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 raise "Server terminate safety not off.  Override db/terminate_safety to run this recipe" unless node[:db][:terminate_safety] == "off"
 
@@ -38,5 +38,3 @@ rs_shutdown "Terminate the server now" do
   immediately true
   action :terminate
 end
-
-rightscale_marker :end

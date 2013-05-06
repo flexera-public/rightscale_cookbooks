@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Installing only for RHEL based systems
 package "mod_ssl" do
@@ -102,5 +102,3 @@ web_app "#{node[:web_apache][:application_name]}.frontend.http" do
   allow_override node[:web_apache][:allow_override]
   notifies :restart, resources(:service => "apache2"), :immediately
 end
-
-rightscale_marker :end
