@@ -1,4 +1,4 @@
-# Vefiry the server is running with the correct inputs.
+# Verify the server is running with the correct inputs.
 #
 # If the inputs are correct return true - no relaunch is required.
 # If the inputs are incorrect set them and return false indicating
@@ -7,7 +7,7 @@
 # @param server [ServerInterface] the server to obtain value from
 # @param inputs [Hash] representing inputs to be ensured to be set on the server
 #
-# @return [Boolean] true is the servers are in the correct state.  False
+# @return [Boolean] true if the server is in the correct state.  False
 #   if the inputs are not in the correct state and the server requires
 #   relaunch.
 #

@@ -104,7 +104,7 @@ helpers do
     sysctl_conntrack_max
   end
 
-  # Verifies that the conntrack_max kernel parameter is set properly
+  # Verify the conntrack_max kernel parameter is set properly
   #
   # @param server [RightScale::ServerInterface] the server to verify for
   #   conntrack_max value
@@ -113,7 +113,7 @@ helpers do
   #   properly
   #
   def verify_conntrack_max(server)
-    # Test 1: Verify that correct conntrack_max value is set in sysctl from
+    # Test 1: Verify the correct conntrack_max value is set in sysctl from
     # configuration file.
     #
     # Obtain the conntrack_max value set in the /etc/sysctl.conf
@@ -242,7 +242,7 @@ end
 
 # Before tests that require security updates disabled.
 #
-# Verfiy the server input rightscale/security_updates is set to "disable"
+# Verify the server input rightscale/security_updates is set to "disable"
 # Rackspace Managed Open clouds should have Rackspace credentials set.
 #
 before "smoke_test", "stop_start", "enable_security_updates_on_running_server" do
@@ -276,7 +276,7 @@ end
 
 # Before tests that require security updates enabled.
 #
-# Verfiy the server input rightscale/security_updates is set to "enable"
+# Verify the server input rightscale/security_updates is set to "enable"
 #
 before "enable_security_updates_on_boot" do
   # Assume a single server in the deployment
