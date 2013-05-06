@@ -15,7 +15,6 @@ action :stop do
   end
 end
 
-
 # Start rsyslog
 action :start do
   service "rsyslog" do
@@ -23,7 +22,6 @@ action :start do
     persist false
   end
 end
-
 
 # Restart rsyslog
 action :restart do
@@ -33,13 +31,11 @@ action :restart do
   end
 end
 
-
 # Reload rsyslog
 action :reload do
   log("WARNING: reload not supported in rsyslog - doing restart") { level :warn }
   action_restart
 end
-
 
 # Install rsyslog package
 action :install do
@@ -48,10 +44,8 @@ action :install do
   package "rsyslog"
 end
 
-
 # Configure logging: client side
 action :configure do
-
   service "rsyslog" do
     supports :restart => true, :status => true, :start => true, :stop => true
     action :nothing
@@ -73,14 +67,12 @@ action :configure do
       # Confirming new installation of package has started
       notifies :start, resources(:service => "rsyslog"), :immediately
     end
-
   end
 
   remote_server = new_resource.remote_server
 
   # Only configure client server if remote logging server is used.
   unless remote_server.empty?
-
     package "rsyslog-relp" if node[:logging][:protocol] =~ /relp/
 
     if node[:logging][:protocol] == "relp-secured"
@@ -108,15 +100,11 @@ action :configure do
       )
       notifies :restart, resources(:service => "rsyslog"), :immediately
     end
-
   end
-
 end
-
 
 # Configure an rsyslog logging server.
 action :configure_server do
-
   service "rsyslog" do
     supports :restart => true, :status => true, :start => true, :stop => true
     action :nothing
@@ -149,27 +137,22 @@ action :configure_server do
     mode "0644"
     notifies :restart, resources(:service => "rsyslog"), :immediately
   end
-
 end
-
 
 # Call the logging rotate command
 action :rotate do
   raise "Rsyslog action not implemented"
 end
 
-
 # Add a remote logging server
 action :add_remote_server do
   raise "Rsyslog action not implemented"
 end
 
-
 # Add a logging definition
 action :add_definition do
   raise "Rsyslog action not implemented"
 end
-
 
 # Add a logrotate policy
 action :add_rotate_policy do

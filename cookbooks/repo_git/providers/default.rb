@@ -9,7 +9,6 @@
 
 # Setup repository URL and other attributes.
 action :setup_attributes do
-
   branch = new_resource.revision
   repository_url = new_resource.repository
 
@@ -27,7 +26,6 @@ end
 
 # Pull code from a determined repository to a specified destination.
 action :pull do
-
   capistrano_dir = "/home/capistrano_repo"
   ruby_block "Before pull" do
     block do
@@ -86,7 +84,6 @@ end
 
 # Pull code from a determined repository to a specified destination and create a capistrano-style deployment.
 action :capistrano_pull do
-
   # Add ssh key and exec script
   ruby_block "Before deploy" do
     block do

@@ -12,8 +12,7 @@ module RightScale
 
       # Create private key file used to connect via ssh.
       #
-      # @param ssh_key [string] rsync private ssh key
-      #
+      # @param [String] ssh_key rsync private ssh key
       # @raise [RuntimeError] if ssh key string is empty
       def create(ssh_key)
         raise "  SSH key is empty!" unless ssh_key
@@ -25,7 +24,6 @@ module RightScale
         end
       end
 
-
       # Delete SSH key created by "create" method.
       def delete
         Chef::Log.info("  Deleting temporary data")
@@ -34,7 +32,7 @@ module RightScale
 
       # Create record in /root/.ssh/known_hosts
       #
-      # @param host_key [string] host_key record: fqdn,ip ssh-rsa value
+      # @param [String] host_key host_key record: fqdn,ip ssh-rsa value
       def add_host_key(host_key)
         host_file = "/root/.ssh/known_hosts"
         if ::File.exists?("#{host_file}") && ::File.readlines(host_file).grep("#{host_key}\n").any?
@@ -46,10 +44,7 @@ module RightScale
             known_hosts.chmod(0600)
           end
         end
-
       end
-
     end
-
   end
 end

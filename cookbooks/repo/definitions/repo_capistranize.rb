@@ -9,7 +9,20 @@
 # cookbooks/repo, cookbooks/repo_git, cookbooks/repo_ros, cookbooks/repo_svn
 
 capistrano_dir = "/home/capistrano_repo"
-# More detailed parameters descriptions you can find in repo/resources/default.rb
+
+# Capistranize repository
+#
+# @param [String] destination Path to where project repo will be pulled
+# @param [String] repository Repository Url
+# @param [String] revision Remote repo Branch or revision
+# @param [String] svn_username SVN username
+# @param [String] svn_password SVN password
+# @param [String] app_user System user to run the deploy as
+# @param [String] environment A hash of the form {"ENV_VARIABLE"=>"VALUE"}
+# @param [String] create_dirs_before_symlink Directories to create before symlinking. Runs after purge_before_symlink
+# @param {String] purge_before_symlink An array of paths, relative to app root, to be removed from a checkout before symlinking
+# @param [String] symlinks A hash that maps files in the shared directory to their paths in the current release
+# @param [String] scm_provider Source Control Management provider
 define :repo_capistranize,
   :destination => "",
   :repository => "",
@@ -106,7 +119,5 @@ define :repo_capistranize,
       Chef::Log.info("  linking #{capistrano_dir}/current/ directory to project root -  #{repo_dest}")
       system("cp -d #{capistrano_dir}/current #{repo_dest}")
     end
-
   end
-
 end

@@ -9,7 +9,6 @@
 
 # Setup repository URL and other attributes.
 action :setup_attributes do
-
   branch = new_resource.revision
   repository_url = new_resource.repository
 
@@ -27,7 +26,6 @@ end
 
 # Pull code from a determined repository to a specified destination.
 action :pull do
-
   # Checking attributes
   # Calls the :setup_attributes action.
   action_setup_attributes
@@ -40,7 +38,6 @@ action :pull do
   svn_password = new_resource.credential
   svn_user = new_resource.account
   params = "--no-auth-cache --non-interactive"
-
 
   # If repository already exists, just update it
   if ::File.directory?("#{destination_path}/.svn")
@@ -74,7 +71,6 @@ end
 
 # Pull code from a determined repository to a specified destination and create a capistrano-style deployment.
 action :capistrano_pull do
-
   # Checking attributes
   # Calls the :setup_attributes action.
   action_setup_attributes

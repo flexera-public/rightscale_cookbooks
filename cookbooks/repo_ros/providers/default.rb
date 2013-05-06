@@ -9,7 +9,6 @@
 
 # Setup repository attributes.
 action :setup_attributes do
-
   # Checking ros_util presence it is required for repo_ros correct operations
   ruby_block "Checking for ros_util presence" do
     block do
@@ -27,7 +26,6 @@ end
 
 # Pull code from a determined repository to a specified destination.
 action :pull do
-
   # Checking attributes
   # Calls the :setup_attributes action.
   action_setup_attributes
@@ -63,7 +61,6 @@ action :pull do
     })
   end
 
-
   bash "Unpack #{tmp_repo_path} to #{new_resource.destination}" do
     cwd "/tmp"
     code <<-EOH
@@ -75,10 +72,8 @@ action :pull do
   log "  ROS repo pull action - finished successfully!"
 end
 
-
 # Pull code from a determined repository to a specified destination and create a capistrano-style deployment.
 action :capistrano_pull do
-
   log "  Recreating project directory for :pull action"
 
   repo_dir = "/home"

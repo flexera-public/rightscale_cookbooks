@@ -9,9 +9,8 @@
 
 include RightScale::LB::Helper
 
-# Installs the load balancer software on the local instance
+# Installs the load balancer HAProxy on the local instance
 action :install do
-
   log "  Installing haproxy"
 
   # Installs haproxy package.
@@ -68,7 +67,6 @@ action :install do
     )
   end
 
-
   # Installs the haproxy config backend which is the part of the haproxy config
   # that doesn't change.
   template "/etc/haproxy/haproxy.cfg.default_backend" do
@@ -94,7 +92,6 @@ end
 
 # Configures load balancer to answer for specified virtual host
 action :add_vhost do
-
   pool_name = new_resource.pool_name
 
   # Creates the directory for vhost server files.
@@ -146,7 +143,6 @@ end
 
 # Attaches an application server to the local load balancer
 action :attach do
-
   pool_name = new_resource.pool_name
 
   log "  Attaching #{new_resource.backend_id} / #{new_resource.backend_ip} / #{pool_name}"
@@ -195,9 +191,8 @@ action :attach do
   end
 end
 
-# Perform advanced configuration for load balancer
+# Performs advanced configuration for load balancer
 action :advanced_configs do
-
   # Creates haproxy service.
   service "haproxy" do
     supports :reload => true, :restart => true, :status => true, :start => true, :stop => true
@@ -241,12 +236,10 @@ action :advanced_configs do
       :pool_name_full => pool_name_full
     )
   end
-
 end
 
 # Attach request from an application server
 action :attach_request do
-
   pool_name = new_resource.pool_name
 
   log "  Attach request for #{new_resource.backend_id} / #{new_resource.backend_ip} / #{pool_name}"
@@ -263,12 +256,10 @@ action :attach_request do
     }
     recipients_tags "loadbalancer:#{pool_name}=lb"
   end
-
 end
 
 # Detaches an application server from the local load balancer
 action :detach do
-
   pool_name = new_resource.pool_name
   backend_id = new_resource.backend_id
 
@@ -295,12 +286,10 @@ action :detach do
     backup false
     notifies :run, resources(:execute => "/etc/haproxy/haproxy-cat.sh")
   end
-
 end
 
 # Detach request from an application server
 action :detach_request do
-
   pool_name = new_resource.pool_name
 
   log "  Detach request for #{new_resource.backend_id} / #{pool_name}"
@@ -315,12 +304,10 @@ action :detach_request do
     }
     recipients_tags "loadbalancer:#{pool_name}=lb"
   end
-
 end
 
 # Install and configure collectd plugins for the server
 action :setup_monitoring do
-
   log "  Setup monitoring for haproxy"
 
   # Installs the haproxy collectd script into the collectd library plugins directory.
@@ -352,12 +339,10 @@ action :setup_monitoring do
       end
     end
   end
-
 end
 
 # Restart the load balancer service
 action :restart do
-
   log "  Restarting haproxy"
 
   require 'timeout'
@@ -377,5 +362,4 @@ action :restart do
       sleep 5
     end
   end
-
 end

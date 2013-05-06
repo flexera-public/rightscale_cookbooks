@@ -14,7 +14,6 @@ end
 
 # Attaches an application server to the local load balancer
 action :attach do
-
   log "  Attaching #{new_resource.backend_id} / #{new_resource.backend_ip}"
 
   script_directory = "/home/lb"
@@ -68,12 +67,10 @@ action :attach do
     action :delete
     backup false
   end
-
 end
 
 # Attach request from an application server
 action :attach_request do
-
   log "  Attach request for #{new_resource.backend_ip}"
 
   # Calls the "attach" action
@@ -87,12 +84,10 @@ action :attach_request do
     service_account_secret new_resource.service_account_secret
     action :attach
   end
-
 end
 
 # Detaches an application server from the local load balancer
 action :detach do
-
   log "  Attaching #{new_resource.backend_ip}"
 
   script_directory = "/home/lb"
@@ -145,7 +140,6 @@ action :detach do
     ip_addr "any"
     action :update
   end
-
 end
 
 # Detach request from an application server

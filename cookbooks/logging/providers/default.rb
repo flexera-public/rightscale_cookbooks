@@ -5,64 +5,54 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-# @resource Chef::Resource::Logging
+# @resource logging
 
-# Stop logging service
+# Stops logging service
 action :stop do
   raise "Default logging action not implemented"
 end
 
-
-# Start logging service
+# Starts logging service
 action :start do
   raise "Default logging action not implemented"
 end
 
-
-# Restart logging service
+# Restarts logging service
 action :restart do
   raise "Default logging action not implemented"
 end
 
-
-# Reload logging service
+# Reloads logging service
 action :reload do
   raise "Default logging action not implemented"
 end
 
-
-# Return logging service status
+# Returns logging service status
 action :status do
   raise "Default logging action not implemented"
 end
 
-
-# Call logrotation
+# Calls logrotation
 action :rotate do
   raise "Default logging action not implemented"
 end
 
-
-# Add a new logging policy definition
+# Adds a new logging policy definition
 action :add_definition do
   raise "Default logging action not implemented"
 end
 
-
-# Add a log rotate policy
+# Adds a log rotate policy
 action :add_rotate_policy do
   raise "Default logging action not implemented"
 end
 
-
-# Install/replace the logging service
+# Installs/replaces the logging service
 action :install do
   raise "Default logging action not implemented"
 end
 
-
-# Configure the logging service
+# Configures the logging service
 action :configure do
   raise "Default logging action not implemented"
 end
-

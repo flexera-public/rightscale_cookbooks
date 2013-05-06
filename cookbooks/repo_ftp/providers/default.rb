@@ -9,7 +9,6 @@
 
 # Pull code from a determined repository to a specified destination.
 action :pull do
-
   repo_source = new_resource.repository
   repo_destination = new_resource.destination
 
@@ -41,10 +40,8 @@ action :pull do
   log "  Data fetch finished successfully!"
 end
 
-
 # Pull code from a determined repository to a specified destination and create a capistrano-style deployment.
 action :capistrano_pull do
-
   log "  Recreating project directory for :pull action"
 
   repo_dir = "/home"
