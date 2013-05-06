@@ -9,7 +9,7 @@
 # This recipe will call "setup_vhost" action of "app" LightWeight resource
 #  For more info please see "setup_vhost" action definition in connected LightWeight provider (ex. app_tomcat/providers/default.rb)
 
-rightscale_marker :begin
+rightscale_marker
 
 # Include apache2 recipe for correct node values and providers initialization
 # in operational mode
@@ -22,5 +22,3 @@ app "default" do
   port node[:app][:port].to_i
   action :setup_vhost
 end
-
-rightscale_marker :end

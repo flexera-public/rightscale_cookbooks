@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 class Chef::Recipe
   include RightScale::BlockDeviceHelper
@@ -74,5 +74,3 @@ db_request_backup "do backup"
 log "  Setting up cron to do scheduled backups..."
 # See cookbooks/db/recipes/do_primary_backup_schedule_enable.rb for the "db::do_primary_backup_schedule_enable" recipe.
 include_recipe "db::do_primary_backup_schedule_enable"
-
-rightscale_marker :end

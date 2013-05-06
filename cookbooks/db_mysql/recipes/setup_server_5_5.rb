@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 version = "5.5"
 node[:db][:version] = version
@@ -53,5 +53,3 @@ node[:db][:info_file_options] = ["mysql -V", "cat /etc/mysql/conf.d/my.cnf"]
 node[:db][:info_file_location] = "/etc/mysql"
 
 log "  Using MySQL service name: #{node[:db_mysql][:service_name]}"
-
-rightscale_marker :end

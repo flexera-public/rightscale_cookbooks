@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # convert inputs into parameters usable by the firewall_rule definition
 rule_port = node[:sys_firewall][:rule][:port].to_i
@@ -39,5 +39,3 @@ if node[:sys_firewall][:enabled] == "enabled"
 else
   log "  Firewall not enabled. Not adding rule for #{rule_port}."
 end
-
-rightscale_marker :end

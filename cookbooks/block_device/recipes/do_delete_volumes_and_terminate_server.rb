@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 class Chef::Recipe
   include RightScale::BlockDeviceHelper
@@ -34,5 +34,3 @@ rs_shutdown "Terminate the server now" do
   immediately true
   action :terminate
 end
-
-rightscale_marker :end

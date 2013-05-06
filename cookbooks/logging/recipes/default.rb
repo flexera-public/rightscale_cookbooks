@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Determine if syslog-ng or rsyslog is installed.
 # Note: The desired package must be installed either as part of the base image or
@@ -32,5 +32,3 @@ logging "default" do
   remote_server remote_server
   action :configure
 end
-
-rightscale_marker :end

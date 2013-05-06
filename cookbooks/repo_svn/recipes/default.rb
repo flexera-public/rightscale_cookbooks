@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Install subversion client
 package "subversion" do
@@ -30,5 +30,3 @@ extra_packages.each do |pkg|
     action :install
   end
 end
-
-rightscale_marker :end

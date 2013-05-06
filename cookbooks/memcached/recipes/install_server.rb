@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Installing server tags
 #
@@ -187,5 +187,3 @@ rightscale_logrotate_app "memcached" do
   rotate 4
   create "644 root root"
 end
-
-rightscale_marker :end

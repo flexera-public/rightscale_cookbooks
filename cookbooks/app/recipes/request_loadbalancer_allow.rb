@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 class Chef::Recipe
   include RightScale::App::Helper
@@ -29,5 +29,3 @@ pool_names(node[:lb][:pools]).each do |pool_name|
     attributes attrs
   end
 end
-
-rightscale_marker :end

@@ -109,18 +109,18 @@ Syntax:
 
 * Accepts only one parameter, "location" which can be used to denote
   the :start or :end of a recipe. It can also be :begin, :stop, and
-  the string versions.
-* Used to log the start and end of a recipe using the 'Chef::Log.info' Chef
+  the string versions. The default value for this parameter is :begin.
+* Used to log the start and end of a recipe using the `Chef::Log.info` Chef
   Logger class.
-  Should be added at the beginning and end of a recipe.
+  Should be added at the beginning of a recipe. No need for marking the end of
+  the recipe.
 * Example:
   `================= cookbook_name::recipe_name : START/END ===================`
 
 Syntax:
 
-    rightscale_marker :start
-
-    rightscale_marker :end
+    rightscale_marker
+    ...
 
 ### Resources:
 

@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Removes maintenance.html file.
 log "  Removing #{node[:web_apache][:maintenance_file]}"
@@ -15,5 +15,3 @@ file node[:web_apache][:maintenance_file] do
   backup false
   only_if { ::File.exists?(node[:web_apache][:maintenance_file]) }
 end
-
-rightscale_marker :end

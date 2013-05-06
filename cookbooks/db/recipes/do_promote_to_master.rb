@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 DATA_DIR = node[:db][:data_dir]
 
@@ -59,7 +59,7 @@ unless force_promote
     recipe "db::do_primary_backup_schedule_enable"
     recipients_tags "rs_dbrepl:master_instance_uuid=#{node[:db][:current_master_uuid]}"
   end
-  
+
   # Demote old master
   # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RemoteRecipe
   # for the "remote_recipe" resource.
@@ -100,5 +100,3 @@ db_request_backup "do backup"
 # See cookbooks/db/recipes/do_primary_backup_schedule_enable.rb
 # for the "db::do_primary_backup_schedule_enable" recipe.
 include_recipe "db::do_primary_backup_schedule_enable"
-
-rightscale_marker :end

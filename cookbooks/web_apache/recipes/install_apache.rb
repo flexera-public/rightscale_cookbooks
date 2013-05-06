@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 apache_log_dir = node[:apache][:log_dir]
 
@@ -75,5 +75,3 @@ template File.join(node[:apache][:dir], 'conf.d', 'maintenance.conf') do
 end
 
 log "  Started the apache server."
-
-rightscale_marker :end

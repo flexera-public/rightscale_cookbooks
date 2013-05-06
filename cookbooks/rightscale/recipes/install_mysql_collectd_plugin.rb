@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Load the mysql plugin in the main config file
 rightscale_enable_collectd_plugin "mysql"
@@ -33,5 +33,3 @@ template File.join(node[:rightscale][:collectd_plugin_dir], 'processes.conf') do
   source "processes.conf.erb"
   notifies :restart, resources(:service => "collectd")
 end
-
-rightscale_marker :end

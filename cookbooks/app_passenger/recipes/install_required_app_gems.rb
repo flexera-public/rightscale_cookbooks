@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Installing bundler
 gem_package "bundler" do
@@ -28,5 +28,3 @@ bash "Install apache passenger module" do
   EOH
   only_if { ::File.exists?("#{node[:app][:destination]}/Gemfile") }
 end
-
-rightscale_marker :end
