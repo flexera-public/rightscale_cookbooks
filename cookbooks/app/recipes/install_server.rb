@@ -15,14 +15,10 @@ public_ip = node[:cloud][:public_ips][0]
 private_ip = node[:cloud][:private_ips][0]
 
 # See cookbooks/rightscale/libraries/helper.rb for the "is_valid_ip?" method.
-if RightScale::Utils::Helper.is_valid_ip?(public_ip)
-  if node[:app][:backend_ip_type] == "public"
-    node[:app][:ip] = public_ip
-  else
-    node[:app][:ip] = private_ip
-  end
+if node[:app][:backend_ip_type] == "public" &&
+  RightScale::Utils::Helper.is_valid_ip?(public_ip)
+  node[:app][:ip] = public_ip
 elsif RightScale::Utils::Helper.is_valid_ip?(private_ip)
-  log "  No public IP detected. Forcing to first private: #{private_ip}"
   node[:app][:ip] = private_ip
 else
   raise "No valid public/private IP found for the server."
