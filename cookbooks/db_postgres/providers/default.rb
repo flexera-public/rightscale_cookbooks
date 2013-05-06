@@ -268,6 +268,24 @@ action :install_server do
     action :stop
   end
 
+  # Shared servers get 50% of the resources allocated to a dedicated server.
+  usage = node[:db_postgres][:server_usage] == "shared" ? 0.5 : 1
+
+  # Converts memory from kB to MB.
+  mem = node[:memory][:total].to_i / 1024
+  log "  Auto-tuning PostgreSQL parameters. Total memory: #{mem}MB"
+
+  # Sets tuning parameters.
+  node[:db_postgres][:tunable][:max_connections] ||= (400 * usage).to_i
+  node[:db_postgres][:tunable][:shared_buffers] ||=
+    value_with_units((mem * 0.25).to_i, "MB", usage)
+
+  # Set the postgres and root users max open files to a really large number.
+  # 1/3 of the overall system file max should be large enough.
+  # The percentage can be adjusted if necessary.
+  ulimit = Mixlib::ShellOut.new("sysctl -n fs.file-max")
+  ulimit.run_command.error!
+  node[:db_postgres][:tunable][:ulimit] ||= ulimit.stdout.to_i / 33
 
   # Setup postgresql.conf
   # template_source = "postgresql.conf.erb"
@@ -278,7 +296,7 @@ action :install_server do
     group "postgres"
     mode "0644"
     cookbook 'db_postgres'
-    not_if "test -f #{configfile}"
+    not_if { ::File.exists?(configfile) }
   end
 
   # Setup pg_hba.conf
@@ -298,15 +316,10 @@ action :install_server do
 
   # Setup PostgreSQL user limits
   #
-  # Set the postgres and root users max open files to a really large number.
-  # 1/3 of the overall system file max should be large enough.  The percentage can be
-  # adjusted if necessary.
-  postgres_file_ulimit = node[:db_postgres][:tunable][:ulimit]
-
   template "/etc/security/limits.d/postgres.limits.conf" do
     source "postgres.limits.conf.erb"
     variables({
-      :ulimit => postgres_file_ulimit
+      :ulimit => node[:db_postgres][:tunable][:ulimit]
     })
     cookbook 'db_postgres'
   end
@@ -314,7 +327,7 @@ action :install_server do
   # Change root's limitations for THIS shell.  The entry in the limits.d will be
   # used for future logins.
   # The setting needs to be in place before postgresql-9 is started.
-  execute "ulimit -n #{postgres_file_ulimit}"
+  execute "ulimit -n #{node[:db_postgres][:tunable][:ulimit]}"
 
   # Start PostgreSQL
   service "postgresql-#{version}" do
@@ -357,14 +370,16 @@ action :install_client_driver do
   when "java"
     # This adapter type is used by tomcat application servers
     node[:db][:client][:driver] = "org.postgresql.Driver"
+    node[:db][:client][:jar_file] = "postgresql-9.1-901.jdbc4.jar"
     # Copy to /usr/share/java/postgresql-9.1-901.jdbc4.jar
-    cookbook_file "/usr/share/java/postgresql-9.1-901.jdbc4.jar" do
-      source "postgresql-9.1-901.jdbc4.jar"
+    cookbook_file "/usr/share/java/#{node[:db][:client][:jar_file]}" do
+      source "#{node[:db][:client][:jar_file]}"
       owner "root"
       group "root"
       mode "0644"
       cookbook 'app_tomcat'
     end
+
   when "ruby"
     # This adapter type is used by Apache Rails Passenger application servers
     node[:db][:client][:driver] = "postgresql"
@@ -501,16 +516,16 @@ action :promote do
 
   begin
     # Promote the slave into the new master
-    Chef::Log.info "  Promoting slave.."
+    log "  Promoting slave.."
     # See cookbooks/db_postgres/libraries/helper.rb for the "RightScale::Database::PostgreSQL::Helper" class.
     RightScale::Database::PostgreSQL::Helper.write_trigger(node)
     sleep 10
 
     # Let the new slave loose and thus let him become the new master
-    Chef::Log.info "  New master is ReadWrite."
+    log "  New master is ReadWrite."
 
   rescue => e
-    Chef::Log.info "  WARNING: caught exception #{e} during critical operations on the MASTER"
+    log "  WARNING: caught exception #{e} during critical operations on the MASTER"
   end
 end
 
@@ -694,7 +709,7 @@ action :restore_from_dump_file do
           " #{node[:db][:dump][:filepath]}"
         import_dump = Mixlib::ShellOut.new(
           "#{node[:db][:dump][:uncompress_command]} #{node[:db][:dump][:filepath]} |" +
-          " psql -U postgres #{db_name}"
+            " psql -U postgres #{db_name}"
         )
         import_dump.run_command
         import_dump.error!

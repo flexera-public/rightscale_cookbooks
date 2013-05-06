@@ -156,11 +156,12 @@ in the `db` cookbook).
 
 #### rightscale_marker
 
-All of the recipes in the RightScale cookbooks begin and end with a call to the
+All of the recipes in the RightScale cookbooks begin with a single call to the
 `rightscale_marker` definition which is defined in the
 `rightscale` cookbook. It is used for better readability and debugging of
 the logs of Chef recipe runs. The definition prints log messages with the
-cookbook and recipe name showing the beginning and end of the recipe run.
+cookbook and recipe name showing the beginning and end of the recipe run. Note
+that there is no need for marking the end of a recipe.
 
     12:12:42: *******************************************
     12:12:42: *RS>  Running rightscale::default   *******
@@ -172,9 +173,8 @@ grouping of recipe logs in "Audit Entries" tab in the RightScale UI.
 If you include the `rightscale` cookbook as dependency of your own
 cookbook, you can use the `rightscale_marker` definition as well:
 
-    rightscale_marker :begin
+    rightscale_marker
     ...
-    rightscale_marker :end
 
 ## RIGHTSCALE RESOURCES:
 
@@ -228,4 +228,4 @@ the RightScale Terms of Service available at http://www.rightscale.com/terms.php
 and, if applicable, other agreements such as a RightScale Master Subscription
 Agreement.
 
-Maintained by the RightScale "White_team"
+Maintained by the RightScale White Team

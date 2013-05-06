@@ -1,11 +1,12 @@
 #
 # Cookbook Name:: db
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 log "  Checking if state of database is 'uninitialized'..."
 
@@ -20,5 +21,3 @@ log "  Authentication information provided by inputs is ignored for slave server
 db_register_slave "restore from primary" do
   action :primary_restore
 end
-
-rightscale_marker :end

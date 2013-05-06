@@ -231,14 +231,27 @@ attribute "block_device/ephemeral/vg_data_percentage",
   :display_name => "Percentage of the ephemeral LVM used for data",
   :description =>
     "The percentage of the total ephemeral Volume Group extents (LVM) that is" +
-    " used for data. (e.g. 50 percent - 1/2 used for data 100 percent - all" +
-    " space is allocated for data. WARNING: Using a non-default value it not" +
+    " used for data (e.g. 50 percent - 1/2 used for data, 100 percent - all" +
+    " space is allocated for data). WARNING: Using a non-default value is not" +
     " recommended. Make sure you understand what you are doing before" +
     " changing this value. Example: 100",
   :type => "string",
   :required => "optional",
   :choice => ["50", "60", "70", "80", "90", "100"],
   :default => "100",
+  :recipes => ["block_device::setup_ephemeral"]
+
+attribute "block_device/ephemeral/file_system_type",
+  :display_name => "Ephemeral File System Type",
+  :description =>
+    "The type of file system that will be installed on the ephemeral device." +
+    " By default, this input will be set to 'xfs'. This input is ignored on" +
+    " Redhat and 'ext3' file system will be set up by default since Redhat" +
+    " does not support the 'xfs' file system. Example: xfs",
+  :type => "string",
+  :required => "optional",
+  :choice => ["xfs", "ext3"],
+  :default => "xfs",
   :recipes => ["block_device::setup_ephemeral"]
 
 # Multiple Block Devices

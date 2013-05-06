@@ -18,6 +18,7 @@ depends "app_passenger"
 depends "app_tomcat"
 depends "db"
 depends "app_django"
+depends "app_jboss"
 
 recipe "app::install_server",
   "Adds the appserver:active=true, appserver:listen_ip=<ip> and" +
@@ -118,12 +119,13 @@ attribute "app/database_name",
   :recipes => ["app::setup_db_connection"]
 
 attribute "app/backend_ip_type",
-  :display_name => "Application ip type given to loadbalancer",
+  :display_name => "Application IP Type Given to Load Balancer",
   :description =>
-    "The ip type that the application service is listening on." +
+    "Specify the IP type where the application server is listening." +
     " Example: Private",
   :choice => ["Public", "Private"],
   :required => "optional",
   :default => "Private",
   :recipes => ["app::install_server"],
   :required => "optional"
+

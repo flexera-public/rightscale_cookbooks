@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: block_device
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 # Detailed descriptions of variables below can be found in block_device/metadata.rb file
 default[:block_device][:devices][:default][:backup][:lineage] = ""
@@ -34,3 +35,6 @@ end
 
 # block_device/first_server_uuid will be used to generate unique block device nicknames
 default[:block_device][:first_server_uuid] = node[:rightscale][:instance_uuid]
+
+# Type of file system set up on ephemeral devices
+default[:block_device][:ephemeral][:file_system_type] = "xfs"

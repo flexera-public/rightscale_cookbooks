@@ -2,6 +2,9 @@
 require_helper "cloud"
 require_helper "ephemeral"
 require_helper "wait_for_ip_repopulation"
+require_helper "errors"
+require_helper "os"
+require_helper "input"
 
 # Test specific helpers.
 #
@@ -9,6 +12,21 @@ helpers do
   # An error with swap file setup.
   #
   class SwapFileError < VirtualMonkey::TestCase::ErrorBase
+  end
+
+  # An error with conntrack_max setup.
+  #
+  class ConntrackMaxError < VirtualMonkey::TestCase::ErrorBase
+  end
+
+  # An error with Rackspace Managed agents not running properly.
+  #
+  class RackspaceManagedError < VirtualMonkey::TestCase::ErrorBase
+  end
+
+  # An error with unfrozen repo check
+  #
+  class FrozenRepoError < VirtualMonkey::TestCase::ErrorBase
   end
 
   # Checks if the swap file is set up.
@@ -39,25 +57,232 @@ helpers do
   def is_chef?
     suite_variables[:server_template_type] == "chef"
   end
+
+  # Obtains the conntrack_max value from /etc/sysctl.conf configuration file
+  #
+  # @param server [Server] the server to obtain value from
+  #
+  # @return [String] conntrack_max value from configuration file
+  #
+  # @raise [FailedProbeCommandError] if probe fails to obtain conntrack_max value from
+  #   configuration file
+  #
+  def obtain_conf_conntrack_max(server)
+    conntrack_module_name = "net.netfilter.nf_conntrack_max"
+    conf_conntrack_max = ""
+    # SSH to the server and obtain the conntrack_max value from
+    # /etc/sysctl.conf file
+    probe(server,
+      %Q{sh -c "grep "#{conntrack_module_name}" /etc/sysctl.conf"}) do |result, status|
+      raise FailedProbeCommandError, "Can't probe the server to obtain conntrack_max value from /etc/sysctl.conf" unless status == 0
+      puts "conntrack_max value in /etc/sysctl.conf: #{result}"
+      conf_conntrack_max = result
+      true
+    end
+    conf_conntrack_max
+  end
+
+  # Obtains the conntrack_max value using sysctl command
+  #
+  # @param server [Server] the server to obtain value from
+  #
+  # @return [String] conntrack_max value from sysctl commann
+  #
+  # @raise [FailedProbeCommandError] if probe fails to obtain conntrack_max value from
+  #   sysctl command
+  #
+  def obtain_sysctl_conntrack_max(server)
+    conntrack_module_name = "net.netfilter.nf_conntrack_max"
+    sysctl_conntrack_max = ""
+    probe(server,
+      %Q{sh -c "sysctl #{conntrack_module_name}"}) do |result, status|
+      raise FailedProbeCommandError, "Can't probe the server to obtain conntrack_max value using sysctl" unless status == 0
+      puts "conntrack_max value returned by sysctl: #{result}"
+      sysctl_conntrack_max = result
+      true
+    end
+    sysctl_conntrack_max
+  end
+
+  # Verifies that the conntrack_max kernel parameter is set properly
+  #
+  # @param server [RightScale::ServerInterface] the server to verify for
+  #   conntrack_max value
+  #
+  # @raise [ConntrackMaxError] if the value for conntrack_max is not set
+  #   properly
+  #
+  def verify_conntrack_max(server)
+    # Test 1: Verify that correct conntrack_max value is set in sysctl from
+    # configuration file.
+    #
+    # Obtain the conntrack_max value set in the /etc/sysctl.conf
+    conf_conntrack_max = obtain_conf_conntrack_max(server)
+
+    # Obtain the conntrack_max value returned by the sysctl command
+    sysctl_conntrack_max_before = obtain_sysctl_conntrack_max(server)
+
+    if conf_conntrack_max == sysctl_conntrack_max_before
+      puts "conntrack_max value is set properly"
+    else
+      raise ConntrackMaxError, "conntrack_max value is not set properly." +
+        " #{conf_conntrack_max} != #{sysctl_conntrack_max_before}"
+    end
+
+    # Test 2: Verify that the value doesn't get reset when an iptables rule is
+    # added or removed (iptables gets reloaded).
+    #
+    # Set a new port as input for sys_firewall::setup_rule. A port that is not
+    # already opened should be used for the setup_rule recipe to rebuild
+    # iptables. Port 8088 is not used anywhere and commonly used for test
+    # purposes.
+    #
+    server.set_inputs("sys_firewall/rule/port" => "text:8088")
+
+    # Run sys_firewall::setup_rule recipe. Running this recipe will rebuild
+    # iptables.
+    #
+    run_recipe("sys_firewall::setup_rule", s_one)
+
+    # Vefify that conntrack_max value is unchanged (not reset).
+    # Obtain the conntrack_max value returned by the sysctl command after
+    # running the sys_firewall::setup_rule recipe.
+    #
+    sysctl_conntrack_max_after = obtain_sysctl_conntrack_max(server)
+
+    if sysctl_conntrack_max_before == sysctl_conntrack_max_after
+      puts "conntrack_max value is unchanged after running" +
+        " sys_firewall::setup_rule recipe"
+    else
+      raise ConntrackMaxError, "conntrack_max value is changed after running" +
+        " sys_firewall::setup_rule recipe"
+    end
+  end
+
+  # Setup the credentials required for Rackspace Managed Open Cloud as advanced
+  # inputs.
+  #
+  # @param server [Server] the server to check
+  #
+  def setup_rackspace_managed_credentials(server)
+    server.set_inputs(
+      "rightscale/rackspace_api_key" => "cred:RACKSPACE_RACKMANAGED_API_KEY",
+      "rightscale/rackspace_tenant_id" => "cred:RACKSPACE_RACKMANAGED_TENANT_ID",
+      "rightscale/rackspace_username" => "cred:RACKSPACE_RACKMANAGED_USERNAME"
+    )
+  end
+
+  # Verify that the Rackspace Managed Open Cloud agents are running properly.
+  #
+  # @param server [Server] the server to check
+  #
+  # @raise [RackspaceRackManagedError] if the rackspace agents are not running
+  #   properly.
+  #
+  def verify_rackspace_managed_agents(server)
+    rackspace_agents = ["driveclient", "rackspace-monitoring-agent"]
+    # Verify the agents functionality on all servers
+    rackspace_agents.each do |agent|
+      probe(server, "service #{agent} status") do |response, status|
+        unless status == 0
+          raise FailedProbeCommandError, "Unable to verify that #{agent} is" +
+            " running on #{server.nickname}"
+        end
+        if response.include?("running")
+          puts "The #{agent} agent is running on #{server.nickname}"
+        else
+          raise RackspaceRackManagedError, "The #{agent} agent is not running" +
+            " on #{server.nickname} Current status is #{response}"
+        end
+        true
+      end
+    end
+  end
+
+  # Verifies the security repositories are unfrozen.
+  # For apt based systems (Ubuntu) it checks repositories in
+  # /etc/apt/sources.list.d/rightscale.sources.list
+  # For yum based systems (CentOS) it checks repositories in
+  # /etc/yum.repos.d/*.repo
+  #
+  # @param server [Server] the server to obtain value from
+  #
+  # @raise [FrozenRepoError] if unfrozen repositories not found
+  #
+  def verify_security_repositories_unfrozen(server)
+    # Check that unforzen repos exist in the package repo dir
+    #
+    os = get_operating_system(server)
+    puts "  Testing OS: #{os}"
+    case os
+    when /ubuntu/i
+      latest = "/ubuntu_daily/latest"
+      repo_dirs = "/etc/apt/sources.list.d/rightscale.sources.list "
+    when /centos|rhel/i
+      latest = "/archive/latest"
+      repo_dirs = "/etc/yum.repos.d/*.repo"
+    end
+
+    probe(server, "grep #{latest} #{repo_dirs}") do |response, status|
+      raise FrozenRepoError, "Unfrozen repo not found in " +
+        "#{repo_dirs}" unless status == 0
+      true
+    end
+  end
 end
 
-# When rerunning a test, shutdown all of the servers.
+# Generic before all
 #
-hard_reset do
-  stop_all
-end
-
-# Before all of the test cases, launch all of the servers in the deployment.
+# This does nothing at this time.  It is here to make it easier
+# to debug missing specific test befores.
 #
 before do
-  launch_all
-  wait_for_all("operational")
+  puts "  No before all actions"
+end
+
+# Before tests that require security updates disabled.
+#
+# Ensure the server input rightscale/security_updates is set to "disable"
+# Rackspace Managed Open clouds should have Rackspace credentials set.
+#
+before "smoke_test", "stop_start", "enable_security_updates_on_running_server" do
+  puts "Running before with security updates disabled"
+  # Assume a single server in the deployment
+  server = servers.first
+
+  # Get the current cloud.
+  cloud = Cloud.factory
+
+  # Set the required credential inputs for Rackspace Managed cloud.
+  setup_rackspace_managed_credentials(server) \
+    if cloud.cloud_name =~ /Rackmanaged/
+
+  # The "ensure_input_setting" method sets the inputs and launches the server
+  # at the moment. This method will be refactored later.
+  ensure_input_setting(
+    server,
+    {"rightscale/security_updates" => "text:disable"}
+  )
+end
+
+# Before tests that require security updates enabled.
+#
+# Ensure the server input rightscale/security_updates is set to "enable"
+#
+before "enable_security_updates_on_boot" do
+  # Assume a single server in the deployment
+  server = servers.first
+  ensure_input_setting(
+    server,
+    {"rightscale/security_updates" => "text:enable"}
+  )
 end
 
 # The Base smoke test makes sure the Base (Chef or RSB) ServerTemplate has its
 # basic functionality including setting up any ephemeral volumes, setting up a
-# swap file, and basic monitoring. It checks if this functionality is working
-# after initial boot and then after a single reboot.
+# swap file, basic monitoring, and the conntrack_max connection tracking
+# parameter setup. It checks if this functionality is working after initial boot
+# and then after a single reboot.
 #
 test_case "smoke_test" do
   # Get current cloud.
@@ -72,6 +297,8 @@ test_case "smoke_test" do
   if is_chef?
     check_ephemeral_mount(server) if cloud.supports_ephemeral?(server)
     check_swap_file(server)
+    verify_conntrack_max(server)
+    verify_rackspace_managed_agents(server) if cloud.cloud_name =~ /Rackmanaged/
   end
 
   # Check if the server's basic monitoring is working.
@@ -92,16 +319,24 @@ test_case "smoke_test" do
   if is_chef?
     check_ephemeral_mount(server) if cloud.supports_ephemeral?(server)
     check_swap_file(server)
+    verify_conntrack_max(server)
+    verify_rackspace_managed_agents(server) if cloud.cloud_name =~ /Rackmanaged/
   end
 
   # Check if the server's basic monitoring is working.
   check_monitoring
+
+  # Check if security updates are disabled can not be done.  Servers can
+  # can be launched with unfrozen repositories.  This case was considered
+  # and it was decided to ignore it.
+  #
 end
 
 # The Base stop/start test makes sure the Base (Chef or RSB) ServerTemplate has
 # its basic functionality after a server has been stopped and then started
 # again. The functionality it tests includes setting up any ephemeral volumes,
-# setting up a swap file, and basic monitoring.
+# setting up a swap file, basic monitoring, and the conntrack_max connection
+# tracking parameter setup.
 #
 test_case "stop_start" do
   # Get the current cloud.
@@ -130,14 +365,36 @@ test_case "stop_start" do
   #
   server.remove_tags ["server:public_ip_0=#{server.public_ip}"] if cloud.needs_private_ssh?
 
-  # Ephemeral and swap file support are currently only implemented on the Chef
-  # ServerTemplate.
+  # Ephemeral, swap file support, and conntrack_max parameter are currently only
+  # implemented on the Chef ServerTemplate.
   #
   if is_chef?
     check_ephemeral_mount(server) if cloud.supports_ephemeral?(server)
     check_swap_file(server)
+    verify_conntrack_max(server)
   end
 
   # Check if the server's basic monitoring is working.
   check_monitoring
+end
+
+# The Base "enable security updates on running a running server" tests if
+# security updates are applied after enabling them.  It enables the updates
+# runs the script to perform the security updates setup and runs the script
+# to perform the updates.
+#
+test_case "enable_security_updates_on_running_server" do
+  server = servers.first
+  server.set_inputs("rightscale/security_updates" => "text:enable")
+  run_recipe("rightscale::setup_security_updates", server)
+  verify_security_repositories_unfrozen(server)
+  run_recipe("rightscale::do_security_updates", server)
+end
+
+# The Base "verify repository unfrozen" test verfies the package managers
+# upstream security repositories are set to "latest".
+#
+test_case "enable_security_updates_on_boot" do
+  server = servers.first
+  verify_security_repositories_unfrozen(server)
 end

@@ -6,9 +6,12 @@ description "Base recipes used to set up services used by the RightScale" +
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version "13.4.0"
 
-# supports "centos", "~> 5.8", "~> 6"
+# supports "centos", "~> 5.8", "~> 6.2"
 # supports "redhat", "~> 5.8"
 # supports "ubuntu", "~> 10.04", "~> 12.04"
+
+depends "driveclient"
+depends "cloudmonitoring"
 
 recipe "rightscale::default",
   "Installs the utilities that are required for RightScale support."
@@ -28,6 +31,9 @@ recipe "rightscale::setup_timezone",
 recipe "rightscale::setup_server_tags",
   "Sets machine tags that are common to all RightScale managed servers."
 
+recipe "rightscale::setup_cloud",
+  "Sets up cloud specific functions."
+
 recipe "rightscale::install_tools",
   "Installs RightScale's instance tools."
 
@@ -37,6 +43,29 @@ recipe "rightscale::install_mysql_collectd_plugin",
 recipe "rightscale::install_file_stats_collectd_plugin",
   "Installs the file-stats.rb collectd plugin for monitoring support." +
   " It is also used for mysql binary backup alerting."
+
+recipe "rightscale::do_security_updates",
+  "Do a system package update to pull in the latest security patches."
+
+recipe "rightscale::setup_security_updates",
+  "Sets up package manager software for security updates."
+
+recipe "rightscale::setup_security_update_monitoring",
+  "Sets up collectd plugin to monitor for available security updates."
+ 
+
+attribute "rightscale/security_updates",
+  :display_name => "Enable security updates",
+  :description => "Unfreezes software repositories after booting and" +
+    " installing packages, allowing for security updates to be installed.",
+  :required => "optional",
+  :choice => [ "enable", "disable" ],
+  :default => "disable",
+  :recipes => [
+    "rightscale::do_security_updates",
+    "rightscale::setup_security_updates",
+    "rightscale::setup_security_update_monitoring"
+  ]
 
 attribute "rightscale/timezone",
   :display_name => "Timezone",
@@ -170,7 +199,6 @@ attribute "rightscale/short_hostname",
     "The short hostname that you would like this node to have." +
     " Example: myhost",
   :required => "required",
-  :default => nil,
   :recipes => [
     "rightscale::setup_hostname"
   ]
@@ -195,6 +223,42 @@ attribute "rightscale/search_suffix",
   :default => "",
   :recipes => [
     "rightscale::setup_hostname"
+  ]
+
+attribute "rightscale/rackspace_username",
+  :display_name => "Rackspace Username",
+  :description =>
+    "The username for Rackspace cloud account. This is required for" +
+    " registering instances with Rackspace Managed Cloud.",
+  :required => "optional",
+  :default => "",
+  :recipes => [
+    "rightscale::default",
+    "rightscale::setup_cloud"
+  ]
+
+attribute "rightscale/rackspace_api_key",
+  :display_name => "Rackspace API Key",
+  :description =>
+    "The API Key for Rackspace cloud account. This is required for" +
+    " registering instances with Rackspace Managed Cloud.",
+  :required => "optional",
+  :default => "",
+  :recipes => [
+    "rightscale::default",
+    "rightscale::setup_cloud"
+  ]
+
+attribute "rightscale/rackspace_tenant_id",
+  :display_name => "Rackspace Tenant ID",
+  :description =>
+    "The tenant ID for Rackspace cloud account. This is required for" +
+    " registering instances with Rackspace Managed Cloud.",
+  :required => "optional",
+  :default => "",
+  :recipes => [
+    "rightscale::default",
+    "rightscale::setup_cloud"
   ]
 
 # RightScale ENV attributes.

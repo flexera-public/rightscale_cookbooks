@@ -1,26 +1,35 @@
 #
 # Cookbook Name:: sys
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 module RightScale
   module System
     module Helper
 
-      # Calculates every 15 minute schedule for cron minute setting
-      # Uses a random start offset to avoid all systems from reconverging at the same time.
-      #
+      # Calculates schedule for cron minute based on user provided
+      # interval. Uses a random start offset from given splay
+      # to avoid all systems from reconverging at the same time.
       # @return [String] randomized schedule time
-      def self.randomize_reconverge_minutes
-        shed_string = ""
-        s = rand(15) # Get random start minute
-        4.times do |q|
-          shed_string << "," unless q == 0
-          shed_string << "#{s + (q*15)}"
+      def self.randomize_reconverge_minutes(interval, splay)
+        # Check parameters
+        err = ArgumentError.new("ERROR: reconverge interval must be between" +
+          " > 0 and < 60 minutes. You requested '#{interval}'.")
+        raise err if interval > 60 || interval <= 0
+
+        # Calculate random start minute offset
+        offset = rand(splay)
+
+        # Create cron minute schedule string
+        shed = []
+        (60/interval).times do |q|
+          min = (offset + (q*interval)) % 60
+          shed << min
         end
-        shed_string.strip
+        shed.sort! * ","
       end
 
       # Use the server_collection resource programatically
@@ -33,7 +42,20 @@ module RightScale
       end
 
       # Use the template resource programatically
-      def self.run_template(target_file, source, cookbook, variables, enable, command, node, run_context)
+      #
+      # @param target_file [String] target file to be created from the template
+      # @param source [String] source erb file
+      # @param cookbook [String] name of the cookbook
+      # @param variables [Hash] variables to be passed to the template resource
+      # @param enable [Boolean] whether to enable the template or disable it
+      # @param command [String] command to run if the template is updated
+      # @param node [Hash] chef node
+      # @param run_context [Chef::RunContext] chef's run context
+      #
+      # @return [Boolean] whether the target file is updated
+      #
+      def self.run_template(target_file, source, cookbook, variables, enable,
+        command, node, run_context)
         resrc = Chef::Resource::Template.new(target_file)
         resrc.source source
         resrc.cookbook cookbook
@@ -50,13 +72,29 @@ module RightScale
           provider.send("action_delete")
         end
 
-        Chef::Log.info `/usr/sbin/rebuild-iptables` if resrc.updated
+        if resrc.updated
+          shell_command = Mixlib::ShellOut.new(command)
+          shell_command.run_command
+          shell_command.error!
+
+          Chef::Log.info shell_command.stdout
+        end
+        resrc.updated
       end
 
       def self.calculate_exponential_backoff(value)
         ((value == 1) ? 2 : (value*value))
       end
 
+      # Reload sysctl
+      def self.reload_sysctl
+        reload_command = Mixlib::ShellOut.new(
+          "/sbin/sysctl -e -p /etc/sysctl.conf"
+        )
+        reload_command.run_command
+        reload_command.error!
+        Chef::Log.info reload_command.stdout
+      end
     end
   end
 end

@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: lb_haproxy
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 # @resource lb
 
@@ -162,13 +163,41 @@ action :attach do
     action :create
   end
 
+  # Create a firewall rule to drop packets internally going to the haproxy
+  # service while it is being reloaded.
+  execute "insert localhost firewall rule" do
+    user "root"
+    group "root"
+    command "/sbin/iptables -I OUTPUT -p tcp -d 127.0.0.1 --dport 85 -j DROP"
+    action :nothing
+  end
+
+  # Remove the previously created firewall rule that was dropping packets sent
+  # to haproxy during reload.
+  execute "delete localhost firewall rule" do
+    user "root"
+    group "root"
+    command "/sbin/iptables -D OUTPUT -p tcp -d 127.0.0.1 --dport 85 -j DROP"
+    action :nothing
+  end
+
   # (Re)generates the haproxy config file.
   execute "/etc/haproxy/haproxy-cat.sh" do
     user "haproxy"
     group "haproxy"
     umask "0077"
     action :nothing
+    # A firewall rule is added to drop packets internally to haproxy, the
+    # service is reloaded, and the rule is removed. This helps to prevent the
+    # web server from sending 5xx responses as HAProxy will not be responding
+    # while it is being reloaded.
+    notifies :run, resources(
+      :execute => "insert localhost firewall rule"
+    )
     notifies :reload, resources(:service => "haproxy")
+    notifies :run, resources(
+      :execute => "delete localhost firewall rule"
+    )
   end
 
   # Creates an individual server file for each vhost and notifies the concatenation script if necessary.
@@ -271,13 +300,41 @@ action :detach do
     action :nothing
   end
 
+  # Create a firewall rule to drop packets internally going to the haproxy
+  # service while it is being reloaded.
+  execute "insert localhost firewall rule" do
+    user "root"
+    group "root"
+    command "/sbin/iptables -I OUTPUT -p tcp -d 127.0.0.1 --dport 85 -j DROP"
+    action :nothing
+  end
+
+  # Remove the previously created firewall rule that was dropping packets sent
+  # to haproxy during reload.
+  execute "delete localhost firewall rule" do
+    user "root"
+    group "root"
+    command "/sbin/iptables -D OUTPUT -p tcp -d 127.0.0.1 --dport 85 -j DROP"
+    action :nothing
+  end
+
   # (Re)generates the haproxy config file.
   execute "/etc/haproxy/haproxy-cat.sh" do
     user "haproxy"
     group "haproxy"
     umask "0077"
     action :nothing
+    # A firewall rule is added to drop packets internally to haproxy, the
+    # service is reloaded, and the rule is removed. This helps to prevent the
+    # web server from sending 5xx responses as HAProxy will not be responding
+    # while it is being reloaded.
+    notifies :run, resources(
+      :execute => "insert localhost firewall rule"
+    )
     notifies :reload, resources(:service => "haproxy")
+    notifies :run, resources(
+      :execute => "delete localhost firewall rule"
+    )
   end
 
   # Deletes the individual server file and notifies the concatenation script if necessary.

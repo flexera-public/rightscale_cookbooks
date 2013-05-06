@@ -1,11 +1,12 @@
 #
 # Cookbook Name:: app
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Set ip address that the application service is listening on.
 # If instance has no public ip's first private ip will be used.
@@ -36,19 +37,20 @@ end
 
 log "  Installing #{node[:app][:packages]}" if node[:app][:packages]
 
+if node[:app][:provider] == "app_passenger"
+  node[:app][:root] = node[:app][:destination] + "/public"
+else
+  node[:app][:root]="#{node[:app][:destination]}"
+end
+
 # Setup default values for application resource and install required packages
 # See cookbooks/app_<providers>/providers/default.rb for the "install" action.
 app "default" do
   persist true
   provider node[:app][:provider]
   packages node[:app][:packages]
+  root node[:app][:root]
   action :install
-end
-
-if node[:app][:provider] == "app_passenger"
-  node[:app][:root] = node[:app][:destination] + "/public"
-else
-  node[:app][:root]="#{node[:app][:destination]}"
 end
 
 # Let others know we are an appserver
@@ -56,5 +58,3 @@ end
 right_link_tag "appserver:active=true"
 right_link_tag "appserver:listen_ip=#{node[:app][:ip]}"
 right_link_tag "appserver:listen_port=#{node[:app][:port]}"
-
-rightscale_marker :end

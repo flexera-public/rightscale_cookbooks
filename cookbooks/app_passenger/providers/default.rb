@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: app_passenger
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 # @resource app
 
@@ -52,53 +53,6 @@ action :install do
   log "  Packages which will be installed: #{packages}"
   packages.each do |p|
     package p
-  end
-
-  # On CentOS 6.3 images uninstall ruby 1.9 version and install ruby 1.8
-  # On Ubuntu 12.04 images use update-alternatives cmd and choose ruby 1.8 
-  if node[:platform] =~ /centos|redhat/
-    ruby_packages = ["ruby", "ruby-libs"]
-    ruby_packages.each do |p|
-      r = package p do
-        action :nothing
-      end
-      r.run_action(:remove)
-    end
-
-    # Install ruby 1.8 using bash block instead of package resource because
-    # we can use wildcard to install the latest ruby 1.8 patch level.
-    # Package resource requires ruby version to be hardcoded which won't
-    # scale very well.
-    r = bash "install ruby 1.8" do
-      code <<-EOH
-      yum install ruby-1.8.* --assumeyes
-      EOH
-      action :nothing
-    end
-    r.run_action(:run)
-
-    # Install rubygems
-    r = package "rubygems" do
-      action :nothing
-    end
-    r.run_action(:install)
-
-  elsif node[:platform] =~ /ubuntu/
-    ruby_packages = ["ruby1.8", "rubygems"]
-    ruby_packages.each do |p|
-      r = package p do
-        action :nothing
-      end
-      r.run_action(:install)
-    end
-    r = bash "use ruby 1.8 version" do
-      code <<-EOH
-      update-alternatives --set ruby "/usr/bin/ruby1.8"
-      update-alternatives --set gem "/usr/bin/gem1.8"
-      EOH
-      action :nothing
-    end
-    r.run_action(:run)
   end
 
   # Repopulate gem environment
@@ -279,6 +233,12 @@ action :code_update do
   # Symlinking application log directory to ephemeral volume
   link "#{deploy_dir}/log" do
     to "/mnt/ephemeral/log/rails/#{node[:web_apache][:application_name]}"
+  end
+
+  # Sets permissions for the code to be owned by the application user.
+  bash "chown_home" do
+    flags "-ex"
+    code "chown -R #{node[:app][:user]}:#{node[:app][:group]} #{deploy_dir}"
   end
 
   log "  Generating new logrotate config for rails application"
