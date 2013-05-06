@@ -25,7 +25,8 @@ define :rightscale_marker do
     # We use Chef::Log.info here to get clear output
     ruby_block "log marker" do
       block do
-        Chef::Log.info "********************************************************************************"
+        Chef::Log.info "****************************************************" +
+          "****************************"
         Chef::Log.info "*RS>  Running recipe #{recipe_name}   ****"
       end
     end
