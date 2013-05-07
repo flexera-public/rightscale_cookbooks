@@ -83,6 +83,7 @@ action :install do
   log "  Installing passenger gem"
   gem_package "passenger" do
     gem_binary "/usr/bin/gem"
+    version "3.0.19"
     action :install
   end
 
