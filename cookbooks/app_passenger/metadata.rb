@@ -29,7 +29,7 @@ recipe "app_passenger::run_custom_rails_commands",
   " the app directory."
 
 
-attribute "app_passenger/spawn_method",
+attribute "app_passenger/rails_spawn_method",
   :display_name => "Rails spawn method",
   :description =>
     "The spawn method that Phusion Passenger will use. The choices are:" +
