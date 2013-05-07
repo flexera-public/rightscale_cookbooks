@@ -1,13 +1,12 @@
 #
 # Cookbook Name:: repo
 #
-#
 # Copyright RightScale, Inc. All rights reserved.
 # All access and use subject to the RightScale Terms of Service available at
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 log "  Setup all resources that have attributes in the node"
 node[:repo].each do |resource_name, entry|
@@ -21,7 +20,7 @@ node[:repo].each do |resource_name, entry|
   prefix = entry[:prefix] || ""
 
   # Initial setup of "repository" LWRP.
-  log "  Registering #{resource_name} prov: #{entry[:provider]}"
+  log "  Registering #{resource_name} provider: #{entry[:provider]}"
   # See cookbooks/repo/resources/default.rb for the "repo" resource.
   repo resource_name do
     provider entry[:provider]
@@ -37,5 +36,3 @@ node[:repo].each do |resource_name, entry|
     persist true
   end
 end
-
-rightscale_marker :end

@@ -81,7 +81,6 @@ action :pull do
     environment environment_variables
   end
 
-
   bash "Unpack #{tmp_repo_path} to #{new_resource.destination}" do
     cwd "/tmp"
     code <<-EOH

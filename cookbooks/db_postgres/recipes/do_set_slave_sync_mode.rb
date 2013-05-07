@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Run only on master server
 # See cookbooks/db/definitions/db_state_assert.rb for the "db_state_assert" definition.
@@ -23,5 +23,3 @@ RightScale::Database::PostgreSQL::Helper.configure_postgres_conf(node)
 # Reload postgresql to read new updated postgresql.conf
 log "  Reload postgresql to read new updated postgresql.conf"
 RightScale::Database::PostgreSQL::Helper.do_query('select pg_reload_conf()')
-
-rightscale_marker :end

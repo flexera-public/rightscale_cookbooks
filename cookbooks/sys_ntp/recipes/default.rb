@@ -17,7 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Install ntpdate package if "ubuntu"
 case node[:platform]
@@ -87,5 +87,3 @@ end
 service node[:sys_ntp][:service] do
   action :start
 end
-
-rightscale_marker :end
