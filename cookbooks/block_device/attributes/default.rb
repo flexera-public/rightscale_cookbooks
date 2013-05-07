@@ -36,16 +36,25 @@ default[:block_device][:devices_to_use] = "device1"
 default[:block_device][:devices][:default][:backup][:primary][:cred][:user] = ""
 # Primary backup secret
 default[:block_device][:devices][:default][:backup][:primary][:cred][:secret] = ""
-# Primary backup storage cloud
-default[:block_device][:devices][:default][:backup][:primary][:cloud] = ""
-# Primary backup storage cloud endpoint URL
-default[:block_device][:devices][:default][:backup][:primary][:endpoint] = ""
 # Secondary backup user
 default[:block_device][:devices][:default][:backup][:secondary][:cred][:user] = ""
 # Secondary backup secret
 default[:block_device][:devices][:default][:backup][:secondary][:cred][:secret] = ""
 # Secondary backup storage cloud
 default[:block_device][:devices][:default][:backup][:secondary][:cloud] = ""
+# Terminate safety flag
+default[:block_device][:terminate_safety] = "Override the dropdown and set" +
+  " to \"off\" to really run this recipe"
+# Force reset safety flag
+default[:block_device][:force_safety] = "Override the dropdown and set to" +
+  " \"off\" to really run this recipe"
+
+# Optional attributes
+
+# Primary backup storage cloud
+default[:block_device][:devices][:default][:backup][:primary][:cloud] = ""
+# Primary backup storage cloud endpoint URL
+default[:block_device][:devices][:default][:backup][:primary][:endpoint] = ""
 # Secondary backup storage cloud endpoint URL
 default[:block_device][:devices][:default][:backup][:secondary][:endpoint] = ""
 # Rackspace SNET enabled for backup
@@ -81,10 +90,3 @@ end.each do |device, number|
   default[:block_device][:devices][device][:iops] = ""
   default[:block_device][:devices][device][:volume_type] = "SATA"
 end
-
-# Terminate safety flag
-default[:block_device][:terminate_safety] = "Override the dropdown and set" +
-  " to \"off\" to really run this recipe"
-# Force reset safety flag
-default[:block_device][:force_safety] = "Override the dropdown and set to" +
-  " \"off\" to really run this recipe"
