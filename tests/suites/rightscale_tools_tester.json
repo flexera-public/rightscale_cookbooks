@@ -1,0 +1,5 @@
+{
+  "description": "Performs unit and functional tests on the rightscale_tools",
+  "server_templates": ["rightscale_tools_tester"],
+  "tests": ["rightscale_tools_tester.rb"]
+}

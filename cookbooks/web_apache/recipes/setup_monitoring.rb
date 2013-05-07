@@ -1,11 +1,12 @@
 #
 # Cookbook Name:: web_apache
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Add the collectd exec plugin to the set of collectd plugins if it isn't already there.
 # See cookbooks/rightscale/definitions/rightscale_enable_collectd_plugin.rb for the "rightscale_enable_collectd_plugin" definition.
@@ -92,5 +93,3 @@ template File.join(node[:rightscale][:collectd_plugin_dir], 'processes.conf') do
   source "processes.conf.erb"
   notifies :restart, resources(:service => "collectd")
 end
-
-rightscale_marker :end

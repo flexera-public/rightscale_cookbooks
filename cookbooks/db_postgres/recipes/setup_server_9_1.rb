@@ -8,7 +8,7 @@
 
 # Setup default values for database resource
 
-rightscale_marker :begin
+rightscale_marker
 
 version = "9.1"
 node[:db][:version] = version
@@ -48,5 +48,3 @@ node[:db][:info_file_options] = [
   "cat #{node[:db_postgres][:datadir]}/postgresql.conf"
 ]
 node[:db][:info_file_location] = node[:db_postgres][:datadir]
-
-rightscale_marker :end

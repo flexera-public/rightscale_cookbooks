@@ -2,7 +2,7 @@ maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "Installs/Configures RightScale system utilities."
-long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
+long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "13.4.0"
 
 # supports "centos", "~> 5.8", "~> 6"
@@ -34,6 +34,15 @@ attribute "sys/reconverge_list",
     "sys::do_reconverge_list_enable",
     "sys::do_reconverge_list_disable"
   ]
+
+attribute "sys/reconverge/interval",
+  :display_name => "Interval in Minutes to Run Reconverge List",
+  :description =>
+    "Defines the interval in minutes to run recipe(s) of reconverge list." +
+    " Example: 15",
+  :required => "optional",
+  :default => "15",
+  :recipes => ["sys::do_reconverge_list_enable"]
 
 attribute "sys/swap_size",
   :display_name => "Swap size in GB",

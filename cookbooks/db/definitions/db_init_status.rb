@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: db
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 # Used to set and check node[:db][:init_status].
 # When our database is at a point where it can be used, this is used to set the database
