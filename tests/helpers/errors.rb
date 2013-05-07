@@ -17,6 +17,7 @@ end
 # An error when a test is run on an unsupported cloud.
 #
 class UnsupportedCloudError < VirtualMonkey::TestCase::ErrorBase
+end
 
 # An error with selecting a set of servers.
 #

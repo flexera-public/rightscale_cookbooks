@@ -14,12 +14,13 @@ node[:repo].each do |resource_name, entry|
   branch = entry[:revision] || ""
   account = entry[:account] || ""
   credential = entry[:credential] || ""
+  endpoint = entry[:endpoint] || ""
   ssh_host_key = entry[:ssh_host_key] || ""
   storage_account_provider = entry[:storage_account_provider] || ""
   prefix = entry[:prefix] || ""
 
   # Initial setup of "repository" LWRP.
-  log "  Registering #{resource_name} prov: #{entry[:provider]}"
+  log "  Registering #{resource_name} provider: #{entry[:provider]}"
   # See cookbooks/repo/resources/default.rb for the "repo" resource.
   repo resource_name do
     provider entry[:provider]
@@ -27,6 +28,7 @@ node[:repo].each do |resource_name, entry|
     revision branch
     account account
     credential credential
+    endpoint endpoint
     ssh_host_key ssh_host_key
     storage_account_provider storage_account_provider
     prefix prefix

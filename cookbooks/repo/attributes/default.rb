@@ -18,3 +18,4 @@ default[:repo][:default][:purge_before_symlink] = %w{}
 default[:repo][:default][:create_dirs_before_symlink] = %w{}
 default[:repo][:default][:perform_action] = :pull
 default[:repo][:default][:prefix] = ""
+default[:repo][:default][:endpoint] = ""

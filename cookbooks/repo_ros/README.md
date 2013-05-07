@@ -42,6 +42,8 @@ filled.
 * repo/default/account
 * repo/default/credintial
 
+The `repo/default/endpoint` input allows to override the default endpoint.
+
 More detailed input descriptions can be found in the 'repo' cookbook's
 README.md.
 
@@ -65,7 +67,8 @@ For more information about these actions please see the `repo` cookbook's
 README.
 
 The `repo_ros` provider allows the retrieval of source code from Amazon S3,
-Rackspace Cloud Files, and SoftLayer Object Storage ROS remote repositories.
+Rackspace Cloud Files, Swift and SoftLayer Object Storage ROS remote
+repositories.
 
 For normal operations it requires the "repo" resource, which acts as the
 interface to all `repo_ros` provider logic.
