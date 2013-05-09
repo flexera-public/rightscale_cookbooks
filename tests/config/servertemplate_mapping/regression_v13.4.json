@@ -1,7 +1,8 @@
 /*
- * These are the v13.4 regression ServerTemplates which starts May 9 2013.
+ * These are the v13.4 regression ServerTemplates which starts 2013-05-09.
  *
- * This uses the last commited revisions of the PRODUCTION ServerTemplates.
+ * This uses the latest versions of the ServerTemplates with v13.4 in their
+ * name.
  */
 {
   "base_chef": {
