@@ -10,7 +10,12 @@
 set[:app_jboss][:install_target] = "/usr/share/jboss"
 
 # List of required apache modules
-set[:app][:module_dependencies] = ["proxy", "proxy_http", "deflate", "rewrite"]
+set[:app_jboss][:module_dependencies] = [
+  "proxy",
+  "proxy_http",
+  "deflate",
+  "rewrite"
+]
 
 # Recommended attributes
 default[:app_jboss][:code][:root_war] = ""
