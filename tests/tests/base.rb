@@ -5,6 +5,7 @@ require_helper "wait_for_ip_repopulation"
 require_helper "errors"
 require_helper "os"
 require_helper "input"
+require_helper "rackspace_managed"
 
 # Test specific helpers.
 #
@@ -17,11 +18,6 @@ helpers do
   # An error with conntrack_max setup.
   #
   class ConntrackMaxError < VirtualMonkey::TestCase::ErrorBase
-  end
-
-  # An error with Rackspace Managed agents not running properly.
-  #
-  class RackspaceManagedError < VirtualMonkey::TestCase::ErrorBase
   end
 
   # An error with unfrozen repo check
@@ -156,46 +152,6 @@ helpers do
     else
       raise ConntrackMaxError, "conntrack_max value is changed after running" +
         " sys_firewall::setup_rule recipe"
-    end
-  end
-
-  # Setup the credentials required for Rackspace Managed Open Cloud as advanced
-  # inputs.
-  #
-  # @param server [Server] the server to check
-  #
-  def setup_rackspace_managed_credentials(server)
-    server.set_inputs(
-      "rightscale/rackspace_api_key" => "cred:RACKSPACE_RACKMANAGED_API_KEY",
-      "rightscale/rackspace_tenant_id" => "cred:RACKSPACE_RACKMANAGED_TENANT_ID",
-      "rightscale/rackspace_username" => "cred:RACKSPACE_RACKMANAGED_USERNAME"
-    )
-  end
-
-  # Verify that the Rackspace Managed Open Cloud agents are running properly.
-  #
-  # @param server [Server] the server to check
-  #
-  # @raise [RackspaceRackManagedError] if the rackspace agents are not running
-  #   properly.
-  #
-  def verify_rackspace_managed_agents(server)
-    rackspace_agents = ["driveclient", "rackspace-monitoring-agent"]
-    # Verify the agents functionality on all servers
-    rackspace_agents.each do |agent|
-      probe(server, "service #{agent} status") do |response, status|
-        unless status == 0
-          raise FailedProbeCommandError, "Unable to verify that #{agent} is" +
-            " running on #{server.nickname}"
-        end
-        if response.include?("running")
-          puts "The #{agent} agent is running on #{server.nickname}"
-        else
-          raise RackspaceRackManagedError, "The #{agent} agent is not running" +
-            " on #{server.nickname} Current status is #{response}"
-        end
-        true
-      end
     end
   end
 
