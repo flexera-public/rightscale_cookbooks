@@ -13,7 +13,7 @@ default[:app_php][:modules_list] = []
 # Defining module dependencies depending on platform.
 case platform
 when "ubuntu"
-  set[:app][:module_dependencies] = ["proxy_http", "php5"]
+  set[:app_php][:module_dependencies] = ["proxy_http", "php5"]
 when "centos", "redhat"
-  set[:app][:module_dependencies] = ["proxy", "proxy_http"]
+  set[:app_php][:module_dependencies] = ["proxy", "proxy_http"]
 end
