@@ -113,6 +113,8 @@ action :setup_vhost do
     only_if { ::File.exists?("/etc/httpd/conf.d/ssl.conf") }
   end
 
+  log "  Module dependencies which will be installed:" +
+    " #{node[:app_passenger][:module_dependencies]}"
   # Enabling required apache modules
   node[:app_passenger][:module_dependencies].each do |mod|
     # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_module.rb
