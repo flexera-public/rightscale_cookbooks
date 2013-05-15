@@ -335,6 +335,28 @@ class Google < Cloud
     true
   end
 
+  # Checks if the cloud supports creating and attaching volumes to servers.
+  # Google cloud support volumes.
+  #
+  # @return [Boolean] whether the cloud supports volumes
+  #
+  # @see Cloud#supports_volumes?
+  #
+  def supports_volumes?
+    true
+  end
+
+  # Checks if the cloud supports the creation of live volume snapshots. Google
+  # cloud support volume snapshots.
+  #
+  # @return [Boolean] whether the cloud supports volume snapshots
+  #
+  # @see Cloud#supports_snapshots?
+  #
+  def supports_snapshots?
+    true
+  end
+
   # Checks if the cloud supports reboot. Google does not support reboot.
   #
   # @return [Boolean] whether the cloud supports reboot
