@@ -407,35 +407,6 @@ test_case "stop_start" do
   check_monitoring
 end
 
-# The Base "enable security updates on running a running server" tests if
-# security updates are applied after enabling them.  It enables the updates
-# runs the script to perform the security updates setup and runs the script
-# to perform the updates.
-#
-test_case "enable_security_updates_on_running_server" do
-  if is_chef?
-    server = servers.first
-    server.set_inputs("rightscale/security_updates" => "text:enable")
-    run_recipe("rightscale::setup_security_updates", server)
-    verify_security_repositories_unfrozen(server)
-    run_recipe("rightscale::do_security_updates", server)
-  else
-    puts "  RSB template - skipping enable_security_updates_on_running_server test"
-  end
-end
-
-# The Base "verify repository unfrozen" test verfies the package managers
-# upstream security repositories are set to "latest".
-#
-test_case "enable_security_updates_on_boot" do
-  if is_chef?
-    server = servers.first
-    verify_security_repositories_unfrozen(server)
-  else
-    puts "  RSB template - skipping enable_security_updates_on_boot test"
-  end
-end
-
 # The Base ephemeral_file_system_type test makes sure the file system type
 # installed on the ephemeral drive is same as the type set in
 # "block_device/ephemeral/file_system_type" input in the advanced inputs
@@ -491,5 +462,34 @@ test_case "ephemeral_file_system_type" do
     })
     relaunch_all
     verify_ephemeral_file_system_type(server, type)
+  end
+end
+
+# The Base "enable security updates on running a running server" tests if
+# security updates are applied after enabling them.  It enables the updates
+# runs the script to perform the security updates setup and runs the script
+# to perform the updates.
+#
+test_case "enable_security_updates_on_running_server" do
+  if is_chef?
+    server = servers.first
+    server.set_inputs("rightscale/security_updates" => "text:enable")
+    run_recipe("rightscale::setup_security_updates", server)
+    verify_security_repositories_unfrozen(server)
+    run_recipe("rightscale::do_security_updates", server)
+  else
+    puts "  RSB template - skipping enable_security_updates_on_running_server test"
+  end
+end
+
+# The Base "verify repository unfrozen" test verfies the package managers
+# upstream security repositories are set to "latest".
+#
+test_case "enable_security_updates_on_boot" do
+  if is_chef?
+    server = servers.first
+    verify_security_repositories_unfrozen(server)
+  else
+    puts "  RSB template - skipping enable_security_updates_on_boot test"
   end
 end
