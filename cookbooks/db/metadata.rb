@@ -2,7 +2,7 @@ maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "RightScale Database Manager"
-long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
+long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "13.4.0"
 
 # supports "centos", "~> 5.8", "~> 6"
@@ -519,6 +519,7 @@ attribute "db/dump/storage_account_provider",
     "cloudfilesuk",
     "google",
     "azure",
+    "swift",
     "SoftLayer_Dallas",
     "SoftLayer_Singapore",
     "SoftLayer_Amsterdam"
@@ -537,6 +538,7 @@ attribute "db/dump/storage_account_id",
     " For Amazon S3, use your Amazon access key ID" +
     " (e.g., cred:AWS_ACCESS_KEY_ID). For Rackspace Cloud Files, use your" +
     " Rackspace login username (e.g., cred:RACKSPACE_USERNAME)." +
+    " For OpenStack Swift the format is: 'tenantID:username'." +
     " Example: cred:AWS_ACCESS_KEY_ID",
   :required => "required",
   :recipes => [
@@ -555,6 +557,20 @@ attribute "db/dump/storage_account_secret",
     " For Rackspace Cloud Files, use your Rackspace account API key" +
     " (e.g., cred:RACKSPACE_AUTH_KEY). Example: cred:AWS_SECRET_ACCESS_KEY",
   :required => "required",
+  :recipes => [
+    "db::do_dump_import",
+    "db::do_dump_export",
+    "db::do_dump_schedule_enable"
+  ]
+
+attribute "db/dump/storage_account_endpoint",
+  :display_name => "Dump Storage Endpoint URL",
+  :description =>
+    "The endpoint URL for the storage cloud. This is used to override the" +
+    " default endpoint or for generic storage clouds such as Swift." +
+    " Example: http://endpoint_ip:5000/v2.0/tokens",
+  :required => "optional",
+  :default => "",
   :recipes => [
     "db::do_dump_import",
     "db::do_dump_export",

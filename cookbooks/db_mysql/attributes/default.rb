@@ -18,7 +18,7 @@ default[:db_mysql][:log_bin] = "/mnt/ephemeral/mysql-binlogs/mysql-bin"
 default[:db_mysql][:binlog_format] = "MIXED"
 default[:db_mysql][:tmpdir] = "/mnt/ephemeral/tmp"
 default[:db_mysql][:datadir] = "/var/lib/mysql"
-default[:db_mysql][:enable_mysql_upgrade] == "false"
+default[:db_mysql][:enable_mysql_upgrade] = "false"
 # Always set to support stop/start
 set[:db_mysql][:bind_address] = "0.0.0.0"
 

@@ -2,9 +2,10 @@
 #
 # Cookbook Name:: lb_clb
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 #
 # File created by RightScale
@@ -33,8 +34,8 @@ if [ -z ${RACKSPACE_API_TOKEN} ] || [ -z ${RACKSPACE_USERNAME} ]; then
 fi
 
 case "$CLB_NODE_IP" in
-  "Public"  ) CLB_NODE_IP=$RS_PUBLIC_IP;;
-  "Private" ) CLB_NODE_IP=$RS_PRIVATE_IP;;
+  "public"  ) CLB_NODE_IP=$RS_PUBLIC_IP;;
+  "private" ) CLB_NODE_IP=$RS_PRIVATE_IP;;
   *         ) echo "Using the provided IP";;
 esac
 

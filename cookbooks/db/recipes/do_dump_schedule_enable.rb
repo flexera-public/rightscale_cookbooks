@@ -1,11 +1,12 @@
 #
 # Cookbook Name:: db
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 skip, reason = true, "DB/Schema name not provided" if node[:db][:dump][:database_name] == ""
 skip, reason = true, "Prefix not provided" if node[:db][:dump][:prefix] == ""
@@ -25,5 +26,3 @@ else
     command "rs_run_recipe -n db::do_dump_export"
   end
 end
-
-rightscale_marker :end

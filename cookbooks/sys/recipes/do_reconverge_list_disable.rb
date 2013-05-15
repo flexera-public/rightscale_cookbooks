@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Remove re-converge task for all recipes provided in
 # the space-separated reconverge_list.
@@ -22,5 +22,3 @@ node[:sys][:reconverge_list].split(" ").each do |recipe|
   end
 
 end if node[:sys]
-
-rightscale_marker :end

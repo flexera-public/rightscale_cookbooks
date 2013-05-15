@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements such
 # as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Add re-converge task for all recipes provided in
 # the space-separated reconverge_list
@@ -18,10 +18,8 @@ node[:sys][:reconverge_list].split(" ").each do |recipe|
   # by passing in the recipe name and optional interval as the parameter.
   sys_reconverge "Enable recipe re-converge" do
     recipe_name recipe
-    cron_interval node[:sys][:cron_interval].to_i
+    interval node[:sys][:reconverge][:interval].to_i
     action :enable
   end
 
 end if node[:sys]
-
-rightscale_marker :end

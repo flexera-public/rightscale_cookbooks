@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Run only on master server
 # See cookbooks/db/definitions/db_state_assert.rb for the "db_state_assert" definition.
@@ -20,5 +20,3 @@ bash "show sync mode status" do
     psql -U postgres -c "select application_name, client_addr, sync_state from pg_stat_replication"
   EOH
 end
-
-rightscale_marker :end

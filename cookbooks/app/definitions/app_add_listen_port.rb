@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: app
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 # Adds a port to the apache listen ports.conf file and node attribute
 # The node[:apache][:listen_ports] is an array of strings for the webserver to listen on.

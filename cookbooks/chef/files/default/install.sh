@@ -74,7 +74,7 @@ shift `expr $OPTIND - 1`
 machine=$(echo -e `uname -m`)
 
 # Retrieve Platform and Platform Version
-if [ -f "/etc/lsb-release" ];
+if [ -f "/etc/lsb-release" ] && grep -q DISTRIB_ID /etc/lsb-release;
 then
   platform=$(grep DISTRIB_ID /etc/lsb-release | cut -d "=" -f 2 | tr '[A-Z]' '[a-z]')
   platform_version=$(grep DISTRIB_RELEASE /etc/lsb-release | cut -d "=" -f 2)

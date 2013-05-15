@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: app_passenger
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 # Stop apache/passenger
 action :stop do
@@ -82,6 +83,7 @@ action :install do
   log "  Installing passenger gem"
   gem_package "passenger" do
     gem_binary "/usr/bin/gem"
+    version "3.0.19"
     action :install
   end
 

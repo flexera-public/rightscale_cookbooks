@@ -2,7 +2,7 @@ maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "RightScale Cookbooks"
-long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
+long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "13.4.0"
 
 # supports "centos", "~> 5.8", "~> 6.2"
@@ -55,7 +55,8 @@ recipe "rightscale::setup_security_update_monitoring",
 
 attribute "rightscale/security_updates",
   :display_name => "Enable security updates",
-  :description => "Enable security updates.",
+  :description => "Unfreezes software repositories after booting and" +
+    " installing packages, allowing for security updates to be installed.",
   :required => "optional",
   :choice => [ "enable", "disable" ],
   :default => "disable",
@@ -197,7 +198,6 @@ attribute "rightscale/short_hostname",
     "The short hostname that you would like this node to have." +
     " Example: myhost",
   :required => "required",
-  :default => nil,
   :recipes => [
     "rightscale::setup_hostname"
   ]

@@ -6,12 +6,12 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 log "  Current Chef Client role(s) are: #{node[:chef][:client][:current_roles]}"
 
 # Updates runlist.json file with new roles.
-if node[:chef][:client][:current_roles] != node[:chef][:client][:roles] 
+if node[:chef][:client][:current_roles] != node[:chef][:client][:roles]
 
   # Creates runlist.json file.
   template "#{node[:chef][:client][:config_dir]}/runlist.json" do
@@ -35,5 +35,3 @@ end
 execute "run chef client" do
   command "chef-client -j #{node[:chef][:client][:config_dir]}/runlist.json"
 end
-
-rightscale_marker :end
