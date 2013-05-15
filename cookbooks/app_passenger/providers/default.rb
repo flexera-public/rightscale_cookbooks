@@ -114,8 +114,9 @@ action :setup_vhost do
   end
 
   # Enabling required apache modules
-  node[:app][:module_dependencies].each do |mod|
-    # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_module.rb for the "apache_module" definition.
+  node[:app_passenger][:module_dependencies].each do |mod|
+    # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_module.rb
+    # for the "apache_module" definition.
     apache_module mod
   end
 
