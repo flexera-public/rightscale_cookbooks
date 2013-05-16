@@ -54,3 +54,6 @@ node[:app_passenger][:passenger_bin_dir] = $1
 # Path to Ruby gem directory
 gemenv.stdout =~ /INSTALLATION DIRECTORY: (.*)$/
 node[:app_passenger][:ruby_gem_base_dir] = $1
+
+# Sets required apache modules.
+node[:app_passenger][:module_dependencies] = ["proxy", "proxy_ajp"]
