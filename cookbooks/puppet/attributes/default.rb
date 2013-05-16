@@ -17,7 +17,7 @@ default[:puppet][:client][:environment] = ""
 # Platform specific attributes
 case platform
 when "redhat", "centos"
-  # Sets the version to comply with Centos/Redhat format.
+  # Sets the version to comply with CentOS/Redhat format.
   node[:puppet][:client][:version] = "#{node[:puppet][:client][:version]}.el6"
 
   node[:puppet][:client][:packages] = "puppet"
@@ -30,5 +30,5 @@ when "ubuntu"
   node[:puppet][:client][:packages] = ["puppet-common", "puppet"]
   node[:puppet][:client][:repo_source] = "puppetlabs-release-precise.deb"
 else
-  raise "Unsupported platform #{platform}"
+  raise "  Unsupported platform #{platform}"
 end

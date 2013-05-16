@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Creates the collectd plugin directory.
 directory "#{node[:rightscale][:collectd_lib]}/plugins/" do
@@ -37,5 +37,3 @@ template "#{node[:rightscale][:collectd_plugin_dir]}/puppet-client.conf" do
   )
   notifies :restart, resources(:service => "collectd")
 end
-
-rightscale_marker :end

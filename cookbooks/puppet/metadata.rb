@@ -9,15 +9,15 @@ depends "rightscale"
 
 recipe "puppet::install_client",
   "Installs and configures the Puppet Client"
-recipe "puppet::do_start",
+recipe "puppet::do_client_start",
   "Starts Puppet service"
-recipe "puppet::do_stop",
+recipe "puppet::do_client_stop",
   "Stops Puppet service"
-recipe "puppet::do_restart",
+recipe "puppet::do_client_restart",
   "Restarts Puppet service"
 recipe "puppet::reload_agent",
   "Reloads the Puppet agent configuration"
-recipe "puppet::setup_monitoring",
+recipe "puppet::setup_client_monitoring",
   "Configures the collectd monitoring for the Puppet Client"
 
 attribute "puppet/client/version",
@@ -40,7 +40,7 @@ attribute "puppet/client/node_name",
   :recipes => ["puppet::install_client"]
 
 attribute "puppet/client/puppet_server_address",
-  :display_name => "Puppet Server Url",
+  :display_name => "Puppet Server FQDN",
   :description =>
     "Enter the address to connect to the remote Puppet Server." +
     " Example: p_master.example.com",

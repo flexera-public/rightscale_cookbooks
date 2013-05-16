@@ -6,12 +6,9 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
-log "  Stoping Puppet Agent Service"
-
+log "  Starting Puppet Agent Service"
 service "puppet" do
-  action :stop
+  action :start
 end
-
-rightscale_marker :end

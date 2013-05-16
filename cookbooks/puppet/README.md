@@ -2,13 +2,13 @@
 
 ## DESCRIPTION:
 
-This cookbook provides recipes for setting up and running a Puppet Client.
+This cookbook provides recipes for setting up and running the Puppet Client.
 
 ## REQUIREMENTS:
 
 * Requires a VM launched from a RightScale managed RightImage
 
-* Tested on the following RightImages: CentOS 6.3, Ubuntu 12.04
+* Tested on the following RightImages: CentOS 6.4, Ubuntu 12.04
 
 * Tested Puppet Client version 2.7.13-1
 
@@ -26,6 +26,8 @@ There are no known limitations.
 * When using a RightScale ServerTemplate, place `puppet::install_client`
   recipe into your runlist to setup the Puppet Client. Set the address to
   connect to the Puppet Server.
+* Use the `puppet::setup_client_monitoring` recipe to add Puppet Client
+  monitoring options to your dashboard "Monitoring" tab.
 
 For more info see: [Release Notes](http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/v13.4#Puppet_Client_\(v13.4\))
 
@@ -46,10 +48,10 @@ These are the settings used in recipes and templates. Default values are noted.
 * `node[:puppet][:client][:puppet_server_port]`-
   The port to connect to the remote Puppet Server. Default: "8140"
 * `node[:puppet][:client][:node_name]`-
-  Name which will be used to authenticate client on the remote Puppet Server.
-  if nothing specified -instance fqdn will be used.
+  Name which will be used to authenticate the Client on the Puppet Server.
+  If nothing is specified instance fqdn will be used.
 * `node[:puppet][:client][:environment]`-
-  The environment type for the Puppet Client configs. Default: "nil"
+  The environment type for the Puppet Client configs.
 
 ### Templates:
 
@@ -62,11 +64,11 @@ These are the settings used in recipes and templates. Default values are noted.
 
 ### Usage Example:
 
-## The Client certificate signing.
+## Requery the Puppet Server
 
 * `puppet::reload_agent`
   This recipe is used in the operational phase only. If the Puppet Server is
-  not configured to autosign client certificate, user needs to sing it manually
+  not configured to autosign client certificate, user needs to sign it manually
   and run this recipe.
 
 ## LICENSE:

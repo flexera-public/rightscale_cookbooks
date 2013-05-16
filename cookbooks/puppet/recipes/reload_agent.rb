@@ -6,15 +6,9 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
-
-# Declares touchfile.
-touchfile = ::File.expand_path "/var/lib/puppet/ssl/certs/" +
-  "#{node[:puppet][:client][:node_name]}.pem"
+rightscale_marker
 
 # Executes the Puppet client.
 # See cookbooks/puppet/definitions/puppet_client_run.rb for the
 # "puppet_client_run" definition.
-puppet_client_run touchfile
-
-rightscale_marker :end
+puppet_client_run

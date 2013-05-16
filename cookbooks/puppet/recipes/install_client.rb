@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Declares touchfile, which will be used to avoid the code execution on reboot.
 touchfile = ::File.expand_path "/var/lib/puppet/ssl/certs/" +
@@ -64,12 +64,14 @@ template "/etc/puppet/puppet.conf" do
     :server_port => node[:puppet][:client][:puppet_server_port],
     :environment => node[:puppet][:client][:environment]
   )
-  notifies :enable, resources(:service => "puppet")
 end
 
 # Executes the Puppet client.
 # See cookbooks/puppet/definitions/puppet_client_run.rb for the
 # "puppet_client_run" definition.
-puppet_client_run touchfile
+puppet_client_run
 
-rightscale_marker :end
+# Configures the Puppet Client service.
+service "puppet" do
+  action :enable
+end

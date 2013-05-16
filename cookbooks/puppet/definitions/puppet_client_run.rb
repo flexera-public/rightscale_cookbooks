@@ -8,21 +8,22 @@
 
 define :puppet_client_run do
 
-  touchfile = params[:name]
+  # Declares touchfile.
+  touchfile = ::File.expand_path "/var/lib/puppet/ssl/certs/" +
+  "#{node[:puppet][:client][:node_name]}.pem"
 
-  # Runs the Puppet Client to create a new SSL certificate and register on the
-  # Puppet Server.
   begin
+    # Performs certificate registration on the Puppet Server and returns exit
+    # code 2 as success
     execute "run puppet-client" do
       command "puppet agent --test"
-      # Please refer Puppet help for "--detailed-exitcodes"
       returns 2
       creates touchfile
     end
   rescue Exception => e
     log "  Puppet Client certificate registration failed. Your Puppet Server" +
       " may not be Operational or it is not auto-signing client certificates." +
-      " Make sure client certificate is signed on the Puppet Server and run" +
+      " Ensure client certificate is signed on the Puppet Server and run" +
       " recipe puppet::reload_agent"
   end
 
