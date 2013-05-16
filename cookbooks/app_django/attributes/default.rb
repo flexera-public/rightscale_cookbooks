@@ -7,7 +7,7 @@
 # such as a RightScale Master Subscription Agreement.
 
 # List of required apache modules
-set[:app_django][:module_dependencies] = []
+default[:app_django][:module_dependencies] = []
 # By default apache will serve any existing local files directly (except actionable ones)
 default[:app_django][:apache][:serve_local_files] = "true"
 # Setting Django version
