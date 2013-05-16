@@ -36,6 +36,13 @@ then opens 22, 80 and 443 ports by default
 (additionally on SoftLayer 48000..48020 ports are opened on the private 10.*
 network for the monitoring agent).
 
+When the firewall is disabled it disabled iptables service is disabled and
+stopped.
+
+When the firewall is set to "unmanaged" no changes are done to the iptables
+service so the cloud provider can manage the firewall rules. RightScale will
+not manage the firewall rules in this case.
+
 `sys_firewall::default` recipe increases the value for the
 'netfilter.nf_conntrack_max' parameter for CentOS images and
 the 'net.ipv4.ip_conntrack_max' for Ubuntu and RHEL images to avoid dropping
