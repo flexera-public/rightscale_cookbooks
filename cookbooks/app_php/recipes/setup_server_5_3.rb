@@ -32,3 +32,11 @@ when "centos", "redhat"
     "php53u-zts"
   ]
 end
+
+# Sets required apache modules.
+node[:app_php][:module_dependencies] = value_for_platform(
+  "ubuntu" => {
+    "default" => ["proxy_http", "php5"]
+  },
+  "default" => ["proxy", "proxy_http"]
+)

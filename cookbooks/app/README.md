@@ -56,7 +56,6 @@ Recommended:
     node[:app][:database_password]
     node[:app][:database_server_fqdn]
     node[:app][:db_adapter]
-    node[:app][:module_dependencies]
     node[:app][:user]
     node[:app][:group]
 
