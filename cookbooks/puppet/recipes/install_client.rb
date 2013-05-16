@@ -71,9 +71,4 @@ end
 # "puppet_client_run" definition.
 puppet_client_run touchfile
 
-# Configures the Puppet Client service.
-service "puppet" do
-  action :enable
-end
-
 rightscale_marker :end

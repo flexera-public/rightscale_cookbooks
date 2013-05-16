@@ -15,6 +15,6 @@ touchfile = ::File.expand_path "/var/lib/puppet/ssl/certs/" +
 # Executes the Puppet client.
 # See cookbooks/puppet/definitions/puppet_client_run.rb for the
 # "puppet_client_run" definition.
-puppet_client_run
+puppet_client_run touchfile
 
 rightscale_marker :end
