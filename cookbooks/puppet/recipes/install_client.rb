@@ -64,6 +64,7 @@ template "/etc/puppet/puppet.conf" do
     :server_port => node[:puppet][:client][:puppet_server_port],
     :environment => node[:puppet][:client][:environment]
   )
+  notifies :enable, resources(:service => "puppet")
 end
 
 # Executes the Puppet client.

@@ -15,6 +15,7 @@ define :puppet_client_run do
   begin
     execute "run puppet-client" do
       command "puppet agent --test"
+      # Please refer Puppet help for "--detailed-exitcodes"
       returns 2
       creates touchfile
     end
@@ -25,10 +26,10 @@ define :puppet_client_run do
       " recipe puppet::reload_agent"
   end
 
-# Configures the Puppet Client service.
+# Restarts the Puppet Client service.
 service "puppet" do
-  action [ :enable, :start ]
-  not_if { ::File.exists?(touchfile) }
+  action :restart
+  only_if { ::File.exists?(touchfile) }
 end
 
 end
