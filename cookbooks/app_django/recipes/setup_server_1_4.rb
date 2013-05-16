@@ -56,3 +56,6 @@ end
 
 # Set debug mode django style (https://docs.djangoproject.com/en/dev/ref/settings/#debug)
 node[:app_django][:app][:debug_mode].gsub!(/^./) { |a| a.upcase }
+
+# Sets required apache modules.
+node[:app_django][:module_dependencies] = ["proxy", "proxy_http"]
