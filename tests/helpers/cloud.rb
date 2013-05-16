@@ -323,7 +323,7 @@ end
 #
 class Google < Cloud
   # Checks if a server can have ephemeral devices. Ephemeral is supported on
-  # Google cloud.
+  # Google cloud only if the server uses an instance type with the "-d" prefix.
   #
   # @param server [Server] the server to check for ephemeral support
   #
@@ -332,7 +332,8 @@ class Google < Cloud
   # @see Cloud#supports_ephemeral?
   #
   def supports_ephemeral?(server)
-    true
+    instance_type = InstanceType.find(server.current_instance["instance_type"])
+    instance_type.resource_uid =~ /-d$/ ? true : false
   end
 
   # Checks if the cloud supports creating and attaching volumes to servers.
