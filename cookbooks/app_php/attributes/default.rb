@@ -8,12 +8,5 @@
 
 # List of additional php modules
 default[:app_php][:modules_list] = []
-
-# Calculated attributes
-# Defining module dependencies depending on platform.
-case platform
-when "ubuntu"
-  set[:app_php][:module_dependencies] = ["proxy_http", "php5"]
-when "centos", "redhat"
-  set[:app_php][:module_dependencies] = ["proxy", "proxy_http"]
-end
+# List of required apache modules
+default[:app_php][:module_dependencies] = []
