@@ -28,13 +28,14 @@ def verify_rackspace_managed_agents(server)
     probe(server, "service #{agent} status") do |response, status|
       unless status == 0
         raise FailedProbeCommandError, "Unable to verify that #{agent} is" +
-          " running on #{server.nickname}"
+          " running on #{server.nickname}. status code: #{status}." +
+          " response: #{response}"
       end
       if response.include?("running")
         puts "The #{agent} agent is running on #{server.nickname}"
       else
         raise RackspaceRackManagedError, "The #{agent} agent is not running" +
-          " on #{server.nickname} Current status is #{response}"
+          " on #{server.nickname}. Current status is #{response}"
       end
       true
     end
