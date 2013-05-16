@@ -48,11 +48,7 @@ if node[:platform] == "ubuntu"
   options += ",bootwait,noauto"
 end
 
-# We do not support xfs on RedHat as we have to pay for it. So set ext3 to be
-# the default.
-# On Google cloud, irrespective of the image (CentOS or Ubuntu) used, xfs is not
-# recognized by /proc/filesystem even after installing xfsprogs. So, set ext3
-# to be the default file system type on google.
+# We do not support xfs on RedHat and Google
 if node[:platform] == "redhat" || cloud == "google"
   filesystem_type = "ext3"
 else
@@ -76,7 +72,8 @@ if ephemeral_supported_clouds.include?(cloud)
   # See rightscale_tools gem for implementation of API.factory method
   @api = RightScale::Tools::API.factory('1.0', {:cloud => cloud}) if cloud == 'ec2'
   my_devices = []
-  if cloud != 'azure' && cloud != 'google'
+  case cloud
+  when 'ec2', 'openstack'
     dev_index = 0
     loop do
       if node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
@@ -102,7 +99,7 @@ if ephemeral_supported_clouds.include?(cloud)
 
   # Azure doesn't have block_device_mapping in the node so the device is
   # hard-coded at the moment
-  elsif cloud == 'azure'
+  when 'azure'
     device = '/dev/sdb1'
     device = Pathname.new(device).realpath.to_s if File.exists?(device)
     if (File.exists?(device) && File.ftype(device) == "blockSpecial")
@@ -111,7 +108,7 @@ if ephemeral_supported_clouds.include?(cloud)
       log "  WARNING: Cannot use device #{device} - skipping"
     end
 
-  elsif cloud == 'google'
+  when 'google'
     eph_link = "/dev/disk/by-id/scsi-0Google_EphemeralDisk_ephemeral-disk-0"
     # /dev/disk/by-id/scsi-0Google_EphemeralDisk_ephemeral-disk-0 is available
     # only on images with '-d' suffix. If this file does not exist then the
