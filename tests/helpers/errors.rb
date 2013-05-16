@@ -28,3 +28,8 @@ end
 #
 class TimeoutError < VirtualMonkey::TestCase::ErrorBase
 end
+
+# An error with Rackspace Managed agents not running properly.
+#
+class RackspaceManagedError < VirtualMonkey::TestCase::ErrorBase
+end
