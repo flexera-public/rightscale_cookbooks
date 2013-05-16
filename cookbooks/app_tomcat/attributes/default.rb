@@ -7,12 +7,7 @@
 # such as a RightScale Master Subscription Agreement.
 
 # List of required apache modules
-set[:app_tomcat][:module_dependencies] = [
-  "proxy",
-  "proxy_http",
-  "deflate",
-  "rewrite"
-]
+default[:app_tomcat][:module_dependencies] = []
 
 # Recommended attributes
 default[:app_tomcat][:code][:root_war] = ""
