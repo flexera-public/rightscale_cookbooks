@@ -6,17 +6,16 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-define :puppet_client_run do
+define :puppet_client_run, :touchfile => nil do
 
   # Runs the Puppet Client to create a new SSL certificate and register on the
   # Puppet Server.
   begin
     execute "run puppet-client" do
-      command "pwd"
-      # command "puppet agent --test"
-      # returns 2
-      # creates touchfile
-      # notifies :start, resources(:service => "puppet")
+      command "puppet agent --test"
+      returns 2
+      creates params[:touchfile]
+      notifies :start, resources(:service => "puppet")
     end
   rescue Exception => e
     log "  Puppet Client certificate registration failed. Your Puppet Server" +
