@@ -1,0 +1,21 @@
+#
+# Cookbook Name:: puppet
+#
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
+#
+# Managed by RightScale
+# DO NOT EDIT BY HAND
+#
+
+#!/bin/bash
+
+HOST="${COLLECTD_HOSTNAME:-`hostname -f`}"
+INTERVAL="${COLLECTD_INTERVAL:-20}"
+
+while sleep "$INTERVAL" ; do
+  puppetd=$(ps aux | grep [p]uppetd | wc -l)
+  echo "PUTVAL $HOST/puppet/gauge-command-total interval=$INTERVAL N:$puppetd"
+done
