@@ -22,9 +22,9 @@
     # The default value is '$confdir/ssl'.
     ssldir = $vardir/ssl
 
-    # Puppet Server details and Certname to handle certificates.
-    server = <%= @server_url %>
-    masterport = <%= @server_port %>
+    # Puppet Master details and Certname to handle certificates.
+    server = <%= @master_address %>
+    masterport = <%= @master_port %>
     certname = <%= @node_name %>
 
 [agent]

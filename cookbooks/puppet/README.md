@@ -1,4 +1,4 @@
-# RightScale Puppet Server and Client Cookbook
+# RightScale Puppet Master and Client Cookbook
 
 ## DESCRIPTION:
 
@@ -25,7 +25,7 @@ There are no known limitations.
 
 * When using a RightScale ServerTemplate, place `puppet::install_client`
   recipe into your runlist to setup the Puppet Client. Set the address to
-  connect to the Puppet Server.
+  connect to the Puppet Master.
 * Use the `puppet::setup_client_monitoring` recipe to add Puppet Client
   monitoring options to your dashboard "Monitoring" tab.
 
@@ -43,12 +43,12 @@ Ubuntu.
 These are the settings used in recipes and templates. Default values are noted.
 * `node[:puppet][:client][:version]`-
   The package version. Default: "2.7.13-1"
-* `node[:puppet][:client][:puppet_server_address]`-
-  Enter the address to connect to the remote Puppet Server.
-* `node[:puppet][:client][:puppet_server_port]`-
-  The port to connect to the remote Puppet Server. Default: "8140"
+* `node[:puppet][:client][:puppet_master_address]`-
+  Enter the address to connect to the remote Puppet Master.
+* `node[:puppet][:client][:puppet_master_port]`-
+  The port to connect to the remote Puppet Master. Default: "8140"
 * `node[:puppet][:client][:node_name]`-
-  Name which will be used to authenticate the Client on the Puppet Server.
+  Name which will be used to authenticate the Client on the Puppet Master.
   If nothing is specified instance fqdn will be used.
 * `node[:puppet][:client][:environment]`-
   The environment type for the Puppet Client configs.
@@ -64,10 +64,10 @@ These are the settings used in recipes and templates. Default values are noted.
 
 ### Usage Example:
 
-## Requery the Puppet Server
+## Requery the Puppet Master
 
 * `puppet::reload_agent`
-  This recipe is used in the operational phase only. If the Puppet Server is
+  This recipe is used in the operational phase only. If the Puppet Master is
   not configured to autosign client certificate, user needs to sign it manually
   and run this recipe.
 

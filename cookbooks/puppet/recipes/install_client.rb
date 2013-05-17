@@ -8,10 +8,6 @@
 
 rightscale_marker
 
-# Declares touchfile, which will be used to avoid the code execution on reboot.
-touchfile = ::File.expand_path "/var/lib/puppet/ssl/certs/" +
-  "#{node[:puppet][:client][:node_name]}.pem"
-
 # Installs the Puppet repository.
 cookbook_file "/tmp/#{node[:puppet][:client][:repo_source]}" do
   source "#{node[:puppet][:client][:repo_source]}"
@@ -59,19 +55,19 @@ template "/etc/puppet/puppet.conf" do
   backup false
   cookbook "puppet"
   variables(
-    :server_url => node[:puppet][:client][:puppet_server_address],
+    :master_address => node[:puppet][:client][:puppet_master_address],
     :node_name => node[:puppet][:client][:node_name],
-    :server_port => node[:puppet][:client][:puppet_server_port],
+    :master_port => node[:puppet][:client][:puppet_master_port],
     :environment => node[:puppet][:client][:environment]
   )
+end
+
+# Configures the Puppet Client service.
+service "puppet" do
+  action :enable
 end
 
 # Executes the Puppet client.
 # See cookbooks/puppet/definitions/puppet_client_run.rb for the
 # "puppet_client_run" definition.
 puppet_client_run
-
-# Configures the Puppet Client service.
-service "puppet" do
-  action :enable
-end
