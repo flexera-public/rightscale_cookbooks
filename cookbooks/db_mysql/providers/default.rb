@@ -944,6 +944,14 @@ action :promote do
           'UNLOCK TABLES',
           previous_master
         )
+
+        # Sets READ_ONLY for oldmaster, now a slave.
+        RightScale::Database::MySQL::Helper.do_query(
+          node,
+          'SET GLOBAL READ_ONLY=1',
+          previous_master
+        )
+
         SystemTimer.timeout_after(
           RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT
         ) do
