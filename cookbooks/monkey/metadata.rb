@@ -18,8 +18,12 @@ recipe "monkey::setup_ruby", "Removing Ruby 1.9 and installing Ruby 1.8."
 recipe "monkey::setup_rest_connection", "Setting up rest_connection for monkey."
 recipe "monkey::setup_virtualmonkey", "Setting up virtualmonkey."
 recipe "monkey::setup_rocketmonkey", "Setting up rocketmonkey."
-recipe "monkey::update_fog_credentials", "Setting up or updating existing credentials for fog configuration."
-recipe "monkey::test_virtualmonkey_api_connection", "Testing API connectivity for virtualmonkey."
+recipe "monkey::update_fog_credentials", "Setting up or updating existing" +
+  " credentials for fog configuration."
+recipe "monkey::test_virtualmonkey_api_connection", "Testing API connectivity" +
+  " for virtualmonkey."
+recipe "monkey::setup_test_config", "Setup test specific configuration." +
+  " Example. Setting up knife credentials for running chef_client test."
 
 attribute "monkey/fog/aws_access_key_id",
   :display_name => "AWS_ACCESS_KEY_ID",
@@ -284,6 +288,13 @@ attribute "monkey/rest/repo_branch",
   :description => "Git branch for checking out rest_connection project",
   :required => "required",
   :recipes => ["monkey::setup_rest_connection"]
+
+attribute "monkey/test_config/knife_pem_key",
+  :display_name => "Knife PEM Key",
+  :description => "The PEM key used by the knife commands to communicate" +
+    " with hosted chef server",
+  :required => "required",
+  :recipes => ["monkey::setup_test_config"]
 
 attribute "monkey/virtualmonkey/monkey_repo_url",
   :display_name => "VirtualMonkey Repo URL",

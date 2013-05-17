@@ -20,3 +20,6 @@ set_unless[:monkey][:rest][:gem_packages] = [
 ]
 
 set_unless[:monkey][:virtualmonkey][:packages] = []
+
+set_unless[:monkey][:user] = "root"
+set_unless[:monkey][:group] = "root"
