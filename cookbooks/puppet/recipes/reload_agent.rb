@@ -8,7 +8,11 @@
 
 rightscale_marker
 
-# Executes the Puppet client.
-# See cookbooks/puppet/definitions/puppet_client_run.rb for the
-# "puppet_client_run" definition.
-puppet_client_run
+# Performs certificate registration on the Puppet Master and returns exit code 2
+# as success.
+execute "run puppet-client" do
+  command "puppet agent --test"
+  returns 2
+  creates "/var/lib/puppet/ssl/certs/" +
+    "#{node[:puppet][:client][:node_name]}.pem"
+end

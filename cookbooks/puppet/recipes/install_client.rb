@@ -72,7 +72,16 @@ service "puppet" do
   action :enable
 end
 
-# Executes the Puppet client.
-# See cookbooks/puppet/definitions/puppet_client_run.rb for the
-# "puppet_client_run" definition.
-puppet_client_run
+# Performs certificate registration on the Puppet Master and returns exit code 2
+# as success, On failure it logs the message.
+execute "run puppet-client" do
+  command "puppet agent --test"
+  returns [1,2]
+  creates touchfile
+  notifies :start, resources(:service => "puppet")
+end
+
+log "  Puppet Client certificate registration failed. Your Puppet Master may" +
+" not be Operational or it is not auto-signing client certificates. Ensure" +
+" client certificate is signed on the Puppet Master and run recipe" +
+" puppet::reload_agent" unless File.exists?(touchfile)
