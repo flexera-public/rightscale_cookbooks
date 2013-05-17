@@ -205,6 +205,24 @@ attribute "monkey/fog/raxprivatev3_auth_url",
   :required => "required",
   :recipes => ["monkey::update_fog_credentials"]
 
+attribute "monkey/fog/hp_access_key_id",
+  :display_name => "HP_ACCESS_KEY_ID",
+  :description => "",
+  :required => "required",
+  :recipes => ["monkey::update_fog_credentials"]
+
+attribute "monkey/fog/hp_secret_access_key",
+  :display_name => "HP_SECRET_ACCESS_KEY",
+  :description => "",
+  :required => "required",
+  :recipes => ["monkey::update_fog_credentials"]
+
+attribute "monkey/fog/hp_auth_url",
+  :display_name => "HP_AUTH_URL",
+  :description => "",
+  :required => "required",
+  :recipes => ["monkey::update_fog_credentials"]
+
 attribute "monkey/git/user",
   :display_name => "Git Username",
   :description => "Git Username to be used with github",

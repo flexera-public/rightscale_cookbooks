@@ -40,6 +40,9 @@ template "/root/.fog" do
     :openstack_access_key_id => node[:monkey][:fog][:openstack_access_key_id],
     :openstack_secret_access_key => node[:monkey][:fog][:openstack_secret_access_key],
     :openstack_auth_url => node[:monkey][:fog][:openstack_auth_url],
+    :hp_access_key_id => node[:monkey][:fog][:hp_access_key_id],
+    :hp_secret_access_key => node[:monkey][:fog][:hp_secret_access_key],
+    :hp_auth_url => node[:monkey][:fog][:hp_auth_url],
     :s3_bucket => node[:monkey][:fog][:s3_bucket]
   )
   cookbook "monkey"
