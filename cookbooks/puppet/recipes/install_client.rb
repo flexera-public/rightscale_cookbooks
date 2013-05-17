@@ -47,7 +47,7 @@ node[:puppet][:client][:packages].each do |pkg|
   end
 end
 
-# Configures to start Puppet on Ubuntu.
+# Configures to enable init process to start Puppet client service on Ubuntu.
 execute "configure puppet to start" do
   command "sed -i 's/START=no/START=yes/g' /etc/default/puppet"
   only_if { node[:platform] == "ubuntu" && !::File.exists?(touchfile) }
@@ -67,21 +67,31 @@ template "/etc/puppet/puppet.conf" do
   )
 end
 
-# Configures the Puppet Client service.
+# Enables the Puppet client service.
 service "puppet" do
   action :enable
 end
 
-# Performs certificate registration on the Puppet Master and returns exit code 2
-# as success, On failure it logs the message.
+# Performs certificate registration on the Puppet Master. Interprets exit code 0
+# or 2 as success. Logs the warning message on exit code 1.
 execute "run puppet-client" do
   command "puppet agent --test"
-  returns [1,2]
+  returns [0,1,2]
   creates touchfile
   notifies :start, resources(:service => "puppet")
+  notifies :create, "ruby_block[registration-status]"
 end
 
-log "  Puppet Client certificate registration failed. Your Puppet Master may" +
-" not be Operational or it is not auto-signing client certificates. Ensure" +
-" client certificate is signed on the Puppet Master and run recipe" +
-" puppet::reload_agent" unless File.exists?(touchfile)
+ruby_block "registration-status" do
+  block do
+    if File.exists?(touchfile)
+      Chef::Log.info("  Puppet Client certificate registration successful.")
+    else
+      Chef::Log.warn("  Puppet Client certificate registration failed. Your" +
+        " Puppet Master may not be Operational or it is not auto-signing" +
+        " client certificates. Ensure client certificate is signed on the" +
+        " Puppet Master and run recipe puppet::reload_agent")
+    end
+  end
+  action :nothing
+end
