@@ -32,7 +32,3 @@ when "ubuntu"
 else
   raise "  Unsupported platform #{platform}"
 end
-
-# Declares touchfile.
-set[:puppet][:client][:touchfile] = ::File.expand_path "/var/lib/puppet/ssl/" +
-  "certs/#{node[:puppet][:client][:node_name]}.pem"

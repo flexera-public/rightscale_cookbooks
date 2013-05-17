@@ -14,7 +14,8 @@ define :puppet_client_run do
     execute "run puppet-client" do
       command "puppet agent --test"
       returns 2
-      creates touchfile
+      creates "/var/lib/puppet/ssl/certs/" +
+        "#{node[:puppet][:client][:node_name]}.pem"
       notifies :start, resources(:service => "puppet")
     end
   rescue Exception => e

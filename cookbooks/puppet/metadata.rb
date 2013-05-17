@@ -34,7 +34,7 @@ attribute "puppet/client/node_name",
   :display_name => "Client Node Name",
   :description =>
     "Name which will be used to authenticate client on the remote Puppet" +
-    " Master. If nothing is specified -instance fqdn will be used." +
+    " Master. Instance FQDN will be used if nothing is specified." +
     " Example: client_101.example.com",
   :required => "optional",
   :recipes => ["puppet::install_client"]

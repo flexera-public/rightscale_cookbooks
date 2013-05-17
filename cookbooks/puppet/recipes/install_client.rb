@@ -8,11 +8,16 @@
 
 rightscale_marker
 
-# Installs the Puppet repository.
+# Declares touchfile, which will be used to avoid the code execution on reboot.
+touchfile = ::File.expand_path "/var/lib/puppet/ssl/certs/" +
+  "#{node[:puppet][:client][:node_name]}.pem"
+
+# Installs the Puppet Open Source package repository.
 cookbook_file "/tmp/#{node[:puppet][:client][:repo_source]}" do
   source "#{node[:puppet][:client][:repo_source]}"
   mode "0755"
   cookbook "puppet"
+  not_if { ::File.exists?(touchfile) }
 end
 
 execute "install puppet repository on Ubuntu" do

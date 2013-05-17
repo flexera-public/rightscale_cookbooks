@@ -49,7 +49,7 @@ These are the settings used in recipes and templates. Default values are noted.
   The port to connect to the remote Puppet Master. Default: "8140"
 * `node[:puppet][:client][:node_name]`-
   Name which will be used to authenticate the Client on the Puppet Master.
-  If nothing is specified instance fqdn will be used.
+  Instance FQDN will be used if nothing is specified.
 * `node[:puppet][:client][:environment]`-
   The environment type for the Puppet Client configs.
 
