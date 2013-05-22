@@ -71,7 +71,7 @@ node[:chef][:client][:current_roles] = node[:chef][:client][:roles]
 log "  Chef Client configuration is completed."
 
 # Sets command extensions and attributes.
-extension = "-j #{node[:chef][:client][:config_dir]}/runlist.json"
+extension = "-j #{node[:chef][:client][:config_dir]}/runlist.json -E #{node[:chef][:client][:environment]}"
 extension << " -o #{node[:chef][:client][:json_attributes]}" \
   unless node[:chef][:client][:json_attributes].empty?
 
