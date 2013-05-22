@@ -349,14 +349,12 @@ action :install_client_driver do
   when "java"
     # This adapter type is used by tomcat application servers
     node[:db][:client][:driver] = "org.postgresql.Driver"
-    node[:db][:client][:jar_file] = "postgresql-9.1-901.jdbc4.jar"
-    # Copy to /usr/share/java/postgresql-9.1-901.jdbc4.jar
     cookbook_file "/usr/share/java/#{node[:db][:client][:jar_file]}" do
       source "#{node[:db][:client][:jar_file]}"
       owner "root"
       group "root"
       mode "0644"
-      cookbook 'app_tomcat'
+      cookbook "db_postgres"
     end
 
   when "ruby"
