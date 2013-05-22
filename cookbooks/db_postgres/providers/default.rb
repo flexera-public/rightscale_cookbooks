@@ -407,10 +407,6 @@ action :enable_replication do
   db_state_get node
   current_restore_process = new_resource.restore_process
   version = new_resource.db_version
-  newmaster_host = node[:db][:current_master_ip]
-  rep_user = node[:db][:replication][:user]
-  rep_pass = node[:db][:replication][:password]
-  app_name = node[:rightscale][:instance_uuid]
 
   # Check the volume before performing any actions.  If invalid raise error and exit.
   ruby_block "validate_master" do
@@ -434,17 +430,29 @@ action :enable_replication do
   ruby_block "Sync to Master data" do
     not_if { current_restore_process == :no_restore }
     block do
-      RightScale::Database::PostgreSQL::Helper.rsync_db(newmaster_host, rep_user)
+      RightScale::Database::PostgreSQL::Helper.rsync_db(
+        node[:db][:current_master_ip],
+        node[:db][:replication][:user]
+      )
     end
   end
 
-  ruby_block "configure_replication" do
+  template "#{node[:db_postgres][:confdir]}/recovery.conf" do
+    source "recovery.conf.erb"
+    owner "postgres"
+    group "postgres"
+    mode "0644"
+    cookbook "db_postgres"
+    variables(
+      :host => RightScale::Database::PostgreSQL::Helper.load_replication_info(
+        node
+      )["Master_IP"],
+      :user => node[:db][:replication][:user],
+      :password => node[:db][:replication][:password],
+      :application_name => node[:rightscale][:instance_uuid],
+      :trigger_file => "#{node[:db_postgres][:confdir]}/recovery.trigger"
+    )
     not_if { current_restore_process == :no_restore }
-    block do
-      master_info = RightScale::Database::PostgreSQL::Helper.load_replication_info(node)
-      newmaster_host = master_info['Master_IP']
-      RightScale::Database::PostgreSQL::Helper.reconfigure_replication_info(newmaster_host, rep_user, rep_pass, app_name)
-    end
   end
 
   bash "wipe_existing_runtime_config" do
