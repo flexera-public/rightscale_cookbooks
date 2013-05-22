@@ -16,3 +16,9 @@ execute "run puppet-client" do
   creates "/var/lib/puppet/ssl/certs/" +
     "#{node[:puppet][:client][:node_name]}.pem"
 end
+
+# Enables and starts the Puppet client service.
+service "puppet" do
+  action [ :enable, :start ]
+  only_if { ::File.exists?(touchfile) }
+end

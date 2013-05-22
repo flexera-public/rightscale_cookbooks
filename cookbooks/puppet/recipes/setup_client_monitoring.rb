@@ -15,10 +15,10 @@ directory "#{node[:rightscale][:collectd_lib]}/plugins/" do
 end
 
 # Creates the collectd plugin for the Puppet Client stats collection.
-template "#{node[:rightscale][:collectd_lib]}/plugins/puppet-stats.sh" do
+template "#{node[:rightscale][:collectd_lib]}/plugins/puppetd-stats.sh" do
   mode "0755"
   backup false
-  source "collectd_puppet_client_stats.erb"
+  source "collectd_puppetd_client_stats.erb"
   cookbook "puppet"
 end
 
@@ -33,7 +33,7 @@ template "#{node[:rightscale][:collectd_plugin_dir]}/puppet-client.conf" do
   cookbook "puppet"
   backup false
   variables(
-    :stats => "#{node[:rightscale][:collectd_lib]}/plugins/puppet-stats.sh"
+    :stats => "#{node[:rightscale][:collectd_lib]}/plugins/puppetd-stats.sh"
   )
   notifies :restart, resources(:service => "collectd")
 end

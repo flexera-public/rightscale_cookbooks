@@ -67,18 +67,12 @@ template "/etc/puppet/puppet.conf" do
   )
 end
 
-# Enables the Puppet client service.
-service "puppet" do
-  action :enable
-end
-
 # Performs certificate registration on the Puppet Master. Interprets exit code 0
 # or 2 as success. Logs the warning message on exit code 1.
 execute "run puppet-client" do
   command "puppet agent --test"
   returns [0,1,2]
   creates touchfile
-  notifies :start, resources(:service => "puppet")
   notifies :create, "ruby_block[registration-status]"
 end
 
@@ -94,4 +88,10 @@ ruby_block "registration-status" do
     end
   end
   action :nothing
+end
+
+# Enables and starts the Puppet client service.
+service "puppet" do
+  action [ :enable, :start ]
+  only_if { ::File.exists?(touchfile) }
 end

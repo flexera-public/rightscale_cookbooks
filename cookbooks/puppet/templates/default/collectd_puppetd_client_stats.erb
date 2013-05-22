@@ -16,6 +16,6 @@ HOST="${COLLECTD_HOSTNAME:-`hostname -f`}"
 INTERVAL="${COLLECTD_INTERVAL:-20}"
 
 while sleep "$INTERVAL" ; do
-  puppetd=$(ps aux | grep [p]uppetd | wc -l)
+  puppetd=$(ps aux | grep [p]uppet | wc -l)
   echo "PUTVAL $HOST/puppet/gauge-command-total interval=$INTERVAL N:$puppetd"
 done
