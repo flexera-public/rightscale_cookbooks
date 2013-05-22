@@ -20,9 +20,9 @@
 # For explanations see
 # http://www.postgresql.org/docs/9.0/interactive/runtime-config.html
 
-data_directory = '<%= @node[:db_postgres][:datadir] %>'           # use data in another directory
+data_directory = '<%= @datadir %>'           # use data in another directory
                                         # (change requires restart)
-hba_file = '<%= @node[:db_postgres][:confdir] %>/pg_hba.conf'     # host-based authentication file
+hba_file = '<%= @confdir %>/pg_hba.conf'     # host-based authentication file
                                         # (change requires restart)
 ident_file = '' # ident configuration file
                                         # (change requires restart)
@@ -32,9 +32,9 @@ listen_addresses = '*'          # what IP address(es) to listen on;
                                         # comma-separated list of addresses;
                                         # defaults to 'localhost', '*' = all
                                         # (change requires restart)
-max_connections = <%= @node[:db_postgres][:tunable][:max_connections] %>                   # (change requires restart)
+max_connections = <%= @max_connections %>                   # (change requires restart)
 # unix_socket_directory = ''             # (change requires restart)
-shared_buffers = <%= @node[:db_postgres][:tunable][:shared_buffers] %>                   # min 128kB
+shared_buffers = <%= @shared_buffers %>                   # min 128kB
                                         # (change requires restart)
 wal_level = hot_standby                 # minimal, archive, or hot_standby
                                         # (change requires restart)
@@ -91,7 +91,6 @@ log_line_prefix = '%m '                 # special values:
                                         #   %q = stop here in non-session
                                         #        processes
                                         #   %% = '%'
-                                        # e.g. '<%u%%%d> '
 datestyle = 'iso, mdy'
 lc_messages = 'C'                       # locale for system error message
                                         # strings
@@ -99,3 +98,7 @@ lc_monetary = 'C'                       # locale for monetary formatting
 lc_numeric = 'C'                        # locale for number formatting
 lc_time = 'C'                           # locale for time formatting
 default_text_search_config = 'pg_catalog.english'
+<% if @sync_state == "sync"%>
+synchronous_standby_names = '*'
+synchronous_commit = on
+<% end %>

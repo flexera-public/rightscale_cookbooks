@@ -12,29 +12,19 @@ rightscale_marker
 # See cookbooks/db/definitions/db_state_assert.rb for the "db_state_assert" definition.
 db_state_assert :master
 
-
-# Set async mode on master server
-
-# Enable async state
-# Setup postgresql.conf
 log "  Initializing slave to connect to master in async state..."
-# updates postgresql.conf for replication
-log "  Updates postgresql.conf for replication"
-template "#{node[:db_postgres][:confdir]}/postgresql.conf" do
-  source "postgresql.conf.erb"
-  owner "postgres"
-  group "postgres"
-  mode "0644"
-  cookbook 'db_postgres'
-end
+# Sets 'sync_state' to 'async' mode on master server.
+# See cookbooks/db_postgres/definitions/db_postgres_set_psqlconf.rb
+# for the "db_postgres_set_psqlconf" definition.
+db_postgres_set_psqlconf "setup_postgresql_conf"
 
 # Setup pg_hba.conf
-cookbook_file ::File.join(node[:db_postgres][:confdir], 'pg_hba.conf') do
+cookbook_file "#{node[:db_postgres][:confdir]}/pg_hba.conf" do
   source "pg_hba.conf"
   owner "postgres"
   group "postgres"
   mode "0644"
-  cookbook 'db_postgres'
+  cookbook "db_postgres"
 end
 
 # Reload postgresql to read new updated postgresql.conf

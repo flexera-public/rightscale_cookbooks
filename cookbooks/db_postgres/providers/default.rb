@@ -268,31 +268,21 @@ action :install_server do
   ulimit.run_command.error!
   node[:db_postgres][:tunable][:ulimit] ||= ulimit.stdout.to_i / 33
 
-  # Setup postgresql.conf
-  # template_source = "postgresql.conf.erb"
-  configfile = ::File.expand_path "~/.postgresql_config.done"
-  template "#{node[:db_postgres][:confdir]}/postgresql.conf" do
-    source "postgresql.conf.erb"
-    owner "postgres"
-    group "postgres"
-    mode "0644"
-    cookbook 'db_postgres'
-    not_if { ::File.exists?(configfile) }
-  end
+  # See cookbooks/db_postgres/definitions/db_postgres_set_psqlconf.rb
+  # for the "db_postgres_set_psqlconf" definition.
+  db_postgres_set_psqlconf "setup_postgresql_conf"
 
   # Setup pg_hba.conf
   # pg_hba_source = "pg_hba.conf.erb"
-  cookbook_file ::File.join(node[:db_postgres][:confdir], 'pg_hba.conf') do
+  cookbook_file "#{node[:db_postgres][:confdir]}/pg_hba.conf" do
     source "pg_hba.conf"
     owner "postgres"
     group "postgres"
     mode "0644"
     cookbook 'db_postgres'
-    not_if "test -f #{configfile}"
-  end
-
-  execute "touch #{configfile}" do
-    creates configfile
+    not_if {
+      ::Dir.glob("#{node[:db_postgres][:confdir]}/pg_hba.conf.chef*").any?
+    }
   end
 
   # Setup PostgreSQL user limits

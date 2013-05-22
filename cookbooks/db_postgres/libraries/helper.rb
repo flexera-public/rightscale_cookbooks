@@ -127,16 +127,6 @@ module RightScale
           return $? == 0
         end
 
-        # Configure the replication parameters into pg_hba.conf.
-        #
-        # @param [Hash] node Node name
-        def self.configure_postgres_conf(node)
-          File.open("/var/lib/pgsql/9.1/data/postgresql.conf", "a") do |f|
-            f.puts("synchronous_standby_names = '*'\nsynchronous_commit = on")
-          end
-          return $? == 0
-        end
-
         # Replication process reconfiguration
         #
         # @param [String] newmaster_host FQDN or ip of new replication master
