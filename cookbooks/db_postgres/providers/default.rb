@@ -522,16 +522,18 @@ action :setup_monitoring do
       notifies :restart, resources(:service => "collectd")
     end
 
-    # Install the postgres_ps collectd script into the collectd library plugins directory
-    cookbook_file ::File.join(node[:rightscale][:collectd_lib], "plugins", 'postgres_ps') do
+    # Installs the postgres_ps collectd script into the collectd library plugins
+    # directory.
+    cookbook_file "#{node[:rightscale][:collectd_lib]}/plugins/postgres_ps" do
       source "postgres_ps"
       mode "0755"
       cookbook "db_postgres"
     end
 
-    # Add a collectd config file for the postgres_ps script with the exec plugin and restart collectd if necessary
-    template ::File.join(node[:rightscale][:collectd_plugin_dir], 'postgres_ps.conf') do
-      source "postgres_collectd_exec.erb"
+    # Adds a collectd config file for the postgres_ps script with the exec
+    # plugin and restarts collectd if necessary.
+    template "#{node[:rightscale][:collectd_plugin_dir]}/postgres_ps.conf" do
+      source "postgres_ps.conf.erb"
       cookbook "db_postgres"
       notifies :restart, resources(:service => "collectd")
     end
