@@ -149,71 +149,67 @@ end
 action :install_client do
 
   version = new_resource.db_version
+  case version
+  when "9.1"
+    node[:db_postgres][:client_packages_install] = value_for_platform(
+      ["centos", "redhat"] => {
+        "default" => [
+          "libxslt",
+          "postgresql91-libs",
+          "postgresql91",
+          "postgresql91-devel"
+        ]
+      },
+      "default" => []
+    )
 
-  # Install PostgreSQL package(s)
+    node[:db_postgres][:packages_version] = value_for_platform(
+      ["centos", "redhat"] => {
+        "5.8" => "9.1.5-3PGDG.rhel5",
+        "default" => "9.1.5-3PGDG.rhel6"
+      },
+      "default" => ""
+    )
 
-  node[:db_postgres][:client_packages_install] = value_for_platform(
-    ["centos", "redhat"] => {
-      "default" => [
-        "postgresql91-libs",
-        "postgresql91",
-        "postgresql91-devel"
-      ]
-    },
-    "default" => []
-  )
-
-  node[:db_postgres][:packages_version] = value_for_platform(
-    ["centos", "redhat"] => {
-      "5.8" => "9.1.5-3PGDG.rhel5",
-      "default" => "9.1.5-3PGDG.rhel6"
-    },
-    "default" => ""
-  )
-
-  raise "Platform not supported for PostgreSQL #{version}" if node[:db_postgres][:client_packages_install].empty?
-
-  # Install PostgreSQL package(s)
-  if node[:platform] =~ /redhat|centos/
-    arch = node[:kernel][:machine]
-    raise "Unsupported platform detected!" unless arch == "x86_64"
-
-    package "libxslt" do
-      action :install
-    end
-
-    packages = node[:db_postgres][:client_packages_install]
-    log "  Packages to install: #{packages.join(", ")}"
-    packages.each do |p|
-      package p do
-        action :install
-        version node[:db_postgres][:packages_version]
-      end
-    end
+    node[:db_postgres][:bindir] = value_for_platform(
+      ["centos", "redhat"] => {
+        "default" => "/usr/pgsql-9.1/bin"
+      }
+    )
   else
-    # Currently supports CentOS in future will support others
-    raise "ERROR:: Unrecognized distro #{node[:platform]}, exiting "
+    raise "PostgresSQL version '#{version}'is not supported yet."
   end
 
-  # Link postgresql pg_config to default system bin path - required by app servers
+
+  # Installs PostgreSQL package(s).
+  packages = node[:db_postgres][:client_packages_install]
+  raise "Platform not supported for PostgreSQL #{version}" if packages.empty?
+
+  log "  Packages to install: #{packages.join(", ")}"
+  packages.each do |p|
+    package p do
+      action :install
+      version node[:db_postgres][:packages_version]
+    end
+  end
+
+  # Link PostgreSQL pg_config to default system bin path - this is required by
+  # the Application servers.
   link "/usr/bin/pg_config" do
-    to "/usr/pgsql-#{version}/bin/pg_config"
+    to "#{node[:db_postgres][:bindir]}/pg_config"
     not_if { ::File.exists?("/usr/bin/pg_config") }
   end
 
-  # Install PostgreSQL client gem
-  node[:db_postgres][:bindir] = "/usr/pgsql-#{version}/bin"
-  gem_package("pg") do
-    gem_binary("/opt/rightscale/sandbox/bin/gem")
-    options("-- --with-pg-config=#{node[:db_postgres][:bindir]}/pg_config")
+  # Installs PostgreSQL client gem.
+  gem_package "pg" do
+    gem_binary "/opt/rightscale/sandbox/bin/gem"
+    options "-- --with-pg-config=#{node[:db_postgres][:bindir]}/pg_config"
   end
 
 end
 
 action :install_server do
 
-  arch = node[:kernel][:machine]
-  raise "Unsupported platform detected!" unless arch == "x86_64"
   version = new_resource.db_version
   package "uuid" do
     action :install
