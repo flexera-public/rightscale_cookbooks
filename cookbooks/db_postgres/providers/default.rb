@@ -515,25 +515,25 @@ action :setup_monitoring do
       version "#{collectd_version}" unless collectd_version == "latest"
     end
 
-    template ::File.join(node[:rightscale][:collectd_share], 'postgresql_default.conf') do
+    cookbook_file "#{node[:rightscale][:collectd_share]}/postgresql_default.conf" do
+      source "postgresql_default.conf"
       backup false
-      source "postgresql_default.conf.erb"
+      cookbook "db_postgres"
       notifies :restart, resources(:service => "collectd")
-      cookbook 'db_postgres'
     end
 
     # Install the postgres_ps collectd script into the collectd library plugins directory
     cookbook_file ::File.join(node[:rightscale][:collectd_lib], "plugins", 'postgres_ps') do
       source "postgres_ps"
       mode "0755"
-      cookbook 'db_postgres'
+      cookbook "db_postgres"
     end
 
     # Add a collectd config file for the postgres_ps script with the exec plugin and restart collectd if necessary
     template ::File.join(node[:rightscale][:collectd_plugin_dir], 'postgres_ps.conf') do
       source "postgres_collectd_exec.erb"
+      cookbook "db_postgres"
       notifies :restart, resources(:service => "collectd")
-      cookbook 'db_postgres'
     end
 
   else
