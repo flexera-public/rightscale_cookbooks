@@ -61,9 +61,8 @@ end
 
 action :firewall_update_request do
   # See cookbooks/sys_firewall/providers/default.rb for the "update_request" action.
-  sys_firewall "Request database open port 5432 (PostgreSQL) to this server" do
+  sys_firewall node[:db_postgres][:port] do
     machine_tag new_resource.machine_tag
-    port 5432
     enable new_resource.enable
     ip_addr new_resource.ip_addr
     action :update_request
@@ -72,9 +71,8 @@ end
 
 action :firewall_update do
   # See cookbooks/sys_firewall/providers/default.rb for the "update" action.
-  sys_firewall "Request database open port 5432 (PostgrSQL) to this server" do
+  sys_firewall node[:db_postgres][:port] do
     machine_tag new_resource.machine_tag
-    port 5432
     enable new_resource.enable
     action :update
   end
