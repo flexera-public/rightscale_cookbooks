@@ -503,9 +503,6 @@ action :setup_monitoring do
   # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
   db_state_get node
 
-  priv_username = new_resource.privilege_username
-  priv_password = new_resource.privilege_password
-
   service "collectd" do
     action :nothing
   end
