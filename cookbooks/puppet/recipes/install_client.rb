@@ -53,6 +53,13 @@ execute "configure puppet to start" do
   only_if { node[:platform] == "ubuntu" && !::File.exists?(touchfile) }
 end
 
+# Initializing supported commands for Puppet service for further usage.
+service "puppet" do
+  action :nothing
+  persist true
+  supports :status => true, :start => true, :stop => true, :restart => true
+end
+
 # Creates the Puppet Client configuration file.
 template "/etc/puppet/puppet.conf" do
   source "puppet_client.conf.erb"
