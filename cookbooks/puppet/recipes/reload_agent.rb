@@ -22,6 +22,6 @@ end
 
 # Enables and starts the Puppet client service.
 service "puppet" do
-  action [ :enable, :start ]
+  action [:enable, :start]
   only_if { ::File.exists?(touchfile) }
 end

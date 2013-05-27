@@ -11,20 +11,18 @@ rightscale_marker
 # Creates the collectd plugin directory.
 directory "#{node[:rightscale][:collectd_lib]}/plugins/" do
   recursive true
-  not_if { ::File.exists?("#{node[:rightscale][:collectd_lib]}/plugins/") }
 end
 
 # Creates the collectd plugin for the Puppet Client stats collection.
-template "#{node[:rightscale][:collectd_lib]}/plugins/puppetd-stats.sh" do
+template "#{node[:rightscale][:collectd_lib]}/plugins/Puppet-stats.sh" do
   mode "0755"
   backup false
-  source "collectd_puppetd_client_stats.erb"
+  source "collectd_puppet_client_stats.erb"
   cookbook "puppet"
 end
 
-service "collectd" do
-  action :nothing
-end
+# Initializing Collectd service for further usage.
+service "collectd"
 
 # Creates the collectd conf file for the Puppet Client monitoring.
 template "#{node[:rightscale][:collectd_plugin_dir]}/puppet-client.conf" do
@@ -33,7 +31,7 @@ template "#{node[:rightscale][:collectd_plugin_dir]}/puppet-client.conf" do
   cookbook "puppet"
   backup false
   variables(
-    :stats => "#{node[:rightscale][:collectd_lib]}/plugins/puppetd-stats.sh"
+    :stats_file => "#{node[:rightscale][:collectd_lib]}/plugins/Puppet-stats.sh"
   )
   notifies :restart, resources(:service => "collectd")
 end

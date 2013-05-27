@@ -55,7 +55,6 @@ end
 
 # Initializing supported commands for Puppet service for further usage.
 service "puppet" do
-  action :nothing
   persist true
   supports :status => true, :start => true, :stop => true, :restart => true
 end
@@ -99,6 +98,6 @@ end
 
 # Enables and starts the Puppet client service.
 service "puppet" do
-  action [ :enable, :start ]
+  action [:enable, :start]
   only_if { ::File.exists?(touchfile) }
 end
