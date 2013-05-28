@@ -15,9 +15,7 @@ depends "sys_firewall"
 depends "logrotate"
 
 
-recipe "jenkins::default", "Default recipe for Jenkins setup."
 recipe "jenkins::install_server", "Install Jenkins."
-recipe "jenkins::install_plugins", "Install Jenkins plugins."
 recipe "jenkins::do_attach_request", "Installing Jenkins."
 recipe "jenkins::do_attach_slave_at_boot", "Installing Jenkins."
 

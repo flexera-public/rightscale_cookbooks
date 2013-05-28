@@ -12,7 +12,6 @@ version          "13.2.0"
 
 depends "rightscale"
 
-recipe "monkey::default", "Default recipe for monkey setup."
 recipe "monkey::setup_git", "Setting up Git for monkey."
 recipe "monkey::setup_ruby", "Removing Ruby 1.9 and installing Ruby 1.8."
 recipe "monkey::setup_rest_connection", "Setting up rest_connection for monkey."

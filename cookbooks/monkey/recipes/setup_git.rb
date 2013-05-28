@@ -8,7 +8,7 @@
 rightscale_marker :begin
 
 log "  Creating ssh directory for root user"
-directory "/root/.ssh" do
+directory "#{node[:monkey][:user_home]}/.ssh" do
   owner "root"
   group "root"
   mode "0755"
@@ -16,9 +16,9 @@ directory "/root/.ssh" do
 end
 
 log "  Adding git private key for root user"
-file "/root/.ssh/git_id_rsa" do
-  owner "root"
-  group "root"
+file "#{node[:monkey][:user_home]}/.ssh/git_id_rsa" do
+  owner node[:monkey][:user]
+  group node[:monkey][:group]
   mode "0600"
   content node[:monkey][:git][:ssh_key]
   action :create
@@ -26,18 +26,18 @@ end
 
 # Configuring ssh to add github
 log "  Configuring ssh to add github"
-template "/root/.ssh/config" do
+template "#{node[:monkey][:user_home]}/.ssh/config" do
   source "sshconfig.erb"
   variables(
     :git_hostname => node[:monkey][:git][:host_name],
-    :keyfile => '/root/.ssh/git_id_rsa'
+    :keyfile => "#{node[:monkey][:user_home]}/.ssh/git_id_rsa"
   )
   cookbook "monkey"
 end
 
 # Setting up git configuration for root user
 log "  Setting up git configuration for root user"
-template "/root/.gitconfig" do
+template "#{node[:monkey][:user_home]}/.gitconfig" do
   source "gitconfig.erb"
   variables(
     :git_user => node[:monkey][:git][:user],

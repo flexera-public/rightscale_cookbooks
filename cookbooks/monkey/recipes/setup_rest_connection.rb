@@ -8,7 +8,6 @@
 rightscale_marker :begin
 
 # Installing packages needed for rest_connection
-
 node[:monkey][:rest][:packages] = value_for_platform(
   "centos" => {
     "default" => [ "libxml2-devel",  "libxslt-devel"]
@@ -24,10 +23,11 @@ packages.each do |pkg|
   package pkg
 end unless packages.empty?
 
-# Install rubygems 1.8.24. By default rubygems 2.x.x gets installed.
+# Install rubygems compatible with Ruby 1.8.7. By default rubygems 2.x.x gets
+# installed.
 gem_package "rubygems-update" do
   gem_binary "/usr/bin/gem"
-  version "1.8.24"
+  version node[:monkey][:rubygems_update_version]
   action :install
 end
 
@@ -55,7 +55,7 @@ gems.each do |gem|
   end
 end unless gems.empty?
 
-git "/root/rest_connection" do
+git node[:monkey][:rest_connection_path] do
   repository node[:monkey][:rest][:repo_url]
   reference node[:monkey][:rest][:repo_branch]
   action :sync
@@ -66,27 +66,26 @@ end
 
 log "  Making super sure that we're on the right branch"
 execute "git checkout" do
-   cwd "/root/rest_connection"
+   cwd node[:monkey][:rest_connection_path]
    command "git checkout #{node[:monkey][:rest][:repo_branch]}"
 end
 
-bash "Building and installing rest_connection gem" do
-  code <<-EOH
-    cd /root/rest_connection
-    bundle install
-  EOH
+log "  Installing rest_connection dependencies"
+execute "bundle install" do
+  cwd node[:monkey][:rest_connection_path]
+  command "bundle install"
 end
 
 log "  Creating rest_connection configuration directory"
-directory "/root/.rest_connection" do
-  owner "root"
-  group "root"
+directory "#{node[:monkey][:user_home]}/.rest_connection" do
+  owner node[:monkey][:user]
+  group node[:monkey][:group]
   mode "0755"
   action :create
 end
 
 
-template "/root/.rest_connection/rest_api_config.yaml" do
+template "#{node[:monkey][:user_home]}/.rest_connection/rest_api_config.yaml" do
   source "rest_api_config.yaml.erb"
   variables(
     :right_passwd => node[:monkey][:rest][:right_passwd],
@@ -97,21 +96,29 @@ template "/root/.rest_connection/rest_api_config.yaml" do
   cookbook "monkey"
 end
 
-bash "Adding private ssh key" do
+# Create the private key used for SSH
+file "#{node[:monkey][:user_home]}/.ssh/api_user_key" do
+  owner node[:monkey][:user]
+  group node[:monkey][:group]
+  mode 0600
+  content node[:monkey][:rest][:ssh_key]
+  action :create
+end
+
+# Add the private key to the rest_connection configuration file
+bash "Adding private ssh key to rest_connection config" do
   code <<-EOH
-    echo "#{node[:monkey][:rest][:ssh_key]}" > /root/.ssh/api_user_key
-    chmod 600 /root/.ssh/api_user_key
-    cat << EOF >> /root/.rest_connection/rest_api_config.yaml
+    cat << EOF >> #{node[:monkey][:user_home]}/.rest_connection/rest_api_config.yaml
 :ssh_keys:
-- /root/.ssh/api_user_key
+- #{node[:monkey][:user_home]}/.ssh/api_user_key
 EOF
 EOH
-end unless node[:monkey][:rest][:ssh_key] == ""
+end
 
-bash "Adding optional public ssh key to authorized keys" do
-  code <<-EOH
-  echo "#{node[:monkey][:rest][:ssh_pub_key]}" >> /root/.ssh/authorized_keys
-  EOH
-end unless node[:monkey][:rest][:ssh_pub_key] == ""
+execute "add public key to authorized keys" do
+  command "echo #{node[:monkey][:rest][:ssh_pub_key]} >>" +
+    " #{node[:monkey][:user_home]}/.ssh/authorized_keys"
+  not_if { File.open("#{ENV['HOME']}/.ssh/authorized_keys").lines.any? { |line| line.chomp == node[:jenkins][:public_key] } }
+end unless node[:monkey][:rest][:ssh_pub_key].empty?
 
 rightscale_marker :end

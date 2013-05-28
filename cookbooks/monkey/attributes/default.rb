@@ -1,5 +1,5 @@
 #
-# Cookbook Name::monkey
+# Cookbook Name:: monkey
 #
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
@@ -24,9 +24,18 @@ set_unless[:monkey][:rest][:gem_packages] = [
 set_unless[:monkey][:virtualmonkey][:packages] = []
 # Monkey user
 set_unless[:monkey][:user] = "root"
+# Monkey user's home directory
+set_unless[:monkey][:user_home] = "/root"
 # Monkey group
 set_unless[:monkey][:group] = "root"
+# Rest connection path
+set_unless[:monkey][:rest_connection_path] =
+  "#{node[:monkey][:user_home]}/rest_connection"
 # Virtualmonkey path
-set_unless[:monkey][:virtualmonkey_path] = "/root/virtualmonkey"
+set_unless[:monkey][:virtualmonkey_path] =
+  "#{node[:monkey][:user_home]}/virtualmonkey"
 # Rocketmonkey path
-set_unless[:monkey][:rocketmonkey_path] = "/root/rocketmonkey"
+set_unless[:monkey][:rocketmonkey_path] =
+  "#{node[:monkey][:user_home]}/rocketmonkey"
+# The version for the rubygems-update gem
+set_unless[:monkey][:rubygems_update_version] = "1.8.24"
