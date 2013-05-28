@@ -115,6 +115,14 @@ EOF
 EOH
 end
 
+# Create the authorized_keys file if it doesn't exist
+file "#{node[:monkey][:user_home}/.ssh/authorized_keys" do
+  owner node[:monkey][:user]
+  group node[:monkey][:group]
+  mode 0644
+  action :create
+end
+
 execute "add public key to authorized keys" do
   command "echo #{node[:monkey][:rest][:ssh_pub_key]} >>" +
     " #{node[:monkey][:user_home]}/.ssh/authorized_keys"
