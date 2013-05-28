@@ -53,9 +53,9 @@ execute "git checkout" do
   command "git checkout #{node[:monkey][:virtualmonkey][:monkey_repo_branch]}"
 end
 
-# Building VirtualMonkey gem
-log "  Building VirtualMonkey gem"
-bash "Building virtualmonkey gem" do
+# Install Virtualmonkey dependencies
+log "  Installing Virtualmonkey dependencies"
+bash "Install Virtualmonkey dependencies" do
   flags "-ex"
   code <<-EOH
     cd /root/virtualmonkey
@@ -64,7 +64,7 @@ bash "Building virtualmonkey gem" do
 end
 
 # Copy the virtualmonkey configuration file
-execute "copy virtualmonkey configuration" do
+execute "Copy Virtualmonkey configuration" do
   command "cp /root/virtualmonkey/config.yaml /root/virtualmonkey/.config.yaml"
 end
 
