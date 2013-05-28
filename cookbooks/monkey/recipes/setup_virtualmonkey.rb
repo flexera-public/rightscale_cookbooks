@@ -37,7 +37,7 @@ end
 # Checking out VirtualMonkey repository
 log "  Checking out VirtualMonkey repository from:" +
   " #{node[:monkey][:virtualmonkey][:monkey_repo_url]}"
-git "/root/virtualmonkey" do
+git node[:monkey][:virtualmonkey_path] do
   repository node[:monkey][:virtualmonkey][:monkey_repo_url]
   reference node[:monkey][:virtualmonkey][:monkey_repo_branch]
   action :sync
@@ -49,7 +49,7 @@ end
 #
 log "  Making super sure that we're on the right branch"
 execute "git checkout" do
-  cwd "/root/virtualmonkey"
+  cwd node[:monkey][:virtualmonkey_path]
   command "git checkout #{node[:monkey][:virtualmonkey][:monkey_repo_branch]}"
 end
 
@@ -58,14 +58,20 @@ log "  Installing Virtualmonkey dependencies"
 bash "Install Virtualmonkey dependencies" do
   flags "-ex"
   code <<-EOH
-    cd /root/virtualmonkey
+    cd #{node[:monkey][:virtualmonkey_path]}
     bundle install --no-color --system
   EOH
 end
 
 # Copy the virtualmonkey configuration file
 execute "Copy Virtualmonkey configuration" do
-  command "cp /root/virtualmonkey/config.yaml /root/virtualmonkey/.config.yaml"
+  command "cp #{node[:monkey][:virtualmonkey_path]}/config.yaml" +
+    " #{node[:monkey][:virtualmonkey_path]}/.config.yaml"
+end
+
+# Add the Virtualmonkey directory to the system path
+execute "Add Virtualmonkey directory to system path" do
+  command "export PATH=#{node[:monkey][:virtualmonkey_path]}:$PATH"
 end
 
 # Installing right_cloud_api gem from the template file found in rightscale

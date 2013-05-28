@@ -108,7 +108,7 @@ EOF
 EOH
 end unless node[:monkey][:rest][:ssh_key] == ""
 
-bash "Adding optional public ssh key ro authorized keys" do
+bash "Adding optional public ssh key to authorized keys" do
   code <<-EOH
   echo "#{node[:monkey][:rest][:ssh_pub_key]}" >> /root/.ssh/authorized_keys
   EOH

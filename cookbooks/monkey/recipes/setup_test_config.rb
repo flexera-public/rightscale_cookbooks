@@ -8,6 +8,7 @@
 
 rightscale_marker :begin
 
+# Create the /etc/chef directory if it doesn't exist
 directory "/etc/chef" do
   owner node[:monkey][:user]
   group node[:monkey][:group]
@@ -16,6 +17,7 @@ directory "/etc/chef" do
   action :create
 end
 
+# Create the Knife PEM Key
 file "/etc/chef/rightscalevirtualmonkey.pem" do
   owner node[:monkey][:user]
   group node[:monkey][:group]

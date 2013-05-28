@@ -7,8 +7,9 @@
 
 rightscale_marker :begin
 
-log "  Checking out Rocketmonkey repository from: #{node[:monkey][:rocketmonkey][:repo_url]}"
-git "/root/rocketmonkey" do
+log "  Checking out Rocketmonkey repository from:" +
+  " #{node[:monkey][:rocketmonkey][:repo_url]}"
+git node[:monkey][:rocketmonkey_path] do
   repository node[:monkey][:rocketmonkey][:repo_url]
   reference node[:monkey][:rocketmonkey][:repo_branch]
   action :sync
@@ -16,7 +17,7 @@ end
 
 log "  Making super sure that we're on the right branch"
 execute "git checkout" do
-  cwd "/root/rocketmonkey"
+  cwd node[:monkey][:rocketmonkey_path]
   command "git checkout #{node[:monkey][:rocketmonkey][:repo_branch]}"
 end
 
@@ -24,7 +25,7 @@ log "  Copy rocketmonkey configuration files"
 bash "Copy rocketmonkey configuration files" do
   flags "-ex"
   code <<-EOH
-    cd /root/rocketmonkey
+    cd #{node[:monkey][:rocketmonkey_path]}
     cp googleget.yaml .googleget.yaml
     cp rocketmonkey.yaml .rocketmonkey.yaml
     cp rocketmonkey.clouds.yaml .rocketmonkey.clouds.yaml
@@ -36,7 +37,7 @@ log "  Installing required gems for rocketmonkey"
 bash "Install required gems for rocketmonkey" do
   flags "-ex"
   code <<-EOH
-    cd /root/rocketmonkey
+    cd #{node[:monkey][:rocketmonkey_path]}
     bundle install --system
   EOH
 end

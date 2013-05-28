@@ -46,7 +46,8 @@ script "Testing API connectivity" do
         :aws_access_key_id => Fog.credentials[:aws_access_key_id_test],
         :aws_secret_access_key => Fog.credentials[:aws_secret_access_key_test])
 
-      if directory = s3.directories.detect { |d| d.key == "#{node[:monkey][:fog][:s3_bucket]}" }
+      if directory =
+        s3.directories.detect { |d| d.key == "#{node[:monkey][:fog][:s3_bucket]}" }
         puts "Found directory, re-using"
       else
         directory = s3.directories.create(
