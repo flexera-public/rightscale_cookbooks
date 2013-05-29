@@ -275,7 +275,7 @@ attribute "monkey/rest/right_acct_id",
 
 attribute "monkey/rest/right_subdomain",
   :display_name => "RightScale Subdomain",
-  :description => "RightScale subdomain. Example. 'my', 'moo'",
+  :description => "RightScale subdomain. Example. 'my', 'moo.test'",
   :required => "required",
   :recipes => [
     "monkey::setup_rest_connection",
