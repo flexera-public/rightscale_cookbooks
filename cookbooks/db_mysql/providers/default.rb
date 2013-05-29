@@ -562,6 +562,7 @@ action :install_server do
   db_mysql_set_mycnf "setup_mycnf" do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
+    innodb_log_file_size ::File.size?("/var/lib/mysql/ib_logfile0")
     compressed_protocol node[:db_mysql][:compressed_protocol] ==
       "enabled" ? true : false
   end
