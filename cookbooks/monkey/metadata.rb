@@ -318,7 +318,7 @@ attribute "monkey/rest/azure_hack_retry_count",
   :display_name => "Azure Hack Retry Count",
   :description => "Number of retries for Azure launch failures. Example: 5",
   :required => "optional",
-  :default => "5"
+  :default => "5",
   :recipes => ["monkey::setup_rest_connection"]
 
 attribute "monkey/rest/azure_hack_sleep_seconds",
