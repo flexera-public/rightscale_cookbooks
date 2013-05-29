@@ -1,9 +1,10 @@
 #
 # Cookbook Name::monkey
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.  All access and use subject
+# to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements such
+# as a RightScale Master Subscription Agreement.
 
 rightscale_marker :begin
 
@@ -66,8 +67,9 @@ git node[:monkey][:rest_connection_path] do
   action :sync
 end
 
-# By default chef changes the checked out branch to a branch named 'deploy' locally
-# To make sure we can pull/push changes, let's checkout the correct branch again!
+# By default chef changes the checked out branch to a branch named 'deploy'
+# locally. To make sure we can pull/push changes, let's checkout the correct
+# branch again!
 
 log "  Making super sure that we're on the right branch"
 execute "git checkout" do
@@ -90,7 +92,12 @@ template "#{node[:monkey][:user_home]}/.rest_connection/rest_api_config.yaml" do
     :right_passwd => node[:monkey][:rest][:right_passwd],
     :right_email => node[:monkey][:rest][:right_email],
     :right_acct_id => node[:monkey][:rest][:right_acct_id],
-    :right_subdomain => node[:monkey][:rest][:right_subdomain]
+    :right_subdomain => node[:monkey][:rest][:right_subdomain],
+    :azure_hack_on => node[:monkey][:rest][:azure_hack_on],
+    :azure_hack_retry_count => node[:monkey][:rest][:azure_hack_retry_count],
+    :azure_hack_sleep_seconds =>
+      node[:monkey][:rest][:azure_hack_sleep_seconds],
+    :api_logging => node[:monkey][:rest][:api_logging]
   )
   cookbook "monkey"
 end

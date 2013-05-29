@@ -306,6 +306,36 @@ attribute "monkey/rest/repo_branch",
   :required => "required",
   :recipes => ["monkey::setup_rest_connection"]
 
+attribute "monkey/rest/azure_hack_on",
+  :display_name => "Azure Hack ON/OFF",
+  :description => "Whether to enable/disable Azure retry hack",
+  :required => "optional",
+  :choice => ["true", "false"],
+  :default => "true",
+  :recipes => ["monkey::setup_rest_connection"]
+
+attribute "monkey/rest/azure_hack_retry_count",
+  :display_name => "Azure Hack Retry Count",
+  :description => "Number of retries for Azure launch failures. Example: 5",
+  :required => "optional",
+  :default => "5"
+  :recipes => ["monkey::setup_rest_connection"]
+
+attribute "monkey/rest/azure_hack_sleep_seconds",
+  :display_name => "Azure Hack Sleep Seconds",
+  :description => "Number of seconds to sleep between attempts on relaunches",
+  :required => "optional",
+  :default => "60",
+  :recipes => ["monkey::setup_rest_connection"]
+
+attribute "monkey/rest/api_logging",
+  :display_name => "API Logging",
+  :description => "Whether to enable/disable API logging",
+  :required => "optional",
+  :choice => ["true", "false"],
+  :default => "false",
+  :recipes => ["monkey::setup_rest_connection"]
+
 attribute "monkey/test_config/knife_pem_key",
   :display_name => "Knife PEM Key",
   :description => "The PEM key used by the knife commands to communicate" +
