@@ -69,9 +69,13 @@ execute "Copy Virtualmonkey configuration" do
     " #{node[:monkey][:virtualmonkey_path]}/.config.yaml"
 end
 
-# Add the Virtualmonkey directory to the system path
-execute "Add Virtualmonkey directory to system path" do
-  command "export PATH=#{node[:monkey][:virtualmonkey_path]}:$PATH"
+# Add virtualmonkey to PATH
+file "/etc/profile.d/virtualmonkey.sh" do
+  owner "root"
+  group "root"
+  mode 0755
+  content "export PATH=#{node[:monkey][:virtualmonkey_path]}/bin:$PATH"
+  action :create
 end
 
 # Installing right_cloud_api gem from the template file found in rightscale
