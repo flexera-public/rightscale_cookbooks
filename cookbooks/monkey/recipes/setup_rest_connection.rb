@@ -55,6 +55,11 @@ gems.each do |gem|
   end
 end unless gems.empty?
 
+# Checkout the rest_connection project. The code is just checked out for
+# performing development. This code is not installed. The Gemfile in
+# virtualmonkey and rocketmonkey determine the version they require for
+# rest_connection.
+#
 git node[:monkey][:rest_connection_path] do
   repository node[:monkey][:rest][:repo_url]
   reference node[:monkey][:rest][:repo_branch]
@@ -68,12 +73,6 @@ log "  Making super sure that we're on the right branch"
 execute "git checkout" do
    cwd node[:monkey][:rest_connection_path]
    command "git checkout #{node[:monkey][:rest][:repo_branch]}"
-end
-
-log "  Installing rest_connection dependencies"
-execute "bundle install" do
-  cwd node[:monkey][:rest_connection_path]
-  command "bundle install"
 end
 
 log "  Creating rest_connection configuration directory"
