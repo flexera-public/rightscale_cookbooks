@@ -55,12 +55,19 @@ end
 
 # Install Virtualmonkey dependencies
 log "  Installing Virtualmonkey dependencies"
-bash "Install Virtualmonkey dependencies" do
-  flags "-ex"
-  code <<-EOH
-    cd #{node[:monkey][:virtualmonkey_path]}
-    bundle install --no-color --system
-  EOH
+execute "bundle install" do
+  cwd node[:monkey][:virtualmonkey_path]
+  command "bundle install --no-color --system"
+end
+
+# Populate all virtualmonkey cloud variables
+log "  Populating virtualmonkey cloud variables"
+execute "populate cloud variables" do
+  command "#{node[:monkey][:virtualmonkey_path]}/bin/monkey" +
+    " populate_all_cloud_vars" +
+    " --force" +
+    " --overwrite" +
+    " --yes"
 end
 
 # Copy the virtualmonkey configuration file
