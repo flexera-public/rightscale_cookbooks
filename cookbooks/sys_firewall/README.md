@@ -36,8 +36,7 @@ then opens 22, 80 and 443 ports by default
 (additionally on SoftLayer 48000..48020 ports are opened on the private 10.*
 network for the monitoring agent).
 
-When the firewall is disabled it disabled iptables service is disabled and
-stopped.
+When the firewall is disabled the iptables service is disabled and stopped.
 
 When the firewall is set to "unmanaged" no changes are done to the iptables
 service so the cloud provider can manage the firewall rules. RightScale will
