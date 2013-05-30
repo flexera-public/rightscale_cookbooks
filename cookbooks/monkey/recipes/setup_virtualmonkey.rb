@@ -7,7 +7,7 @@
 
 rightscale_marker :begin
 
-node[:monkey][:virtualmonkey][:packages] = value_for_platform(
+packages = value_for_platform(
   "centos" => {
     "default" => ["libxml2-devel", "libxslt-devel", "file"]
   },
@@ -18,7 +18,6 @@ node[:monkey][:virtualmonkey][:packages] = value_for_platform(
 
 # Installing packages required by VirtualMonkey
 log "  Installing packages required by VirtualMonkey"
-packages = node[:monkey][:virtualmonkey][:packages]
 packages.each do |pkg|
   package pkg
 end unless packages.empty?

@@ -9,7 +9,7 @@
 rightscale_marker :begin
 
 # Installing packages needed for rest_connection
-node[:monkey][:rest][:packages] = value_for_platform(
+packages = value_for_platform(
   "centos" => {
     "default" => [ "libxml2-devel",  "libxslt-devel"]
   },
@@ -18,7 +18,6 @@ node[:monkey][:rest][:packages] = value_for_platform(
   }
 )
 
-packages = node[:monkey][:rest][:packages]
 log "  Installing packages required by rest_connection"
 packages.each do |pkg|
   package pkg
