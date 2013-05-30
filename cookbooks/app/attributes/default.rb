@@ -21,5 +21,5 @@ default[:app][:lb_public_ip] = ""
 default[:app][:port] = "8080"
 # The database schema name the app server uses
 default[:app][:database_name] = ""
-# Applicatio IP type given to the load balancer
+# Application IP type given to the load balancer
 default[:app][:backend_ip_type] = "private"
