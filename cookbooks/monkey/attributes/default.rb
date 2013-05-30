@@ -11,130 +11,130 @@
 # Fog Credentials
 
 # AWS Access Key ID
-set_unless[:monkey][:fog][:aws_access_key_id] = ""
+default[:monkey][:fog][:aws_access_key_id] = ""
 # AWS Secret Access Key
-set_unless[:monkey][:fog][:aws_secret_access_key] = ""
+default[:monkey][:fog][:aws_secret_access_key] = ""
 # AWS Publish Access Key ID
-set_unless[:monkey][:fog][:aws_publish_key] = ""
+default[:monkey][:fog][:aws_publish_key] = ""
 # AWS Publish Secret Key
-set_unless[:monkey][:fog][:aws_publish_secret_key] = ""
+default[:monkey][:fog][:aws_publish_secret_key] = ""
 # AWS Access Key ID for Test Account
-set_unless[:monkey][:fog][:aws_access_key_id_test] = ""
+default[:monkey][:fog][:aws_access_key_id_test] = ""
 # AWS Secret Access Key for Test Account
-set_unless[:monkey][:fog][:aws_secret_access_key_test] = ""
+default[:monkey][:fog][:aws_secret_access_key_test] = ""
 # Rackspace API Key
-set_unless[:monkey][:fog][:rackspace_api_key] = ""
+default[:monkey][:fog][:rackspace_api_key] = ""
 # Rackspace Username
-set_unless[:monkey][:fog][:rackspace_username] = ""
+default[:monkey][:fog][:rackspace_username] = ""
 # Rackspace UK API Key for Test Account
-set_unless[:monkey][:fog][:rackspace_api_uk_key_test] = ""
+default[:monkey][:fog][:rackspace_api_uk_key_test] = ""
 # Rackspace UK Username for Test Account
-set_unless[:monkey][:fog][:rackspace_uk_username_test] = ""
+default[:monkey][:fog][:rackspace_uk_username_test] = ""
 # AWS Access Key ID for RS ServerTemplates Account
-set_unless[:monkey][:fog][:aws_access_key_id_rstemp] = ""
+default[:monkey][:fog][:aws_access_key_id_rstemp] = ""
 # AWS Secret Access Key for RS ServerTemplates Account
-set_unless[:monkey][:fog][:aws_secret_access_key_rstemp] = ""
+default[:monkey][:fog][:aws_secret_access_key_rstemp] = ""
 # Softlayer API Key
-set_unless[:monkey][:fog][:softlayer_api_key] = ""
+default[:monkey][:fog][:softlayer_api_key] = ""
 # Softlayer Username
-set_unless[:monkey][:fog][:softlayer_username] = ""
+default[:monkey][:fog][:softlayer_username] = ""
 # Rackspace Managed Auth Key
-set_unless[:monkey][:fog][:rackspace_managed_auth_key] = ""
+default[:monkey][:fog][:rackspace_managed_auth_key] = ""
 # Rackspace Managed Username
-set_unless[:monkey][:fog][:rackspace_managed_username] = ""
+default[:monkey][:fog][:rackspace_managed_username] = ""
 # Rackspace Managed UK Auth Key for Test Account
-set_unless[:monkey][:fog][:rackspace_managed_uk_auth_key] = ""
+default[:monkey][:fog][:rackspace_managed_uk_auth_key] = ""
 # Rackspace Managed UK Username for Test Accounr
-set_unless[:monkey][:fog][:rackspace_managed_uk_username] = ""
+default[:monkey][:fog][:rackspace_managed_uk_username] = ""
 # Rackspace UK Auth URL for Test Account
-set_unless[:monkey][:fog][:rackspace_auth_url_uk_test] = ""
+default[:monkey][:fog][:rackspace_auth_url_uk_test] = ""
 # Google Access Key ID
-set_unless[:monkey][:fog][:google_access_key_id] = ""
+default[:monkey][:fog][:google_access_key_id] = ""
 # Google Secret Access Key
-set_unless[:monkey][:fog][:google_secret_access_key] = ""
+default[:monkey][:fog][:google_secret_access_key] = ""
 # Azure Access Key ID
-set_unless[:monkey][:fog][:azure_access_key_id] = ""
+default[:monkey][:fog][:azure_access_key_id] = ""
 # Azure Secret Access Key
-set_unless[:monkey][:fog][:azure_secret_access_key] = ""
+default[:monkey][:fog][:azure_secret_access_key] = ""
 # S3 Bucket Name for Reports Storage
-set_unless[:monkey][:fog][:s3_bucket] = ""
+default[:monkey][:fog][:s3_bucket] = ""
 # Openstack Folsom Access Key ID
-set_unless[:monkey][:fog][:openstack_access_key_id] = ""
+default[:monkey][:fog][:openstack_access_key_id] = ""
 # Openstack Folsom Secret Access Key
-set_unless[:monkey][:fog][:openstack_secret_access_key] = ""
+default[:monkey][:fog][:openstack_secret_access_key] = ""
 # Openstack Auth URL
-set_unless[:monkey][:fog][:openstack_auth_url] = ""
+default[:monkey][:fog][:openstack_auth_url] = ""
 # Rackspace Private Access Key ID
-set_unless[:monkey][:fog][:raxprivatev3_access_key_id] = ""
+default[:monkey][:fog][:raxprivatev3_access_key_id] = ""
 # Rackspace Private Secret Access Key
-set_unless[:monkey][:fog][:raxprivatev3_secret_access_key] = ""
+default[:monkey][:fog][:raxprivatev3_secret_access_key] = ""
 # Rackspace Private Auth URL
-set_unless[:monkey][:fog][:raxprivatev3_auth_url] = ""
+default[:monkey][:fog][:raxprivatev3_auth_url] = ""
 # HP Access Key ID
-set_unless[:monkey][:fog][:hp_access_key_id] = ""
+default[:monkey][:fog][:hp_access_key_id] = ""
 # HP Secret Access Key
-set_unless[:monkey][:fog][:hp_secret_access_key] = ""
+default[:monkey][:fog][:hp_secret_access_key] = ""
 # HP Auth URL
-set_unless[:monkey][:fog][:hp_auth_url] = ""
+default[:monkey][:fog][:hp_auth_url] = ""
 
 # Git Settings
 
 # Git Username
-set_unless[:monkey][:git][:user] = ""
+default[:monkey][:git][:user] = ""
 # Git Email
-set_unless[:monkey][:git][:email] = ""
+default[:monkey][:git][:email] = ""
 # Git SSH Key
-set_unless[:monkey][:git][:ssh_key] = ""
+default[:monkey][:git][:ssh_key] = ""
 # Git Hostname
-set_unless[:monkey][:git][:host_name] = ""
+default[:monkey][:git][:host_name] = ""
 
 # Rest Connection Settings
 
 # RightScale Password
-set_unless[:monkey][:rest][:right_passwd] = ""
+default[:monkey][:rest][:right_passwd] = ""
 # RightScale Email
-set_unless[:monkey][:rest][:right_email] = ""
+default[:monkey][:rest][:right_email] = ""
 # RightScale Account ID
-set_unless[:monkey][:rest][:right_acct_id] = ""
+default[:monkey][:rest][:right_acct_id] = ""
 # RightScale Subdomain
-set_unless[:monkey][:rest][:right_subdomain] = ""
+default[:monkey][:rest][:right_subdomain] = ""
 # SSH Key Used by Rest Connection
-set_unless[:monkey][:rest][:ssh_key] = ""
+default[:monkey][:rest][:ssh_key] = ""
 # Public Key for allowing connections from
-set_unless[:monkey][:rest][:ssh_pub_key] = ""
+default[:monkey][:rest][:ssh_pub_key] = ""
 # Rest Connection Repository URL
-set_unless[:monkey][:rest][:repo_url] = ""
+default[:monkey][:rest][:repo_url] = ""
 # Rest Connection Repository Branch
-set_unless[:monkey][:rest][:repo_branch] = ""
+default[:monkey][:rest][:repo_branch] = ""
 
 # Test Specific Configuration Settings
 
 # Knife PEM Key used by Chef Client Tests
-set_unless[:monkey][:test_config][:knife_pem_key] = ""
+default[:monkey][:test_config][:knife_pem_key] = ""
 
 # VirtualMonkey Settings
 
 # VirtualMonkey Repository URL
-set_unless[:monkey][:virtualmonkey][:monkey_repo_url] = ""
+default[:monkey][:virtualmonkey][:monkey_repo_url] = ""
 # VirtualMonkey Repository Branch
-set_unless[:monkey][:virtualmonkey][:monkey_repo_branch] = ""
+default[:monkey][:virtualmonkey][:monkey_repo_branch] = ""
 # Collateral Repository URL
-set_unless[:monkey][:virtualmonkey][:collateral_repo_url] = ""
+default[:monkey][:virtualmonkey][:collateral_repo_url] = ""
 # Collateral Repository Branch
-set_unless[:monkey][:virtualmonkey][:collateral_repo_branch] = ""
+default[:monkey][:virtualmonkey][:collateral_repo_branch] = ""
 
 # RocketMonkey Settings
 
 # RocketMonkey Repository URL
-set_unless[:monkey][:rocketmonkey][:repo_url] = ""
+default[:monkey][:rocketmonkey][:repo_url] = ""
 # RocketMonkey Repository Branch
-set_unless[:monkey][:rocketmonkey][:repo_branch] = ""
+default[:monkey][:rocketmonkey][:repo_branch] = ""
 
 # Recommended attributes
 #
 
 # Gems required for rest_connection
-set_unless[:monkey][:rest][:gem_packages] = [
+default[:monkey][:rest][:gem_packages] = [
   {:name => "rake", :version => "10.0.3"},
   {:name => "bundler", :version => "1.2.3"},
   {:name => "jeweler", :version => "1.8.4"},
@@ -144,30 +144,30 @@ set_unless[:monkey][:rest][:gem_packages] = [
   {:name => "rspec", :version => "2.12.0"}
 ]
 # Monkey user
-set_unless[:monkey][:user] = "root"
+default[:monkey][:user] = "root"
 # Monkey user's home directory
-set_unless[:monkey][:user_home] = "/root"
+default[:monkey][:user_home] = "/root"
 # Monkey group
-set_unless[:monkey][:group] = "root"
+default[:monkey][:group] = "root"
 # Rest connection path
-set_unless[:monkey][:rest_connection_path] =
+default[:monkey][:rest_connection_path] =
   "#{node[:monkey][:user_home]}/rest_connection"
 # Virtualmonkey path
-set_unless[:monkey][:virtualmonkey_path] =
+default[:monkey][:virtualmonkey_path] =
   "#{node[:monkey][:user_home]}/virtualmonkey"
 # Rocketmonkey path
-set_unless[:monkey][:rocketmonkey_path] =
+default[:monkey][:rocketmonkey_path] =
   "#{node[:monkey][:user_home]}/rocketmonkey"
 # The version for the rubygems-update gem
-set_unless[:monkey][:rubygems_update_version] = "1.8.24"
+default[:monkey][:rubygems_update_version] = "1.8.24"
 
 # Optional Attributes
 
 # Azure Hack on/off
-set_unless[:monkey][:rest][:azure_hack_on] = ""
+default[:monkey][:rest][:azure_hack_on] = ""
 # Azure Hack Retry Count
-set_unless[:monkey][:rest][:azure_hack_retry_count] = ""
+default[:monkey][:rest][:azure_hack_retry_count] = ""
 # Azure Hack Sleep Seconds
-set_unless[:monkey][:rest][:azure_hack_sleep_seconds] = ""
+default[:monkey][:rest][:azure_hack_sleep_seconds] = ""
 # API Logging on/off
-set_unless[:monkey][:rest][:api_logging] = ""
+default[:monkey][:rest][:api_logging] = ""
