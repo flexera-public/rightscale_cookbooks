@@ -75,8 +75,9 @@ when "ubuntu"
   end
 
   # Install Jenkins from the downloaded deb file
-  package "jenkins" do
+  dpkg_package "jenkins" do
     source "/tmp/jenkins_#{node[:jenkins][:server][:version]}_all.deb"
+    action :install
   end
 
 end
