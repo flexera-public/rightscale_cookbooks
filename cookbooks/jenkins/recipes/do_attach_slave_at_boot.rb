@@ -13,5 +13,3 @@ if node[:jenkins][:attach_slave_at_boot] == "true"
 else
   log "  Attach slave at boot [skipped]"
 end
-
-rightscale_marker :end

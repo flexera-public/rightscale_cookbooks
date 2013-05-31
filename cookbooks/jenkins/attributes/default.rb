@@ -1,19 +1,20 @@
 #
-# Cookbook Name::jenkins
+# cookbook name:: jenkins
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# copyright rightscale, inc. all rights reserved.  all access and use subject
+# to the rightscale terms of service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements such
+# as a rightscale master subscription agreement.
 
 # Recommended attributes
 #
 
 # Attributes for Jenkins master
 
+# To support running the use of this cookbook inside a vagrant box
 if node[:cloud]
   default[:jenkins][:ip] = node[:cloud][:public_ips][0]
 else
-  # To support running the use of this cookbook inside a vagrant box
   default[:jenkins][:ip] = "127.0.0.1"
 end
 default[:jenkins][:server][:home] = "/var/lib/jenkins"

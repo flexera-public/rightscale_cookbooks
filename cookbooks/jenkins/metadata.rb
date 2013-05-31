@@ -3,7 +3,7 @@ maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "Installs/Configures Jenkins"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "13.2.0"
+version          "13.5.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"
@@ -15,9 +15,13 @@ depends "sys_firewall"
 depends "logrotate"
 
 
-recipe "jenkins::install_server", "Install Jenkins."
-recipe "jenkins::do_attach_request", "Installing Jenkins."
-recipe "jenkins::do_attach_slave_at_boot", "Installing Jenkins."
+recipe "jenkins::install_server", "Install Jenkins server and configure it" +
+  " using the inputs provided."
+recipe "jenkins::do_attach_request", "Attach a slave node to the master" +
+  " jenkins server."
+recipe "jenkins::do_attach_slave_at_boot", "Attach a slave node to the master" +
+  " jenkins server at boot time if `jenkins/attach_slave_at_boot` is set to" +
+  " true"
 
 # Server/Master Attributes
 

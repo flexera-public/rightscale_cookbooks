@@ -1,9 +1,10 @@
 #
 # Cookbook Name::monkey
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.  All access and use subject
+# to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements such
+# as a RightScale Master Subscription Agreement.
 
 rightscale_marker :begin
 
@@ -28,9 +29,8 @@ end
 case node[:platform]
 when "centos"
   # Add Jenkins repo
-  execute "add jenkins repo" do
-    command "wget -O /etc/yum.repos.d/jenkins.repo" +
-      " http://pkg.jenkins-ci.org/redhat/jenkins.repo"
+  remote_file "/etc/yum.repos.d/jenkins.repo" do
+    source "http://pkg.jenkins-ci.org/redhat/jenkins.repo"
   end
 
   # Import Jenkins RPM key
@@ -41,7 +41,8 @@ when "centos"
   # If a version is specified, include the release information. This is only
   # required for CentOS. The release appears to be the same for all Jenkins
   # versions available.
-  node[:jenkins][:server][:version] += "-1.1" if node[:jenkins][:server][:version]
+  node[:jenkins][:server][:version] += "-1.1" \
+    if node[:jenkins][:server][:version]
   # Install Jenkins package
   package "jenkins" do
     version node[:jenkins][:server][:version]
@@ -51,7 +52,8 @@ when "centos"
 when "ubuntu"
   # Download the deb package file for the specified version
   remote_file "/tmp/jenkins_#{node[:jenkins][:server][:version]}_all.deb" do
-    source "http://pkg.jenkins-ci.org/debian/binary/jenkins_#{node[:jenkins][:server][:version]}_all.deb"
+    source "http://pkg.jenkins-ci.org/debian/binary/" +
+      "jenkins_#{node[:jenkins][:server][:version]}_all.deb"
   end
 
   # dpkg doesn't resolve and install all dependencies and some of the packages
@@ -72,15 +74,11 @@ when "ubuntu"
     command "apt-get install #{jenkins_dependencies.join(" ")}"
   end
 
-  # Install Jenkins
-  execute "install jenkins" do
-    command "dpkg --install /tmp/jenkins_#{node[:jenkins][:server][:version]}_all.deb"
+  # Install Jenkins from the downloaded deb file
+  package "jenkins" do
+    source "/tmp/jenkins_#{node[:jenkins][:server][:version]}_all.deb"
   end
 
-  # Remove the downloaded deb package
-  file "/tmp/jenkins_#{node[:jenkins][:server][:version]}_all.deb" do
-    action :delete
-  end
 end
 
 service "jenkins" do
@@ -93,13 +91,12 @@ end
 # https://wush.net/trac/rightscale/ticket/5651
 # Once this ticket is fixed, a new 'monkey' group can be created and any user
 # belonging to that group will be allowed to run monkey tests.
-jenkins_system_config_file =
-  case node[:platform]
-  when "ubuntu"
-    "/etc/default/jenkins"
-  else
-    "/etc/sysconfig/jenkins"
-  end
+jenkins_system_config_file = value_for_platform(
+  "ubuntu" => {
+    "default" => "/etc/default/jenkins"
+  },
+  "default" => "/etc/sysconfig/jenkins"
+)
 
 template jenkins_system_config_file do
   source "jenkins_system_config.erb"
@@ -122,7 +119,8 @@ directory "/var/log/jenkins" do
 end
 
 # Create the Jenkins user directory
-directory "#{node[:jenkins][:server][:home]}/users/#{node[:jenkins][:server][:user_name]}" do
+directory "#{node[:jenkins][:server][:home]}/users/" +
+  "#{node[:jenkins][:server][:user_name]}" do
   recursive true
   mode 0755
   owner node[:jenkins][:server][:system_user]
@@ -144,19 +142,14 @@ end
 # Obtain the hash of the password.
 chef_gem "bcrypt-ruby"
 
-r = ruby_block "Encrypt Jenkins user password" do
-  block do
-    require "bcrypt"
-    node[:jenkins][:server][:password_encrypted] = ::BCrypt::Password.create(
-      node[:jenkins][:server][:password]
-    )
-  end
-  action :nothing
-end
-r.run_action(:create)
+require "bcrypt"
+node[:jenkins][:server][:password_encrypted] = ::BCrypt::Password.create(
+  node[:jenkins][:server][:password]
+)
 
 # Create Jenkins user configuration file.
-template "#{node[:jenkins][:server][:home]}/users/#{node[:jenkins][:server][:user_name]}/config.xml" do
+template "#{node[:jenkins][:server][:home]}/users/" +
+  "#{node[:jenkins][:server][:user_name]}/config.xml" do
   source "jenkins_user_config.xml.erb"
   mode 0644
   owner node[:jenkins][:server][:system_user]
