@@ -123,6 +123,10 @@ default[:monkey][:virtualmonkey][:monkey_repo_branch] = ""
 default[:monkey][:virtualmonkey][:collateral_repo_url] = ""
 # Collateral Repository Branch
 default[:monkey][:virtualmonkey][:collateral_repo_branch] = ""
+# Right API Objects Repository URL
+default[:monkey][:virtualmonkey][:right_api_objects_repo_url] = ""
+# Right API Objects Repository Branch
+default[:monkey][:virtualmonkey][:right_api_objects_repo_branch] = ""
 
 # RocketMonkey Settings
 
@@ -142,7 +146,8 @@ default[:monkey][:rest][:gem_packages] = {
   "ruby-debug" => "0.10.4",
   "gemedit" => "1.0.1",
   "diff-lcs" => "1.1.3",
-  "rspec" => "2.12.0"
+  "rspec" => "2.12.0",
+  "json" => "1.7.7"
 }
 # Monkey user
 default[:monkey][:user] = "root"
