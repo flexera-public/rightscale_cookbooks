@@ -16,31 +16,32 @@ git node[:monkey][:rocketmonkey_path] do
   action :sync
 end
 
-log "  Making super sure that we're on the right branch"
 execute "git checkout" do
   cwd node[:monkey][:rocketmonkey_path]
   command "git checkout #{node[:monkey][:rocketmonkey][:repo_branch]}"
 end
 
+# Copy the rocketmonkey configuration files if they are not present
 log "  Copy rocketmonkey configuration files"
-bash "Copy rocketmonkey configuration files" do
-  flags "-ex"
-  code <<-EOH
-    cd #{node[:monkey][:rocketmonkey_path]}
-    cp googleget.yaml .googleget.yaml
-    cp rocketmonkey.yaml .rocketmonkey.yaml
-    cp rocketmonkey.clouds.yaml .rocketmonkey.clouds.yaml
-    cp rocketmonkey.regexs.yaml .rocketmonkey.regexs.yaml
-  EOH
+[
+  "googleget.yaml",
+  "rocketmonkey.yaml",
+  "rocketmonkey.clouds.yaml",
+  "rocketmonkey.regexs.yaml"
+].each do |config_file|
+  file "#{node[:monkey][:rocketmonkey_path]}/.#{config_file}" do
+    owner node[:monkey][:user]
+    group node[:monkey][:group]
+    mode 0644
+    content ::File.read("#{node[:monkey][:rocketmonkey_path]}/#{config_file}")
+    action :create_if_missing
+  end
 end
 
 log "  Installing required gems for rocketmonkey"
-bash "Install required gems for rocketmonkey" do
-  flags "-ex"
-  code <<-EOH
-    cd #{node[:monkey][:rocketmonkey_path]}
-    bundle install --system
-  EOH
+execute "Install rocketmonkey gem dependencies" do
+  cwd node[:monkey][:rocketmonkey_path]
+  command "bundle install --system"
 end
 
 rightscale_marker :end

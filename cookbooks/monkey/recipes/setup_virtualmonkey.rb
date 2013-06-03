@@ -47,7 +47,6 @@ end
 # locally. To make sure we can pull/push changes, let's checkout the correct
 # branch again!
 #
-log "  Making super sure that we're on the right branch"
 execute "git checkout" do
   cwd node[:monkey][:virtualmonkey_path]
   command "git checkout #{node[:monkey][:virtualmonkey][:monkey_repo_branch]}"
@@ -71,9 +70,13 @@ execute "populate cloud variables" do
 end
 
 # Copy the virtualmonkey configuration file
-execute "Copy Virtualmonkey configuration" do
-  command "cp #{node[:monkey][:virtualmonkey_path]}/config.yaml" +
-    " #{node[:monkey][:virtualmonkey_path]}/.config.yaml"
+log "  Copying virtualmonkey configuration"
+file "#{node[:monkey][:virtualmonkey_path]}/.config.yaml" do
+  owner node[:monkey][:user]
+  group node[:monkey][:group]
+  mode 0644
+  content ::File.read("#{node[:monkey][:virtualmonkey_path]}/config.yaml")
+  action :create_if_missing
 end
 
 # Add virtualmonkey to PATH

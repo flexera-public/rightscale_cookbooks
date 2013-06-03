@@ -68,10 +68,9 @@ end
 # locally. To make sure we can pull/push changes, let's checkout the correct
 # branch again!
 
-log "  Making super sure that we're on the right branch"
 execute "git checkout" do
-   cwd node[:monkey][:rest_connection_path]
-   command "git checkout #{node[:monkey][:rest][:repo_branch]}"
+  cwd node[:monkey][:rest_connection_path]
+  command "git checkout #{node[:monkey][:rest][:repo_branch]}"
 end
 
 log "  Creating rest_connection configuration directory"
