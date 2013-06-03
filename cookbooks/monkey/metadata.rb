@@ -196,37 +196,25 @@ attribute "monkey/rest/right_passwd",
   :display_name => "RightScale password",
   :description => "RightScale password to connect to the API",
   :required => "required",
-  :recipes => [
-    "monkey::setup_rest_connection",
-    "monkey::test_virtualmonkey_api_connection"
-  ]
+  :recipes => ["monkey::setup_rest_connection"]
 
 attribute "monkey/rest/right_email",
   :display_name => "RightScale Email",
   :description => "RightScale email address to connect to the API",
   :required => "required",
-  :recipes => [
-    "monkey::setup_rest_connection",
-    "monkey::test_virtualmonkey_api_connection"
-  ]
+  :recipes => ["monkey::setup_rest_connection"]
 
 attribute "monkey/rest/right_acct_id",
   :display_name => "RightScale account ID",
   :description => "RightScale account ID used to connect to the API",
   :required => "required",
-  :recipes => [
-    "monkey::setup_rest_connection",
-    "monkey::test_virtualmonkey_api_connection"
-  ]
+  :recipes => ["monkey::setup_rest_connection"]
 
 attribute "monkey/rest/right_subdomain",
   :display_name => "RightScale Subdomain",
   :description => "RightScale subdomain. Example. 'my', 'moo.test'",
   :required => "required",
-  :recipes => [
-    "monkey::setup_rest_connection",
-    "monkey::test_virtualmonkey_api_connection"
-  ]
+  :recipes => ["monkey::setup_rest_connection"]
 
 attribute "monkey/rest/ssh_key",
   :display_name => "API user key",
@@ -297,7 +285,7 @@ attribute "monkey/virtualmonkey/monkey_repo_url",
 
 attribute "monkey/virtualmonkey/monkey_repo_branch",
   :display_name => "VirtualMonkey Repo Branch",
-  :description => "Git branch for VirtualMonkey project",
+  :description => "Git branch for VirtualMonkey",
   :required => "required",
   :recipes => ["monkey::setup_virtualmonkey"]
 
@@ -310,6 +298,18 @@ attribute "monkey/virtualmonkey/collateral_repo_url",
 attribute "monkey/virtualmonkey/collateral_repo_branch",
   :display_name => "Collateral Repo Branch",
   :description => "Git branch for collateral project",
+  :required => "required",
+  :recipes => ["monkey::setup_virtualmonkey"]
+
+attribute "monkey/virtualmonkey/right_api_objects_repo_url",
+  :display_name => "Right API Objects Repo URL",
+  :description => "Git repository URL for Right API Objects",
+  :required => "required",
+  :recipes => ["monkey::setup_virtualmonkey"]
+
+attribute "monkey/virtualmonkey/right_api_objects_repo_branch",
+  :display_name => "Right API Objects Repo Branch",
+  :description => "Git branch for Right API Objects",
   :required => "required",
   :recipes => ["monkey::setup_virtualmonkey"]
 

@@ -41,6 +41,34 @@ execute "git checkout" do
   command "git checkout #{node[:monkey][:virtualmonkey][:monkey_repo_branch]}"
 end
 
+# Check out right_api_object project from the Github repository
+log "  Checking out right_api_objects project from:" +
+  " #{node[:monkey][:virtualmonkey][:right_api_objects_repo_url]}"
+git "#{node[:monkey][:user_home]}/right_api_objects" do
+  repository node[:monkey][:virtualmonkey][:right_api_objects_repo_url]
+  reference node[:monkey][:virtualmonkey][:right_api_objects_repo_branch]
+  action :sync
+end
+
+# Check out the correct branch for right_api_objects
+execute "git checkout" do
+  cwd "#{node[:monkey][:user_home]}/right_api_objects"
+  command "git checkout" +
+    " #{node[:monkey][:virtualmonkey][:right_api_objects_repo_branch}"
+end
+
+# Install the dependencies of right_api_objects
+execute "bundle install" do
+  cwd "#{node[:monkey][:user_home]}/right_api_objects"
+  command "bundle install"
+end
+
+# Install the right_api_objects gem
+execute "rake install" do
+  cwd "#{node[:monkey][:user_home]}/right_api_objects"
+  command "rake install"
+end
+
 # Install Virtualmonkey dependencies
 log "  Installing Virtualmonkey dependencies"
 execute "bundle install" do
@@ -65,14 +93,6 @@ execute "copy virtualmonkey configuration file" do
   command "cp config.yaml .config.yaml"
   not_if { ::File.exists?("#{node[:monkey][:virtualmonkey_path]}/.config.yaml") }
 end
-
-#file "#{node[:monkey][:virtualmonkey_path]}/.config.yaml" do
-#  owner node[:monkey][:user]
-#  group node[:monkey][:group]
-#  mode 0644
-#  content ::File.read("#{node[:monkey][:virtualmonkey_path]}/config.yaml")
-#  action :create_if_missing
-#end
 
 # Add virtualmonkey to PATH
 file "/etc/profile.d/virtualmonkey.sh" do
