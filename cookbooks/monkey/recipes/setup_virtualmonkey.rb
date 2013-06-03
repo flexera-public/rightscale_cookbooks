@@ -23,17 +23,6 @@ packages.each do |pkg|
   package pkg
 end
 
-# Updating rubygems
-log "  Updating rubygems"
-bash "Update Rubygems" do
-  flags "-ex"
-  code <<-EOH
-    gem install rubygems-update --version 1.8.24 --no-ri --no-rdoc
-    update_rubygems
-  EOH
-  not_if { node[:platform] == "ubuntu"  }
-end
-
 # Checking out VirtualMonkey repository
 log "  Checking out VirtualMonkey repository from:" +
   " #{node[:monkey][:virtualmonkey][:monkey_repo_url]}"
