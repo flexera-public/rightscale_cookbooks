@@ -29,12 +29,10 @@ log "  Copy rocketmonkey configuration files"
   "rocketmonkey.clouds.yaml",
   "rocketmonkey.regexs.yaml"
 ].each do |config_file|
-  file "#{node[:monkey][:rocketmonkey_path]}/.#{config_file}" do
-    owner node[:monkey][:user]
-    group node[:monkey][:group]
-    mode 0644
-    content ::File.read("#{node[:monkey][:rocketmonkey_path]}/#{config_file}")
-    action :create_if_missing
+  execute "copy '#{config_file}' to '.#{config_file}'" do
+    cwd node[:monkey][:rocketmonkey_path]
+    command "cp #{config_file} .#{config_file}"
+    not_if { ::File.exists?("#{node[:monkey][:rocketmonkey_path]}/.#{config_file}") }
   end
 end
 
