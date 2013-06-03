@@ -19,8 +19,6 @@ recipe "monkey::setup_virtualmonkey", "Setting up virtualmonkey."
 recipe "monkey::setup_rocketmonkey", "Setting up rocketmonkey."
 recipe "monkey::update_fog_credentials", "Setting up or updating existing" +
   " credentials for fog configuration."
-recipe "monkey::test_virtualmonkey_api_connection", "Testing API connectivity" +
-  " for virtualmonkey."
 recipe "monkey::setup_test_config", "Setup test specific configuration." +
   " Example. Setting up knife credentials for running chef_client test."
 

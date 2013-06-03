@@ -21,7 +21,7 @@ packages = value_for_platform(
 log "  Installing packages required by VirtualMonkey"
 packages.each do |pkg|
   package pkg
-end unless packages.empty?
+end
 
 # Updating rubygems
 log "  Updating rubygems"
@@ -90,7 +90,7 @@ end
 
 # Installing right_cloud_api gem from the template file found in rightscale
 # cookbook. The rightscale::install_tools installs this gem in sandbox ruby
-# and I want it in system ruby
+# and we want it in system ruby
 #
 log "  Installing the right_cloud_api gem"
 gem_package "right_cloud_api" do
@@ -102,7 +102,7 @@ gem_package "right_cloud_api" do
     "rightscale",
     "files",
     "default",
-    "right_cloud_api-0.0.0.gem"
+    "right_cloud_api-#{node[:monkey][:right_cloud_api_version]}.gem"
   )
   action :install
 end
@@ -120,7 +120,6 @@ git "/root/#{node[:monkey][:virtualmonkey][:collateral_name]}" do
   action :sync
 end
 
-log "  Making super sure that we're on the right branch"
 execute "git checkout" do
   cwd "/root/#{node[:monkey][:virtualmonkey][:collateral_name]}"
   command "git checkout #{node[:monkey][:virtualmonkey][:collateral_repo_branch]}"

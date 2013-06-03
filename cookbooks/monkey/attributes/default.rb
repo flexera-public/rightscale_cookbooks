@@ -161,6 +161,8 @@ default[:monkey][:rocketmonkey_path] =
   "#{node[:monkey][:user_home]}/rocketmonkey"
 # The version for the rubygems-update gem
 default[:monkey][:rubygems_update_version] = "1.8.24"
+# The version of right_cloud_api rubygem to install
+default[:monkey][:right_cloud_api_version] = "0.0.0"
 
 # Optional Attributes
 
