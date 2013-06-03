@@ -1,11 +1,12 @@
 #
 # Cookbook Name:: app_php
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 log "  Setting provider specific settings for php application server."
 node[:app][:provider] = "app_php"
@@ -31,5 +32,3 @@ when "centos", "redhat"
     "php53u-zts"
   ]
 end
-
-rightscale_marker :end

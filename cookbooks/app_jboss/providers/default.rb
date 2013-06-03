@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: app_jboss
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 # Stop jboss service
 action :stop do
@@ -502,9 +503,5 @@ action :code_update do
     EOH
     only_if { node[:app_jboss][:code][:root_war] != "ROOT.war" }
   end
-
-  # Restart application server
-  # Calls action :restart
-  action_restart
 
 end

@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: app_php
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 # Stop apache
 action :stop do
@@ -141,10 +142,6 @@ action :code_update do
     repository node[:repo][:default][:repository]
     persist false
   end
-
-  # Restarting apache
-  # Calls the :restart action.
-  action_restart
 
 end
 

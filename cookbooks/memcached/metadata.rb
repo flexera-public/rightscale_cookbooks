@@ -2,8 +2,8 @@ maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "Installs/Configures a memcached server"
-long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "13.4.0"
+long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
+version          "13.5.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"
@@ -27,9 +27,6 @@ recipe "memcached::do_start",
 
 recipe "memcached::do_restart",
   "Restarts memcached service."
-
-recipe "memcached::do_reload",
-  "Reloads memcached service."
 
 recipe "memcached::do_stop",
   "Stops memcached service."

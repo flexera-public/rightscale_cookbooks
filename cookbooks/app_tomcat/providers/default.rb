@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: app_tomcat
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 # Stop tomcat service
 action :stop do
@@ -416,9 +417,5 @@ action :code_update do
     EOH
     only_if { node[:app_tomcat][:code][:root_war] != "ROOT.war" }
   end
-  # Restarting tomcat service.
-  # This will automatically deploy ROOT.war if it is available in application root directory
-  # Calls the :restart action.
-  action_restart
 
 end

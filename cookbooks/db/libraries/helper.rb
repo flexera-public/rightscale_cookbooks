@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: db
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 module RightScale
   module Database
@@ -63,6 +64,24 @@ module RightScale
       def set_resource_attribute(resource, attribute, value)
         resource_found = run_context.resource_collection.find(resource)
         resource_found.method(attribute).call(value)
+      end
+
+      # Adjusts values based on a usage factor and create human readable string.
+      #
+      # @param value [Integer] value to adjust
+      # @param units [String] units of the value
+      # @param usage_factor [Integer] server usage factor used for adjustment
+      #
+      # @return [String] adjusted value with units
+      def value_with_units(value, units, usage_factor)
+        raise "Error: value must convert to an integer." unless value.to_i
+        raise "Error: units must be k, m, g" unless units =~ /[KMG]/i
+        factor = usage_factor.to_f
+        if factor > 1.0 || factor <= 0.0
+          raise "Error: usage_factor must be between 1.0 and 0.0." +
+            " Value used: #{usage_factor}"
+        end
+        (value * factor).to_i.to_s + units
       end
 
     end

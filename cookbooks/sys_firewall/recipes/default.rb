@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Setting up Server to work with Rackconnect
 if node[:cloud][:provider] == "rackspace-ng" &&
@@ -31,6 +31,13 @@ when "enabled"
   # See https://github.com/rightscale/cookbooks/blob/master/iptables/recipes/default.rb
   # for the "iptables::default" recipe.
   include_recipe "iptables"
+
+  # Enable the iptables service for CentOS/RedHat
+  service "iptables" do
+    action :enable
+    not_if { node[:platform] == "ubuntu" }
+  end
+
   # See cookbooks/sys_firewall/providers/default.rb for the "update" action.
   sys_firewall "22" # SSH
   sys_firewall "80" # HTTP
@@ -80,6 +87,3 @@ bash "Update #{nf_module_name}" do
   not_if { ::File.readlines("/etc/sysctl.conf" ).grep(
     /^\s*#{nf_conntrack_max}/).any? }
 end
-
-rightscale_marker :end
-
