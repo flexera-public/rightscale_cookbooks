@@ -24,203 +24,152 @@ recipe "monkey::test_virtualmonkey_api_connection", "Testing API connectivity" +
 recipe "monkey::setup_test_config", "Setup test specific configuration." +
   " Example. Setting up knife credentials for running chef_client test."
 
-attribute "monkey/fog/aws_access_key_id",
-  :display_name => "AWS_ACCESS_KEY_ID",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
+{
+  :aws_access_key_id => [
+    "AWS_ACCESS_KEY_ID",
+    "Access Key ID for AWS"
+  ],
+  :aws_secret_access_key => [
+    "AWS_SECRET_ACCESS_KEY",
+    "Secret Access Key for AWS"
+  ],
+  :aws_publish_key => [
+    "AWS_PUBLISH_KEY",
+    "Access Key ID for AWS Publish Account"
+  ],
+  :aws_publish_secret_key => [
+    "AWS_PUBLISH_SECRET_KEY",
+    "Secret Access Key for AWS Publish Account"
+  ],
+  :aws_access_key_id_test => [
+    "AWS_ACCESS_KEY_ID_TEST_ACCT",
+    "Access Key ID for AWS Test Account"
+  ],
+  :aws_secret_access_key_test => [
+    "AWS_SECRET_ACCESS_KEY_TEST_ACCT",
+    "Secret Access Key for AWS Test Account"
+  ],
+  :aws_access_key_id_rstemp => [
+    "AWS_ACCESS_KEY_ID_RSTEMP",
+    "Access Key ID for AWS RS ServerTemplates Account"
+  ],
+  :aws_secret_access_key_rstemp => [
+    "AWS_SECRET_ACCESS_KEY_RSTEMP",
+    "Secret Access Key for the AWS RS ServerTemplates Account"
+  ],
+  :rackspace_api_key => [
+    "RACKSPACE_API_KEY",
+    "API Key for Rackspace"
+  ],
+  :rackspace_username => [
+    "RACKSPACE_USERNAME",
+    "Username for Rackspace"
+  ],
+  :rackspace_api_uk_key_test => [
+    "RACKSPACE_API_UK_KEY_TEST",
+    "API Key for Rackspace UK Test Account"
+  ],
+  :rackspace_uk_username_test => [
+    "RACKSPACE_UK_USERNAME_TEST",
+    "Username for Rackspace UK Test Account"
+  ],
+  :softlayer_api_key => [
+    "SOFTLAYER_SECRET_ACCESS_KEY",
+    "API Key for Softlayer"
+  ],
+  :softlayer_username => [
+    "SOFTLAYER_ACCESS_KEY_ID",
+    "Username for Softlayer"
+  ],
+  :softlayer_auth_url => [
+    "SOFTLAYER_AUTH_URL",
+    "Auth URL for Softlayer"
+  ],
+  :rackspace_managed_auth_key => [
+    "RACKSPACE_MANAGED_AUTH_KEY_US_TEST",
+    "Auth Key for Rackspace Managed US Test Account"
+  ],
+  :rackspace_managed_username => [
+    "RACKSPACE_MANAGED_USERNAME_US_TEST",
+    "Username for Rackspace Managed US Test Account"
+  ],
+  :rackspace_managed_uk_auth_key => [
+    "RACKSPACE_MANAGED_AUTH_KEY_UK_TEST",
+    "Auth Key for Rackspace Managed UK Test Account"
+  ],
+  :rackspace_managed_uk_username => [
+    "RACKSPACE_MANAGED_USERNAME_UK_TEST",
+    "Username for Rackspace Managed UK Test Account"
+  ],
+  :rackspace_auth_url_uk_test => [
+    "RACKSPACE_AUTH_URL_UK_TEST",
+    "Auth URL for Rackspace UK Test Account"
+  ],
+  :google_access_key_id => [
+    "GC_ACCESS_KEY_ID",
+    "Access Key ID for Google"
+  ],
+  :google_secret_access_key => [
+    "GC_SECRET_ACCESS_KEY",
+    "Secret Access Key for Google"
+  ],
+  :azure_access_key_id => [
+    "AZURE_ACCESS_KEY_ID",
+    "Access Key ID for Azure"
+  ],
+  :azure_secret_access_key => [
+    "AZURE_SECRET_ACCESS_KEY",
+    "Secret Access Key for Azure"
+  ],
+  :openstack_access_key_id => [
+    "OPENSTACK_FOLSOM_ACCESS_KEY_ID",
+    "Access Key ID for Openstack Folsom"
+  ],
+  :openstack_secret_access_key => [
+    "OPENSTACK_FOLSOM_SECRET_ACCESS_KEY",
+    "Secret Access Key for Openstack Folsom"
+  ],
+  :openstack_auth_url => [
+    "OPENSTACK_AUTH_URL",
+    "Auth URL for Openstack Folsom"
+  ],
+  :raxprivatev3_access_key_id => [
+    "RACKSPACE_PRIVATEV3_ACCESS_KEY_ID",
+    "Access Key ID for Rackspace Private V3"
+  ],
+  :raxprivatev3_secret_access_key => [
+    "RACKSPACE_PRIVATEV3_SECRET_ACCESS_KEY",
+    "Secret Access Key for Rackspace Private V3"
+  ],
+  :raxprivatev3_auth_url => [
+    "RACKSPACE_PRIVATEV3_AUTH_URL",
+    "Auth URL for Rackspace Private V3"
+  ],
+  :hp_access_key_id => [
+    "HP_ACCESS_KEY_ID",
+    "Access Key ID for HP"
+  ],
+  :hp_secret_access_key => [
+    "HP_SECRET_ACCESS_KEY",
+    "Secret Access Key for HP"
+  ],
+  :hp_auth_url => [
+    "HP_AUTH_URL",
+    "Auth URL for HP"
+  ],
+  :s3_bucket => [
+    "S3_BUCKET_NAME",
+    "The Name of the S3 Bucket to Store Monkey Reports"
+  ]
+}.each do |attribute_name, value|
+  display_name, description = value
 
-attribute "monkey/fog/aws_secret_access_key",
-  :display_name => "AWS_SECRET_ACCESS_KEY",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/aws_publish_key",
-  :display_name => "AWS_PUBLISH_KEY",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/aws_publish_secret_key",
-  :display_name => "AWS_PUBLISH_SECRET_KEY",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/aws_access_key_id_test",
-  :display_name => "AWS_ACCESS_KEY_ID_TEST_ACCT",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/aws_secret_access_key_test",
-  :display_name => "AWS_SECRET_ACCESS_KEY_TEST_ACCT",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/rackspace_api_key",
-  :display_name => "RACKSPACE_API_KEY",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/rackspace_username",
-  :display_name => "RACKSPACE_USERNAME",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/rackspace_api_uk_key_test",
-  :display_name => "RACKSPACE_API_UK_KEY_TEST",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/rackspace_uk_username_test",
-  :display_name => "RACKSPACE_UK_USERNAME_TEST",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/aws_access_key_id_rstemp",
-  :display_name => "AWS_ACCESS_KEY_ID_RSTEMP",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/aws_secret_access_key_rstemp",
-  :display_name => "AWS_SECRET_ACCESS_KEY_RSTEMP",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/softlayer_api_key",
-  :display_name => "SOFTLAYER_SECRET_ACCESS_KEY",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/softlayer_username",
-  :display_name => "SOFTLAYER_ACCESS_KEY_ID",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/rackspace_managed_auth_key",
-  :display_name => "RACKSPACE_MANAGED_AUTH_KEY_US_TEST",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/rackspace_managed_username",
-  :display_name => "RACKSPACE_MANAGED_USERNAME_US_TEST",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/rackspace_managed_uk_auth_key",
-  :display_name => "RACKSPACE_MANAGED_AUTH_KEY_UK_TEST",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/rackspace_managed_uk_username",
-  :display_name => "RACKSPACE_MANAGED_USERNAME_UK_TEST",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/rackspace_auth_url_uk_test",
-  :display_name => "RACKSPACE_AUTH_URL_UK_TEST",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/google_access_key_id",
-  :display_name => "GC_ACCESS_KEY_ID",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/google_secret_access_key",
-  :display_name => "GC_SECRET_ACCESS_KEY",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/azure_access_key_id",
-  :display_name => "AZURE_ACCESS_KEY_ID",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/azure_secret_access_key",
-  :display_name => "AZURE_SECRET_ACCESS_KEY",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/s3_bucket",
-  :display_name => "S3_BUCKET_NAME",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/openstack_access_key_id",
-  :display_name => "OPENSTACK_FOLSOM_ACCESS_KEY_ID",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/openstack_secret_access_key",
-  :display_name => "OPENSTACK_FOLSOM_SECRET_ACCESS_KEY",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/openstack_auth_url",
-  :display_name => "OPENSTACK_AUTH_URL",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/raxprivatev3_access_key_id",
-  :display_name => "RACKSPACE_PRIVATEV3_ACCESS_KEY_ID",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/raxprivatev3_secret_access_key",
-  :display_name => "RACKSPACE_PRIVATEV3_SECRET_ACCESS_KEY",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/raxprivatev3_auth_url",
-  :display_name => "RACKSPACE_PRIVATEV3_AUTH_URL",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/hp_access_key_id",
-  :display_name => "HP_ACCESS_KEY_ID",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/hp_secret_access_key",
-  :display_name => "HP_SECRET_ACCESS_KEY",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
-
-attribute "monkey/fog/hp_auth_url",
-  :display_name => "HP_AUTH_URL",
-  :description => "",
-  :required => "required",
-  :recipes => ["monkey::update_fog_credentials"]
+  attribute "monkey/fog/#{attribute_name}",
+    :display_name => display_name,
+    :description => description,
+    :required => "required",
+    :recipes => ["monkey::update_fog_credentials"]
+end
 
 attribute "monkey/git/user",
   :display_name => "Git Username",

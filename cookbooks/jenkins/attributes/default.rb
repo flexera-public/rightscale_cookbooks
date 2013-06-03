@@ -1,10 +1,10 @@
 #
 # cookbook name:: jenkins
 #
-# copyright rightscale, inc. all rights reserved.  all access and use subject
-# to the rightscale terms of service available at
-# http://www.rightscale.com/terms.php and, if applicable, other agreements such
-# as a rightscale master subscription agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 # Recommended attributes
 #
@@ -29,5 +29,6 @@ default[:jenkins][:slave][:user] = "root"
 default[:jenkins][:slave][:name] = node[:rightscale][:instance_uuid]
 default[:jenkins][:slave][:mode] = "normal"
 default[:jenkins][:slave][:executors] = "10"
-default[:jenkins][:private_key_file] = "#{node[:jenkins][:server][:home]}/jenkins_key"
+default[:jenkins][:private_key_file] = "#{node[:jenkins][:server][:home]}/" +
+  "jenkins_key"
 default[:jenkins][:slave][:attach_status] = "unattached"

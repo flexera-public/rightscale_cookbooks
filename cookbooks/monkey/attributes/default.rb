@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: monkey
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 # Required attributes
 #
@@ -134,15 +135,15 @@ default[:monkey][:rocketmonkey][:repo_branch] = ""
 #
 
 # Gems required for rest_connection
-default[:monkey][:rest][:gem_packages] = [
-  {:name => "rake", :version => "10.0.3"},
-  {:name => "bundler", :version => "1.2.3"},
-  {:name => "jeweler", :version => "1.8.4"},
-  {:name => "ruby-debug", :version => "0.10.4"},
-  {:name => "gemedit", :version => "1.0.1"},
-  {:name => "diff-lcs", :version => "1.1.3"},
-  {:name => "rspec", :version => "2.12.0"}
-]
+default[:monkey][:rest][:gem_packages] = {
+  "rake" => "10.0.3",
+  "bundler" => "1.2.3",
+  "jeweler" => "1.8.4",
+  "ruby-debug" => "0.10.4",
+  "gemedit" => "1.0.1",
+  "diff-lcs" => "1.1.3",
+  "rspec" => "2.12.0"
+}
 # Monkey user
 default[:monkey][:user] = "root"
 # Monkey user's home directory
@@ -171,3 +172,9 @@ default[:monkey][:rest][:azure_hack_retry_count] = ""
 default[:monkey][:rest][:azure_hack_sleep_seconds] = ""
 # API Logging on/off
 default[:monkey][:rest][:api_logging] = ""
+
+# Calculated Attributes
+
+# Azure Endpoint is calculated from the Access Key ID
+default[:monkey][:fog][:azure_endpoint] = "https://" +
+  "#{node[:monkey][:fog][:azure_access_key_id]}.blob.core.windows.net"

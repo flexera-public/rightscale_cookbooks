@@ -15,3 +15,9 @@
 :azure_hack_retry_count: <%=@azure_hack_retry_count%>
 :azure_hack_sleep_seconds: <%=@azure_hack_sleep_seconds%>
 :api_logging: <%=@api_logging%>
+<% unless @ssh_keys.empty? %>
+:ssh_keys:
+<% @ssh_keys.each do |ssh_key| %>
+- <%=ssh_key%>
+<% end %>
+<% end %>

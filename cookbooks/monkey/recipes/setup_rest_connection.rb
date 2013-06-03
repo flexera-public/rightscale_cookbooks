@@ -1,10 +1,10 @@
 #
-# Cookbook Name::monkey
+# Cookbook Name:: monkey
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject
-# to the RightScale Terms of Service available at
-# http://www.rightscale.com/terms.php and, if applicable, other agreements such
-# as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 rightscale_marker :begin
 
@@ -32,13 +32,12 @@ gem_package "rubygems-update" do
 end
 
 # Set the update rubygems command based on the platform
-update_rubygems_cmd =
-  case node[:platform]
-  when "ubuntu"
-    "/usr/local/bin/update_rubygems"
-  else
-    "/usr/bin/update_rubygems"
-  end
+update_rubygems_cmd = value_for_platform(
+  "ubuntu" => {
+    "default" => "/usr/local/bin/update_rubygems"
+  },
+  "default" => "/usr/bin/update_rubygems"
+)
 
 execute "update rubygems" do
   command update_rubygems_cmd
@@ -46,14 +45,13 @@ end
 
 # Installing gem dependencies
 log "  Installing gems requierd by rest_connection"
-gems = node[:monkey][:rest][:gem_packages]
-gems.each do |gem|
-  gem_package gem[:name] do
+node[:monkey][:rest][:gem_packages].each do |gem_name, gem_version|
+  gem_package gem_name do
     gem_binary "/usr/bin/gem"
-    version gem[:version]
+    version gem_version
     action :install
   end
-end unless gems.empty?
+end
 
 # Checkout the rest_connection project. The code is just checked out for
 # performing development. This code is not installed. The Gemfile in
@@ -84,6 +82,14 @@ directory "#{node[:monkey][:user_home]}/.rest_connection" do
   action :create
 end
 
+# Create the private key used for SSH
+file "#{node[:monkey][:user_home]}/.ssh/api_user_key" do
+  owner node[:monkey][:user]
+  group node[:monkey][:group]
+  mode 0600
+  content node[:monkey][:rest][:ssh_key]
+  action :create
+end
 
 template "#{node[:monkey][:user_home]}/.rest_connection/rest_api_config.yaml" do
   source "rest_api_config.yaml.erb"
@@ -96,28 +102,9 @@ template "#{node[:monkey][:user_home]}/.rest_connection/rest_api_config.yaml" do
     :azure_hack_retry_count => node[:monkey][:rest][:azure_hack_retry_count],
     :azure_hack_sleep_seconds =>
       node[:monkey][:rest][:azure_hack_sleep_seconds],
-    :api_logging => node[:monkey][:rest][:api_logging]
+    :api_logging => node[:monkey][:rest][:api_logging],
+    :ssh_keys => ["#{node[:monkey][:user_home]}/.ssh/api_user_key"]
   )
-  cookbook "monkey"
-end
-
-# Create the private key used for SSH
-file "#{node[:monkey][:user_home]}/.ssh/api_user_key" do
-  owner node[:monkey][:user]
-  group node[:monkey][:group]
-  mode 0600
-  content node[:monkey][:rest][:ssh_key]
-  action :create
-end
-
-# Add the private key to the rest_connection configuration file
-bash "Adding private ssh key to rest_connection config" do
-  code <<-EOH
-    cat << EOF >> #{node[:monkey][:user_home]}/.rest_connection/rest_api_config.yaml
-:ssh_keys:
-- #{node[:monkey][:user_home]}/.ssh/api_user_key
-EOF
-EOH
 end
 
 # Create the authorized_keys file if it doesn't exist
@@ -128,10 +115,16 @@ file "#{node[:monkey][:user_home]}/.ssh/authorized_keys" do
   action :create
 end
 
-execute "add public key to authorized keys" do
-  command "echo #{node[:monkey][:rest][:ssh_pub_key]} >>" +
-    " #{node[:monkey][:user_home]}/.ssh/authorized_keys"
-  not_if { File.open("#{ENV['HOME']}/.ssh/authorized_keys").lines.any? { |line| line.chomp == node[:jenkins][:public_key] } }
-end unless node[:monkey][:rest][:ssh_pub_key].empty?
+unless node[:monkey][:rest][:ssh_pub_key].empty?
+  execute "add public key to authorized keys" do
+    command "echo #{node[:monkey][:rest][:ssh_pub_key]} >>" +
+      " #{node[:monkey][:user_home]}/.ssh/authorized_keys"
+    not_if do
+      File.open("#{ENV['HOME']}/.ssh/authorized_keys").lines.any? do |line|
+        line.chomp == node[:jenkins][:public_key]
+      end
+    end
+  end
+end
 
 rightscale_marker :end
