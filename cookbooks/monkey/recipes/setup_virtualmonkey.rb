@@ -60,13 +60,19 @@ end
 
 # Copy the virtualmonkey configuration file
 log "  Copying virtualmonkey configuration"
-file "#{node[:monkey][:virtualmonkey_path]}/.config.yaml" do
-  owner node[:monkey][:user]
-  group node[:monkey][:group]
-  mode 0644
-  content ::File.read("#{node[:monkey][:virtualmonkey_path]}/config.yaml")
-  action :create_if_missing
+execute "copy virtualmonkey configuration file" do
+  cwd node[:monkey][:virtualmonkey_path]
+  command "cp config.yaml .config.yaml"
+  not_if { ::File.exists?("#{node[:monkey][:virtualmonkey_path]}/.config.yaml") }
 end
+
+#file "#{node[:monkey][:virtualmonkey_path]}/.config.yaml" do
+#  owner node[:monkey][:user]
+#  group node[:monkey][:group]
+#  mode 0644
+#  content ::File.read("#{node[:monkey][:virtualmonkey_path]}/config.yaml")
+#  action :create_if_missing
+#end
 
 # Add virtualmonkey to PATH
 file "/etc/profile.d/virtualmonkey.sh" do
