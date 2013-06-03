@@ -54,7 +54,7 @@ end
 execute "git checkout" do
   cwd "#{node[:monkey][:user_home]}/right_api_objects"
   command "git checkout" +
-    " #{node[:monkey][:virtualmonkey][:right_api_objects_repo_branch}"
+    " #{node[:monkey][:virtualmonkey][:right_api_objects_repo_branch]}"
 end
 
 # Install the dependencies of right_api_objects
