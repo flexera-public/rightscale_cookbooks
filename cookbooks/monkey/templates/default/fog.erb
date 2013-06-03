@@ -5,7 +5,12 @@
 #
 # Cloud credentials to be used by Fog
 #
+
+# Sort the credential key value pairs for easier inspection
+<% creds_array = @creds.to_a %>
+<% creds_array.sort! { |elem1, elem2| elem1[0].to_s <=> elem2[0].to_s } %>
+
 :default:
-<% @creds.each do |cred_name, cred_value| %>
-  :<%=cred_name%>: "<%=cred_value%>"
+<% creds_array.each do |cred| %>
+  :<%=cred[0]%>: "<%=cred[1]%>"
 <% end %>
