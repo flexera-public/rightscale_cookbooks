@@ -1,203 +1,203 @@
 {
-  "version": "13.5.0",
-  "suggestions": {
+  "groupings": {
   },
-  "maintainer_email": "support@rightscale.com",
-  "conflicting": {
-  },
-  "platforms": {
+  "providing": {
   },
   "recommendations": {
   },
-  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "maintainer": "RightScale, Inc.",
+  "recipes": {
+    "jenkins::do_attach_slave_at_boot": "Attach a slave node to the master jenkins server at boot time if `jenkins/attach_slave_at_boot` is set to true",
+    "jenkins::do_attach_request": "Attach a slave node to the master jenkins server.",
+    "jenkins::install_server": "Install Jenkins server and configure it using the inputs provided."
+  },
+  "dependencies": {
+    "logrotate": ">= 0.0.0",
+    "rightscale": ">= 0.0.0",
+    "sys_firewall": ">= 0.0.0"
+  },
+  "name": "jenkins",
+  "description": "Installs/Configures Jenkins",
   "attributes": {
-    "jenkins/server/plugins": {
-      "required": "optional",
-      "calculated": false,
-      "type": "string",
-      "display_name": "Jenkins Plugins",
-      "description": "Jenkins plugins to install.",
+    "jenkins/public_key": {
       "recipes": [
-        "jenkins::install_server"
-      ],
-      "choice": [
-
-      ]
-    },
-    "jenkins/server/user_full_name": {
-      "required": "required",
-      "calculated": false,
-      "type": "string",
-      "display_name": "Jenkins User Full Name",
-      "description": "Default user's full name.",
-      "recipes": [
-        "jenkins::install_server"
-      ],
-      "choice": [
-
-      ]
-    },
-    "jenkins/server/user_name": {
-      "required": "required",
-      "calculated": false,
-      "type": "string",
-      "display_name": "Jenkins User Name",
-      "description": "Default user's sign in name.",
-      "recipes": [
-        "jenkins::install_server",
         "jenkins::do_attach_request",
         "jenkins::do_attach_slave_at_boot"
       ],
-      "choice": [
-
-      ]
-    },
-    "jenkins/private_key": {
-      "required": "required",
-      "calculated": false,
-      "type": "string",
-      "display_name": "Jenkins Private Key",
-      "description": "This key is used by Jenkins master/server to connect to the slave using SSH.",
-      "recipes": [
-        "jenkins::install_server"
-      ],
-      "choice": [
-
-      ]
-    },
-    "jenkins/public_key": {
-      "required": "required",
-      "calculated": false,
-      "type": "string",
       "display_name": "Jenkins Public Key",
       "description": "This public key will be used by Jenkins slave to allow connections from the master/server",
-      "recipes": [
-        "jenkins::do_attach_request",
-        "jenkins::do_attach_slave_at_boot"
-      ],
-      "choice": [
-
-      ]
-    },
-    "jenkins/slave/name": {
-      "required": "optional",
-      "calculated": false,
       "type": "string",
-      "display_name": "Jenkins Slave Name",
-      "description": "Name of Jenkins slave. This name should be unique. The RightScale instance uuid will be used as the name if this input is left blank",
-      "recipes": [
-        "jenkins::do_attach_request",
-        "jenkins::do_attach_slave_at_boot"
-      ],
-      "choice": [
-
-      ]
-    },
-    "jenkins/server/password": {
       "required": "required",
       "calculated": false,
+      "choice": [
+
+      ]
+    },
+    "jenkins/server/plugins": {
+      "recipes": [
+        "jenkins::install_server"
+      ],
+      "display_name": "Jenkins Plugins",
+      "description": "Jenkins plugins to install.",
       "type": "string",
-      "display_name": "Jenkins Password",
-      "description": "Default user's password.",
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+
+      ]
+    },
+    "jenkins/slave/mode": {
+      "recipes": [
+        "jenkins::do_attach_request",
+        "jenkins::do_attach_slave_at_boot"
+      ],
+      "display_name": "Jenkins Slave Mode",
+      "description": "Mode of Jenkins slave. Choose 'normal' if this slave can be used for running any jobs or choose 'exclusive' if this slave should be used only for tied jobs.",
+      "type": "string",
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+        "normal",
+        "exclusive"
+      ],
+      "default": "normal"
+    },
+    "jenkins/server/user_name": {
       "recipes": [
         "jenkins::install_server",
         "jenkins::do_attach_request",
         "jenkins::do_attach_slave_at_boot"
       ],
-      "choice": [
-
-      ]
-    },
-    "jenkins/server/user_email": {
+      "display_name": "Jenkins User Name",
+      "description": "Default user's sign in name.",
+      "type": "string",
       "required": "required",
       "calculated": false,
-      "type": "string",
-      "display_name": "Jenkins User Email",
-      "description": "Default user's email.",
-      "recipes": [
-        "jenkins::install_server"
-      ],
       "choice": [
 
       ]
     },
     "jenkins/attach_slave_at_boot": {
-      "required": "optional",
-      "calculated": false,
-      "default": "false",
-      "type": "string",
-      "display_name": "Attach Jenkins Slave At Boot",
-      "description": "Set this input to 'true' if this is a Jenkins slave and should be connected as a slave to the Jenkins server/master at boot.",
       "recipes": [
         "jenkins::do_attach_slave_at_boot"
       ],
+      "display_name": "Attach Jenkins Slave At Boot",
+      "description": "Set this input to 'true' if this is a Jenkins slave and should be connected as a slave to the Jenkins server/master at boot.",
+      "type": "string",
+      "required": "optional",
+      "calculated": false,
       "choice": [
         "true",
         "false"
-      ]
+      ],
+      "default": "false"
     },
-    "jenkins/slave/mode": {
+    "jenkins/server/version": {
+      "recipes": [
+        "jenkins::install_server"
+      ],
+      "display_name": "Jenkins Version",
+      "description": "Jenkins version to install. Leave it blank to get the latest version. Example: 1.500",
+      "type": "string",
       "required": "optional",
       "calculated": false,
-      "default": "normal",
-      "type": "string",
-      "display_name": "Jenkins Slave Mode",
-      "description": "Mode of Jenkins slave. Choose 'normal' if this slave can be used for running any jobs or choose 'exclusive' if this slave should be used only for tied jobs.",
-      "recipes": [
-        "jenkins::do_attach_request",
-        "jenkins::do_attach_slave_at_boot"
-      ],
-      "choice": [
-        "normal",
-        "exclusive"
-      ]
-    },
-    "jenkins/slave/executors": {
-      "required": "optional",
-      "calculated": false,
-      "type": "string",
-      "display_name": "Jenkins Slave Executors",
-      "description": "Number of Jenkins executors.",
-      "recipes": [
-        "jenkins::do_attach_request",
-        "jenkins::do_attach_slave_at_boot"
-      ],
       "choice": [
 
       ]
     },
-    "jenkins/server/version": {
+    "jenkins/slave/executors": {
+      "recipes": [
+        "jenkins::do_attach_request",
+        "jenkins::do_attach_slave_at_boot"
+      ],
+      "display_name": "Jenkins Slave Executors",
+      "description": "Number of Jenkins executors.",
+      "type": "string",
       "required": "optional",
       "calculated": false,
-      "type": "string",
-      "display_name": "Jenkins Version",
-      "description": "Jenkins version to install. Leave it blank to get the latest version. Example: 1.500",
+      "choice": [
+
+      ]
+    },
+    "jenkins/private_key": {
       "recipes": [
         "jenkins::install_server"
       ],
+      "display_name": "Jenkins Private Key",
+      "description": "This key is used by Jenkins master/server to connect to the slave using SSH.",
+      "type": "string",
+      "required": "required",
+      "calculated": false,
+      "choice": [
+
+      ]
+    },
+    "jenkins/slave/name": {
+      "recipes": [
+        "jenkins::do_attach_request",
+        "jenkins::do_attach_slave_at_boot"
+      ],
+      "display_name": "Jenkins Slave Name",
+      "description": "Name of Jenkins slave. This name should be unique. The RightScale instance uuid will be used as the name if this input is left blank",
+      "type": "string",
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+
+      ]
+    },
+    "jenkins/server/user_email": {
+      "recipes": [
+        "jenkins::install_server"
+      ],
+      "display_name": "Jenkins User Email",
+      "description": "Default user's email.",
+      "type": "string",
+      "required": "required",
+      "calculated": false,
+      "choice": [
+
+      ]
+    },
+    "jenkins/server/password": {
+      "recipes": [
+        "jenkins::install_server",
+        "jenkins::do_attach_request",
+        "jenkins::do_attach_slave_at_boot"
+      ],
+      "display_name": "Jenkins Password",
+      "description": "Default user's password.",
+      "type": "string",
+      "required": "required",
+      "calculated": false,
+      "choice": [
+
+      ]
+    },
+    "jenkins/server/user_full_name": {
+      "recipes": [
+        "jenkins::install_server"
+      ],
+      "display_name": "Jenkins User Full Name",
+      "description": "Default user's full name.",
+      "type": "string",
+      "required": "required",
+      "calculated": false,
       "choice": [
 
       ]
     }
   },
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "long_description": "# Jenkins Cookbook\n\n## DESCRIPTION:\n\nThis cookbook provides recipes to setup and Jenkins servers and slaves.\n\n## REQUIREMENTS:\n\nRequires a virtual machine from a RightScale managed RightImage.\n\n## COOKBOOK DEPENDENCIES:\n\nPlease see the `metadata.rb` for the latest dependencies.\n\n## KNOWN LIMITATIONS:\n\nJenkins currently runs as root user. This is required for using the\nVirtualMonkey test framework. Once the test framework is fixed to run as a\nregular user, this limitation can be removed.\n\n## SETUP/USAGE:\n\n* To setup a Jenkins server include `jenkins::install_server` to your runlist.\n  This recipe will Jenkins server and configure the server.\n* To add a server as a slave to existing Jenkins master server, run the\n  `jenkins::do_attach_request` recipe. This recipe will attach the server as a\n  slave to the Jenkins master server found in the current deployment.\n\n## DETAILS:\n\n### Recipes:\n\n### Attributes:\n\nThese are settings used in recipes and tempaltes. Default values are noted.\n\nNote: Only \"internal\" cookbook attributes are described here. Descriptions of\nattributes which have inputs can be found in the metadata.rb file.\n\n#### Jenkins master attributes\n\n* `node[:jenkins][:ip]` - The system IP address to be used for Jenkins server.\n* `node[:jenkins][:server][:home]` - The home directory for Jenkins.\n* `node[:jenkins][:server][:system_user]` - The system user name for Jenkins.\n* `node[:jenkins][:server][:system_group]` - The system group for Jenkins.\n* `node[:jenkins][:server][:port]` - The port number for Jenkins server.\n* `node[:jenkins][:mirror]` - The mirror for downloading jenkins plugins and\n  other resources.\n\n#### Jenkins slave attributes\n\n* `node[:jenkins][:slave][:user]` - The slave username to be used for\n  connecting to the Jenkins master server.\n  The RightScale Instance UUID is used if the name is not specified.\n* `node[:jenkins][:private_key_file]` - The private key file used by the master\n  for SSH communications with the slave.\n* `node[:jenkins][:slave][:attach_status]` - The status of slave attachment.\n\n#### `jenkins::install_server`\n\nThis recipe installs the Jenkins server from the mirrors provided by\njenkins-ci.org. This recipe also allows a particular version of Jenkins\ninstalled based on the `jenkins/server/version` input (Please refer to the\n`metadata.rb` for more information about this input).\n\nThe master node will add tags to announce itself as a master with information\nabout its listen IP address and Port number. Jenkins slaves will use this\ninformation for communication.\n\n#### `jenkins::do_attach_request`\n\nThis recipe attaches a server as a slave to the Jenkins master server found in\nthe current deployment. It uses the Jenkins API to request the master server to\nattach itself as a slave. The slave nodes will add information as tags about its\nIP address, mode, and name.\n\n##### Slave mode:\n\nThe mode for a slave could be either 'normal' or 'exclusive'. The slaves in\n'normal' can be used to run any jobs. The slaves in 'exclusive' mode can only\nrun jobs that are tied/restricted to themselves. The default mode for a slave\nwill be 'normal' unless otherwise overridden.\n\n##### Slave name:\n\nJenkins master uses the name to identify slaves and restrict jobs to a\nparticular slave. This name will be chosen to be the RightScale Instance UUID\nif it is not specified in the inputs.\n\n### Templates:\n\n* `jenkins_user_config.xml.erb` - The Jenkins user configuration XML.\n* `jenkins_system_config.erb` - The Jenkins system configuration file.\n* `jenkins_config.xml.erb` - The main Jenkins configuration XML.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to\nthe RightScale Terms of Service available at http://www.rightscale.com/terms.php\nand, if applicable, other agreements such as a RightScale Master Subscription\nAgreement.\n",
+  "conflicting": {
+  },
+  "suggestions": {
+  },
+  "maintainer_email": "support@rightscale.com",
   "replacing": {
   },
-  "maintainer": "RightScale, Inc.",
-  "recipes": {
-    "jenkins::install_server": "Install Jenkins server and configure it using the inputs provided.",
-    "jenkins::do_attach_slave_at_boot": "Attach a slave node to the master jenkins server at boot time if `jenkins/attach_slave_at_boot` is set to true",
-    "jenkins::do_attach_request": "Attach a slave node to the master jenkins server."
+  "platforms": {
   },
-  "dependencies": {
-    "rightscale": ">= 0.0.0",
-    "sys_firewall": ">= 0.0.0",
-    "logrotate": ">= 0.0.0"
-  },
-  "description": "Installs/Configures Jenkins",
-  "long_description": "# Jenkins Cookbook\n\n## DESCRIPTION:\n\nThis cookbook provides recipes to setup and Jenkins servers and slaves.\n\n## REQUIREMENTS:\n\nRequires a virtual machine from a RightScale managed RightImage.\n\n## COOKBOOK DEPENDENCIES:\n\nPlease see the `metadata.rb` for the latest dependencies.\n\n## KNOWN LIMITATIONS:\n\nJenkins currently runs as root user. This is required for using the\nVirtualMonkey test framework. Once the test framework is fixed to run as a\nregular user, this limitation can be removed.\n\n## SETUP/USAGE:\n\n* To setup a Jenkins server include `jenkins::install_server` to your runlist.\n  This recipe will Jenkins server and configure the server.\n* To add a server as a slave to existing Jenkins master server, run the\n  `jenkins::do_attach_request` recipe. This recipe will attach the server as a\n  slave to the Jenkins master server found in the current deployment.\n\n## DETAILS:\n\n### Recipes:\n\n### Attributes:\n\nThese are settings used in recipes and tempaltes. Default values are noted.\n\nNote: Only \"internal\" cookbook attributes are described here. Descriptions of\nattributes which have inputs can be found in the metadata.rb file.\n\n#### Jenkins master attributes\n\n* `node[:jenkins][:ip]` - The system IP address to be used for Jenkins server.\n* `node[:jenkins][:server][:home]` - The home directory for Jenkins.\n* `node[:jenkins][:server][:system_user]` - The system user name for Jenkins.\n* `node[:jenkins][:server][:system_group]` - The system group for Jenkins.\n* `node[:jenkins][:server][:port]` - The port number for Jenkins server.\n* `node[:jenkins][:mirror]` - The mirror for downloading jenkins plugins and\n  other resources.\n\n#### Jenkins slave attributes\n\n* `node[:jenkins][:slave][:user]` - The slave username to be used for\n  connecting to the Jenkins master server.\n  The RightScale Instance UUID is used if the name is not specified.\n* `node[:jenkins][:private_key_file]` - The private key file used by the master\n  for SSH communications with the slave.\n* `node[:jenkins][:slave][:attach_status]` - The status of slave attachment.\n\n#### `jenkins::install_server`\n\nThis recipe installs the Jenkins server from the mirrors provided by\njenkins-ci.org. This recipe also allows a particular version of Jenkins\ninstalled based on the `jenkins/server/version` input (Please refer to the\n`metadata.rb` for more information about this input).\n\nThe master node will add tags to announce itself as a master with information\nabout its listen IP address and Port number. Jenkins slaves will use this\ninformation for communication.\n\n#### `jenkins::do_attach_request`\n\nThis recipe attaches a server as a slave to the Jenkins master server found in\nthe current deployment. It uses the Jenkins API to request the master server to\nattach itself as a slave. The slave nodes will add information as tags about its\nIP address, mode, and name.\n\n##### Slave mode:\n\nThe mode for a slave could be either 'normal' or 'exclusive'. The slaves in\n'normal' can be used to run any jobs. The slaves in 'exclusive' mode can only\nrun jobs that are tied/restricted to themselves. The default mode for a slave\nwill be 'normal' unless otherwise overridden.\n\n##### Slave name:\n\nJenkins master uses the name to identify slaves and restrict jobs to a\nparticular slave. This name will be chosen to be the RightScale Instance UUID\nif it is not specified in the inputs.\n\n### Templates:\n\n* `jenkins_user_config.xml.erb` - The Jenkins user configuration XML.\n* `jenkins_system_config.erb` - The Jenkins system configuration file.\n* `jenkins_config.xml.erb` - The main Jenkins configuration XML.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to\nthe RightScale Terms of Service available at http://www.rightscale.com/terms.php\nand, if applicable, other agreements such as a RightScale Master Subscription\nAgreement.\n",
-  "name": "jenkins",
-  "groupings": {
-  },
-  "providing": {
-  }
+  "version": "13.5.0"
 }
