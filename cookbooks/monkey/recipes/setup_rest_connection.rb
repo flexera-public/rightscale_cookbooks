@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Installing packages needed for rest_connection
 packages = value_for_platform(
@@ -125,5 +125,3 @@ unless node[:monkey][:rest][:ssh_pub_key].empty?
     end
   end
 end
-
-rightscale_marker :end

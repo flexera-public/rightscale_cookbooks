@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 case node[:platform]
 when "ubuntu"
@@ -84,5 +84,3 @@ right_link_tag "jenkins:slave=true"
 right_link_tag "jenkins:slave_name=#{node[:jenkins][:slave][:name]}"
 right_link_tag "jenkins:slave_mode=#{node[:jenkins][:slave][:mode]}"
 right_link_tag "jenkins:slave_ip=#{node[:jenkins][:ip]}"
-
-rightscale_marker :end

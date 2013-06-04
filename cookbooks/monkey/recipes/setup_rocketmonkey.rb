@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 log "  Checking out Rocketmonkey repository from:" +
   " #{node[:monkey][:rocketmonkey][:repo_url]}"
@@ -41,5 +41,3 @@ execute "Install rocketmonkey gem dependencies" do
   cwd node[:monkey][:rocketmonkey_path]
   command "bundle install --system"
 end
-
-rightscale_marker :end

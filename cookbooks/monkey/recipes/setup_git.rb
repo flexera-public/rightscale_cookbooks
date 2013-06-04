@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 log "  Creating ssh directory for root user"
 directory "#{node[:monkey][:user_home]}/.ssh" do
@@ -46,5 +46,3 @@ template "#{node[:monkey][:user_home]}/.gitconfig" do
   )
   cookbook "monkey"
 end
-
-rightscale_marker :end

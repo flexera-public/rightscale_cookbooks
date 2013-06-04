@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 packages = value_for_platform(
   "centos" => {
@@ -145,5 +145,3 @@ execute "bundle install on collateral" do
   cwd "/root/#{node[:monkey][:virtualmonkey][:collateral_name]}"
   command "bundle install --no-color --system"
 end
-
-rightscale_marker :end

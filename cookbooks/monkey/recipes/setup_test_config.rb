@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Create the /etc/chef directory if it doesn't exist
 directory "/etc/chef" do
@@ -25,5 +25,3 @@ file "/etc/chef/rightscalevirtualmonkey.pem" do
   content node[:monkey][:test_config][:knife_pem_key]
   action :create
 end
-
-rightscale_marker :end

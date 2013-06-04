@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 log "  Updating fog credentials"
 template "/root/.fog" do
@@ -15,5 +15,3 @@ template "/root/.fog" do
     :creds => node[:monkey][:fog]
   )
 end
-
-rightscale_marker :end
