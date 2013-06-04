@@ -201,10 +201,7 @@ end
 
 action :install_server do
 
-  version = new_resource.db_version
-  package "uuid" do
-    action :install
-  end
+  package "uuid"
 
   packages = node[:db_postgres][:server_packages_install]
   log "  Packages to install: #{packages.join(",")}"
@@ -214,20 +211,20 @@ action :install_server do
     end
   end
 
-  service "postgresql-#{version}" do
+  service node[:db_postgres][:service_name] do
     supports :status => true, :restart => true, :reload => true
     action :stop
   end
 
   # Initializes PostgreSQL server and creates system tables.
-  execute "/etc/init.d/postgresql-#{version} initdb" do
+  execute "/etc/init.d/#{node[:db_postgres][:service_name]} initdb" do
     not_if { ::File.exists?("#{node[:db_postgres][:confdir]}/postgresql.conf") }
   end
 
   # Configure system for PostgreSQL
   #
   # Stop PostgreSQL
-  service "postgresql-#{version}" do
+  service node[:db_postgres][:service_name] do
     action :stop
   end
 
@@ -283,7 +280,7 @@ action :install_server do
   execute "ulimit -n #{node[:db_postgres][:tunable][:ulimit]}"
 
   # Start PostgreSQL
-  service "postgresql-#{version}" do
+  service node[:db_postgres][:service_name] do
     action :start
   end
 
@@ -388,7 +385,6 @@ action :enable_replication do
   # See cookbooks/db/libraries/helper.rb for "db_state_get" method.
   db_state_get node
   current_restore_process = new_resource.restore_process
-  version = new_resource.db_version
 
   # Check the volume before performing any actions.  If invalid raise error and exit.
   ruby_block "validate_master" do
@@ -404,7 +400,7 @@ action :enable_replication do
   end
 
   # Stopping Postgresql service
-  service "postgresql-#{version}" do
+  service node[:db_postgres][:service_name] do
     not_if { current_restore_process == :no_restore }
     action :stop
   end
