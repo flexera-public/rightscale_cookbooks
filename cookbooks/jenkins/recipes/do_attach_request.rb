@@ -23,7 +23,7 @@ require "jenkins_api_client"
 
 # Add the jenkins public key to allow master to connect to the slave
 execute "add jenkins public key to authorized keys" do
-  command "echo #{node[:jenkins][:public_key]}" +
+  command "echo \"#{node[:jenkins][:public_key]}\"" +
     " >> #{ENV['HOME']}/.ssh/authorized_keys"
   not_if do
     File.open("#{ENV['HOME']}/.ssh/authorized_keys").lines.any? do |line|
