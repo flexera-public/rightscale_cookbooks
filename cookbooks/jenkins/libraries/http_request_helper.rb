@@ -6,12 +6,12 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-module RightScale
-  module Jenkins
-    module HttpRequestHelper
-	    class Chef::REST
-	      def gzip_disabled?; true; end
-	    end
-    end
-  end
-end
+#module RightScale
+#  module Jenkins
+#    module HttpRequestHelper
+#	    class Chef::REST
+#	      def gzip_disabled?; true; end
+#	    end
+#    end
+#  end
+#end
