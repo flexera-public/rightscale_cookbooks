@@ -163,14 +163,6 @@ action :install_client do
       "default" => []
     )
 
-    node[:db_postgres][:packages_version] = value_for_platform(
-      ["centos", "redhat"] => {
-        "5.8" => "9.1.5-3PGDG.rhel5",
-        "default" => "9.1.5-3PGDG.rhel6"
-      },
-      "default" => ""
-    )
-
     node[:db_postgres][:bindir] = value_for_platform(
       ["centos", "redhat"] => {
         "default" => "/usr/pgsql-9.1/bin"
@@ -189,7 +181,6 @@ action :install_client do
   packages.each do |p|
     package p do
       action :install
-      version node[:db_postgres][:packages_version]
     end
   end
 
@@ -220,7 +211,6 @@ action :install_server do
   packages.each do |p|
     package p do
       action :install
-      version node[:db_postgres][:packages_version]
     end
   end
 
@@ -229,11 +219,9 @@ action :install_server do
     action :stop
   end
 
-  # Initialize PostgreSQL server and create system tables
-  touchfile = ::File.expand_path "~/.postgresql_installed"
-  execute "/etc/init.d/postgresql-#{version} initdb ; touch #{touchfile}" do
-    creates touchfile
-    not_if "test -f #{touchfile}"
+  # Initializes PostgreSQL server and creates system tables.
+  execute "/etc/init.d/postgresql-#{version} initdb" do
+    not_if { ::File.exists?("#{node[:db_postgres][:confdir]}/postgresql.conf") }
   end
 
   # Configure system for PostgreSQL
