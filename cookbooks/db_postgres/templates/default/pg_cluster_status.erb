@@ -7,23 +7,21 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 # 
-# Arguments: hostname to use to report the stats (Instance ID or UUID)
+# Arguments: monitoring machine hostname to use to report the stats.
 # Arguments: IPAddress of Master/Slave database server.
 #
 
 require 'getoptlong'
 require 'rubygems'
 
-PLUGIN_TYPE = 'pg_data'
-PLUGIN_NAME = 'check_hot_standby_delay'
-
-LAG_ALERT = 32 # Alert after 2 WAL segments worth of lag. (MB)
+PLUGIN_TYPE = 'pg_state'
+PLUGIN_NAME = 'pg_cluster_status'
 
 def usage
   puts("#{$0} -m <masterip> -s <slaveip> -h <host_id> [-i <sampling_interval>]")
   puts("    -m: The IPAddress of the master db server. 1.2.3.4")
   puts("    -s: The IPAddress of the slave db server. 1.2.3.4")
-  puts("    -h: The hostname of the machine. Instance ID or UUID")
+  puts("    -h: The hostname of the monitoring machine.")
   puts("    -i: The sample interval of the file check (in seconds).  Default: 20 seconds")
   exit
 
@@ -57,72 +55,76 @@ begin
         sampling_interval = arg.to_i
     end
   end
-  usage if !hostname
   usage if !masterip
   usage if !slaveip
+  usage if !hostname
 
   # check server status/role - if this is master server, skip to run this script.
   # This script should run only on slave server
   def detect_if_master
-    read_only = `/usr/pgsql-9.1/bin/pg_controldata /var/lib/pgsql/9.1/data | grep "Database cluster state" | awk '{print $NF}'`
+    read_only = `<%= @bindir %>/pg_controldata <%= @datadir %> | grep "Database cluster state" | awk '{print $NF}'`
     return true if read_only =~ /production/
   end
 
   whoiam = detect_if_master
   if ( whoiam == true )
-    # This is master db; skipping to run this script on master server
+    #This is master db; skipping to run this script on master server.
     exit 1
   end
 
   def pg_status
-    status = `/usr/pgsql-9.1/bin/pg_controldata /var/lib/pgsql/9.1/data | grep "Database cluster state" |cut -d: -f2 | xargs`
+    status = `<%= @bindir %>/pg_controldata <%= @datadir %> | grep "Database cluster state" |cut -d: -f2 | xargs`
     return true if status =~ /shut down/
   end
 
   while true do
-  ### Given an +xlog+ position from a slave server, return
-  ### the number of bytes the slave needs to replay before it
-  ### is caught up to the master.
+  ### Given an +slave status state+ from a master server, return
+  ### the true
   ###
-  def find_lag( slave_xlog )
-    s_segment, s_offset = slave_xlog.split( /\// )
-    # hex result converting to bytes
-    return (( $segment.hex - s_segment.hex ) * $segbytes) + ( $offset.hex - s_offset.hex )
+  def slave_status(master, slave)
+    return true if $client_addr =~ /#{slave}/
   end
 
-  # Get master xlog data
-  begin
-    $segbytes = `psql -h #{masterip} -U postgres -c "SHOW wal_segment_size"`.sub( /\D+/, '' ).to_i << 20
-    current   = `psql -h #{masterip} -U postgres -c "SELECT pg_current_xlog_location() AS location" |xargs|awk '{print $3}'`
-    $segment, $offset = current.split( /\// )
-  rescue => err
-    # Unable to retrieve required info from the master.
-    exit 1
+  def slave_state(master, slave)
+    return true if $state =~ /streaming/
   end
 
-  # Get slave xlog data
+  # Get data from master
   begin
     mystatus = pg_status
     if ( mystatus == true )
       # pg status is down, exiting script to avoid un-wanted errors on PUTVAL
       exit 1
     else
-      slave_xlog = `psql -h #{slaveip} -U postgres -c "SELECT pg_last_xlog_receive_location() AS receive" | xargs|awk '{print $3}'`
+      mquery = `psql -h #{masterip} -U postgres -c "select client_addr, state from pg_stat_replication" |grep "#{slaveip}"`
+      $client_addr, $state = mquery.split( /\|/ )
     end
-    # hex result converting to bytes
-    lag_in_megs = ( find_lag( slave_xlog ).to_f / 1024 / 1024 ).abs
   rescue => err
-    # Unable to retrieve required info from the slave.
+    # Unable to retrieve required info from the master
     exit 1
   end
 
+  # Assigned to validate
+  slavestatus = slave_status("#{masterip}", "#{slaveip}")
+  slavestate = slave_state("#{masterip}", "#{slaveip}")
 
   # Collection loop
     start_run = Time.now.to_i
     next_run = start_run + sampling_interval
 
     # collectd data and print the values ==> set your code here for monitoring
-    print "PUTVAL #{hostname}/#{PLUGIN_NAME}/#{PLUGIN_TYPE} interval=#{sampling_interval} #{start_run}:#{lag_in_megs}"
+    if ( slavestatus == true )
+          if ( slavestate == true )
+            megs = "1"
+          else
+            megs = "0"
+          end
+    else
+      megs = "0"
+    end
+
+ # collectd data and print the values ==> set your code here for monitoring
+    print "PUTVAL #{hostname}/#{PLUGIN_NAME}/#{PLUGIN_TYPE}  interval=#{sampling_interval} #{start_run}:#{megs}"
 
     # sleep to make the interval
     while((time_left = (next_run - Time.now.to_i)) > 0) do
