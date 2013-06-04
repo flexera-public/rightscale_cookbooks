@@ -6,18 +6,18 @@
 # Rest connection configuration for root user
 #
 ---
-:pass: <%=@right_passwd%>
-:user: <%=@right_email%>
-:api_url: https://<%=@right_subdomain%>.rightscale.com/api/acct/<%=@right_acct_id%>
+:pass: <%= @right_passwd %>
+:user: <%= @right_email %>
+:api_url: https://<%= @right_subdomain %>.rightscale.com/api/acct/<%= @right_acct_id %>
 :common_headers:
   X_API_VERSION: "1.0"
-:azure_hack_on: <%=@azure_hack_on%>
-:azure_hack_retry_count: <%=@azure_hack_retry_count%>
-:azure_hack_sleep_seconds: <%=@azure_hack_sleep_seconds%>
-:api_logging: <%=@api_logging%>
+:azure_hack_on: <%= @azure_hack_on %>
+:azure_hack_retry_count: <%= @azure_hack_retry_count %>
+:azure_hack_sleep_seconds: <%= @azure_hack_sleep_seconds %>
+:api_logging: <%= @api_logging %>
 <% unless @ssh_keys.empty? %>
 :ssh_keys:
 <% @ssh_keys.each do |ssh_key| %>
-- <%=ssh_key%>
+- <%= ssh_key %>
 <% end %>
 <% end %>

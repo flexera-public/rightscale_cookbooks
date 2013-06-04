@@ -86,12 +86,15 @@ execute "populate cloud variables" do
     " --yes"
 end
 
-# Copy the virtualmonkey configuration file
-log "  Copying virtualmonkey configuration"
+# Create the VirtualMonkey configuration file from template. Currently, this
+# configuration file is not managed by Chef.
+log "  Creating VirtualMonkey configuration file from template"
 execute "copy virtualmonkey configuration file" do
   cwd node[:monkey][:virtualmonkey_path]
   command "cp config.yaml .config.yaml"
-  not_if { ::File.exists?("#{node[:monkey][:virtualmonkey_path]}/.config.yaml") }
+  not_if do
+    ::File.exists?("#{node[:monkey][:virtualmonkey_path]}/.config.yaml")
+  end
 end
 
 # Add virtualmonkey to PATH
@@ -123,12 +126,16 @@ gem_package "right_cloud_api" do
 end
 
 log "  Obtaining collateral project name from repo URL"
-ruby "Obtaining Collateral Project name" do
-  node[:monkey][:virtualmonkey][:collateral_name] =
-    `basename "#{node[:monkey][:virtualmonkey][:collateral_repo_url]}" ".git"`.chomp
-end
+basename_cmd = Mixlib::ShellOut.new("basename" +
+  " #{node[:monkey][:virtualmonkey][:collateral_repo_url]} .git"
+)
+basename_cmd.run_command
+basename_cmd.error!
 
-log "  Checking out collateral repo to #{node[:monkey][:virtualmonkey][:collateral_name]}"
+node[:monkey][:virtualmonkey][:collateral_name] = basename_cmd.stdout.chomp
+
+log "  Checking out collateral repo to" +
+  " #{node[:monkey][:virtualmonkey][:collateral_name]}"
 git "/root/#{node[:monkey][:virtualmonkey][:collateral_name]}" do
   repository node[:monkey][:virtualmonkey][:collateral_repo_url]
   reference node[:monkey][:virtualmonkey][:collateral_repo_branch]
@@ -137,7 +144,8 @@ end
 
 execute "git checkout" do
   cwd "/root/#{node[:monkey][:virtualmonkey][:collateral_name]}"
-  command "git checkout #{node[:monkey][:virtualmonkey][:collateral_repo_branch]}"
+  command "git checkout" +
+    " #{node[:monkey][:virtualmonkey][:collateral_repo_branch]}"
 end
 
 log "  Installing gems required for the collateral project"

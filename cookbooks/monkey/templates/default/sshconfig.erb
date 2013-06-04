@@ -11,10 +11,10 @@ ForwardX11 yes
 ForwardAgent yes
 StrictHostKeyChecking no
 
-Host "<%=@git_hostname%>"
+Host "<%= @git_hostname %>"
   User git
   Port 22
-  Hostname "<%=@git_hostname%>"
-  IdentityFile "<%=@keyfile%>"
+  Hostname "<%= @git_hostname %>"
+  IdentityFile "<%= @keyfile %>"
   TCPKeepAlive yes
   IdentitiesOnly yes

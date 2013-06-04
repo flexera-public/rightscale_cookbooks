@@ -18,9 +18,9 @@ depends "logrotate"
 recipe "jenkins::install_server",
   "Install Jenkins server and configure it using the inputs provided."
 recipe "jenkins::do_attach_request",
-  "Attach a slave node to the master jenkins server."
+  "Attach a slave node to the master Jenkins server."
 recipe "jenkins::do_attach_slave_at_boot",
-  "Attach a slave node to the master jenkins server at boot time if" +
+  "Attach a slave node to the master Jenkins server at boot time if" +
   " `jenkins/attach_slave_at_boot` is set to true"
 
 # Server/Master Attributes
@@ -82,7 +82,7 @@ attribute "jenkins/slave/name",
   :display_name => "Jenkins Slave Name",
   :description =>
     "Name of Jenkins slave. This name should be unique. The RightScale" +
-    " instance uuid will be used as the name if this input is left blank",
+    " instance UUID will be used as the name if this input is left blank",
   :required => "optional",
   :recipes => ["jenkins::do_attach_request", "jenkins::do_attach_slave_at_boot"]
 
@@ -117,7 +117,7 @@ attribute "jenkins/public_key",
 attribute "jenkins/private_key",
   :display_name => "Jenkins Private Key",
   :description =>
-    "This key is used by Jenkins master/server to connect to the slave" +
+    "This key is used by Jenkins server/master to connect to the slave" +
     " using SSH.",
   :required => "required",
   :recipes => ["jenkins::install_server"]

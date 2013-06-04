@@ -21,8 +21,9 @@ execute "git checkout" do
   command "git checkout #{node[:monkey][:rocketmonkey][:repo_branch]}"
 end
 
-# Copy the rocketmonkey configuration files if they are not present
-log "  Copy rocketmonkey configuration files"
+# Copy the rocketmonkey configuration files if they are not present. Presently,
+# these configuration files are not managed by Chef.
+log "  Creating rocketmonkey configuration files from tempaltes"
 [
   "googleget.yaml",
   "rocketmonkey.yaml",
@@ -32,7 +33,9 @@ log "  Copy rocketmonkey configuration files"
   execute "copy '#{config_file}' to '.#{config_file}'" do
     cwd node[:monkey][:rocketmonkey_path]
     command "cp #{config_file} .#{config_file}"
-    not_if { ::File.exists?("#{node[:monkey][:rocketmonkey_path]}/.#{config_file}") }
+    not_if do
+      ::File.exists?("#{node[:monkey][:rocketmonkey_path]}/.#{config_file}")
+    end
   end
 end
 

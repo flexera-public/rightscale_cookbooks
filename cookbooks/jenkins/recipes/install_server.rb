@@ -17,7 +17,7 @@ directory node[:jenkins][:server][:home] do
 end
 
 # Create Jenkins private key file
-file "#{node[:jenkins][:private_key_file]}" do
+file node[:jenkins][:private_key_file] do
   content node[:jenkins][:private_key]
   mode 0600
   owner node[:jenkins][:server][:system_user]

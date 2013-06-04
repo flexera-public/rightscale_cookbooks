@@ -27,7 +27,8 @@ default[:jenkins][:server][:system_group] = "root"
 default[:jenkins][:server][:port] = "8080"
 # Jenkins mirror
 default[:jenkins][:mirror] = "http://updates.jenkins-ci.org"
-
+# The version used for jenkins_api_client gem
+default[:jenkins][:server][:jenkins_api_client_version] = "0.9.1"
 # Attributes for Jenkins slave
 
 # Jenkins slave user

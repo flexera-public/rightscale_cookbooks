@@ -8,14 +8,16 @@
 
 rightscale_marker
 
-case node[:platform]
-when "ubuntu"
-  package "openjdk-6-jre"
-else
-  package "java-1.6.0-openjdk"
-end
+java_package = value_for_platform_family(
+  "debian" => "openjdk-6-jre",
+  "default" => "java-1.6.0-openjdk"
+)
+package java_package
 
-chef_gem "jenkins_api_client"
+chef_gem "jenkins_api_client" do
+  version node[:jenkins][:server][:jenkins_api_client_version]
+  action :install
+end
 
 require "jenkins_api_client"
 
@@ -23,7 +25,11 @@ require "jenkins_api_client"
 execute "add jenkins public key to authorized keys" do
   command "echo #{node[:jenkins][:public_key]}" +
     " >> #{ENV['HOME']}/.ssh/authorized_keys"
-  not_if { File.open("#{ENV['HOME']}/.ssh/authorized_keys").lines.any? { |line| line.chomp == node[:jenkins][:public_key] } }
+  not_if do
+    File.open("#{ENV['HOME']}/.ssh/authorized_keys").lines.any? do |line|
+      line.chomp == node[:jenkins][:public_key]
+    end
+  end
 end
 
 # Obtain information about Jenkins master by querying for its tags

@@ -11,10 +11,10 @@ rightscale_marker
 # Installing packages needed for rest_connection
 packages = value_for_platform(
   "centos" => {
-    "default" => [ "libxml2-devel",  "libxslt-devel"]
+    "default" => ["libxml2-devel",  "libxslt-devel"]
   },
   "ubuntu" => {
-    "default" => [ "libxml2-dev", "libxslt1-dev" ]
+    "default" => ["libxml2-dev", "libxslt1-dev"]
   }
 )
 

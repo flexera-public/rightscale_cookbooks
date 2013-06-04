@@ -13,18 +13,17 @@ version          "13.5.0"
 depends "rightscale"
 
 recipe "monkey::setup_git",
-  "Setting up Git for monkey."
+  "Setup Git configuration for virtualmonkey."
 recipe "monkey::setup_rest_connection",
-  "Setting up rest_connection for monkey."
+  "Setup the rest_connection library."
 recipe "monkey::setup_virtualmonkey",
-  "Setting up virtualmonkey."
+  "Setup virtualmonkey."
 recipe "monkey::setup_rocketmonkey",
-  "Setting up rocketmonkey."
+  "Setup rocketmonkey."
 recipe "monkey::update_fog_credentials",
-  "Setting up or updating existing credentials for fog configuration."
+  "Setup or update existing credentials for fog configuration."
 recipe "monkey::setup_test_config",
-  "Setup test specific configuration. Example. Setting up knife credentials" +
-  " for running chef_client test."
+  "Setup test specific configuration."
 
 {
   :aws_access_key_id => [
@@ -162,7 +161,7 @@ recipe "monkey::setup_test_config",
   :s3_bucket => [
     "S3_BUCKET_NAME",
     "The Name of the S3 Bucket to Store Monkey Reports"
-  ]
+  ],
 }.each do |attribute_name, value|
   display_name, description = value
 

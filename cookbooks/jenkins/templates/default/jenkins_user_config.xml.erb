@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <user>
-  <fullName><%=@user_full_name%></fullName>
+  <fullName><%= @user_full_name %></fullName>
   <properties>
     <jenkins.security.ApiTokenProperty>
       <apiToken></apiToken>
@@ -20,10 +20,10 @@
       <insensitiveSearch>false</insensitiveSearch>
     </hudson.search.UserSearchProperty>
     <hudson.security.HudsonPrivateSecurityRealm_-Details>
-      <passwordHash>#jbcrypt:<%=@password_encrypted%></passwordHash>
+      <passwordHash>#jbcrypt:<%= @password_encrypted %></passwordHash>
     </hudson.security.HudsonPrivateSecurityRealm_-Details>
     <hudson.tasks.Mailer_-UserProperty>
-      <emailAddress><%=@email%></emailAddress>
+      <emailAddress><%= @email %></emailAddress>
     </hudson.tasks.Mailer_-UserProperty>
   </properties>
 </user>
