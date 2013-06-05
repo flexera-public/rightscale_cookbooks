@@ -86,7 +86,7 @@ module RightScale
           Gem.clear_paths
           require 'pg'
 
-          while(1) do
+          while (1) do
             begin
               info_msg = "  Doing SQL Query: HOST=#{hostname}, QUERY=#{query}"
               info_msg << ", TIMEOUT=#{timeout}" if timeout
@@ -102,7 +102,7 @@ module RightScale
                 conn = PGconn.open("localhost", nil, nil, nil, nil, "postgres", nil)
                 result = conn.exec(query)
               end
-              return result.getvalue(0,0) if result
+              return result.getvalue(0, 0) if result
               return result
             rescue Timeout::Error => e
               Chef::Log.info("  Timeout occured during pgsql query:#{e}")
@@ -110,16 +110,6 @@ module RightScale
               raise "FATAL: retry count reached" if tries == 0
             end
           end
-        end
-
-        # Replication process reconfiguration
-        #
-        # @param [String] newmaster_host FQDN or ip of new replication master
-        # @param [String] rep_user Replication user
-        def self.rsync_db(newmaster_host = nil, rep_user = nil)
-          puts `su - postgres -c "env PGCONNECT_TIMEOUT=30 /usr/pgsql-9.1/bin/pg_basebackup -D /var/lib/pgsql/9.1/backups -U #{rep_user} -h #{newmaster_host}"`
-          puts `su - postgres -c "rsync -av /var/lib/pgsql/9.1/backups/ /var/lib/pgsql/9.1/data --exclude postgresql.conf --exclude pg_hba.conf"`
-          return $? == 0
         end
 
         #Creates a trigger file whose presence should cause recovery to end whether or not the next WAL file is available.

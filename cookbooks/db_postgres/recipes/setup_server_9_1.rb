@@ -42,6 +42,7 @@ case node[:platform]
 when "centos", "redhat"
   node[:db_postgres][:confdir] = "/var/lib/pgsql/9.1/data"
   node[:db_postgres][:datadir] = "/var/lib/pgsql/9.1/data"
+  node[:db_postgres][:backupdir] = "/var/lib/pgsql/9.1/backups"
   node[:db_postgres][:bindir] = "/usr/pgsql-9.1/bin"
 else
   raise "Platform '#{node[:platform]}' is not supported by this recipe."
