@@ -31,9 +31,13 @@ default[:repo][:default][:destination] = "/home/webapps"
 default[:repo][:default][:storage_account_provider] = ""
 # ROS prefix
 default[:repo][:default][:prefix] = ""
-
-
+# Repository environment
 default[:repo][:default][:environment]= {}
+# Repository symlinks
 default[:repo][:default][:symlinks]= {}
+# Whether to purge before creating symlink
 default[:repo][:default][:purge_before_symlink] = %w{}
+# Whether to create directories before creating symlink
 default[:repo][:default][:create_dirs_before_symlink] = %w{}
+# Repository endpoint
+default[:repo][:default][:endpoint] = ""

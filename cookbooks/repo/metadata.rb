@@ -3,7 +3,7 @@ maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "Abstract cookbook for managing source code repositories."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "13.4.0"
+version          "13.5.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"
@@ -74,6 +74,16 @@ attribute "repo/default/credential",
   :required => "recommended",
   :recipes => ["repo::default"]
 
+attribute "repo/default/endpoint",
+  :display_name => "Storage Cloud Endpoint URL",
+  :description =>
+    "The endpoint URL for the storage cloud. This is used to override the" +
+    " default endpoint or for generic storage clouds such as Swift." +
+    " Example: http://endpoint_ip:5000/v2.0/tokens",
+  :required => "optional",
+  :default => "",
+  :recipes => ["repo::default"]
+
 attribute "repo/default/ssh_host_key",
   :display_name => "Known hosts ssh key",
   :description =>
@@ -121,6 +131,7 @@ attribute "repo/default/storage_account_provider",
     "cloudfilesuk",
     "google",
     "azure",
+    "swift",
     "SoftLayer_Dallas",
     "SoftLayer_Singapore",
     "SoftLayer_Amsterdam"

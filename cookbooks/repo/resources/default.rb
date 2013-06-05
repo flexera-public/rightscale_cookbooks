@@ -37,6 +37,8 @@ attribute :account, :kind_of => String
 # Account credential
 attribute :credential, :kind_of => String
 
+# ROS endpoint
+attribute :endpoint, :kind_of => String
 
 # ssh_hostkey to be added to known hosts
 attribute :ssh_host_key, :kind_of => String

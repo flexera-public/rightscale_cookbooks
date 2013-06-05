@@ -11,6 +11,7 @@ rightscale_marker
 log "  Creating database config for application"
 # See cookbooks/app/providers/default.rb for the "setup_db_connection" action.
 app "default" do
+  destination node[:app][:destination]
   database_name node[:app][:database_name]
   database_user node[:app][:database_user]
   database_password node[:app][:database_password]

@@ -1,31 +1,31 @@
 {
+  "replacing": {
+  },
   "name": "ruby",
-  "description": "Installs and configures Ruby",
-  "long_description": "# RightScale Ruby Cookbook\n\n## DESCRIPTION:\n\nThis cookbook provides recipes for setting up specific versions of Ruby.\n\n## REQUIREMENTS:\n\nRequires a virtual machine launched from a RightScale-managed RightImage.\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see `metadata.rb` file for the latest dependencies.\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## SETUP/USAGE:\n\nPlace the `ruby::install_1_8` recipe into the boot recipes to install ruby 1.8\nwith rubygems.\n\nPlace the `ruby::install_1_9` recipe into the boot recipes to install ruby 1.9\nwith rubygems.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to\nthe RightScale Terms of Service available at http://www.rightscale.com/terms.php\nand, if applicable, other agreements such as a RightScale Master Subscription\nAgreement.\n",
-  "maintainer": "RightScale, Inc.",
-  "maintainer_email": "support@rightscale.com",
-  "license": "Copyright RightScale, Inc. All rights reserved.",
-  "platforms": {
+  "suggestions": {
   },
   "dependencies": {
   },
-  "recommendations": {
-  },
-  "suggestions": {
-  },
   "conflicting": {
   },
-  "providing": {
-  },
-  "replacing": {
+  "version": "13.5.0",
+  "groupings": {
   },
   "attributes": {
   },
-  "groupings": {
-  },
+  "maintainer_email": "support@rightscale.com",
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "long_description": "# RightScale Ruby Cookbook\n\n## DESCRIPTION:\n\nThis cookbook provides recipes for setting up specific versions of Ruby.\n\n## REQUIREMENTS:\n\nRequires a virtual machine launched from a RightScale-managed RightImage.\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see `metadata.rb` file for the latest dependencies.\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## SETUP/USAGE:\n\nPlace the `ruby::install_1_8` recipe into the boot recipes to install ruby 1.8\nwith rubygems.\n\nPlace the `ruby::install_1_9` recipe into the boot recipes to install ruby 1.9\nwith rubygems.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to\nthe RightScale Terms of Service available at http://www.rightscale.com/terms.php\nand, if applicable, other agreements such as a RightScale Master Subscription\nAgreement.\n",
+  "description": "Installs and configures Ruby",
   "recipes": {
-    "ruby::install_1_8": "Installs and configures Ruby 1.8.",
-    "ruby::install_1_9": "Installs and configures Ruby 1.9."
+    "ruby::install_1_9": "Installs and configures Ruby 1.9.",
+    "ruby::install_1_8": "Installs and configures Ruby 1.8."
   },
-  "version": "13.4.0"
+  "platforms": {
+  },
+  "recommendations": {
+  },
+  "providing": {
+  },
+  "maintainer": "RightScale, Inc."
 }

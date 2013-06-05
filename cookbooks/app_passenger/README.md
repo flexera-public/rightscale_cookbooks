@@ -53,7 +53,7 @@ Server built: Jun 6 2012 10:00:42
 
 __Phusion Passenger__
 
-Phusion Passenger version 3.0.12
+Phusion Passenger version 3.0.19
 
 also:
 * `Rails spawn method input`
