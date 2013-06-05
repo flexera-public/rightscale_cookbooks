@@ -588,16 +588,20 @@ action :setup_slave_monitoring do
     cookbook "db_postgres"
   end
 
-  # Setting pg_state and pg_data types for pg slave monitoring into types.db
-  ruby_block "add_collectd_gauges" do
-    block do
-      types_file = ::File.join(node[:rightscale][:collectd_share], 'types.db')
-      typesdb = IO.read(types_file)
-      unless typesdb.include?('pg_data') && typesdb.include?('pg_state')
-        typesdb += "\npg_data                 value:GAUGE:0:9223372036854775807\npg_state                value:GAUGE:0:65535"
-        ::File.open(types_file, "w") { |f| f.write(typesdb) }
-      end
-    end
+  # Adds custom gauges to collectd 'types.db'.
+  cookbook_file "#{node[:rightscale][:collectd_plugin_dir]}/psql.types.db" do
+    source "psql.types.db"
+    backup false
+  end
+
+  # Adds configuration to use the custom gauges.
+  template "#{node[:rightscale][:collectd_plugin_dir]}/psql.types.db.conf" do
+    source "psql.types.db.conf.erb"
+    variables(
+      :collectd_plugin_dir => node[:rightscale][:collectd_plugin_dir]
+    )
+    backup false
+    notifies :restart, resources(:service => "collectd")
   end
 
 end
