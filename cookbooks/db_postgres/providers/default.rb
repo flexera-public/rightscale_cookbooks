@@ -369,9 +369,21 @@ action :grant_replication_slave do
     else
       log "  Creating replication user #{username}"
       conn.exec("CREATE USER #{username} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password}'")
-      # Setup pg_hba.conf for replication user allow
-      # See cookbooks/db_postgres/libraries/helper.rb for the "RightScale::Database::PostgreSQL::Helper" class.
-      RightScale::Database::PostgreSQL::Helper.configure_pg_hba(node)
+      # Configures the replication parameters.
+      # See cookbooks/db_postgres/libraries/helper.rb
+      # for the "RightScale::Database::PostgreSQL::Helper" class.
+      ruby_block "configure pg_hba.conf replication parameters" do
+        block do
+          line = "host replication #{node[:db][:replication][:user]}"
+          line << " 0.0.0.0/0 trust"
+
+          file = Chef::Util::FileEdit.new(
+            "#{node[:db_postgres][:confdir]}/pg_hba.conf"
+          )
+          file.insert_line_if_no_match(line, line)
+          file.write_file
+        end
+      end
       # Reload postgresql to read new updated pg_hba.conf
       RightScale::Database::PostgreSQL::Helper.do_query('select pg_reload_conf()')
     end
