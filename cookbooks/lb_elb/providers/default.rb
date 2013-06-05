@@ -32,8 +32,8 @@ action :attach do
     ["LoadBalancerDescriptions"]\
     ["member"]
 
-  # If there is only one ELB in the account, AWS returns a single Hash in the
-  # response and an array is returned if multiple ELBs exist.
+  # If there is only one ELB in the account, Right Cloud API returns a single
+  # Hash in the response and an array is returned if multiple ELBs exist.
   existing_elbs = [existing_elbs] if existing_elbs.is_a?(Hash)
 
   if selected_elb = existing_elbs.detect { |existing_elb|
