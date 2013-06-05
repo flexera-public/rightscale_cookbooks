@@ -36,5 +36,8 @@ LoadPlugin interface
 LoadPlugin <%= plugin %>
 <% end %>
 
-#this is where other configs go (e.g. mysql.conf)
+# Use multiple types.db
+TypesDB "/usr/share/collectd/types.db"
+
+# Recursively includes all files within that directory and its subdirectories.
 Include "<%= node[:rightscale][:collectd_plugin_dir] %>/*"
