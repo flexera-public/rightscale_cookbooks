@@ -72,8 +72,8 @@ default[:db][:current_master_ip] = nil
 # Offset the start time by a random number. Skip the minutes near the exact
 # hour and 1/2 hour. This is done to prevent overloading the API and cloud
 # providers. If every rightscale server sent a request at the same time to
-# perform a snapshot it would be a huge usage spike. The random start time even
-# out these spikes.
+# perform a snapshot it would be a huge usage spike. The random start time
+# evens out these spikes.
 
 # Generate random time
 # Master and slave backup times are staggered by 30 minutes.

@@ -18,8 +18,9 @@ default[:app][:lb_public_ip] = ""
 # Recommended attributes
 
 # Application listen port
-default[:app][:port] = "8080"
+default[:app][:port] = "8000"
 # The database schema name the app server uses
 default[:app][:database_name] = ""
-# Application IP type given to the load balancer
+# Application IP type given to the load balancer. Possible values for this
+# attribute are "public" and "private".
 default[:app][:backend_ip_type] = "private"

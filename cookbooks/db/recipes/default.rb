@@ -28,7 +28,7 @@ end
 # 'db' resource and database version.
 #
 provider_type = node[:db][:provider_type]
-if not provider_type.empty?
+unless provider_type.empty?
   database_type = provider_type.match(/^db_([a-z]+)_(\d.\d)/)
   # Database provider type Ex: db_mysql
   node[:db][:provider] = "db_#{database_type[1]}"
