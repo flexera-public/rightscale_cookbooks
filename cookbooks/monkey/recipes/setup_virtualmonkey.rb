@@ -76,16 +76,6 @@ execute "bundle install" do
   command "bundle install --no-color --system"
 end
 
-# Populate all virtualmonkey cloud variables
-log "  Populating virtualmonkey cloud variables"
-execute "populate cloud variables" do
-  command "#{node[:monkey][:virtualmonkey_path]}/bin/monkey" +
-    " populate_all_cloud_vars" +
-    " --force" +
-    " --overwrite" +
-    " --yes"
-end
-
 # Create the VirtualMonkey configuration file from template. Currently, this
 # configuration file is not managed by Chef.
 log "  Creating VirtualMonkey configuration file from template"
@@ -95,6 +85,16 @@ execute "copy virtualmonkey configuration file" do
   not_if do
     ::File.exists?("#{node[:monkey][:virtualmonkey_path]}/.config.yaml")
   end
+end
+
+# Populate all virtualmonkey cloud variables
+log "  Populating virtualmonkey cloud variables"
+execute "populate cloud variables" do
+  command "#{node[:monkey][:virtualmonkey_path]}/bin/monkey" +
+    " populate_all_cloud_vars" +
+    " --force" +
+    " --overwrite" +
+    " --yes"
 end
 
 # Add virtualmonkey to PATH
