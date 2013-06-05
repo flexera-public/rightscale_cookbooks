@@ -388,21 +388,21 @@ action :setup_monitoring do
     source "haproxy_collectd_exec.erb"
     notifies :restart, resources(:service => "collectd")
     cookbook "lb_haproxy"
+
+  # Adds custom gauges to collectd 'types.db'.
+  cookbook_file "#{node[:rightscale][:collectd_plugin_dir]}/haproxy.types.db" do
+    source "haproxy.types.db"
+    backup false
   end
 
-  ruby_block "add_collectd_gauges" do
-    block do
-      types_file = ::File.join(node[:rightscale][:collectd_share], "types.db")
-      typesdb = IO.read(types_file)
-      unless typesdb.include?("gague-age") && typesdb.include?("haproxy_sessions")
-        typesdb += <<-EOS
-          haproxy_sessions current_queued:GAUGE:0:65535, current_session:GAUGE:0:65535
-          haproxy_traffic cumulative_requests:COUNTER:0:200000000, response_errors:COUNTER:0:200000000, health_check_errors:COUNTER:0:200000000
-          haproxy_status status:GAUGE:-255:255
-        EOS
-        ::File.open(types_file, "w") { |f| f.write(typesdb) }
-      end
-    end
+  # Adds configuration to use the custom gauges.
+  template "#{node[:rightscale][:collectd_plugin_dir]}/haproxy.types.db.conf" do
+    source "haproxy.types.db.conf.erb"
+    variables(
+      :collectd_plugin_dir => node[:rightscale][:collectd_plugin_dir]
+    )
+    backup false
+    notifies :restart, resources(:service => "collectd")
   end
 
 end
