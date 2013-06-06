@@ -609,12 +609,14 @@ action :setup_slave_monitoring do
   # Adds custom gauges to collectd 'types.db'.
   cookbook_file "#{node[:rightscale][:collectd_plugin_dir]}/psql.types.db" do
     source "psql.types.db"
+    cookbook "db_postgres"
     backup false
   end
 
   # Adds configuration to use the custom gauges.
   template "#{node[:rightscale][:collectd_plugin_dir]}/psql.types.db.conf" do
     source "psql.types.db.conf.erb"
+    cookbook "db_postgres"
     variables(
       :collectd_plugin_dir => node[:rightscale][:collectd_plugin_dir]
     )
