@@ -12,19 +12,35 @@
 
 
 # Optional attributes
-#
+
+# Timezone
 default[:rightscale][:timezone] = "UTC"
+# Process list
 default[:rightscale][:process_list] = ""
+# Process match list
 default[:rightscale][:process_match_list] = ""
-default[:rightscale][:private_ssh_key] = ""
-
+# Database backup file
 default[:rightscale][:db_backup_file] = "/var/run/db-backup"
-
+# Short hostname
 default[:rightscale][:short_hostname] = ""
+# Domain name
 default[:rightscale][:domain_name] = ""
+# Domain search suffix
 default[:rightscale][:search_suffix] = ""
-
+# Enable/disable security updates
 default[:rightscale][:security_update] = "disable"
 
+# Required attributes
+
+# Private SSH key
+default[:rightscale][:private_ssh_key] = ""
+
+
 # Cloud specific attributes
-#
+
+# Rackspace username
+default[:rightscale][:rackspace_username] = ""
+# Rackspace Tenant ID
+default[:rightscale][:rackspace_tenant_id] = ""
+# Rackspace API key
+default[:rightscale][:rackspace_api_key] = ""

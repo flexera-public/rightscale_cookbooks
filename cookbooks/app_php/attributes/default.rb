@@ -6,10 +6,13 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
+# Recommended attributes
+
 # List of additional php modules
 default[:app_php][:modules_list] = []
 
 # Calculated attributes
+
 # Defining module dependencies depending on platform.
 case platform
 when "ubuntu"
