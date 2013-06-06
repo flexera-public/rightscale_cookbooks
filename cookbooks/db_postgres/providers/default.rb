@@ -369,22 +369,20 @@ action :grant_replication_slave do
     else
       log "  Creating replication user #{username}"
       conn.exec("CREATE USER #{username} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password}'")
+
       # Configures the replication parameters.
+      line = "host replication #{node[:db][:replication][:user]}"
+      line << " 0.0.0.0/0 trust"
+
+      file = Chef::Util::FileEdit.new(
+        "#{node[:db_postgres][:confdir]}/pg_hba.conf"
+      )
+      file.insert_line_if_no_match(line, line)
+      file.write_file
+
+      # Reload postgresql to read new updated pg_hba.conf
       # See cookbooks/db_postgres/libraries/helper.rb
       # for the "RightScale::Database::PostgreSQL::Helper" class.
-      ruby_block "configure pg_hba.conf replication parameters" do
-        block do
-          line = "host replication #{node[:db][:replication][:user]}"
-          line << " 0.0.0.0/0 trust"
-
-          file = Chef::Util::FileEdit.new(
-            "#{node[:db_postgres][:confdir]}/pg_hba.conf"
-          )
-          file.insert_line_if_no_match(line, line)
-          file.write_file
-        end
-      end
-      # Reload postgresql to read new updated pg_hba.conf
       RightScale::Database::PostgreSQL::Helper.do_query('select pg_reload_conf()')
     end
   else
@@ -519,43 +517,33 @@ action :setup_monitoring do
     action :nothing
   end
 
-  if node[:platform] =~ /redhat|centos/
+  collectd_version = node[:rightscale][:collectd_packages_version]
+  package "collectd-postgresql" do
+    action :install
+    version "#{collectd_version}" unless collectd_version == "latest"
+  end
 
-    collectd_version = node[:rightscale][:collectd_packages_version]
-    package "collectd-postgresql" do
-      action :install
-      version "#{collectd_version}" unless collectd_version == "latest"
-    end
+  cookbook_file "#{node[:rightscale][:collectd_share]}/postgresql_default.conf" do
+    source "postgresql_default.conf"
+    backup false
+    cookbook "db_postgres"
+    notifies :restart, resources(:service => "collectd")
+  end
 
-    cookbook_file "#{node[:rightscale][:collectd_share]}/postgresql_default.conf" do
-      source "postgresql_default.conf"
-      backup false
-      cookbook "db_postgres"
-      notifies :restart, resources(:service => "collectd")
-    end
+  # Installs the postgres_ps collectd script into the collectd library plugins
+  # directory.
+  cookbook_file "#{node[:rightscale][:collectd_lib]}/plugins/postgres_ps" do
+    source "postgres_ps"
+    mode "0755"
+    cookbook "db_postgres"
+  end
 
-    # Installs the postgres_ps collectd script into the collectd library plugins
-    # directory.
-    cookbook_file "#{node[:rightscale][:collectd_lib]}/plugins/postgres_ps" do
-      source "postgres_ps"
-      mode "0755"
-      cookbook "db_postgres"
-    end
-
-    # Adds a collectd config file for the postgres_ps script with the exec
-    # plugin and restarts collectd if necessary.
-    template "#{node[:rightscale][:collectd_plugin_dir]}/postgres_ps.conf" do
-      source "postgres_ps.conf.erb"
-      cookbook "db_postgres"
-      notifies :restart, resources(:service => "collectd")
-    end
-
-  else
-
-    log "  WARNING: attempting to install collectd-postgresql on unsupported platform #{node[:platform]}, continuing.." do
-      level :warn
-    end
-
+  # Adds a collectd config file for the postgres_ps script with the exec
+  # plugin and restarts collectd if necessary.
+  template "#{node[:rightscale][:collectd_plugin_dir]}/postgres_ps.conf" do
+    source "postgres_ps.conf.erb"
+    cookbook "db_postgres"
+    notifies :restart, resources(:service => "collectd")
   end
 end
 
