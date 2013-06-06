@@ -14,4 +14,6 @@ when "redhat", "centos"
   default[:sys_ntp][:service] = "ntpd"
 end
 
-default[:sys_ntp][:servers] = "time.rightscale.com, ec2-us-east.time.rightscale.com, ec2-us-west.time.rightscale.com"
+# NTP servers
+default[:sys_ntp][:servers] = "time.rightscale.com," +
+  " ec2-us-east.time.rightscale.com, ec2-us-west.time.rightscale.com"

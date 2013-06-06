@@ -6,16 +6,38 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
+# Recommended attributes
+
+# Repository URL/ROS container
 default[:repo][:default][:repository] = ""
-default[:repo][:default][:revision] = "HEAD"
+# Repository Branch/Tag/Commit
+default[:repo][:default][:revision] = "master"
+# Repository provider
 default[:repo][:default][:provider] = "repo_git"
+# Repository account name
 default[:repo][:default][:account] = ""
+# Repository account credential
 default[:repo][:default][:credential] = ""
-default[:repo][:default][:storage_account_provider] = "S3"
-default[:repo][:default][:environment]= {}
-default[:repo][:default][:symlinks]= {}
-default[:repo][:default][:purge_before_symlink] = %w{}
-default[:repo][:default][:create_dirs_before_symlink] = %w{}
-default[:repo][:default][:perform_action] = :pull
+
+# Optional attributes
+
+# Known hosts SSH key
+default[:repo][:default][:ssh_host_key] = ""
+# Default action to perform
+default[:repo][:default][:perform_action] = "pull"
+# Default destination to place code
+default[:repo][:default][:destination] = "/home/webapps"
+# ROS Storage account provider
+default[:repo][:default][:storage_account_provider] = ""
+# ROS prefix
 default[:repo][:default][:prefix] = ""
+# Repository environment
+default[:repo][:default][:environment]= {}
+# Repository symlinks
+default[:repo][:default][:symlinks]= {}
+# Whether to purge before creating symlink
+default[:repo][:default][:purge_before_symlink] = %w{}
+# Whether to create directories before creating symlink
+default[:repo][:default][:create_dirs_before_symlink] = %w{}
+# Repository endpoint
 default[:repo][:default][:endpoint] = ""

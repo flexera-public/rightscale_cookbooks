@@ -6,6 +6,10 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
+# Optional attributes
+
+# Reconverge list
+default[:sys][:reconverge_list] = ""
 # Defines the interval in minutes to run recipe(s) in reconverge list.
 default[:sys][:reconverge][:interval] = "15"
 # Defines the plus/minus offset of reconverge interval to avoid all systems
