@@ -432,7 +432,6 @@ action :enable_replication do
 
       backup = Mixlib::ShellOut.new(backup_cmd)
       backup.run_command.error!
-      Chef::Log.info backup.stdout
 
       rsync_cmd = "su --login postgres --command=\"rsync --archive --verbose"
       rsync_cmd << " #{node[:db_postgres][:backupdir]}"
@@ -441,7 +440,6 @@ action :enable_replication do
 
       rsync = Mixlib::ShellOut.new(rsync_cmd)
       rsync.run_command.error!
-      Chef::Log.info rsync.stdout
     end
   end
 
