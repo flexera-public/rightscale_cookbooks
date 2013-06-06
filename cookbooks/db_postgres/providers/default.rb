@@ -371,14 +371,7 @@ action :grant_replication_slave do
       conn.exec("CREATE USER #{username} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password}'")
 
       # Configures the replication parameters.
-      line = "host replication #{node[:db][:replication][:user]}"
-      line << " 0.0.0.0/0 trust"
-
-      file = Chef::Util::FileEdit.new(
-        "#{node[:db_postgres][:confdir]}/pg_hba.conf"
-      )
-      file.insert_line_if_no_match(line, line)
-      file.write_file
+      RightScale::Database::PostgreSQL::Helper.configure_pg_hba(node)
 
       # Reload postgresql to read new updated pg_hba.conf
       # See cookbooks/db_postgres/libraries/helper.rb
@@ -418,28 +411,7 @@ action :enable_replication do
   ruby_block "Sync to Master data" do
     not_if { current_restore_process == :no_restore }
     block do
-      # pg_basebackup takes a base backup of a running PostgreSQL server.
-      # Usage:
-      #  pg_basebackup [OPTION]...
-      #  -D, --pgdata=DIRECTORY   receive base backup into directory
-      #  -U, --username=NAME      connect as specified database user
-      #  -h, --host=HOSTNAME      database server host or socket directory
-      backup_cmd = "su --login postgres --command=\"env PGCONNECT_TIMEOUT=30"
-      backup_cmd << " #{node[:db_postgres][:bindir]}/pg_basebackup"
-      backup_cmd << " -D #{node[:db_postgres][:backupdir]}"
-      backup_cmd << " -U #{node[:db][:replication][:user]}"
-      backup_cmd << " -h #{node[:db][:current_master_ip]}\""
-
-      backup = Mixlib::ShellOut.new(backup_cmd)
-      backup.run_command.error!
-
-      rsync_cmd = "su --login postgres --command=\"rsync --archive --verbose"
-      rsync_cmd << " #{node[:db_postgres][:backupdir]}"
-      rsync_cmd << " #{node[:db_postgres][:datadir]}"
-      rsync_cmd << "  --exclude postgresql.conf --exclude pg_hba.conf\""
-
-      rsync = Mixlib::ShellOut.new(rsync_cmd)
-      rsync.run_command.error!
+      RightScale::Database::PostgreSQL::Helper.rsync_db(newmaster_host, rep_user)
     end
   end
 

@@ -42,6 +42,16 @@ module RightScale
           YAML::load_file(loadfile)
         end
 
+        # Configure the replication parameters into pg_hba.conf.
+        #
+        # @param [Hash] node Node name
+        def self.configure_pg_hba(node)
+          File.open("/var/lib/pgsql/9.1/data/pg_hba.conf", "a") do |f|
+            f.puts("host    replication     #{node[:db][:replication][:user]}          0.0.0.0/0            trust")
+          end
+          return $? == 0
+        end
+
         # Create new PostgreSQL connection
         #
         # @param [String] username System username, default is 'postgres'
@@ -75,7 +85,7 @@ module RightScale
           Gem.clear_paths
           require 'pg'
 
-          while (1) do
+          loop do
             begin
               info_msg = "  Doing SQL Query: HOST=#{hostname}, QUERY=#{query}"
               info_msg << ", TIMEOUT=#{timeout}" if timeout
@@ -99,6 +109,16 @@ module RightScale
               raise "FATAL: retry count reached" if tries == 0
             end
           end
+        end
+
+        # Replication process reconfiguration
+        #
+        # @param [String] newmaster_host FQDN or ip of new replication master
+        # @param [String] rep_user Replication user
+        def self.rsync_db(newmaster_host = nil, rep_user = nil)
+          puts `su - postgres -c "env PGCONNECT_TIMEOUT=30 /usr/pgsql-9.1/bin/pg_basebackup -D /var/lib/pgsql/9.1/backups -U #{rep_user} -h #{newmaster_host}"`
+          puts `su - postgres -c "rsync -av /var/lib/pgsql/9.1/backups/ /var/lib/pgsql/9.1/data --exclude postgresql.conf --exclude pg_hba.conf"`
+          return $? == 0
         end
 
         #Creates a trigger file whose presence should cause recovery to end whether or not the next WAL file is available.
