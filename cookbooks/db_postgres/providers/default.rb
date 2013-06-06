@@ -411,7 +411,10 @@ action :enable_replication do
   ruby_block "Sync to Master data" do
     not_if { current_restore_process == :no_restore }
     block do
-      RightScale::Database::PostgreSQL::Helper.rsync_db(newmaster_host, rep_user)
+      RightScale::Database::PostgreSQL::Helper.rsync_db(
+        node[:db][:current_master_ip],
+        node[:db][:replication][:user]
+      )
     end
   end
 
