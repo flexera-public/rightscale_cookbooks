@@ -1,31 +1,31 @@
 {
+  "version": "13.5.0",
   "recipes": {
     "logging_rsyslog::setup_server": "Sets rsyslog logging provider"
   },
-  "providing": {
-  },
-  "name": "logging_rsyslog",
-  "groupings": {
-  },
-  "description": "Enable instance Monitoring in the RightScale dashboard.",
   "attributes": {
   },
-  "conflicting": {
-  },
-  "suggestions": {
-  },
-  "version": "13.5.0",
-  "long_description": "# RightScale Rsyslog Cookbook\n\n## DESCRIPTION:\n\n* Cookbook provides rsyslog implementation of the logging LWRP.\n* Configures rsyslog to log to a remote server or use default local file\n  logging.\n\n## REQUIREMENTS:\n\n* Requires [\"logging\" Lightweight resource cookbook][logging]\n* Requires a VM launched from a RightScale managed RightImage\n\n[logging]: https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/logging\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see `metadata.rb` file for the latest dependencies.\n\n## KNOWN LIMITATIONS:\n\n* Only supports configuration for remote server.\n* Does not replace or upgrade installed rsyslog package.\n\n## SETUP/USAGE:\n\n* There are no standalone recipes in the current implementation of this\n  cookbook.\n  The 'rsyslog' provider is set up by the logging:default recipe based on the\n  logging package installed.\n\n## DETAILS:\n\n## General:\n\nThe `logging_rsyslog` cookbook does the minimal configuration for a remote\nlogging setup. Additional features are TBD.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
-  "recommendations": {
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "providing": {
   },
   "platforms": {
   },
-  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "maintainer": "RightScale, Inc.",
+  "long_description": "# RightScale Rsyslog Cookbook\n\n## DESCRIPTION:\n\n* Cookbook provides rsyslog implementation of the logging LWRP.\n* Configures rsyslog to log to a remote server or use default local file\n  logging.\n\n## REQUIREMENTS:\n\n* Requires [\"logging\" Lightweight resource cookbook][logging]\n* Requires a VM launched from a RightScale managed RightImage\n\n[logging]: https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/logging\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see `metadata.rb` file for the latest dependencies.\n\n## KNOWN LIMITATIONS:\n\n* Only supports configuration for remote server.\n* Does not replace or upgrade installed rsyslog package.\n\n## SETUP/USAGE:\n\n* There are no standalone recipes in the current implementation of this\n  cookbook.\n  The 'rsyslog' provider is set up by the logging:default recipe based on the\n  logging package installed.\n\n## DETAILS:\n\n## General:\n\nThe `logging_rsyslog` cookbook does the minimal configuration for a remote\nlogging setup. Additional features are TBD.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
   "maintainer_email": "support@rightscale.com",
-  "replacing": {
+  "groupings": {
   },
+  "suggestions": {
+  },
+  "description": "Enable instance Monitoring in the RightScale dashboard.",
   "dependencies": {
     "logging": ">= 0.0.0"
   },
-  "maintainer": "RightScale, Inc."
+  "replacing": {
+  },
+  "conflicting": {
+  },
+  "recommendations": {
+  },
+  "name": "logging_rsyslog"
 }
