@@ -30,7 +30,11 @@ attribute "sys_dns/choice",
     " Example: DNSMadeEasy ",
   :required => "required",
   :choice => ["DNSMadeEasy", "DynDNS", "Route53", "CloudDNS"],
-  :recipes => ["sys_dns::do_set_private", "sys_dns::do_set_public", "sys_dns::default"]
+  :recipes => [
+    "sys_dns::do_set_private",
+    "sys_dns::do_set_public",
+    "sys_dns::default"
+  ]
 
 attribute "sys_dns/id",
   :display_name => "DNS Record ID",
@@ -55,7 +59,11 @@ attribute "sys_dns/user",
     " (e.g., cred:AWS_ACCESS_KEY_ID). For CloudDNS, enter your login username" +
     " (e.g., cred:RACKSPACE_USERNAME). Example: cred:CLOUD_ACCOUNT_USERNAME",
   :required => "required",
-  :recipes => ["sys_dns::do_set_private", "sys_dns::do_set_public", "sys_dns::default"]
+  :recipes => [
+    "sys_dns::do_set_private",
+    "sys_dns::do_set_public",
+    "sys_dns::default"
+  ]
 
 attribute "sys_dns/password",
   :display_name => "DNS Password",
@@ -67,7 +75,11 @@ attribute "sys_dns/password",
     " enter your API key (e.g., cred:RACKSPACE_AUTH_KEY)." +
     " Example: cred:CLOUD_ACCOUNT_KEY ",
   :required => "required",
-  :recipes => ["sys_dns::do_set_private", "sys_dns::do_set_public", "sys_dns::default"]
+  :recipes => [
+    "sys_dns::do_set_private",
+    "sys_dns::do_set_public",
+    "sys_dns::default"
+  ]
 
 attribute "sys_dns/region",
   :display_name => "Cloud DNS region",
@@ -76,4 +88,8 @@ attribute "sys_dns/region",
     " Example: Chicago",
   :required => "optional",
   :choice => ["Chicago", "Dallas", "London"],
-  :recipes => ["sys_dns::do_set_private", "sys_dns::do_set_public", "sys_dns::default"]
+  :recipes => [
+    "sys_dns::do_set_private",
+    "sys_dns::do_set_public",
+    "sys_dns::default"
+  ]
