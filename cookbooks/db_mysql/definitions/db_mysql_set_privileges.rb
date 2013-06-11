@@ -46,14 +46,24 @@ define :db_mysql_set_privileges, :preset => "administrator", :username => nil, :
 
       case priv_preset
       when 'administrator'
-        con.query("GRANT ALL PRIVILEGES on *.* TO '#{username}'@'%' IDENTIFIED BY '#{password}' WITH GRANT OPTION")
-        con.query("GRANT ALL PRIVILEGES on *.* TO '#{username}'@'localhost' IDENTIFIED BY '#{password}' WITH GRANT OPTION")
+        query = "GRANT ALL PRIVILEGES on *.* TO '#{username}'@'%'" +
+          " IDENTIFIED BY '#{password}' WITH GRANT OPTION"
+        con.query(query)
+
+        query = "GRANT ALL PRIVILEGES on *.* TO '#{username}'@'localhost'" +
+          " IDENTIFIED BY '#{password}' WITH GRANT OPTION"
+        con.query(query)
       when 'user'
         # Grant only the appropriate privs
         privs = priv_list
-        privs += global_priv_list if db_name == "*.*"
-        con.query("GRANT #{privs.join(',')} on #{db_name} TO '#{username}'@'%' IDENTIFIED BY '#{password}'")
-        con.query("GRANT #{privs.join(',')} on #{db_name} TO '#{username}'@'localhost' IDENTIFIED BY '#{password}'")
+        privs << global_priv_list if db_name == "*.*"
+        query = "GRANT #{privs.join(',')} on #{db_name} TO '#{username}'@'%'" +
+          " IDENTIFIED BY '#{password}'"
+        con.query(query)
+
+        query = "GRANT #{privs.join(',')} on #{db_name} TO " +
+          "'#{username}'@'localhost' IDENTIFIED BY '#{password}'"
+        con.query(query)
       else
         raise "only 'administrator' and 'user' type presets are supported!"
       end
