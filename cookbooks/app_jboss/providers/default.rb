@@ -303,8 +303,12 @@ action :setup_vhost do
 
     log "  Finished configuring mod_jk, creating the application vhost"
 
+    log "  Module dependencies which will be installed:" +
+      " #{node[:app_jboss][:module_dependencies]}"
     # Enabling required apache modules
-    node[:app][:module_dependencies].each do |mod|
+    node[:app_jboss][:module_dependencies].each do |mod|
+      # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_module.rb
+      # for the "apache_module" definition.
       apache_module mod
     end
 

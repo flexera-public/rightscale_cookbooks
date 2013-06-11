@@ -322,6 +322,42 @@ end
 # @see Cloud
 #
 class Google < Cloud
+  # Checks if a server can have ephemeral devices. Ephemeral is supported on
+  # Google cloud only if the server uses an instance type with the "-d" prefix.
+  #
+  # @param server [Server] the server to check for ephemeral support
+  #
+  # @return [Boolean] whether the cloud supports ephemeral devices
+  #
+  # @see Cloud#supports_ephemeral?
+  #
+  def supports_ephemeral?(server)
+    instance_type = InstanceType.find(server.current_instance["instance_type"])
+    instance_type.resource_uid =~ /-d$/ ? true : false
+  end
+
+  # Checks if the cloud supports creating and attaching volumes to servers.
+  # Google cloud support volumes.
+  #
+  # @return [Boolean] whether the cloud supports volumes
+  #
+  # @see Cloud#supports_volumes?
+  #
+  def supports_volumes?
+    true
+  end
+
+  # Checks if the cloud supports the creation of live volume snapshots. Google
+  # cloud support volume snapshots.
+  #
+  # @return [Boolean] whether the cloud supports volume snapshots
+  #
+  # @see Cloud#supports_snapshots?
+  #
+  def supports_snapshots?
+    true
+  end
+
   # Checks if the cloud supports reboot. Google does not support reboot.
   #
   # @return [Boolean] whether the cloud supports reboot

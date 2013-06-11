@@ -6,14 +6,9 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
+# Recommended attributes
+
 # List of additional php modules
 default[:app_php][:modules_list] = []
-
-# Calculated attributes
-# Defining module dependencies depending on platform.
-case platform
-when "ubuntu"
-  set[:app][:module_dependencies] = ["proxy_http", "php5"]
-when "centos", "redhat"
-  set[:app][:module_dependencies] = ["proxy", "proxy_http"]
-end
+# List of required apache modules
+default[:app_php][:module_dependencies] = []

@@ -201,7 +201,8 @@ end
 # Verify the server input rightscale/security_updates is set to "disable"
 # Rackspace Managed Open clouds should have Rackspace credentials set.
 #
-before "smoke_test", "stop_start", "enable_security_updates_on_running_server" do
+before "smoke_test", "stop_start", "enable_security_updates_on_running_server",
+  "ephemeral_file_system_type" do
   puts "Running before with security updates disabled"
   # Assume a single server in the deployment
   server = servers.first
@@ -360,6 +361,64 @@ test_case "stop_start" do
 
   # Check if the server's basic monitoring is working.
   check_monitoring
+end
+
+# The Base ephemeral_file_system_type test makes sure the file system type
+# installed on the ephemeral drive is same as the type set in
+# "block_device/ephemeral/file_system_type" input in the advanced inputs
+# category of block device in Base Chef ServerTemplate.
+#
+test_case "ephemeral_file_system_type" do
+  # Get the current cloud.
+  cloud = Cloud.factory
+
+  # Get the single server in the deployment.
+  server = servers.first
+
+  # Skip this test if the cloud does not support ephemeral drives and if the
+  # ServerTemplate is not chef based. Ephemeral drives are supported only on
+  # Chef ServerTemplates.
+  skip unless cloud.supports_ephemeral?(server) && is_chef?
+
+  # Get the OS used by the server
+  os = get_operating_system(server)
+
+  # List all file system types supported on the ephemeral device
+  supported_fs_types = ["xfs", "ext3"]
+
+  # We do not support xfs on Google cloud and Redhat due to these reasons
+  # * Google uses a statically compiled kernel built without xfs support
+  # * Redhat charges for using xfs. Hence we don't install it through our
+  # cookbooks and tools.
+  xfs_unsupported = os =~ /rhel/i || cloud.cloud_name == "Google"
+
+  # Remove file system types that are not supported on the ephemeral device
+  # based on the platform
+  if xfs_unsupported
+    unsupported_types = ["xfs"]
+  else
+    unsupported_types = []
+  end
+
+  # Get the list of supported file system types on the ephemeral device
+  # based on the platform
+  supported_fs_types = supported_fs_types - unsupported_types
+
+  # Verify the default file system type that will be installed on the
+  # ephemeral device
+  default_fs_type = xfs_unsupported ? "ext3" : "xfs"
+  verify_ephemeral_file_system_type(server, default_fs_type)
+  supported_fs_types.delete(default_fs_type)
+
+  # Iterate through the rest of the supported file system types and verify the
+  # installation of each type
+  supported_fs_types.each do |type|
+    server.set_next_inputs({
+      "block_device/ephemeral/file_system_type" => "text:#{type}"
+    })
+    relaunch_all
+    verify_ephemeral_file_system_type(server, type)
+  end
 end
 
 # The Base "enable security updates on running a running server" tests if

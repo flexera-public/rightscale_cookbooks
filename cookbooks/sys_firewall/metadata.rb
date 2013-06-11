@@ -30,7 +30,7 @@ attribute "sys_firewall/enabled",
     " Use the sys_firewall::setup_rule recipe to enable/disable extra ports." +
     " Example: enabled",
   :required => "optional",
-  :choice => ["enabled", "disabled"],
+  :choice => ["enabled", "disabled", "unmanaged"],
   :default => "enabled",
   :recipes => ["sys_firewall::default"]
 
