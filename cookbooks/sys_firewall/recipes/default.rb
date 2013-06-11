@@ -16,7 +16,8 @@ if node[:cloud][:provider] == "rackspace-ng" &&
   # will make no changes to iptables.
   r = ruby_block "Setting up sys_firewall for Rackconnect" do
     block do
-      Chef::Log.info("Overriding sys_firewall/enabled to \"unmanaged\"")
+      Chef::Log.info("Overriding sys_firewall/enabled to \"unmanaged\" for" +
+        " Rackconnect support")
       node[:sys_firewall][:enabled] = "unmanaged"
     end
     action :nothing
@@ -62,8 +63,9 @@ when "unmanaged"
   # If the sys_firewall/enabled input is set to "unmanaged" no changes will be
   # made for iptables and not managed by RightScale. This setup helps the cloud
   # provider to setup firewall rules on the servers.
-  log "making no changes to sys_firewall. sys_firewall will not be managed by" +
-    " RightScale"
+  log "The firewall state is set to 'unmanaged'. The firewall on the server" +
+    " is not managed by RightScale. The cloud provider is responsible for" +
+    " maintaining the firewall rules."
 end
 
 # Increase connection tracking table sizes
