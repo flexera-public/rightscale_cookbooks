@@ -3,6 +3,8 @@ require_helper "errors"
 require_helper "monitoring"
 require_helper "os"
 require_helper "input"
+require_helper "cloud"
+require_helper "rackspace_managed"
 
 # Test specific helpers.
 #
@@ -115,18 +117,31 @@ before "smoke_test" do
   # Assumes there is a single Logging server in the deployment and a single
   # client Base server in the deployment.
   logging_server = logging_servers.first
+  base_server = base_servers.first
 
-  ensure_input_setting(
+  # Get the current cloud
+  cloud = Cloud.factory
+
+  if cloud.cloud_name =~ /Rackmanaged/
+    puts "Setting up credentials for Rackspace Managed..."
+    setup_rackspace_managed_credentials(logging_server)
+    setup_rackspace_managed_credentials(base_server)
+  end
+
+  status = verify_instance_input_settings?(
     logging_server,
     {"logging/protocol" => "text:udp"}
   )
-  ensure_input_setting(
-    base_servers.first,
+  relaunch_server(logging_server) unless status
+
+  status = verify_instance_input_settings?(
+    base_server,
     {
       "logging/protocol" => "text:udp",
       "logging/remote_server" => "text:#{logging_ip(logging_server)}"
     }
   )
+  relaunch_server(base_server) unless status
   check_monitoring(logging_server)
 end
 
@@ -141,18 +156,23 @@ end
 #
 before "relp" do
   logging_server = logging_servers.first
+  base_server = base_servers.first
 
-  ensure_input_setting(
+  status = verify_instance_input_settings?(
     logging_server,
     {"logging/protocol" => "text:relp"}
   )
-  ensure_input_setting(
-    base_servers.first,
+  relaunch_server(logging_server) unless status
+
+  status = verify_instance_input_settings?(
+    base_server,
     {
       "logging/protocol" => "text:relp",
       "logging/remote_server" => "text:#{logging_ip(logging_server)}"
     }
   )
+  relaunch_server(base_server) unless status
+
   check_monitoring(logging_server)
 end
 
@@ -167,22 +187,27 @@ end
 #
 before "relp-secured" do
   logging_server = logging_servers.first
+  base_server = base_servers.first
 
-  ensure_input_setting(
+  status = verify_instance_input_settings?(
     logging_server,
     {
       "logging/protocol" => "text:relp-secured",
       "logging/certificate" => "cred:LOGGING_SSL_CRED"
     }
   )
-  ensure_input_setting(
-    base_servers.first,
+  relaunch_server(logging_server) unless status
+
+  status = verify_instance_input_settings?(
+    base_server,
     {
       "logging/protocol" => "text:relp-secured",
       "logging/certificate" => "cred:LOGGING_SSL_CRED",
       "logging/remote_server" => "text:#{logging_ip(logging_server)}"
     }
   )
+  relaunch_server(base_server) unless status
+
   check_monitoring(logging_server)
 end
 
