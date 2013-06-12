@@ -6,6 +6,8 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
+# Recommended attributes
+
 # List of additional php modules
 default[:app_php][:modules_list] = []
 # List of required apache modules

@@ -1,155 +1,155 @@
 {
-  "name": "app_tomcat",
   "description": "Installs the tomcat application server.",
-  "long_description": "# RightScale App Tomcat Cookbook\n\n## DESCRIPTION:\n\n* Cookbook provides Tomcat application server implementation of the app LWRP.\n* Installs and configures, Tomcat application server.\n\n## REQUIREMENTS:\n\n* Requires [\"app\" Lightweight resource cookbook][app] or your own implementation\n  of the \"app\" resource. See \"app\" cookbook README for details.\n* Requires a VM launched from a RightScale managed RightImage\n\n[app]: https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see the `metadata.rb` file for the latest dependencies.\n\n* `app`\n* `db_mysql`\n* `db_postgres`\n* `repo`\n* `rightscale`\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## SETUP/USAGE:\n\n* Place `app_tomcat::setup_server_6` or `app_tomcat::setup_server_7`\n  (depending on which application server version to be installed) recipes into\n  your runlist to set up the application server specific attributes.\n* Place `app::install_server` after setup_server recipe to install the\n  application server.\n* Set 'jdbc/ConnDB' as your datasource name to set up a database connection with\n  the application server.\n\nFor more info see: [Release Notes][Notes] (Section тАШTomcat App ServerтАЩ under\nServerTemplates)\n\n[Notes]: http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current\n\nPlease checkout the tutorial: [Tomcat App Server][Tutorial]\n\n[Tutorial]: http://support.rightscale.com/03-Tutorials/Tomcat_App_Server\n\n## DETAILS:\n\n### General\n\nThe `app_tomcat` cookbook will install and set up the Apache web server with a\nmod_jk module and the Tomcat application server, with support for MySQL or\nPostgres database servers.\nSet db/provider_type input in RightScale ServerTemplate to choose database\nprovider. Place `db::default` recipe before application server installation\nto install the database client.\n\nThe Cookbook will create a separate vhost config for the Apache web server,\nwhich will allow Apache to handle static content, such as images and HTML\ndocuments, and forward all requests for dynamic content to Tomcat.\n\n__Apache__\n\nServer version: Apache/2.2.3\n\nServer built: Jun 6 2012 10:00:42\n\n__Apache Tomcat__\n\n__Version 6__\n\nServer.info=Apache Tomcat/6.0.16\n\nServer.number=6.0.16.0\n\nServer.built=Feb 8 2008 10:50:49\n\nTomcat Native library 1.1.20\n\nmod_jk/1.2.32\n\n__Version 7__\n\nServer.info=Apache Tomcat/7.0.26\n\nServer.number=7.0.26.0\n\nServer.built=Jul 19 2012 03:21:30\n\nTomcat Native library 1.1.22\n\nmod_jk/1.2.32\n\n__Java__\n\n__Tomcat 6__\n\nJava version \"1.6.0_31\"\n\nJava(TM) SE Runtime Environment (build 1.6.0_31-b04)\n\nJava HotSpot(TM) 64-Bit Server VM (build 20.6-b01, mixed mode)\n\n__Tomcat 7__\n\nJava version \"1.6.0_24\"\n\nOpenJDK Runtime Environment (IcedTea6 1.11.4)\n\nOpenJDK 64-Bit Server VM (build 20.0-b12, mixed mode)\n\nalso:\n* `User defined war file support`\n* `Java heap size Xms and Xmx memory limitations tuning`\n* `Java NewSize, MaxNewSize, PermSize, MaxPermSize limitations tuning`\n* `Application code installation from the remote git, svn or ROS repository`\n* `MySQL database db.tomcat connection file configuration`\n* `Automatic application vhost file configuration`\n* `Automatic logrotate file configuration for Tomcat logs`\n* `Collectd monitoring support`\n\n### Attributes:\n\nThese are settings used in recipes and templates. Default values are noted.\n\nNote: Only \"internal\" cookbook attributes are described here. Descriptions of\nattributes that are inputs are in the `metadata.rb` cookbook file.\n\n###### General attributes\n\n* `node[:app_tomcat][:code][:root_war]` -\n  Path to the directory which will contain the application for Tomcat.\n\n###### Java heap tuning attributes\n\n* `node[:app_tomcat][:java][:permsize]` -\n  The initial value of the permanent generation space size.\n* `node[:app_tomcat][:java][:maxpermsize]` -\n  The maximum value of the permanent generation space size.\n* `node[:app_tomcat][:java][:newsize]` -\n  The initial size of new space generation.\n* `node[:app_tomcat][:java][:maxnewsize]` -\n  The maximum size of new space generation.\n* `node[:app_tomcat][:java][:xmx]` -\n  The maximum size of the heap used by the JVM.\n* `node[:app_tomcat][:java][:xms]` -\n  The initial size of the heap used by the JVM.\n\n###### Platform dependent\n\n* `node[:app][:user]` -\n  Username. Required for changing the owner of created project dirs.\n* `node[:app_tomcat][:alternatives_cmd]` -\n  Java alternatives command list.\n* `node[:app_tomcat][:jkworkersfile]` -\n  Path to file defining workers properties.\n\n### Templates:\n\n#### Defined in `:setup_vhost` LWRP action for the `app::setup_vhost` recipe.\n\n* `apache_mod_jk_vhost.erb` - Configuration for apache vhost file.\n* `mod_jk.conf.erb` - Mod_jk configuration template.\n* `server_xml.erb` - Tomcat server.xml configuration template.\n* `tomcat_conf.erb` - Tomcat.conf configuration template used in the\n  `app::setup_vhost` recipe.\n* `tomcat_logrotate.conf.erb` - Logrotate for configuration template for\n  Tomcat.\n* `tomcat_workers.properties.erb` - Tomcat worker configuration template.\n\n#### Defined in `:setup_db_connection` LWRP action for the\n`app::setup_db_connection` recipe.\n\n* `web_xml.erb` - Content configuration template for Tomcat.\n* `context_xml.erb` - Configuration for project database connection\n  config file.\n* `catalina.properties.erb` - Tomcat catalina properties with updated\n  configuration that loads all java classes from /usr/share/java.\n\n### LWRPs:\n\n`app_tomcat` Lightweight provider is defined in the\n`providers/default.rb` file and contains source for the following actions:\n\n* `:install`\n* `:setup_vhost`\n* `:start`\n* `:stop`\n* `:reload`\n* `:restart`\n* `:code_update`\n* `:setup_db_connection`\n* `:setup_monitoring`\n\nFor more info about these actions please see `app` cookbook README.\n\nFor normal operations it requires the \"app\" resource which will act as an \ninterface to all `app_tomcat` provider logic.\n\n##### Actions\n\n* `:install` - Install packages required for application server setup.\n* `:setup_vhost` - Set up Apache vhost file, with Tomcat module\n  directives included. Install and set up Tomcat package dependencies.\n* `:start` - Start sequence for Tomcat application server.\n* `:stop` - Stop sequence for Tomcat application server.\n* `:reload` - Reload sequence for Tomcat application server.\n* `:restart` - Restart sequence for Tomcat application server.\n* `:code_update` - Perform project source code update/download using user\n  selected \"repo\" LWRP. Set up logrotate config.\n* `:setup_db_connection` - Perform project\n  `/etc/tomcat{6|7}/context.xml` database file configuration. The driver\n  type is specified as 'java' and the db_<provider> cookbook's\n  `install_client_driver` action performs necessary steps to install the\n  database adapter.\n* `:setup_monitoring` - Install and set up of required monitoring software.\n\n##### Usage Example:\n\nFor usage examples, please see corresponding section in `app` cookbook README.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
-  "maintainer": "RightScale, Inc.",
-  "maintainer_email": "support@rightscale.com",
-  "license": "Copyright RightScale, Inc. All rights reserved.",
-  "platforms": {
-  },
-  "dependencies": {
-    "app": ">= 0.0.0",
-    "repo": ">= 0.0.0",
-    "rightscale": ">= 0.0.0",
-    "web_apache": ">= 0.0.0"
-  },
-  "recommendations": {
-  },
-  "suggestions": {
-  },
-  "conflicting": {
-  },
-  "providing": {
+  "recipes": {
+    "app_tomcat::setup_server_7": "Sets version 7 and node variables specific to the chosen Tomcat version to install the tomcat application server.",
+    "app_tomcat::setup_server_6": "Sets version 6 and node variables specific to the chosen Tomcat version to install the tomcat application server."
   },
   "replacing": {
   },
-  "attributes": {
-    "app_tomcat/code/root_war": {
-      "display_name": "War file for ROOT",
-      "description": "The path to the war file relative to project repo root directory. Will be renamed to ROOT.war. Example: /dist/app_test.war",
-      "required": "recommended",
-      "default": "",
-      "recipes": [
-        "app_tomcat::setup_server_6",
-        "app_tomcat::setup_server_7"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "app_tomcat/java/xms": {
-      "display_name": "Tomcat Java XMS",
-      "description": "The java Xms argument. Example: 512m",
-      "required": "optional",
-      "default": "512m",
-      "recipes": [
-        "app_tomcat::setup_server_6",
-        "app_tomcat::setup_server_7"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "app_tomcat/java/xmx": {
-      "display_name": "Tomcat Java XMX",
-      "description": "The java Xmx argument. Example: 512m",
-      "required": "optional",
-      "default": "512m",
-      "recipes": [
-        "app_tomcat::setup_server_6",
-        "app_tomcat::setup_server_7"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "app_tomcat/java/permsize": {
-      "display_name": "Tomcat Java PermSize",
-      "description": "The java PermSize argument. Example: 256m",
-      "required": "optional",
-      "default": "256m",
-      "recipes": [
-        "app_tomcat::setup_server_6",
-        "app_tomcat::setup_server_7"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "app_tomcat/java/maxpermsize": {
-      "display_name": "Tomcat Java MaxPermSize",
-      "description": "The java MaxPermSize argument. Example: 256m",
-      "required": "optional",
-      "default": "256m",
-      "recipes": [
-        "app_tomcat::setup_server_6",
-        "app_tomcat::setup_server_7"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "app_tomcat/java/newsize": {
-      "display_name": "Tomcat Java NewSize",
-      "description": "The java NewSize argument. Example: 256m",
-      "required": "optional",
-      "default": "256m",
-      "recipes": [
-        "app_tomcat::setup_server_6",
-        "app_tomcat::setup_server_7"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "app_tomcat/java/maxnewsize": {
-      "display_name": "Tomcat Java MaxNewSize",
-      "description": "The java MaxNewSize argument. Example: 256m",
-      "required": "optional",
-      "default": "256m",
-      "recipes": [
-        "app_tomcat::setup_server_6",
-        "app_tomcat::setup_server_7"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "app_tomcat/datasource_name": {
-      "display_name": "Container datasource name",
-      "description": "This name is used to set up the database connection with the application server. You should set the attribute if your application is compiled to use a different datasource name. To set custom datasource you must override input value. Example: jdbc/MyConnDB",
-      "required": "optional",
-      "default": "jdbc/ConnDB",
-      "recipes": [
-        "app_tomcat::setup_server_6",
-        "app_tomcat::setup_server_7"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    }
+  "providing": {
+  },
+  "maintainer_email": "support@rightscale.com",
+  "maintainer": "RightScale, Inc.",
+  "suggestions": {
+  },
+  "dependencies": {
+    "repo": ">= 0.0.0",
+    "web_apache": ">= 0.0.0",
+    "app": ">= 0.0.0",
+    "rightscale": ">= 0.0.0"
+  },
+  "version": "13.5.0",
+  "recommendations": {
+  },
+  "platforms": {
   },
   "groupings": {
   },
-  "recipes": {
-    "app_tomcat::setup_server_6": "Sets version 6 and node variables specific to the chosen Tomcat version to install the tomcat application server.",
-    "app_tomcat::setup_server_7": "Sets version 7 and node variables specific to the chosen Tomcat version to install the tomcat application server."
+  "attributes": {
+    "app_tomcat/java/maxpermsize": {
+      "description": "The java MaxPermSize argument. Example: 256m",
+      "recipes": [
+        "app_tomcat::setup_server_6",
+        "app_tomcat::setup_server_7"
+      ],
+      "required": "optional",
+      "calculated": false,
+      "display_name": "Tomcat Java MaxPermSize",
+      "choice": [
+
+      ],
+      "type": "string",
+      "default": "256m"
+    },
+    "app_tomcat/datasource_name": {
+      "description": "This name is used to set up the database connection with the application server. You should set the attribute if your application is compiled to use a different datasource name. To set custom datasource you must override input value. Example: jdbc/MyConnDB",
+      "recipes": [
+        "app_tomcat::setup_server_6",
+        "app_tomcat::setup_server_7"
+      ],
+      "required": "optional",
+      "calculated": false,
+      "display_name": "Container datasource name",
+      "choice": [
+
+      ],
+      "type": "string",
+      "default": "jdbc/ConnDB"
+    },
+    "app_tomcat/java/maxnewsize": {
+      "description": "The java MaxNewSize argument. Example: 256m",
+      "recipes": [
+        "app_tomcat::setup_server_6",
+        "app_tomcat::setup_server_7"
+      ],
+      "required": "optional",
+      "calculated": false,
+      "display_name": "Tomcat Java MaxNewSize",
+      "choice": [
+
+      ],
+      "type": "string",
+      "default": "256m"
+    },
+    "app_tomcat/java/newsize": {
+      "description": "The java NewSize argument. Example: 256m",
+      "recipes": [
+        "app_tomcat::setup_server_6",
+        "app_tomcat::setup_server_7"
+      ],
+      "required": "optional",
+      "calculated": false,
+      "display_name": "Tomcat Java NewSize",
+      "choice": [
+
+      ],
+      "type": "string",
+      "default": "256m"
+    },
+    "app_tomcat/java/xmx": {
+      "description": "The java Xmx argument. Example: 512m",
+      "recipes": [
+        "app_tomcat::setup_server_6",
+        "app_tomcat::setup_server_7"
+      ],
+      "required": "optional",
+      "calculated": false,
+      "display_name": "Tomcat Java XMX",
+      "choice": [
+
+      ],
+      "type": "string",
+      "default": "512m"
+    },
+    "app_tomcat/java/xms": {
+      "description": "The java Xms argument. Example: 512m",
+      "recipes": [
+        "app_tomcat::setup_server_6",
+        "app_tomcat::setup_server_7"
+      ],
+      "required": "optional",
+      "calculated": false,
+      "display_name": "Tomcat Java XMS",
+      "choice": [
+
+      ],
+      "type": "string",
+      "default": "512m"
+    },
+    "app_tomcat/code/root_war": {
+      "description": "The path to the war file relative to project repo root directory. Will be renamed to ROOT.war. Example: /dist/app_test.war",
+      "recipes": [
+        "app_tomcat::setup_server_6",
+        "app_tomcat::setup_server_7"
+      ],
+      "required": "recommended",
+      "calculated": false,
+      "display_name": "War file for ROOT",
+      "choice": [
+
+      ],
+      "type": "string",
+      "default": ""
+    },
+    "app_tomcat/java/permsize": {
+      "description": "The java PermSize argument. Example: 256m",
+      "recipes": [
+        "app_tomcat::setup_server_6",
+        "app_tomcat::setup_server_7"
+      ],
+      "required": "optional",
+      "calculated": false,
+      "display_name": "Tomcat Java PermSize",
+      "choice": [
+
+      ],
+      "type": "string",
+      "default": "256m"
+    }
   },
-  "version": "13.4.0"
+  "conflicting": {
+  },
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "long_description": "# RightScale App Tomcat Cookbook\n\n## DESCRIPTION:\n\n* Cookbook provides Tomcat application server implementation of the app LWRP.\n* Installs and configures, Tomcat application server.\n\n## REQUIREMENTS:\n\n* Requires [\"app\" Lightweight resource cookbook][app] or your own implementation\n  of the \"app\" resource. See \"app\" cookbook README for details.\n* Requires a VM launched from a RightScale managed RightImage\n\n[app]: https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see the `metadata.rb` file for the latest dependencies.\n\n* `app`\n* `db_mysql`\n* `db_postgres`\n* `repo`\n* `rightscale`\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## SETUP/USAGE:\n\n* Place `app_tomcat::setup_server_6` or `app_tomcat::setup_server_7`\n  (depending on which application server version to be installed) recipes into\n  your runlist to set up the application server specific attributes.\n* Place `app::install_server` after setup_server recipe to install the\n  application server.\n* Set 'jdbc/ConnDB' as your datasource name to set up a database connection with\n  the application server.\n\nFor more info see: [Release Notes][Notes] (Section ‘Tomcat App Server’ under\nServerTemplates)\n\n[Notes]: http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current\n\nPlease checkout the tutorial: [Tomcat App Server][Tutorial]\n\n[Tutorial]: http://support.rightscale.com/03-Tutorials/Tomcat_App_Server\n\n## DETAILS:\n\n### General\n\nThe `app_tomcat` cookbook will install and set up the Apache web server with a\nmod_jk module and the Tomcat application server, with support for MySQL or\nPostgres database servers.\nSet db/provider_type input in RightScale ServerTemplate to choose database\nprovider. Place `db::default` recipe before application server installation\nto install the database client.\n\nThe Cookbook will create a separate vhost config for the Apache web server,\nwhich will allow Apache to handle static content, such as images and HTML\ndocuments, and forward all requests for dynamic content to Tomcat.\n\n__Apache__\n\nServer version: Apache/2.2.3\n\nServer built: Jun 6 2012 10:00:42\n\n__Apache Tomcat__\n\n__Version 6__\n\nServer.info=Apache Tomcat/6.0.16\n\nServer.number=6.0.16.0\n\nServer.built=Feb 8 2008 10:50:49\n\nTomcat Native library 1.1.20\n\nmod_jk/1.2.32\n\n__Version 7__\n\nServer.info=Apache Tomcat/7.0.26\n\nServer.number=7.0.26.0\n\nServer.built=Jul 19 2012 03:21:30\n\nTomcat Native library 1.1.22\n\nmod_jk/1.2.32\n\n__Java__\n\n__Tomcat 6__\n\nJava version \"1.6.0_31\"\n\nJava(TM) SE Runtime Environment (build 1.6.0_31-b04)\n\nJava HotSpot(TM) 64-Bit Server VM (build 20.6-b01, mixed mode)\n\n__Tomcat 7__\n\nJava version \"1.6.0_24\"\n\nOpenJDK Runtime Environment (IcedTea6 1.11.4)\n\nOpenJDK 64-Bit Server VM (build 20.0-b12, mixed mode)\n\nalso:\n* `User defined war file support`\n* `Java heap size Xms and Xmx memory limitations tuning`\n* `Java NewSize, MaxNewSize, PermSize, MaxPermSize limitations tuning`\n* `Application code installation from the remote git, svn or ROS repository`\n* `MySQL database db.tomcat connection file configuration`\n* `Automatic application vhost file configuration`\n* `Automatic logrotate file configuration for Tomcat logs`\n* `Collectd monitoring support`\n\n### Attributes:\n\nThese are settings used in recipes and templates. Default values are noted.\n\nNote: Only \"internal\" cookbook attributes are described here. Descriptions of\nattributes that are inputs are in the `metadata.rb` cookbook file.\n\n###### General attributes\n\n* `node[:app_tomcat][:code][:root_war]` -\n  Path to the directory which will contain the application for Tomcat.\n\n###### Java heap tuning attributes\n\n* `node[:app_tomcat][:java][:permsize]` -\n  The initial value of the permanent generation space size.\n* `node[:app_tomcat][:java][:maxpermsize]` -\n  The maximum value of the permanent generation space size.\n* `node[:app_tomcat][:java][:newsize]` -\n  The initial size of new space generation.\n* `node[:app_tomcat][:java][:maxnewsize]` -\n  The maximum size of new space generation.\n* `node[:app_tomcat][:java][:xmx]` -\n  The maximum size of the heap used by the JVM.\n* `node[:app_tomcat][:java][:xms]` -\n  The initial size of the heap used by the JVM.\n\n###### Platform dependent\n\n* `node[:app][:user]` -\n  Username. Required for changing the owner of created project dirs.\n* `node[:app_tomcat][:alternatives_cmd]` -\n  Java alternatives command list.\n* `node[:app_tomcat][:jkworkersfile]` -\n  Path to file defining workers properties.\n\n### Templates:\n\n#### Defined in `:setup_vhost` LWRP action for the `app::setup_vhost` recipe.\n\n* `apache_mod_jk_vhost.erb` - Configuration for apache vhost file.\n* `mod_jk.conf.erb` - Mod_jk configuration template.\n* `server_xml.erb` - Tomcat server.xml configuration template.\n* `tomcat_conf.erb` - Tomcat.conf configuration template used in the\n  `app::setup_vhost` recipe.\n* `tomcat_logrotate.conf.erb` - Logrotate for configuration template for\n  Tomcat.\n* `tomcat_workers.properties.erb` - Tomcat worker configuration template.\n\n#### Defined in `:setup_db_connection` LWRP action for the\n`app::setup_db_connection` recipe.\n\n* `web_xml.erb` - Content configuration template for Tomcat.\n* `context_xml.erb` - Configuration for project database connection\n  config file.\n* `catalina.properties.erb` - Tomcat catalina properties with updated\n  configuration that loads all java classes from /usr/share/java.\n\n### LWRPs:\n\n`app_tomcat` Lightweight provider is defined in the\n`providers/default.rb` file and contains source for the following actions:\n\n* `:install`\n* `:setup_vhost`\n* `:start`\n* `:stop`\n* `:reload`\n* `:restart`\n* `:code_update`\n* `:setup_db_connection`\n* `:setup_monitoring`\n\nFor more info about these actions please see `app` cookbook README.\n\nFor normal operations it requires the \"app\" resource which will act as an \ninterface to all `app_tomcat` provider logic.\n\n##### Actions\n\n* `:install` - Install packages required for application server setup.\n* `:setup_vhost` - Set up Apache vhost file, with Tomcat module\n  directives included. Install and set up Tomcat package dependencies.\n* `:start` - Start sequence for Tomcat application server.\n* `:stop` - Stop sequence for Tomcat application server.\n* `:reload` - Reload sequence for Tomcat application server.\n* `:restart` - Restart sequence for Tomcat application server.\n* `:code_update` - Perform project source code update/download using user\n  selected \"repo\" LWRP. Set up logrotate config.\n* `:setup_db_connection` - Perform project\n  `/etc/tomcat{6|7}/context.xml` database file configuration. The driver\n  type is specified as 'java' and the db_<provider> cookbook's\n  `install_client_driver` action performs necessary steps to install the\n  database adapter.\n* `:setup_monitoring` - Install and set up of required monitoring software.\n\n##### Usage Example:\n\nFor usage examples, please see corresponding section in `app` cookbook README.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
+  "name": "app_tomcat"
 }

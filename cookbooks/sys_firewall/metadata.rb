@@ -3,7 +3,7 @@ maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "Installs/Configures firewall"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "13.4.0"
+version          "13.5.0"
 
 # supports "centos", "~> 5.8", "~> 6"
 # supports "redhat", "~> 5.8"
@@ -30,7 +30,7 @@ attribute "sys_firewall/enabled",
     " Use the sys_firewall::setup_rule recipe to enable/disable extra ports." +
     " Example: enabled",
   :required => "optional",
-  :choice => ["enabled", "disabled"],
+  :choice => ["enabled", "disabled", "unmanaged"],
   :default => "enabled",
   :recipes => ["sys_firewall::default"]
 
