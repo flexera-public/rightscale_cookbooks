@@ -56,7 +56,7 @@ Please see `metadata.rb` file for the latest dependencies.
 
 1. Once your server is operational, run the:
 
-    "db::setup_block_device"
+    "db::do_init_and_become_master"
 
    recipe, which initializes your database onto a block device
    that supports backup and restore operations.
