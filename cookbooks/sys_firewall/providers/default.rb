@@ -17,10 +17,12 @@ action :update do
   to_enable = new_resource.enable
   ip_addr = new_resource.ip_addr
   machine_tag = new_resource.machine_tag
-  ip_tag = "server:private_ip_0"
+  ip_type = new_resource.ip_type
+  ip_tag = "server:#{ip_type}_ip_0"
   collection_name = new_resource.collection
 
-  # We only support ip_addr or tags, however, ip_addr defaults to 'any' so reconcile here
+  # We only support ip_addr or tags, however, ip_addr defaults 
+  # to 'any' so reconcile here
   ip_addr.downcase!
   ip_addr = nil if (ip_addr == "any") && machine_tag # tags win, so clear 'any'
   raise "ERROR: ip_addr param - #{ip_addr} - cannot be used with machine_tag param - #{machine_tag}." if machine_tag && ip_addr
@@ -37,7 +39,8 @@ action :update do
     log "Firewall not enabled. Not adding rule for #{port}."
   else
     if machine_tag
-      # See cookbooks/rightscale/providers/server_collection.rb for the "rightscale_server_collection" resource.
+      # See cookbooks/rightscale/providers/server_collection.rb for 
+      # the "rightscale_server_collection" resource.
       rightscale_server_collection collection_name do
         tags machine_tag
         mandatory_tags ip_tag
@@ -57,7 +60,8 @@ action :update do
             '\b(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}' +
             '([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\b'
           ip_list = node[:server_collection][collection_name].collect do |_, tags|
-            # See cookbooks/rightscale/libraries/helper.rb for the "get_tag_value" definition.
+            # See cookbooks/rightscale/libraries/helper.rb for the 
+            # "get_tag_value" definition.
             RightScale::Utils::Helper.get_tag_value(ip_tag, tags, valid_ip_regex)
           end
         end
@@ -70,7 +74,8 @@ action :update do
           rule << "_#{ip.gsub('/', '_')}_#{protocol}"
 
           # Programatically execute template resource
-          # See cookbooks/sys/libraries/helper.rb for the "run_template" definition.
+          # See cookbooks/sys/libraries/helper.rb for the 
+          # "run_template" definition.
           template_updated = RightScale::System::Helper.run_template(
             "/etc/iptables.d/#{rule}", # target_file
             "iptables_port.erb", # source
