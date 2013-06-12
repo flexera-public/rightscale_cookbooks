@@ -13,7 +13,7 @@ attribute :protocol, :equal_to => ["tcp", "udp", "both"], :default => "tcp"
 attribute :enable, :equal_to => [true, false], :default => true
 attribute :ip_addr, :kind_of => String, :default => "any"
 attribute :machine_tag, :kind_of => String, :regex => /^([^:]+):(.+)=.+/
-attribute :ip_tag, :kind_of => String, :regex => /^([^:]+):(.+)=.+/
+attribute :ip_tag, :kind_of => String, :regex => /server:(.+)/
 attribute :collection, :kind_of => String, :default => "sys_firewall"
 
 # Defines a default action
