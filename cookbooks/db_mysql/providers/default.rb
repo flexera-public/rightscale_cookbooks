@@ -282,15 +282,6 @@ action :set_privileges do
   end
 end
 
-action :remove_anonymous do
-  require 'mysql'
-  con = Mysql.new('localhost', 'root')
-  host = `hostname`.strip
-  con.query("DELETE FROM mysql.user WHERE user='' AND host='#{host}'")
-
-  con.close
-end
-
 action :install_client do
 
   version = new_resource.db_version
@@ -646,15 +637,24 @@ action :install_server do
     EOH
   end
 
-  # TODO: Fix these comments
-  # Anonymous users are created by default by MySQl to allow users access the database
-  # without using a username and password.
-  # For more information, visit
-  # http://dev.mysql.com/doc/refman/5.5/en/default-privileges.html
-
-  # This recipe removes anonymous users access from any hosts except localhost to
+  # Removes anonymous users access from any hosts except localhost to
   # prevent remote unauthorized access.
+  #
+  # Anonymous users are created by default by MySQl to allow users access the
+  # database without using a username and password.
+  # For more information, please see
+  # http://dev.mysql.com/doc/refman/5.5/en/default-privileges.html
+  #
+  require "mysql"
+  con = Mysql.new("localhost", "root")
+  hostname_cmd = Mixlib::ShellOut.new("hostname")
+  hostname_cmd.run_command
+  hostname_cmd.error!
 
+  host = hostname_cmd.stdout.strip
+  con.query("DROP USER ''@'#{host}'")
+
+  con.close
 end
 
 action :install_client_driver do
