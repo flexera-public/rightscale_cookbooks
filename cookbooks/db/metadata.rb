@@ -58,9 +58,6 @@ recipe "db::setup_privileges_admin",
 recipe "db::setup_privileges_application",
   "Adds the username and password for application privileges."
 
-recipe "db::remove_anonymous_users",
-  "Removes anonymous users from database."
-
 recipe "db::do_secondary_backup",
   :description =>
     "Creates a backup of the database and uploads it to a secondary cloud" +

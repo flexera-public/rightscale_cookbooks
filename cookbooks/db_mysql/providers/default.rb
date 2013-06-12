@@ -646,6 +646,15 @@ action :install_server do
     EOH
   end
 
+  # TODO: Fix these comments
+  # Anonymous users are created by default by MySQl to allow users access the database
+  # without using a username and password.
+  # For more information, visit
+  # http://dev.mysql.com/doc/refman/5.5/en/default-privileges.html
+
+  # This recipe removes anonymous users access from any hosts except localhost to
+  # prevent remote unauthorized access.
+
 end
 
 action :install_client_driver do
