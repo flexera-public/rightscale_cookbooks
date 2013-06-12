@@ -645,6 +645,7 @@ action :install_server do
   # For more information, please see
   # http://dev.mysql.com/doc/refman/5.5/en/default-privileges.html
   #
+=begin
   require "mysql"
   con = Mysql.new("localhost", "root")
   hostname_cmd = Mixlib::ShellOut.new("hostname")
@@ -655,6 +656,7 @@ action :install_server do
   con.query("DROP USER ''@'#{host}'")
 
   con.close
+=end
 end
 
 action :install_client_driver do
