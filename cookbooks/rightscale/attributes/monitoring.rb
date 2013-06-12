@@ -18,8 +18,7 @@ default[:rightscale][:plugin_list_array] = [
   "load",
   "memory",
   "processes",
-  "users",
-  "ping"
+  "users"
 ]
 
 default[:rightscale][:process_list] = ""
