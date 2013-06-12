@@ -19,7 +19,7 @@ pool_names(node[:lb][:pools]).each do |pool_name|
     machine_tag "loadbalancer:#{pool_name}=lb"
     port node[:app][:port].to_i
     enable true
-    ip_type node[:app][:backend_ip_type]
+    ip_tag "server:#{node[:app][:backend_ip_type]}_ip_0"
     action :update
   end
 end

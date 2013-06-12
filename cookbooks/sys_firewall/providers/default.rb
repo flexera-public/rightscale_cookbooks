@@ -17,8 +17,7 @@ action :update do
   to_enable = new_resource.enable
   ip_addr = new_resource.ip_addr
   machine_tag = new_resource.machine_tag
-  ip_type = new_resource.ip_type
-  ip_tag = "server:#{ip_type}_ip_0"
+  ip_tag = new_resource.ip_type
   collection_name = new_resource.collection
 
   # We only support ip_addr or tags, however, ip_addr defaults 
