@@ -52,6 +52,9 @@ recipe "rightscale::setup_security_updates",
 recipe "rightscale::setup_security_update_monitoring",
   "Sets up collectd plugin to monitor for available security updates."
  
+recipe "rightscale::install_rightimage_extras",
+  "Installs the RightImage extra packages expected by our ServerTemplates"
+ 
 
 attribute "rightscale/security_updates",
   :display_name => "Enable security updates",
