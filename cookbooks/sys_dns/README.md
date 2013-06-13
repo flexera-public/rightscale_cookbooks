@@ -20,13 +20,18 @@ Currently only the first private IP address can be set.
 
 ## SETUP/USAGE:
 
-Place `sys_dns::default` recipe into your runlist to set up the dynamic DNS
-provider resource. This will install the support tools and chef providers for
-the dynamic DNS provider selected by the "DNS Service Provider" input. When
-using a RightScale ServerTemplate, this will automatically add the common DNS
-service provider attributes to your ServerTemplate inputs. Place
-`sys_dns::do_set_private` recipe in your runlistto set the DNS record identified
-by the “DNS Record ID” input to the first private IP address of the instance.
+* Place `sys_dns::default` recipe into your runlist to set up the dynamic DNS
+  provider resource. This will install the support tools and chef providers for
+  the dynamic DNS provider selected by the "DNS Service Provider" input. When
+  using a RightScale ServerTemplate, this will automatically add the common DNS
+  service provider attributes to your ServerTemplate inputs.
+* Place `sys_dns::do_set_private` recipe in your runlist to set the DNS record
+  identified by the "DNS Record ID" input to the first private IP address of
+  the instance if the private IP is desired.
+* Place `sys_dns::do_set_public` recipe in your runlist to set the DNS record
+  identified by the "DNS Record ID" input to the first public IP address of the
+  instance if the public IP is desired. This recipe will fail if no valid
+  public IP is found for the instance.
 
 ## DETAILS:
 
