@@ -637,15 +637,13 @@ action :install_server do
     EOH
   end
 
-  # Removes anonymous users access from any hosts except localhost to
-  # prevent remote unauthorized access.
+  # Removes anonymous users access to prevent remote unauthorized access.
   #
   # Anonymous users are created by default by MySQl to allow users access the
   # database without using a username and password.
   # For more information, please see
   # http://dev.mysql.com/doc/refman/5.5/en/default-privileges.html
   #
-=begin
   require "mysql"
   con = Mysql.new("localhost", "root")
   hostname_cmd = Mixlib::ShellOut.new("hostname")
@@ -653,10 +651,10 @@ action :install_server do
   hostname_cmd.error!
 
   host = hostname_cmd.stdout.strip
+  con.query("DROP USER ''@'localhost'")
   con.query("DROP USER ''@'#{host}'")
 
   con.close
-=end
 end
 
 action :install_client_driver do
