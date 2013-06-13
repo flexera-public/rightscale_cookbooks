@@ -117,3 +117,18 @@ attribute "app_tomcat/datasource_name",
     "app_tomcat::setup_server_6",
     "app_tomcat::setup_server_7"
   ]
+
+attribute "app_tomcat/internal_port",
+  :display_name => "Tomcat Internal Port",
+  :description =>
+    "Sets the internal port on which Tomcat listens. By default, Tomcat" +
+    " listens on localhost port 8080. WARNING: The value for this input" +
+    " should NOT be the same as the value in 'app/port' input as it would" +
+    " conflict with the Apache listen port and would cause a fatal error when" +
+    " the apache service is started.",
+  :required => "optional",
+  :default => "8080",
+  :recipes => [
+    "app_tomcat::setup_server_6",
+    "app_tomcat::setup_server_7"
+  ]
