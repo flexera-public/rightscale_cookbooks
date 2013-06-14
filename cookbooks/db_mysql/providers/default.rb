@@ -652,7 +652,8 @@ action :install_server do
   log "  Removing anonymous users on host #{host}"
   unless host == "localhost"
     require "mysql"
-    con = Mysql.new("localhost", "root")
+    #con = Mysql.new("localhost", "root")
+    con = Mysql.new("", "root", nil, nil, nil, "#{node[:db][:socket]}")
     con.query("DROP USER ''@'#{host}'")
     con.close
   end
