@@ -649,6 +649,7 @@ action :install_server do
   hostname_cmd.error!
   host = hostname_cmd.stdout.strip
 
+  log "  Removing anonymous users on host #{host}"
   unless host == "localhost"
     require "mysql"
     con = Mysql.new("localhost", "root")
