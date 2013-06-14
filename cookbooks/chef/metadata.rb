@@ -5,6 +5,10 @@ description      "Installs and configures the Chef Client and Server"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "13.5.0"
 
+supports "centos"
+supports "redhat"
+supports "ubuntu"
+
 depends "rightscale"
 
 recipe "chef::install_client",
