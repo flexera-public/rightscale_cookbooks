@@ -5,15 +5,13 @@ description      "Installs/Configures Jenkins"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "13.5.0"
 
-# supports "centos", "~> 5.8", "~> 6"
-# supports "redhat", "~> 5.8"
-# supports "ubuntu", "~> 10.04", "~> 12.04"
-
+supports "centos"
+supports "redhat"
+supports "ubuntu"
 
 depends "rightscale"
 depends "sys_firewall"
 depends "logrotate"
-
 
 recipe "jenkins::install_server",
   "Install Jenkins server and configure it using the inputs provided."
@@ -102,7 +100,6 @@ attribute "jenkins/slave/executors",
     "Number of Jenkins executors.",
   :required => "optional",
   :recipes => ["jenkins::do_attach_request", "jenkins::do_attach_slave_at_boot"]
-
 
 # Attributes shared between master and slave
 

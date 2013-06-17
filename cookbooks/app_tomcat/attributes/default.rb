@@ -29,6 +29,8 @@ default[:app_tomcat][:java][:xmx] = "512m"
 default[:app_tomcat][:java][:xms] = "512m"
 # The container datasource name
 default[:app_tomcat][:datasource_name] = "jdbc/ConnDB"
+# Internal port for Tomcat.
+default[:app_tomcat][:internal_port] = "8080"
 
 # Calculated attributes
 # Defining java alternatives parameter depending on platform.

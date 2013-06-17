@@ -53,7 +53,7 @@ elsif secondary_storage_cloud =~ /rackspace/i
   secondary_storage_cloud = "cloudfiles"
 end
 
-log "  Performing Secondary Restore from #{node[:db][:backup][:secondary_location]}..."
+log "  Performing Secondary Restore from #{secondary_storage_cloud}..."
 # Requires block_device DATA_DIR to be previously instantiated.
 # Make sure block_device::default recipe has been run.
 # See cookbooks/block_device/providers/default.rb for the "secondary_restore" action.

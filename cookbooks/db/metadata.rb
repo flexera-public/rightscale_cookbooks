@@ -5,16 +5,15 @@ description      "RightScale Database Manager"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "13.5.0"
 
-# supports "centos", "~> 5.8", "~> 6"
-# supports "redhat", "~> 5.8"
-# supports "ubuntu", "~> 10.04", "~> 12.04"
+supports "centos"
+supports "redhat"
+supports "ubuntu"
 
 depends "rightscale"
 depends "block_device"
 depends "sys_firewall"
 depends "db_mysql"
 depends "db_postgres"
-
 
 recipe "db::default",
   "Selects and installs database client. It also sets up the provider" +
@@ -90,7 +89,6 @@ recipe "db::do_dump_schedule_enable",
 recipe "db::do_dump_schedule_disable",
   "Disables the daily run of do_dump_export."
 
-
 # == Database Firewall Recipes
 #
 recipe "db::do_appservers_allow",
@@ -116,7 +114,6 @@ recipe "db::request_appserver_deny",
   " to all database servers in the deployment that are tagged with the" +
   " database:active=true tag." +
   " This should be run on an application server upon decommissioning."
-
 
 # == Master/Slave Recipes
 #
@@ -494,10 +491,8 @@ attribute "db/backup/primary/slave/cron/minute",
   :required => "optional",
   :recipes => ["db::do_primary_backup_schedule_enable"]
 
-
 # == Import/export attributes
 #
-
 attribute "db/dump",
   :display_name => "Import/export settings for database dump file management.",
   :type => "hash"
