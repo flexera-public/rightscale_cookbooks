@@ -11,6 +11,12 @@ rightscale_marker
 # Install the java package required by jenkins
 package node[:jenkins][:java_package]
 
+# Install the jenkins_api_client gem
+chef_gem "jenkins_api_client" do
+  version node[:jenkins][:server][:jenkins_api_client_version]
+  action :install
+end
+
 require "jenkins_api_client"
 
 # Add the jenkins public key to allow master to connect to the slave
