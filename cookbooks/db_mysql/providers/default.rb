@@ -74,6 +74,7 @@ action :reset do
   # See "rightscale_tools" gem for the "reset" method.
   @db = init(new_resource)
   @db.reset(new_resource.name, node[:db_mysql][:datadir])
+  remove_anonymous_users(node)
 end
 
 action :firewall_update_request do
