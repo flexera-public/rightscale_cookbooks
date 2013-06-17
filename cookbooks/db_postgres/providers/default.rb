@@ -132,22 +132,18 @@ action :set_privileges do
   if ::File.exist?("#{node[:db_postgres][:datadir]}/recovery.conf")
     log "  No need to rerun on reboot for slave"
   else
-    priv = new_resource.privilege
-    priv_username = new_resource.privilege_username
-    priv_password = new_resource.privilege_password
-    priv_database = new_resource.privilege_database
-    # See cookbooks/db_postgres/definitions/db_postgres_set_privileges.rb for the "db_postgres_set_privileges" definition.
+    # See cookbooks/db_postgres/definitions/db_postgres_set_privileges.rb
+    # for the "db_postgres_set_privileges" definition.
     db_postgres_set_privileges "setup db privileges" do
-      preset priv
-      username priv_username
-      password priv_password
-      database priv_database
+      preset new_resource.privilege
+      username new_resource.privilege_username
+      password new_resource.privilege_password
+      database new_resource.privilege_database
     end
   end
 end
 
 action :install_client do
-
   version = new_resource.db_version
   case version
   when "9.1"
@@ -172,7 +168,6 @@ action :install_client do
     raise "PostgresSQL version '#{version}'is not supported yet."
   end
 
-
   # Installs PostgreSQL package(s).
   packages = node[:db_postgres][:client_packages_install]
   raise "Platform not supported for PostgreSQL #{version}" if packages.empty?
@@ -196,11 +191,9 @@ action :install_client do
     gem_binary "/opt/rightscale/sandbox/bin/gem"
     options "-- --with-pg-config=#{node[:db_postgres][:bindir]}/pg_config"
   end
-
 end
 
 action :install_server do
-
   package "uuid"
 
   packages = node[:db_postgres][:server_packages_install]
@@ -283,7 +276,6 @@ action :install_server do
   service node[:db_postgres][:service_name] do
     action :start
   end
-
 end
 
 action :install_client_driver do
@@ -325,7 +317,6 @@ action :install_client_driver do
       mode "0644"
       cookbook "db_postgres"
     end
-
   when "ruby"
     # This adapter type is used by Apache Rails Passenger application servers
     node[:db][:client][:driver] = "postgresql"
@@ -598,26 +589,17 @@ action :setup_slave_monitoring do
     backup false
     notifies :restart, resources(:service => "collectd")
   end
-
 end
 
 action :generate_dump_file do
-
-  db_name = new_resource.db_name
-  dumpfile = new_resource.dumpfile
-
   bash "Write the postgres DB backup file" do
     user 'postgres'
-    code <<-EOH
-      pg_dump -U postgres #{db_name} | gzip -c > #{dumpfile}
-    EOH
+    code "pg_dump -U postgres #{new_resource.db_name}" +
+      " | gzip -c > #{new_resource.dumpfile}"
   end
-
-
 end
 
 action :restore_from_dump_file do
-
   db_name = new_resource.db_name
   dumpfilepath_without_extension = new_resource.dumpfile
 
@@ -685,5 +667,4 @@ action :restore_from_dump_file do
       end
     end
   end
-
 end
