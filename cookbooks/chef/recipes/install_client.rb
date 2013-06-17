@@ -76,8 +76,8 @@ log "  Chef Client configuration is completed."
 extension = "--json-attributes #{node[:chef][:client][:config_dir]}/runlist.json"
 extension << " --environment #{node[:chef][:client][:environment]}" \
   unless node[:chef][:client][:environment].empty?
-extension << " --override-runlist #{node[:chef][:client][:json_attributes]}" \
-  unless node[:chef][:client][:json_attributes].empty?
+extension << " --override-runlist #{node[:chef][:client][:runlist_override]}" \
+  unless node[:chef][:client][:runlist_override].empty?
 
 # Runs the Chef Client using command extensions.
 execute "run chef-client" do
