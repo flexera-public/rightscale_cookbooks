@@ -168,7 +168,7 @@ action :install_client do
       }
     )
   else
-    raise "PostgresSQL version '#{version}'is not supported yet."
+    raise "PostgreSQL version '#{version}'is not supported yet."
   end
 
   # Installs PostgreSQL package(s).
