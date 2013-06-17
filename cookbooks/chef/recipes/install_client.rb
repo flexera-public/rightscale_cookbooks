@@ -86,4 +86,5 @@ end
 
 log "  Chef Client role(s) are: #{node[:chef][:client][:current_roles]}"
 
-log "  Chef Client logging to: #{node[:chef][:client][:log_location]}"
+log "  Chef Client logging location: #{node[:chef][:client][:log_location]}"
+log "  Chef Client logging level: #{node[:chef][:client][:log_level]}"
