@@ -60,9 +60,11 @@ action :reset do
 end
 
 action :firewall_update_request do
-  # See cookbooks/sys_firewall/providers/default.rb for the "update_request" action.
-  sys_firewall node[:db_postgres][:port] do
+  # See cookbooks/sys_firewall/providers/default.rb
+  # for the "update_request" action.
+  sys_firewall "Requesting #{node[:db_postgres][:port]} port for PostgreSQL" do
     machine_tag new_resource.machine_tag
+    port node[:db_postgres][:port]
     enable new_resource.enable
     ip_addr new_resource.ip_addr
     action :update_request
@@ -70,11 +72,12 @@ action :firewall_update_request do
 end
 
 action :firewall_update do
-  # See cookbooks/sys_firewall/providers/default.rb for the "update" action.
-  sys_firewall node[:db_postgres][:port] do
+  # See cookbooks/sys_firewall/providers/default.rb
+  # for the "update" action.
+  sys_firewall "Opening #{node[:db_postgres][:port]} port for PostgreSQL" do
     machine_tag new_resource.machine_tag
+    port node[:db_postgres][:port]
     enable new_resource.enable
-    ip_addr nil
     action :update
   end
 end
