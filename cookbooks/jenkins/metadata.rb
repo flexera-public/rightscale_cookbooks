@@ -31,7 +31,7 @@ attribute "jenkins/server/user_name",
     "Default user's sign in name.",
   :required => "required",
   :recipes => [
-    "jenkins::default"
+    "jenkins::default",
     "jenkins::install_server",
     "jenkins::do_attach_request",
     "jenkins::do_attach_slave_at_boot"
