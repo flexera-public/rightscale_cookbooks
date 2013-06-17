@@ -70,12 +70,12 @@ action :reset do
     read_only false
   end
 
-  # See cookbooks/db_mysql/libraries/helper.rb for the "init" and
-  # "remove_anonymous_users" methods.
+  # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "reset" method.
   @db = init(new_resource)
   @db.reset(new_resource.name, node[:db_mysql][:datadir])
-  RightScale::Database::MySQL::Helper.remove_anonymous_users(node)
+  # Make sure the database has all its dependencies installed and configured.
+  action_install_server
 end
 
 action :firewall_update_request do

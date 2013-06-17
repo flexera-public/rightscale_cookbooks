@@ -210,29 +210,6 @@ module RightScale
               " seem to be up and running..."
           end
         end
-
-        # Removes anonymous users access to prevent remote unauthorized
-        # access.
-        #
-        # anonymous users are created by default by mysql to allow users
-        # access the database without using a username and password.
-        # for more information, please see
-        # http://dev.mysql.com/doc/refman/5.5/en/default-privileges.html
-        #
-        # @param [Hash] node The Chef node
-        #
-        def self.remove_anonymous_users(node)
-          hostname_cmd = mixlib::shellout.new("hostname")
-          hostname_cmd.run_command
-          hostname_cmd.error!
-          host = hostname_cmd.stdout.strip
-
-          Chef::Log.info "  removing anonymous users on host #{host}"
-          cmd = "DROP USER ''@'localhost'"
-          RightScale::Database::MySQL::Helper.do_query(node, cmd, 'localhost')
-          cmd = "DROP USER ''@'#{host}'"
-          RightScale::Database::MySQL::Helper.do_query(node, cmd, 'localhost')
-        end
       end
     end
   end
