@@ -36,7 +36,9 @@ template "#{node[:chef][:client][:config_dir]}/client.rb" do
   variables(
     :server_url => node[:chef][:client][:server_url],
     :validation_name => node[:chef][:client][:validation_name],
-    :node_name => node[:chef][:client][:node_name]
+    :node_name => node[:chef][:client][:node_name],
+    :log_level => node[:chef][:client][:log_level],
+    :log_location => node[:chef][:client][:log_location]
   )
 end
 
