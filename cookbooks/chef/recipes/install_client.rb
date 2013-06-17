@@ -29,7 +29,7 @@ directory node[:chef][:client][:config_dir]
 
 # Creates the Chef Client configuration file.
 template "#{node[:chef][:client][:config_dir]}/client.rb" do
-  source "chef_client_conf.erb"
+  source "client.rb.erb"
   mode "0644"
   backup false
   cookbook "chef"
