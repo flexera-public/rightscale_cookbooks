@@ -132,13 +132,16 @@ action :set_privileges do
   if ::File.exist?("#{node[:db_postgres][:datadir]}/recovery.conf")
     log "  No need to rerun on reboot for slave"
   else
-    # See cookbooks/db_postgres/definitions/db_postgres_set_privileges.rb
-    # for the "db_postgres_set_privileges" definition.
+    priv = new_resource.privilege
+    priv_username = new_resource.privilege_username
+    priv_password = new_resource.privilege_password
+    priv_database = new_resource.privilege_database
+    # See cookbooks/db_postgres/definitions/db_postgres_set_privileges.rb for the "db_postgres_set_privileges" definition.
     db_postgres_set_privileges "setup db privileges" do
-      preset new_resource.privilege
-      username new_resource.privilege_username
-      password new_resource.privilege_password
-      database new_resource.privilege_database
+      preset priv
+      username priv_username
+      password priv_password
+      database priv_database
     end
   end
 end
@@ -592,10 +595,14 @@ action :setup_slave_monitoring do
 end
 
 action :generate_dump_file do
+  db_name = new_resource.db_name
+  dumpfile = new_resource.dumpfile
+
   bash "Write the postgres DB backup file" do
     user 'postgres'
-    code "pg_dump -U postgres #{new_resource.db_name}" +
-      " | gzip -c > #{new_resource.dumpfile}"
+    code <<-EOH
+      pg_dump -U postgres #{db_name} | gzip -c > #{dumpfile}
+    EOH
   end
 end
 
