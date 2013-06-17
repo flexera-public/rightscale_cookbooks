@@ -20,8 +20,13 @@ action :update do
   ip_tag = new_resource.ip_tag
   collection_name = new_resource.collection
 
-  # We only support ip_addr or tags, however, ip_addr defaults 
-  # to 'any' so reconcile here
+  log "  Using machine tags #{machine_tag} and #{ip_tag} to determine" +
+    " IP address." if machine_tag 
+
+  # The IP address is either selected explicitly using the ip_addr parameter
+  # or by the value of the passed tags.  The parameter ip_addr is always set
+  # with the default of 'any'.  Set to nil if the machine tag parameter is
+  # passed.
   ip_addr.downcase!
   ip_addr = nil if (ip_addr == "any") && machine_tag # tags win, so clear 'any'
   raise "ERROR: ip_addr param - #{ip_addr} - cannot be used with machine_tag param - #{machine_tag}." if machine_tag && ip_addr
