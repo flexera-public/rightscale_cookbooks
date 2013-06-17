@@ -83,3 +83,5 @@ execute "run chef-client" do
 end
 
 log "  Chef Client role(s) are: #{node[:chef][:client][:current_roles]}"
+
+log "  Chef Client logging to: #{node[:chef][:client][:log_location}"
