@@ -74,6 +74,7 @@ action :firewall_update do
   sys_firewall node[:db_postgres][:port] do
     machine_tag new_resource.machine_tag
     enable new_resource.enable
+    ip_addr nil
     action :update
   end
 end
