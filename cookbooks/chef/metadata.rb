@@ -87,10 +87,10 @@ attribute "chef/client/roles",
   :required => "optional",
   :recipes => ["chef::install_client", "chef::do_client_converge"]
 
-attribute "chef/client/json_attributes",
-  :display_name => "JSON String to be Added to Chef Client Run",
+attribute "chef/client/runlist_override",
+  :display_name => "JSON String used to override the first run of chef-client.",
   :description =>
-    "A custom JSON string to be added to the first run of chef-client." +
+    "A custom JSON string to override the first run of chef-client." +
     " Example: recipe[ntp::default]",
   :required => "optional",
   :recipes => ["chef::install_client"]
