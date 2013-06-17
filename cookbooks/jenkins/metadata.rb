@@ -13,6 +13,8 @@ depends "rightscale"
 depends "sys_firewall"
 depends "logrotate"
 
+recipe "jenkins::default",
+  "Install the dependencies for jenkins."
 recipe "jenkins::install_server",
   "Install Jenkins server and configure it using the inputs provided."
 recipe "jenkins::do_attach_request",
@@ -29,6 +31,7 @@ attribute "jenkins/server/user_name",
     "Default user's sign in name.",
   :required => "required",
   :recipes => [
+    "jenkins::default"
     "jenkins::install_server",
     "jenkins::do_attach_request",
     "jenkins::do_attach_slave_at_boot"
@@ -39,14 +42,14 @@ attribute "jenkins/server/user_email",
   :description =>
     "Default user's email.",
   :required => "required",
-  :recipes => ["jenkins::install_server"]
+  :recipes => ["jenkins::default", "jenkins::install_server"]
 
 attribute "jenkins/server/user_full_name",
   :display_name => "Jenkins User Full Name",
   :description =>
     "Default user's full name.",
   :required => "required",
-  :recipes => ["jenkins::install_server"]
+  :recipes => ["jenkins::default", "jenkins::install_server"]
 
 attribute "jenkins/server/password",
   :display_name => "Jenkins Password",
@@ -54,6 +57,7 @@ attribute "jenkins/server/password",
     "Default user's password.",
   :required => "required",
   :recipes => [
+    "jenkins::default",
     "jenkins::install_server",
     "jenkins::do_attach_request",
     "jenkins::do_attach_slave_at_boot"
@@ -65,14 +69,14 @@ attribute "jenkins/server/version",
     "Jenkins version to install. Leave it blank to get the latest version." +
     " Example: 1.500",
   :required => "optional",
-  :recipes => ["jenkins::install_server"]
+  :recipes => ["jenkins::default", "jenkins::install_server"]
 
 attribute "jenkins/server/plugins",
   :display_name => "Jenkins Plugins",
   :description =>
     "Jenkins plugins to install.",
   :required => "optional",
-  :recipes => ["jenkins::install_server"]
+  :recipes => ["jenkins::default", "jenkins::install_server"]
 
 # Slave Attributes
 

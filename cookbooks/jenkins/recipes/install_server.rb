@@ -25,6 +25,9 @@ file node[:jenkins][:private_key_file] do
   action :create
 end
 
+# Install the java package
+package node[:jenkins][:java_package]
+
 # Jenkins package installation based on platform
 case node[:platform]
 when "centos"
@@ -37,8 +40,6 @@ when "centos"
   execute "import jenkins key" do
     command "rpm --import http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key"
   end
-
-  package "java-1.6.0-openjdk"
 
   # If a version is specified, include the release information. This is only
   # required for CentOS. The release appears to be the same for all Jenkins
@@ -66,8 +67,7 @@ when "ubuntu"
   jenkins_dependencies = [
     "daemon",
     "adduser",
-    "psmisc",
-    "openjdk-6-jre"
+    "psmisc"
   ]
 
   jenkins_dependencies.each do |pkg|
@@ -92,14 +92,7 @@ end
 # https://wush.net/trac/rightscale/ticket/5651
 # Once this ticket is fixed, a new 'monkey' group can be created and any user
 # belonging to that group will be allowed to run monkey tests.
-jenkins_system_config_file = value_for_platform(
-  "ubuntu" => {
-    "default" => "/etc/default/jenkins"
-  },
-  "default" => "/etc/sysconfig/jenkins"
-)
-
-template jenkins_system_config_file do
+template node[:jenkins][:system_config_file] do
   source "jenkins_system_config.erb"
   cookbook "jenkins"
   owner node[:jenkins][:server][:system_user]
