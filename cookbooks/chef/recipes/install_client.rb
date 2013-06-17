@@ -73,10 +73,10 @@ node[:chef][:client][:current_roles] = node[:chef][:client][:roles]
 log "  Chef Client configuration is completed."
 
 # Sets command extensions and attributes.
-extension = "-j #{node[:chef][:client][:config_dir]}/runlist.json"
-extension << " -E #{node[:chef][:client][:environment]}" \
+extension = "--json-attributes #{node[:chef][:client][:config_dir]}/runlist.json"
+extension << " --environment #{node[:chef][:client][:environment]}" \
   unless node[:chef][:client][:environment].empty?
-extension << " -o #{node[:chef][:client][:json_attributes]}" \
+extension << " --override-runlist #{node[:chef][:client][:json_attributes]}" \
   unless node[:chef][:client][:json_attributes].empty?
 
 # Runs the Chef Client using command extensions.
