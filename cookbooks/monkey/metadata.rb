@@ -10,6 +10,7 @@ supports "redhat"
 supports "ubuntu"
 
 depends "rightscale"
+depends "jenkins"
 
 recipe "monkey::setup_git",
   "Setup Git configuration for virtualmonkey."
