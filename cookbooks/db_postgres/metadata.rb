@@ -19,22 +19,10 @@ recipe "db_postgres::setup_server_9_1",
   " specific to PostgreSQL 9.1."
 
 recipe "db_postgres::do_set_slave_sync_mode",
-  "Sets master to do sync-based replication with slaves." +
-  " PostgreSQL streaming replication is asynchronous by default." +
-  " If the primary server crashes then some transactions" +
-  " that were committed may not have been replicated to the standby server," +
-  " causing data loss. The amount of data loss is proportional" +
-  " to the replication delay at the time of failover. Synchronous replication" +
-  " offers the ability to confirm that all changes made by a transaction" +
-  " have been transferred to one synchronous standby server." +
-  " This extends the standard level of durability offered by a transaction" +
-  " commit. This level of protection is referred to as 2-safe replication" +
-  " in computer science theory. For more info refer:" +
-  " http://www.postgresql.org/docs/9.1/static/warm-standby.html#SYNCHRONOUS-REPLICATION "
+  "Sets master to do sync-based replication with slaves."
 
 recipe "db_postgres::do_set_slave_async_mode",
-  "Sets master to do async-based replication with slaves. For more info" +
-  "refer: http://www.postgresql.org/docs/9.1/static/warm-standby.html#SYNCHRONOUS-REPLICATION"
+  "Sets master to do async-based replication with slaves."
 
 recipe "db_postgres::do_show_slave_sync_mode",
   "Shows the sync mode used for replication."
@@ -43,8 +31,6 @@ attribute "db_postgres",
   :display_name => "General Database Options",
   :type => "hash"
 
-# == Default attributes
-#
 attribute "db_postgres/server_usage",
   :display_name => "Server Usage",
   :description =>
