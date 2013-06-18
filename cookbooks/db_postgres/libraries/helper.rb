@@ -37,7 +37,7 @@ module RightScale
         def self.get_pgsql_handle(hostname = "localhost", username = "postgres")
           info_msg = "  PostgreSQL connection to #{hostname}"
           info_msg << ": opening NEW PostgreSQL connection."
-          conn = PGconn.open("localhost", nil, nil, nil, nil, "postgres", nil)
+          conn = PGconn.open(hostname, nil, nil, nil, nil, username, nil)
           Chef::Log.info info_msg
           # this raises if the connection has gone away
           conn.ping
@@ -70,11 +70,11 @@ module RightScale
               result = nil
               if timeout
                 SystemTimer.timeout_after(timeout) do
-                  conn = PGconn.open("localhost", nil, nil, nil, nil, "postgres", nil)
+                  conn = get_pgsql_handle(hostname, username)
                   result = conn.exec(query)
                 end
               else
-                conn = PGconn.open("localhost", nil, nil, nil, nil, "postgres", nil)
+                conn = get_pgsql_handle(hostname, username)
                 result = conn.exec(query)
               end
               return result.getvalue(0, 0) if result
