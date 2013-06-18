@@ -639,10 +639,11 @@ action :install_server do
     EOH
   end
 
-  # Removes anonymous users access to prevent remote unauthorized access.
+  # Removes anonymous users so all access to the database requires a valid
+  # username and password.
   #
-  # Anonymous users are created by default by MySQl to allow users access the
-  # database without using a username and password.
+  # By default MySQL creates anonymous users that allow access to the database
+  # via the localhost interface without requiring a username or password.
   # For more information, please see
   # http://dev.mysql.com/doc/refman/5.5/en/default-privileges.html
   # 'DELETE' query is used here instead of the 'DROP USER' command suggested by
