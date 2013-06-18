@@ -97,6 +97,94 @@ execute "populate cloud variables" do
     " --yes"
 end
 
+###############################################################################
+# The following code checks out the virtualmonkey nextgen code and sets it up
+# so we don't have to launch different monkeys for testing the nextgen
+# collateral. This code should be removed from the template when the TOS
+# collateral is abondoned.
+#
+# Checking out VirtualMonkey repository
+log "  Checking out VirtualMonkey repository from:" +
+  " #{node[:monkey][:virtualmonkey][:monkey_repo_url]}"
+git "#{node[:monkey][:virtualmonkey_path]}-ng" do
+  repository node[:monkey][:virtualmonkey][:monkey_repo_url]
+  reference "colrefactor"
+  action :sync
+end
+
+# By default chef changes the checked out branch to a branch named 'deploy'
+# locally. To make sure we can pull/push changes, let's checkout the correct
+# branch again!
+#
+execute "git checkout" do
+  cwd node[:monkey][:virtualmonkey_path]
+  command "git checkout colrefactor"
+end
+
+# Install Virtualmonkey dependencies
+log "  Installing Virtualmonkey dependencies"
+execute "bundle install" do
+  cwd "#{node[:monkey][:virtualmonkey_path]}-ng"
+  command "bundle install --no-color --system"
+end
+
+# Create the VirtualMonkey configuration file from template. Currently, this
+# configuration file is not managed by Chef.
+log "  Creating VirtualMonkey configuration file from template"
+execute "copy virtualmonkey configuration file" do
+  cwd "#{node[:monkey][:virtualmonkey_path]}-ng"
+  command "cp config.yaml .config.yaml"
+  not_if do
+    ::File.exists?("#{node[:monkey][:virtualmonkey_path]}-ng/.config.yaml")
+  end
+end
+
+# Populate all virtualmonkey cloud variables
+log "  Populating virtualmonkey cloud variables"
+execute "populate cloud variables" do
+  command "#{node[:monkey][:virtualmonkey_path]}-ng/bin/monkey" +
+    " populate_all_cloud_vars" +
+    " --force" +
+    " --overwrite" +
+    " --yes"
+end
+
+# Add virtualmonkey-ng to PATH
+file "/etc/profile.d/virtualmonkey-ng.sh" do
+  owner "root"
+  group "root"
+  mode 0755
+  content "export PATH=#{node[:monkey][:virtualmonkey_path]}-ng/bin:$PATH"
+  action :create
+end
+
+# Checkout the nextgen collateral project and configure it
+nextgen_collateral_name = "rightscale_cookbooks_private"
+nextgen_collateral_repo_url =
+  "git@github.com:rightscale/rightscale_cookbooks_private.git"
+
+log "  Checking out nextgen collateral repo to" +
+  " #{nextgen_collateral_name}"
+git "/root/#{nextgen_collateral_name}" do
+  repository nextgen_collateral_repo_url
+  reference node[:monkey][:virtualmonkey][:collateral_repo_branch]
+  action :sync
+end
+
+execute "git checkout" do
+  cwd "/root/#{nextgen_collateral_name}"
+  command "git checkout" +
+    " #{node[:monkey][:virtualmonkey][:collateral_repo_branch]}"
+end
+
+log "  Installing gems required for the collateral project"
+execute "bundle install on collateral" do
+  cwd "/root/#{nextgen_collateral_name}"
+  command "bundle install --no-color --system"
+end
+
+###############################################################################
+
 # Add virtualmonkey to PATH
 file "/etc/profile.d/virtualmonkey.sh" do
   owner "root"
