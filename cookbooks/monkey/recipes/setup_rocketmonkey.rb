@@ -30,7 +30,7 @@ end
 # allowing custom edits on the configuration. This template file is not
 # completely controlled by Chef yet.
 #
-template "#{node[:monkey][:rocketmonkey_path]}/.rocketmonkey.config" do
+template "#{node[:monkey][:rocketmonkey_path]}/.rocketmonkey.yaml" do
   source "rocketmonkey_config.yaml.erb"
   owner node[:monkey][:user]
   group node[:monkey][:group]

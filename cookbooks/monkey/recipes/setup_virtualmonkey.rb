@@ -150,7 +150,7 @@ execute "populate cloud variables" do
 end
 
 # Add virtualmonkey-ng to PATH
-file "/etc/profile.d/virtualmonkey-ng.sh" do
+file "/etc/profile.d/01virtualmonkey-ng.sh" do
   owner "root"
   group "root"
   mode 0755
@@ -186,7 +186,7 @@ end
 ###############################################################################
 
 # Add virtualmonkey to PATH
-file "/etc/profile.d/virtualmonkey.sh" do
+file "/etc/profile.d/02virtualmonkey.sh" do
   owner "root"
   group "root"
   mode 0755
