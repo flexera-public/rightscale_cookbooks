@@ -260,7 +260,7 @@ action :install_server do
     mode "0644"
     cookbook 'db_postgres'
     not_if {
-      ::Dir.glob("#{node[:db_postgres][:confdir]}/pg_hba.conf.chef*").any?
+      ::Dir.glob("#{node[:db_postgres][:confdir]}/pg_hba.conf*").any?
     }
   end
 
@@ -338,6 +338,7 @@ action :install_client_driver do
 end
 
 action :grant_replication_slave do
+  require 'fileutils'
   require 'rubygems'
   Gem.clear_paths
   require 'pg'
@@ -369,7 +370,16 @@ action :grant_replication_slave do
       conn.exec("CREATE USER #{username} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password}'")
 
       # Configures the replication parameters.
-      RightScale::Database::PostgreSQL::Helper.configure_pg_hba(node)
+      pg_hba_file = "#{node[:db_postgres][:confdir]}/pg_hba.conf"
+
+      FileUtils.cp pg_hba_file, "#{pg_hba_file}.bak"
+      file = Chef::Util::FileEdit.new(pg_hba_file)
+
+      line = "host replication #{node[:db][:replication][:user]}"
+      line << " 0.0.0.0/0 trust"
+
+      file.insert_line_if_no_match(line, line)
+      file.write_file
 
       # Reload postgresql to read new updated pg_hba.conf
       # See cookbooks/db_postgres/libraries/helper.rb

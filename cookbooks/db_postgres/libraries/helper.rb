@@ -42,16 +42,6 @@ module RightScale
           YAML::load_file(loadfile)
         end
 
-        # Configure the replication parameters into pg_hba.conf.
-        #
-        # @param [Hash] node Node name
-        def self.configure_pg_hba(node)
-          File.open("/var/lib/pgsql/9.1/data/pg_hba.conf", "a") do |f|
-            f.puts("host    replication     #{node[:db][:replication][:user]}          0.0.0.0/0            trust")
-          end
-          return $? == 0
-        end
-
         # Create new PostgreSQL connection
         #
         # @param [String] username System username, default is 'postgres'
