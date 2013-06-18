@@ -66,12 +66,12 @@ These are the settings used in recipes and templates. Default values are noted.
   Company name to be set in the Client configuration file. This attribute is
   applicable for Opscode Hosted Chef Server. The company name specified in both
   the Server and the Client configuration file must match.
-* `chef/client/json_attributes`-
+* `chef/client/runlist_override`-
   A custom JSON string to be added to the first run of chef-client.
 
 ### Templates:
 
-* `chef_client_conf.erb`-
+* `client.rb.erb`-
   The Chef Client configuration file. Used in `chef::install_client` recipe.
 * `validation_key.erb`-
   Private SSH key which will be used to authenticate the Chef Client on the

@@ -29,14 +29,16 @@ directory node[:chef][:client][:config_dir]
 
 # Creates the Chef Client configuration file.
 template "#{node[:chef][:client][:config_dir]}/client.rb" do
-  source "chef_client_conf.erb"
+  source "client.rb.erb"
   mode "0644"
   backup false
   cookbook "chef"
   variables(
     :server_url => node[:chef][:client][:server_url],
     :validation_name => node[:chef][:client][:validation_name],
-    :node_name => node[:chef][:client][:node_name]
+    :node_name => node[:chef][:client][:node_name],
+    :log_level => node[:chef][:client][:log_level],
+    :log_location => node[:chef][:client][:log_location]
   )
 end
 
@@ -71,9 +73,11 @@ node[:chef][:client][:current_roles] = node[:chef][:client][:roles]
 log "  Chef Client configuration is completed."
 
 # Sets command extensions and attributes.
-extension = "-j #{node[:chef][:client][:config_dir]}/runlist.json"
-extension << " -o #{node[:chef][:client][:json_attributes]}" \
-  unless node[:chef][:client][:json_attributes].empty?
+extension = "--json-attributes #{node[:chef][:client][:config_dir]}/runlist.json"
+extension << " --environment #{node[:chef][:client][:environment]}" \
+  unless node[:chef][:client][:environment].empty?
+extension << " --override-runlist #{node[:chef][:client][:runlist_override]}" \
+  unless node[:chef][:client][:runlist_override].empty?
 
 # Runs the Chef Client using command extensions.
 execute "run chef-client" do
@@ -81,3 +85,6 @@ execute "run chef-client" do
 end
 
 log "  Chef Client role(s) are: #{node[:chef][:client][:current_roles]}"
+
+log "  Chef Client logging location: #{node[:chef][:client][:log_location]}"
+log "  Chef Client logging level: #{node[:chef][:client][:log_level]}"
