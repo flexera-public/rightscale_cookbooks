@@ -40,7 +40,7 @@ module RightScale
           conn = PGconn.open(hostname, nil, nil, nil, nil, username, nil)
           Chef::Log.info info_msg
           # this raises if the connection has gone away
-          conn.ping
+          conn.class.ping
           return conn
         end
 
