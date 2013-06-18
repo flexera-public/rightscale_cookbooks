@@ -117,7 +117,7 @@ end
 # branch again!
 #
 execute "git checkout" do
-  cwd node[:monkey][:virtualmonkey_path]
+  cwd "#{node[:monkey][:virtualmonkey_path]}-ng"
   command "git checkout colrefactor"
 end
 
@@ -177,7 +177,7 @@ execute "git checkout" do
     " #{node[:monkey][:virtualmonkey][:collateral_repo_branch]}"
 end
 
-log "  Installing gems required for the collateral project"
+log "  Installing gems required for the nextgen collateral project"
 execute "bundle install on collateral" do
   cwd "/root/#{nextgen_collateral_name}"
   command "bundle install --no-color --system"
