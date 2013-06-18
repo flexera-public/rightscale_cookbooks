@@ -18,6 +18,9 @@ action :update do
   ip_addr = new_resource.ip_addr
   machine_tag = new_resource.machine_tag
   ip_tag = new_resource.ip_tag
+  # For backwards compatibility use the private ip tag if the ip_tag
+  # was not passed
+  ip_tag = "server:private_ip_0" unless ip_tag
   collection_name = new_resource.collection
 
   log "  Using machine tags #{machine_tag} and #{ip_tag} to determine" +
@@ -64,8 +67,8 @@ action :update do
             '\b(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}' +
             '([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\b'
           ip_list = node[:server_collection][collection_name].collect do |_, tags|
-            # See cookbooks/rightscale/libraries/helper.rb for the 
-            # "get_tag_value" definition.
+            # See cookbooks/rightscale/libraries/helper.rb for
+            # the "get_tag_value" definition.
             RightScale::Utils::Helper.get_tag_value(ip_tag, tags, valid_ip_regex)
           end
         end
