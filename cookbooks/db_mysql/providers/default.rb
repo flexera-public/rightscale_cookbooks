@@ -648,7 +648,7 @@ action :install_server do
   # 'DELETE' query is used here instead of the 'DROP USER' command suggested by
   # MySQL docs as the 'DROP USER' command is not idempotent for Chef recipes.
   #
-  log "  Removing anonymous users on host #{host}"
+  log "  Removing anonymous users from database"
   ruby_block "remove anonymous users" do
     block do
       require "mysql"
