@@ -18,15 +18,6 @@ log "  Initializing slave to connect to master in async state..."
 # for the "db_postgres_set_psqlconf" definition.
 db_postgres_set_psqlconf "setup_postgresql_conf"
 
-# Setup pg_hba.conf
-cookbook_file "#{node[:db_postgres][:confdir]}/pg_hba.conf" do
-  source "pg_hba.conf"
-  owner "postgres"
-  group "postgres"
-  mode "0644"
-  cookbook "db_postgres"
-end
-
 # Reload postgresql to read new updated postgresql.conf
 log "  Reload postgresql to read new updated postgresql.conf"
 RightScale::Database::PostgreSQL::Helper.do_query('select pg_reload_conf()')
