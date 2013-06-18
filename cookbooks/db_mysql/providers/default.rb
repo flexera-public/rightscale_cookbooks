@@ -645,19 +645,16 @@ action :install_server do
   # database without using a username and password.
   # For more information, please see
   # http://dev.mysql.com/doc/refman/5.5/en/default-privileges.html
+  # 'DELETE' query is used here instead of the 'DROP USER' command suggested by
+  # MySQL docs as the 'DROP USER' command is not idempotent for Chef recipes.
   #
-  hostname_cmd = Mixlib::ShellOut.new("hostname")
-  hostname_cmd.run_command
-  hostname_cmd.error!
-  host = hostname_cmd.stdout.strip
-
   log "  Removing anonymous users on host #{host}"
   ruby_block "remove anonymous users" do
     block do
       require "mysql"
       con = Mysql.new("localhost", "root")
-      con.query("DROP USER ''@'localhost'")
-      con.query("DROP USER ''@'#{host}'")
+      con.query("DELETE FROM mysql.user WHERE user=''")
+      con.query("FLUSH PRIVILEGES")
       con.close
     end
   end
