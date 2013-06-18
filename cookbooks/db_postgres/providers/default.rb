@@ -64,7 +64,7 @@ action :firewall_update_request do
   # for the "update_request" action.
   sys_firewall "Requesting #{node[:db_postgres][:port]} port for PostgreSQL" do
     machine_tag new_resource.machine_tag
-    port node[:db_postgres][:port]
+    port node[:db_postgres][:port].to_i
     enable new_resource.enable
     ip_addr new_resource.ip_addr
     action :update_request
@@ -76,7 +76,7 @@ action :firewall_update do
   # for the "update" action.
   sys_firewall "Opening #{node[:db_postgres][:port]} port for PostgreSQL" do
     machine_tag new_resource.machine_tag
-    port node[:db_postgres][:port]
+    port node[:db_postgres][:port].to_i
     enable new_resource.enable
     action :update
   end
