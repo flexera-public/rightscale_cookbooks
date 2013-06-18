@@ -97,15 +97,6 @@ module RightScale
           return $? == 0
         end
 
-        #Creates a trigger file whose presence should cause recovery to end whether or not the next WAL file is available.
-        #
-        # @param [Hash] node Node name
-        def self.write_trigger(node)
-          File.open("/var/lib/pgsql/9.1/data/recovery.trigger", File::CREAT|File::TRUNC|File::RDWR) do |f|
-            f.puts(" ")
-          end
-        end
-
       end
     end
   end

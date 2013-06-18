@@ -482,8 +482,11 @@ action :promote do
   begin
     # Promote the slave into the new master
     log "  Promoting slave.."
-    # See cookbooks/db_postgres/libraries/helper.rb for the "RightScale::Database::PostgreSQL::Helper" class.
-    RightScale::Database::PostgreSQL::Helper.write_trigger(node)
+
+    # Creates a trigger file, the presence of which should cause recovery to end
+    # whether or not the next WAL file is available.
+    file "#{node[:db_postgres][:confdir]}/recovery.trigger"
+
     sleep 10
 
     # Let the new slave loose and thus let him become the new master
