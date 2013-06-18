@@ -98,8 +98,13 @@ action :write_backup_info do
     masterstatus['File_position'] = slavestatus['File_position']
   end
   log "  Saving master info...:\n#{masterstatus.to_yaml}"
-  # See cookbooks/db_postgres/libraries/helper.rb for the "RightScale::Database::PostgreSQL::Helper" class.
-  ::File.open(::File.join(node[:db][:data_dir], RightScale::Database::PostgreSQL::Helper::SNAPSHOT_POSITION_FILENAME), ::File::CREAT|::File::TRUNC|::File::RDWR) do |out|
+  # See cookbooks/db/libraries/helper.rb
+  # for the "RightScale::Database::Helper" class.
+  ::File.open(
+    ::File.join(node[:db][:data_dir],
+    RightScale::Database::Helper::SNAPSHOT_POSITION_FILENAME),
+    ::File::CREAT|::File::TRUNC|::File::RDWR
+  ) do |out|
     YAML.dump(masterstatus, out)
   end
 end
@@ -398,9 +403,10 @@ action :enable_replication do
   # Check the volume before performing any actions.  If invalid raise error and exit.
   ruby_block "validate_master" do
     not_if { current_restore_process == :no_restore }
-    # See cookbooks/db_postgres/libraries/helper.rb for the "RightScale::Database::PostgreSQL::Helper" class.
+    # See cookbooks/db/libraries/helper.rb
+    # for the "RightScale::Database::Helper" class.
     block do
-      master_info = RightScale::Database::PostgreSQL::Helper.load_replication_info(node)
+      master_info = RightScale::Database::Helper.load_replication_info(node)
 
       # Check that the snapshot is from the current master or a slave associated with the current master
       raise "Position and file not saved or it does not contain info!" unless master_info['Master_instance_uuid']
@@ -431,7 +437,7 @@ action :enable_replication do
     mode "0644"
     cookbook "db_postgres"
     variables(
-      :host => RightScale::Database::PostgreSQL::Helper.load_replication_info(
+      :host => RightScale::Database::Helper.load_replication_info(
         node
       )["Master_IP"],
       :user => node[:db][:replication][:user],

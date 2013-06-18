@@ -12,10 +12,6 @@ module RightScale
       module Helper
 
         require 'timeout'
-        require 'yaml'
-
-        SNAPSHOT_POSITION_FILENAME = 'rs_snapshot_position.yaml'
-        DEFAULT_CRITICAL_TIMEOUT = 7
 
         # Create new PostgreSQL object
         #
@@ -30,16 +26,6 @@ module RightScale
           end
           mount_point = new_resource.name
           RightScale::Tools::Database.factory(:postgres, new_resource.user, new_resource.password, mount_point, Chef::Log)
-        end
-
-        # Load replication information
-        # from "rs_snapshot_position.yaml"
-        #
-        # @param [Hash] node Node name
-        def self.load_replication_info(node)
-          loadfile = ::File.join(node[:db][:data_dir], SNAPSHOT_POSITION_FILENAME)
-          Chef::Log.info "  Loading replication information from #{loadfile}"
-          YAML::load_file(loadfile)
         end
 
         # Create new PostgreSQL connection
