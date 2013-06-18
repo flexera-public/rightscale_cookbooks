@@ -34,7 +34,7 @@ template "#{node[:monkey][:rocketmonkey_path]}/.rocketmonkey.config" do
   source "rocketmonkey_config.yaml.erb"
   owner node[:monkey][:user]
   group node[:monkey][:group]
-  mode 0755
+  mode 0644
   variables(
     :jenkins_user => node[:jenkins][:server][:user_name],
     :jenkins_password => node[:jenkins][:server][:password],
