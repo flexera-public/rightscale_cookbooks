@@ -260,7 +260,7 @@ action :install_server do
     mode "0644"
     cookbook 'db_postgres'
     not_if {
-      ::Dir.glob("#{node[:db_postgres][:confdir]}/pg_hba.conf*").any?
+      ::Dir.glob("#{node[:db_postgres][:confdir]}/pg_hba.conf.*").any?
     }
   end
 
