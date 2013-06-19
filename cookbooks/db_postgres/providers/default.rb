@@ -477,23 +477,42 @@ action :promote do
 
   previous_master = node[:db][:current_master_ip]
   raise "FATAL: could not determine master host from slave status" if previous_master.nil?
-  log "  host: #{previous_master}}"
+  log "  Current master: #{previous_master}"
 
   begin
     # Promote the slave into the new master
     log "  Promoting slave.."
 
+    # The slave server has the 'wal receiver' process running, once we promote
+    # it to master, streaming replication should be stopped.
+    ruby_block "check receiver process" do
+      block do
+        60.downto(0) do |try|
+          cmd = Mixlib::ShellOut.new("ps ax | grep '[w]al receiver process'")
+          cmd.run_command
+          break if cmd.stdout.empty?
+          Chef::Log.info cmd.stdout.chomp
+          raise "FATAL: 'wal receiver' process is still running!" if try.zero?
+          Chef::Log.info "  'wal receiver' process is still running, retrying."
+          sleep 10
+        end
+      end
+      action :nothing
+    end
+
     # Creates a trigger file, the presence of which should cause recovery to end
     # whether or not the next WAL file is available.
-    file "#{node[:db_postgres][:confdir]}/recovery.trigger"
-
-    sleep 10
+    # Immediately calls "check receiver process" to verify that server is no
+    # longer a slave.
+    file "#{node[:db_postgres][:confdir]}/recovery.trigger" do
+      notifies :create, "ruby_block[check receiver process]", :immediately
+    end
 
     # Let the new slave loose and thus let him become the new master
     log "  New master is ReadWrite."
 
   rescue => e
-    log "  WARNING: caught exception #{e} during critical operations on the MASTER"
+    raise "Caught exception during critical operations on the MASTER: '#{e}'"
   end
 end
 
