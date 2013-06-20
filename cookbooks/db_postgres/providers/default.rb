@@ -157,8 +157,7 @@ end
 
 action :install_client do
   version = new_resource.db_version
-  case version
-  when "9.1"
+  if version == "9.1"
     node[:db_postgres][:client_packages_install] = value_for_platform(
       ["centos", "redhat"] => {
         "default" => [
@@ -292,6 +291,7 @@ end
 
 action :install_client_driver do
   type = new_resource.driver_type
+  version = new_resource.db_version
   log "  Installing postgres support for #{type} driver"
 
   # Installation of the database client driver for application servers is
@@ -320,8 +320,18 @@ action :install_client_driver do
       action :install
     end
   when "java"
-    # This adapter type is used by tomcat application servers
+    # This adapter type is used by JBoos and Tomcat application servers.
     node[:db][:client][:driver] = "org.postgresql.Driver"
+    if version == "9.1"
+      node[:db][:client][:jar_file] = value_for_platform(
+        ["centos", "redhat"] => {
+          "default" => "postgresql-9.1-901.jdbc4.jar"
+        }
+      )
+    else
+      raise "PostgreSQL version '#{version}'is not supported yet."
+    end
+
     cookbook_file "/usr/share/java/#{node[:db][:client][:jar_file]}" do
       source "#{node[:db][:client][:jar_file]}"
       owner "root"

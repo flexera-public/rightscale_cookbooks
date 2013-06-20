@@ -56,6 +56,3 @@ node[:db][:info_file_options] = [
   "cat #{node[:db_postgres][:datadir]}/postgresql.conf"
 ]
 node[:db][:info_file_location] = node[:db_postgres][:datadir]
-
-# Database client driver used for Jboss and Tomcat application servers.
-node[:db][:client][:jar_file] = "postgresql-9.1-901.jdbc4.jar"
