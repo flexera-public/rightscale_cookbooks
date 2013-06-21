@@ -10,26 +10,32 @@ rightscale_marker
 
 if "#{node[:rightscale][:security_updates]}" == "enable"
 
-  case node[:platform]
+  platform =  node[:platform]
+  log "  Applying secutiy updates for #{platform}"
+  # Make sure we DON'T check the output of the update because it
+  # may return a non-zero error code when one server is down but all
+  # the others are up, and a partial update was successful!
+  # If the upgrade fails then the security update monitor will
+  # trigger alerting users to investigate what went wrong.
+  case platform
   when "ubuntu"
-    bash "Apply Ubuntu security updates" do
+    bash "Apply apt security updates" do
       flags "-ex"
       code <<-EOH
-        # Make sure we DON'T check the output of this, as apt-get update
-        # may return a non-zero error code when one server is down but all
-        # the others are up, and a partial update was successful!
-        apt-get update || true
+        apt-get update && apt-get upgrade || true
       EOH
     end
-  end
+  when "centos", "redhat"
     # Update packages
-    bash "Yum security updates" do
+    bash "Apply yum security updates" do
       flags "-ex"
       code <<-EOH
-        # Assume we want to ignore output for the same reason as apt-get update
         yum -y --security update || true
       EOH
     end
+  else
+    log " Security updates not supported for platform #{platform}"
+  end
 
 else
 
