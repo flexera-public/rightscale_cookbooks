@@ -21,14 +21,12 @@ when "redhat", "centos"
   set[:puppet][:client][:version] = "#{node[:puppet][:client][:version]}.el6"
 
   set[:puppet][:client][:packages] = "puppet"
-  set[:puppet][:client][:repo_source] = "puppetlabs-release-6-7.noarch.rpm"
 when "ubuntu"
   # Sets the version to comply with Ubuntu format.
   set[:puppet][:client][:version] =
     "#{node[:puppet][:client][:version]}puppetlabs1"
 
   set[:puppet][:client][:packages] = ["puppet-common", "puppet"]
-  set[:puppet][:client][:repo_source] = "puppetlabs-release-precise.deb"
 else
   raise "  Unsupported platform #{platform}"
 end

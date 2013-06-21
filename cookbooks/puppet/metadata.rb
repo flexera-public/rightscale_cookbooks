@@ -9,6 +9,8 @@ depends "rightscale"
 
 recipe "puppet::install_client",
   "Installs and configures the Puppet Client"
+recipe "puppet::setup_client_package_repository",
+  "Installs repo for the Puppet Client packages"
 recipe "puppet::do_client_start",
   "Starts Puppet service"
 recipe "puppet::do_client_stop",

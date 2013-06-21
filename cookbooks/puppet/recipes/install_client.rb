@@ -12,34 +12,6 @@ rightscale_marker
 touchfile = ::File.expand_path "/var/lib/puppet/ssl/certs/" +
   "#{node[:puppet][:client][:node_name]}.pem"
 
-# Installs the Puppet Open Source package repository.
-cookbook_file "/tmp/#{node[:puppet][:client][:repo_source]}" do
-  source "#{node[:puppet][:client][:repo_source]}"
-  mode "0755"
-  cookbook "puppet"
-  not_if { ::File.exists?(touchfile) }
-end
-
-execute "install puppet repository on Ubuntu" do
-  command "sudo dpkg -i /tmp/#{node[:puppet][:client][:repo_source]} && sudo" +
-    " apt-get -qq update"
-  only_if { node[:platform] == "ubuntu" && !::File.exists?(touchfile) }
-end
-
-ruby_block "reload-internal-yum-cache" do
-  block do
-    Chef::Provider::Package::Yum::YumCache.instance.reload
-  end
-  action :nothing
-end
-
-execute "install puppet repository on CentOS/RHEL" do
-  command "rpm -i /tmp/#{node[:puppet][:client][:repo_source]} && yum -q" +
-    " makecache"
-  notifies :create, "ruby_block[reload-internal-yum-cache]", :immediately
-  only_if { node[:platform] =~ /redhat|centos/ && !::File.exists?(touchfile) }
-end
-
 # Installs the Puppet Client specific to the user provided version.
 node[:puppet][:client][:packages].each do |pkg|
   package pkg do
