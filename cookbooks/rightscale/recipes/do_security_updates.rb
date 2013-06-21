@@ -18,7 +18,8 @@ if "#{node[:rightscale][:security_updates]}" == "enable"
         # Make sure we DON'T check the output of this, as apt-get update
         # may return a non-zero error code when one server is down but all
         # the others are up, and a partial update was successful!
-        apt-get update || true
+        apt-get -y update || true
+        apt-get -y upgrade
       EOH
     end
   end
