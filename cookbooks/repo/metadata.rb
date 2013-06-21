@@ -5,9 +5,9 @@ description      "Abstract cookbook for managing source code repositories."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "13.5.0"
 
-# supports "centos", "~> 5.8", "~> 6"
-# supports "redhat", "~> 5.8"
-# supports "ubuntu", "~> 10.04", "~> 12.04"
+supports "centos"
+supports "redhat"
+supports "ubuntu"
 
 depends "rightscale"
 depends "repo_svn"
@@ -18,7 +18,6 @@ depends "repo_rsync"
 
 recipe "repo::default",
   "Sets up repo resource and provider."
-
 
 attribute "repo/default/provider",
   :display_name => "Repository Provider",
@@ -146,4 +145,3 @@ attribute "repo/default/prefix",
     " specify 'myapp' as the ROS Prefix. Example: myapp",
   :required => "optional",
   :recipes => ["repo::default"]
-

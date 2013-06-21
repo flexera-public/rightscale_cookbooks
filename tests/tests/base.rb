@@ -5,6 +5,7 @@ require_helper "wait_for_ip_repopulation"
 require_helper "errors"
 require_helper "os"
 require_helper "input"
+require_helper "rackspace_managed"
 
 # Test specific helpers.
 #
@@ -17,11 +18,6 @@ helpers do
   # An error with conntrack_max setup.
   #
   class ConntrackMaxError < VirtualMonkey::TestCase::ErrorBase
-  end
-
-  # An error with Rackspace Managed agents not running properly.
-  #
-  class RackspaceManagedError < VirtualMonkey::TestCase::ErrorBase
   end
 
   # An error with unfrozen repo check
@@ -159,46 +155,6 @@ helpers do
     end
   end
 
-  # Setup the credentials required for Rackspace Managed Open Cloud as advanced
-  # inputs.
-  #
-  # @param server [Server] the server to check
-  #
-  def setup_rackspace_managed_credentials(server)
-    server.set_inputs(
-      "rightscale/rackspace_api_key" => "cred:RACKSPACE_RACKMANAGED_API_KEY",
-      "rightscale/rackspace_tenant_id" => "cred:RACKSPACE_RACKMANAGED_TENANT_ID",
-      "rightscale/rackspace_username" => "cred:RACKSPACE_RACKMANAGED_USERNAME"
-    )
-  end
-
-  # Verify that the Rackspace Managed Open Cloud agents are running properly.
-  #
-  # @param server [Server] the server to check
-  #
-  # @raise [RackspaceRackManagedError] if the rackspace agents are not running
-  #   properly.
-  #
-  def verify_rackspace_managed_agents(server)
-    rackspace_agents = ["driveclient", "rackspace-monitoring-agent"]
-    # Verify the agents functionality on all servers
-    rackspace_agents.each do |agent|
-      probe(server, "service #{agent} status") do |response, status|
-        unless status == 0
-          raise FailedProbeCommandError, "Unable to verify that #{agent} is" +
-            " running on #{server.nickname}"
-        end
-        if response.include?("running")
-          puts "The #{agent} agent is running on #{server.nickname}"
-        else
-          raise RackspaceRackManagedError, "The #{agent} agent is not running" +
-            " on #{server.nickname} Current status is #{response}"
-        end
-        true
-      end
-    end
-  end
-
   # Verifies the security repositories are unfrozen.
   #
   # For apt based systems (Ubuntu) it checks repositories in
@@ -245,7 +201,8 @@ end
 # Verify the server input rightscale/security_updates is set to "disable"
 # Rackspace Managed Open clouds should have Rackspace credentials set.
 #
-before "smoke_test", "stop_start", "enable_security_updates_on_running_server" do
+before "smoke_test", "stop_start", "enable_security_updates_on_running_server",
+  "ephemeral_file_system_type" do
   puts "Running before with security updates disabled"
   # Assume a single server in the deployment
   server = servers.first
@@ -404,6 +361,64 @@ test_case "stop_start" do
 
   # Check if the server's basic monitoring is working.
   check_monitoring
+end
+
+# The Base ephemeral_file_system_type test makes sure the file system type
+# installed on the ephemeral drive is same as the type set in
+# "block_device/ephemeral/file_system_type" input in the advanced inputs
+# category of block device in Base Chef ServerTemplate.
+#
+test_case "ephemeral_file_system_type" do
+  # Get the current cloud.
+  cloud = Cloud.factory
+
+  # Get the single server in the deployment.
+  server = servers.first
+
+  # Skip this test if the cloud does not support ephemeral drives and if the
+  # ServerTemplate is not chef based. Ephemeral drives are supported only on
+  # Chef ServerTemplates.
+  skip unless cloud.supports_ephemeral?(server) && is_chef?
+
+  # Get the OS used by the server
+  os = get_operating_system(server)
+
+  # List all file system types supported on the ephemeral device
+  supported_fs_types = ["xfs", "ext3"]
+
+  # We do not support xfs on Google cloud and Redhat due to these reasons
+  # * Google uses a statically compiled kernel built without xfs support
+  # * Redhat charges for using xfs. Hence we don't install it through our
+  # cookbooks and tools.
+  xfs_unsupported = os =~ /rhel/i || cloud.cloud_name == "Google"
+
+  # Remove file system types that are not supported on the ephemeral device
+  # based on the platform
+  if xfs_unsupported
+    unsupported_types = ["xfs"]
+  else
+    unsupported_types = []
+  end
+
+  # Get the list of supported file system types on the ephemeral device
+  # based on the platform
+  supported_fs_types = supported_fs_types - unsupported_types
+
+  # Verify the default file system type that will be installed on the
+  # ephemeral device
+  default_fs_type = xfs_unsupported ? "ext3" : "xfs"
+  verify_ephemeral_file_system_type(server, default_fs_type)
+  supported_fs_types.delete(default_fs_type)
+
+  # Iterate through the rest of the supported file system types and verify the
+  # installation of each type
+  supported_fs_types.each do |type|
+    server.set_next_inputs({
+      "block_device/ephemeral/file_system_type" => "text:#{type}"
+    })
+    relaunch_all
+    verify_ephemeral_file_system_type(server, type)
+  end
 end
 
 # The Base "enable security updates on running a running server" tests if

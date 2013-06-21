@@ -5,15 +5,13 @@ description      "Installs/Configures a memcached server"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "13.5.0"
 
-# supports "centos", "~> 5.8", "~> 6"
-# supports "redhat", "~> 5.8"
-# supports "ubuntu", "~> 10.04", "~> 12.04" 
-
+supports "centos"
+supports "redhat"
+supports "ubuntu"
 
 depends "rightscale"
 depends "sys_firewall"
 depends "logrotate"
-
 
 recipe "memcached::default",
   "Sets up mecached.."
@@ -30,7 +28,6 @@ recipe "memcached::do_restart",
 
 recipe "memcached::do_stop",
   "Stops memcached service."
-
 
 attribute "memcached/tcp_port",
   :display_name => "Memcached TCP Port",

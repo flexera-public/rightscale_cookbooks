@@ -5,9 +5,9 @@ description      "Installs/Configures Apache Passenger Rails application server"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "13.5.0"
 
-# supports "centos", "~> 5.8", "~> 6"
-# supports "redhat", "~> 5.8"
-# supports "ubuntu", "~> 10.04", "~> 12.04"
+supports "centos"
+supports "redhat"
+supports "ubuntu"
 
 depends "app"
 depends "repo"
@@ -27,7 +27,6 @@ recipe "app_passenger::install_required_app_gems",
 recipe "app_passenger::run_custom_rails_commands",
   "Runs specific user defined commands. Commands will be executed in" +
   " the app directory."
-
 
 attribute "app_passenger/rails_spawn_method",
   :display_name => "Rails spawn method",

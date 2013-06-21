@@ -5,9 +5,9 @@ description      "Installs the tomcat application server."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "13.5.0"
 
-# supports "centos", "~> 5.8", "~> 6"
-# supports "redhat", "~> 5.8"
-# supports "ubuntu", "~> 10.04", "~> 12.04"
+supports "centos"
+supports "redhat"
+supports "ubuntu"
 
 depends "app"
 depends "repo"
@@ -113,6 +113,21 @@ attribute "app_tomcat/datasource_name",
     " override input value. Example: jdbc/MyConnDB",
   :required => "optional",
   :default => "jdbc/ConnDB",
+  :recipes => [
+    "app_tomcat::setup_server_6",
+    "app_tomcat::setup_server_7"
+  ]
+
+attribute "app_tomcat/internal_port",
+  :display_name => "Tomcat Internal Port",
+  :description =>
+    "Sets the internal port on which Tomcat listens. By default, Tomcat" +
+    " listens on localhost port 8080. WARNING: The value for this input" +
+    " should NOT be the same as the value in 'app/port' input as it would" +
+    " conflict with the Apache listen port and would cause a fatal error when" +
+    " the apache service is started.",
+  :required => "optional",
+  :default => "8080",
   :recipes => [
     "app_tomcat::setup_server_6",
     "app_tomcat::setup_server_7"

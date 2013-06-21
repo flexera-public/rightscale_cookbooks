@@ -7,12 +7,8 @@
 # such as a RightScale Master Subscription Agreement.
 
 # List of required apache modules
-set[:app][:module_dependencies] = ["proxy", "proxy_ajp"]
-
-# Recommended attributes
-
-# By default apache will serve any existing local files directly
-# (except actionable ones)
+default[:app_passenger][:module_dependencies] = []
+# By default apache will serve any existing local files directly (except actionable ones)
 default[:app_passenger][:apache][:serve_local_files] = "true"
 # By default passenger will use "conservative" spawn method. For more info see:
 # http://www.modrails.com/documentation/Users%20guide%20Apache.html#PassengerSpawnMethod

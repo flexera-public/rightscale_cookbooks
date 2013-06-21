@@ -52,7 +52,7 @@ action :pull do
   # Overrides default endpoint or for generic storage clouds such as Swift.
   # Is set as ENV['STORAGE_OPTIONS'] for ros_util.
   options =
-    if new_resource.endpoint
+    unless new_resource.endpoint.empty?
       {'STORAGE_OPTIONS' => JSON.dump({
         :endpoint => new_resource.endpoint,
         :cloud => new_resource.storage_account_provider.to_sym

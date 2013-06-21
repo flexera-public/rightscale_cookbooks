@@ -7,7 +7,7 @@
 # such as a RightScale Master Subscription Agreement.
 
 # List of required apache modules
-set[:app][:module_dependencies] = ["proxy", "proxy_http", "deflate", "rewrite"]
+default[:app_tomcat][:module_dependencies] = []
 
 # Recommended attributes
 
@@ -29,6 +29,8 @@ default[:app_tomcat][:java][:xmx] = "512m"
 default[:app_tomcat][:java][:xms] = "512m"
 # The container datasource name
 default[:app_tomcat][:datasource_name] = "jdbc/ConnDB"
+# Internal port for Tomcat.
+default[:app_tomcat][:internal_port] = "8080"
 
 # Calculated attributes
 # Defining java alternatives parameter depending on platform.

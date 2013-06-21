@@ -1,6 +1,7 @@
 # Include the helper objects and methods.
 require_helper "cloud"
 require_helper "errors"
+require_helper "rackspace_managed"
 
 # When rerunning a test, shutdown all of the servers.
 #
@@ -11,6 +12,16 @@ end
 # Before all of the test cases, launch all of the servers in the deployment.
 #
 before do
+  # Get the current cloud
+  cloud = Cloud.factory
+
+  # Single server in deployment
+  server = servers.first
+
+  # Set the required credential inputs for Rackspace Managed cloud.
+  setup_rackspace_managed_credentials(server) \
+    if cloud.cloud_name =~ /Rackmanaged/
+
   launch_all
   wait_for_all("operational")
 end

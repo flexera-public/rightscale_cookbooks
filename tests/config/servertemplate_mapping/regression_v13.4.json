@@ -5,11 +5,11 @@
  * name.
  */
 {
-  "base_chef": {
+  "base_rsb": {
     "nickname": "Base ServerTemplate for Linux (RSB) (v13.4)",
     "rev": "latest"
   },
-  "base_rsb": {
+  "base_chef": {
     "nickname": "Base ServerTemplate for Linux (v13.4)",
     "rev": "latest"
   },

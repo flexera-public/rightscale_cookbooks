@@ -36,6 +36,12 @@ then opens 22, 80 and 443 ports by default
 (additionally on SoftLayer 48000..48020 ports are opened on the private 10.*
 network for the monitoring agent).
 
+When the firewall is disabled the iptables service is disabled and stopped.
+
+When the firewall is set to "unmanaged" no changes are done to the iptables
+service so the cloud provider can manage the firewall rules. RightScale will
+not manage the firewall rules in this case.
+
 `sys_firewall::default` recipe increases the value for the
 'netfilter.nf_conntrack_max' parameter for CentOS images and
 the 'net.ipv4.ip_conntrack_max' for Ubuntu and RHEL images to avoid dropping
@@ -47,11 +53,23 @@ All tag-based actions are scoped to the deployment.
 
 #### Update Action
 
-To open a local port to all servers with a given tag use:
+To open a local port on the private IP to all servers with a given tag use:
 
     sys_firewall "Open this server's ports to all servers with this 'tag' " do
       machine_tag "servertag:active=true"
       port 3306
+      # ip_tag "server:private_ip_0" <= default value if not set
+      enable true
+      action :update
+    end
+
+To open a local port to all servers with a given tag on a specified interface
+set the ip_tag to the desired interface.
+
+    sys_firewall "Open this server's ports to all servers with this 'tag' " do
+      machine_tag "servertag:active=true"
+      port 3306
+      ip_tag "server:public_ip_0"
       enable true
       action :update
     end
@@ -60,6 +78,20 @@ This can be used when a server is booting to open up access for multiple systems
 at once.
 
 #### Update Request Action
+
+To request that all servers with a given tag open a port to a given IP address
+use:
+
+    sys_firewall "Reques master DB server to open the port to this slave server" do
+      machine_tag "rs_dbrepl:master_instance_uuid=XXXXXXX"
+      port 3306
+      enable true
+      ip_addr node[:cloud][:private_ips][0]
+      action :update_request
+    end
+
+This can be useful when launching a new server that needs to communicate with
+a running server (example: new slave server brought online)
 
 To request that all servers with a given tag close a port to a given IP address
 use:
