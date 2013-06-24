@@ -241,6 +241,7 @@ define(:db_mysql_set_mycnf,
       :long_query_time => node[:db_mysql][:tunable][:long_query_time],
       :read_only => node[:db_mysql][:tunable][:read_only],
       :server_id => params[:server_id],
+      :binlog_format => node[:db_mysql][:binlog_format],
       :relay_log => params[:relay_log],
       :innodb_log_file_size => params[:innodb_log_file_size] ||
         node[:db_mysql][:tunable][:innodb_log_file_size],
