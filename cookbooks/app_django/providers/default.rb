@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: app_django
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 # Stop apache
 action :stop do
@@ -57,10 +58,12 @@ action :install do
     not_if { ::File.exists?("#{node[:app_django][:pip_bin]}") }
   end
 
-  log "  Module dependencies which will be installed: #{node[:app][:module_dependencies]}"
+  log "  Module dependencies which will be installed:" +
+    " #{node[:app_django][:module_dependencies]}"
   # Installing python modules dependencies
-  node[:app][:module_dependencies].each do |mod|
-    # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_module.rb for the "apache_module" definition.
+  node[:app_django][:module_dependencies].each do |mod|
+    # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_module.rb
+    # for the "apache_module" definition.
     apache_module mod
   end
 
@@ -202,10 +205,6 @@ action :code_update do
   execute "#{node[:app_django][:pip_bin]} install --requirement=#{deploy_dir}/requirements.txt" do
     only_if { ::File.exists?("#{deploy_dir}/requirements.txt") }
   end
-
-  # Restarting apache
-  # Calls the :restart action.
-  action_restart
 
 end
 

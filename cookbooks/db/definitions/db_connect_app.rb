@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: db
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 # Sets up config file to connect application servers with database servers.
 #
@@ -43,7 +44,7 @@ define(:db_connect_app,
       :fqdn => node[:db][:dns][:master][:fqdn],
       :socket => node[:db][:socket],
       :database => params[:database],
-      :listen_port => node[node[:db][:provider]][:port],
+      :port => node[node[:db][:provider]][:port],
       :vars => params[:vars]
     )
   end

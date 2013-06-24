@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: app
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 # Adds a port to the apache listen ports.conf file and node attribute
 # The node[:apache][:listen_ports] is an array of strings for the webserver to listen on.
@@ -18,7 +19,7 @@ define :app_add_listen_port do
   node[:apache][:listen_ports] << port_str unless node[:apache][:listen_ports].include?(port_str)
   log "Apache listen ports: #{node[:apache][:listen_ports].inspect}"
 
-  # Creating pots.conf for apache which will contain all ports apache listen on.
+  # Creating ports.conf for apache which will contain all ports apache listen on.
   template "#{node[:apache][:dir]}/ports.conf" do
     cookbook "apache2"
     source "ports.conf.erb"

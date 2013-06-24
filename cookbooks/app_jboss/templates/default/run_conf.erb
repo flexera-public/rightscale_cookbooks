@@ -1,0 +1,55 @@
+#
+# Cookbook Name:: app_jboss
+#
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
+#
+# Managed by RightScale
+# DO NOT EDIT BY HAND
+#
+#
+
+#
+# Specify the maximum file descriptor limit, use "max" or "maximum" to use
+# the default, as queried by the system.
+#
+# Defaults to "maximum"
+#
+#MAX_FD="maximum"
+
+if [ "x$JBOSS_MODULES_SYSTEM_PKGS" = "x" ]; then
+   JBOSS_MODULES_SYSTEM_PKGS="org.jboss.byteman"
+fi
+
+# Uncomment the following line to prevent manipulation of JVM options
+# by shell scripts.
+#
+#PRESERVE_JAVA_OPTS=true
+
+#
+# Specify options to pass to the Java VM.
+#
+if [ "x$JAVA_OPTS" = "x" ]; then
+   JAVA_OPTS="-Djava.net.preferIPv4Stack=true -Dorg.jboss.resolver.warning=true -Dsun.rmi.dgc.client.gcInterval=3600000 -Dsun.rmi.dgc.server.gcInterval=3600000"
+else
+   echo "JAVA_OPTS already set in environment; overriding default settings with values: $JAVA_OPTS"
+fi
+
+# JVM tuning options
+# see http://www.mastertheboss.com/jboss-performance/jboss-as-7-performance-tuning
+
+# XMX and XMS
+JAVA_OPTS="$JAVA_OPTS -Xms<%= @java_xms %> -Xmx<%= @java_xmx %>"
+
+# PermSize and MaxPermSize
+JAVA_OPTS="$JAVA_OPTS -XX:PermSize=<%= @java_permsize %> -XX:MaxPermSize=<%= @java_maxpermsize %>"
+
+# NewSize, MaxNewSize and SurvivorRatio
+JAVA_OPTS="$JAVA_OPTS -XX:NewSize=<%= @java_newsize %> -XX:MaxNewSize=<%= @java_maxnewsize %> -XX:SurvivorRatio=<%= @java_survivor_ratio %>"
+
+# Garbage collector
+JAVA_OPTS="$JAVA_OPTS -XX:+UseConcMarkSweepGC"
+
+# Collectd

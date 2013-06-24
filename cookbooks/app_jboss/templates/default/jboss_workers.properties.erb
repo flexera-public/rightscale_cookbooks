@@ -1,0 +1,28 @@
+#
+# Cookbook Name:: app_jboss
+#
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
+#
+# Managed by RightScale
+# DO NOT EDIT BY HAND
+#
+
+## Define some properties
+workers.apache_log=/var/log/<%= @config_subdir %>/
+workers.jboss_home=<%= @jboss_home %>
+workers.java_home=/usr/lib/jvm/jre
+ps=/
+
+
+## Set properties for worker1 (ajp13)
+worker.list=ajp13
+worker.ajp13.type=ajp13
+worker.ajp13.host=localhost
+worker.ajp13.port=8009
+worker.ajp13.lbfactor=1
+worker.ajp13.connection_pool_timeout=600
+worker.ajp13.socket_keepalive=1
+worker.ajp13.socket_timeout=60

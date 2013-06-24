@@ -1,0 +1,5 @@
+{
+  "description": "Tests the RightScale API using the API Tester ServerTemplate",
+  "server_templates": ["api_tester"],
+  "tests": ["api_tester.rb"]
+}

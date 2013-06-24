@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: app_php
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 # Stop apache
 action :stop do
@@ -60,10 +61,12 @@ action :install do
     package p
   end
 
-  log "  Module dependencies which will be installed: #{node[:app][:module_dependencies]}"
+  log "  Module dependencies which will be installed:" +
+    " #{node[:app_php][:module_dependencies]}"
   # Installing php modules dependencies
-  node[:app][:module_dependencies].each do |mod|
-    # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_module.rb for the "apache_module" definition.
+  node[:app_php][:module_dependencies].each do |mod|
+    # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_module.rb
+    # for the "apache_module" definition.
     apache_module mod
   end
 
@@ -142,10 +145,6 @@ action :code_update do
     repository node[:repo][:default][:repository]
     persist false
   end
-
-  # Restarting apache
-  # Calls the :restart action.
-  action_restart
 
 end
 

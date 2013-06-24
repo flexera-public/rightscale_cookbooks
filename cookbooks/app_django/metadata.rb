@@ -2,12 +2,12 @@ maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "Installs the Django application server."
-long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "13.4.0"
+long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
+version          "13.5.0"
 
-# supports "centos", "~> 5.8", "~> 6.2"
-# supports "redhat", "~> 5.8"
-# supports "ubuntu", "~> 10.04", "~> 12.04"
+supports "centos"
+supports "redhat"
+supports "ubuntu"
 
 depends "app"
 depends "web_apache"
@@ -23,7 +23,6 @@ recipe "app_django::setup_server_1_4",
 recipe "app_django::run_custom_django_commands",
   "Runs specific user defined commands. Commands will be executed" +
   " in the app directory."
-
 
 attribute "app_django/app/debug_mode",
   :display_name => "Django App Debug Mode",

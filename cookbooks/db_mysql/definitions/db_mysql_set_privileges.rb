@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: db_mysql
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 define :db_mysql_set_privileges, :preset => "administrator", :username => nil, :password => nil, :db_name => nil do
 
@@ -24,11 +25,6 @@ define :db_mysql_set_privileges, :preset => "administrator", :username => nil, :
       # Now that we have a Mysql object, let's sanitize our inputs
       username = con.escape_string(username)
       password = con.escape_string(password)
-
-      # Remove anonymous access via the server hostname.
-      # Some cloud sets hostname to DNS FQDN name which causes problems for replication.
-      host=`hostname`.strip
-      con.query("DELETE from mysql.user where user='' and host='#{host}'")
 
       case priv_preset
       when 'administrator'

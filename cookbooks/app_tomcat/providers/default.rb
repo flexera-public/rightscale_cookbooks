@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: app_tomcat
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 # Stop tomcat service
 action :stop do
@@ -130,8 +131,6 @@ action :setup_vhost do
     )
   end
 
-  # Define internal port for tomcat. It must be different than apache ports
-  tomcat_port = port + 1
   log "  Creating server.xml"
   template "/etc/tomcat#{version}/server.xml" do
     action :create
@@ -143,7 +142,7 @@ action :setup_vhost do
     variables(
       :tomcat_version => node[:app][:version],
       :doc_root => app_root,
-      :app_port => tomcat_port.to_s
+      :app_port => node[:app_tomcat][:internal_port]
     )
   end
 
@@ -237,9 +236,12 @@ action :setup_vhost do
 
     log "  Finished configuring mod_jk, creating the application vhost"
 
+    log "  Module dependencies which will be installed:" +
+      " #{node[:app_tomcat][:module_dependencies]}"
     # Enabling required apache modules
-    node[:app][:module_dependencies].each do |mod|
-      # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_module.rb for the "apache_module" definition.
+    node[:app_tomcat][:module_dependencies].each do |mod|
+      # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_module.rb
+      # for the "apache_module" definition.
       apache_module mod
     end
 
@@ -418,9 +420,5 @@ action :code_update do
     EOH
     only_if { node[:app_tomcat][:code][:root_war] != "ROOT.war" }
   end
-  # Restarting tomcat service.
-  # This will automatically deploy ROOT.war if it is available in application root directory
-  # Calls the :restart action.
-  action_restart
 
 end

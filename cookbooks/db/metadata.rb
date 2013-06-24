@@ -2,19 +2,18 @@ maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "RightScale Database Manager"
-long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "13.4.0"
+long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
+version          "13.5.0"
 
-# supports "centos", "~> 5.8", "~> 6"
-# supports "redhat", "~> 5.8"
-# supports "ubuntu", "~> 10.04", "~> 12.04"
+supports "centos"
+supports "redhat"
+supports "ubuntu"
 
 depends "rightscale"
 depends "block_device"
 depends "sys_firewall"
 depends "db_mysql"
 depends "db_postgres"
-
 
 recipe "db::default",
   "Selects and installs database client. It also sets up the provider" +
@@ -58,9 +57,6 @@ recipe "db::setup_privileges_admin",
 recipe "db::setup_privileges_application",
   "Adds the username and password for application privileges."
 
-recipe "db::remove_anonymous_users",
-  "Removes anonymous users from database."
-
 recipe "db::do_secondary_backup",
   :description =>
     "Creates a backup of the database and uploads it to a secondary cloud" +
@@ -93,7 +89,6 @@ recipe "db::do_dump_schedule_enable",
 recipe "db::do_dump_schedule_disable",
   "Disables the daily run of do_dump_export."
 
-
 # == Database Firewall Recipes
 #
 recipe "db::do_appservers_allow",
@@ -119,7 +114,6 @@ recipe "db::request_appserver_deny",
   " to all database servers in the deployment that are tagged with the" +
   " database:active=true tag." +
   " This should be run on an application server upon decommissioning."
-
 
 # == Master/Slave Recipes
 #
@@ -497,10 +491,8 @@ attribute "db/backup/primary/slave/cron/minute",
   :required => "optional",
   :recipes => ["db::do_primary_backup_schedule_enable"]
 
-
 # == Import/export attributes
 #
-
 attribute "db/dump",
   :display_name => "Import/export settings for database dump file management.",
   :type => "hash"
@@ -519,6 +511,7 @@ attribute "db/dump/storage_account_provider",
     "cloudfilesuk",
     "google",
     "azure",
+    "swift",
     "SoftLayer_Dallas",
     "SoftLayer_Singapore",
     "SoftLayer_Amsterdam"
@@ -537,6 +530,7 @@ attribute "db/dump/storage_account_id",
     " For Amazon S3, use your Amazon access key ID" +
     " (e.g., cred:AWS_ACCESS_KEY_ID). For Rackspace Cloud Files, use your" +
     " Rackspace login username (e.g., cred:RACKSPACE_USERNAME)." +
+    " For OpenStack Swift the format is: 'tenantID:username'." +
     " Example: cred:AWS_ACCESS_KEY_ID",
   :required => "required",
   :recipes => [
@@ -555,6 +549,20 @@ attribute "db/dump/storage_account_secret",
     " For Rackspace Cloud Files, use your Rackspace account API key" +
     " (e.g., cred:RACKSPACE_AUTH_KEY). Example: cred:AWS_SECRET_ACCESS_KEY",
   :required => "required",
+  :recipes => [
+    "db::do_dump_import",
+    "db::do_dump_export",
+    "db::do_dump_schedule_enable"
+  ]
+
+attribute "db/dump/storage_account_endpoint",
+  :display_name => "Dump Storage Endpoint URL",
+  :description =>
+    "The endpoint URL for the storage cloud. This is used to override the" +
+    " default endpoint or for generic storage clouds such as Swift." +
+    " Example: http://endpoint_ip:5000/v2.0/tokens",
+  :required => "optional",
+  :default => "",
   :recipes => [
     "db::do_dump_import",
     "db::do_dump_export",

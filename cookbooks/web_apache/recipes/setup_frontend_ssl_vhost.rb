@@ -1,11 +1,12 @@
 #
 # Cookbook Name:: web_apache
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Installing only for RHEL based systems
 package "mod_ssl" do
@@ -112,5 +113,3 @@ web_app "#{node[:web_apache][:application_name]}.frontend.http" do
   apache_log_dir node[:apache][:log_dir]
   notifies :restart, resources(:service => "apache2"), :immediately
 end
-
-rightscale_marker :end

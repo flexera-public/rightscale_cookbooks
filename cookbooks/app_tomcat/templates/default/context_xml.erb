@@ -2,9 +2,10 @@
 <!--
   Cookbook Name:: app_tomcat
 
-  Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-  RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-  if applicable, other agreements such as a RightScale Master Subscription Agreement.
+  Copyright RightScale, Inc. All rights reserved.
+  All access and use subject to the RightScale Terms of Service available at
+  http://www.rightscale.com/terms.php and, if applicable, other agreements
+  such as a RightScale Master Subscription Agreement.
 
   Managed by RightScale
   DO NOT EDIT BY HAND
@@ -36,6 +37,6 @@
         <%# The db/client/driver node variable isn't available during compile time %>
         <%# so it can't be passed via the resource %>
         driverClassName="<%= node[:db][:client][:driver] %>"
-        url="jdbc:<%= node[:db][:client][:driver].split(".")[1] %>://<%= @fqdn %>:<%= @listen_port %>/<%= @database %>"/>
+        url="jdbc:<%= node[:db][:client][:driver].split(".")[1] %>://<%= @fqdn %>:<%= @port %>/<%= @database %>"/>
 
 </Context>
