@@ -241,3 +241,22 @@ execute "bundle install on collateral" do
   cwd "/root/#{node[:monkey][:virtualmonkey][:collateral_name]}"
   command "bundle install --no-color --system"
 end
+
+log "  Updating the ServerTemplate IDs for old collateral"
+execute "update_stids" do
+  cwd "/root/#{node[:monkey][:virtualmonkey][:collateral_name]}"
+  command "bin/update_stids --source linux --lineage" +
+    " #{node[:monkey][:virtualmonkey][:collateral_repo_branch]}.csv"
+  only_if do
+    File.exists?(
+      "/root/#{node[:monkey][:virtualmonkey][:collateral_name]}/" +
+      "csv_sheets/#{node[:monkey][:virtualmonkey][:collateral_repo_branch]}.csv"
+    )
+  end
+end
+
+# Install the jsonlint tool for checking if the JSON file is valid
+cookbook_file "/usr/bin/jsonlint" do
+  source "jsonlint"
+  mode 0755
+end
