@@ -294,12 +294,12 @@ if node[:platform] =~ /ubuntu/
     end
   end
 
-  directory "#{node[:monkey][:user_home]}/.windows" do
+  directory "#{node[:monkey][:user_home]}/.virtualmonkey" do
     owner node[:monkey][:user]
     group node[:monkey][:group]
   end
 
-  file "#{node[:monkey][:user_home]}/.windows/galanga" do
+  file "#{node[:monkey][:user_home]}/.virtualmonkey/windows_password" do
     content node[:monkey][:virtualmonkey][:windows_admin_password]
     owner node[:monkey][:user]
     group node[:monkey][:group]
