@@ -241,7 +241,16 @@ define(:db_mysql_set_mycnf,
       :long_query_time => node[:db_mysql][:tunable][:long_query_time],
       :read_only => node[:db_mysql][:tunable][:read_only],
       :server_id => params[:server_id],
+      :log_bin_enabled => node[:db_mysql][:log_bin_enabled],
+      :log_bin => node[:db_mysql][:log_bin],
+      :expire_logs_days => node[:db_mysql][:tunable][:expire_logs_days],
       :binlog_format => node[:db_mysql][:binlog_format],
+
+      # InnoDB
+      :innodb_buffer_pool_size =>
+        node[:db_mysql][:tunable][:innodb_buffer_pool_size],
+      :innodb_additional_mem_pool_size =>
+        node[:db_mysql][:tunable][:innodb_additional_mem_pool_size],
       :relay_log => params[:relay_log],
       :innodb_log_file_size => params[:innodb_log_file_size] ||
         node[:db_mysql][:tunable][:innodb_log_file_size],
@@ -250,6 +259,8 @@ define(:db_mysql_set_mycnf,
       :data_dir => node[:db][:data_dir],
       :relay_log => params[:relay_log],
 
+      # SSL
+      :ssl_enabled => node[:db_mysql][:ssl_enabled],
       :compressed_protocol => params[:compressed_protocol] ? "1" : "0",
       :slave_net_timeout => params[:slave_net_timeout] ||
         node[:db_mysql][:tunable][:slave_net_timeout],
@@ -260,7 +271,11 @@ define(:db_mysql_set_mycnf,
       :master_certificate => params[:master_certificate] ||
         node[:db_mysql][:ssl_credentials][:master_certificate][:path],
       :master_key => params[:master_key] ||
-        node[:db_mysql][:ssl_credentials][:master_key][:path]
+        node[:db_mysql][:ssl_credentials][:master_key][:path],
+      :version => node[:db][:version],
+      :isamchk_key_buffer => node[:db_mysql][:tunable][:isamchk][:key_buffer],
+      :isamchk_sort_buffer_size =>
+        node[:db_mysql][:tunable][:isamchk][:sort_buffer_size]
     )
     cookbook "db_mysql"
   end
