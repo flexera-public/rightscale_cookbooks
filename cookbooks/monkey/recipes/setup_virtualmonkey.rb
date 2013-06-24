@@ -165,21 +165,21 @@ nextgen_collateral_repo_url =
 
 log "  Checking out nextgen collateral repo to" +
   " #{nextgen_collateral_name}"
-git "/root/#{nextgen_collateral_name}" do
+git "#{node[:monkey][:user_home]}/#{nextgen_collateral_name}" do
   repository nextgen_collateral_repo_url
   reference node[:monkey][:virtualmonkey][:collateral_repo_branch]
   action :sync
 end
 
 execute "git checkout" do
-  cwd "/root/#{nextgen_collateral_name}"
+  cwd "#{node[:monkey][:user_home]}/#{nextgen_collateral_name}"
   command "git checkout" +
     " #{node[:monkey][:virtualmonkey][:collateral_repo_branch]}"
 end
 
 log "  Installing gems required for the nextgen collateral project"
 execute "bundle install on collateral" do
-  cwd "/root/#{nextgen_collateral_name}"
+  cwd "#{node[:monkey][:user_home]}/#{nextgen_collateral_name}"
   command "bundle install --no-color --system"
 end
 
@@ -224,33 +224,39 @@ node[:monkey][:virtualmonkey][:collateral_name] = basename_cmd.stdout.chomp
 
 log "  Checking out collateral repo to" +
   " #{node[:monkey][:virtualmonkey][:collateral_name]}"
-git "/root/#{node[:monkey][:virtualmonkey][:collateral_name]}" do
+git "#{node[:monkey][:user_home]}/" +
+  "#{node[:monkey][:virtualmonkey][:collateral_name]}" do
   repository node[:monkey][:virtualmonkey][:collateral_repo_url]
   reference node[:monkey][:virtualmonkey][:collateral_repo_branch]
   action :sync
 end
 
 execute "git checkout" do
-  cwd "/root/#{node[:monkey][:virtualmonkey][:collateral_name]}"
+  cwd "#{node[:monkey][:user_home]}/" +
+    "#{node[:monkey][:virtualmonkey][:collateral_name]}"
   command "git checkout" +
     " #{node[:monkey][:virtualmonkey][:collateral_repo_branch]}"
 end
 
 log "  Installing gems required for the collateral project"
 execute "bundle install on collateral" do
-  cwd "/root/#{node[:monkey][:virtualmonkey][:collateral_name]}"
+  cwd "#{node[:monkey][:user_home]}/" +
+    "#{node[:monkey][:virtualmonkey][:collateral_name]}"
   command "bundle install --no-color --system"
 end
 
 log "  Updating the ServerTemplate IDs for old collateral"
 execute "update_stids" do
-  cwd "/root/#{node[:monkey][:virtualmonkey][:collateral_name]}"
+  cwd "#{node[:monkey][:user_home]}/" +
+    "#{node[:monkey][:virtualmonkey][:collateral_name]}"
   command "bin/update_stids --source linux --lineage" +
     " #{node[:monkey][:virtualmonkey][:collateral_repo_branch]}.csv"
   only_if do
     File.exists?(
-      "/root/#{node[:monkey][:virtualmonkey][:collateral_name]}/" +
-      "csv_sheets/#{node[:monkey][:virtualmonkey][:collateral_repo_branch]}.csv"
+      "#{node[:monkey][:user_home]}/" +
+      "#{node[:monkey][:virtualmonkey][:collateral_name]}/" +
+      "csv_sheets/" +
+      "#{node[:monkey][:virtualmonkey][:collateral_repo_branch]}.csv"
     )
   end
 end
@@ -288,12 +294,12 @@ if node[:platform] =~ /ubuntu/
     end
   end
 
-  directory "/root/.windows" do
+  directory "#{node[:monkey][:user_home]}/.windows" do
     owner node[:monkey][:user]
     group node[:monkey][:group]
   end
 
-  file "/root/.windows/galanga" do
+  file "#{node[:monkey][:user_home]}/.windows/galanga" do
     content node[:monkey][:virtualmonkey][:windows_admin_password]
     owner node[:monkey][:user]
     group node[:monkey][:group]
