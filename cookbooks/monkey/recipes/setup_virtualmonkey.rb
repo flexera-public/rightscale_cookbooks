@@ -260,3 +260,43 @@ cookbook_file "/usr/bin/jsonlint" do
   source "jsonlint"
   mode 0755
 end
+
+# Setup Windows related ruby environment and gems. Since the "winrm" gem used
+# for connecting to windows machines requires Ruby 1.9.1 and only Ubuntu
+# supports the installation of Ruby 1.9.1, the following setup will only be
+# fone on Ubuntu images.
+if node[:platform] =~ /ubuntu/
+  log "  Setting up Ruby 1.9 on Ubuntu"
+  version = Mixlib::ShellOut.new("ruby --version")
+  version.run_command.error!
+  # Install Ruby 1.9.1 if it is not already installed
+  if version.stdout =~ /1\.9/
+    log "  Ruby #{version.stdout} is already installed on this system."
+  else
+    # Installs ruby 1.9 with rubygems.
+    ["ruby1.9.1-full", "rubygems"].each do |pkg|
+      package pkg
+    end
+  end
+
+  # Install the required gems for windows
+  gems = {"winrm" => "1.1.2", "trollop" => "2.0"}
+  gems.each do |gem_name, gem_version|
+    gem_package gem_name do
+      gem_binary "/usr/bin/gem1.9.1"
+      version gem_version
+    end
+  end
+
+  directory "/root/.windows" do
+    owner node[:monkey][:user]
+    group node[:monkey][:group]
+  end
+
+  file "/root/.windows/galanga" do
+    content node[:monkey][:virtualmonkey][:windows_admin_password]
+    owner node[:monkey][:user]
+    group node[:monkey][:group]
+    mode 0600
+  end
+end

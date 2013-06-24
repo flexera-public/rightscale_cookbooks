@@ -340,6 +340,13 @@ attribute "monkey/virtualmonkey/right_api_objects_repo_branch",
   :required => "required",
   :recipes => ["monkey::setup_virtualmonkey"]
 
+attribute "monkey/virtualmonkey/windows_admin_password",
+  :display_name => "Windows Administrator Password",
+  :description =>
+    "The Administrator password for connecting to Windows servers",
+  :required => "required",
+  :recipes => ["monkey::setup_virtualmonkey"]
+
 attribute "monkey/rocketmonkey/repo_url",
   :display_name => "RocketMonkey Repo URL",
   :description =>
