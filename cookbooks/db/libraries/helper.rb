@@ -88,7 +88,7 @@ module RightScale
         (value * factor).to_i.to_s + units
       end
 
-      # Loads replication information from "rs_snapshot_position.yaml".
+      # Loads replication information from 'SNAPSHOT_POSITION_FILENAME'.
       #
       # @param node [Hash] node name
       def self.load_replication_info(node)
