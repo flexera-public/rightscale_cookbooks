@@ -320,7 +320,7 @@ action :install_client_driver do
       action :install
     end
   when "java"
-    # This adapter type is used by JBoos and Tomcat application servers.
+    # This adapter type is used by JBoss and Tomcat application servers.
     node[:db][:client][:driver] = "org.postgresql.Driver"
     if version == "9.1"
       node[:db][:client][:jar_file] = value_for_platform(
