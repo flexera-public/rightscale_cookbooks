@@ -22,13 +22,17 @@ end
 
 # If firewall enabled
 if node[:sys_firewall][:enabled] == "enabled"
+  rule_ports = []
   # Generate separate rules to each of rule_protocol element
   node[:sys_firewall][:rule][:port].split(/\s*,\s*/).each do |rule_port|
+    rule_port = rule_port.to_i
     raise "Invalid port specified: #{rule_port}. Valid range 1-65536" \
-      unless rule_port.to_i > 0 and rule_port.to_i <= 65536
+      unless rule_port > 0 and rule_port <= 65536
+    rule_ports << rule_port
   end
+
   rule_protocol.each do |proto|
-    node[:sys_firewall][:rule][:port].split(/\s*,\s*/).each do |rule_port|
+    rule_ports.each do |rule_port|
       # See cookbooks/sys_firewall/providers/default.rb for the "update" action
       sys_firewall rule_port.to_i do
         ip_addr rule_ip
