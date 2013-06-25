@@ -10,5 +10,6 @@
 # DO NOT EDIT BY HAND
 #
 
+# 9223372036854775807 - max number of seconds since the beginning of epoch time.
 pg_data                 value:GAUGE:0:9223372036854775807
 pg_state                value:GAUGE:0:65535
