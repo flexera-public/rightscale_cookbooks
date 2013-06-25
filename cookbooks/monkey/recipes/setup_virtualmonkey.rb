@@ -267,6 +267,13 @@ cookbook_file "/usr/bin/jsonlint" do
   mode 0755
 end
 
+# Create the directory for virtualmonkey log files
+directory "/var/log/virtualmonkey" do
+  owner node[:monkey][:user]
+  group node[:monkey][:group]
+  recursive true
+end
+
 # Setup Windows related ruby environment and gems. Since the "winrm" gem used
 # for connecting to windows machines requires Ruby 1.9.1 and only Ubuntu
 # supports the installation of Ruby 1.9.1, the following setup will only be
