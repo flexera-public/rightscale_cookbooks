@@ -9,5 +9,6 @@
 # Managed by RightScale
 # DO NOT EDIT BY HAND
 #
+
 gauge-age               seconds:GAUGE:0:200000000
 gauge-size              bytes:GAUGE:0:200000000
