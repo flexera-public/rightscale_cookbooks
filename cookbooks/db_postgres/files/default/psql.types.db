@@ -9,5 +9,6 @@
 # Managed by RightScale
 # DO NOT EDIT BY HAND
 #
+
 pg_data                 value:GAUGE:0:9223372036854775807
 pg_state                value:GAUGE:0:65535
