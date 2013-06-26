@@ -38,21 +38,24 @@ action :attach do
 
   if selected_elb = existing_elbs.detect { |existing_elb|
     existing_elb["LoadBalancerName"] == new_resource.service_lb_name }
-    log "ELB '#{new_resource.service_lb_name}' exists"
+    log "  ELB '#{new_resource.service_lb_name}' exists"
   else
     raise "ERROR: ELB '#{new_resource.service_lb_name}' does not exist"
   end
 
-  # Checks if this instance's zone is part of the lb. If not, add it.
-  if selected_elb["AvailabilityZones"]["member"].
-    include?(node[:ec2][:placement][:availability_zone])
-    log "...instance already part of ELB zone"
-  else
-    log "...activating zone #{node[:ec2][:placement][:availability_zone]}"
-    elb.EnableAvailabilityZonesForLoadBalancer({
-      "LoadBalancerName" => new_resource.service_lb_name,
-      "AvailabilityZones.member" => node[:ec2][:placement][:availability_zone]
-    })
+  # Enabling the 'AvailabilityZones' is skipped if the ELB is part of a VPC.
+  if selected_elb["VPCId"].to_s.empty?
+    # Checks if this instance's zone is part of the lb. If not, add it.
+    if selected_elb["AvailabilityZones"]["member"].
+      include?(node[:ec2][:placement][:availability_zone])
+      log "  ...instance already part of ELB zone"
+    else
+      log "  ...activating zone #{node[:ec2][:placement][:availability_zone]}"
+      elb.EnableAvailabilityZonesForLoadBalancer({
+        "LoadBalancerName" => new_resource.service_lb_name,
+        "AvailabilityZones.member" => node[:ec2][:placement][:availability_zone]
+      })
+    end
   end
 
   # Opens the backend_port.
@@ -65,7 +68,7 @@ action :attach do
   end
 
   # Connects the server to ELB.
-  log "...registering with ELB"
+  log "  ...registering with ELB"
   elb.RegisterInstancesWithLoadBalancer({
     "LoadBalancerName" => new_resource.service_lb_name,
     "Instances.member" => {"InstanceId" => node[:ec2][:instance_id]}
@@ -104,7 +107,7 @@ action :detach do
   )
 
   # Deregister the server to ELB.
-  log "...DE-registering with ELB"
+  log "  ...DE-registering with ELB"
   elb.DeregisterInstancesFromLoadBalancer({
     "LoadBalancerName" => new_resource.service_lb_name,
     "Instances.member" => {"InstanceId" => node[:ec2][:instance_id]}
