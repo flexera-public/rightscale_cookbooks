@@ -25,9 +25,6 @@ file node[:jenkins][:private_key_file] do
   action :create
 end
 
-# Install the java package
-package node[:jenkins][:java_package]
-
 # Jenkins package installation based on platform
 case node[:platform]
 when "centos"
