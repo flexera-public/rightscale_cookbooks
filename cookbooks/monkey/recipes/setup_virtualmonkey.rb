@@ -312,4 +312,6 @@ if node[:platform] =~ /ubuntu/
     group node[:monkey][:group]
     mode 0600
   end
+else
+  log "  Not a ubuntu server. Setup for windows testing is skipped."
 end
