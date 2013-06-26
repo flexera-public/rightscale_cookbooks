@@ -8,17 +8,6 @@
 
 rightscale_marker
 
-java_package = value_for_platform_family(
-  "debian" => "openjdk-6-jre",
-  "default" => "java-1.6.0-openjdk"
-)
-package java_package
-
-chef_gem "jenkins_api_client" do
-  version node[:jenkins][:server][:jenkins_api_client_version]
-  action :install
-end
-
 require "jenkins_api_client"
 
 # Add the jenkins public key to allow master to connect to the slave
