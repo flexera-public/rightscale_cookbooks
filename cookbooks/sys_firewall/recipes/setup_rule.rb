@@ -34,7 +34,7 @@ if node[:sys_firewall][:enabled] == "enabled"
   rule_protocol.each do |proto|
     rule_ports.each do |rule_port|
       # See cookbooks/sys_firewall/providers/default.rb for the "update" action
-      sys_firewall rule_port.to_i do
+      sys_firewall rule_port do
         ip_addr rule_ip
         protocol proto
         enable to_enable
