@@ -588,27 +588,29 @@ action :setup_slave_monitoring do
     action :nothing
   end
 
+  collectd_lib_dir = node[:rightscale][:collectd_lib]
+  collectd_plugin_dir = node[:rightscale][:collectd_plugin_dir]
+  pg_bin_dir = node[:db_postgres][:bindir]
+  pg_data_dir = node[:db_postgres][:datadir]
+
   # Sets up monitoring for slave replication: since it is hard to define the
   # lag - we monitor the master/slave sync health status.
 
   # Installs the 'pg_cluster_status' collectd script into the collectd library
   # plugins directory.
-  template "#{node[:rightscale][:collectd_lib]}/plugins/pg_cluster_status" do
+  template "#{collectd_lib_dir}/plugins/pg_cluster_status" do
     source "pg_cluster_status.erb"
     mode "0755"
     cookbook "db_postgres"
     variables(
-      :bindir => node[:db_postgres][:bindir],
-      :datadir => node[:db_postgres][:datadir]
+      :bindir => pg_bin_dir,
+      :datadir => pg_data_dir
     )
   end
 
   # Adds a collectd configuration file for the 'pg_cluster_status' script with
   # the exec plugin and restarts collectd if necessary.
-  template ::File.join(
-    node[:rightscale][:collectd_plugin_dir],
-    "pg_cluster_status.conf"
-  ) do
+  template "#{collectd_plugin_dir}/pg_cluster_status.conf" do
     source "pg_cluster_status_exec.erb"
     notifies :restart, resources(:service => "collectd")
     cookbook "db_postgres"
@@ -616,44 +618,37 @@ action :setup_slave_monitoring do
 
   # Installs the 'check_hot_standby_delay' collectd script into the collectd
   # library plugins directory.
-  template ::File.join(
-    node[:rightscale][:collectd_lib],
-    "plugins",
-    "check_hot_standby_delay"
-  ) do
+  template "#{collectd_lib_dir}/plugins/check_hot_standby_delay" do
     source "check_hot_standby_delay.erb"
     mode "0755"
     cookbook "db_postgres"
     variables(
-      :bindir => node[:db_postgres][:bindir],
-      :datadir => node[:db_postgres][:datadir]
+      :bindir => pg_bin_dir,
+      :datadir => pg_data_dir
     )
   end
 
   # Adds a collectd configuration file for the 'check_hot_standby_delay' script
   # with the exec plugin and restarts collectd if necessary.
-  template ::File.join(
-    node[:rightscale][:collectd_plugin_dir],
-    "check_hot_standby_delay.conf"
-  ) do
+  template "#{collectd_plugin_dir}/check_hot_standby_delay.conf" do
     source "check_hot_standby_delay_exec.erb"
     notifies :restart, resources(:service => "collectd")
     cookbook "db_postgres"
   end
 
   # Adds custom gauges to collectd 'types.db'.
-  cookbook_file "#{node[:rightscale][:collectd_plugin_dir]}/psql.types.db" do
+  cookbook_file "#{collectd_plugin_dir}/psql.types.db" do
     source "psql.types.db"
     cookbook "db_postgres"
     backup false
   end
 
   # Adds configuration to use the custom gauges.
-  template "#{node[:rightscale][:collectd_plugin_dir]}/psql.types.db.conf" do
+  template "#{collectd_plugin_dir}/psql.types.db.conf" do
     source "psql.types.db.conf.erb"
     cookbook "db_postgres"
     variables(
-      :collectd_plugin_dir => node[:rightscale][:collectd_plugin_dir]
+      :collectd_plugin_dir => collectd_plugin_dir
     )
     backup false
     notifies :restart, resources(:service => "collectd")
