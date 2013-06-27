@@ -441,8 +441,11 @@ action :enable_replication do
       backup_cmd << " --host='#{node[:db][:current_master_ip]}'\""
 
       backup = Mixlib::ShellOut.new(backup_cmd)
-      backup.run_command.error!
+      backup.run_command
+      # Logs STDERR because 'pg_stop_backup' puts notification messages there.
       Chef::Log.info backup.stderr
+      # Raises an Exception if command execution fails.
+      backup.error!
 
       rsync_cmd = "su --login postgres --command=\"rsync --archive"
       rsync_cmd << " #{node[:db_postgres][:backupdir]}/"
