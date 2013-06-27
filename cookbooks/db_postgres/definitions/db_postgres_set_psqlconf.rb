@@ -13,6 +13,12 @@ define :db_postgres_set_psqlconf,
   :shared_buffers => nil,
   :sync_state => "async" do
 
+  # Logs what is being passed into this definition.
+  params.each do |parameter, argument|
+    log "  '#{parameter.inspect} => #{argument.inspect}' passed into" +
+      " 'db_postgres_set_psqlconf' definition." unless parameter == :name
+  end
+
   template "#{node[:db_postgres][:confdir]}/postgresql.conf" do
     source "postgresql.conf.erb"
     owner "postgres"
