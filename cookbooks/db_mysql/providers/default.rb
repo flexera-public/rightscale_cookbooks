@@ -74,6 +74,8 @@ action :reset do
   # See "rightscale_tools" gem for the "reset" method.
   @db = init(new_resource)
   @db.reset(new_resource.name, node[:db_mysql][:datadir])
+  # Make sure the database has all its dependencies installed and configured.
+  action_install_server
 end
 
 action :firewall_update_request do
@@ -280,15 +282,6 @@ action :set_privileges do
     password priv_password
     database priv_database
   end
-end
-
-action :remove_anonymous do
-  require 'mysql'
-  con = Mysql.new('localhost', 'root')
-  host = `hostname`.strip
-  con.query("DELETE FROM mysql.user WHERE user='' AND host='#{host}'")
-
-  con.close
 end
 
 action :install_client do
@@ -646,6 +639,26 @@ action :install_server do
     EOH
   end
 
+  # Removes anonymous users so all access to the database requires a valid
+  # username and password.
+  #
+  # By default MySQL creates anonymous users that allow access to the database
+  # via the localhost interface without requiring a username or password.
+  # For more information, please see
+  # http://dev.mysql.com/doc/refman/5.5/en/default-privileges.html
+  # 'DELETE' query is used here instead of the 'DROP USER' command suggested by
+  # MySQL docs as the 'DROP USER' command is not idempotent for Chef recipes.
+  #
+  log "  Removing anonymous users from database"
+  ruby_block "remove anonymous users" do
+    block do
+      require "mysql"
+      con = Mysql.new("localhost", "root")
+      con.query("DELETE FROM mysql.user WHERE user=''")
+      con.query("FLUSH PRIVILEGES")
+      con.close
+    end
+  end
 end
 
 action :install_client_driver do

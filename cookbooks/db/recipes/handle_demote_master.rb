@@ -27,5 +27,5 @@ end
 # Add server tag to visually show a slave
 # See cookbooks/db/definitions/db_register_slave.rb for the "db_register_slave" definition.
 db_register_slave "tagging slave" do
-  action :only_tag
+  action :demote_master
 end
