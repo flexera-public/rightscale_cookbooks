@@ -7,14 +7,21 @@
 # such as a RightScale Master Subscription Agreement.
 
 rightscale_marker
-# Recipe sets node[:rightscale] variables via attribute and metadata.
 
-# Make sure these inputs are set.
-raise "rightscale/instance_uuid must be set" unless node[:rightscale][:instance_uuid]
-raise "rightscale/servers/sketchy/hostname must be set" unless node[:rightscale][:servers][:sketchy][:hostname]
+# Logs 'node[:rightscale][:instance_uuid]'. Raises an Exception if it isn't set.
+if node[:rightscale][:instance_uuid].to_s.empty?
+  raise "'node[:rightscale][:instance_uuid]' must be set!"
+else
+  log "  Instance UUID: #{node[:rightscale][:instance_uuid]}"
+end
 
-log "rightscale/instance_uuid is  #{node[:rightscale][:instance_uuid]}"
-log "rightscale/servers/sketchy/hostname is #{node[:rightscale][:servers][:sketchy][:hostname]}"
+# Logs 'node[:rightscale][:servers][:sketchy][:hostname]'.
+# Raises an Exception if it isn't set.
+if node[:rightscale][:servers][:sketchy][:hostname].to_s.empty?
+  raise "'node[:rightscale][:servers][:sketchy][:hostname]' must be set!"
+else
+  log "  Sketchy hostname: #{node[:rightscale][:servers][:sketchy][:hostname]}"
+end
 
 # See cookbooks/rightscale/recipes/setup_server_tags.rb for the
 # "rightscale::setup_server_tags" recipe.
