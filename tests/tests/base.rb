@@ -202,7 +202,7 @@ end
 # Rackspace Managed Open clouds should have Rackspace credentials set.
 #
 before "smoke_test", "stop_start", "enable_security_updates_on_running_server",
-  "ephemeral_file_system_type" do
+  "ephemeral_file_system_type", "comma_separated_firewall_ports" do
   puts "Running before with security updates disabled"
   # Assume a single server in the deployment
   server = servers.first
@@ -419,6 +419,59 @@ test_case "ephemeral_file_system_type" do
     relaunch_all
     verify_ephemeral_file_system_type(server, type)
   end
+end
+
+# This test tests if the sys_firewall cookbook accepts comma-separated ports on
+# sys_firewall/rule/port input. It also verifies that multiple inputs specified
+# in that input is added to the firewall. In addition to the positive test
+# case, it also validates that the script raises an exception if the port
+# number given was out of range.
+test_case "comma_separated_firewall_ports" do
+  # Assume a single server in the deployment
+  server = servers.first
+
+  # Test 1: firewall should have all input rules specified
+  # Set the input on the server with comma-separated firewall rules
+  status = verify_instance_input_settings?(
+    server,
+    {"sys_firewall/rule/port" => "text:8080, 8000"}
+  )
+  run_recipe("sys_firewall::default", server) unless status
+  puts "sys_firewall::defaul recipe completed successfully"
+  run_recipe("sys_firewall::setup_rule", server)
+
+  # Verify that the firewall rules are setup properly
+  probe(server, "iptables -L -n") do |result, status|
+    raise FailedProbeCommandError, "Can't run iptables command" \
+      unless status == 0
+    unless result.include?("tcp dpt:8080") && result.include?("tcp dpt:8000")
+      raise "Ports 8080 and 8000 are not in the added in the firewall"
+    end
+    puts "The ports are properly added to the firewall"
+    true
+  end
+
+  # Test 2: The sys_firewall::setup_rule recipe should fail if ports are not in
+  # range
+  status = verify_instance_input_settings?(
+    server,
+    {"sys_firewall/rule/port" => "text:8888, 69999"}
+  )
+  # Run the sys_firewall::default recipe so the inputs are applied in the node
+  run_recipe("sys_firewall::default", server) unless status
+
+  # Verify that an exception is raised as the result of the recipe run. If
+  # there is no exception is raised, that is failure and this test should fail.
+  exception_raised = false
+  begin
+    run_recipe("sys_firewall::setup_rule", server)
+  rescue Exception => e
+    exception_raised = true
+    puts "An exception expected here since invalid port range is specified:" +
+      " #{e.inspect}"
+  end
+  raise "An exception is expected since invalid port range is specified and" +
+    " no exception is raised" unless exception_raised
 end
 
 # The Base "enable security updates on running a running server" tests if
