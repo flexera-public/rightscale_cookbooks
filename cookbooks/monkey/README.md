@@ -26,9 +26,8 @@ following order.
 2. `monkey::setup_ruby`
 3. `monkey::setup_rest_connection`
 4. `monkey::setup_virtualmonkey`
-5. `monkey::setup_rocketmonkey`
+5. `monkey::setup_test_config`
 6. `monkey::update_fog_credentials`
-7. `monkey::test_virtualmonkey_api_connection`
 
 ## DETAILS:
 
@@ -58,11 +57,12 @@ attributes which have inputs can be found in the metadata.rb file.
    libraries which is used for communicating with RightScale API.
 4. `monkey::setup_virtualmonkey` - This recipe will setup the virtualmonkey
    test framework.
-5. `monkey::setup_rocketmonkey` - This recipe will setup rocketmonkey.
-6. `monkey::update_fog_credentials` - This recipe will create/update the fog
+5. `monkey::setup_rocketmonkey` - This recipe will setup rocketmonkey and also
+   install the jenkins server.
+6. `monkey::setup_test_config` - This recipe will setup test specific
+   gems/packages.
+7. `monkey::update_fog_credentials` - This recipe will create/update the fog
    credentials file with the inputs provided.
-7. `monkey::test_virtualmonkey_api_connection` - This recipe will perform some
-   smoke tests to verify the API connection to RightScale.
 
 ### Templates:
 
@@ -70,6 +70,7 @@ attributes which have inputs can be found in the metadata.rb file.
 * `sshconfig.erb` - Configuration for SSH connections.
 * `gitconfig.erb` - Configuration for using Git.
 * `fog.erb` - Cloud credentials to be used with the Fog library.
+* `rocketmonkey_config.yaml.erb` - The RocketMonkey configuration file.
 
 ## LICENSE:
 

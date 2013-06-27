@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+require "rubygems"
+require "json"
+
+if ARGV.size < 1
+  puts "Please provide a JSON file"
+  exit 1
+end
+
+file_name = ARGV.shift
+
+begin
+  JSON.load(File.read(file_name))
+  puts "Syntax OK"
+  exit 0
+rescue JSON::ParserError
+  puts "Syntax Error!"
+  exit 1
+end
