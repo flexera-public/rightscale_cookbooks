@@ -375,6 +375,8 @@ action :setup_monitoring do
 
   log "  Setup monitoring for haproxy"
 
+  collectd_plugin_dir = node[:rightscale][:collectd_plugin_dir]
+
   # Installs the haproxy collectd script into the collectd library plugins directory.
   cookbook_file(::File.join(node[:rightscale][:collectd_lib], "plugins", "haproxy")) do
     source "haproxy1.4.rb"
@@ -383,7 +385,7 @@ action :setup_monitoring do
   end
 
   # Adds a collectd config file for the haproxy collectd script with the exec plugin and restart collectd if necessary.
-  template ::File.join(node[:rightscale][:collectd_plugin_dir], "haproxy.conf") do
+  template ::File.join(collectd_plugin_dir, "haproxy.conf") do
     backup false
     source "haproxy_collectd_exec.erb"
     notifies :restart, resources(:service => "collectd")
@@ -391,18 +393,18 @@ action :setup_monitoring do
   end
 
   # Adds custom gauges to collectd 'types.db'.
-  cookbook_file "#{node[:rightscale][:collectd_plugin_dir]}/haproxy.types.db" do
+  cookbook_file "#{collectd_plugin_dir}/haproxy.types.db" do
     source "haproxy.types.db"
     cookbook "lb_haproxy"
     backup false
   end
 
   # Adds configuration to use the custom gauges.
-  template "#{node[:rightscale][:collectd_plugin_dir]}/haproxy.types.db.conf" do
+  template "#{collectd_plugin_dir}/haproxy.types.db.conf" do
     source "haproxy.types.db.conf.erb"
     cookbook "lb_haproxy"
     variables(
-      :collectd_plugin_dir => node[:rightscale][:collectd_plugin_dir]
+      :collectd_plugin_dir => collectd_plugin_dir
     )
     backup false
     notifies :restart, resources(:service => "collectd")
