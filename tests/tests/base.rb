@@ -430,7 +430,8 @@ test_case "comma_separated_firewall_ports" do
   # Assume a single server in the deployment
   server = servers.first
 
-  # Test 1: firewall should have all input rules specified
+  # Test 1: firewall should have all rules specified in the comma-separated
+  # list of input rules.
   # Set the input on the server with comma-separated firewall rules
   status = verify_instance_input_settings?(
     server,
@@ -445,13 +446,35 @@ test_case "comma_separated_firewall_ports" do
     raise FailedProbeCommandError, "Can't run iptables command" \
       unless status == 0
     unless result.include?("tcp dpt:8080") && result.include?("tcp dpt:8000")
-      raise "Ports 8080 and 8000 are not in the added in the firewall"
+      raise "Ports 8080 and 8000 are not added in the firewall"
     end
     puts "The ports are properly added to the firewall"
     true
   end
 
-  # Test 2: The sys_firewall::setup_rule recipe should fail if ports are not in
+  # Test 2: sys_firewall::setup_rule should work even if a single rule is
+  # specified (backward-compatibility check).
+  # Set the input on the server with a single rule.
+  status = verify_instance_input_settings?(
+    server,
+    {"sys_firewall/rule/port" => "text:8888"}
+  )
+  run_recipe("sys_firewall::default", server) unless status
+  puts "sys_firewall::defaul recipe completed successfully"
+  run_recipe("sys_firewall::setup_rule", server)
+
+  # Verify that the firewall rules are setup properly
+  probe(server, "iptables -L -n") do |result, status|
+    raise FailedProbeCommandError, "Can't run iptables command" \
+      unless status == 0
+    unless result.include?("tcp dpt:8888")
+      raise "Port 8888 is not added in the firewall"
+    end
+    puts "The port is properly added to the firewall"
+    true
+  end
+
+  # Test 3: The sys_firewall::setup_rule recipe should fail if ports are not in
   # range
   status = verify_instance_input_settings?(
     server,
