@@ -13,7 +13,7 @@ module RightScale
       require 'yaml'
 
       DB_MASTER_SLAVE_STATE = "/var/lib/rightscale_db_master_slave_state.json"
-      SNAPSHOT_POSITION_FILENAME = 'rs_snapshot_position.yaml'
+      SNAPSHOT_POSITION_FILENAME = "rs_snapshot_position.yaml"
 
       # Get the current status of the database server.
       #

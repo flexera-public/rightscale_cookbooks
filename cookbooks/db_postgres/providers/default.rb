@@ -220,7 +220,7 @@ action :install_server do
     action :stop
   end
 
-  # Initializes PostgreSQL server and creates system tables.
+  # Creates a new PostgreSQL database cluster.
   execute "/etc/init.d/#{node[:db_postgres][:service_name]} initdb" do
     not_if { ::File.exists?("#{node[:db_postgres][:confdir]}/postgresql.conf") }
   end
