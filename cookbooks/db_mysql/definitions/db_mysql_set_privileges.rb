@@ -33,11 +33,6 @@ define :db_mysql_set_privileges, :preset => "administrator", :username => nil, :
       username = con.escape_string(username)
       password = con.escape_string(password)
 
-      # Remove anonymous access via the server hostname.
-      # Some cloud sets hostname to DNS FQDN name which causes problems for replication.
-      host=`hostname`.strip
-      con.query("DELETE from mysql.user where user='' and host='#{host}'")
-
       case priv_preset
       when 'administrator'
         con.query("GRANT ALL PRIVILEGES on *.* TO '#{username}'@'%' IDENTIFIED BY '#{password}' WITH GRANT OPTION")

@@ -243,7 +243,3 @@ actions :promote
 # Set database replication privileges for a slave. This is called when a slave
 # is initialized.
 actions :grant_replication_slave
-
-# Removes anonymous users from a database.
-#
-actions :remove_anonymous

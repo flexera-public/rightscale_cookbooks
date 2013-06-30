@@ -24,7 +24,8 @@ attribute :ip_addr, :kind_of => String, :default => "any"
 # be run
 attribute :machine_tag, :kind_of => String, :regex => /^([^:]+):(.+)=.+/
 
-# Collection of servers on which the remote_recipe can be run
+attribute :ip_tag, :kind_of => String, :regex => /server:(.+)/
+
 attribute :collection, :kind_of => String, :default => "sys_firewall"
 
 # Defines a default action

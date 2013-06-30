@@ -68,6 +68,7 @@ action :pull do
     repository repository_url
     reference revision
     user app_user
+    enable_submodules true
     action git_action
   end
 
