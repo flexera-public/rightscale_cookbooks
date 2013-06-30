@@ -25,3 +25,11 @@ else
 end
 
 log "  Setting JBoss internal port to #{node[:app_jboss][:internal_port]}"
+
+# Sets required apache modules.
+node[:app_jboss][:module_dependencies] = [
+  "proxy",
+  "proxy_http",
+  "deflate",
+  "rewrite"
+]

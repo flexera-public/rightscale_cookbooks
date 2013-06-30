@@ -7,11 +7,14 @@
 # such as a RightScale Master Subscription Agreement.
 
 # List of required apache modules
-set[:app][:module_dependencies] = ["proxy", "proxy_http", "deflate", "rewrite"]
+default[:app_tomcat][:module_dependencies] = []
 
 # Recommended attributes
+
+# The path to the war file of application code
 default[:app_tomcat][:code][:root_war] = ""
-# Java heap tuning attributes. For more info see http://www.tomcatexpert.com/blog/2011/11/22/performance-tuning-jvm-running-tomcat
+# Java heap tuning attributes. For more info see
+# http://www.tomcatexpert.com/blog/2011/11/22/performance-tuning-jvm-running-tomcat
 # Defines the initial value of the permanent generation space size
 default[:app_tomcat][:java][:permsize] = "256m"
 # Defines the maximum value of the permanent generation space size
@@ -24,6 +27,10 @@ default[:app_tomcat][:java][:maxnewsize] = "256m"
 default[:app_tomcat][:java][:xmx] = "512m"
 # Defines the initial size of the heap used by the JVM
 default[:app_tomcat][:java][:xms] = "512m"
+# The container datasource name
+default[:app_tomcat][:datasource_name] = "jdbc/ConnDB"
+# Internal port for Tomcat.
+default[:app_tomcat][:internal_port] = "8080"
 
 # Calculated attributes
 # Defining java alternatives parameter depending on platform.

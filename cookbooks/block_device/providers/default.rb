@@ -6,7 +6,7 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-# @resource block_Device
+# @resource block_device
 
 include RightScale::BlockDeviceHelper
 

@@ -1,16 +1,16 @@
-maintainer "RightScale, Inc."
+maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
-license "Copyright RightScale, Inc. All rights reserved."
-description "This cookbook provides a set of recipes used by the RightScale" +
+license          "Copyright RightScale, Inc. All rights reserved."
+description      "This cookbook provides a set of recipes used by the RightScale" +
   " ServerTemplates to configure the logging service provider. This cookbook" +
   " does not contain a specific logging server implementation but generic" +
   " recipes that use the LWRP interface."
-long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version "13.4.0"
+long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
+version          "13.5.0"
 
-# supports "centos", "~> 5.8", "~> 6"
-# supports "redhat", "~> 5.8"
-# supports "ubuntu", "~> 10.04", "~> 12.04"
+supports "centos"
+supports "redhat"
+supports "ubuntu"
 
 depends "rightscale"
 depends "logging_rsyslog"

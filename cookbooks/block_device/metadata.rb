@@ -1,14 +1,15 @@
-maintainer "RightScale, Inc."
+maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
-license "Copyright RightScale, Inc. All rights reserved."
-description "This cookbook provides the building blocks for Multi-Cloud" +
+license          "Copyright RightScale, Inc. All rights reserved."
+description      "Installs/Configures block device storage."
+description      "This cookbook provides the building blocks for Multi-Cloud" +
   "backup/restore support."
-long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version "13.4.0"
+long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
+version          "13.5.0"
 
-# supports "centos", "~> 5.8", "~> 6"
-# supports "redhat", "~> 5.8"
-# supports "ubuntu", "~> 10.04", "~> 12.04"
+supports "centos"
+supports "redhat"
+supports "ubuntu"
 
 depends "rightscale"
 
@@ -90,6 +91,7 @@ ros_clouds = [
   "google",
   "azure",
   "swift",
+  "hp",
   "SoftLayer_Dallas",
   "SoftLayer_Singapore",
   "SoftLayer_Amsterdam"
@@ -246,8 +248,9 @@ attribute "block_device/ephemeral/file_system_type",
   :description =>
     "The type of file system that will be installed on the ephemeral device." +
     " By default, this input will be set to 'xfs'. This input is ignored on" +
-    " Redhat and 'ext3' file system will be set up by default since Redhat" +
-    " does not support the 'xfs' file system. Example: xfs",
+    " Redhat and Google cloud since we do not support 'xfs' on them. The" +
+    " 'ext3' file system will be set up by default on Redhat and Google cloud." +
+    " Example: xfs",
   :type => "string",
   :required => "optional",
   :choice => ["xfs", "ext3"],

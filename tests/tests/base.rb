@@ -5,6 +5,7 @@ require_helper "wait_for_ip_repopulation"
 require_helper "errors"
 require_helper "os"
 require_helper "input"
+require_helper "rackspace_managed"
 
 # Test specific helpers.
 #
@@ -17,11 +18,6 @@ helpers do
   # An error with conntrack_max setup.
   #
   class ConntrackMaxError < VirtualMonkey::TestCase::ErrorBase
-  end
-
-  # An error with Rackspace Managed agents not running properly.
-  #
-  class RackspaceManagedError < VirtualMonkey::TestCase::ErrorBase
   end
 
   # An error with unfrozen repo check
@@ -104,7 +100,7 @@ helpers do
     sysctl_conntrack_max
   end
 
-  # Verifies that the conntrack_max kernel parameter is set properly
+  # Verify the conntrack_max kernel parameter is set properly
   #
   # @param server [RightScale::ServerInterface] the server to verify for
   #   conntrack_max value
@@ -113,7 +109,7 @@ helpers do
   #   properly
   #
   def verify_conntrack_max(server)
-    # Test 1: Verify that correct conntrack_max value is set in sysctl from
+    # Test 1: Verify the correct conntrack_max value is set in sysctl from
     # configuration file.
     #
     # Obtain the conntrack_max value set in the /etc/sysctl.conf
@@ -159,47 +155,8 @@ helpers do
     end
   end
 
-  # Setup the credentials required for Rackspace Managed Open Cloud as advanced
-  # inputs.
-  #
-  # @param server [Server] the server to check
-  #
-  def setup_rackspace_managed_credentials(server)
-    server.set_inputs(
-      "rightscale/rackspace_api_key" => "cred:RACKSPACE_RACKMANAGED_API_KEY",
-      "rightscale/rackspace_tenant_id" => "cred:RACKSPACE_RACKMANAGED_TENANT_ID",
-      "rightscale/rackspace_username" => "cred:RACKSPACE_RACKMANAGED_USERNAME"
-    )
-  end
-
-  # Verify that the Rackspace Managed Open Cloud agents are running properly.
-  #
-  # @param server [Server] the server to check
-  #
-  # @raise [RackspaceRackManagedError] if the rackspace agents are not running
-  #   properly.
-  #
-  def verify_rackspace_managed_agents(server)
-    rackspace_agents = ["driveclient", "rackspace-monitoring-agent"]
-    # Verify the agents functionality on all servers
-    rackspace_agents.each do |agent|
-      probe(server, "service #{agent} status") do |response, status|
-        unless status == 0
-          raise FailedProbeCommandError, "Unable to verify that #{agent} is" +
-            " running on #{server.nickname}"
-        end
-        if response.include?("running")
-          puts "The #{agent} agent is running on #{server.nickname}"
-        else
-          raise RackspaceRackManagedError, "The #{agent} agent is not running" +
-            " on #{server.nickname} Current status is #{response}"
-        end
-        true
-      end
-    end
-  end
-
   # Verifies the security repositories are unfrozen.
+  #
   # For apt based systems (Ubuntu) it checks repositories in
   # /etc/apt/sources.list.d/rightscale.sources.list
   # For yum based systems (CentOS) it checks repositories in
@@ -211,14 +168,13 @@ helpers do
   #
   def verify_security_repositories_unfrozen(server)
     # Check that unforzen repos exist in the package repo dir
-    #
     os = get_operating_system(server)
     puts "  Testing OS: #{os}"
     case os
     when /ubuntu/i
       latest = "/ubuntu_daily/latest"
       repo_dirs = "/etc/apt/sources.list.d/rightscale.sources.list "
-    when /centos|rhel/i
+    when /centos|rhel|redhat/i
       latest = "/archive/latest"
       repo_dirs = "/etc/yum.repos.d/*.repo"
     end
@@ -242,10 +198,11 @@ end
 
 # Before tests that require security updates disabled.
 #
-# Ensure the server input rightscale/security_updates is set to "disable"
+# Verify the server input rightscale/security_updates is set to "disable"
 # Rackspace Managed Open clouds should have Rackspace credentials set.
 #
-before "smoke_test", "stop_start", "enable_security_updates_on_running_server" do
+before "smoke_test", "stop_start", "enable_security_updates_on_running_server",
+  "ephemeral_file_system_type" do
   puts "Running before with security updates disabled"
   # Assume a single server in the deployment
   server = servers.first
@@ -257,25 +214,53 @@ before "smoke_test", "stop_start", "enable_security_updates_on_running_server" d
   setup_rackspace_managed_credentials(server) \
     if cloud.cloud_name =~ /Rackmanaged/
 
-  # The "ensure_input_setting" method sets the inputs and launches the server
-  # at the moment. This method will be refactored later.
-  ensure_input_setting(
-    server,
-    {"rightscale/security_updates" => "text:disable"}
-  )
+  if is_chef?
+    # Verify the instance launched with the correct inputs.
+    status = verify_instance_input_settings?(
+      server,
+      {"rightscale/security_updates" => "text:disable"}
+    )
+
+    relaunch_server(server) unless status
+  else
+    # RSB does not require input settings.  Just ensure the server
+    # is operational.
+    relaunch_server(server) if server.state != "operational"
+  end
+
+  wait_for_server_state(server, "operational")
 end
 
 # Before tests that require security updates enabled.
 #
-# Ensure the server input rightscale/security_updates is set to "enable"
+# Verify the server input rightscale/security_updates is set to "enable"
 #
 before "enable_security_updates_on_boot" do
   # Assume a single server in the deployment
   server = servers.first
-  ensure_input_setting(
-    server,
-    {"rightscale/security_updates" => "text:enable"}
-  )
+
+  # Get the current cloud.
+  cloud = Cloud.factory
+
+  # Set the required credential inputs for Rackspace Managed cloud.
+  setup_rackspace_managed_credentials(server) \
+    if cloud.cloud_name =~ /Rackmanaged/
+
+  if is_chef?
+    # Verify the instance launched with the correct inputs.
+    status = verify_instance_input_settings?(
+      server,
+      {"rightscale/security_updates" => "text:enable"}
+    )
+
+    relaunch_server(server) unless status
+  else
+    # RSB does not require input settings.  Just ensure the server
+    # is operational.
+    relaunch_server(server) if server.state != "operational"
+  end
+
+  wait_for_server_state(server, "operational")
 end
 
 # The Base smoke test makes sure the Base (Chef or RSB) ServerTemplate has its
@@ -378,23 +363,89 @@ test_case "stop_start" do
   check_monitoring
 end
 
+# The Base ephemeral_file_system_type test makes sure the file system type
+# installed on the ephemeral drive is same as the type set in
+# "block_device/ephemeral/file_system_type" input in the advanced inputs
+# category of block device in Base Chef ServerTemplate.
+#
+test_case "ephemeral_file_system_type" do
+  # Get the current cloud.
+  cloud = Cloud.factory
+
+  # Get the single server in the deployment.
+  server = servers.first
+
+  # Skip this test if the cloud does not support ephemeral drives and if the
+  # ServerTemplate is not chef based. Ephemeral drives are supported only on
+  # Chef ServerTemplates.
+  skip unless cloud.supports_ephemeral?(server) && is_chef?
+
+  # Get the OS used by the server
+  os = get_operating_system(server)
+
+  # List all file system types supported on the ephemeral device
+  supported_fs_types = ["xfs", "ext3"]
+
+  # We do not support xfs on Google cloud and Redhat due to these reasons
+  # * Google uses a statically compiled kernel built without xfs support
+  # * Redhat charges for using xfs. Hence we don't install it through our
+  # cookbooks and tools.
+  xfs_unsupported = os =~ /rhel/i || cloud.cloud_name == "Google"
+
+  # Remove file system types that are not supported on the ephemeral device
+  # based on the platform
+  if xfs_unsupported
+    unsupported_types = ["xfs"]
+  else
+    unsupported_types = []
+  end
+
+  # Get the list of supported file system types on the ephemeral device
+  # based on the platform
+  supported_fs_types = supported_fs_types - unsupported_types
+
+  # Verify the default file system type that will be installed on the
+  # ephemeral device
+  default_fs_type = xfs_unsupported ? "ext3" : "xfs"
+  verify_ephemeral_file_system_type(server, default_fs_type)
+  supported_fs_types.delete(default_fs_type)
+
+  # Iterate through the rest of the supported file system types and verify the
+  # installation of each type
+  supported_fs_types.each do |type|
+    server.set_next_inputs({
+      "block_device/ephemeral/file_system_type" => "text:#{type}"
+    })
+    relaunch_all
+    verify_ephemeral_file_system_type(server, type)
+  end
+end
+
 # The Base "enable security updates on running a running server" tests if
 # security updates are applied after enabling them.  It enables the updates
 # runs the script to perform the security updates setup and runs the script
 # to perform the updates.
 #
 test_case "enable_security_updates_on_running_server" do
-  server = servers.first
-  server.set_inputs("rightscale/security_updates" => "text:enable")
-  run_recipe("rightscale::setup_security_updates", server)
-  verify_security_repositories_unfrozen(server)
-  run_recipe("rightscale::do_security_updates", server)
+  if is_chef?
+    server = servers.first
+    server.set_inputs("rightscale/security_updates" => "text:enable")
+    run_recipe("rightscale::setup_security_updates", server)
+    verify_security_repositories_unfrozen(server)
+    run_recipe("rightscale::do_security_updates", server)
+  else
+    puts "  RSB template - skipping enable_security_updates_on_running_server test"
+  end
 end
 
 # The Base "verify repository unfrozen" test verfies the package managers
 # upstream security repositories are set to "latest".
 #
 test_case "enable_security_updates_on_boot" do
-  server = servers.first
-  verify_security_repositories_unfrozen(server)
+  if is_chef?
+    server = servers.first
+    verify_security_repositories_unfrozen(server)
+  else
+    puts "  RSB template - skipping enable_security_updates_on_boot test"
+  end
 end

@@ -583,6 +583,7 @@ action :install_server do
   db_mysql_set_mycnf "setup_mycnf" do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
+    innodb_log_file_size ::File.size?("/var/lib/mysql/ib_logfile0")
     compressed_protocol node[:db_mysql][:compressed_protocol] ==
       "enabled" ? true : false
   end
@@ -970,6 +971,14 @@ action :promote do
           'UNLOCK TABLES',
           previous_master
         )
+
+        # Sets READ_ONLY for oldmaster, now a slave.
+        RightScale::Database::MySQL::Helper.do_query(
+          node,
+          'SET GLOBAL READ_ONLY=1',
+          previous_master
+        )
+
         SystemTimer.timeout_after(
           RightScale::Database::MySQL::Helper::DEFAULT_CRITICAL_TIMEOUT
         ) do

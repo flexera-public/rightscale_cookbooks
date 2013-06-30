@@ -82,7 +82,10 @@ attributes** which are used internally in recipes.
 
 * `node[:repo][:default][:storage_account_provider]` - Location where the
   source file is saved. Used by recipes to download from Amazon S3, Rackspace,
-  Google, Azure, SoftLayer and Cloud Files. Default is: "S3".
+  Google, Azure, SoftLayer, Swift and Cloud Files. Default is: "S3".
+* `node[:repo][:default][:endpoint]` - Is used to override the default
+  endpoint or for generic storage clouds such as Swift. Example:
+  "http://endpoint_ip:5000/v2.0/tokens"
 * `node[:repo][:default][:prefix]` - Filename of required source
   repository archive. Example: "source.tar.gz".
 

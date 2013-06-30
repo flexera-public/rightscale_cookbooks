@@ -85,6 +85,7 @@ action :install do
   log "  Installing passenger gem"
   gem_package "passenger" do
     gem_binary "/usr/bin/gem"
+    version "3.0.19"
     action :install
   end
 
@@ -114,9 +115,12 @@ action :setup_vhost do
     only_if { ::File.exists?("/etc/httpd/conf.d/ssl.conf") }
   end
 
+  log "  Module dependencies which will be installed:" +
+    " #{node[:app_passenger][:module_dependencies]}"
   # Enabling required apache modules
-  node[:app][:module_dependencies].each do |mod|
-    # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_module.rb for the "apache_module" definition.
+  node[:app_passenger][:module_dependencies].each do |mod|
+    # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_module.rb
+    # for the "apache_module" definition.
     apache_module mod
   end
 

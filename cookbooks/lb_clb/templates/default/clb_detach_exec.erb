@@ -34,8 +34,8 @@ if [ -z ${RACKSPACE_API_TOKEN} ] || [ -z ${RACKSPACE_USERNAME} ]; then
 fi
 
 case "$CLB_NODE_IP" in
-  "Public"  ) CLB_NODE_IP=$RS_PUBLIC_IP;;
-  "Private" ) CLB_NODE_IP=$RS_PRIVATE_IP;;
+  "public"  ) CLB_NODE_IP=$RS_PUBLIC_IP;;
+  "private" ) CLB_NODE_IP=$RS_PRIVATE_IP;;
   *         ) echo "Using the provided IP";;
 esac
 
@@ -47,7 +47,7 @@ case "$CLB_REGION" in
 esac
 
 #auth and setup variables
-output=`curl -D - -H "X-Auth-Key: $RACKSPACE_API_TOKEN" -H "X-Auth-User: $RACKSPACE_USERNAME" $auth_url 2>&1`
+output=`curl --silent --show-error -D - -H "X-Auth-Key: $RACKSPACE_API_TOKEN" -H "X-Auth-User: $RACKSPACE_USERNAME" $auth_url 2>&1`
 x_auth_token=`grep -i "X-Auth-Token:"<<<"$output" | awk '{print $2}' | sed -e 's/\s//g'`
 account_id=`grep -i "X-Server-Management-Url"<<<"$output" | sed -r 's/.+\/([0-9]+).*/\1/'`
 service_endpoint+=$account_id
@@ -60,7 +60,7 @@ else
 fi
 
 #get LB id for $RAX_CLB_NAME
-output=`curl -k -H "X-Auth-Token: $x_auth_token" $service_endpoint/loadbalancers.xml 2>&1`
+output=`curl --silent --show-error -k -H "X-Auth-Token: $x_auth_token" $service_endpoint/loadbalancers.xml 2>&1`
 clb_id=`grep -i "loadBalancer"<<<"$output" | sed -r 's/.+lancer id="([0-9]+)" name="'$RAX_CLB_NAME'".+>/\1/'`
 
 if [[ $clb_id =~ ^[0-9]+$ ]] ; then
@@ -71,7 +71,7 @@ else
 fi
 
 #get node id based on listening IP
-output=`curl -k -H "X-Auth-Token: $x_auth_token" $service_endpoint/loadbalancers/$clb_id/nodes.xml 2>&1`
+output=`curl --silent --show-error -k -H "X-Auth-Token: $x_auth_token" $service_endpoint/loadbalancers/$clb_id/nodes.xml 2>&1`
 
 node_id=`grep -i "loadBalancer"<<<"$output"  | sed -r 's/.+node id="([0-9]+)" address="'$CLB_NODE_IP'".+>/\1/'`
 

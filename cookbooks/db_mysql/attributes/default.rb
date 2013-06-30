@@ -16,9 +16,10 @@ default[:db_mysql][:port] = "3306"
 default[:db_mysql][:log_bin_enabled] = true
 default[:db_mysql][:log_bin] = "/mnt/ephemeral/mysql-binlogs/mysql-bin"
 default[:db_mysql][:binlog_format] = "MIXED"
-default[:db_mysql][:tmpdir] = "/mnt/ephemeral/tmp"
+default[:db_mysql][:tmpdir] = "/mnt/ephemeral/mysqltmp"
 default[:db_mysql][:datadir] = "/var/lib/mysql"
 default[:db_mysql][:enable_mysql_upgrade] = "false"
+default[:db_mysql][:compressed_protocol] = "disabled"
 # Always set to support stop/start
 set[:db_mysql][:bind_address] = "0.0.0.0"
 
@@ -35,11 +36,11 @@ default[:db_mysql][:tunable][:isamchk] = {}
 default[:db_mysql][:tunable][:myisamchk] = {}
 
 # SSL attributes
-default[:db_mysql][:ssl][:ca_certificate] = nil
-default[:db_mysql][:ssl][:master_certificate] = nil
-default[:db_mysql][:ssl][:master_key] = nil
-default[:db_mysql][:ssl][:slave_certificate] = nil
-default[:db_mysql][:ssl][:slave_key] = nil
+default[:db_mysql][:ssl][:ca_certificate] = ""
+default[:db_mysql][:ssl][:master_certificate] = ""
+default[:db_mysql][:ssl][:master_key] = ""
+default[:db_mysql][:ssl][:slave_certificate] = ""
+default[:db_mysql][:ssl][:slave_key] = ""
 
 # Platform specific attributes
 

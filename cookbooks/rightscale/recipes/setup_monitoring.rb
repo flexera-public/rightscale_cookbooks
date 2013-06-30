@@ -49,6 +49,7 @@ end
 cookbook_file "/etc/apt/preferences.d/00rightscale" do
   only_if { node[:platform] == "ubuntu" }
   source "apt.preferences.rightscale"
+  mode 0644
 end
 
 # If YUM, lock this collectd package so it can't be updated.

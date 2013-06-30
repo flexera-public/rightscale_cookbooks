@@ -1,108 +1,112 @@
 {
-  "name": "sys_firewall",
-  "description": "Installs/Configures firewall",
-  "long_description": "# RightScale System Firewall Cookbook\n\n## DESCRIPTION:\n\nBuilt upon Opscode's 'iptables' cookbook. This cookbook provides a LWRP for\nmanaging access to multiple servers in a deployment using machine tags.\n\n## REQUIREMENTS:\n\nRequires a virtual machine launched from a RightScale managed RightImage.\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see `metadata.rb` file for the latest dependencies.\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## SETUP/USAGE:\n\n* Use the `sys_firewall::default` recipe in conjunction with the\n  'Firewall' input to enable or disable iptables.\n* Use the `sys_firewall::setup_rule` recipe for enabling/disabling\n  specific firewall rules.\n* Use the `sys_firewall::do_list_rules` recipe to list the existing\n  firewall rules set up on the server.\n\n## DETAILS:\n\n### General information\n\nWhen the firewall is enabled it is completely closed for incoming connections -\nonly outbound connections are allowed. `sys_firewall::default`\nthen opens 22, 80 and 443 ports by default\n(additionally on SoftLayer 48000..48020 ports are opened on the private 10.*\nnetwork for the monitoring agent).\n\n`sys_firewall::default` recipe increases the value for the\n'netfilter.nf_conntrack_max' parameter for CentOS images and\nthe 'net.ipv4.ip_conntrack_max' for Ubuntu and RHEL images to avoid dropping\npackets on high-throughput systems.\n\n### Updating firewall rules using tags\n\nAll tag-based actions are scoped to the deployment.\n\n#### Update Action\n\nTo open a local port to all servers with a given tag use:\n\n    sys_firewall \"Open this server's ports to all servers with this 'tag' \" do\n      machine_tag \"servertag:active=true\"\n      port 3306\n      enable true\n      action :update\n    end\n\nThis can be used when a server is booting to open up access for multiple systems\nat once.\n\n#### Update Request Action\n\nTo request that all servers with a given tag close a port to a given IP address\nuse:\n\n    sys_firewall \"Request all app servers close ports to this load balancer\" do\n      machine_tag \"loadbalancer:app=www\"\n      port 8000\n      enable false\n      ip_addr node[:cloud][:private_ips][0]\n      action :update_request\n    end\n\nThis can be useful when decommissioning a running server that had previously\nrequested ports opened.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
-  "maintainer": "RightScale, Inc.",
-  "maintainer_email": "support@rightscale.com",
   "license": "Copyright RightScale, Inc. All rights reserved.",
-  "platforms": {
-  },
-  "dependencies": {
-    "iptables": ">= 0.0.0",
-    "sys": ">= 0.0.0",
-    "rightscale": ">= 0.0.0"
-  },
-  "recommendations": {
+  "description": "RightScale firewall cookbook. This cookbook provides a LWRP for managing access to multiple servers in a deployment using machine.",
+  "groupings": {
   },
   "suggestions": {
   },
-  "conflicting": {
+  "recipes": {
+    "sys_firewall::do_list_rules": "Lists the firewall rules.",
+    "sys_firewall::default": "Enables or disables iptables based on the value set in \"Firewall\" input",
+    "sys_firewall::setup_rule": "Enables or disables specific firewall ports."
   },
-  "providing": {
-  },
-  "replacing": {
-  },
+  "maintainer": "RightScale, Inc.",
+  "name": "sys_firewall",
   "attributes": {
     "sys_firewall/enabled": {
-      "display_name": "Firewall",
       "description": "Enables an iptables firewall for this server which allows port 22, 80 and 443 open by default. Use the sys_firewall::setup_rule recipe to enable/disable extra ports. Example: enabled",
-      "required": "optional",
-      "choice": [
-        "enabled",
-        "disabled"
-      ],
-      "default": "enabled",
+      "calculated": false,
       "recipes": [
         "sys_firewall::default"
       ],
-      "calculated": false,
-      "type": "string"
+      "type": "string",
+      "choice": [
+        "enabled",
+        "disabled",
+        "unmanaged"
+      ],
+      "required": "optional",
+      "default": "enabled",
+      "display_name": "Firewall"
     },
     "sys_firewall/rule/port": {
-      "display_name": "Firewall Rule Port",
       "description": "Firewall port to Enable or Disable. Example: 8000",
-      "required": "required",
+      "calculated": false,
       "recipes": [
         "sys_firewall::setup_rule"
       ],
+      "type": "string",
       "choice": [
 
       ],
-      "calculated": false,
-      "type": "string"
+      "required": "required",
+      "display_name": "Firewall Rule Port"
     },
-    "sys_firewall/rule/enable": {
-      "display_name": "Firewall Rule",
-      "description": "Enables or disables a firewall rule. Example: enable",
-      "choice": [
-        "enable",
-        "disable"
-      ],
-      "default": "enable",
+    "sys_firewall/rule/protocol": {
+      "description": "Firewall protocol use. Example: tcp",
+      "calculated": false,
       "recipes": [
         "sys_firewall::setup_rule"
       ],
-      "calculated": false,
       "type": "string",
-      "required": "optional"
-    },
-    "sys_firewall/rule/protocol": {
-      "display_name": "Firewall Rule Protocol",
-      "description": "Firewall protocol use. Example: tcp",
       "choice": [
         "tcp",
         "udp",
         "both"
       ],
+      "required": "optional",
       "default": "tcp",
+      "display_name": "Firewall Rule Protocol"
+    },
+    "sys_firewall/rule/enable": {
+      "description": "Enables or disables a firewall rule. Example: enable",
+      "calculated": false,
       "recipes": [
         "sys_firewall::setup_rule"
       ],
-      "calculated": false,
       "type": "string",
-      "required": "optional"
+      "choice": [
+        "enable",
+        "disable"
+      ],
+      "required": "optional",
+      "default": "enable",
+      "display_name": "Firewall Rule"
     },
     "sys_firewall/rule/ip_address": {
-      "display_name": "Firewall Rule IP Address",
       "description": "Address can either be a network name, a network IP address (with /mask), or a plain IP address. The mask can either be a network mask or a plain number specifying the number of 1's at the left side of the network mask. Thus, a mask of 24 is equivalent to 255.255.255.0. A '!' argument before the address specification inverts the sense of the address. A value of 'any' allows any IP address. Example: any",
-      "required": "optional",
-      "default": "any",
+      "calculated": false,
       "recipes": [
         "sys_firewall::setup_rule"
       ],
+      "type": "string",
       "choice": [
 
       ],
-      "calculated": false,
-      "type": "string"
+      "required": "optional",
+      "default": "any",
+      "display_name": "Firewall Rule IP Address"
     }
   },
-  "groupings": {
+  "providing": {
   },
-  "recipes": {
-    "sys_firewall::default": "Enables or disables iptables based on the value set in \"Firewall\" input",
-    "sys_firewall::setup_rule": "Enables or disables specific firewall ports.",
-    "sys_firewall::do_list_rules": "Lists the firewall rules."
+  "recommendations": {
   },
-  "version": "13.4.0"
+  "version": "13.5.0",
+  "platforms": {
+    "ubuntu": ">= 0.0.0",
+    "redhat": ">= 0.0.0",
+    "centos": ">= 0.0.0"
+  },
+  "conflicting": {
+  },
+  "maintainer_email": "support@rightscale.com",
+  "long_description": "# RightScale System Firewall Cookbook\n\n## DESCRIPTION:\n\nBuilt upon Opscode's 'iptables' cookbook. This cookbook provides a LWRP for\nmanaging access to multiple servers in a deployment using machine tags.\n\n## REQUIREMENTS:\n\nRequires a virtual machine launched from a RightScale managed RightImage.\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see `metadata.rb` file for the latest dependencies.\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## SETUP/USAGE:\n\n* Use the `sys_firewall::default` recipe in conjunction with the\n  'Firewall' input to enable or disable iptables.\n* Use the `sys_firewall::setup_rule` recipe for enabling/disabling\n  specific firewall rules.\n* Use the `sys_firewall::do_list_rules` recipe to list the existing\n  firewall rules set up on the server.\n\n## DETAILS:\n\n### General information\n\nWhen the firewall is enabled it is completely closed for incoming connections -\nonly outbound connections are allowed. `sys_firewall::default`\nthen opens 22, 80 and 443 ports by default\n(additionally on SoftLayer 48000..48020 ports are opened on the private 10.*\nnetwork for the monitoring agent).\n\nWhen the firewall is disabled the iptables service is disabled and stopped.\n\nWhen the firewall is set to \"unmanaged\" no changes are done to the iptables\nservice so the cloud provider can manage the firewall rules. RightScale will\nnot manage the firewall rules in this case.\n\n`sys_firewall::default` recipe increases the value for the\n'netfilter.nf_conntrack_max' parameter for CentOS images and\nthe 'net.ipv4.ip_conntrack_max' for Ubuntu and RHEL images to avoid dropping\npackets on high-throughput systems.\n\n### Updating firewall rules using tags\n\nAll tag-based actions are scoped to the deployment.\n\n#### Update Action\n\nTo open a local port to all servers with a given tag use:\n\n    sys_firewall \"Open this server's ports to all servers with this 'tag' \" do\n      machine_tag \"servertag:active=true\"\n      port 3306\n      enable true\n      action :update\n    end\n\nThis can be used when a server is booting to open up access for multiple systems\nat once.\n\n#### Update Request Action\n\nTo request that all servers with a given tag close a port to a given IP address\nuse:\n\n    sys_firewall \"Request all app servers close ports to this load balancer\" do\n      machine_tag \"loadbalancer:app=www\"\n      port 8000\n      enable false\n      ip_addr node[:cloud][:private_ips][0]\n      action :update_request\n    end\n\nThis can be useful when decommissioning a running server that had previously\nrequested ports opened.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
+  "dependencies": {
+    "iptables": ">= 0.0.0",
+    "sys": ">= 0.0.0",
+    "rightscale": ">= 0.0.0"
+  },
+  "replacing": {
+  }
 }
