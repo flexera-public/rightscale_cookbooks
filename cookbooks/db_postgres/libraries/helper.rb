@@ -37,11 +37,9 @@ module RightScale
         def self.get_pgsql_handle(hostname = "localhost", username = "postgres")
           info_msg = "  PostgreSQL connection to #{hostname}"
           info_msg << ": opening NEW PostgreSQL connection."
-          conn = PGconn.open(hostname, nil, nil, nil, nil, username, nil)
           Chef::Log.info info_msg
-          # this raises if the connection has gone away
-          conn.class.ping
-          return conn
+          # PG::Connection.new raises a PG::Error if connection fails.
+          PG::Connection.new(hostname, nil, nil, nil, nil, username, nil)
         end
 
         # Perform sql query to PostgreSQL server
