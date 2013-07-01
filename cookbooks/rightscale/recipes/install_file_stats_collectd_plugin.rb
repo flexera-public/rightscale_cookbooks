@@ -19,9 +19,7 @@ require 'fileutils'
 
 log "  Installing file_stats collectd plugin.."
 
-collectd_plugin_dir = node[:rightscale][:collectd_plugin_dir]
-
-template(::File.join(collectd_plugin_dir, "file-stats.conf")) do
+template(::File.join(node[:rightscale][:collectd_plugin_dir], "file-stats.conf")) do
   backup false
   source "file-stats.conf.erb"
   notifies :restart, resources(:service => "collectd")
@@ -51,16 +49,16 @@ file node[:rightscale][:db_backup_file] do
 end
 
 # Adds custom gauges to collectd 'types.db'.
-cookbook_file "#{collectd_plugin_dir}/rs.types.db" do
+cookbook_file "#{node[:rightscale][:collectd_plugin_dir]}/rs.types.db" do
   source "rs.types.db"
   backup false
 end
 
 # Adds configuration to use the custom gauges.
-template "#{collectd_plugin_dir}/rs.types.db.conf" do
+template "#{node[:rightscale][:collectd_plugin_dir]}/rs.types.db.conf" do
   source "rs.types.db.conf.erb"
   variables(
-    :collectd_plugin_dir => collectd_plugin_dir
+    :collectd_plugin_dir => node[:rightscale][:collectd_plugin_dir]
   )
   backup false
   notifies :restart, resources(:service => "collectd")
