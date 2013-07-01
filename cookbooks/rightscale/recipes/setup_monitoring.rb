@@ -76,7 +76,7 @@ end
 # The default configs should be template-ized as needed.
 template node[:rightscale][:collectd_config] do
   backup 5
-  source "collectd.conf.erb"
+  source "collectd.config.erb"
   notifies :restart, resources(:service => "collectd")
 end
 
