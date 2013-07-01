@@ -176,7 +176,7 @@ action :install_client do
       }
     )
   else
-    raise "PostgreSQL version '#{version}'is not supported yet."
+    raise "PostgreSQL version '#{version}' is not supported yet."
   end
 
   # Installs PostgreSQL package(s).
@@ -197,7 +197,7 @@ action :install_client do
     not_if { ::File.exists?("/usr/bin/pg_config") }
   end
 
-  # Installs PostgreSQL client gem.
+  # It is required by rightscale_tools gem for PostgreSQL operations.
   gem_package "pg" do
     gem_binary "/opt/rightscale/sandbox/bin/gem"
     options "-- --with-pg-config=#{node[:db_postgres][:bindir]}/pg_config"
@@ -221,7 +221,7 @@ action :install_server do
   end
 
   # Creates a new PostgreSQL database cluster.
-  execute "/etc/init.d/#{node[:db_postgres][:service_name]} initdb" do
+  execute "service #{node[:db_postgres][:service_name]} initdb" do
     not_if { ::File.exists?("#{node[:db_postgres][:confdir]}/postgresql.conf") }
   end
 
