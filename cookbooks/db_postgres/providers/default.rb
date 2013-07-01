@@ -225,13 +225,8 @@ action :install_server do
     not_if { ::File.exists?("#{node[:db_postgres][:confdir]}/postgresql.conf") }
   end
 
-  # Configure system for PostgreSQL
+  # Configures system for PostgreSQL.
   #
-  # Stop PostgreSQL
-  service node[:db_postgres][:service_name] do
-    action :stop
-  end
-
   # Shared servers get 50% of the resources allocated to a dedicated server.
   usage = node[:db_postgres][:server_usage] == "shared" ? 0.5 : 1
 
