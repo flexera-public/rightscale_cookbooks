@@ -49,7 +49,7 @@ file node[:rightscale][:db_backup_file] do
 end
 
 # Adds custom gauges to collectd 'types.db'.
-cookbook_file "#{node[:rightscale][:collectd_plugin_dir]}/rs.types.db" do
+file "#{node[:rightscale][:collectd_plugin_dir]}/rs.types.db" do
   source "rs.types.db"
   backup false
 end
