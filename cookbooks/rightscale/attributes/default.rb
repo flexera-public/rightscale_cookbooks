@@ -35,7 +35,6 @@ default[:rightscale][:security_update] = "disable"
 # Private SSH key
 default[:rightscale][:private_ssh_key] = ""
 
-default[:rightscale][:security_update] = "disable"
 
 # Cloud specific attributes
 

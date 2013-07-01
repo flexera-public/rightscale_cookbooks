@@ -8,7 +8,7 @@
 
 # Sets up HAProxy backend configuration file in "/etc/haproxy".
 #
-# @param [String] pool_name Pool name to which the load balancer listens to.
+# @param pool_name [String] Pool name to which the load balancer listens to.
 #
 define :lb_haproxy_backend, :pool_name => "" do
   backend_name = params[:pool_name] + "_backend"

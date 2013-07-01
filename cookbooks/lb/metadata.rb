@@ -2,9 +2,9 @@ maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "This cookbook provides a set of load balancer recipes used" +
-  " by the RightScale Load Balancer ServerTemplates. This cookbook does not" +
-  " contain a specific load balancer implementation, but generic recipes that" +
-  " use the LWRP interface."
+                 " by the RightScale Load Balancer ServerTemplates. This" +
+                 " cookbook does not  contain a specific load balancer" +
+                 " implementation, but generic recipes that use the LWRP interface."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "13.5.0"
 

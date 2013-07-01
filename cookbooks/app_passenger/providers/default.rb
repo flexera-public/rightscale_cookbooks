@@ -166,7 +166,7 @@ action :setup_vhost do
 end
 
 
-# Setup project db connection
+# Setup Passenger database connection
 action :setup_db_connection do
 
   deploy_dir = new_resource.destination

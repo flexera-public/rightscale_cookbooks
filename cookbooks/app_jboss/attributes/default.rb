@@ -30,7 +30,6 @@ default[:app_jboss][:java][:xmx] = "1024m"
 default[:app_jboss][:java][:xms] = "1024m"
 # Defines the survivor ratio used by the JVM
 default[:app_jboss][:java][:survivor_ratio] = "6"
-
 # Defines the datasource name
 default[:app_jboss][:datasource_name] = "jdbc/ConnDB"
 # Internal port for JBoss

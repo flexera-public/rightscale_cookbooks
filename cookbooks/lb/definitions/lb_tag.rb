@@ -7,8 +7,10 @@
 # such as a RightScale Master Subscription Agreement.
 
 # Installs loadbalancer tags.
+#
 # @param [String] name Name of the pool to be set in loadbalancer tag.
 # @param [Symbol] action Action to be taken by the right_link_tag resource.
+#
 define :lb_tag, :action => :publish do
 
   pool_name = params[:name] == "" ? "localhost" : params[:name]

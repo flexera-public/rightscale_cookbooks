@@ -23,6 +23,7 @@ module RightScale
         # @param new_resource [Object] Resource which will be initialized
         #
         # @return [Mysql] MySQL object
+        #
         def init(new_resource)
           begin
             require 'rightscale_tools'
@@ -38,9 +39,11 @@ module RightScale
         end
 
         # Create numeric UUID
-        # MySQL server_id must be a unique number  - use the ip address integer representation
-        #
+        # MySQL server_id must be a unique number - use the ip address integer representation
         # Duplicate IP's and server_id's may occur with cross cloud replication.
+        #
+        # @param node [Hash] Node name
+        #
         def self.mycnf_uuid(node)
           node[:db_mysql][:mycnf_uuid] = IPAddr.new(node[:cloud][:private_ips][0]).to_i
         end
@@ -48,15 +51,20 @@ module RightScale
         # Generate unique filename for relay_log used in slave db.
         # Should only generate once.  Used to create unique relay_log files used for slave
         # Always set to support stop/start
+        #
+        # @param node [Hash] Node name
+        #
+        # @return [String] unique filename for relay_log
+        #
         def self.mycnf_relay_log(node)
           node[:db_mysql][:mycnf_relay_log] = Time.now.to_i.to_s + rand(9999).to_s.rjust(4, '0') if !node[:db_mysql][:mycnf_relay_log]
           return node[:db_mysql][:mycnf_relay_log]
         end
 
-        # Helper to load replication information
-        # from "rs_snapshot_position.yaml"
+        # Helper to load replication information from "rs_snapshot_position.yaml"
         #
         # @param node [Hash] Node name
+        #
         def self.load_replication_info(node)
           loadfile = ::File.join(node[:db][:data_dir], SNAPSHOT_POSITION_FILENAME)
           Chef::Log.info "  Loading replication information from #{loadfile}"
@@ -64,9 +72,11 @@ module RightScale
         end
 
         # Loading information about replication master status.
-        # If that file exists, the MySQL server has already previously been configured for replication,
+        # If that file exists, the MySQL server has already previously been
+        # configured for replication,
         #
         # @param node [Hash] Node name
+        #
         def self.load_master_info_file(node)
           loadfile = ::File.join(node[:db][:data_dir], "master.info")
           Chef::Log.info "  Loading master.info file from #{loadfile}"
@@ -85,6 +95,7 @@ module RightScale
         # @param hostname [String] Hostname FQDN, default is 'localhost'
         #
         # @return [Mysql] MySQL connection
+        #
         def self.get_mysql_handle(node, hostname = 'localhost')
           info_msg = "  MySQL connection to #{hostname}"
           info_msg << ": opening NEW MySQL connection."
@@ -106,6 +117,7 @@ module RightScale
         #
         # @raise [TimeoutError] if timeout exceeded
         # @raise [RuntimeError] if connection try attempts limit reached
+        #
         def self.do_query(node, query, hostname = 'localhost', timeout = nil, tries = 1)
           require 'mysql'
 
@@ -142,6 +154,7 @@ module RightScale
         # @param newmaster_host [String] FQDN or ip of new replication master
         # @param newmaster_logfile [String] Replication log filename
         # @param newmaster_position [Integer] Last record position in replication log
+        #
         def self.reconfigure_replication(
           node,
           hostname = 'localhost',

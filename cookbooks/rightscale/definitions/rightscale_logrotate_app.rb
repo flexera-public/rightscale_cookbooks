@@ -17,6 +17,10 @@
 
 # Performs log rotation on servers.
 #
+# @param enable [String] enables logrotate
+# @param frequency [String] frequency for rotating logs
+# @param template [String] template file for setting up log rotate configuration
+#
 define :rightscale_logrotate_app, :enable => true, :frequency => "weekly", :template => "logrotate.erb", :cookbook => "logrotate" do
   # See Opscode cookbooks at https://github.com/rightscale/cookbooks for the "logrotate" cookbook.
   # See logrotate/recipes/default.rb for the "logrotate" recipe.

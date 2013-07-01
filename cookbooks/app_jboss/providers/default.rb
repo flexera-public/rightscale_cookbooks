@@ -360,7 +360,7 @@ action :setup_vhost do
   end
 end
 
-# Setup project db connection
+# Setup JBoss database connection
 action :setup_db_connection do
 
   db_name = new_resource.database_name
@@ -413,7 +413,7 @@ action :setup_db_connection do
   end
 end
 
-# Setup monitoring tools for jboss
+# Setup monitoring tools for JBoss
 action :setup_monitoring do
 
   install_target = node[:app_jboss][:install_target]

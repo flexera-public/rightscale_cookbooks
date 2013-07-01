@@ -84,8 +84,8 @@ module RightScale
     # Instance method for do_for_block_devices. Calls
     # {self.do_for_block_devices} with given parameters.
     #
-    # @param [Hash] block_device Block device
-    # @param [Object] block Hash of block devices to which block_device belongs
+    # @param block_device [Hash] Block device
+    # @param block [Object] Hash of block devices to which block_device belongs
     # to
     #
     def do_for_block_devices(block_device, &block)

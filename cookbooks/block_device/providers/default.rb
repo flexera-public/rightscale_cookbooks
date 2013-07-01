@@ -10,7 +10,7 @@
 
 include RightScale::BlockDeviceHelper
 
-# Will setup new block device
+# Sets up new block device
 action :create do
   # Initialize new device by setting up resource attributes.
   # See cookbooks/block_device/libraries/block_device.rb for definition of
@@ -30,7 +30,7 @@ action :create do
   device.create(create_options)
 end
 
-# Create snapshot of given device
+# Creates snapshot of given device
 action :snapshot do
   # See cookbooks/block_device/libraries/block_device.rb for definition of
   # init method.
@@ -39,7 +39,7 @@ action :snapshot do
   device.snapshot
 end
 
-# Prepare device for primary backup
+# Prepares device for primary backup
 action :primary_backup do
   # See cookbooks/block_device/libraries/block_device.rb for definition of
   # init method.
@@ -62,7 +62,7 @@ action :primary_backup do
   device.primary_backup(new_resource.lineage, backup_options)
 end
 
-# Prepare device for primary restore
+# Prepares device for primary restore
 action :primary_restore do
   # See cookbooks/block_device/libraries/block_device.rb for definition of
   # init method.
@@ -90,7 +90,7 @@ action :primary_restore do
   device.primary_restore(new_resource.lineage, restore_args)
 end
 
-# Prepare device for secondary backup
+# Prepares device for secondary backup
 action :secondary_backup do
   # Check if all secondary backup inputs are set up. See
   # cookbooks/block_device/libraries/block_device.rb for definition of
@@ -101,7 +101,7 @@ action :secondary_backup do
   device.secondary_backup(new_resource.lineage)
 end
 
-# Prepare device for secondary restore
+# Prepares device for secondary restore
 action :secondary_restore do
   # See cookbooks/block_device/libraries/block_device.rb for secondary_checks
   # and init methods.
@@ -125,7 +125,7 @@ action :secondary_restore do
   device.secondary_restore(new_resource.lineage, restore_args)
 end
 
-# Unmount and delete the attached block device(s)
+# Unmounts and deletes the attached block device(s)
 action :reset do
   # See cookbooks/block_device/libraries/block_device.rb for init method.
   device = init(new_resource)
@@ -133,7 +133,7 @@ action :reset do
   device.reset()
 end
 
-# Enable cron backups
+# Enables cron backups
 action :backup_schedule_enable do
 
   # Verify parameters
@@ -163,7 +163,7 @@ action :backup_schedule_enable do
 
 end
 
-# Disable cron backups
+# Disables cron backups
 action :backup_schedule_disable do
   # Select recipe to disable
   recipe = new_resource.cron_backup_recipe

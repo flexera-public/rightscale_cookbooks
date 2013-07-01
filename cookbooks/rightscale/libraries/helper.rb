@@ -20,7 +20,9 @@ module RightScale
       # @param wildcard [String] expression or prefix
       # @param tag [String]
       #
-      # @return [Boolean] True if the tag matches the wildcard expression or prefix, false otherwise
+      # @return [Boolean] True if the tag matches the wildcard expression or
+      #   prefix, false otherwise
+      #
       def self.matches_tag_wildcard?(wildcard, tag)
         if wildcard =~ /^(#{NAMESPACE_REGEX}):$/
           wildcard = "#{$1}:*"
@@ -38,6 +40,7 @@ module RightScale
       # @param tags [Array] list of tags or tag wildcards to filter by
       #
       # @return [Hash] A filtered server collection
+      #
       def self.filter_tags(collection, name, tags)
         collection[name].reject do |key, values|
           reject = false
@@ -50,13 +53,15 @@ module RightScale
         end.to_hash
       end
 
-      # Filters a server collection to only include servers with all of the supplied tags modifying the given server collection.
+      # Filters a server collection to only include servers with all of the
+      # supplied tags modifying the given server collection.
       #
       # @param collection [Chef::Node::Attribute] dictionary of server collections
       # @param name [String] name of the server collection to filter
       # @param tags [Array] list of tags or tag wildcards to filter by
       #
       # @return [Hash] A filtered server collection
+      #
       def self.filter_tags!(collection, name, tags)
         collection[name] = filter_tags(collection, name, tags)
       end
@@ -67,7 +72,9 @@ module RightScale
       # @param tags [Array] list of tags to search
       # @param capture [String] optional Regexp portion to validate the value
       #
-      # @return [String] The value portion of a tag if found, nil if not found or value is invalid
+      # @return [String] The value portion of a tag if found, nil if not found
+      #   or value is invalid
+      #
       def self.get_tag_value(prefix, tags, capture = '.*')
         if tags.detect { |tag| tag =~ /^#{Regexp.escape(prefix)}=(#{capture})$/ }
           $1
@@ -76,10 +83,11 @@ module RightScale
 
       # Returns true if a valid IP address is give and false if it is invalid
       #
-      # @param [String] ip IP addres
+      # @param ip [String] IP address
       #
       # @return [Boolean] True if the IP address is valid and false if it is
       #   invalid
+      #
       def self.is_valid_ip?(ip)
         ip =~ /^#{IPADDRESS_REGEX}$/
       end

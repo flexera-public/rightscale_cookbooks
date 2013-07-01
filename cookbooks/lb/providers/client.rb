@@ -8,26 +8,28 @@
 
 include RightScale::LB::Helper
 
+# Installs load balancer packages
 action :install do
   raise "The :install action is not supported by the generic lb provider."
 end
 
-
+# Configures load balancer to answer for specified virtual host
 action :add_vhost do
   raise "The :add_vhost action is not supported by the generic lb provider."
 end
 
-
+# Attaches an application server to the local load balancer
 action :attach do
   raise "The :attach action is not supported by the generic lb provider."
 end
 
+# Performs advanced configuration for load balancer
 action :advanced_configs do
   raise "The :advanced_configs action is not supported by the generic" +
     " lb provider."
 end
 
-
+# Attach request from an application server
 action :attach_request do
 
   pool_name = new_resource.pool_name

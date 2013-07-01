@@ -13,7 +13,14 @@ module RightScale
       # Calculates schedule for cron minute based on user provided
       # interval. Uses a random start offset from given splay
       # to avoid all systems from reconverging at the same time.
+      #
+      # @param interval [Integer] interval for reconverge
+      # @param splay [Integer] random number maximum limit
+      #
       # @return [String] randomized schedule time
+      #
+      # @raise [RuntimeError] if interval parameter is not between 0 and 60
+      #
       def self.randomize_reconverge_minutes(interval, splay)
         # Check parameters
         err = ArgumentError.new("ERROR: reconverge interval must be between" +
@@ -33,6 +40,7 @@ module RightScale
       end
 
       # Use the server_collection resource programatically
+      #
       def self.requery_server_collection(tag, collection_name, node, run_context)
         resrc = Chef::Resource::ServerCollection.new(collection_name)
         resrc.tags tag
@@ -87,6 +95,7 @@ module RightScale
       end
 
       # Reload sysctl
+      #
       def self.reload_sysctl
         reload_command = Mixlib::ShellOut.new(
           "/sbin/sysctl -e -p /etc/sysctl.conf"

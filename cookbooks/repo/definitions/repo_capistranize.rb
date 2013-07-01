@@ -13,17 +13,21 @@ capistrano_dir = "/home/capistrano_repo"
 
 # Capistranize repository
 #
-# @param [String] destination Path to where project repo will be pulled
-# @param [String] repository Repository Url
-# @param [String] revision Remote repo Branch or revision
-# @param [String] svn_username SVN username
-# @param [String] svn_password SVN password
-# @param [String] app_user System user to run the deploy as
-# @param [String] environment A hash of the form {"ENV_VARIABLE"=>"VALUE"}
-# @param [String] create_dirs_before_symlink Directories to create before symlinking. Runs after purge_before_symlink
-# @param {String] purge_before_symlink An array of paths, relative to app root, to be removed from a checkout before symlinking
-# @param [String] symlinks A hash that maps files in the shared directory to their paths in the current release
-# @param [String] scm_provider Source Control Management provider
+# @param destination [String] Path to where project repo will be pulled
+# @param repository [String] Repository Url
+# @param revision [String] Remote repo Branch or revision
+# @param svn_username [String] SVN username
+# @param svn_password [String] SVN password
+# @param app_user [String] System user to run the deploy as
+# @param environment [String] A hash of the form {"ENV_VARIABLE"=>"VALUE"}
+# @param create_dirs_before_symlink [String] Directories to create before
+#   symlinking. Runs after purge_before_symlink
+# @param purge_before_symlink [String] An array of paths, relative to app root,
+#   to be removed from a checkout before symlinking
+# @param symlinks [String] A hash that maps files in the shared directory to
+#   their paths in the current release
+# @param scm_provider [String] Source Control Management provider
+#
 define :repo_capistranize,
   :destination => "",
   :repository => "",

@@ -23,37 +23,51 @@
 # Below are the actions defined by by the Log resource interface.
 #
 
-# Stops the logging service. Calls the logging service stop command
+# Stops the logging service. Calls the logging service stop command.
+#
 actions :stop
 
-# Starts the logging service. Calls the logging service start command
+# Starts the logging service. Calls the logging service start command.
+#
 actions :start
 
-# Restarts the logging service. Calls the logging service restart command
+# Restarts the logging service. Calls the logging service restart command.
+#
 actions :restart
 
-# Reloads the logging service. Calls the logging service reload command
+# Reloads the logging service. Calls the logging service reload command.
+#
 actions :reload
 
-# Outputs the status of the logging service. Logs and returns the logging service status command results.
+# Outputs the status of the logging service. Logs and returns the logging
+# service status command results.
+#
 actions :status
 
-# Calls the logging rotate command
+# Calls the logging rotate command.
+#
 actions :rotate
 
-# Adds a logging definition
+# Adds a logging definition.
+#
 actions :add_definition
 
-# Adds Log Rotation Policy
+# Adds Log Rotation Policy.
+#
 actions :add_rotate_policy
 
-# Installs logging software
+# Installs logging software.
+#
 actions :install
 
-# Updates the configuration
+# Updates the configuration.
+#
 actions :configure
+
   # Remote logging server
+  #
   attribute :remote_server, :kind_of => String, :default => ""
 
 # Configures a logging server
+#
 actions :configure_server

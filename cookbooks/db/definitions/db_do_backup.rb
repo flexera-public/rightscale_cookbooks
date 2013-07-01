@@ -15,6 +15,7 @@
 # secondary.  Secondary uses 'ROS'.
 #
 # @raise [RuntimeError] If database is not 'initialized'
+#
 define :db_do_backup, :backup_type => "primary" do
 
   class Chef::Recipe

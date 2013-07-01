@@ -6,21 +6,26 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-# Used to find master db
-# When a slave database starts, it needs to determine which database it should use as
-# master.  If there is only one DB tagged as master, it will be chosen. Lineage is used to
-# restore the database from a backup created by the master.  Master DBs can contain it's lineage
-# in it's "rs_dbrepl:master_active" tag. This definition uses this logic to determine what
-# database should be master for the slave running it.
+# Used to find master db. When a slave database starts, it needs to determine
+# which database it should use as master. If there is only one DB tagged as
+# master, it will be chosen. Lineage is used to restore the database from a
+# backup created by the master.  Master DBs can contain it's lineage in it's
+# "rs_dbrepl:master_active" tag. This definition uses this logic to determine
+# what database should be master for the slave running it.
 #
 # @param action [Symbol] restore process to do before becoming a slave.
-#   * The +:primary_restore+ action will do a restore from primary backup location then become a slave.
-#   * The +:secondary_restore+ action will do a restore from secondary backup location then become a slave.
+#   * The +:primary_restore+ action will do a restore from primary backup
+#     location then become a slave.
+#   * The +:secondary_restore+ action will do a restore from secondary backup
+#     location then become a slave.
 #   * The +:demote_master+ action will process configs and tags to be a slave.
-#   * The +:no_restore+ action will not do a restore of any type then will become a slave.  Used for stop/start where data already exists.
+#   * The +:no_restore+ action will not do a restore of any type then will
+#     become a slave.  Used for stop/start where data already exists.
 #
-# @raise [RuntimeError] if no master DB found".
-# @raise [RuntimeError] if invalid action type is chosen must be primary_restore, :secondary_restore or no_restore
+# @raise [RuntimeError] if no master DB found
+# @raise [RuntimeError] if invalid action type is chosen. must be primary_restore,
+#   :secondary_restore or no_restore
+#
 define :db_register_slave, :action => :primary_restore do
 
   # Tag the slave server

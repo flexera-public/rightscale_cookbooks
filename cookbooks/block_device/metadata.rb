@@ -1,9 +1,8 @@
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
-description      "Installs/Configures block device storage."
 description      "This cookbook provides the building blocks for Multi-Cloud" +
-  "backup/restore support."
+                 " backup/restore support."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "13.5.0"
 

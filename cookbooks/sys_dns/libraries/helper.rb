@@ -28,6 +28,7 @@ module RightScale
       # @return [String] A record successful update message.
       #
       # @raise [String] Error message that may have occurred during the update process.
+      #
       def action_set(id, user, password, address, options = {})
         raise "Not implemented!"
       end

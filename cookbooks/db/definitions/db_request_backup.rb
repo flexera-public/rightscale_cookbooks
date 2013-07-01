@@ -6,11 +6,13 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-# Perform backup request, will execute db::do_primary/secondary_backup recipe depending of backup_type given
+# Perform backup request, will execute db::do_primary/secondary_backup recipe
+# depending of backup_type given
 #
-# @param [String] backup_type If 'primary' will do a primary backup using node attributes specific
-#   to the main backup.  If 'secondary' will do a secondary backup using node attributes for
-#   secondary.  Secondary uses 'ROS'.
+# @param backup_type [String] If 'primary' will do a primary backup using node
+#   attributes specific to the main backup. If 'secondary' will do a secondary
+#   backup using node attributes for secondary. Secondary uses 'ROS'.
+#
 define :db_request_backup, :backup_type => 'primary' do
   do_backup_type = params[:backup_type] == "primary" ? "primary" : "secondary"
 

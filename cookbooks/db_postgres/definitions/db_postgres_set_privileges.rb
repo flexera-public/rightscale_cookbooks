@@ -7,6 +7,11 @@
 # such as a RightScale Master Subscription Agreement.
 
 # Sets privileges for Postgres database.
+#
+# @param preset [String] privilege to be set
+# @param username [String] username for the database
+# @param password [String] password for the database
+#
 define :db_postgres_set_privileges, :preset => "administrator", :username => nil, :password => nil do
 
 
