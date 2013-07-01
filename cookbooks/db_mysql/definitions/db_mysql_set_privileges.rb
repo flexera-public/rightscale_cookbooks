@@ -6,7 +6,11 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-define :db_mysql_set_privileges, :preset => "administrator", :username => nil, :password => nil, :db_name => nil do
+define :db_mysql_set_privileges,
+  :preset => "administrator",
+  :username => nil,
+  :password => nil,
+  :db_name => nil do
 
   priv_preset = params[:preset]
   username = params[:username]
@@ -16,15 +20,16 @@ define :db_mysql_set_privileges, :preset => "administrator", :username => nil, :
 
   # The list of all privileges applicable in a non global scope. I.E. dbname.*
   priv_list = [
-    "SELECT", "INSERT", "UPDATE", "DELETE", "CREATE", "DROP", "REFERENCES", "INDEX",
-    "ALTER", "CREATE TEMPORARY TABLES", "LOCK TABLES", "EXECUTE", "CREATE VIEW",
-    "SHOW VIEW", "CREATE ROUTINE", "ALTER ROUTINE", "EVENT", "TRIGGER"
+    "SELECT", "INSERT", "UPDATE", "DELETE", "CREATE", "DROP", "REFERENCES",
+    "INDEX", "ALTER", "CREATE TEMPORARY TABLES", "LOCK TABLES", "EXECUTE",
+    "CREATE VIEW", "SHOW VIEW", "CREATE ROUTINE", "ALTER ROUTINE", "EVENT",
+    "TRIGGER"
   ]
 
   # The list of all privileges applicable only for *.* or "global"
   global_priv_list = [
-    "RELOAD", "SHUTDOWN", "PROCESS", "FILE", "SHOW DATABASES", "REPLICATION SLAVE",
-    "REPLICATION CLIENT", "CREATE USER"
+    "RELOAD", "SHUTDOWN", "PROCESS", "FILE", "SHOW DATABASES",
+    "REPLICATION SLAVE", "REPLICATION CLIENT", "CREATE USER"
   ]
 
 
