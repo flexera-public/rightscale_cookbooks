@@ -6,7 +6,11 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-actions :update, :update_request
+# Updates firewall rules on the servers
+actions :update
+
+# Requests firewall rule update on the servers
+actions :update_request
 
 # Firewall port
 attribute :port, :kind_of => Integer # Can also be passed as resource name
@@ -24,8 +28,10 @@ attribute :ip_addr, :kind_of => String, :default => "any"
 # be run
 attribute :machine_tag, :kind_of => String, :regex => /^([^:]+):(.+)=.+/
 
+# Sets the IP interface on which the server listens. Example: public_ip_0, private_ip_0
 attribute :ip_tag, :kind_of => String, :regex => /server:(.+)/
 
+# Server collection
 attribute :collection, :kind_of => String, :default => "sys_firewall"
 
 # Defines a default action

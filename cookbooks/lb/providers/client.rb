@@ -6,6 +6,8 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
+# @resource lb
+
 include RightScale::LB::Helper
 
 # Installs load balancer packages
@@ -13,10 +15,12 @@ action :install do
   raise "The :install action is not supported by the generic lb provider."
 end
 
+
 # Configures load balancer to answer for specified virtual host
 action :add_vhost do
   raise "The :add_vhost action is not supported by the generic lb provider."
 end
+
 
 # Attaches an application server to the local load balancer
 action :attach do
@@ -28,6 +32,7 @@ action :advanced_configs do
   raise "The :advanced_configs action is not supported by the generic" +
     " lb provider."
 end
+
 
 # Attach request from an application server
 action :attach_request do

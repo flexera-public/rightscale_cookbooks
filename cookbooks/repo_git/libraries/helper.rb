@@ -46,6 +46,7 @@ module RightScale
         ::File.delete("#{SshKey::KEYFILE}.sh")
         ENV.delete("GIT_SSH")
       end
+
     end
   end
 end

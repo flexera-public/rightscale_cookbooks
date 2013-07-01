@@ -79,6 +79,7 @@ end
 
 # Attach request from an application server
 action :attach_request do
+
   log "  Attach request for #{node[:ec2][:instance_id]}"
 
   # Calls the "attach" action
@@ -90,6 +91,7 @@ action :attach_request do
     service_account_secret new_resource.service_account_secret
     action :attach
   end
+
 end
 
 # Detaches an application server from the local load balancer
@@ -122,10 +124,12 @@ action :detach do
     ip_addr "any"
     action :update
   end
+
 end
 
 # Detach request from an application server
 action :detach_request do
+
   log "  Detach request for #{node[:ec2][:instance_id]}"
 
   # Calls the "detach" action
@@ -137,6 +141,7 @@ action :detach_request do
     service_account_secret new_resource.service_account_secret
     action :detach
   end
+
 end
 
 # Install and configure collectd plugins for the server

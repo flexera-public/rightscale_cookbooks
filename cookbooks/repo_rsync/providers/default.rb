@@ -10,6 +10,7 @@
 
 # Setup repository attributes.
 action :setup_attributes do
+
   # Checking inputs required for getting source with RSync
   raise "  RSync username input is unset" unless new_resource.account
   raise "  RSync SSH Key input is unset" unless new_resource.credential
@@ -18,6 +19,7 @@ end
 
 # Pull code from a determined repository to a specified destination.
 action :pull do
+
   # Checking attributes
   # Calls the :setup_attributes action.
   action_setup_attributes
@@ -79,6 +81,7 @@ end
 
 # Pull code from a determined repository to a specified destination and create a capistrano deployment.
 action :capistrano_pull do
+
   log "  Recreating project directory for :pull action"
 
   repo_dir = "/home"
@@ -107,6 +110,7 @@ action :capistrano_pull do
       end
     end
     only_if { ::File.exists?("#{new_resource.destination}") and ::Dir["#{new_resource.destination}/*"].empty? == false }
+
   end
 
   # Ensure that destination directory exists after all backups and cleanups

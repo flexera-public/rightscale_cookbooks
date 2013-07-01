@@ -41,6 +41,11 @@ module RightScale
 
       # Use the server_collection resource programatically
       #
+      # @param tag [String] tag name
+      # @param collection_name [String] Server collection name
+      # @param node [Hash] node
+      # @param run_context [String] run context for the ServerCollection provider
+      #
       def self.requery_server_collection(tag, collection_name, node, run_context)
         resrc = Chef::Resource::ServerCollection.new(collection_name)
         resrc.tags tag
@@ -90,6 +95,12 @@ module RightScale
         resrc.updated
       end
 
+      # Calculate exponential delay for a given number.
+      #
+      # @param value [Integer] delay value
+      #
+      # @return [Integer] exponential value
+      #
       def self.calculate_exponential_backoff(value)
         ((value == 1) ? 2 : (value*value))
       end

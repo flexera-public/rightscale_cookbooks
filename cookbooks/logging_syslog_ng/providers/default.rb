@@ -16,6 +16,7 @@ action :stop do
   end
 end
 
+
 # Start syslog-ng
 action :start do
   service "syslog-ng" do
@@ -23,6 +24,7 @@ action :start do
     persist false
   end
 end
+
 
 # Restart syslog-ng
 action :restart do
@@ -32,6 +34,7 @@ action :restart do
   end
 end
 
+
 # Reload syslog-ng
 action :reload do
   service "syslog-ng" do
@@ -40,12 +43,14 @@ action :reload do
   end
 end
 
+
 # Install syslog-ng package
 action :install do
   # The replacing syslog-ng with rsyslog requires low level package
   # manipulation via rpm/dpkg
   package "syslog-ng"
 end
+
 
 # Configure logging: client side
 action :configure do
@@ -68,22 +73,28 @@ action :configure do
   end
 end
 
+
 # Call the logging rotate command
 action :rotate do
   raise "syslog-ng action not implemented"
 end
+
 
 # Add a remote logging server
 action :add_remote_server do
   raise "syslog-ng action not implemented"
 end
 
+
 # Add a logging definition
 action :add_definition do
   raise "syslog-ng action not implemented"
 end
 
+
 # Add a logrotate policy
 action :add_rotate_policy do
   raise "syslog-ng action not implemented"
 end
+
+

@@ -20,6 +20,7 @@
 
 require 'rubygems'
 require 'chef'
+require 'json'
 require 'yard'
 
 YARD::Config.load_plugin 'chef'
