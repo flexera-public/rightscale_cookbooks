@@ -62,7 +62,9 @@ begin
   # check server status/role - if this is master server, skip to run this script.
   # This script should run only on slave server
   def detect_if_master
-    read_only = `<%= @bindir %>/pg_controldata <%= @datadir %> | grep "Database cluster state" | awk '{print $NF}'`
+    read_only_cmd = "<%= @bindir %>/pg_controldata <%= @datadir %> |"
+    read_only_cmd << " grep \"Database cluster state\" | awk '{print $NF}'"
+    read_only = `read_only_cmd`
     return true if read_only =~ /production/
   end
 
@@ -73,7 +75,9 @@ begin
   end
 
   def pg_status
-    status = `<%= @bindir %>/pg_controldata <%= @datadir %> | grep "Database cluster state" |cut -d: -f2 | xargs`
+    status_cmd = "<%= @bindir %>/pg_controldata <%= @datadir %> |"
+    status_cmd << " grep \"Database cluster state\" |cut -d: -f2 | xargs"
+    status = `status_cmd`
     return true if status =~ /shut down/
   end
 
