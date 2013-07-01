@@ -315,7 +315,8 @@ action :install_client_driver do
       action :install
     end
   when "java"
-    # This adapter type is used by JBoss and Tomcat application servers.
+    # This adapter type is required by application servers,
+    # such as JBoss and Tomcat.
     node[:db][:client][:driver] = "org.postgresql.Driver"
     if version == "9.1"
       node[:db][:client][:jar_file] = value_for_platform(
@@ -469,7 +470,7 @@ action :enable_replication do
     not_if { current_restore_process == :no_restore }
   end
 
-  bash "wipe_existing_runtime_config" do
+  bash "wipe_existing_xlog_files" do
     not_if { current_restore_process == :no_restore }
     flags "-ex"
     code <<-EOH
