@@ -9,7 +9,6 @@
 # Managed by RightScale
 # DO NOT EDIT BY HAND
 #
-
 haproxy_sessions current_queued:GAUGE:0:65535, current_session:GAUGE:0:65535
 haproxy_traffic cumulative_requests:COUNTER:0:200000000, response_errors:COUNTER:0:200000000, health_check_errors:COUNTER:0:200000000
 haproxy_status status:GAUGE:-255:255
