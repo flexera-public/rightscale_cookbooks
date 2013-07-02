@@ -25,7 +25,7 @@ if node[:rightscale][:security_updates] == "enable"
     end
 
     cookbook_file "#{node[:rightscale][:collectd_lib]}/plugins/update_monitor" do
-      source "update_monitor_collect_plugin.rb"
+      source "update_monitor_collectd_plugin.rb"
       mode 0755
     end
 
