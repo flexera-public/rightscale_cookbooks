@@ -39,7 +39,7 @@ if node[:rightscale][:security_updates] == "enable"
       source "update_monitor.conf.erb"
       variables(
         :collectd_lib => node[:rightscale][:collectd_lib],
-        :server_uuid => node[:rightscale][:instalce_uuid]
+        :server_uuid => node[:rightscale][:instance_uuid]
       )
       mode 0644
     end
