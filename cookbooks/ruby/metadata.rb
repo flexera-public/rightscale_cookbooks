@@ -9,6 +9,8 @@ supports "centos"
 supports "redhat"
 supports "ubuntu"
 
+depends "rightscale"
+
 recipe "ruby::install_1_8",
   "Installs and configures Ruby 1.8."
 
