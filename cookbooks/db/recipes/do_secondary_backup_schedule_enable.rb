@@ -51,7 +51,6 @@ log "  Setting up Slave secondary backup cron job to run at hour:" +
 end
 
 block_device NICKNAME do
-  only_if { true }
   not_if { node[:db][:this_is_master] }
   lineage snap_lineage
   cron_backup_recipe "db::do_secondary_backup"
