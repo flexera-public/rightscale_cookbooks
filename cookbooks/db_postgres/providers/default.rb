@@ -507,7 +507,7 @@ action :promote do
 
     # The slave server has the 'wal receiver' process running, once we promote
     # it to master, streaming replication should be stopped.
-    ruby_block "check receiver process" do
+    ruby_block "verify no receiver process" do
       block do
         60.downto(0) do |try|
           cmd = Mixlib::ShellOut.new("ps ax | grep '[w]al receiver process'")
@@ -515,19 +515,19 @@ action :promote do
           break if cmd.stdout.empty?
           Chef::Log.info cmd.stdout.chomp
           raise "FATAL: 'wal receiver' process is still running!" if try.zero?
-          Chef::Log.info "  'wal receiver' process is still running, retrying."
+          Chef::Log.info "  Waiting for 'wal receiver' process to terminate."
           sleep 10
         end
       end
       action :nothing
     end
 
-    # Creates a trigger file, the presence of which should cause recovery to end
-    # whether or not the next WAL file is available.
+    # Creates a trigger file, the presence of which should cause streaming
+    # replication to end whether or not the next WAL file is available.
     # Immediately calls "check receiver process" to verify that server is no
     # longer a slave.
     file "#{node[:db_postgres][:confdir]}/recovery.trigger" do
-      notifies :create, "ruby_block[check receiver process]", :immediately
+      notifies :create, "ruby_block[verify no receiver process]", :immediately
     end
 
     # Let the new slave loose and thus let him become the new master
