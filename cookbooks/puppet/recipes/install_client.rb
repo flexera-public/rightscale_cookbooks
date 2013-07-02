@@ -9,20 +9,23 @@
 rightscale_marker
 
 # Declares touchfile, which will be used to avoid the code execution on reboot.
-touchfile = ::File.expand_path "/var/lib/puppet/ssl/certs/" +
-  "#{node[:puppet][:client][:node_name]}.pem"
+t_file = "/var/lib/puppet/ssl/certs/#{node[:puppet][:client][:node_name]}.pem"
+
+# Sets the version suffix to comply with platform.
+os_suffix = node[:platform] == "ubuntu" ? "puppetlabs1" : ".el6"
 
 # Installs the Puppet Client specific to the user provided version.
 node[:puppet][:client][:packages].each do |pkg|
   package pkg do
-    version node[:puppet][:client][:version]
+    version "#{node[:puppet][:client][:version]}#{os_suffix}"
   end
 end
 
 # Configures to enable init process to start Puppet client service on Ubuntu.
-execute "configure puppet to start" do
-  command "sed -i 's/START=no/START=yes/g' /etc/default/puppet"
-  only_if { node[:platform] == "ubuntu" && !::File.exists?(touchfile) }
+cookbook_file "/etc/default/puppet" do
+  source "puppet_enable_init"
+  cookbook "puppet"
+  only_if { node[:platform] == "ubuntu" }
 end
 
 # Initializing supported commands for Puppet service for further usage.
@@ -50,13 +53,13 @@ end
 execute "run puppet-client" do
   command "puppet agent --test"
   returns [0,1,2]
-  creates touchfile
+  creates t_file
   notifies :create, "ruby_block[registration-status]"
 end
 
 ruby_block "registration-status" do
   block do
-    if File.exists?(touchfile)
+    if File.exists?(t_file)
       Chef::Log.info("  Puppet Client certificate registration successful.")
     else
       Chef::Log.warn("  Puppet Client certificate registration failed. Your" +
@@ -71,5 +74,5 @@ end
 # Enables and starts the Puppet client service.
 service "puppet" do
   action [:enable, :start]
-  only_if { ::File.exists?(touchfile) }
+  only_if { ::File.exists?(t_file) }
 end

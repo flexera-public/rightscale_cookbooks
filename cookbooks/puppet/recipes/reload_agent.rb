@@ -9,19 +9,18 @@
 rightscale_marker
 
 # Declares touchfile.
-touchfile = ::File.expand_path "/var/lib/puppet/ssl/certs/" +
-  "#{node[:puppet][:client][:node_name]}.pem"
+t_file = "/var/lib/puppet/ssl/certs/#{node[:puppet][:client][:node_name]}.pem"
 
 # Performs certificate registration on the Puppet Master and returns exit code 0
 # or 2 as success.
 execute "run puppet-client" do
   command "puppet agent --test"
   returns [0,2]
-  creates touchfile
+  creates t_file
 end
 
 # Enables and starts the Puppet client service.
 service "puppet" do
   action [:enable, :start]
-  only_if { ::File.exists?(touchfile) }
+  only_if { ::File.exists?(t_file) }
 end
