@@ -11,8 +11,13 @@ rightscale_marker
 if node[:rightscale][:security_updates] == "enable"
   log "  Security updates enabled. Setting up monitoring."
 
+  # Load the exec plugin in the main config file
+  # See cookbooks/rightscale/definitions/rightscale_enable_collectd_plugin.rb
+  # for the "rightscale_enable_collectd_plugin" definition.
   rightscale_enable_collectd_plugin "exec"
 
+  # See cookbooks/rightscale/recipes/setup_monitoring.rb for the
+  # "rightscale::setup_monitoring" recipe.
   include_recipe "rightscale::setup_monitoring"
 
   platform = node[:platform]
@@ -22,20 +27,25 @@ if node[:rightscale][:security_updates] == "enable"
     package "update-notifier-common"
     # Install custom collectd plugin
     #
-    directory "#{node[:rightscale][:collectd_lib]}/plugins" do
-      owner "root"
-      group "root"
+    directory ::File.join(node[:rightscale][:collectd_lib], "plugins") do
       recursive true
       action :create
     end
 
-    cookbook_file "#{node[:rightscale][:collectd_lib]}/plugins/update_monitor" do
+    cookbook_file ::File.join(
+      node[:rightscale][:collectd_lib]},
+      "plugins",
+      "update_monitor"
+    ) do
       source "update_monitor_collectd_plugin.rb"
       mode 0755
+      notifies :restart, resources(:service => "collectd")
     end
 
-
-    template "#{node[:rightscale][:collectd_plugin_dir]}/update_monitor.conf" do
+    template ::File.join(
+      node[:rightscale][:collectd_plugin_dir],
+      "update_monitor.conf"
+    ) do
       source "update_monitor.conf.erb"
       variables(
         :collectd_lib => node[:rightscale][:collectd_lib],

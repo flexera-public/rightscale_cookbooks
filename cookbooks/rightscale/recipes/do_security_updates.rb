@@ -22,7 +22,7 @@ if "#{node[:rightscale][:security_updates]}" == "enable"
     bash "Apply apt security updates" do
       flags "-ex"
       code <<-EOH
-        apt-get update && apt-get upgrade || true
+        apt-get -y update && apt-get -y upgrade || true
       EOH
     end
   when "centos", "redhat"
