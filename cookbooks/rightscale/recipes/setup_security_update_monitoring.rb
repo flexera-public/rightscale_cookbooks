@@ -10,6 +10,11 @@ rightscale_marker
 
 if node[:rightscale][:security_updates] == "enable"
   log "  Security updates enabled. Setting up monitoring."
+
+  rightscale_enable_collectd_plugin "exec"
+
+  include_recipe "rightscale::setup_monitoring"
+
   platform = node[:platform]
   case platform
   when "ubuntu"
@@ -29,7 +34,6 @@ if node[:rightscale][:security_updates] == "enable"
       mode 0755
     end
 
-    rightscale_enable_collectd_plugin "exec"
 
     template "#{node[:rightscale][:collectd_plugin_dir]}/update_monitor.conf" do
       source "update_monitor.conf.erb"
