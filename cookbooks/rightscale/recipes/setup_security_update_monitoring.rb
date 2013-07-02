@@ -20,45 +20,46 @@ if node[:rightscale][:security_updates] == "enable"
   # "rightscale::setup_monitoring" recipe.
   include_recipe "rightscale::setup_monitoring"
 
-  platform = node[:platform]
-  case platform
-  when "ubuntu"
-    log "  Install Ubuntu security monitoring package dependencies and plugin"
-    package "update-notifier-common"
-    # Install custom collectd plugin
-    #
-    directory ::File.join(node[:rightscale][:collectd_lib], "plugins") do
-      recursive true
-      action :create
+  # TODO: Once the package for centos, redhat is identified, update it in the
+  # else condition. If there is no package needed for centos/redhat add a
+  # condition to the package resource and only install it for ubuntu.
+  update_notifier_package =
+    case node[:platform]
+    when "ubuntu"
+      "update-notifier-common"
+    else
+      "to-be-updated"
     end
+  package update_notifier_package
 
-    cookbook_file ::File.join(
-      node[:rightscale][:collectd_lib]},
-      "plugins",
-      "update_monitor"
-    ) do
-      source "update_monitor_collectd_plugin.rb"
-      mode 0755
-      notifies :restart, resources(:service => "collectd")
-    end
+  log "  Install security monitoring package dependencies and plugin"
+  # Install custom collectd plugin
+  #
+  directory ::File.join(node[:rightscale][:collectd_lib], "plugins") do
+    recursive true
+    action :create
+  end
 
-    template ::File.join(
-      node[:rightscale][:collectd_plugin_dir],
-      "update_monitor.conf"
-    ) do
-      source "update_monitor.conf.erb"
-      variables(
-        :collectd_lib => node[:rightscale][:collectd_lib],
-        :server_uuid => node[:rightscale][:instance_uuid]
-      )
-      mode 0644
-    end
+  cookbook_file ::File.join(
+    node[:rightscale][:collectd_lib]},
+    "plugins",
+    "update_monitor"
+  ) do
+    source "update_monitor_collectd_plugin.rb"
+    mode 0755
+    notifies :restart, resources(:service => "collectd")
+  end
 
-  when "centos", "redhat"
-    log "  Install CentOS security monitoring package dependencies and plugin"
-    log "  ERROR/TBD/XXXX - centos implementation not complete"
-  else
-    log "  Usupportted OS: #{platform}"
+  template ::File.join(
+    node[:rightscale][:collectd_plugin_dir],
+    "update_monitor.conf"
+  ) do
+    source "update_monitor.conf.erb"
+    variables(
+      :collectd_lib => node[:rightscale][:collectd_lib],
+      :server_uuid => node[:rightscale][:instance_uuid]
+    )
+    mode 0644
   end
 else
   log "  Security updates disabled.  Skipping monitoring setup!"
