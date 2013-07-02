@@ -8,22 +8,22 @@
 
 rightscale_marker
 
-if "#{node[:rightscale][:security_updates]}" == "enable"
-
-  log "  Security updates enabled.  Setting up monitoring."
+if node[:rightscale][:security_updates] == "enable"
+  log "  Security updates enabled. Setting up monitoring."
   platform = node[:platform]
   case platform
   when "ubuntu"
     log "  Install Ubuntu security monitoring package dependencies and plugin"
-    package update-notifier-common
+    package "update-notifier-common"
     # Install custom collectd plugin
     #
-    
+
   when "centos", "redhat"
     log "  Install CentOS security monitoring package dependencies and plugin"
     log "  ERROR/TBD/XXXX - centos implementation not complete"
   else
     log "  Usupportted OS: #{platform}"
+  end
 else
   log "  Security updates disabled.  Skipping monitoring setup!"
 end
