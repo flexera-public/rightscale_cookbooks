@@ -12,7 +12,7 @@ version = Mixlib::ShellOut.new("ruby --version")
 version.run_command.error!
 
 if version.stdout =~ /1\.8/
-  log "  Ruby #{version.stdout} is already installed on this system."
+  log "  Ruby '#{version.stdout.chomp}' is already installed on this system."
 else
   case node[:platform]
   when /centos|redhat/
