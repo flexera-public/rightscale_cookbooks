@@ -27,7 +27,7 @@ attribute :hypervisor, :kind_of => String
 # Block device mount point
 attribute :mount_point, :kind_of => String, :required => true
 
-# Check if the block device is the master
+# The block device is the master if this attribute is set to true
 attribute :is_master, :equal_to => [true, false], :default => false
 
 # Force backups on a device

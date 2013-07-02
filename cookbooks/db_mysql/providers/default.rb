@@ -73,7 +73,7 @@ action :move_data_dir do
   @db.move_datadir(new_resource.name, node[:db_mysql][:datadir])
 end
 
-# Wipes the current MySQL database to a pristine state
+# Resets MySQL database to a pristine state
 action :reset do
   # Set read/write in read_write_status.cnf
   db_mysql_set_mysql_read_only "setup mysql read/write" do
@@ -143,7 +143,8 @@ action :write_backup_info do
   end
 end
 
-# Verify whether MySQL database is in a good state before preforming a restore
+# Verify MySQL database is in a pristine state before performing a restore to
+# prevent overwriting of an existing database
 action :pre_restore_check do
   # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "pre_restore_sanity_check" method.
@@ -151,7 +152,7 @@ action :pre_restore_check do
   @db.pre_restore_sanity_check
 end
 
-# Used to validate backup and cleanup VM after restore
+# Validates backup and cleanup instance after restore
 action :post_restore_cleanup do
   # Performs checks for snapshot compatibility with current server.
   # See cookbooks/db_mysql/libraries/helper.rb
@@ -279,7 +280,7 @@ action :pre_backup_check do
   @db.pre_backup_check
 end
 
-# Used to cleanup VM after backup
+# Cleans up instance after backup
 action :post_backup_cleanup do
   # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "post_backup_steps" method.
@@ -302,6 +303,7 @@ action :set_privileges do
   end
 end
 
+# Installs MySQL database client driver
 action :install_client do
 
   version = new_resource.db_version
@@ -1018,7 +1020,7 @@ action :promote do
   end
 end
 
-# Configures and start a slave replicating from master
+# Configures replication between a slave server and master
 action :enable_replication do
   # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
   db_state_get node

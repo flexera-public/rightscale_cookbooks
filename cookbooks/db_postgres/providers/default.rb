@@ -60,7 +60,7 @@ action :move_data_dir do
   @db.move_datadir(new_resource.name, node[:db_postgres][:datadir])
 end
 
-# Wipes the current database into a pristine state
+# Resets Postgres database to a pristine state
 action :reset do
   # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "reset" method.
@@ -68,7 +68,7 @@ action :reset do
   @db.reset(new_resource.name, node[:db_postgres][:datadir])
 end
 
-# Sends a remote_recipe that requests a database updates it's firewall rules
+# Sends a firewall update request to the Postgres database server
 action :firewall_update_request do
   # See cookbooks/sys_firewall/providers/default.rb for the "update_request" action.
   sys_firewall "Request database open port 5432 (PostgreSQL) to this server" do
@@ -114,7 +114,8 @@ action :write_backup_info do
   end
 end
 
-# Verify the database is in a good state before preforming a restore
+# Verify Postgres database is in a pristine state before performing a restore to
+# prevent overwriting of an existing database
 action :pre_restore_check do
   # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "pre_restore_sanity_check" method.
@@ -122,7 +123,7 @@ action :pre_restore_check do
   @db.pre_restore_sanity_check
 end
 
-# Used to validate backup and cleanup VM after restore
+# Validate backup and cleanup instance after restore
 action :post_restore_cleanup do
   # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "restore_snapshot" method.
@@ -138,7 +139,7 @@ action :pre_backup_check do
   @db.pre_backup_check
 end
 
-# Used to cleanup VM after backup
+# Clean up instance after backup
 action :post_backup_cleanup do
   # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "post_backup_steps" method.
@@ -336,8 +337,7 @@ action :install_server do
 
 end
 
-# Installs the driver packages for applications servers based on their driver
-# type
+# Installs the Postgres client driver packages
 action :install_client_driver do
   type = new_resource.driver_type
   log "  Installing postgres support for #{type} driver"
@@ -436,7 +436,7 @@ action :grant_replication_slave do
   conn.finish
 end
 
-# Configures and start a slave replicating from master
+# Configures replication between a slave server and master
 action :enable_replication do
   # See cookbooks/db/libraries/helper.rb for "db_state_get" method.
   db_state_get node

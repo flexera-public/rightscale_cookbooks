@@ -163,7 +163,8 @@ module RightScale
           return $? == 0
         end
 
-        #Creates a trigger file whose presence should cause recovery to end whether or not the next WAL file is available.
+        # Creates a trigger file whose presence should cause recovery to end
+        # whether or not the next WAL file is available.
         #
         # @param node [Hash] Node name
         #
