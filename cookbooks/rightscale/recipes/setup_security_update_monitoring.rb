@@ -29,6 +29,8 @@ if node[:rightscale][:security_updates] == "enable"
       mode 0755
     end
 
+    rightscale_enable_collectd_plugin "exec"
+
     template "#{node[:rightscale][:collectd_plugin_dir]}/update_monitor.conf" do
       source "update_monitor.conf.erb"
       variables(
