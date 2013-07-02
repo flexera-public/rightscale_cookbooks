@@ -49,9 +49,7 @@ loop do
   now = Time.now
 
   if ( now.to_i - last_update_check ) > update_check_freq
-#    packages_to_update=`#{apt_check} 2>&1`.split(";")
-    #packages_to_update.each { |x| puts x }
-    #Yummify this
+    packages_to_update=`yum list -q updates 2>&1 | cut -d" " -f 1`
 
     # Tag the server if updates are available.
     if (packages_to_update[1].to_i > 0) then

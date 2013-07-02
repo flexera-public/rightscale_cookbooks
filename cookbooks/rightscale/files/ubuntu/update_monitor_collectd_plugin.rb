@@ -29,7 +29,6 @@ last_update_check = 0
 # path to apt-check
 apt_check="/usr/lib/update-notifier/apt-check"
 
-
 opts.each do |opt, arg|
   case opt
     when '--hostname'
@@ -49,7 +48,6 @@ loop do
 
   if ( now.to_i - last_update_check ) > update_check_freq
     packages_to_update=`#{apt_check} 2>&1`.split(";")
-    #packages_to_update.each { |x| puts x }
 
     # Tag the server if updates are available.
     if (packages_to_update[1].to_i > 0) then
