@@ -21,7 +21,7 @@ if node[:rightscale][:security_updates] == "enable"
   include_recipe "rightscale::setup_monitoring"
 
   # Install the update_notifier_package package on ubuntu
-  package "update_notifier_package" do
+  package "update-notifier-common" do
     action :install
     only_if { node[:platform] == "ubuntu" }
   end
