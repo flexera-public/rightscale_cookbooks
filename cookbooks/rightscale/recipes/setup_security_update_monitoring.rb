@@ -20,28 +20,21 @@ if node[:rightscale][:security_updates] == "enable"
   # "rightscale::setup_monitoring" recipe.
   include_recipe "rightscale::setup_monitoring"
 
-  # TODO: Once the package for centos, redhat is identified, update it in the
-  # else condition. If there is no package needed for centos/redhat add a
-  # condition to the package resource and only install it for ubuntu.
-  update_notifier_package =
-    case node[:platform]
-    when "ubuntu"
-      "update-notifier-common"
-    else
-      "to-be-updated"
-    end
-  package update_notifier_package
+  # Install the update_notifier_package package on ubuntu
+  package "update_notifier_package" do
+    action :install
+    only_if { node[:platform] == "ubuntu" }
+  end
 
   log "  Install security monitoring package dependencies and plugin"
   # Install custom collectd plugin
-  #
   directory ::File.join(node[:rightscale][:collectd_lib], "plugins") do
     recursive true
     action :create
   end
 
   cookbook_file ::File.join(
-    node[:rightscale][:collectd_lib]},
+    node[:rightscale][:collectd_lib],
     "plugins",
     "update_monitor"
   ) do
@@ -62,5 +55,5 @@ if node[:rightscale][:security_updates] == "enable"
     mode 0644
   end
 else
-  log "  Security updates disabled.  Skipping monitoring setup!"
+  log "  Security updates disabled. Skipping monitoring setup!"
 end
