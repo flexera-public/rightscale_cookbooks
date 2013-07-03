@@ -5,9 +5,9 @@ description      "Installs/Configures firewall"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "13.5.0"
 
-# supports "centos", "~> 5.8", "~> 6"
-# supports "redhat", "~> 5.8"
-# supports "ubuntu", "~> 10.04", "~> 12.04"
+supports "centos"
+supports "redhat"
+supports "ubuntu"
 
 depends "iptables"
 depends "sys"
@@ -37,7 +37,7 @@ attribute "sys_firewall/enabled",
 attribute "sys_firewall/rule/port",
   :display_name => "Firewall Rule Port",
   :description =>
-    "Firewall port to Enable or Disable. Example: 8000",
+    "Comma-separated list of ports to Enable or Disable. Example: 8080,8000",
   :required => "required",
   :recipes => ["sys_firewall::setup_rule"]
 

@@ -5,9 +5,9 @@ description      "RightScale Cookbooks"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "13.5.0"
 
-# supports "centos", "~> 5.8", "~> 6.2"
-# supports "redhat", "~> 5.8"
-# supports "ubuntu", "~> 10.04", "~> 12.04"
+supports "centos"
+supports "redhat"
+supports "ubuntu"
 
 depends "driveclient"
 depends "cloudmonitoring"
@@ -55,7 +55,6 @@ recipe "rightscale::setup_security_update_monitoring",
 recipe "rightscale::install_rightimage_extras",
   "Installs the RightImage extra packages expected by our ServerTemplates"
  
-
 attribute "rightscale/security_updates",
   :display_name => "Enable security updates",
   :description => "Unfreezes software repositories after booting and" +

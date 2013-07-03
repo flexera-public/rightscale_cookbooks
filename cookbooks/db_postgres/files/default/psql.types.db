@@ -1,0 +1,15 @@
+#
+# Cookbook Name:: db_postgres
+#
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
+#
+# Managed by RightScale
+# DO NOT EDIT BY HAND
+#
+
+# 9223372036854775807 - max number of seconds since the beginning of epoch time.
+pg_data                 value:GAUGE:0:9223372036854775807
+pg_state                value:GAUGE:0:65535

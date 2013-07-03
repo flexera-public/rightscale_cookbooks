@@ -5,12 +5,12 @@ description      "Installs/Configures Virtual Monkey"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "13.5.0"
 
-# supports "centos", "~> 5.8", "~> 6"
-# supports "redhat", "~> 5.8"
-# supports "ubuntu", "~> 10.04", "~> 12.04"
-
+supports "centos"
+supports "redhat"
+supports "ubuntu"
 
 depends "rightscale"
+depends "jenkins"
 
 recipe "monkey::setup_git",
   "Setup Git configuration for virtualmonkey."
@@ -337,6 +337,13 @@ attribute "monkey/virtualmonkey/right_api_objects_repo_branch",
   :display_name => "Right API Objects Repo Branch",
   :description =>
     "Git branch for Right API Objects",
+  :required => "required",
+  :recipes => ["monkey::setup_virtualmonkey"]
+
+attribute "monkey/virtualmonkey/windows_admin_password",
+  :display_name => "Windows Administrator Password",
+  :description =>
+    "The Administrator password for connecting to Windows servers",
   :required => "required",
   :recipes => ["monkey::setup_virtualmonkey"]
 

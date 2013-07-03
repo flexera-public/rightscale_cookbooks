@@ -1,0 +1,142 @@
+#
+# Cookbook Name:: monkey
+#
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
+#
+#
+# Config file in YAML format that controls rocketmonkey execution
+#
+# All variables require an explicit value unless specified otherwise
+#
+
+
+#
+# email_from - email address used as the sender
+# email_to - comma separated list of recipient email addresses
+#
+# Change the addresses below to meet your particular needs
+#
+:email_from: "someuser@rightscale.com"
+:email_to: "someotheruser1@rightscale.com, someotheruser2@rightscale.com"
+
+
+#
+# jenkins_user - user used to authenticate with Jenkins to kick off jobs
+# jenkins_password - user used to authenticate with Jenkins to kick off jobs
+# jenkins_ip_address - if the rocket monkey can't get the public ip address, use this to specify the public ip address
+#
+:jenkins_user: "<%= @jenkins_user %>"
+:jenkins_password: "<%= @jenkins_password %>"
+#:jenkins_ip_address: "X.X.X.X"
+
+
+#
+# virtual_monkey_path - Path to virtual monkey folder
+#
+:virtual_monkey_path: "/root/virtualmonkey/"
+
+
+#
+# rocket_monkey_path - Path to virtual monkey folder
+#
+:rocket_monkey_path: "/root/rocketmonkey/"
+
+
+#
+# troop_path - Path to troop files
+#
+:troop_path: "/root/servertemplate_tests/updatedTroops/"
+
+
+#
+# suite_path - Path to test suites
+#
+:suite_path: "/root/rightscale_cookbooks_private/tests/suites/"
+
+
+#
+# server_template_map_file - Path to server template map file
+#
+:server_template_map_file: "/root/rightscale_cookbooks_private/tests/config/servertemplate_mapping/release_v13.2.json"
+
+
+#
+# output_file_path - Path to Jenkins jobs xml generation target folder
+#
+# On the Mac it should usually be "/Users/Shared/Jenkins/Home/jobs"
+# On a cloud server it should usually be "/var/lib/jenkins/jobs"
+#
+:output_file_path: "/var/lib/jenkins/jobs"
+
+
+#
+# mci_override_file_name - Optional MCI Override file name
+#
+# You only need to specify this if you use the m:<friendly_name>/<revision> cell clause
+#
+#:mci_override_file_name: "mci.csv"
+
+
+#
+# chain - How to chain the generated Jenkins jobs
+#   Allowed values:
+#     job_to_destroyer                  - Only link the each job to its associated destroyer
+#     job_to_destroyer_and_next_job     - Link current job to next job and associated destroyer (parallel)
+#     job_to_destroyer_then_to_next_job - Link current job to associated destroyer and then to next job (serial)
+#
+:chain: job_to_destroyer
+
+
+#
+# threshold - Controls the Jenkins job "Threshold" value which affects how the chain executes (if at all)
+#   Allowed values:
+#     only_if_build_succeeds
+#     even_if_build_is_unstable
+#     even_if_the_build_fails
+#
+:threshold: even_if_the_build_fails
+
+
+#
+# generate_wip_reports_locally - Controls where WIP reports end up
+#   Allowed values:
+#     true - WIP reports and charts are not uploaded to S3 and are instead placed in the Jenkins userContent folder
+#     false - WIP reports and charts are not placed in the Jenkins userContent folder and are instead uploaded to S3
+#
+:generate_wip_reports_locally: true
+
+
+#
+# rightscale_account - Rightscale account number. Defaults to the Publish account 2901
+#
+:rightscale_account: <%= @right_acct_id %>
+
+
+#
+# cloud_shepherd_max_retries - Maximum number of retries the the cloud shepherd will use per job
+#
+:cloud_shepherd_max_retries: 2
+
+
+#
+# cloud_shepherd_sleep_before_retrying_job_in_seconds - Number of seconds the cloud shepherd will sleep between polling
+# the current job
+#
+:cloud_shepherd_sleep_before_retrying_job_in_seconds: 60
+
+
+#
+# cloud_shepherd_sleep_after_job_start_in_seconds - Number of seconds the cloud shepherd will sleep after starting a
+# test
+#
+:cloud_shepherd_sleep_after_job_start_in_seconds: 300
+
+
+#
+# third_level_domain_name - The third level domain which will usually be "my" but may be "moo.test" or any valid third
+# level domain name (do not include the trailing dot)
+#
+:third_level_domain_name: "<%= @right_subdomain %>"

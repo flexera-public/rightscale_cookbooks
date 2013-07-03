@@ -10,6 +10,6 @@
 # DO NOT EDIT BY HAND
 #
 
-# PostgreSQL
--A FWR -p tcp -m tcp --dport 5432 -j ACCEPT
--A FWR -p udp -m udp --dport 5432 -j ACCEPT
+standby_mode='on'
+primary_conninfo='host=<%= @host %> user=<%= @user %> password=<%= @password %> application_name=<%= @application_name %>'
+trigger_file='<%= @trigger_file %>'
