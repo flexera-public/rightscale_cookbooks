@@ -21,14 +21,14 @@ node[:puppet][:client][:packages].each do |pkg|
   end
 end
 
-# Configures to enable init process to start Puppet client service on Ubuntu.
+# Configures to enable init process to start puppet client service on Ubuntu.
 cookbook_file "/etc/default/puppet" do
   source "puppet_enable_init"
   cookbook "puppet"
   only_if { node[:platform] == "ubuntu" }
 end
 
-# Initializing supported commands for Puppet service for further usage.
+# Initializing supported commands for puppet client service for further usage.
 service "puppet" do
   persist true
   supports :status => true, :start => true, :stop => true, :restart => true
@@ -48,8 +48,11 @@ template "/etc/puppet/puppet.conf" do
   )
 end
 
-# Performs certificate registration on the Puppet Master. Interprets exit code 0
-# or 2 as success. Logs the warning message on exit code 1.
+# Performs certificate registration on the Puppet Master. This execute resource
+# interprets exit code 0, 1 and 2 as success.
+# An exit code of 1 from 'puppet agent --test' command results in not creating
+# the 't_file', which will trigger logging a warning in the
+# ruby_block[registration-status], called by the notifies attribute.
 execute "run puppet-client" do
   command "puppet agent --test"
   returns [0,1,2]
@@ -71,7 +74,7 @@ ruby_block "registration-status" do
   action :nothing
 end
 
-# Enables and starts the Puppet client service.
+# Enables and starts puppet client service on successful client registration.
 service "puppet" do
   action [:enable, :start]
   only_if { ::File.exists?(t_file) }

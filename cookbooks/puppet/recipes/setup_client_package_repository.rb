@@ -16,7 +16,7 @@ if node[:platform] =~ /redhat|centos/
     cookbook "puppet"
   end
 
-  # Copies public key for package verification.
+  # Installs public key for package verification.
   cookbook_file "/etc/pki/rpm-gpg/RPM-GPG-KEY-puppetlabs" do
     source "RPM-GPG-KEY-puppetlabs"
     cookbook "puppet"
@@ -29,6 +29,7 @@ if node[:platform] =~ /redhat|centos/
     action :nothing
   end
 
+  # Updates the list of available packages.
   execute "Updating the list of available packages" do
     command "yum -q makecache"
     notifies :create, "ruby_block[reload-internal-yum-cache]", :immediately
@@ -42,7 +43,7 @@ elsif node[:platform] =~ /ubuntu/
     cookbook "puppet"
   end
 
-  # Copies public key for package verification.
+  # Installs public key for package verification.
   directory "/etc/apt/trusted.gpg.d"
 
   cookbook_file "/etc/apt/trusted.gpg.d/puppetlabs-keyring.gpg" do
@@ -50,6 +51,7 @@ elsif node[:platform] =~ /ubuntu/
     cookbook "puppet"
   end
 
+  # Updates the list of available packages.
   execute "Updating the list of available packages" do
     command "sudo apt-get -qq update"
   end

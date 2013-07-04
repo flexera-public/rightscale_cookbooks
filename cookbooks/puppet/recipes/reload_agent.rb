@@ -19,7 +19,7 @@ execute "run puppet-client" do
   creates t_file
 end
 
-# Enables and starts the Puppet client service.
+# Enables and starts puppet client service on successful client registration.
 service "puppet" do
   action [:enable, :start]
   only_if { ::File.exists?(t_file) }
