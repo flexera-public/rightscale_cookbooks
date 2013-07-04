@@ -8,13 +8,12 @@
 
 # Setup default values for database resource
 
-rightscale_marker :begin
+rightscale_marker
 
-version = "9.1"
-node[:db][:version] = version
+node[:db][:version] = "9.1"
 node[:db][:provider] = "db_postgres"
 
-log "  Setting DB PostgreSQL version to #{version}"
+log "  Setting DB PostgreSQL version to #{node[:db][:version]}"
 
 # Set PostgreSQL 9.1 specific node variables in this recipe.
 #
@@ -32,12 +31,21 @@ node[:db_postgres][:server_packages_install] = value_for_platform(
   "default" => []
 )
 
+node[:db_postgres][:service_name] = value_for_platform(
+  ["centos", "redhat"] => {
+    "default" => "postgresql-9.1"
+  }
+)
+
 # Platform specific attributes
 case node[:platform]
 when "centos", "redhat"
-  node[:db_postgres][:basedir] = "/var/lib/pgsql/#{version}"
-  node[:db_postgres][:confdir] = "/var/lib/pgsql/#{version}/data"
-  node[:db_postgres][:datadir] = "/var/lib/pgsql/#{version}/data"
+  node[:db_postgres][:confdir] = "/var/lib/pgsql/9.1/data"
+  node[:db_postgres][:datadir] = "/var/lib/pgsql/9.1/data"
+  node[:db_postgres][:backupdir] = "/var/lib/pgsql/9.1/backups"
+  node[:db_postgres][:bindir] = "/usr/pgsql-9.1/bin"
+else
+  raise "Platform '#{node[:platform]}' is not supported by this recipe."
 end
 
 node[:db][:init_timeout]= "60"
@@ -48,5 +56,3 @@ node[:db][:info_file_options] = [
   "cat #{node[:db_postgres][:datadir]}/postgresql.conf"
 ]
 node[:db][:info_file_location] = node[:db_postgres][:datadir]
-
-rightscale_marker :end

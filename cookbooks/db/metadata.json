@@ -1,11 +1,14 @@
 {
   "name": "db",
   "description": "RightScale Database Manager",
-  "long_description": "= RightScale Database Manager\n\n== DESCRIPTION:\n\nThis cookbook provides a set of database recipes used by the RightScale\nDatabase Manager ServerTemplates.\n\nThis cookbook does not contain a specific database implementation, rather\nit provides an interface for general database actions and parameters.\n\n== REQUIREMENTS:\n\n* Must be used with a 'db' provider in the cookbook path.\n* Depends on a <tt>block_device</tt> resource for backup and restore recipes.\n* Requires a virtual machine launched from a RightScale-managed RightImage.\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n== KNOWN LIMITATIONS:\n\n* Only one db provider should be present in your cookbook path.\n\n== SETUP:\n\n* To setup only the database client, place <tt>db::default</tt> recipe into\n  your runlist. This will pull in generic client inputs, provide provider\n  selection input and install client. Set db/provider_type input in\n  RightScale ServerTemplate to set provider and version for 'db' resource.\n  Packages specific to the database for application servers will be installed by\n  the <tt>install_client_driver</tt> action of the db_<provider> based on the type\n  of driver. The driver type should be set by the application servers and\n  passed to the db_<provider> cookbook. This action also sets the\n  <tt>node[:db][:client][:driver]</tt> attribute which is used to perform\n  database specific actions.\n* To setup a database client and server, place the following recipes\n  in order to your runlist:\n\n    db_<provider>::setup_server_<version>\n      loads the database provider, tuning parameters, as well as other\n      provider-specific attributes into the node as inputs.\n\n    db::install_server\n      sets up generic server and client inputs. This will also include\n      db::default recipe which installs the client.\n\n  For example: To set up and install MySQL 5.5 client and server\n\n    db_mysql::setup_server_5_5\n    db::install_server\n\n== USAGE:\n\n=== Initialize a master database:\n\n1. Once your server is operational, run the:\n\n    \"db::setup_block_device\"\n\n   recipe, which initializes your database onto a block device\n   that supports backup and restore operations.\n2. Initialize your database from previous dump file or other source.\n3. Register your database with a DNS provider that supports dynamic DNS using:\n\n    \"sys_dns::do_set_private\"\n\n   to allow your application servers to start making connections.\n4. Backup your database using:\n\n    \"db:do_backup\"\n\n   so that you can restore the master database in the event \n   of a failure or planned termination.\n\n=== Restore a master database:\n\n1. Once your server is operational, run the:\n\n    \"db::do_restore\"\n\n   recipe, which restores your database from a backup previously saved to\n   persistent cloud storage.\n2. Register your database with a DNS provider that supports dynamic DNS using:\n\n    \"sys_dns::do_set_private\"\n\n   to allow your application servers to start making connections.\n\n=== Setup database client:\n\n1. Put \"db::default\" into database client ServerTemplate runlist.\n   Use db/provider_type input to select from existing clients or override this\n   input to add custom type of database client\n   db/provider_type Input selects your database provider cookbook\n   (e.g. db_mysql, db_postgres, db_oracle, etc.) and what database version the\n   client will connect to. (e.g. 5.1, 5.5, 9.1). This affects what connector\n   package to install. Syntax for this input is\n   <cookbook>_<version> (i.e. db_mydatabase_1.0)\n2. Fill <tt>db/application/password</tt> , <tt>db/application/user</tt> and\n   <tt>db/dns/master/fqdn</tt> inputs which are necessary to connect client to\n   Database Manager.\n\n== DETAILS:\n\n=== General\n\nThe 'db' interface is defined by a Lightweight Resource, which can be found in\nthe 'resources/default.rb' file.\n\nThis cookbook is intended to be used in conjunction with cookbooks that contain\nLightweight Providers which implement the 'db' interface. See RightScale's\n'db_mysql' cookbook for an example.\n\nFor more information about Lightweight Resources and Providers (LWRPs), please see: {Lightweight Resources and Providers}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)]\n\n=== Backup/Restore\n\nThis cookbook depends on the block_device LWRP for backup and restore actions.\nSee <tt>db::do_backup</tt> and <tt>db::do_restore</tt> recipes for examples. The\n'block_device' cookbook provides primary and secondary persistence solutions for\nmultiple clouds.\n\nHowever, using LWRPs one can provide their own block device implementation\ninstead.\n\nPlease see the 'block_device' cookbook for the list of available actions,\nattributes and usage.\n\n=== Providers:\n\nWhen writing your own database Lightweight Provider:\n\n* The database provider to use is defined by the <tt>node[:db][:provider]</tt>\n  attribute. You will need to override this attribute by adding the following\n  code in the attributes file of your provider cookbook.\n\n    set[:db][:provider] = \"db_myprovider\"\n\n* Any database-specific attributes that you wish to make into user-configurable\n  inputs should be added to the cookbook metadata with the default recipe included in\n  the attribute's 'recipes' array. For more about Chef metadata, please see: {Chef Metadata}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-RightScale_Support_of_Chef/Chef_Metadata]\n* Your provider cookbook metadata should depend on this cookbook by adding a\n  'depends' line to its metadata. For example:\n\n    depends \"db\"\n\n== LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to\nthe RightScale Terms of Service available at http://www.rightscale.com/terms.php\nand, if applicable, other agreements such as a RightScale Master Subscription\nAgreement.\n",
+  "long_description": "# RightScale Database Cookbook\n\n## DESCRIPTION:\n\nThis cookbook provides a set of database recipes used by the RightScale\nDatabase Manager ServerTemplates.\n\nThis cookbook does not contain a specific database implementation, rather\nit provides an interface for general database actions and parameters.\n\n## REQUIREMENTS:\n\n* Must be used with a 'db' provider in the cookbook path.\n* Depends on a `block_device` resource for backup and restore recipes.\n* Requires a virtual machine launched from a RightScale-managed RightImage.\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see `metadata.rb` file for the latest dependencies.\n\n## KNOWN LIMITATIONS:\n\n* Only one db provider should be present in your cookbook path.\n\n## SETUP:\n\n* To setup only the database client, place `db::default` recipe into\n  your runlist. This will pull in generic client inputs, provide provider\n  selection input and install client. Set db/provider_type input in\n  RightScale ServerTemplate to set provider and version for 'db' resource.\n  Packages specific to the database for application servers will be installed by\n  the `install_client_driver` action of the db_<provider> based on the type\n  of driver. The driver type should be set by the application servers and\n  passed to the db_<provider> cookbook. This action also sets the\n  `node[:db][:client][:driver]` attribute which is used to perform\n  database specific actions.\n* To setup a database client and server, place the following recipes\n  in order to your runlist:\n\n    db_<provider>::setup_server_<version>\n      loads the database provider, tuning parameters, as well as other\n      provider-specific attributes into the node as inputs.\n\n    db::install_server\n      sets up generic server and client inputs. This will also include\n      db::default recipe which installs the client.\n\n  For example: To set up and install MySQL 5.5 client and server\n\n    db_mysql::setup_server_5_5\n    db::install_server\n\n## USAGE:\n\n### Initialize a master database:\n\n1. Once your server is operational, run the:\n\n    \"db::do_init_and_become_master\"\n\n   recipe, which initializes your database onto a block device\n   that supports backup and restore operations.\n2. Initialize your database from previous dump file or other source.\n3. Register your database with a DNS provider that supports dynamic DNS using:\n\n    \"sys_dns::do_set_private\"\n\n   to allow your application servers to start making connections.\n4. Backup your database using:\n\n    \"db:do_backup\"\n\n   so that you can restore the master database in the event \n   of a failure or planned termination.\n\n### Restore a master database:\n\n1. Once your server is operational, run the:\n\n    \"db::do_restore\"\n\n   recipe, which restores your database from a backup previously saved to\n   persistent cloud storage.\n2. Register your database with a DNS provider that supports dynamic DNS using:\n\n    \"sys_dns::do_set_private\"\n\n   to allow your application servers to start making connections.\n\n### Setup database client:\n\n1. Put \"db::default\" into database client ServerTemplate runlist.\n   Use db/provider_type input to select from existing clients or override this\n   input to add custom type of database client\n   db/provider_type Input selects your database provider cookbook\n   (e.g. db_mysql, db_postgres, db_oracle, etc.) and what database version the\n   client will connect to. (e.g. 5.1, 5.5, 9.1). This affects what connector\n   package to install. Syntax for this input is\n   <cookbook>_<version> (i.e. db_mydatabase_1.0)\n2. Fill `db/application/password` , `db/application/user` and\n   `db/dns/master/fqdn` inputs which are necessary to connect client to\n   Database Manager.\n\n## DETAILS:\n\n### General\n\nThe 'db' interface is defined by a Lightweight Resource, which can be found in\nthe 'resources/default.rb' file.\n\nThis cookbook is intended to be used in conjunction with cookbooks that contain\nLightweight Providers which implement the 'db' interface. See RightScale's\n'db_mysql' cookbook for an example.\n\nFor more information about Lightweight Resources and Providers (LWRPs), please\nsee: [Lightweight Resources and Providers][LWRP]\n\n[LWRP]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)\n\n### Backup/Restore\n\nThis cookbook depends on the block_device LWRP for backup and restore actions.\nSee `db::do_backup` and `db::do_restore` recipes for examples. The\n'block_device' cookbook provides primary and secondary persistence solutions for\nmultiple clouds.\n\nHowever, using LWRPs one can provide their own block device implementation\ninstead.\n\nPlease see the 'block_device' cookbook for the list of available actions,\nattributes and usage.\n\n### Providers:\n\nWhen writing your own database Lightweight Provider:\n\n* The database provider to use is defined by the `node[:db][:provider]`\n  attribute. You will need to override this attribute by adding the following\n  code in the attributes file of your provider cookbook.\n\n    set[:db][:provider] = \"db_myprovider\"\n\n* Any database-specific attributes that you wish to make into user-configurable\n  inputs should be added to the cookbook metadata with the default recipe included in\n  the attribute's 'recipes' array. For more about Chef metadata, please see:\n  [Chef Metadata][Guide]\n* Your provider cookbook metadata should depend on this cookbook by adding a\n  'depends' line to its metadata. For example:\n\n    depends \"db\"\n\n[Guide]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-RightScale_Support_of_Chef/Chef_Metadata\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
   "maintainer": "RightScale, Inc.",
   "maintainer_email": "support@rightscale.com",
   "license": "Copyright RightScale, Inc. All rights reserved.",
   "platforms": {
+    "centos": ">= 0.0.0",
+    "redhat": ">= 0.0.0",
+    "ubuntu": ">= 0.0.0"
   },
   "dependencies": {
     "rightscale": ">= 0.0.0",
@@ -290,7 +293,9 @@
         "db::do_primary_backup_schedule_disable",
         "db::do_force_reset",
         "db::do_secondary_backup",
-        "db::do_secondary_restore"
+        "db::do_secondary_restore",
+        "db::do_secondary_backup_schedule_enable",
+        "db::do_secondary_backup_schedule_disable"
       ],
       "choice": [
 
@@ -387,6 +392,58 @@
       "calculated": false,
       "type": "string"
     },
+    "db/backup/secondary/master/cron/hour": {
+      "display_name": "Master Secondary Backup Cron Hour",
+      "description": "Defines the hour of the day when the secondary backup will be taken of the master database. Backups of the master are taken daily. By default, an hour will be randomly chosen at launch time. Otherwise, the time of the backup is defined by 'Master Secondary Backup Cron Hour' and 'Master Secondary Backup Cron Minute'. Uses standard crontab format (e.g., 23 for 11:00 PM).",
+      "required": "optional",
+      "recipes": [
+        "db::do_secondary_backup_schedule_enable"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "db/backup/secondary/slave/cron/hour": {
+      "display_name": "Slave Secondary Backup Cron Hour",
+      "description": "By default, secondary backups of the slave database are taken hourly. However, if you specify a value in this input (e.g., 23 for 11:00 PM), then backups will occur once per day at the specified hour, rather than hourly. Uses standard crontab format (e.g., 23 for 11:00 PM).",
+      "required": "optional",
+      "recipes": [
+        "db::do_secondary_backup_schedule_enable"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "db/backup/secondary/master/cron/minute": {
+      "display_name": "Master Secondary Backup Cron Minute",
+      "description": "Defines the minute of the hour when the secondary backup will be taken of the master database. Backups of the master are taken daily. By default, a minute will be randomly chosen at launch time. Otherwise, the time of the backup is defined by 'Master Secondary Backup Cron Hour' and 'Master Secondary Backup Cron Minute'. Uses standard crontab format (e.g., 30 for minute 30 of the hour).",
+      "required": "optional",
+      "recipes": [
+        "db::do_secondary_backup_schedule_enable"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "db/backup/secondary/slave/cron/minute": {
+      "display_name": "Slave Secondary Backup Cron Minute",
+      "description": "Defines the minute of the hour when the secondary backup will be taken of the slave database. Backups of the slave are taken hourly. By default, a minute will be randomly chosen at launch time. Uses standard crontab format (e.g., 30 for minute 30 of the hour). Uses standard crontab format (e.g., 30 for minute 30 of the hour).",
+      "required": "optional",
+      "recipes": [
+        "db::do_secondary_backup_schedule_enable"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    },
     "db/dump": {
       "display_name": "Import/export settings for database dump file management.",
       "type": "hash",
@@ -409,6 +466,7 @@
         "cloudfilesuk",
         "google",
         "azure",
+        "swift",
         "SoftLayer_Dallas",
         "SoftLayer_Singapore",
         "SoftLayer_Amsterdam"
@@ -423,7 +481,7 @@
     },
     "db/dump/storage_account_id": {
       "display_name": "Dump Storage Account ID",
-      "description": "In order to write the dump file to the specified cloud storage location, you need to provide cloud authentication credentials. For Amazon S3, use your Amazon access key ID (e.g., cred:AWS_ACCESS_KEY_ID). For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME). Example: cred:AWS_ACCESS_KEY_ID",
+      "description": "In order to write the dump file to the specified cloud storage location, you need to provide cloud authentication credentials. For Amazon S3, use your Amazon access key ID (e.g., cred:AWS_ACCESS_KEY_ID). For Rackspace Cloud Files, use your Rackspace login username (e.g., cred:RACKSPACE_USERNAME). For OpenStack Swift the format is: 'tenantID:username'. Example: cred:AWS_ACCESS_KEY_ID",
       "required": "required",
       "recipes": [
         "db::do_dump_import",
@@ -440,6 +498,22 @@
       "display_name": "Dump Storage Account Secret",
       "description": "In order to write the dump file to the specified cloud storage location, you need to provide cloud authentication credentials. For Amazon S3, use your AWS secret access key (e.g., cred:AWS_SECRET_ACCESS_KEY). For Rackspace Cloud Files, use your Rackspace account API key (e.g., cred:RACKSPACE_AUTH_KEY). Example: cred:AWS_SECRET_ACCESS_KEY",
       "required": "required",
+      "recipes": [
+        "db::do_dump_import",
+        "db::do_dump_export",
+        "db::do_dump_schedule_enable"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "db/dump/storage_account_endpoint": {
+      "display_name": "Dump Storage Endpoint URL",
+      "description": "The endpoint URL for the storage cloud. This is used to override the default endpoint or for generic storage clouds such as Swift. Example: http://endpoint_ip:5000/v2.0/tokens",
+      "required": "optional",
+      "default": "",
       "recipes": [
         "db::do_dump_import",
         "db::do_dump_export",
@@ -555,12 +629,13 @@
     "db::do_primary_backup_schedule_disable": "Disables db::do_primary_backup from being run periodically.",
     "db::setup_privileges_admin": "Adds the username and password for 'superuser' privileges.",
     "db::setup_privileges_application": "Adds the username and password for application privileges.",
-    "db::remove_anonymous_users": "Removes anonymous users from database.",
     "db::do_secondary_backup": {
       "description": "Creates a backup of the database and uploads it to a secondary cloud storage location, which can be used to migrate your database to a different cloud. For example, you can save a secondary backup to an Amazon S3 bucket or a Rackspace Cloud Files container.",
       "thread": "db_backup"
     },
     "db::do_secondary_restore": "Restores the database from the most recently completed backup available in a secondary location.",
+    "db::do_secondary_backup_schedule_enable": "Enables db::do_secondary_backup to be run periodically.",
+    "db::do_secondary_backup_schedule_disable": "Disables db::do_secondary_backup from being run periodically.",
     "db::do_force_reset": "Resets the database back to a pristine state. WARNING: Execution of this script will delete any data in your database!",
     "db::do_dump_export": "Creates a dump file and uploads it to a remote object storage (e.g., Amazon S3, Google Cloud Storage, Azure, Softlayer or Rackspace Cloud Files).",
     "db::do_dump_import": "Retrieves a dump file from remote object storage (e.g., Amazon S3 Google Cloud Storage, Azure, Softlayer or Rackspace Cloud Files) and imports it to the database server.",
@@ -584,5 +659,5 @@
     "db::handle_demote_master": "Remote recipe executed by do_promote_to_master. DO NOT RUN.",
     "db::do_delete_volumes_and_terminate_server": "Deletes any currently attached volumes from the instance and then terminates the machine."
   },
-  "version": "13.4.0"
+  "version": "13.5.0"
 }

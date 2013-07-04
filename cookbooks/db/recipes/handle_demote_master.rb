@@ -1,11 +1,12 @@
 #
 # Cookbook Name:: db
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Clear master tags
 master_instance_uuid_tag = "rs_dbrepl:master_instance_uuid=#{node[:rightscale][:instance_uuid]}"
@@ -26,7 +27,5 @@ end
 # Add server tag to visually show a slave
 # See cookbooks/db/definitions/db_register_slave.rb for the "db_register_slave" definition.
 db_register_slave "tagging slave" do
-  action :only_tag
+  action :demote_master
 end
-
-rightscale_marker :end

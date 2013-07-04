@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: db
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 # Used to find master db
 # When a slave database starts, it needs to determine which database it should use as
@@ -15,7 +16,7 @@
 # @param [Symbol] action restore process to do before becoming a slave.
 #   * The +:primary_restore+ action will do a restore from primary backup location then become a slave.
 #   * The +:secondary_restore+ action will do a restore from secondary backup location then become a slave.
-#   * The +:only_tag+ action will only tag the slave server.
+#   * The +:demote_master+ action will process configs and tags to be a slave.
 #   * The +:no_restore+ action will not do a restore of any type then will become a slave.  Used for stop/start where data already exists.
 #
 # @raise [RuntimeError] if no master DB found".
@@ -26,10 +27,19 @@ define :db_register_slave, :action => :primary_restore do
   # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RightLinkTag for the "right_link_tag" resource.
   right_link_tag "rs_dbrepl:slave_instance_uuid=#{node[:rightscale][:instance_uuid]}"
 
-  # if we are only tagging the server, exit
-  unless params[:action] == :only_tag
+  DATA_DIR = node[:db][:data_dir]
 
-    DATA_DIR = node[:db][:data_dir]
+  # if we are demoting a master
+  if params[:action] == :demote_master
+
+    # See cookbooks/db_<provider>/providers/default.rb for the
+    # "enable_replication" action.
+    db DATA_DIR do
+      restore_process :no_restore
+      action :enable_replication
+    end
+
+  else
 
     # See cookbooks/rightscale/providers/server_collection.rb for the "load" action.
     r = rightscale_server_collection "master_servers" do
@@ -158,7 +168,7 @@ define :db_register_slave, :action => :primary_restore do
     # See cookbooks/db/recipes/request_master_allow.rb for the "db::request_master_allow" recipe.
     include_recipe "db::request_master_allow"
 
-    # After slave has been initialized, run the specified backup recipe, primary or secondary.
+    # After slave has been initialized, run the specified restore recipe, primary or secondary.
     # Stop/start or reboot would pass a no_restore action.
     case params[:action]
     when :primary_restore
@@ -180,11 +190,6 @@ define :db_register_slave, :action => :primary_restore do
       action :enable_replication
     end
 
-    # See cookbooks/db_<provider>/providers/default.rb for the "setup_monitoring" action.
-    db DATA_DIR do
-      action :setup_monitoring
-    end
-
     # Force a new backup if this is the initial setup of a slave
     case params[:action]
     when :primary_restore, :secondary_restore
@@ -193,9 +198,14 @@ define :db_register_slave, :action => :primary_restore do
     else
       log "  No backup initiated"
     end
-
-    # See cookbooks/db/recipes/do_primary_backup_schedule_enable.rb for the "db::do_primary_backup_schedule_enable" recipe.
-    include_recipe "db::do_primary_backup_schedule_enable"
   end
+
+  # See cookbooks/db_<provider>/providers/default.rb for the "setup_monitoring" action.
+  db DATA_DIR do
+    action :setup_monitoring
+  end
+
+  # See cookbooks/db/recipes/do_primary_backup_schedule_enable.rb for the "db::do_primary_backup_schedule_enable" recipe.
+  include_recipe "db::do_primary_backup_schedule_enable"
 
 end

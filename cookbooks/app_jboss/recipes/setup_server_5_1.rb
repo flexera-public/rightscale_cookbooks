@@ -1,11 +1,12 @@
 #
 # Cookbook Name:: app_jboss
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Defining provider, app user, group attributes
 log "  Setting provider specific settings for jboss"
@@ -25,4 +26,10 @@ end
 
 log "  Setting JBoss internal port to #{node[:app_jboss][:internal_port]}"
 
-rightscale_marker :end
+# Sets required apache modules.
+node[:app_jboss][:module_dependencies] = [
+  "proxy",
+  "proxy_http",
+  "deflate",
+  "rewrite"
+]

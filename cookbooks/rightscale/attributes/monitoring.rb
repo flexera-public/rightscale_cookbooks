@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: rightscale
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 default[:rightscale][:collectd_packages_version] = "latest"
 default[:rightscale][:collectd_lib] = "/usr/lib64/collectd"
@@ -17,8 +18,7 @@ default[:rightscale][:plugin_list_array] = [
   "load",
   "memory",
   "processes",
-  "users",
-  "ping"
+  "users"
 ]
 
 default[:rightscale][:process_list] = ""

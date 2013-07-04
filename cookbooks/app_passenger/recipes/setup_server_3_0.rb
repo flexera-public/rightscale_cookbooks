@@ -1,11 +1,12 @@
 #
-# Cookbook Name::app_passenger
+# Cookbook Name:: app_passenger
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 log "  Setting provider specific settings for rails-passenger."
 version = "3.0"
@@ -54,4 +55,5 @@ node[:app_passenger][:passenger_bin_dir] = $1
 gemenv.stdout =~ /INSTALLATION DIRECTORY: (.*)$/
 node[:app_passenger][:ruby_gem_base_dir] = $1
 
-rightscale_marker :end
+# Sets required apache modules.
+node[:app_passenger][:module_dependencies] = ["proxy", "proxy_ajp"]

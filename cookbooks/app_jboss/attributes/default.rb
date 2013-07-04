@@ -1,17 +1,20 @@
 #
 # Cookbook Name:: app_jboss
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 # Set Jboss install dir and version
 set[:app_jboss][:install_target] = "/usr/share/jboss"
 
 # List of required apache modules
-set[:app][:module_dependencies] = ["proxy", "proxy_http", "deflate", "rewrite"]
+default[:app_jboss][:module_dependencies] = []
 
 # Recommended attributes
+
+# Defines the root war file location
 default[:app_jboss][:code][:root_war] = ""
 # Defines the initial value of the permanent generation space size
 default[:app_jboss][:java][:permsize] = "256m"
@@ -27,7 +30,8 @@ default[:app_jboss][:java][:xmx] = "1024m"
 default[:app_jboss][:java][:xms] = "1024m"
 # Defines the survivor ratio used by the JVM
 default[:app_jboss][:java][:survivor_ratio] = "6"
-
+# Defines the datasource name
+default[:app_jboss][:datasource_name] = "jdbc/ConnDB"
 # Internal port for JBoss
 default[:app_jboss][:internal_port] = "8080"
 

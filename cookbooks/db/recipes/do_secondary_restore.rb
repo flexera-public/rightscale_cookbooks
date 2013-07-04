@@ -1,11 +1,12 @@
 #
 # Cookbook Name:: db
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 class Chef::Recipe
   include RightScale::BlockDeviceHelper
@@ -52,7 +53,7 @@ elsif secondary_storage_cloud =~ /rackspace/i
   secondary_storage_cloud = "cloudfiles"
 end
 
-log "  Performing Secondary Restore from #{node[:db][:backup][:secondary_location]}..."
+log "  Performing Secondary Restore from #{secondary_storage_cloud}..."
 # Requires block_device DATA_DIR to be previously instantiated.
 # Make sure block_device::default recipe has been run.
 # See cookbooks/block_device/providers/default.rb for the "secondary_restore" action.
@@ -93,5 +94,3 @@ db_set_privileges [
   {:role => "administrator", :username => node[:db][:admin][:user], :password => node[:db][:admin][:password]},
   {:role => "user", :username => node[:db][:application][:user], :password => node[:db][:application][:password]}
 ]
-
-rightscale_marker :end

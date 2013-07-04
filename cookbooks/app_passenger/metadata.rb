@@ -2,12 +2,12 @@ maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "Installs/Configures Apache Passenger Rails application server"
-long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "13.4.0"
+long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
+version          "13.5.0"
 
-# supports "centos", "~> 5.8", "~> 6"
-# supports "redhat", "~> 5.8"
-# supports "ubuntu", "~> 10.04", "~> 12.04"
+supports "centos"
+supports "redhat"
+supports "ubuntu"
 
 depends "app"
 depends "repo"
@@ -28,8 +28,7 @@ recipe "app_passenger::run_custom_rails_commands",
   "Runs specific user defined commands. Commands will be executed in" +
   " the app directory."
 
-
-attribute "app_passenger/spawn_method",
+attribute "app_passenger/rails_spawn_method",
   :display_name => "Rails spawn method",
   :description =>
     "The spawn method that Phusion Passenger will use. The choices are:" +

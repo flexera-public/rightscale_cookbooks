@@ -1,11 +1,12 @@
 #
 # Cookbook Name:: app_tomcat
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 log "  Setting provider specific settings for tomcat"
 version = "7"
@@ -56,8 +57,14 @@ node[:app][:packages] = value_for_platform(
   }
 )
 
+# Sets required apache modules.
+node[:app_tomcat][:module_dependencies] = [
+  "proxy",
+  "proxy_http",
+  "deflate",
+  "rewrite"
+]
+
 if node[:app][:packages].empty?
   raise "Unrecognized distro #{node[:platform]} for tomcat#{version}, exiting"
 end
-
-rightscale_marker :end

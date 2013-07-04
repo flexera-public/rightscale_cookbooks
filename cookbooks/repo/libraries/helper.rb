@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: repo
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 module RightScale
   module Repo
@@ -15,6 +16,7 @@ module RightScale
       # @param ssh_key [string] rsync private ssh key
       #
       # @raise [RuntimeError] if ssh key string is empty
+      #
       def create(ssh_key)
         raise "  SSH key is empty!" unless ssh_key
 
@@ -35,9 +37,13 @@ module RightScale
       # Create record in /root/.ssh/known_hosts
       #
       # @param host_key [string] host_key record: fqdn,ip ssh-rsa value
+      #
       def add_host_key(host_key)
-        host_file = "/root/.ssh/known_hosts"
-        if ::File.exists?("#{host_file}") && ::File.readlines(host_file).grep("#{host_key}\n").any?
+        # Make sure .ssh directory exists.
+        host_file_dir = "/root/.ssh"
+        ::Dir.mkdir(host_file_dir, 0700) unless ::File.exists?(host_file_dir)
+        host_file = "#{host_file_dir}/known_hosts"
+        if ::File.exists?(host_file) && ::File.readlines(host_file).grep("#{host_key}\n").any?
           Chef::Log.info("  Skipping key installation. Looks like the key already exists.")
         else
           Chef::Log.info("  Installing ssh host key for root.")
@@ -46,10 +52,7 @@ module RightScale
             known_hosts.chmod(0600)
           end
         end
-
       end
-
     end
-
   end
 end

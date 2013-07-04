@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: db_mysql
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 module RightScale
   module Database
@@ -11,10 +12,8 @@ module RightScale
       module Helper
 
         require 'timeout'
-        require 'yaml'
         require 'ipaddr'
 
-        SNAPSHOT_POSITION_FILENAME = 'rs_snapshot_position.yaml'
         DEFAULT_CRITICAL_TIMEOUT = 7
 
         # Create new MySQL object
@@ -50,16 +49,6 @@ module RightScale
         def self.mycnf_relay_log(node)
           node[:db_mysql][:mycnf_relay_log] = Time.now.to_i.to_s + rand(9999).to_s.rjust(4, '0') if !node[:db_mysql][:mycnf_relay_log]
           return node[:db_mysql][:mycnf_relay_log]
-        end
-
-        # Helper to load replication information
-        # from "rs_snapshot_position.yaml"
-        #
-        # @param [Hash] node  Node name
-        def self.load_replication_info(node)
-          loadfile = ::File.join(node[:db][:data_dir], SNAPSHOT_POSITION_FILENAME)
-          Chef::Log.info "  Loading replication information from #{loadfile}"
-          YAML::load_file(loadfile)
         end
 
         # Loading information about replication master status.

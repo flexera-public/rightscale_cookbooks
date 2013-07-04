@@ -1,11 +1,12 @@
 #
 # Cookbook Name:: block_device
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 class Chef::Resource::Mount
   include RightScale::BlockDeviceHelper
@@ -47,8 +48,8 @@ if node[:platform] == "ubuntu"
   options += ",bootwait,noauto"
 end
 
-# RedHat does not support xfs, so set specific item accordingly
-if node[:platform] == "redhat"
+# We do not support xfs on RedHat and Google
+if node[:platform] == "redhat" || cloud == "google"
   filesystem_type = "ext3"
 else
   filesystem_type = node[:block_device][:ephemeral][:file_system_type]
@@ -63,39 +64,42 @@ root_device = `mount`.find { |dev| dev.include? " on / " }.split[0]
 current_mnt_device = `mount`.find { |dev| dev.include? " on #{ephemeral_mount_point} " }
 current_mnt_device = current_mnt_device ? current_mnt_device.split[0] : nil
 
-# Only EC2, Azure, and openstack clouds are currently supported
-if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
-
+# Only EC2, Google, Azure, and openstack clouds are currently supported
+ephemeral_supported_clouds = ["ec2", "openstack", "azure", "google"]
+if ephemeral_supported_clouds.include?(cloud)
   # Get a list of ephemeral devices
   # Make sure to skip EBS volumes attached on boot
   # See rightscale_tools gem for implementation of API.factory method
   @api = RightScale::Tools::API.factory('1.0', {:cloud => cloud}) if cloud == 'ec2'
   my_devices = []
-  dev_index = 0
-  loop do
-    if node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
-      device = node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
-      device = '/dev/' + device if device !~ /^\/dev\//
-      # See rightscale_tools gem for implementation of unmap_device_for_ec2
-      # method.
-      device = @api.unmap_device_for_ec2(device) if cloud == 'ec2'
-      # for HVM: /dev/xvdb is symlinked to /dev/sda, though it shows up as
-      # /dev/xvdb in /proc/partitions.  unmap function returns that
-      device = Pathname.new(device).realpath.to_s if File.exists?(device)
-      # verify that device is actually on the instance and is a blockSpecial
-      if (File.exists?(device) && File.ftype(device) == "blockSpecial")
-        my_devices << device
+  case cloud
+  when 'ec2', 'openstack'
+    dev_index = 0
+    loop do
+      if node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
+        device = node[cloud][:block_device_mapping]["ephemeral#{dev_index}"]
+        device = '/dev/' + device if device !~ /^\/dev\//
+        # See rightscale_tools gem for implementation of unmap_device_for_ec2
+        # method.
+        device = @api.unmap_device_for_ec2(device) if cloud == 'ec2'
+        # for HVM: /dev/xvdb is symlinked to /dev/sda, though it shows up as
+        # /dev/xvdb in /proc/partitions.  unmap function returns that
+        device = Pathname.new(device).realpath.to_s if File.exists?(device)
+        # verify that device is actually on the instance and is a blockSpecial
+        if (File.exists?(device) && File.ftype(device) == "blockSpecial")
+          my_devices << device
+        else
+          log "  WARNING: Cannot use device #{device} - skipping"
+        end
       else
-        log "  WARNING: Cannot use device #{device} - skipping"
+        break
       end
-    else
-      break
+      dev_index += 1
     end
-    dev_index += 1
-  end if cloud != 'azure'
 
-  # Azure doesn't have block_device_mapping in the node so the device is hard-coded at the moment
-  if cloud == 'azure'
+  # Azure doesn't have block_device_mapping in the node so the device is
+  # hard-coded at the moment
+  when 'azure'
     device = '/dev/sdb1'
     device = Pathname.new(device).realpath.to_s if File.exists?(device)
     if (File.exists?(device) && File.ftype(device) == "blockSpecial")
@@ -103,10 +107,25 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
     else
       log "  WARNING: Cannot use device #{device} - skipping"
     end
+
+  when 'google'
+    eph_link = "/dev/disk/by-id/scsi-0Google_EphemeralDisk_ephemeral-disk-0"
+    # /dev/disk/by-id/scsi-0Google_EphemeralDisk_ephemeral-disk-0 is available
+    # only on images with '-d' suffix. If this file does not exist then the
+    # ephemeral device is not supported for the specified image.
+    if File.exists?(eph_link)
+      unless File.symlink?(eph_link)
+        raise "Link to ephemeral disk '#{link}' does not exist"
+      end
+      disk = File.readlink(eph_link)
+      device = File.basename(disk)
+      my_devices << "/dev/#{device}"
+    end
   end
 
   # Check if /mnt is actually on a seperate device.
-  # ec2 instances and images that do now have ephemeral will be caught by this, eg: t1.micro and HVM
+  # ec2 instances and images that do now have ephemeral will be caught by this,
+  # eg: t1.micro and HVM
   if my_devices.empty?
     log "  Skipping ephemeral drive setup for non-ephemeral image/instance size"
   else
@@ -216,5 +235,3 @@ if cloud == 'ec2' || cloud == 'openstack' || cloud == 'azure'
 else
   log "  Skipping LVM on ephemeral drives setup for non-ephemeral cloud #{cloud}"
 end
-
-rightscale_marker :end

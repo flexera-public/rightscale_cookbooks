@@ -6,18 +6,19 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Setting up Server to work with Rackconnect
 if node[:cloud][:provider] == "rackspace-ng" &&
   node[:etc][:passwd].has_key?(:rackconnect)
 
-  # If we are using rackconnect, setting sys_firewall/enabled to anything
-  # other than "enable" or "disable" will make no changes to iptables.
-  r = ruby_block "Setting up for Rackconnect" do
+  # If we are using rackconnect, setting sys_firewall/enabled to "unmanaged"
+  # will make no changes to iptables.
+  r = ruby_block "Setting up sys_firewall for Rackconnect" do
     block do
-      Chef::Log.info("Bypassing sys_firewall::default")
-      node[:sys_firewall][:enabled] = "rackconnect"
+      Chef::Log.info("Overriding sys_firewall/enabled to \"unmanaged\" for" +
+        " Rackconnect support")
+      node[:sys_firewall][:enabled] = "unmanaged"
     end
     action :nothing
   end
@@ -31,6 +32,13 @@ when "enabled"
   # See https://github.com/rightscale/cookbooks/blob/master/iptables/recipes/default.rb
   # for the "iptables::default" recipe.
   include_recipe "iptables"
+
+  # Enable the iptables service for CentOS/RedHat
+  service "iptables" do
+    action :enable
+    not_if { node[:platform] == "ubuntu" }
+  end
+
   # See cookbooks/sys_firewall/providers/default.rb for the "update" action.
   sys_firewall "22" # SSH
   sys_firewall "80" # HTTP
@@ -51,10 +59,13 @@ when "disabled"
     supports :status => true
     action [:disable, :stop]
   end
-else
-  # previous recipes could have set the node to anything else
-  # in order to make no changes to iptables.
-  log "making no changes to sys_firewall"
+when "unmanaged"
+  # If the sys_firewall/enabled input is set to "unmanaged" no changes will be
+  # made for iptables and not managed by RightScale. This setup helps the cloud
+  # provider to setup firewall rules on the servers.
+  log "The firewall state is set to 'unmanaged'. The firewall on the server" +
+    " is not managed by RightScale. The cloud provider is responsible for" +
+    " maintaining the firewall rules."
 end
 
 # Increase connection tracking table sizes
@@ -80,6 +91,3 @@ bash "Update #{nf_module_name}" do
   not_if { ::File.readlines("/etc/sysctl.conf" ).grep(
     /^\s*#{nf_conntrack_max}/).any? }
 end
-
-rightscale_marker :end
-

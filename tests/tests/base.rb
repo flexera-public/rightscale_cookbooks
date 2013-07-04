@@ -3,6 +3,9 @@ require_helper "cloud"
 require_helper "ephemeral"
 require_helper "wait_for_ip_repopulation"
 require_helper "errors"
+require_helper "os"
+require_helper "input"
+require_helper "rackspace_managed"
 
 # Test specific helpers.
 #
@@ -12,9 +15,14 @@ helpers do
   class SwapFileError < VirtualMonkey::TestCase::ErrorBase
   end
 
-  # An error with conntrack_max setup
+  # An error with conntrack_max setup.
   #
   class ConntrackMaxError < VirtualMonkey::TestCase::ErrorBase
+  end
+
+  # An error with unfrozen repo check
+  #
+  class FrozenRepoError < VirtualMonkey::TestCase::ErrorBase
   end
 
   # Checks if the swap file is set up.
@@ -92,7 +100,7 @@ helpers do
     sysctl_conntrack_max
   end
 
-  # Verifies that the conntrack_max kernel parameter is set properly
+  # Verify the conntrack_max kernel parameter is set properly
   #
   # @param server [RightScale::ServerInterface] the server to verify for
   #   conntrack_max value
@@ -101,7 +109,7 @@ helpers do
   #   properly
   #
   def verify_conntrack_max(server)
-    # Test 1: Verify that correct conntrack_max value is set in sysctl from
+    # Test 1: Verify the correct conntrack_max value is set in sysctl from
     # configuration file.
     #
     # Obtain the conntrack_max value set in the /etc/sysctl.conf
@@ -146,19 +154,113 @@ helpers do
         " sys_firewall::setup_rule recipe"
     end
   end
+
+  # Verifies the security repositories are unfrozen.
+  #
+  # For apt based systems (Ubuntu) it checks repositories in
+  # /etc/apt/sources.list.d/rightscale.sources.list
+  # For yum based systems (CentOS) it checks repositories in
+  # /etc/yum.repos.d/*.repo
+  #
+  # @param server [Server] the server to obtain value from
+  #
+  # @raise [FrozenRepoError] if unfrozen repositories not found
+  #
+  def verify_security_repositories_unfrozen(server)
+    # Check that unforzen repos exist in the package repo dir
+    os = get_operating_system(server)
+    puts "  Testing OS: #{os}"
+    case os
+    when /ubuntu/i
+      latest = "/ubuntu_daily/latest"
+      repo_dirs = "/etc/apt/sources.list.d/rightscale.sources.list "
+    when /centos|rhel|redhat/i
+      latest = "/archive/latest"
+      repo_dirs = "/etc/yum.repos.d/*.repo"
+    end
+
+    probe(server, "grep #{latest} #{repo_dirs}") do |response, status|
+      raise FrozenRepoError, "Unfrozen repo not found in " +
+        "#{repo_dirs}" unless status == 0
+      true
+    end
+  end
 end
 
-# When rerunning a test, shutdown all of the servers.
+# Generic before all
 #
-hard_reset do
-  stop_all
-end
-
-# Before all of the test cases, launch all of the servers in the deployment.
+# This does nothing at this time.  It is here to make it easier
+# to debug missing specific test befores.
 #
 before do
-  launch_all
-  wait_for_all("operational")
+  puts "  No before all actions"
+end
+
+# Before tests that require security updates disabled.
+#
+# Verify the server input rightscale/security_updates is set to "disable"
+# Rackspace Managed Open clouds should have Rackspace credentials set.
+#
+before "smoke_test", "stop_start", "enable_security_updates_on_running_server",
+  "ephemeral_file_system_type", "comma_separated_firewall_ports" do
+  puts "Running before with security updates disabled"
+  # Assume a single server in the deployment
+  server = servers.first
+
+  # Get the current cloud.
+  cloud = Cloud.factory
+
+  # Set the required credential inputs for Rackspace Managed cloud.
+  setup_rackspace_managed_credentials(server) \
+    if cloud.cloud_name =~ /Rackmanaged/
+
+  if is_chef?
+    # Verify the instance launched with the correct inputs.
+    status = verify_instance_input_settings?(
+      server,
+      {"rightscale/security_updates" => "text:disable"}
+    )
+
+    relaunch_server(server) unless status
+  else
+    # RSB does not require input settings.  Just ensure the server
+    # is operational.
+    relaunch_server(server) if server.state != "operational"
+  end
+
+  wait_for_server_state(server, "operational")
+end
+
+# Before tests that require security updates enabled.
+#
+# Verify the server input rightscale/security_updates is set to "enable"
+#
+before "enable_security_updates_on_boot" do
+  # Assume a single server in the deployment
+  server = servers.first
+
+  # Get the current cloud.
+  cloud = Cloud.factory
+
+  # Set the required credential inputs for Rackspace Managed cloud.
+  setup_rackspace_managed_credentials(server) \
+    if cloud.cloud_name =~ /Rackmanaged/
+
+  if is_chef?
+    # Verify the instance launched with the correct inputs.
+    status = verify_instance_input_settings?(
+      server,
+      {"rightscale/security_updates" => "text:enable"}
+    )
+
+    relaunch_server(server) unless status
+  else
+    # RSB does not require input settings.  Just ensure the server
+    # is operational.
+    relaunch_server(server) if server.state != "operational"
+  end
+
+  wait_for_server_state(server, "operational")
 end
 
 # The Base smoke test makes sure the Base (Chef or RSB) ServerTemplate has its
@@ -181,6 +283,7 @@ test_case "smoke_test" do
     check_ephemeral_mount(server) if cloud.supports_ephemeral?(server)
     check_swap_file(server)
     verify_conntrack_max(server)
+    verify_rackspace_managed_agents(server) if cloud.cloud_name =~ /Rackmanaged/
   end
 
   # Check if the server's basic monitoring is working.
@@ -202,10 +305,16 @@ test_case "smoke_test" do
     check_ephemeral_mount(server) if cloud.supports_ephemeral?(server)
     check_swap_file(server)
     verify_conntrack_max(server)
+    verify_rackspace_managed_agents(server) if cloud.cloud_name =~ /Rackmanaged/
   end
 
   # Check if the server's basic monitoring is working.
   check_monitoring
+
+  # Check if security updates are disabled can not be done.  Servers can
+  # can be launched with unfrozen repositories.  This case was considered
+  # and it was decided to ignore it.
+  #
 end
 
 # The Base stop/start test makes sure the Base (Chef or RSB) ServerTemplate has
@@ -271,15 +380,21 @@ test_case "ephemeral_file_system_type" do
   # Chef ServerTemplates.
   skip unless cloud.supports_ephemeral?(server) && is_chef?
 
-  # Get the MCI used by the server
-  mci = cloud.get_server_mci(server)
+  # Get the OS used by the server
+  os = get_operating_system(server)
 
   # List all file system types supported on the ephemeral device
   supported_fs_types = ["xfs", "ext3"]
 
+  # We do not support xfs on Google cloud and Redhat due to these reasons
+  # * Google uses a statically compiled kernel built without xfs support
+  # * Redhat charges for using xfs. Hence we don't install it through our
+  # cookbooks and tools.
+  xfs_unsupported = os =~ /rhel/i || cloud.cloud_name == "Google"
+
   # Remove file system types that are not supported on the ephemeral device
   # based on the platform
-  if mci.name =~ /rhel/i
+  if xfs_unsupported
     unsupported_types = ["xfs"]
   else
     unsupported_types = []
@@ -291,7 +406,7 @@ test_case "ephemeral_file_system_type" do
 
   # Verify the default file system type that will be installed on the
   # ephemeral device
-  default_fs_type = mci.name =~ /rhel/i ? "ext3" : "xfs"
+  default_fs_type = xfs_unsupported ? "ext3" : "xfs"
   verify_ephemeral_file_system_type(server, default_fs_type)
   supported_fs_types.delete(default_fs_type)
 
@@ -303,5 +418,110 @@ test_case "ephemeral_file_system_type" do
     })
     relaunch_all
     verify_ephemeral_file_system_type(server, type)
+  end
+end
+
+# This test tests if the sys_firewall cookbook accepts comma-separated ports on
+# sys_firewall/rule/port input. It also verifies that multiple inputs specified
+# in that input is added to the firewall. In addition to the positive test
+# case, it also validates that the script raises an exception if the port
+# number given was out of range.
+test_case "comma_separated_firewall_ports" do
+  # Assume a single server in the deployment
+  server = servers.first
+
+  # Test 1: firewall should have all rules specified in the comma-separated
+  # list of input rules.
+  # Set the input on the server with comma-separated firewall rules
+  status = verify_instance_input_settings?(
+    server,
+    {"sys_firewall/rule/port" => "text:8080, 8000"}
+  )
+  run_recipe("sys_firewall::default", server) unless status
+  puts "sys_firewall::defaul recipe completed successfully"
+  run_recipe("sys_firewall::setup_rule", server)
+
+  # Verify that the firewall rules are setup properly
+  probe(server, "iptables -L -n") do |result, status|
+    raise FailedProbeCommandError, "Can't run iptables command" \
+      unless status == 0
+    unless result.include?("tcp dpt:8080") && result.include?("tcp dpt:8000")
+      raise "Ports 8080 and 8000 are not added in the firewall"
+    end
+    puts "The ports are properly added to the firewall"
+    true
+  end
+
+  # Test 2: sys_firewall::setup_rule should work even if a single rule is
+  # specified (backward-compatibility check).
+  # Set the input on the server with a single rule.
+  status = verify_instance_input_settings?(
+    server,
+    {"sys_firewall/rule/port" => "text:8888"}
+  )
+  run_recipe("sys_firewall::default", server) unless status
+  puts "sys_firewall::defaul recipe completed successfully"
+  run_recipe("sys_firewall::setup_rule", server)
+
+  # Verify that the firewall rules are setup properly
+  probe(server, "iptables -L -n") do |result, status|
+    raise FailedProbeCommandError, "Can't run iptables command" \
+      unless status == 0
+    unless result.include?("tcp dpt:8888")
+      raise "Port 8888 is not added in the firewall"
+    end
+    puts "The port is properly added to the firewall"
+    true
+  end
+
+  # Test 3: The sys_firewall::setup_rule recipe should fail if ports are not in
+  # range
+  status = verify_instance_input_settings?(
+    server,
+    {"sys_firewall/rule/port" => "text:8888, 69999"}
+  )
+  # Run the sys_firewall::default recipe so the inputs are applied in the node
+  run_recipe("sys_firewall::default", server) unless status
+
+  # Verify that an exception is raised as the result of the recipe run. If
+  # there is no exception is raised, that is failure and this test should fail.
+  exception_raised = false
+  begin
+    run_recipe("sys_firewall::setup_rule", server)
+  rescue Exception => e
+    exception_raised = true
+    puts "An exception expected here since invalid port range is specified:" +
+      " #{e.inspect}"
+  end
+  raise "An exception is expected since invalid port range is specified and" +
+    " no exception is raised" unless exception_raised
+end
+
+# The Base "enable security updates on running a running server" tests if
+# security updates are applied after enabling them.  It enables the updates
+# runs the script to perform the security updates setup and runs the script
+# to perform the updates.
+#
+test_case "enable_security_updates_on_running_server" do
+  if is_chef?
+    server = servers.first
+    server.set_inputs("rightscale/security_updates" => "text:enable")
+    run_recipe("rightscale::setup_security_updates", server)
+    verify_security_repositories_unfrozen(server)
+    run_recipe("rightscale::do_security_updates", server)
+  else
+    puts "  RSB template - skipping enable_security_updates_on_running_server test"
+  end
+end
+
+# The Base "verify repository unfrozen" test verfies the package managers
+# upstream security repositories are set to "latest".
+#
+test_case "enable_security_updates_on_boot" do
+  if is_chef?
+    server = servers.first
+    verify_security_repositories_unfrozen(server)
+  else
+    puts "  RSB template - skipping enable_security_updates_on_boot test"
   end
 end

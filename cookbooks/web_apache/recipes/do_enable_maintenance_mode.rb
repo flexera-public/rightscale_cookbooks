@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: web_apache
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 # This recipe will enable maintenance mode for Apache
 # All RightScale apache vhost erb templates have maintenance mode rewrite rule:
@@ -15,7 +16,7 @@
 # Recipe will extract a maintenance.html from maintenance.tar.gz
 # which will automatically enable maintenance mode rewrite rule.
 
-rightscale_marker :begin
+rightscale_marker
 
 maintenance_file_dir = ::File.dirname(node[:web_apache][:maintenance_file])
 
@@ -38,5 +39,3 @@ bash "Unpack /tmp/maintenance.tar.gz to #{maintenance_file_dir}" do
     tar xzf /tmp/maintenance.tar.gz -C #{maintenance_file_dir}
   EOH
 end
-
-rightscale_marker :end

@@ -1,0 +1,19 @@
+#
+# Cookbook Name:: chef
+#
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
+#
+# Managed by RightScale
+# DO NOT EDIT BY HAND
+#
+log_level              <%= @log_level.to_sym.inspect %>
+log_location           <%= @log_location.inspect %>
+chef_server_url        "<%= @server_url %>"
+validation_client_name "<%= @validation_name %>"
+<%# Includes node_name if set, else Ohai will detect FQDN automatically %>
+<% unless @node_name.empty? %>
+node_name              "<%= @node_name %>"
+<% end %>

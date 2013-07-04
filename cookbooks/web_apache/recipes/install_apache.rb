@@ -1,11 +1,12 @@
 #
 # Cookbook Name:: web_apache
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 apache_log_dir = node[:apache][:log_dir]
 
@@ -24,6 +25,11 @@ end
 # Include the public recipe for basic installation.
 # Calls the https://github.com/rightscale/cookbooks/blob/master/apache2/recipes/default.rb recipe.
 include_recipe "apache2"
+
+# Creates the document root for Apache.
+directory node[:web_apache][:docroot] do
+  recursive true
+end
 
 # Persist apache2 resource to node for use in other run lists.
 service "apache2" do
@@ -74,5 +80,3 @@ template File.join(node[:apache][:dir], 'conf.d', 'maintenance.conf') do
 end
 
 log "  Started the apache server."
-
-rightscale_marker :end
