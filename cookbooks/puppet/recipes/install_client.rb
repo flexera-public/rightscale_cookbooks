@@ -37,7 +37,7 @@ end
 # Creates the Puppet Client configuration file.
 template "/etc/puppet/puppet.conf" do
   source "puppet_client.conf.erb"
-  mode "0644"
+  mode 0644
   backup false
   cookbook "puppet"
   variables(
