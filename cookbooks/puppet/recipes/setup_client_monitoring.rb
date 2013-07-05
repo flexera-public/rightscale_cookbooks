@@ -17,7 +17,7 @@ end
 
 # Creates the collectd plugin for the Puppet Client stats collection.
 template "#{collectd_lib}/plugins/Puppet-stats.sh" do
-  mode "0755"
+  mode 0755
   backup false
   source "collectd_puppet_client_stats.erb"
   cookbook "puppet"
@@ -28,7 +28,7 @@ service "collectd"
 
 # Creates the collectd conf file for the Puppet Client monitoring.
 template "#{node[:rightscale][:collectd_plugin_dir]}/puppet-client.conf" do
-  mode "0644"
+  mode 0644
   source "collectd_puppet_client.erb"
   cookbook "puppet"
   backup false
