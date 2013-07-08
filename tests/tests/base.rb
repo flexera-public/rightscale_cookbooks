@@ -434,7 +434,7 @@ test_case "comma_separated_firewall_ports" do
   cloud = Cloud.factory
   # Skip this test if the cloud is a Rackconnect cloud because the firewall is
   # disabled in the server for this cloud.
-  skip if cloud.cloud_name =~ /Rackconnect/
+  skip unless cloud.supports_sys_firewall?
 
   # Test 1: firewall should have all rules specified in the comma-separated
   # list of input rules.
