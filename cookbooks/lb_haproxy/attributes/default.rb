@@ -13,3 +13,8 @@ default[:lb_haproxy][:timeout_client] = '60000'
 # Haproxy server timeout
 default[:lb_haproxy][:timeout_server] = '60000'
 
+# HAProxy tuning parameters
+default[:lb_haproxy][:global_maxconn] = 4096
+default[:lb_haproxy][:default_maxconn] = 2000
+default[:lb_haproxy][:httpclose] = "off"
+default[:lb_haproxy][:abortonclose] = "off"

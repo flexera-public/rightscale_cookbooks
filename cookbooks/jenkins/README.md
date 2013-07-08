@@ -28,8 +28,6 @@ regular user, this limitation can be removed.
 
 ## DETAILS:
 
-### Recipes:
-
 ### Attributes:
 
 These are settings used in recipes and tempaltes. Default values are noted.
@@ -55,6 +53,12 @@ attributes which have inputs can be found in the metadata.rb file.
 * `node[:jenkins][:private_key_file]` - The private key file used by the master
   for SSH communications with the slave.
 * `node[:jenkins][:slave][:attach_status]` - The status of slave attachment.
+
+### Recipes:
+
+#### `jenkins::default`
+
+This is the default recipe that sets up the platform specific attributes.
 
 #### `jenkins::install_server`
 

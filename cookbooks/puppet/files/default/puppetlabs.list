@@ -1,0 +1,11 @@
+# Puppetlabs products
+deb http://apt.puppetlabs.com precise main
+deb-src http://apt.puppetlabs.com precise main
+
+# Puppetlabs dependencies
+deb http://apt.puppetlabs.com precise dependencies
+deb-src http://apt.puppetlabs.com precise dependencies
+
+# Puppetlabs devel (uncomment to activate)
+# deb http://apt.puppetlabs.com precise devel
+# deb-src http://apt.puppetlabs.com precise devel

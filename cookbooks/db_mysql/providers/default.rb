@@ -125,7 +125,13 @@ action :write_backup_info do
   masterstatus['DB_Version'] = version # save the version number
 
   Chef::Log.info "  Saving master info...:\n#{masterstatus.to_yaml}"
-  ::File.open(::File.join(node[:db][:data_dir], RightScale::Database::MySQL::Helper::SNAPSHOT_POSITION_FILENAME), ::File::CREAT|::File::TRUNC|::File::RDWR) do |out|
+  # See cookbooks/db/libraries/helper.rb
+  # for the "RightScale::Database::Helper" class.
+  ::File.open(
+    ::File.join(node[:db][:data_dir],
+    RightScale::Database::Helper::SNAPSHOT_POSITION_FILENAME),
+    ::File::CREAT|::File::TRUNC|::File::RDWR
+  ) do |out|
     YAML.dump(masterstatus, out)
   end
 end
@@ -139,9 +145,9 @@ end
 
 action :post_restore_cleanup do
   # Performs checks for snapshot compatibility with current server.
-  # See cookbooks/db_mysql/libraries/helper.rb
-  # for the "RightScale::Database::MySQL::Helper" class.
-  master_info = RightScale::Database::MySQL::Helper.load_replication_info(node)
+  # See cookbooks/db/libraries/helper.rb
+  # for the "RightScale::Database::Helper" class.
+  master_info = RightScale::Database::Helper.load_replication_info(node)
 
   # Checks version matches because not all 11H2 snapshots (prior to 5.5 release)
   # saved provider or version. Assume MySQL 5.1 if nil.
@@ -1001,11 +1007,12 @@ action :enable_replication do
   current_restore_process = new_resource.restore_process
 
   # Check the volume before performing any actions.  If invalid raise error and exit.
-  # See cookbooks/db_mysql/libraries/helper.rb for the "RightScale::Database::MySQL::Helper" class.
+  # See cookbooks/db/libraries/helper.rb
+  # for the "RightScale::Database::Helper" class.
   ruby_block "validate_master" do
     not_if { current_restore_process == :no_restore }
     block do
-      master_info = RightScale::Database::MySQL::Helper.load_replication_info(node)
+      master_info = RightScale::Database::Helper.load_replication_info(node)
 
       # Checks that the snapshot is from the current master or a slave
       # associated with the current master.
@@ -1077,7 +1084,7 @@ action :enable_replication do
   ruby_block "configure_replication" do
     not_if { current_restore_process == :no_restore }
     block do
-      master_info = RightScale::Database::MySQL::Helper.load_replication_info(node)
+      master_info = RightScale::Database::Helper.load_replication_info(node)
       newmaster_host = master_info['Master_IP']
       newmaster_logfile = master_info['File']
       newmaster_position = master_info['Position']
