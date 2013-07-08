@@ -5,7 +5,7 @@
 # All access and use subject to the RightScale Terms of Service available at
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
-# 
+#
 # Managed by RightScale
 # DO NOT EDIT BY HAND
 #
@@ -36,5 +36,8 @@ LoadPlugin interface
 LoadPlugin <%= plugin %>
 <% end %>
 
-#this is where other configs go (e.g. mysql.conf)
-Include "<%= @collectd_plugin_dir %>/*"
+# Use multiple types.db
+TypesDB "/usr/share/collectd/types.db"
+
+# Recursively includes all files within that directory and its subdirectories.
+Include "<%= node[:rightscale][:collectd_plugin_dir] %>/*"
