@@ -11,5 +11,5 @@
 #
 
 <Plugin exec>
-   Exec "www-data" "<%= @collectd_lib %>/plugins/update_monitor" "-h" "<%= @server_uuid %>"
+   Exec "nobody" "<%= @collectd_lib %>/plugins/update_monitor" "-h" "<%= @server_uuid %>"
 </Plugin>
