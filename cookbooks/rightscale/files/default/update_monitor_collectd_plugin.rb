@@ -1,4 +1,4 @@
-#!/usr/bin/ruby 
+#!/usr/bin/ruby
 
 require 'rubygems'
 require 'getoptlong'
@@ -49,7 +49,10 @@ loop do
   now = Time.now
 
   if ( now.to_i - last_update_check ) > update_check_freq
-    packages_to_update=`yum list -q updates 2>&1 | cut -d" " -f 1`
+    # List all available updates and count the number of lines and get rid of
+    # the line that says "Updated packages"
+    packages_to_update[0] = `yum list -q updates 2>&1 | wc -l`.to_i  -1
+    packages_to_update[1] = `yum list-security -q 2>&1 | wc -l`
 
     # Tag the server if updates are available.
     if (packages_to_update[1].to_i > 0) then
@@ -61,8 +64,8 @@ loop do
     last_update_check = now.to_i
   end
 
-  puts "PUTVAL #{hostname}/update_check/gauge-pending_updates interval=#{sample_interval} #{now.to_i}:#{packages_to_update[0]}\n" 
-  puts "PUTVAL #{hostname}/update_check/gauge-pending_security_updates interval=#{sample_interval} #{now.to_i}:#{packages_to_update[1]}\n" 
+  puts "PUTVAL #{hostname}/update_check/gauge-pending_updates interval=#{sample_interval} #{now.to_i}:#{packages_to_update[0]}\n"
+  puts "PUTVAL #{hostname}/update_check/gauge-pending_security_updates interval=#{sample_interval} #{now.to_i}:#{packages_to_update[1]}\n"
 
   STDOUT.flush
   sleep sample_interval

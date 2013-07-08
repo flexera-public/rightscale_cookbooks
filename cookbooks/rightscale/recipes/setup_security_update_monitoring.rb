@@ -20,11 +20,17 @@ if node[:rightscale][:security_updates] == "enable"
   # "rightscale::setup_monitoring" recipe.
   include_recipe "rightscale::setup_monitoring"
 
-  # Install the update_notifier_package package on ubuntu
-  package "update-notifier-common" do
-    action :install
-    only_if { node[:platform] == "ubuntu" }
-  end
+  # The package to be installed to obtain information about
+  # updates/security updates
+  package_to_install =
+    case node[:platform]
+    when "ubuntu"
+      "update-notifier-common"
+    else
+      "yum-security"
+    end
+
+  package package_to_install
 
   log "  Install security monitoring package dependencies and plugin"
   # Install custom collectd plugin
