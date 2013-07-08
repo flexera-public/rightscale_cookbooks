@@ -22,5 +22,5 @@ when "redhat", "centos"
 when "ubuntu"
   set[:puppet][:client][:packages] = ["puppet-common", "puppet"]
 else
-  set[:puppet][:client][:packages] = ""
+  set[:puppet][:client][:packages] = []
 end
