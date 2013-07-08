@@ -52,6 +52,9 @@ recipe "rightscale::setup_security_updates",
 recipe "rightscale::setup_security_update_monitoring",
   "Sets up collectd plugin to monitor for available security updates."
 
+recipe "rightscale::setup_redhat",
+  "Registers a system with the RHN Satellite or Red Hat Network Classic."
+
 attribute "rightscale/security_updates",
   :display_name => "Enable security updates",
   :description => "Unfreezes software repositories after booting and" +
@@ -257,6 +260,30 @@ attribute "rightscale/rackspace_tenant_id",
   :recipes => [
     "rightscale::default",
     "rightscale::setup_cloud"
+  ]
+
+attribute "rightscale/redhat/username",
+  :display_name => "RedHat Network Username",
+  :description =>
+    "The username to register the system with under RHN Satellite or Red Hat" +
+    " Network Classic. Example: cred:REDHAT_DEV_SUB_USERNAME",
+  :required => "optional",
+  :default => "",
+  :recipes => [
+    "rightscale::default",
+    "rightscale::setup_redhat"
+  ]
+
+attribute "rightscale/redhat/password",
+  :display_name => "RedHat Network Password",
+  :description =>
+    "The password associated with the username specified in the" +
+    " rightscale/redhat/username input. Example: cred:REDHAT_DEV_SUB_PASSWORD",
+  :required => "optional",
+  :default => "",
+  :recipes => [
+    "rightscale::default",
+    "rightscale::setup_redhat"
   ]
 
 # RightScale ENV attributes.

@@ -38,3 +38,7 @@ include_recipe "rightscale::setup_monitoring"
 # See cookbooks/rightscale/recipes/setup_cloud.rb for the
 # "rightscale::setup_cloud" recipe.
 include_recipe "rightscale::setup_cloud"
+
+# See cookbooks/rightscale/recipes/setup_redhat.rb for the
+# "rightscale::setup_redhat" recipe.
+include_recipe "rightscale::setup_redhat" if node[:platform] =~ /redhat/
