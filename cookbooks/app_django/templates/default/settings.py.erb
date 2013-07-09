@@ -17,7 +17,7 @@ import os
 PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
-DEBUG = <%= @django_debug_mode %>
+DEBUG = <%= @vars[:django_debug_mode] %>
 TEMPLATE_DEBUG = DEBUG
 
 # The database engine used here is set by the "install_client_driver" action of db provider.
