@@ -52,7 +52,7 @@ loop do
     # List all available updates and count the number of lines and get rid of
     # the line that says "Updated packages"
     packages_to_update[0] = `yum list -q updates 2>&1 | wc -l`.to_i - 1
-    packages_to_update[1] = `yum list-security -q 2>&1 | wc -l`
+    packages_to_update[1] = `yum list-security security -q 2>&1 | wc -l`
 
     # Tag the server if updates are available.
     if (packages_to_update[1].to_i > 0) then
