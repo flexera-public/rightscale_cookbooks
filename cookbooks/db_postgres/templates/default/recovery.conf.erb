@@ -10,9 +10,6 @@
 # DO NOT EDIT BY HAND
 #
 
-postgres soft nofile <%= @ulimit %>
-postgres hard nofile <%= @ulimit %>
-root soft nofile <%= @ulimit %>
-root hard nofile <%= @ulimit %>
-postgres soft nproc unlimited
-postgres hard nproc unlimited
+standby_mode='on'
+primary_conninfo='host=<%= @host %> user=<%= @user %> password=<%= @password %> application_name=<%= @application_name %>'
+trigger_file='<%= @trigger_file %>'

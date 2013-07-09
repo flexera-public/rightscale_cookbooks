@@ -12,18 +12,6 @@ module RightScale
       module Helper
 
         require 'timeout'
-        require 'yaml'
-
-        SNAPSHOT_POSITION_FILENAME = 'rs_snapshot_position.yaml'
-        DEFAULT_CRITICAL_TIMEOUT = 7
-
-        # Setup UUID
-        # PostgreSQL server_id must be a unique number - use timestamp to create unique UUID
-        #
-        def mycnf_uuid
-          node[:db_postgres][:mycnf_uuid] ||= Time.new.to_i
-          node[:db_postgres][:mycnf_uuid]
-        end
 
         # Create new PostgreSQL object
         #
@@ -35,33 +23,10 @@ module RightScale
           begin
             require 'rightscale_tools'
           rescue LoadError
-            Chef::Log.warn("  This database cookbook requires our premium 'rightscale_tools' gem.")
-            Chef::Log.warn("  Please contact Rightscale to upgrade your account.")
+            Chef::Log.warn "  Missing gem 'rightscale_tools'"
           end
           mount_point = new_resource.name
           RightScale::Tools::Database.factory(:postgres, new_resource.user, new_resource.password, mount_point, Chef::Log)
-        end
-
-        # Load replication information
-        # from "rs_snapshot_position.yaml"
-        #
-        # @param node [Hash] Node name
-        #
-        def self.load_replication_info(node)
-          loadfile = ::File.join(node[:db][:data_dir], SNAPSHOT_POSITION_FILENAME)
-          Chef::Log.info "  Loading replication information from #{loadfile}"
-          YAML::load_file(loadfile)
-        end
-
-        # Configure the replication parameters into pg_hba.conf.
-        #
-        # @param node [Hash] Node name
-        #
-        def self.configure_pg_hba(node)
-          File.open("/var/lib/pgsql/9.1/data/pg_hba.conf", "a") do |f|
-            f.puts("host    replication     #{node[:db][:replication][:user]}          0.0.0.0/0            trust")
-          end
-          return $? == 0
         end
 
         # Create new PostgreSQL connection
@@ -74,11 +39,9 @@ module RightScale
         def self.get_pgsql_handle(hostname = "localhost", username = "postgres")
           info_msg = "  PostgreSQL connection to #{hostname}"
           info_msg << ": opening NEW PostgreSQL connection."
-          conn = PGconn.open("localhost", nil, nil, nil, nil, "postgres", nil)
           Chef::Log.info info_msg
-          # this raises if the connection has gone away
-          conn.ping
-          return conn
+          # PG::Connection.new raises a PG::Error if connection fails.
+          PG::Connection.new(hostname, nil, nil, nil, nil, username, nil)
         end
 
         # Perform sql query to PostgreSQL server
@@ -99,7 +62,7 @@ module RightScale
           Gem.clear_paths
           require 'pg'
 
-          while(1) do
+          loop do
             begin
               info_msg = "  Doing SQL Query: HOST=#{hostname}, QUERY=#{query}"
               info_msg << ", TIMEOUT=#{timeout}" if timeout
@@ -108,69 +71,20 @@ module RightScale
               result = nil
               if timeout
                 SystemTimer.timeout_after(timeout) do
-                  conn = PGconn.open("localhost", nil, nil, nil, nil, "postgres", nil)
+                  conn = get_pgsql_handle(hostname, username)
                   result = conn.exec(query)
                 end
               else
-                conn = PGconn.open("localhost", nil, nil, nil, nil, "postgres", nil)
+                conn = get_pgsql_handle(hostname, username)
                 result = conn.exec(query)
               end
-              return result.getvalue(0,0) if result
+              return result.getvalue(0, 0) if result
               return result
             rescue Timeout::Error => e
-              Chef::Log.info("  Timeout occured during pgsql query:#{e}")
+              Chef::Log.info "  Timeout occurred during PostgreSQL query:#{e}"
               tries -= 1
               raise "FATAL: retry count reached" if tries == 0
             end
-          end
-        end
-
-
-        # Replication process reconfiguration
-        #
-        # @param newmaster_host [String] FQDN or ip of new replication master
-        # @param rep_user [String] Replication user
-        # @param rep_pass [Integer] Replication password
-        # @param app_name [String] PostgreSQL application name
-        #
-        def self.reconfigure_replication_info(newmaster_host = nil, rep_user = nil, rep_pass = nil, app_name = nil)
-          File.open("/var/lib/pgsql/9.1/data/recovery.conf", File::CREAT|File::TRUNC|File::RDWR) do |f|
-            f.puts("standby_mode='on'\nprimary_conninfo='host=#{newmaster_host} user=#{rep_user} password=#{rep_pass} application_name=#{app_name}'\ntrigger_file='/var/lib/pgsql/9.1/data/recovery.trigger'")
-            `chown postgres:postgres /var/lib/pgsql/9.1/data/recovery.conf`
-          end
-          return $? == 0
-        end
-
-        # Configure the replication parameters into pg_hba.conf.
-        #
-        # @param node [Hash] Node name
-        #
-        def self.configure_postgres_conf(node)
-          File.open("/var/lib/pgsql/9.1/data/postgresql.conf", "a") do |f|
-            f.puts("synchronous_standby_names = '*'\nsynchronous_commit = on")
-          end
-          return $? == 0
-        end
-
-        # Replication process reconfiguration
-        #
-        # @param newmaster_host [String] FQDN or ip of new replication master
-        # @param rep_user [String] Replication user
-        #
-        def self.rsync_db(newmaster_host = nil, rep_user = nil)
-          puts `su - postgres -c "env PGCONNECT_TIMEOUT=30 /usr/pgsql-9.1/bin/pg_basebackup -D /var/lib/pgsql/9.1/backups -U #{rep_user} -h #{newmaster_host}"`
-          puts `su - postgres -c "rsync -av /var/lib/pgsql/9.1/backups/ /var/lib/pgsql/9.1/data --exclude postgresql.conf --exclude pg_hba.conf"`
-          return $? == 0
-        end
-
-        # Creates a trigger file whose presence should cause recovery to end
-        # whether or not the next WAL file is available.
-        #
-        # @param node [Hash] Node name
-        #
-        def self.write_trigger(node)
-          File.open("/var/lib/pgsql/9.1/data/recovery.trigger", File::CREAT|File::TRUNC|File::RDWR) do |f|
-            f.puts(" ")
           end
         end
 

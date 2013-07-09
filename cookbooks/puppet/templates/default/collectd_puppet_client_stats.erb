@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: db_postgres
+# Cookbook Name:: puppet
 #
 # Copyright RightScale, Inc. All rights reserved.
 # All access and use subject to the RightScale Terms of Service available at
@@ -10,9 +10,12 @@
 # DO NOT EDIT BY HAND
 #
 
-postgres soft nofile <%= @ulimit %>
-postgres hard nofile <%= @ulimit %>
-root soft nofile <%= @ulimit %>
-root hard nofile <%= @ulimit %>
-postgres soft nproc unlimited
-postgres hard nproc unlimited
+#!/bin/bash
+
+HOST="${COLLECTD_HOSTNAME:-`hostname -f`}"
+INTERVAL="${COLLECTD_INTERVAL:-20}"
+
+while sleep "$INTERVAL" ; do
+  puppetd=$(ps aux | grep -c [p]uppet )
+  echo "PUTVAL $HOST/puppet/gauge-command-total interval=$INTERVAL N:$puppetd"
+done
