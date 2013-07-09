@@ -56,8 +56,9 @@ action :attach do
       })
     end
   else
-    # Enabling the 'AvailabilityZones' is skipped if the ELB is part of a VPC.
-    log "  ELB is part of a VPC"
+    # Enabling the 'AvailabilityZones' is skipped if the ELB is attached to
+    # a VPC.
+    log "  ELB is attached to a VPC"
   end
 
   # Opens the backend_port.
