@@ -205,6 +205,7 @@ Bundler:
   * `foodcritic` Runs Foodcritic with the standard suite of rules
   * `foodcritic_correctness` Runs Foodcritic with just the correctness rules
   * `foodcritic_syntax` Runs Foodcritic with just the syntax rules
+* To generate HTML documentation for the cookbooks run `rake yard`.
 
 ## CONTRIBUTING:
 
