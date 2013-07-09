@@ -10,7 +10,7 @@
 
 require "timeout"
 
-# Update firewall rules on a server
+# Updates firewall rules on a server
 action :update do
 
   # Set local variables from attributes
@@ -111,7 +111,7 @@ action :update do
 
 end
 
-# Update request to server to update its firewall rules
+# Updates request to server to update its firewall rules
 action :update_request do
 
   # Deal with attributes

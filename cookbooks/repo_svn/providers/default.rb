@@ -8,7 +8,7 @@
 
 # @resource repo
 
-# Setup repository URL and other attributes.
+# Sets up repository URL and other attributes.
 action :setup_attributes do
 
   branch = new_resource.revision
@@ -26,7 +26,7 @@ action :setup_attributes do
 end
 
 
-# Pull code from a determined repository to a specified destination.
+# Pulls code from a determined repository to a specified destination.
 action :pull do
 
   # Checking attributes
@@ -73,7 +73,8 @@ action :pull do
   log "  SVN repository update/download action - finished successfully!"
 end
 
-# Pull code from a determined repository to a specified destination and create a capistrano-style deployment.
+# Pulls code from a determined repository to a specified destination and create
+# a capistrano-style deployment.
 action :capistrano_pull do
 
   # Checking attributes

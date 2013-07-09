@@ -11,7 +11,7 @@
 include RightScale::Database::Helper
 include RightScale::Database::PostgreSQL::Helper
 
-# Stop Postgres service
+# Stops Postgres service
 action :stop do
   # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "stop" method.
@@ -19,7 +19,7 @@ action :stop do
   @db.stop
 end
 
-# Start Postgres service
+# Starts Postgres service
 action :start do
   # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "start" method.
@@ -27,7 +27,7 @@ action :start do
   @db.start
 end
 
-# Check status of Postgres service
+# Checks status of Postgres service
 action :status do
   # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "status" method.
@@ -36,7 +36,7 @@ action :status do
   log "Database Status:\n#{status}"
 end
 
-# Lock Postgres database
+# Locks Postgres database
 action :lock do
   # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "lock" method.
@@ -44,7 +44,7 @@ action :lock do
   @db.lock
 end
 
-# Unlock Postgres database
+# Unlocks Postgres database
 action :unlock do
   # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "unlock" method.
@@ -52,7 +52,7 @@ action :unlock do
   @db.unlock
 end
 
-# Relocate the Postgres database data directory
+# Relocates the Postgres database data directory
 action :move_data_dir do
   # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "move_datadir" method.
@@ -93,7 +93,7 @@ action :firewall_update do
   end
 end
 
-# Write backup information needed during restore
+# Writes backup information needed during restore
 action :write_backup_info do
   # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
   db_state_get node
@@ -121,7 +121,7 @@ action :write_backup_info do
   end
 end
 
-# Verify Postgres database is in a pristine state before performing a restore to
+# Verifies Postgres database is in a pristine state before performing a restore to
 # prevent overwriting of an existing database
 action :pre_restore_check do
   # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
@@ -130,7 +130,7 @@ action :pre_restore_check do
   @db.pre_restore_sanity_check
 end
 
-# Validate backup and cleanup instance after restore
+# Validates backup and cleans up instance after restore
 action :post_restore_cleanup do
   # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "restore_snapshot" method.
@@ -138,7 +138,7 @@ action :post_restore_cleanup do
   @db.restore_snapshot
 end
 
-# Verify the database is in a good state for taking a snapshot
+# Verifies the database is in a good state for taking a snapshot
 action :pre_backup_check do
   # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "pre_backup_check" method.
@@ -146,7 +146,7 @@ action :pre_backup_check do
   @db.pre_backup_check
 end
 
-# Clean up instance after backup
+# Cleans up instance after backup
 action :post_backup_cleanup do
   # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "post_backup_steps" method.
@@ -154,7 +154,7 @@ action :post_backup_cleanup do
   @db.post_backup_steps
 end
 
-# Set database privileges
+# Sets database privileges
 action :set_privileges do
   if ::File.exist?("#{node[:db_postgres][:datadir]}/recovery.conf")
     log "  No need to rerun on reboot for slave"
@@ -369,7 +369,7 @@ action :install_client_driver do
   end
 end
 
-# Set database replication privileges for a slave
+# Sets database replication privileges for a slave
 action :grant_replication_slave do
   require 'rubygems'
   Gem.clear_paths
@@ -562,7 +562,7 @@ action :promote do
   end
 end
 
-# Install and configure collectd plugins for the server
+# Installs and configures collectd plugins for the server
 action :setup_monitoring do
   # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
   db_state_get node
@@ -601,7 +601,7 @@ action :setup_monitoring do
   end
 end
 
-# Setup monitoring for slave database
+# Sets up monitoring for slave database
 action :setup_slave_monitoring do
   # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
   db_state_get node
@@ -677,7 +677,7 @@ action :setup_slave_monitoring do
   end
 end
 
-# Generate database dump file
+# Generates database dump file
 action :generate_dump_file do
   db_name = new_resource.db_name
   dumpfile = new_resource.dumpfile
@@ -690,7 +690,7 @@ action :generate_dump_file do
   end
 end
 
-# Restore database from a dump file
+# Restores database from a dump file
 action :restore_from_dump_file do
   db_name = new_resource.db_name
   dumpfilepath_without_extension = new_resource.dumpfile

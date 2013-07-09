@@ -11,14 +11,14 @@
 include RightScale::Database::Helper
 include RightScale::Database::MySQL::Helper
 
-# Stop MySQL service
+# Stops MySQL service
 action :stop do
   service node[:db_mysql][:service_name] do
     action :stop
   end
 end
 
-# Start MySQL service
+# Starts MySQL service
 action :start do
   begin
     SystemTimer.timeout_after(node[:db_mysql][:init_timeout].to_i) do
@@ -33,14 +33,14 @@ action :start do
   end
 end
 
-# Restart MySQL service
+# Restarts MySQL service
 action :restart do
   service node[:db_mysql][:service_name] do
     action :restart
   end
 end
 
-# Check status of MySQL service
+# Checks status of MySQL service
 action :status do
   # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "status" method.
@@ -49,7 +49,7 @@ action :status do
   Chef::Log.info "  Database Status:\n#{status}"
 end
 
-# Lock MySQL database
+# Locks MySQL database
 action :lock do
   # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "lock" method.
@@ -57,7 +57,7 @@ action :lock do
   @db.lock
 end
 
-# Unlock MySQL database
+# Unlocks MySQL database
 action :unlock do
   # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "unlock" method.
@@ -65,7 +65,7 @@ action :unlock do
   @db.unlock
 end
 
-# Relocate MySQL database data directory
+# Relocates MySQL database data directory
 action :move_data_dir do
   # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "move_datadir" method.
@@ -112,7 +112,7 @@ action :firewall_update do
   end
 end
 
-# Write backup information needed during restore
+# Writes backup information needed during restore
 action :write_backup_info do
   # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
   # See cookbooks/db/libraries/helper.rb for the "RightScale::Database::MySQL::Helper" class.
@@ -149,7 +149,7 @@ action :write_backup_info do
   end
 end
 
-# Verify MySQL database is in a pristine state before performing a restore to
+# Verifies MySQL database is in a pristine state before performing a restore to
 # prevent overwriting of an existing database
 action :pre_restore_check do
   # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
@@ -278,7 +278,7 @@ action :post_restore_cleanup do
 
 end
 
-# Verify whether the MySQL database is in a good state for taking a snapshot.
+# Verifies whether the MySQL database is in a good state for taking a snapshot.
 action :pre_backup_check do
   # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "pre_backup_check" method.
@@ -294,7 +294,7 @@ action :post_backup_cleanup do
   @db.post_backup_steps
 end
 
-# Set MySQL database user privileges
+# Sets MySQL database user privileges
 action :set_privileges do
   priv = new_resource.privilege
   priv_username = new_resource.privilege_username
@@ -406,7 +406,7 @@ action :install_client do
 
 end
 
-# Install MySQL database server
+# Installs MySQL database server
 action :install_server do
 
   platform = node[:platform]
@@ -761,7 +761,7 @@ action :install_client_driver do
   end
 end
 
-# Install and configure collectd plugins for the MySQL database server
+# Installs and configures collectd plugins for the MySQL database server
 action :setup_monitoring do
   # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
   db_state_get node
@@ -805,7 +805,7 @@ action :setup_monitoring do
 
 end
 
-# Set database replication privileges for a slave
+# Sets database replication privileges for a slave
 action :grant_replication_slave do
   require 'mysql'
 
@@ -820,7 +820,7 @@ action :grant_replication_slave do
   con.close
 end
 
-# Promote slave database to master
+# Promotes slave database to master
 action :promote do
   # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
   db_state_get node
@@ -1144,7 +1144,7 @@ action :enable_replication do
 
 end
 
-# Generate dump file
+# Generates dump file
 action :generate_dump_file do
 
   db_name = new_resource.db_name
@@ -1156,7 +1156,7 @@ action :generate_dump_file do
 
 end
 
-# Restore MySQL database from dump file
+# Restores MySQL database from dump file
 action :restore_from_dump_file do
 
   db_name = new_resource.db_name

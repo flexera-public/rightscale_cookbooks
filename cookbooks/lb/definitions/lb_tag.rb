@@ -8,8 +8,8 @@
 
 # Installs loadbalancer tags.
 #
-# @param [String] name Name of the pool to be set in loadbalancer tag.
-# @param [Symbol] action Action to be taken by the right_link_tag resource.
+# @param name [String] Name of the pool to be set in loadbalancer tag.
+# @param action [Symbol] Action to be taken by the right_link_tag resource.
 #
 define :lb_tag, :action => :publish do
 

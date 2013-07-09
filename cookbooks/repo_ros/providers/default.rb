@@ -10,7 +10,7 @@
 
 require 'json'
 
-# Setup repository attributes.
+# Sets up repository attributes.
 action :setup_attributes do
 
   # Checking ros_util presence it is required for repo_ros correct operations
@@ -31,7 +31,7 @@ action :setup_attributes do
 end
 
 
-# Pull code from a determined repository to a specified destination.
+# Pulls code from a determined repository to a specified destination.
 action :pull do
 
   # Checking attributes
@@ -95,7 +95,8 @@ action :pull do
 end
 
 
-# Pull code from a determined repository to a specified destination and create a capistrano-style deployment.
+# Pulls code from a determined repository to a specified destination and create
+# a capistrano-style deployment.
 action :capistrano_pull do
 
   log "  Recreating project directory for :pull action"

@@ -7,14 +7,14 @@
 # such as a RightScale Master Subscription Agreement.
 
 
-# Install packages required for application server setup
+# Installs packages required for application server setup
 actions :install
 
   # Set of packages to be installed in addition to the base application
   # packages
   attribute :packages, :kind_of => Array
 
-# Set up the application vhost on specified port. Action designed to setup
+# Sets up the application vhost on specified port. Action designed to setup
 # APP LWRP with common parameters required for apache vhost file.
 actions :setup_vhost
 
@@ -44,7 +44,7 @@ actions :code_update
   # Destination for source code download
   attribute :destination, :kind_of => String
 
-# Set up the database connection file. Action designed to setup APP LWRP with
+# Sets up the database connection file. Action designed to setup APP LWRP with
 # common parameters required for database configuration file creation.
 actions :setup_db_connection
 
@@ -60,6 +60,6 @@ actions :setup_db_connection
   # Database server fqdn
   attribute :database_server_fqdn, :kind_of => String
 
-# Action designed to setup APP LWRP with common parameters required for install
-# and configuration of required monitoring software.
+# Sets up APP LWRP with common parameters required for install and configuration
+# of required monitoring software.
 actions :setup_monitoring

@@ -8,7 +8,7 @@
 
 # @resource repo
 
-# Setup repository attributes.
+# Sets up repository attributes.
 action :setup_attributes do
 
   # Checking inputs required for getting source with RSync
@@ -17,7 +17,7 @@ action :setup_attributes do
 end
 
 
-# Pull code from a determined repository to a specified destination.
+# Pulls code from a determined repository to a specified destination.
 action :pull do
 
   # Checking attributes
@@ -79,7 +79,8 @@ action :pull do
 end
 
 
-# Pull code from a determined repository to a specified destination and create a capistrano deployment.
+# Pulls code from a determined repository to a specified destination and create
+# a capistrano deployment.
 action :capistrano_pull do
 
   log "  Recreating project directory for :pull action"

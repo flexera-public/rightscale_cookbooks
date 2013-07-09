@@ -8,7 +8,7 @@
 
 # @resource logging
 
-# Stop syslog-ng
+# Stops syslog-ng
 action :stop do
   service "syslog-ng" do
     action :stop
@@ -17,7 +17,7 @@ action :stop do
 end
 
 
-# Start syslog-ng
+# Starts syslog-ng
 action :start do
   service "syslog-ng" do
     action :start
@@ -26,7 +26,7 @@ action :start do
 end
 
 
-# Restart syslog-ng
+# Restarts syslog-ng
 action :restart do
   service "syslog-ng" do
     action :restart
@@ -35,7 +35,7 @@ action :restart do
 end
 
 
-# Reload syslog-ng
+# Reloads syslog-ng
 action :reload do
   service "syslog-ng" do
     action :reload
@@ -44,7 +44,7 @@ action :reload do
 end
 
 
-# Install syslog-ng package
+# Installs syslog-ng package
 action :install do
   # The replacing syslog-ng with rsyslog requires low level package
   # manipulation via rpm/dpkg
@@ -52,7 +52,7 @@ action :install do
 end
 
 
-# Configure logging: client side
+# Configures logging: client side
 action :configure do
   remote_server = new_resource.remote_server
   # Keep the default configuration (local file only logging) unless a
@@ -74,25 +74,25 @@ action :configure do
 end
 
 
-# Call the logging rotate command
+# Calls the logging rotate command
 action :rotate do
   raise "syslog-ng action not implemented"
 end
 
 
-# Add a remote logging server
+# Adds a remote logging server
 action :add_remote_server do
   raise "syslog-ng action not implemented"
 end
 
 
-# Add a logging definition
+# Adds a logging definition
 action :add_definition do
   raise "syslog-ng action not implemented"
 end
 
 
-# Add a logrotate policy
+# Adds a logrotate policy
 action :add_rotate_policy do
   raise "syslog-ng action not implemented"
 end

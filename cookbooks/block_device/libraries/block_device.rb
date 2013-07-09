@@ -20,7 +20,7 @@ module RightScale
     #
     # @param new_resource [Object] resource which will be initialized
     #
-    # @return [BlockDevice] blockDevice object
+    # @return [BlockDevice] BlockDevice object
     #
     def init(new_resource, backup_type = :primary)
       # Setup options

@@ -8,7 +8,7 @@
 
 # @resource app
 
-# Stop apache
+# Stops apache
 action :stop do
   log "  Running stop sequence"
   service "apache2" do
@@ -17,7 +17,7 @@ action :stop do
   end
 end
 
-# Start apache
+# Starts apache
 action :start do
   log "  Running start sequence"
   service "apache2" do
@@ -26,7 +26,7 @@ action :start do
   end
 end
 
-# Reload apache
+# Reloads apache
 action :reload do
   log "  Running reload sequence"
   service "apache2" do
@@ -35,7 +35,7 @@ action :reload do
   end
 end
 
-# Restart apache
+# Restarts apache
 action :restart do
   # Calls the :stop action.
   action_stop
@@ -44,7 +44,7 @@ action :restart do
   action_start
 end
 
-# Install Packages and Modules required for PHP application server.
+# Installs packages and modules required for PHP application server.
 action :install do
   # Installing required packages
   packages = new_resource.packages
@@ -75,7 +75,7 @@ action :install do
 end
 
 
-# Setup apache PHP virtual host
+# Sets up apache PHP virtual host
 action :setup_vhost do
 
   project_root = new_resource.destination
@@ -105,7 +105,7 @@ action :setup_vhost do
 end
 
 
-# Setup PHP Database Connection
+# Sets up PHP Database Connection
 action :setup_db_connection do
   project_root = new_resource.destination
   db_name = new_resource.database_name
@@ -128,7 +128,7 @@ action :setup_db_connection do
   end
 end
 
-# Download/Update application repository
+# Downloads/Updates application repository
 action :code_update do
 
   deploy_dir = new_resource.destination
@@ -149,6 +149,7 @@ action :code_update do
 
 end
 
+# Sets up monitoring for PHP application server. Not implemented.
 action :setup_monitoring do
 
   log "  Monitoring resource is not implemented in php framework yet. Use apache monitoring instead."
