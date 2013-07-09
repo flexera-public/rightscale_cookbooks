@@ -56,9 +56,9 @@ loop do
 
     # Tag the server if updates are available.
     if (packages_to_update[1].to_i > 0) then
-      system("rs_tag -a 'security_updates_available' > /dev/null 2>&1")
+      system("rs_tag -a 'rs_monitoring:security_updates_available=true' > /dev/null 2>&1")
     else
-      system("rs_tag -r 'security_updates_available' > /dev/null 2>&1")
+      system("rs_tag -r 'rs_monitoring:security_updates_available=true' > /dev/null 2>&1")
     end
 
     last_update_check = now.to_i
