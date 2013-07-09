@@ -123,6 +123,15 @@ class Cloud
     false
   end
 
+  # Checks if the cloud supports managing the server's firewall. If not
+  # overridden by a subclass this method will always return true.
+  #
+  # @return [Boolean] whether the cloud supports managing the server's firewall
+  #
+  def supports_sys_firewall?
+    true
+  end
+
 private
   # Constructs a cloud object. This method should not be used directly. Instead
   # {.factory} will create an instance of the correct Cloud subclass based on
@@ -394,5 +403,17 @@ class RackspaceOpenCloud < Cloud
   #
   def supports_snapshots?
     true
+  end
+
+  # Checks if the cloud supports managing server's firewall. All Rackspace Open
+  # Clouds support managing server's firewall except the cloud accounts with
+  # Rackconnect enabled.
+  #
+  # @return [Boolean] whether the cloud supports managing the server's firewall
+  #
+  # @see Cloud#supports_sys_firewall?
+  #
+  def supports_sys_firewall?
+    @cloud_name =~ /Rackconnect/ ? false : true
   end
 end
