@@ -43,7 +43,6 @@ action :attach do
     raise "ERROR: ELB '#{new_resource.service_lb_name}' does not exist"
   end
 
-  # Enabling the 'AvailabilityZones' is skipped if the ELB is part of a VPC.
   if selected_elb["VPCId"].to_s.empty?
     # Checks if this instance's zone is part of the lb. If not, add it.
     if selected_elb["AvailabilityZones"]["member"].
@@ -56,6 +55,9 @@ action :attach do
         "AvailabilityZones.member" => node[:ec2][:placement][:availability_zone]
       })
     end
+  else
+    # Enabling the 'AvailabilityZones' is skipped if the ELB is part of a VPC.
+    log "  ELB is part of a VPC"
   end
 
   # Opens the backend_port.
