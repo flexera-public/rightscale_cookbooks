@@ -9,7 +9,6 @@
 rightscale_marker
 
 if "#{node[:rightscale][:security_updates]}" == "enable"
-
   platform =  node[:platform]
   log "  Applying secutiy updates for #{platform}"
   # Make sure we DON'T check the output of the update because it
@@ -19,26 +18,17 @@ if "#{node[:rightscale][:security_updates]}" == "enable"
   # trigger alerting users to investigate what went wrong.
   case platform
   when "ubuntu"
-    bash "Apply apt security updates" do
-      flags "-ex"
-      code <<-EOH
-        apt-get -y update && apt-get -y upgrade || true
-      EOH
+    execute "apply apt security updates" do
+      command "apt-get -y update && apt-get -y upgrade || true"
     end
   when "centos", "redhat"
     # Update packages
-    bash "Apply yum security updates" do
-      flags "-ex"
-      code <<-EOH
-        yum -y --security update || true
-      EOH
+    execute "apply yum security updates" do
+      command "yum -y --security update || true"
     end
   else
     log " Security updates not supported for platform #{platform}"
   end
-
 else
-
-  log "  Security updates disabled.  Skipping update!"
-
+  log "  Security updates disabled. Skipping update!"
 end
