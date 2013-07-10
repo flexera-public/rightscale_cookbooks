@@ -21,10 +21,34 @@ if "#{node[:rightscale][:security_updates]}" == "enable"
     execute "apply apt security updates" do
       command "apt-get -y update && apt-get -y upgrade || true"
     end
+    ruby_block "check and tag if reboot required" do
+      block do
+        if ::File.exists?("/var/run/reboot-required")
+          execute "rs_tag -a 'rs_monitoring:reboot_required=true'"
+        else
+          execute "rs_tag -r 'rs_monitoring:reboot_required=true'"
+        end
+      end
+    end
   when "centos", "redhat"
     # Update packages
+    current_kernel_version = nil
+    ruby_block "obtain current kernel version before update" do
+      block do
+        current_kernel_version = system("uname -r").chomp
+      end
+    end
     execute "apply yum security updates" do
       command "yum -y update || true"
+    end
+    ruby_block "check and tag if reboot is required" do
+      block do
+        if system("uname -r").chomp != current_kernel_version
+          execute "rs_tag -a 'rs_monitoring:reboot_required=true'"
+        else
+          execute "rs_tag -r 'rs_monitoring:reboot_required=true'"
+        end
+      end
     end
   else
     log " Security updates not supported for platform #{platform}"
