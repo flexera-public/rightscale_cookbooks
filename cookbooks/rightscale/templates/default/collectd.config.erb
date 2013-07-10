@@ -40,4 +40,4 @@ LoadPlugin <%= plugin %>
 TypesDB "/usr/share/collectd/types.db"
 
 # Recursively includes all files within that directory and its subdirectories.
-Include "<%= node[:rightscale][:collectd_plugin_dir] %>/*"
+Include "<%= @collectd_plugin_dir %>/*"
