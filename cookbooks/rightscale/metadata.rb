@@ -266,7 +266,7 @@ attribute "rightscale/redhat/username",
   :display_name => "RedHat Network Username",
   :description =>
     "The username to register the system with under RHN Satellite or Red Hat" +
-    " Network Classic. Example: cred:REDHAT_DEV_SUB_USERNAME",
+    " Network Classic. Example: cred:REDHAT_SUBSCRIBER_USERNAME",
   :required => "optional",
   :default => "",
   :recipes => [
@@ -278,7 +278,8 @@ attribute "rightscale/redhat/password",
   :display_name => "RedHat Network Password",
   :description =>
     "The password associated with the username specified in the" +
-    " rightscale/redhat/username input. Example: cred:REDHAT_DEV_SUB_PASSWORD",
+    " rightscale/redhat/username input." +
+    " Example: cred:REDHAT_SUBSCRIBER_PASSWORD",
   :required => "optional",
   :default => "",
   :recipes => [
