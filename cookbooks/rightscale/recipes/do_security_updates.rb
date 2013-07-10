@@ -24,9 +24,9 @@ if "#{node[:rightscale][:security_updates]}" == "enable"
     ruby_block "check and tag if reboot required" do
       block do
         if ::File.exists?("/var/run/reboot-required")
-          execute "rs_tag -a 'rs_monitoring:reboot_required=true'"
+          system("rs_tag -a 'rs_monitoring:reboot_required=true'")
         else
-          execute "rs_tag -r 'rs_monitoring:reboot_required=true'"
+          system("rs_tag -r 'rs_monitoring:reboot_required=true'")
         end
       end
     end
@@ -50,9 +50,9 @@ if "#{node[:rightscale][:security_updates]}" == "enable"
         uname_cmd.run_command
         uname_cmd.error!
         if uname_cmd.stdout.chomp != current_kernel_version
-          execute "rs_tag -a 'rs_monitoring:reboot_required=true'"
+          system("rs_tag -a 'rs_monitoring:reboot_required=true'")
         else
-          execute "rs_tag -r 'rs_monitoring:reboot_required=true'"
+          system("rs_tag -r 'rs_monitoring:reboot_required=true'")
         end
       end
     end
