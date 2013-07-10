@@ -24,7 +24,7 @@ if "#{node[:rightscale][:security_updates]}" == "enable"
   when "centos", "redhat"
     # Update packages
     execute "apply yum security updates" do
-      command "yum -y --security update || true"
+      command "yum -y update || true"
     end
   else
     log " Security updates not supported for platform #{platform}"
