@@ -94,10 +94,10 @@ directory "#{node[:rightscale][:collectd_plugin_dir]}" do
   action :create
 end
 
-# Install a Nightly Crontask to Restart Collectd
-#
-# Add the task to /etc/crontab, at 04:00 localtime.
+# Installs a nightly cron job (at 04:00 localtime) to restart collectd.
+# Sets the cron PATH environment variable to follow root PATH.
 cron "collectd" do
+  path ENV["PATH"]
   command "service collectd restart > /dev/null"
   minute "00"
   hour "4"
