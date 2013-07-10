@@ -33,6 +33,7 @@ attribute "puppet/client/version",
     " Puppet Master. Provide the version in version-release format." +
     " Example: 2.7.13-1",
   :required => "optional",
+  :default => "2.7.13-1",
   :recipes => ["puppet::install_client"]
 
 attribute "puppet/client/node_name",
