@@ -35,7 +35,10 @@ if "#{node[:rightscale][:security_updates]}" == "enable"
     current_kernel_version = nil
     ruby_block "obtain current kernel version before update" do
       block do
-        current_kernel_version = system("uname -r").chomp
+        uname_cmd = Mixlib::ShellOut.new("uname -r")
+        uname_cmd.run_command
+        uname_cmd.error!
+        current_kernel_version = uname_cmd.stdout.chomp
       end
     end
     execute "apply yum security updates" do
@@ -43,7 +46,10 @@ if "#{node[:rightscale][:security_updates]}" == "enable"
     end
     ruby_block "check and tag if reboot is required" do
       block do
-        if system("uname -r").chomp != current_kernel_version
+        uname_cmd = Mixlib::ShellOut.new("uname -r")
+        uname_cmd.run_command
+        uname_cmd.error!
+        if uname_cmd.stdout.chomp != current_kernel_version
           execute "rs_tag -a 'rs_monitoring:reboot_required=true'"
         else
           execute "rs_tag -r 'rs_monitoring:reboot_required=true'"
