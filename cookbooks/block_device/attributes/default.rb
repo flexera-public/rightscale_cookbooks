@@ -12,7 +12,8 @@ default[:block_device][:devices][:default][:backup][:lineage_override] = ""
 
 default[:block_device][:devices][:default][:backup][:primary][:keep][:max_snapshots] = "60"
 
-default[:block_device][:devices][:default][:backup][:primary][:cloud] = 'cloudfiles' if cloud[:provider] == 'rackspace'
+default[:block_device][:devices][:default][:backup][:primary][:cloud] = 
+  'Cloud_Files' if cloud[:provider] == 'rackspace'
 
 # Defining initial backup parameters for all block devices
 RightScale::BlockDeviceHelper.do_for_all_block_devices block_device do |device, number|
