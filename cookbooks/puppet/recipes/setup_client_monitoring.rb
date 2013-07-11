@@ -19,7 +19,7 @@ end
 cookbook_file "#{collectd_plugins}/Puppet-stats.sh" do
   mode 0755
   backup false
-  source "collectd_puppet_client_stats.erb"
+  source "Puppet-stats.sh"
 end
 
 # Initializing Collectd service for further usage.
