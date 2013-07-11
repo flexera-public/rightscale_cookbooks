@@ -39,6 +39,7 @@ if "#{node[:rightscale][:security_updates]}" == "enable"
         uname_cmd.run_command
         uname_cmd.error!
         current_kernel_version = uname_cmd.stdout.chomp
+        Chef::Log.info "Current Kernel Version: #{current_kernel_version}"
       end
     end
     execute "apply yum security updates" do
@@ -49,10 +50,23 @@ if "#{node[:rightscale][:security_updates]}" == "enable"
         uname_cmd = Mixlib::ShellOut.new("uname -r")
         uname_cmd.run_command
         uname_cmd.error!
+        Chef::Log.info "Updated Kernel Version: #{uname_cmd.stdout}"
         if uname_cmd.stdout.chomp != current_kernel_version
-          system("rs_tag -a 'rs_monitoring:reboot_required=true'")
+          Chef::Log.info "Adding reboot required tag"
+          add_tag_cmd = Mixlib::ShellOut.new(
+            "rs_tag -a 'rs_monitoring:reboot_required=true'"
+          )
+          add_tag_cmd.run_command
+          add_tag_cmd.error!
+          Chef::Log.info add_tag_command.stdout
         else
-          system("rs_tag -r 'rs_monitoring:reboot_required=true'")
+          Chef::Log.info "Removing reboot required tag"
+          remove_tag_cmd = Mixlib::ShellOut.new(
+            "rs_tag -r 'rs_monitoring:reboot_required=true'"
+          )
+          remove_tag_cmd.run_command
+          remove_tag_cmd.error!
+          Chef::Log.info remove_tag_cmd.stdout
         end
       end
     end
