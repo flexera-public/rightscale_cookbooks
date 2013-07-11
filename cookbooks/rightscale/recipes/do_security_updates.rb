@@ -46,7 +46,7 @@ if "#{node[:rightscale][:security_updates]}" == "enable"
         rpm_cmd = Mixlib::ShellOut.new("rpm -q kernel | tail -1")
         rpm_cmd.run_command
         rpm_cmd.error!
-        updated_kernel_version = rpm_cmd.stdout.chomp
+        updated_kernel_version = rpm_cmd.stdout.chomp.split("kernel-")[1]
         Chef::Log.info "Updated Kernel Version: #{updated_kernel_version}"
         if updated_kernel_version != current_kernel_version
           Chef::Log.info "Adding reboot required tag"
@@ -55,7 +55,7 @@ if "#{node[:rightscale][:security_updates]}" == "enable"
           )
           add_tag_cmd.run_command
           add_tag_cmd.error!
-          Chef::Log.info add_tag_command.stdout
+          Chef::Log.info add_tag_cmd.stdout
         else
           Chef::Log.info "Removing reboot required tag"
           remove_tag_cmd = Mixlib::ShellOut.new(
