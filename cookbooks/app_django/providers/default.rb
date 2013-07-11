@@ -97,7 +97,7 @@ action :install do
 
 end
 
-# Sets up apache PHP virtual host
+# Sets up apache virtual host for Django
 action :setup_vhost do
 
   project_root = new_resource.destination
@@ -144,7 +144,7 @@ action :setup_vhost do
 
 end
 
-# Sets up Django Database Connection
+# Sets up Django database Connection
 action :setup_db_connection do
 
   project_root = new_resource.destination

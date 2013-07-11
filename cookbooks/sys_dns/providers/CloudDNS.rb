@@ -8,7 +8,7 @@
 
 # @resource sys_dns
 
-# Set Cloud DNS
+# Sets Cloud DNS
 action :set do
   log "==================== sys_dns(:set) CloudDNS BEGIN ==================== "
 

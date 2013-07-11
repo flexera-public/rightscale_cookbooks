@@ -18,7 +18,7 @@ module RightScale
 
         # Create new MySQL object
         #
-        # @param new_resource [Object] Resource which will be initialized
+        # @param new_resource [Object] resource which will be initialized
         #
         # @return [Mysql] MySQL object
         #
@@ -37,20 +37,21 @@ module RightScale
         end
 
         # Create numeric UUID
-        # MySQL server_id must be a unique number - use the ip address integer representation
+        # MySQL server_id must be a unique number - use the ip address integer
+        # representation
         # Duplicate IP's and server_id's may occur with cross cloud replication.
         #
-        # @param node [Hash] Node name
+        # @param node [Hash] node name
         #
         def self.mycnf_uuid(node)
           node[:db_mysql][:mycnf_uuid] = IPAddr.new(node[:cloud][:private_ips][0]).to_i
         end
 
         # Generate unique filename for relay_log used in slave db.
-        # Should only generate once.  Used to create unique relay_log files used for slave
-        # Always set to support stop/start
+        # Should only generate once.  Used to create unique relay_log files used
+        # for slave. Always set to support stop/start
         #
-        # @param node [Hash] Node name
+        # @param node [Hash] node name
         #
         # @return [String] unique filename for relay_log
         #
@@ -60,10 +61,10 @@ module RightScale
         end
 
         # Loading information about replication master status.
-        # If that file exists, the MySQL server has already previously been
-        # configured for replication,
+        # If that file exists, the MySQL server has already been configured for
+        # replication.
         #
-        # @param node [Hash] Node name
+        # @param node [Hash] node name
         #
         def self.load_master_info_file(node)
           loadfile = ::File.join(node[:db][:data_dir], "master.info")
@@ -79,8 +80,8 @@ module RightScale
 
         # Create new Mysql connection
         #
-        # @param node [Hash] Node name
-        # @param hostname [String] Hostname FQDN, default is 'localhost'
+        # @param node [Hash] node name
+        # @param hostname [String] hostname FQDN, default is 'localhost'
         #
         # @return [Mysql] MySQL connection
         #
@@ -96,10 +97,10 @@ module RightScale
 
         # Perform sql query to MySql server
         #
-        # @param node [Hash] Node name
-        # @param hostname [String] Hostname FQDN, default is 'localhost'
-        # @param timeout [Integer] Timeout value
-        # @param tries [Integer] Connection attempts number
+        # @param node [Hash] node name
+        # @param hostname [String] hostname FQDN, default is 'localhost'
+        # @param timeout [Integer] timeout value for query
+        # @param tries [Integer] connection attempts number
         #
         # @return [Mysql::Result] MySQL query result
         #
@@ -135,13 +136,13 @@ module RightScale
           end
         end
 
-        # Replication process reconfiguration
+        # Reconfigures replication process.
         #
-        # @param node [Hash] Node name
-        # @param hostname [String] Hostname FQDN, default is 'localhost'
+        # @param node [Hash] node name
+        # @param hostname [String] hostname FQDN, default is 'localhost'
         # @param newmaster_host [String] FQDN or ip of new replication master
-        # @param newmaster_logfile [String] Replication log filename
-        # @param newmaster_position [Integer] Last record position in replication log
+        # @param newmaster_logfile [String] replication log filename
+        # @param newmaster_position [Integer] last record position in replication log
         #
         def self.reconfigure_replication(
           node,

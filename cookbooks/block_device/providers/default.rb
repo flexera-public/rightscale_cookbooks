@@ -30,7 +30,7 @@ action :create do
   device.create(create_options)
 end
 
-# Creates snapshot of given device
+# Creates a snapshot of given device
 action :snapshot do
   # See cookbooks/block_device/libraries/block_device.rb for definition of
   # init method.
@@ -39,7 +39,7 @@ action :snapshot do
   device.snapshot
 end
 
-# Prepares device for primary backup
+# Performs primary backup
 action :primary_backup do
   # See cookbooks/block_device/libraries/block_device.rb for definition of
   # init method.
@@ -62,7 +62,7 @@ action :primary_backup do
   device.primary_backup(new_resource.lineage, backup_options)
 end
 
-# Prepares device for primary restore
+# Performs primary restore
 action :primary_restore do
   # See cookbooks/block_device/libraries/block_device.rb for definition of
   # init method.
@@ -90,7 +90,7 @@ action :primary_restore do
   device.primary_restore(new_resource.lineage, restore_args)
 end
 
-# Prepares device for secondary backup
+# Performs secondary backup
 action :secondary_backup do
   # Check if all secondary backup inputs are set up. See
   # cookbooks/block_device/libraries/block_device.rb for definition of
@@ -101,7 +101,7 @@ action :secondary_backup do
   device.secondary_backup(new_resource.lineage)
 end
 
-# Prepares device for secondary restore
+# Performs for secondary restore
 action :secondary_restore do
   # See cookbooks/block_device/libraries/block_device.rb for secondary_checks
   # and init methods.

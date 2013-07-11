@@ -68,7 +68,7 @@ actions :add_vhost
 # to attach.
 actions :attach
 
-# Attach request from an application server. This runs on an application server
+# Sends an attach request to an application server. This runs on an application server
 # which then runs a remote recipe on the remote load balancer. The remote recipe
 # eventually runs the 'attach' action.
 actions :attach_request
@@ -84,15 +84,15 @@ actions :detach
 # eventually runs the 'detach' action.
 actions :detach_request
 
-# Restart the load balancer service. Should use the platform's 'service' method
+# Restarts the load balancer service. Should use the platform's 'service' method
 # to restart the service.
 actions :restart
 
-# Install and configure collectd plugins for the server. This is used by the
+# Installs and configures collectd plugins for the server. This is used by the
 # RightScale platform to display metrics about the load balancer on the
 # RightScale dashboard.
 actions :setup_monitoring
 
-# Perform advanced configuration for load balancer. Adds support for complicated
+# Performs advanced configuration for load balancer. Adds support for complicated
 # acls and authorization process.
 actions :advanced_configs

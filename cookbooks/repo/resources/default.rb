@@ -11,14 +11,14 @@
 # Please see the action details found in the lightweight providers of other implementing
 # cookbooks: cookbooks/repo_<provider>/providers/default.rb
 
-# Pull code from a determined repository to a specified destination.
+# Pulls code from a determined repository to a specified destination.
 actions :pull
 
-# Pull code from a determined repository to a specified destination and create a
+# Pulls code from a determined repository to a specified destination and create a
 # capistrano-style deployment.
 actions :capistrano_pull
 
-# Setup repository URL and other attributes.
+# Sets up repository URL and other attributes.
 actions :setup_attributes
 
 

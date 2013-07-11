@@ -73,9 +73,9 @@ module RightScale
     # Instance method for do_for_all_block_devices. Calls
     # {self.do_for_all_block_devices} with given parameters.
     #
-    # @param block_device [Hash] block device
-    # @param block [Object] hash of block devices to which the block_device
-    # belongs to
+    # @param block_device [Hash] block device on which the action will be performed
+    # @param block [Proc] block which will be used for setting up of all available
+    # block device resources
     #
     def do_for_all_block_devices(block_device, &block)
       RightScale::BlockDeviceHelper.do_for_all_block_devices(block_device, &block)
@@ -84,9 +84,9 @@ module RightScale
     # Instance method for do_for_block_devices. Calls
     # {self.do_for_block_devices} with given parameters.
     #
-    # @param block_device [Hash] Block device
-    # @param block [Object] Hash of block devices to which block_device belongs
-    # to
+    # @param block_device [Hash] block device on which the action will be performed
+    # @param block [Proc] block which will be used for setting up of all available
+    # block device resources
     #
     def do_for_block_devices(block_device, &block)
       RightScale::BlockDeviceHelper.do_for_block_devices(block_device, &block)
@@ -94,8 +94,8 @@ module RightScale
 
     # Helper to perform actions to a set of all available block devices.
     #
-    # @param block_device [Hash] block device
-    # @param block [Proc] block which will be used for setup of all available
+    # @param block_device [Hash] block device on which the action will be performed
+    # @param block [Proc] block which will be used for setting up of all available
     # block device resources
     #
     def self.do_for_all_block_devices(block_device, &block)
@@ -110,7 +110,7 @@ module RightScale
 
     # Helper to perform actions to a set of block devices.
     #
-    # @param block_device [Hash] block device
+    # @param block_device [Hash] block device on which the action will be performed
     # @param block [Proc] block which will be used for setup of block device
     # resource
     #
@@ -139,8 +139,8 @@ module RightScale
     # {self.get_device_or_default} with given parameters.
     #
     # @param node [Hash] node name
-    # @param device [Symbol] nevice
-    # @param keys [Array] array of keys
+    # @param device [Symbol] device to get
+    # @param keys [Array] array of block device attributes
     #
     def get_device_or_default(node, device, *keys)
       RightScale::BlockDeviceHelper.get_device_or_default(node, device, *keys)
@@ -148,9 +148,9 @@ module RightScale
 
     # Returns current device.
     #
-    # @param node [Hash] node name
-    # @param device [Symbol] device
-    # @param keys [Array] array of keys
+    # @param node [Hash] node hash
+    # @param device [Symbol] device to get
+    # @param keys [Array] array of block device attributes
     #
     def self.get_device_or_default(node, device, *keys)
       value = keys.reduce(node[:block_device][:devices][device]) do |values, key|
@@ -173,8 +173,8 @@ module RightScale
       fstab_exists && mtab_exists
     end
 
-    # Calculates and print out restore params and returns the array of ready to
-    # use values.
+    # Checks whether lineage and/or timestamp override should be used during
+    # restore.
     #
     # @param lineage [String] lineage input value
     # @param lineage_override [String] lineage override input value

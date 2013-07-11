@@ -8,7 +8,7 @@
 
 # = Database Attributes
 #
-# Below are the attributes defined by the db resource interface.
+# Below are the attributes defined by the database resource interface.
 #
 
 # == General options
@@ -70,10 +70,10 @@ attribute :machine_tag, :kind_of => String, :regex => /^([^:]+):(.+)=.+/
 
 # == Import/Export options
 
-# Database dump file
+# Database dump file name
 attribute :dumpfile, :kind_of => String
 
-# Name of the database
+# Database name
 attribute :db_name, :kind_of => String
 
 # Database version
@@ -81,27 +81,27 @@ attribute :db_version, :kind_of => String
 
 # = General Database Actions
 #
-# Below are the actions defined by the db resource interface.
+# Below are the actions defined by the database resource interface.
 #
 
-# Stop the database service. Calls the correct init.d script for the database
+# Stops the database service. Calls the correct init.d script for the database
 # and platform.
 actions :stop
 
-# Start the database service. Calls the correct init.d script for the database
+# Starts the database service. Calls the correct init.d script for the database
 # and platform.
 actions :start
 
-# Log the status of the database service. Calls the correct init.d script for
+# Logs the status of the database service. Calls the correct init.d script for
 # the database and platform and send the output to the Chef log and RightScale
 # audit entries.
 actions :status
 
-# Lock the database so writes will be blocked. This must insure a consistent
+# Locks the database so writes will be blocked. This must insure a consistent
 # state while taking a snapshot.
 actions :lock
 
-# Unlock the database so writes can occur. This must be called as soon as
+# Unlocks the database so writes can occur. This must be called as soon as
 # possible after calling the :lock action  since clients will be blocked
 # from writing until unlocked.
 actions :unlock
@@ -117,38 +117,38 @@ actions :firewall_update
 # Sends a remote_recipe that requests a database updates it's firewall rules.
 actions :firewall_update_request
 
-# Relocate the database data directory. Moves the data directory from the
+# Relocates the database data directory. Moves the data directory from the
 # default install path to the path specified in name attribute or data_dir
 # attribute of the resource. This is used for relocating the data directory to a
 # block device that provides snapshot functionality. This action should also
 # setup a symlink from the old path to the new location.
 actions :move_data_dir
 
-# Generate dump file
+# Generates dump file
 actions :generate_dump_file
 
-# Restore db from dump file
+# Restores database from dump file
 actions :restore_from_dump_file
 
-# Verify the database is in a good state for taking a snapshot. This action is
+# Verifies the database is in a good state for taking a snapshot. This action is
 # used to verify correct state and to preform any other steps necessary before
 # the database is locked. This action should raise an exception if the database
 # is not in a valid state for a backup.
 actions :pre_backup_check
 
-# Used to cleanup VM after backup. This action is called after the backup has
+# Cleans up database after backup. This action is called after the backup has
 # completed. Can be used to cleanup any temporary files created from the
 # :pre_backup_check action.
 actions :post_backup_cleanup
 
-# Write backup information needed during restore. This action is called before
-# a backup is done. It contains information about the current DB setup
-# (db provider, version, replication details, etc.) that is used during restore
-# to verify the backup and initialize the DB. The file is written to the DB data
-# block device and is part of the backup.
+# Writes backup information needed during restore. This action is called before
+# a backup is done. It contains information about the current database setup
+# (database provider, version, replication details, etc.) that is used during
+# restore to verify the backup and initialize the database. The file is written
+# to the database data block device and is part of the backup.
 actions :write_backup_info
 
-# Verify the database is in a good state before preforming a restore. This
+# Verifies the database is in a good state before preforming a restore. This
 # action is called before a restore is performed. It should be used to verify
 # that the system is in a correct state for restoring and should preform any
 # other steps necessary before a new block_device is attached and the database
@@ -156,7 +156,7 @@ actions :write_backup_info
 # database is not in a valid state for a restore.
 actions :pre_restore_check
 
-# Used to validate backup and cleanup VM after restore. Raise an exception if
+# Validates backup and cleans up database after restore. Raise an exception if
 # the snapshot is from a different master, from an incompatible database
 # software version, incompatible architecture, or other provider dependent
 # conditions. This action is called after the block_device restore has completed
@@ -165,7 +165,7 @@ actions :pre_restore_check
 # to cleanup after a restore.
 actions :post_restore_cleanup
 
-# Set database user privileges. Use the privilege attributes of this resource to
+# Sets database user privileges. Use the privilege attributes of this resource to
 # setup 'administrator' or 'user' privilege to the given username with the given
 # password.
 actions :set_privileges
@@ -182,12 +182,12 @@ actions :install_server
 # type
 actions :install_client_driver
 
-# Install and configure collectd plugins for the server. This is used by the
+# Installs and configures collectd plugins for the server. This is used by the
 # RightScale platform to display metrics about the database on the RightScale
 # dashboard. Also enables alerts and escalations for the database.
 actions :setup_monitoring
 
-# Configures and start a slave replicating from master
+# Configures and starts a slave replicating from master
 actions :enable_replication
 
 # Promotes a slave server to the master server. This is called when a new master
@@ -198,6 +198,6 @@ actions :promote
   # Force a slave to promote to master
   attribute :force, :equal_to => [true, false], :default => false
 
-# Set database replication privileges for a slave. This is called when a slave
+# Sets database replication privileges for a slave. This is called when a slave
 # is initialized.
 actions :grant_replication_slave

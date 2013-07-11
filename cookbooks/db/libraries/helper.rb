@@ -17,7 +17,7 @@ module RightScale
 
       # Get the current status of the database server.
       #
-      # @param node [Hash] Server node name to check.
+      # @param node [Hash] server node name to check.
       #
       def db_state_get(node)
         Chef::Log.info "  Loading master/slave state"
@@ -54,7 +54,7 @@ module RightScale
 
       # Set the attribute of a resource during converge phase
       #
-      # @param resource [Hash] Hash representing the resource
+      # @param resource [Hash] hash representing the resource
       # @param attribute [Symbol] attribute to be changed
       # @param value [String] value of the attribute
       #

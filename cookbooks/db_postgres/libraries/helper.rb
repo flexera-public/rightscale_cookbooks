@@ -15,7 +15,7 @@ module RightScale
 
         # Create new PostgreSQL object
         #
-        # @param new_resource [Object] Resource which will be initialized
+        # @param new_resource [Object] resource which will be initialized
         #
         # @return [PostgreSQL] PostgreSQL object
         #
@@ -31,8 +31,8 @@ module RightScale
 
         # Create new PostgreSQL connection
         #
-        # @param username [String] System username, default is 'postgres'
-        # @param hostname [String] Hostname FQDN, default is 'localhost'
+        # @param username [String] system username, default is 'postgres'
+        # @param hostname [String] hostname FQDN, default is 'localhost'
         #
         # @return [PostgreSQL] PostgreSQL connection
         #
@@ -46,13 +46,13 @@ module RightScale
 
         # Perform sql query to PostgreSQL server
         #
-        # @param query [String] Query text
-        # @param hostname [String] Hostname FQDN, default is 'localhost'
-        # @param username [String] System username, default is 'postgres'
-        # @param timeout [Integer] Timeout value
-        # @param tries [Integer] Connection attempts number, default is 1
+        # @param query [String] query text
+        # @param hostname [String] hostname FQDN, default is 'localhost'
+        # @param username [String] system username, default is 'postgres'
+        # @param timeout [Integer] timeout value for query
+        # @param tries [Integer] connection attempts number, default is 1
         #
-        # @return [PGresult] result Query result
+        # @return [PGresult] query result
         #
         # @raise [TimeoutError] if timeout exceeded
         # @raise [RuntimeError] if connection try attempts limit reached

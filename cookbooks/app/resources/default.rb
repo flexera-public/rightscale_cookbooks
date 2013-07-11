@@ -48,7 +48,7 @@ actions :code_update
 # common parameters required for database configuration file creation.
 actions :setup_db_connection
 
-  # Name of the required database
+  # Database name
   attribute :database_name, :kind_of => String
 
   # Database username
@@ -57,7 +57,7 @@ actions :setup_db_connection
   # Database password
   attribute :database_password, :kind_of => String
 
-  # Database server fqdn
+  # Database server FQDN
   attribute :database_server_fqdn, :kind_of => String
 
 # Sets up APP LWRP with common parameters required for install and configuration

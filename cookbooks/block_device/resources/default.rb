@@ -27,7 +27,7 @@ attribute :hypervisor, :kind_of => String
 # Block device mount point
 attribute :mount_point, :kind_of => String, :required => true
 
-# The block device is the master if this attribute is set to true
+# The database (block device) is the master if this attribute is set to true
 attribute :is_master, :equal_to => [true, false], :default => false
 
 # Force backups on a device
@@ -38,7 +38,7 @@ attribute :force, :equal_to => [true, false], :default => false
 # Backup lineage for a block device
 attribute :lineage, :kind_of => String
 
-# Override default timestamp on a block device backup
+# Override default timestamp on a block device restore
 attribute :timestamp_override, :kind_of => String # Restore only
 
 
@@ -61,16 +61,16 @@ attribute :cron_backup_recipe,
 # Maximum snapshots to keep for a block device
 attribute :max_snapshots, :kind_of => String
 
-# Number of daily snapshots to be be kept
+# Number of daily snapshots to keep for a block device
 attribute :keep_daily, :kind_of => String
 
-# Number of weekly snapshots to be kept
+# Number of weekly snapshots to keep for a block device
 attribute :keep_weekly, :kind_of => String
 
-# Number of monthly snapshots to be kept
+# Number of monthly snapshots to keep for a block device
 attribute :keep_monthly, :kind_of => String
 
-# Number of yearly snapshots to be kept
+# Number of yearly snapshots to keep for a block device
 attribute :keep_yearly, :kind_of => String
 
 

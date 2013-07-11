@@ -278,7 +278,7 @@ action :post_restore_cleanup do
 
 end
 
-# Verifies whether the MySQL database is in a good state for taking a snapshot.
+# Verifies whether the MySQL database is in a good state for taking a backup.
 action :pre_backup_check do
   # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "pre_backup_check" method.

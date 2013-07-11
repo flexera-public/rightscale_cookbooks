@@ -11,8 +11,8 @@
 # been 'initialized', else it will fail.
 #
 # @param backup_type [String] If 'primary' will do a primary backup using node
-# attributes specific to the main backup. If 'secondary' will do a secondary backup using node attributes for
-# secondary.  Secondary uses 'ROS'.
+# attributes specific to the main backup. If 'secondary' will do a secondary
+# backup using node attributes for secondary.  Secondary uses 'ROS'.
 #
 # @raise [RuntimeError] If database is not 'initialized'
 #

@@ -8,15 +8,15 @@
 
 # Sets up my.cnf for configuration file for MySQL database.
 #
-# @param server_id [String] Database server ID
-# @param relay_log [String] Slave relay log information
-# @param innodb_log_file_size [Integer] Log file size
-# @param compressed_protocol [Boolean] Set if using compression protocols
-# @param slave_net_timeout [Integer] Timeout value
-# @param ssl_enabled [Boolean] Set to enable SSL authentication
+# @param server_id [String] database server ID
+# @param relay_log [String] slave relay log information
+# @param innodb_log_file_size [Integer] log file size
+# @param compressed_protocol [Boolean] set if using compression protocols
+# @param slave_net_timeout [Integer] timeout value for slave to read data from master
+# @param ssl_enabled [Boolean] set to enable SSL authentication
 # @param ca_certificate [String] SSL cetificate
-# @param master_certificate [String] Master database certificate
-# @param master_key [String] Key for the master certificate
+# @param master_certificate [String] master database certificate
+# @param master_key [String] key for the master certificate
 #
 define :db_mysql_set_mycnf,
   :server_id => nil,
