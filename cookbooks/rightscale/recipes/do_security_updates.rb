@@ -32,16 +32,6 @@ if "#{node[:rightscale][:security_updates]}" == "enable"
     end
   when "centos", "redhat"
     # Update packages
-    current_kernel_version = nil
-    ruby_block "obtain current kernel version before update" do
-      block do
-        uname_cmd = Mixlib::ShellOut.new("uname -r")
-        uname_cmd.run_command
-        uname_cmd.error!
-        current_kernel_version = uname_cmd.stdout.chomp
-        Chef::Log.info "Current Kernel Version: #{current_kernel_version}"
-      end
-    end
     execute "apply yum security updates" do
       command "yum -y update || true"
     end
@@ -50,8 +40,15 @@ if "#{node[:rightscale][:security_updates]}" == "enable"
         uname_cmd = Mixlib::ShellOut.new("uname -r")
         uname_cmd.run_command
         uname_cmd.error!
-        Chef::Log.info "Updated Kernel Version: #{uname_cmd.stdout}"
-        if uname_cmd.stdout.chomp != current_kernel_version
+        current_kernel_version = uname_cmd.stdout.chomp
+        Chef::Log.info "Current Kernel Version: #{current_kernel_version}"
+
+        rpm_cmd = Mixlib::ShellOut.new("rpm -q kernel | tail -1")
+        rpm_cmd.run_command
+        rpm_cmd.error!
+        updated_kernel_version = rpm_cmd.stdout.chomp
+        Chef::Log.info "Updated Kernel Version: #{updated_kernel_version}"
+        if updated_kernel_version != current_kernel_version
           Chef::Log.info "Adding reboot required tag"
           add_tag_cmd = Mixlib::ShellOut.new(
             "rs_tag -a 'rs_monitoring:reboot_required=true'"
