@@ -15,6 +15,8 @@ t_file = "/var/lib/puppet/ssl/certs/#{node[:puppet][:client][:node_name]}.pem"
 os_suffix = node[:platform] == "ubuntu" ? "puppetlabs1" : ".el6"
 
 # If packages empty, OS not supported
+# See puppet/attributes/default.rb for OSs supported by setting
+# this node variable.
 if node[:puppet][:client][:packages].empty?
   raise "Unsupported platform - #{node[:platform]}"
 end
