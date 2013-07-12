@@ -98,3 +98,20 @@ attribute "chef/client/runlist_override",
     " Example: recipe[ntp::default]",
   :required => "optional",
   :recipes => ["chef::install_client"]
+
+attribute "chef/client/log_level",
+  :display_name => "Logging Level",
+  :description =>
+    "The level of logging that will be stored in the log file. Example: debug",
+  :required => "optional",
+  :default => "info",
+  :recipes => ["chef::install_client"]
+
+attribute "chef/client/log_location",
+  :display_name => "Log File Location",
+  :description =>
+    "The location of the log file. Example: /var/log/chef-client.log",
+  :required => "optional",
+  :default => "/var/log/chef-client.log",
+  :recipes => ["chef::install_client"]
+
