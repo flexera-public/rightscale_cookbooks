@@ -1,0 +1,29 @@
+{
+  "conflicting": {
+  },
+  "description": "Installs and configures rs-postfix",
+  "dependencies": {
+  },
+  "version": "13.5.0",
+  "providing": {
+  },
+  "recommendations": {
+  },
+  "maintainer": "RightScale, Inc.",
+  "long_description": "# RightScale Postfix Wrapper Cookbook\n\n## DESCRIPTION:\n\nTODO\n\n## REQUIREMENTS:\n\n* TODO\n\n## COOKBOOKS DEPENDENCIES:\n\n* TODO\n\n## KNOWN LIMITATIONS:\n\n* TODO\n\n## SETUP:\n\n* TODO\n\n## USAGE:\n\n* TODO\n\n## DETAILS:\n\n* TODO\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
+  "attributes": {
+  },
+  "name": "rs-postfix",
+  "groupings": {
+  },
+  "recipes": {
+  },
+  "replacing": {
+  },
+  "suggestions": {
+  },
+  "platforms": {
+  },
+  "maintainer_email": "support@rightscale.com",
+  "license": "Copyright RightScale, Inc. All rights reserved."
+}
