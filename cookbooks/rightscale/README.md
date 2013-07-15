@@ -46,9 +46,9 @@ server has all available security updates applied. Runs if the
 this action is skipped. Note: once security updates are enabled they can
 not be disabled.
 
-The 'rightscale::install_rightimage_extras' recipe installs the package
-'rightimage-extras'.  This package ensures all packages required by
-a ServerTemplate or cookbook are installed.
+The `rightscale::install_rightimage_extras` recipe installs the package
+`rightimage-extras`.  This ensures that all non-rightscale created images
+have the same packages as a RightImage does.
 
 ## USAGE:
 

@@ -8,8 +8,8 @@
 
 rightscale_marker
 
-# Install all packages installed on the RightImages.  Use this recipe
-# to ensure non-RightImages have the packages our ServerTemplates
+# Installs all extra packages RightImages have installed by default.  Use 
+# this recipe to ensure non-RightImages have the packages our ServerTemplates
 # require.
 
 package "rightimage-extras"
