@@ -12,9 +12,13 @@ supports "ubuntu"
 depends "rightscale"
 
 recipe "chef::install_client",
-  "Installs and configures the Chef Client"
+  "Installs and configures the Chef Client."
+
 recipe "chef::do_client_converge",
-  "Allows manual update/re-run of runlist on the Chef Client"
+  "Allows manual update/re-run of runlist on the Chef Client."
+
+recipe "chef::do_remove_node",
+  "Deletes the node and registered client on the Chef Server."
 
 attribute "chef/client/version",
   :display_name => "Chef Client Version",

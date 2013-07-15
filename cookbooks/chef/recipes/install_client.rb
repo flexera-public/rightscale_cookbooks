@@ -56,7 +56,6 @@ end
 # Creates the file containing the secret key used to encrypt the data bag items.
 file "#{node[:chef][:client][:config_dir]}/encrypted_data_bag_secret" do
   mode 0600
-  cookbook "chef"
   content node[:chef][:client][:data_bag_secret]
   not_if { node[:chef][:client][:data_bag_secret].to_s.empty? }
 end

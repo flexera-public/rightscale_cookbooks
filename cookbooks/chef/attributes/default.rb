@@ -23,6 +23,9 @@ default[:chef][:client][:node_name] = node[:fqdn]
 default[:chef][:client][:company] = ""
 default[:chef][:client][:roles] = ""
 default[:chef][:client][:runlist_override] = ""
+# The level of logging that will be stored in the log file
 default[:chef][:client][:log_level] = "info"
+# The location of the log file
 default[:chef][:client][:log_location] = "/var/log/chef-client.log"
+# The secret key used to encrypt the data bag items
 default[:chef][:client][:data_bag_secret] = ""
