@@ -98,7 +98,7 @@ action :install do
 end
 
 
-# Configures load balancer to answer for specified virtual host
+# Configures HAProxy load balancer to answer for specified virtual host
 action :add_vhost do
 
   pool_name = new_resource.pool_name
@@ -151,7 +151,7 @@ action :add_vhost do
 end
 
 
-# Attaches an application server to the local load balancer
+# Attaches an application server to the HAProxy load balancer
 action :attach do
 
   pool_name = new_resource.pool_name
@@ -230,7 +230,7 @@ action :attach do
   end
 end
 
-# Performs advanced configuration for load balancer
+# Performs advanced configuration for the HAProxy load balancer
 action :advanced_configs do
 
   # Creates haproxy service.
@@ -303,7 +303,7 @@ action :attach_request do
 end
 
 
-# Detaches an application server from the local load balancer
+# Detaches an application server from the HAProxy load balancer
 action :detach do
 
   pool_name = new_resource.pool_name
@@ -384,7 +384,7 @@ action :detach_request do
 
 end
 
-# Install and configure collectd plugins for the server
+# Installs and configures collectd plugins for the HAProxy server
 action :setup_monitoring do
 
   log "  Setup monitoring for haproxy"
@@ -422,7 +422,7 @@ action :setup_monitoring do
 end
 
 
-# Restart the load balancer service
+# Restarts the HAProxy load balancer service
 action :restart do
 
   log "  Restarting haproxy"

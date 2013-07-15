@@ -10,12 +10,12 @@
 
 include RightScale::ELB::Helper
 
-# Installs the load balancer software on the local instance
+# Installs the Elastic Load Balancer. Not applicable.
 action :install do
   log "  Install does not apply to ELB"
 end
 
-# Attaches an application server to the local load balancer
+# Attaches an application server to Elastic Load Balancer
 action :attach do
 
   require "right_cloud_api"
@@ -83,7 +83,7 @@ action :attach do
 
 end
 
-# Attach request from an application server
+# Sends an attach request from an application server to an Elastic Load Balancer
 action :attach_request do
 
   log "  Attach request for #{node[:ec2][:instance_id]}"
@@ -100,7 +100,7 @@ action :attach_request do
 
 end
 
-# Detaches an application server from the local load balancer
+# Detaches an application server from the Elastic Load Balancer
 action :detach do
 
   require "right_cloud_api"
@@ -133,7 +133,7 @@ action :detach do
 
 end
 
-# Detach request from an application server
+# Sends a detach request from an application server to an Elastic Load Balancer
 action :detach_request do
 
   log "  Detach request for #{node[:ec2][:instance_id]}"
@@ -150,12 +150,12 @@ action :detach_request do
 
 end
 
-# Install and configure collectd plugins for the server
+# Installs and configures collectd plugins for the server. Not applicable.
 action :setup_monitoring do
   log "  Setup monitoring does not apply to ELB"
 end
 
-# Restart the load balancer service
+# Restarts the Elastic Load Balancer service. Not applicable.
 action :restart do
   log "  Restart does not apply to ELB"
 end
