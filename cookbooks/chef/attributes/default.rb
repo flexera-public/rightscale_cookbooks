@@ -23,6 +23,6 @@ default[:chef][:client][:node_name] = node[:fqdn]
 default[:chef][:client][:company] = ""
 default[:chef][:client][:roles] = ""
 default[:chef][:client][:runlist_override] = ""
-
 default[:chef][:client][:log_level] = "info"
 default[:chef][:client][:log_location] = "/var/log/chef-client.log"
+default[:chef][:client][:data_bag_secret] = ""

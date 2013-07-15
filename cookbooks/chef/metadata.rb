@@ -115,3 +115,11 @@ attribute "chef/client/log_location",
   :default => "/var/log/chef-client.log",
   :recipes => ["chef::install_client"]
 
+attribute "chef/client/data_bag_secret",
+  :display_name => "Data Bag Secret Key",
+  :description =>
+    "A secret key used to encrypt data bag items." +
+    " Example: cred:CHEF_DATA_BAG_SECRET",
+  :required => "optional",
+  :default => "",
+  :recipes => ["chef::install_client"]

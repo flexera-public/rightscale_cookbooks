@@ -171,6 +171,20 @@
       ],
       "calculated": false,
       "type": "string"
+    },
+    "chef/client/data_bag_secret": {
+      "display_name": "Data Bag Secret Key",
+      "description": "A secret key used to encrypt data bag items. Example: cred:CHEF_DATA_BAG_SECRET",
+      "required": "optional",
+      "default": "",
+      "recipes": [
+        "chef::install_client"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
     }
   },
   "groupings": {
