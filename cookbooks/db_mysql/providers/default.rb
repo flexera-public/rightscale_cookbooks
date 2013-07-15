@@ -158,7 +158,7 @@ action :pre_restore_check do
   @db.pre_restore_sanity_check
 end
 
-# Validates backup and cleanup instance after restore
+# Validates the restored backup and cleans up the instance after restore.
 action :post_restore_cleanup do
   # Performs checks for snapshot compatibility with current server.
   # See cookbooks/db/libraries/helper.rb

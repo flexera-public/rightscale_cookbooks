@@ -68,9 +68,9 @@ actions :add_vhost
 # to attach.
 actions :attach
 
-# Sends an attach request to an application server. This runs on an application server
-# which then runs a remote recipe on the remote load balancer. The remote recipe
-# eventually runs the 'attach' action.
+# Sends an attach request from an application server to a load balancer.
+# The load balancer then runs the 'handle_attach' remote recipe to attach the
+# application server.
 actions :attach_request
 
 # Detaches an application server from the local load balancer. Detaches
@@ -79,9 +79,9 @@ actions :attach_request
 # server to detach.
 actions :detach
 
-# Detach request from an application server. This runs on an application server
-# which then runs a remote recipe on the remote load balancer. The remote recipe
-# eventually runs the 'detach' action.
+# Sends a detach request from an application server to a load balancer.
+# The load balancer then runs the 'handle_detach' remote recipe to detach the
+# application server.
 actions :detach_request
 
 # Restarts the load balancer service. Should use the platform's 'service' method

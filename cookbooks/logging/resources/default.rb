@@ -39,13 +39,13 @@ actions :reload
 # service status command results.
 actions :status
 
-# Calls the logging rotate command.
+# Calls the logging rotation command.
 actions :rotate
 
 # Adds a logging definition.
 actions :add_definition
 
-# Adds Log Rotation Policy.
+# Adds log rotation Policy.
 actions :add_rotate_policy
 
 # Installs logging software.

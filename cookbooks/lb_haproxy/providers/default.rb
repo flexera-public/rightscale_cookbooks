@@ -280,7 +280,7 @@ action :advanced_configs do
 end
 
 
-# Attach request from an application server
+# Sends an attach request from an application server to a HAProxy load balancer.
 action :attach_request do
 
   pool_name = new_resource.pool_name
@@ -364,7 +364,7 @@ action :detach do
 end
 
 
-# Detach request from an application server
+# Sends a detach request from an application server to a HAProxy load balancer.
 action :detach_request do
 
   pool_name = new_resource.pool_name

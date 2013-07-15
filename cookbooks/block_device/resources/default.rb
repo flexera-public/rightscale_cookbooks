@@ -160,16 +160,16 @@ actions :create
 # Creates a snapshot of a block device
 actions :snapshot
 
-# Prepares device for primary backup
+# Performs primary backup
 actions :primary_backup
 
-# Prepares device for primary restore
+# Performs primary restore
 actions :primary_restore
 
-# Prepares device for secondary backup
+# Performs secondary backup
 actions :secondary_backup
 
-# Prepares device for secondary restore
+# Performs secondary restore
 actions :secondary_restore
 
 # Unmounts and deletes the attached block device(s)

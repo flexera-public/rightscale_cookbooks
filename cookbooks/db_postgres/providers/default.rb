@@ -138,7 +138,7 @@ action :post_restore_cleanup do
   @db.restore_snapshot
 end
 
-# Verifies the database is in a good state for taking a snapshot
+# Verifies the database is in a good state for taking a backup.
 action :pre_backup_check do
   # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "pre_backup_check" method.
