@@ -42,21 +42,22 @@ DNS service providers.
 A new chef provider can be created to add support for additional dynamic DNS
 service providers.
 
-For additional information: {Deployment Prerequisites}[http://support.rightscale.com/03-Tutorials/Deployment_Prerequisites_(Chef)]
+For additional information: [Deployment Prerequisites][link]
+[link]:http://support.rightscale.com/ServerTemplates/Infinity/Supplemental/Deployment_Prerequisites_(Linux)
 
 ### Attributes:
 
 These are settings used in recipes and templates. Default values are noted.
 
-* `node[sys_dns][choice]` -
+* `node[:sys_dns][:choice]` -
   The name of your DNS provider.
-* `node[sys_dns][id]` -
+* `node[:sys_dns][:id]` -
   The unique identifier that is associated with the DNS A record of the server.
-* `node[sys_dns][user]` -
+* `node[:sys_dns][:user]` -
   The username that is used to access and modify your DNS A records.
-* `node[sys_dns][password]` -
+* `node[:sys_dns][:password]` -
   The password that is used to access and modify your DNS A records.
-* `node[sys_dns][region]` -
+* `node[:sys_dns][:region]` -
   Region where the A records should be modified. This input only applies to
   Cloud DNS.
 
@@ -68,14 +69,10 @@ Provide examples of how it is used in recipes.
 
 #### Example:
 
-**RightScale::DnsTools::CloudDNS.new(Chef::Log).action_set(id, user, password,
-address, region)**
-**RightScale::DnsTools::DME.new(Chef::Log).action_set(id, user, password,
-address)**
-**RightScale::DnsTools::DynDNS.new(Chef::Log).action_set(id, user, password,
-address)**
-**RightScale::DnsTools::AWS.new(Chef::Log).action_set(id, user, password,
-address)**
+    RightScale::DnsTools::CloudDNS.new(Chef::Log).action_set(id, user, password, address, region)
+    RightScale::DnsTools::DME.new(Chef::Log).action_set(id, user, password, address)
+    RightScale::DnsTools::DynDNS.new(Chef::Log).action_set(id, user, password, address)
+    RightScale::DnsTools::AWS.new(Chef::Log).action_set(id, user, password, address)
 
 Return the result of A record update process.
 
@@ -109,8 +106,7 @@ the resources/default.rb file.
 Used to pass data to the helper file and call the corresponding DNS provider.
 
 For more information, please see [Lightweight Resources and Providers][Guide].
-
-[Guide]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)
+[Guide]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Lightweight_Resources_and_Providers_(LWRP)
 
 #### Example:
 

@@ -91,7 +91,7 @@ block devices. Currently, in order to add more block devices you need to
 override the cookbook. Instructions can be found at: [Increase the Number of
 Block Devices][Guide]
 
-[Guide]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Increase_the_Number_of_Block_Devices
+[Guide]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/ServerTemplate_Development/08-Common_Development_Tasks/Increase_the_Number_of_Block_Devices
 
 The volume nicknames are made unique by appending the RightScale instance's uuid
 to the provided nickname input. In case of "stop/start" operation (supported by
