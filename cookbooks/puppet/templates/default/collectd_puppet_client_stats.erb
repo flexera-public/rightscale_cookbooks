@@ -11,7 +11,8 @@
 # DO NOT EDIT BY HAND
 #
 
-HOST="${COLLECTD_HOSTNAME:-`hostname -f`}"
+UUID="<%= @uuid %>"
+HOST="${COLLECTD_HOSTNAME:-${UUID}}"
 INTERVAL="${COLLECTD_INTERVAL:-20}"
 
 while sleep "$INTERVAL" ; do

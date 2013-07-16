@@ -16,10 +16,13 @@ directory collectd_plugins do
 end
 
 # Creates the collectd plugin for the Puppet Client stats collection.
-cookbook_file "#{collectd_plugins}/Puppet-stats.sh" do
+template "#{collectd_plugins}/Puppet-stats.sh" do
   mode 0755
   backup false
-  source "Puppet-stats.sh"
+  source "collectd_puppet_client_stats.erb"
+  variables(
+    :uuid => node[:rightscale][:instance_uuid]
+  )
 end
 
 # Initializing Collectd service for further usage.
