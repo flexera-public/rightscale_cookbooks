@@ -1,29 +1,46 @@
 {
-  "conflicting": {
-  },
-  "description": "Installs and configures rs-postfix",
-  "dependencies": {
-  },
-  "version": "13.5.0",
+  "maintainer_email": "support@rightscale.com",
   "providing": {
+  },
+  "conflicting": {
   },
   "recommendations": {
   },
-  "maintainer": "RightScale, Inc.",
+  "license": "Copyright RightScale, Inc. All rights reserved.",
   "long_description": "# RightScale Postfix Wrapper Cookbook\n\n## DESCRIPTION:\n\nTODO\n\n## REQUIREMENTS:\n\n* TODO\n\n## COOKBOOKS DEPENDENCIES:\n\n* TODO\n\n## KNOWN LIMITATIONS:\n\n* TODO\n\n## SETUP:\n\n* TODO\n\n## USAGE:\n\n* TODO\n\n## DETAILS:\n\n* TODO\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
+  "suggestions": {
+  },
+  "version": "13.5.0",
   "attributes": {
+    "postfix/mail_type": {
+      "default": "master",
+      "calculated": false,
+      "type": "string",
+      "choice": [
+        "client",
+        "master"
+      ],
+      "required": "optional",
+      "description": "Is this node a client or server/master?",
+      "display_name": "Postfix Mail Type",
+      "recipes": [
+        "rs-postfix::default"
+      ]
+    }
+  },
+  "platforms": {
   },
   "name": "rs-postfix",
   "groupings": {
   },
-  "recipes": {
+  "dependencies": {
+    "postfix": ">= 0.0.0"
   },
+  "maintainer": "RightScale, Inc.",
   "replacing": {
   },
-  "suggestions": {
-  },
-  "platforms": {
-  },
-  "maintainer_email": "support@rightscale.com",
-  "license": "Copyright RightScale, Inc. All rights reserved."
+  "description": "Installs and configures rs-postfix",
+  "recipes": {
+    "rs-postfix::default": "Default recipe in wrapper cookbook of postfix. Logic is done here based on inputs to determine which recipe in postfix cookbook to run."
+  }
 }
