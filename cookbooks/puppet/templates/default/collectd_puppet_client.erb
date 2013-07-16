@@ -11,8 +11,6 @@
 #
 # Collectd config file for the Puppet Client montioring.
 
-LoadPlugin "exec"
-
 <Plugin exec>
   #    userid   plugin executable
   Exec "nobody" "<%= @stats_file %>"
