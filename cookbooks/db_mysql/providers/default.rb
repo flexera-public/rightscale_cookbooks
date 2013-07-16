@@ -775,7 +775,8 @@ action :setup_monitoring do
     cookbook "db_mysql"
     notifies :restart, resources(:service => "collectd")
     variables(
-      :collectd_master_slave_mode => node[:db_mysql][:collectd_master_slave_mode]
+      :collectd_master_slave_mode =>
+        node[:db_mysql][:collectd_master_slave_mode]
     )
   end
 

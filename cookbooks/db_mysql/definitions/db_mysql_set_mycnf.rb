@@ -7,63 +7,15 @@
 # such as a RightScale Master Subscription Agreement.
 
 define(:db_mysql_set_mycnf,
-  :hostname => nil,
-
-  # Basic Settings
-  :socket => nil,
-  :datadir => nil,
-  :tmpdir => nil,
-  :bind_address => nil,
-
-  # Fine Tuning
-  :key_buffer => nil,
-  :thread_cache_size => nil,
-  :max_connections => nil,
-  :wait_timeout => nil,
-  :net_read_timeout => nil,
-  :net_write_timeout => nil,
-  :back_log => nil,
-  :table_cache => nil,
-  :max_heap_table_size => nil,
-  :sort_buffer_size => nil,
-  :read_buffer_size => nil,
-  :read_rnd_buffer_size => nil,
-  :myisam_sort_buffer_size => nil,
-  :net_buffer_length => nil,
-
-  # Query Cache Configuration
-  :query_cache_size => nil,
-
-  # Logging and Replication
-  :log => nil,
-  :log_error => nil,
-  :log_slow_queries => nil,
-  :long_query_time => nil,
-  :read_only => nil,
   :server_id => nil,
-  :log_bin_enabled => nil,
-  :log_bin => nil,
-  :expire_logs_days => nil,
-  :binlog_format => nil,
-
-  # InnoDB
-  :innodb_buffer_pool_size => nil,
-  :innodb_additional_mem_pool_size => nil,
-  :innodb_log_file_size => nil,
-  :innodb_log_buffer_size =>nil,
-  :data_dir => nil,
   :relay_log => nil,
-
+  :innodb_log_file_size => nil,
   :compressed_protocol => false,
-
-  # SSL
+  :slave_net_timeout => nil,
   :ssl_enabled => nil,
   :ca_certificate => nil,
   :master_certificate => nil,
-  :master_key => nil,
-  :version => nil,
-  :isamchk_key_buffer => nil,
-  :isamchk_sort_buffer_size => nil
+  :master_key => nil
 ) do
 
   class Chef::Recipe
@@ -208,6 +160,8 @@ define(:db_mysql_set_mycnf,
     mode "0644"
     variables(
       :hostname => node[:hostname],
+      :version => node[:db][:version],
+
       # Basic Settings
       :socket => node[:db][:socket],
       :datadir => node[:db_mysql][:datadir],
@@ -272,10 +226,17 @@ define(:db_mysql_set_mycnf,
         node[:db_mysql][:ssl_credentials][:master_certificate][:path],
       :master_key => params[:master_key] ||
         node[:db_mysql][:ssl_credentials][:master_key][:path],
-      :version => node[:db][:version],
+
+      # isamchk
       :isamchk_key_buffer => node[:db_mysql][:tunable][:isamchk][:key_buffer],
       :isamchk_sort_buffer_size =>
-        node[:db_mysql][:tunable][:isamchk][:sort_buffer_size]
+        node[:db_mysql][:tunable][:isamchk][:sort_buffer_size],
+
+      # myisamchk
+      :myisamchk_key_buffer =>
+        node[:db_mysql][:tunable][:myisamchk][:key_buffer],
+      :myisamchk_sort_buffer_size =>
+        node[:db_mysql][:tunable][:myisamchk][:sort_buffer_size]
     )
     cookbook "db_mysql"
   end

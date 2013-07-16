@@ -24,12 +24,13 @@ TEMPLATE_DEBUG = DEBUG
 # See cookbooks/db_<provider>/providers/default.rb for more information.
 DATABASES = {
   'default': {
-    <%# The db/client/driver node variable isn't available during compile time  so it can't be passed via the resource %>
+    <%# The db/client/driver node variable isn't available during compile %>
+    <%# time so it can't be passed via the resource %>
     'ENGINE': '<%= node[:db][:client][:driver] %>',
     'NAME': '<%= @database %>',
     'USER': '<%= @user %>',
     'PASSWORD': '<%= @password %>',
     'HOST': '<%= @fqdn %>',
-    'PORT': '<%= @port %>',
+    'PORT': '',
   }
 }

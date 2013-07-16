@@ -229,7 +229,7 @@ action :setup_vhost do
       variables(
         :jkworkersfile => node[:app_tomcat][:jkworkersfile],
         :apache_log_dir => node[:apache][:log_dir],
-        :platform_version => node[:platform_version].to_i
+        :platform_version => node[:platform_version]
       )
       cookbook 'app_tomcat'
     end
