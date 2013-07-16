@@ -47,7 +47,7 @@ if "#{node[:rightscale][:security_updates]}" == "enable"
   when "centos", "redhat"
     # Update security packages
     execute "apply yum security updates" do
-      command "yum -y update || true"
+      command "yum -y --security update || true"
     end
     # Checking if a reboot is required after security updates.
     # CentOS/RedHat doesn't notify if reboot is required after updates. So
