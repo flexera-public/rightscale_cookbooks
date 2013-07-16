@@ -38,12 +38,18 @@ ssl_key_file = ::File.join(ssl_dir, "#{node[:web_apache][:server_name]}.key")
 template ssl_certificate_file do
   mode "0400"
   source "ssl_certificate.erb"
+  variables(
+    :ssl_certificate => node[:web_apache][:ssl_certificate]
+  )
 end
 
 # Updating key file config
 template ssl_key_file do
   mode "0400"
   source "ssl_key.erb"
+  variables(
+    :ssl_key => node[:web_apache][:ssl_key]
+  )
 end
 
 log "  Using passphrase to decrypt certificate"
@@ -62,6 +68,9 @@ if node[:web_apache][:ssl_certificate_chain]
   template "#{ssl_certificate_chain_file}" do
     mode "0400"
     source "ssl_certificate_chain.erb"
+    variables(
+      :ssl_certificate_chain => node[:web_apache][:ssl_certificate_chain]
+    )
   end
 else
   ssl_certificate_chain_file = nil
@@ -90,6 +99,7 @@ web_app "#{node[:web_apache][:application_name]}.frontend.https" do
   ssl_certificate_file ssl_certificate_file
   ssl_key_file ssl_key_file
   allow_override node[:web_apache][:allow_override]
+  apache_log_dir node[:apache][:log_dir]
   notifies :restart, resources(:service => "apache2")
 end
 
@@ -100,5 +110,6 @@ web_app "#{node[:web_apache][:application_name]}.frontend.http" do
   vhost_port http_port
   server_name node[:web_apache][:server_name]
   allow_override node[:web_apache][:allow_override]
+  apache_log_dir node[:apache][:log_dir]
   notifies :restart, resources(:service => "apache2"), :immediately
 end

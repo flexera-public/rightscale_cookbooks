@@ -23,7 +23,9 @@ define :app_add_listen_port do
   template "#{node[:apache][:dir]}/ports.conf" do
     cookbook "apache2"
     source "ports.conf.erb"
-    variables :apache_listen_ports => node[:apache][:listen_ports]
+    variables(
+      :apache_listen_ports => node[:apache][:listen_ports]
+    )
     notifies :restart, resources(:service => "apache2")
   end
 

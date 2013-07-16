@@ -573,6 +573,10 @@ action :setup_monitoring do
     source "postgres_ps.conf.erb"
     cookbook "db_postgres"
     notifies :restart, resources(:service => "collectd")
+    variables(
+      :collectd_lib => node[:rightscale][:collectd_lib],
+      :instance_uuid => node[:rightscale][:instance_uuid]
+    )
   end
 end
 
@@ -609,7 +613,13 @@ action :setup_slave_monitoring do
   template "#{collectd_plugin_dir}/pg_cluster_status.conf" do
     source "pg_cluster_status_exec.erb"
     notifies :restart, resources(:service => "collectd")
-    cookbook "db_postgres"
+    cookbook 'db_postgres'
+    variables(
+      :collectd_lib => node[:rightscale][:collectd_lib],
+      :current_master_ip => node[:db][:current_master_ip],
+      :private_ip => node[:cloud][:private_ips][0],
+      :instance_uuid => node[:rightscale][:instance_uuid]
+    )
   end
 
   # Installs the 'check_hot_standby_delay' collectd script into the collectd
@@ -629,7 +639,13 @@ action :setup_slave_monitoring do
   template "#{collectd_plugin_dir}/check_hot_standby_delay.conf" do
     source "check_hot_standby_delay_exec.erb"
     notifies :restart, resources(:service => "collectd")
-    cookbook "db_postgres"
+    cookbook 'db_postgres'
+    variables(
+      :collectd_lib => node[:rightscale][:collectd_lib],
+      :current_master_ip => node[:db][:current_master_ip],
+      :private_ip => node[:cloud][:private_ips][0],
+      :instance_uuid => node[:rightscale][:instance_uuid]
+    )
   end
 
   # Adds custom gauges to collectd 'types.db'.

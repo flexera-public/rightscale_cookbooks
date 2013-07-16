@@ -140,6 +140,7 @@ action :setup_vhost do
     mode "0644"
     cookbook 'app_tomcat'
     variables(
+      :tomcat_version => node[:app][:version],
       :doc_root => app_root,
       :app_port => node[:app_tomcat][:internal_port]
     )
@@ -227,7 +228,8 @@ action :setup_vhost do
       source "mod_jk.conf.erb"
       variables(
         :jkworkersfile => node[:app_tomcat][:jkworkersfile],
-        :apache_log_dir => node[:apache][:log_dir]
+        :apache_log_dir => node[:apache][:log_dir],
+        :platform_version => node[:platform_version]
       )
       cookbook 'app_tomcat'
     end

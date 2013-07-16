@@ -181,6 +181,9 @@ action :setup_db_connection do
     group node[:app][:group]
     database db_name
     driver_type "ruby"
+    vars(
+      :environment => node[:app_passenger][:project][:environment]
+    )
   end
 
   # Creating bash file for manual $RAILS_ENV setup

@@ -392,6 +392,10 @@ action :setup_monitoring do
     source "haproxy_collectd_exec.erb"
     notifies :restart, resources(:service => "collectd")
     cookbook "lb_haproxy"
+    variables(
+      :collectd_lib => node[:rightscale][:collectd_lib],
+      :instance_uuid => node[:rightscale][:instance_uuid]
+    )
   end
 
   ruby_block "add_collectd_gauges" do
