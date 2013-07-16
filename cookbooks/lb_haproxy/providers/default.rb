@@ -62,7 +62,11 @@ action :install do
     stats_file="stats socket /etc/haproxy/status user haproxy group haproxy"
     variables(
       :stats_file_line => stats_file,
-      :timeout_client => node[:lb_haproxy][:timeout_client]
+      :timeout_client => node[:lb_haproxy][:timeout_client],
+      :global_maxconn => node[:lb_haproxy][:global_maxconn],
+      :default_maxconn => node[:lb_haproxy][:default_maxconn],
+      :httpclose => node[:lb_haproxy][:httpclose],
+      :abortonclose => node[:lb_haproxy][:abortonclose]
     )
   end
 

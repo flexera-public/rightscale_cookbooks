@@ -9,7 +9,11 @@
 module RightScale
   module Database
     module Helper
+
+      require 'yaml'
+
       DB_MASTER_SLAVE_STATE = "/var/lib/rightscale_db_master_slave_state.json"
+      SNAPSHOT_POSITION_FILENAME = "rs_snapshot_position.yaml"
 
       # Get the current status of the database server.
       #
@@ -82,6 +86,15 @@ module RightScale
             " Value used: #{usage_factor}"
         end
         (value * factor).to_i.to_s + units
+      end
+
+      # Loads replication information from 'SNAPSHOT_POSITION_FILENAME'.
+      #
+      # @param node [Hash] node name
+      def self.load_replication_info(node)
+        loadfile = ::File.join(node[:db][:data_dir], SNAPSHOT_POSITION_FILENAME)
+        Chef::Log.info "  Loading replication information from #{loadfile}"
+        YAML::load_file(loadfile)
       end
 
     end

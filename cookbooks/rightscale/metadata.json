@@ -254,6 +254,36 @@
       "calculated": false,
       "type": "string"
     },
+    "rightscale/redhat/username": {
+      "display_name": "RedHat Network Username",
+      "description": "The username to register the system with under RHN Satellite or Red Hat Network Classic. Example: cred:REDHAT_SUBSCRIBER_USERNAME",
+      "required": "optional",
+      "default": "",
+      "recipes": [
+        "rightscale::default",
+        "rightscale::setup_redhat"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "rightscale/redhat/password": {
+      "display_name": "RedHat Network Password",
+      "description": "The password associated with the username specified in the rightscale/redhat/username input. Example: cred:REDHAT_SUBSCRIBER_PASSWORD",
+      "required": "optional",
+      "default": "",
+      "recipes": [
+        "rightscale::default",
+        "rightscale::setup_redhat"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    },
     "rightscale": {
       "display_name": "RightScale Attributes",
       "type": "hash",
@@ -282,7 +312,8 @@
     "rightscale::install_file_stats_collectd_plugin": "Installs the file-stats.rb collectd plugin for monitoring support. It is also used for mysql binary backup alerting.",
     "rightscale::do_security_updates": "Do a system package update to pull in the latest security patches.",
     "rightscale::setup_security_updates": "Sets up package manager software for security updates.",
-    "rightscale::setup_security_update_monitoring": "Sets up collectd plugin to monitor for available security updates."
+    "rightscale::setup_security_update_monitoring": "Sets up collectd plugin to monitor for available security updates.",
+    "rightscale::setup_redhat": "Registers a system with the RHN Satellite or Red Hat Network Classic."
   },
   "version": "13.5.0"
 }
