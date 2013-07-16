@@ -62,8 +62,6 @@ These are the settings used in recipes and templates. Default values are noted.
 * `collectd_puppet_client_stats.erb`-
   Puppet Client monitoring plugin. Used in `puppet::setup_monitoring` recipe.
 
-### Usage Example:
-
 ## Requery the Puppet Master
 
 * `puppet::reload_agent`

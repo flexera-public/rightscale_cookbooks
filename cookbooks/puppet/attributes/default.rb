@@ -16,11 +16,4 @@ default[:puppet][:client][:node_name] = node[:fqdn]
 default[:puppet][:client][:environment] = ""
 
 # Platform specific attributes
-case platform
-when "redhat", "centos"
-  set[:puppet][:client][:packages] = ["puppet"]
-when "ubuntu"
-  set[:puppet][:client][:packages] = ["puppet-common", "puppet"]
-else
-  set[:puppet][:client][:packages] = []
-end
+default[:puppet][:client][:packages] = []

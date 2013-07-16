@@ -14,9 +14,14 @@ t_file = "/var/lib/puppet/ssl/certs/#{node[:puppet][:client][:node_name]}.pem"
 # Sets the version suffix to comply with platform.
 os_suffix = node[:platform] == "ubuntu" ? "puppetlabs1" : ".el6"
 
-# If packages empty, OS not supported
-# See puppet/attributes/default.rb for OSs supported by setting
-# this node variable.
+# Platform specific attributes
+node[:puppet][:client][:packages] = value_for_platform(
+  ["centos", "redhat"] => {"default" => ["puppet"]},
+  ["ubuntu"] => {"default" => ["puppet-common", "puppet"]},
+  "default" => []
+  )
+
+# Update packages based on OS.  Error out if OS not supported.
 if node[:puppet][:client][:packages].empty?
   raise "Unsupported platform - #{node[:platform]}"
 end
