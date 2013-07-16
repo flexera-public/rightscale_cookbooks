@@ -66,8 +66,14 @@ These are the settings used in recipes and templates. Default values are noted.
   Company name to be set in the Client configuration file. This attribute is
   applicable for Opscode Hosted Chef Server. The company name specified in both
   the Server and the Client configuration file must match.
-* `chef/client/runlist_override`-
+* `node[:chef][:client][:runlist_override]`-
   A custom JSON string to be added to the first run of chef-client.
+* `node[:chef][:client][:log_level]`-
+  the level of logging that will be stored in the log file. Default: info.
+* `node[:chef][:client][:log_location]`-
+  the location of the log file. Default: /var/log/chef-client.log
+* `node[:chef][:client][:data_bag_secret]`-
+  secret key used to encrypt data bag items.
 
 ### Templates:
 
