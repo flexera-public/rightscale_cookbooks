@@ -19,7 +19,7 @@ if "#{node[:rightscale][:security_updates]}" == "enable"
   case platform
   when "ubuntu"
     execute "apply apt security updates" do
-      command "apt-get -y update && apt-get -y upgrade || true"
+      command "apt-get -y update && apt-get -y dist-upgrade || true"
     end
     ruby_block "check and tag if reboot required" do
       block do
