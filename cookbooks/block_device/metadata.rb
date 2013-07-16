@@ -85,8 +85,8 @@ backup_recipes = [
 # ROS cloud type choices
 ros_clouds = [
   "s3",
-  "cloudfiles",
-  "cloudfilesuk",
+  "Cloud_Files",
+  "Cloud_Files_UK",
   "google",
   "azure",
   "swift",

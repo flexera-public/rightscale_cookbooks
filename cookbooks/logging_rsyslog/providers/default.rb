@@ -105,7 +105,9 @@ action :configure do
       group "root"
       mode "0644"
       variables(
-        :remote_server => remote_server
+        :remote_server => remote_server,
+        :platform_version => node[:platform_version],
+        :logging_protocol => node[:logging][:protocol]
       )
       notifies :restart, resources(:service => "rsyslog"), :immediately
     end
@@ -149,6 +151,9 @@ action :configure_server do
     group "root"
     mode "0644"
     notifies :restart, resources(:service => "rsyslog"), :immediately
+    variables(
+      :logging_protocol => node[:logging][:protocol]
+    )
   end
 
 end

@@ -616,6 +616,9 @@ action :install_server do
     source "sysconfig-mysqld.erb"
     mode "0755"
     cookbook "db_mysql"
+    variables(
+      :init_timeout => node[:db_mysql][:init_timeout]
+    )
     only_if { platform =~ /redhat|centos/ }
   end
 
@@ -795,6 +798,10 @@ action :setup_monitoring do
     backup false
     cookbook "db_mysql"
     notifies :restart, resources(:service => "collectd")
+    variables(
+      :collectd_master_slave_mode =>
+        node[:db_mysql][:collectd_master_slave_mode]
+    )
   end
 
   # Sends warning if not centos/redhat or ubuntu.

@@ -110,7 +110,7 @@ action :install do
     source "server.xml.erb"
     variables(
       :doc_root => app_root,
-      :listen_port => node[:app_jboss][:internal_port]
+      :app_port => node[:app_jboss][:internal_port]
     )
     cookbook "app_jboss"
   end

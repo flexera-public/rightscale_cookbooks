@@ -390,7 +390,7 @@ test_case "ephemeral_file_system_type" do
   # * Google uses a statically compiled kernel built without xfs support
   # * Redhat charges for using xfs. Hence we don't install it through our
   # cookbooks and tools.
-  xfs_unsupported = os =~ /rhel/i || cloud.cloud_name == "Google"
+  xfs_unsupported = os =~ /rhel/i || os =~ /redhatenterpriseserver/i || cloud.cloud_name == "Google"
 
   # Remove file system types that are not supported on the ephemeral device
   # based on the platform

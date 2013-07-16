@@ -172,6 +172,9 @@ action :setup_db_connection do
     database db_name
     cookbook "app_django"
     driver_type "python"
+    vars(
+      :django_debug_mode => node[:app_django][:app][:debug_mode]
+    )
   end
 
 end

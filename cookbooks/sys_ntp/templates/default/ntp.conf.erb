@@ -21,7 +21,7 @@ filegen loopstats file loopstats type day enable
 filegen peerstats file peerstats type day enable
 filegen clockstats file clockstats type day enable
 
-<% node[:sys_ntp][:servers].split(',').each do |ntpserver| -%>
+<% @ntp_servers.split(',').each do |ntpserver| -%>
 server <%= ntpserver %> burst iburst
 <% end -%>
 

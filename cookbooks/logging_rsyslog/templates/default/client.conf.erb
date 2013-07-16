@@ -12,7 +12,7 @@
 
 <%# CentOS/RedHat 5.8 don't have an rsyslog.d directory %>
 <%# so we shouldn't overwrite the default configuration file %>
-<% if node[:platform_version] =~ /^5\..+/ %>
+<% if @platform_version =~ /^5\..+/ %>
 # Use traditional timestamp format
 $ActionFileDefaultTemplate RSYSLOG_TraditionalFileFormat
 
@@ -42,7 +42,7 @@ local7.*                                                /var/log/boot.log
 <% end %>
 
 <%# Setting up remote_server and protocol depending on user input %>
-<% case node[:logging][:protocol] %>
+<% case @logging_protocol %>
 <% when "udp" %>
 $ModLoad imudp
 *.* @<%= @remote_server %>:514
