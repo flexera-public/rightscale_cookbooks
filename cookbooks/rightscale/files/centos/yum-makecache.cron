@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Updates the metadata cache for yum
+yum makecache -y

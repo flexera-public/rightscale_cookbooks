@@ -12,11 +12,11 @@ if "#{node[:rightscale][:security_updates]}" == "enable"
   log "  Enabling security updates."
   case node[:platform]
   when "ubuntu"
-    # Set all Ubuntu security repos to latest
+    # Sets all Ubuntu security repos to latest
     execute "unfreeze ubuntu security repositories" do
       command "sed -i \"s%ubuntu_daily/.* $(lsb_release -cs)-security%ubuntu_daily/latest $(lsb_release -cs)-security%\" /etc/apt/sources.list.d/rightscale.sources.list"
     end
-    # Update the repositories initially to get the latest security updates
+    # Updates the repositories initially to get the latest security updates
     execute "apt-get update" do
       command "apt-get update -y"
     end
@@ -38,9 +38,18 @@ if "#{node[:rightscale][:security_updates]}" == "enable"
         end
       end
     end
-    # Update local cache for security updates
+
+    # Updates local cache for security updates
     execute "yum makecache -y" do
       command "yum makecache -y"
+    end
+
+    # Adds a cron.daily script to update the yum cache
+    cookbook_file "/etc/cron.daily/yum-makecache.cron" do
+      owner "root"
+      group "root"
+      mode 0755
+      source "yum-makecache.cron"
     end
   end
 else
