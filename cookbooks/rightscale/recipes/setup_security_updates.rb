@@ -8,7 +8,7 @@
 
 rightscale_marker
 
-if "#{node[:rightscale][:security_updates]}" == "enable"
+if node[:rightscale][:security_updates] == "enable"
   log "  Enabling security updates."
   case node[:platform]
   when "ubuntu"
@@ -16,12 +16,10 @@ if "#{node[:rightscale][:security_updates]}" == "enable"
     execute "unfreeze ubuntu security repositories" do
       command "sed -i \"s%ubuntu_daily/.* $(lsb_release -cs)-security%ubuntu_daily/latest $(lsb_release -cs)-security%\" /etc/apt/sources.list.d/rightscale.sources.list"
     end
-    # Updates the repositories initially to get the latest security updates
-    execute "apt-get update" do
-      command "apt-get update -y"
-    end
+    # Updates the repositories initially to get the latest security updates.
+    execute "apt-get update --assumeyes"
   when "centos"
-    ruby_block "Unfreeze CentOS repositories" do
+    ruby_block "unfreeze centos repositories" do
       block do
         # Set all repos to latest
         files = Dir.glob("/etc/yum.repos.d/*.repo")
@@ -39,19 +37,20 @@ if "#{node[:rightscale][:security_updates]}" == "enable"
       end
     end
 
-    # Updates local cache for security updates
-    execute "yum makecache -y" do
-      command "yum makecache -y"
-    end
+    # Updates local cache for security updates.
+    execute "yum makecache --assumeyes"
 
-    # Adds a cron.daily script to update the yum cache
+    # Adds a cron.daily script to update the yum cache.
     cookbook_file "/etc/cron.daily/yum-makecache.cron" do
       owner "root"
       group "root"
       mode 0755
       source "yum-makecache.cron"
     end
+  else
+    log "  Security updates are not supported for platform:" +
+      " #{node[:platform]}. Skipping setup!"
   end
 else
-  log "  Security updates disabled.  Skipping setup!"
+  log "  Security updates disabled. Skipping setup!"
 end

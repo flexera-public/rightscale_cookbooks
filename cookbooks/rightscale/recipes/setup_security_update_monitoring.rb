@@ -19,20 +19,17 @@ include_recipe "rightscale::setup_monitoring"
 
 # The package to be installed to obtain information about
 # updates/security updates
-package_to_install =
-  case node[:platform]
-  when "ubuntu"
-    "update-notifier-common"
-  else
-    "yum-security"
-  end
+package_to_install = value_for_platform(
+  "ubuntu" => {"default" => "update-notifier-common"},
+  "default" => "yum-security"
+)
 
 package package_to_install
 
 collectd_lib_dir = node[:rightscale][:collectd_lib]
 
-log "  Install security monitoring package dependencies and plugin"
-# Install custom collectd plugin
+log "  Installing the collectd plugin for monitoring security updates"
+# Installs custom collectd plugin
 directory ::File.join(collectd_lib_dir, "plugins") do
   recursive true
   action :create
