@@ -192,7 +192,7 @@
   "recipes": {
     "chef::install_client": "Installs and configures the Chef Client.",
     "chef::do_client_converge": "Allows manual update/re-run of runlist on the Chef Client.",
-    "chef::do_remove_node": "Deletes the node and registered client on the Chef Server."
+    "chef::do_unregister_request": "Deletes the node and registered client on the Chef Server."
   },
   "version": "13.5.0"
 }

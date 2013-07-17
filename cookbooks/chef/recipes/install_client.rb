@@ -53,7 +53,7 @@ template "#{node[:chef][:client][:config_dir]}/validation.pem" do
   )
 end
 
-# Creates the file containing the secret key used to encrypt the data bag items.
+# Creates secret key file used to decrypt data bags if they are encrypted.
 file "#{node[:chef][:client][:config_dir]}/encrypted_data_bag_secret" do
   mode 0600
   content node[:chef][:client][:data_bag_secret]

@@ -17,7 +17,7 @@ recipe "chef::install_client",
 recipe "chef::do_client_converge",
   "Allows manual update/re-run of runlist on the Chef Client."
 
-recipe "chef::do_remove_node",
+recipe "chef::do_unregister_request",
   "Deletes the node and registered client on the Chef Server."
 
 attribute "chef/client/version",
