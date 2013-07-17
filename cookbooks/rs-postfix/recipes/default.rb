@@ -8,4 +8,9 @@
 
 rightscale_marker
 
-include_recipe "postfix::default"
+case node['postfix']['mail_type']
+when "master"
+  include_recipe "postfix::server"
+else
+  include_recipe "postfix::default"
+end
