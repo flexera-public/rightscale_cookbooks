@@ -1,60 +1,234 @@
 {
-  "groupings": {
+  "name": "rs-postfix",
+  "description": "Installs and configures rs-postfix",
+  "long_description": "# RightScale Postfix Wrapper Cookbook\n\n## DESCRIPTION:\n\nTODO\n\n## REQUIREMENTS:\n\n* TODO\n\n## COOKBOOKS DEPENDENCIES:\n\n* TODO\n\n## KNOWN LIMITATIONS:\n\n* TODO\n\n## SETUP:\n\n* TODO\n\n## USAGE:\n\n* TODO\n\n## DETAILS:\n\n* TODO\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
+  "maintainer": "RightScale, Inc.",
+  "maintainer_email": "support@rightscale.com",
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "platforms": {
+    "centos": ">= 0.0.0",
+    "redhat": ">= 0.0.0",
+    "ubuntu": ">= 0.0.0"
+  },
+  "dependencies": {
+    "postfix": ">= 0.0.0"
+  },
+  "recommendations": {
   },
   "suggestions": {
   },
+  "conflicting": {
+  },
+  "providing": {
+  },
+  "replacing": {
+  },
   "attributes": {
-    "postfix/relayhost": {
-      "required": "optional",
-      "display_name": "Postfix Relayhost",
-      "choice": [
-
-      ],
-      "recipes": [
-        "rs-postfix::default"
-      ],
-      "calculated": false,
-      "type": "string",
-      "default": "",
-      "description": "Sets the relayhost value in main.cf"
-    },
     "postfix/mail_type": {
-      "required": "optional",
       "display_name": "Postfix Mail Type",
+      "description": "Is this node a client or server/master?",
+      "required": "optional",
       "choice": [
         "client",
         "master"
       ],
+      "default": "master",
       "recipes": [
         "rs-postfix::default"
       ],
       "calculated": false,
-      "type": "string",
-      "default": "master",
-      "description": "Is this node a client or server/master?"
+      "type": "string"
+    },
+    "postfix/myhostname": {
+      "display_name": "Postfix Myhostname",
+      "description": "Sets the myhostname value in main.cf",
+      "required": "optional",
+      "default": "fqdn",
+      "recipes": [
+        "rs-postfix::default"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "postfix/mydomain": {
+      "display_name": "Postfix Mydomain",
+      "description": "Sets the mydomain value in main.cf",
+      "required": "optional",
+      "default": "domain",
+      "recipes": [
+        "rs-postfix::default"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "postfix/myorigin": {
+      "display_name": "Postfix Myorigin",
+      "description": "Sets the myorigin value in main.cf",
+      "required": "optional",
+      "default": "fqdn",
+      "recipes": [
+        "rs-postfix::default"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "postfix/relayhost": {
+      "display_name": "Postfix Relayhost",
+      "description": "Sets the relayhost value in main.cf",
+      "required": "optional",
+      "default": "",
+      "recipes": [
+        "rs-postfix::default"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "postfix/mail_relay_networks": {
+      "display_name": "Postfix Mail Relay Networks",
+      "description": "Sets the mynetworks value in main.cf",
+      "required": "optional",
+      "default": "127.0.0.0/8",
+      "recipes": [
+        "rs-postfix::default"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "postfix/smtp_sasl_auth_enable": {
+      "display_name": "Postfix SMTP SASL Auth Enable",
+      "description": "Enable SMTP SASL Authentication",
+      "required": "optional",
+      "choice": [
+        "no",
+        "yes"
+      ],
+      "default": "no",
+      "recipes": [
+        "rs-postfix::default"
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "postfix/smtp_sasl_password_maps": {
+      "display_name": "Postfix SMTP SASL Password Maps",
+      "description": "hashmap of SASL passwords",
+      "required": "optional",
+      "default": "hash:/etc/postfix/sasl_passwd",
+      "recipes": [
+        "rs-postfix::default"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "postfix/smtp_sasl_security_options": {
+      "display_name": "Postfix SMTP SASL Security Options",
+      "description": "Sets the value of smtp_sasl_security_options in main.cf",
+      "required": "optional",
+      "default": "noanonymous",
+      "recipes": [
+        "rs-postfix::default"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "postfix/inet_interfaces": {
+      "display_name": "Postfix listening interfaces",
+      "description": "Interfaces to listen to, all or loopback-only. Default is all for master mail_type, and loopback-only otherwise",
+      "required": "optional",
+      "default": "all",
+      "choice": [
+        "all",
+        "loopback-only"
+      ],
+      "recipes": [
+        "rs-postfix::default"
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "postfix/smtp_tls_cafile": {
+      "display_name": "Postfix SMTP TLS CA File",
+      "description": "CA certificate file for SMTP over TLS",
+      "required": "optional",
+      "default": "/etc/postfix/cacert.pem",
+      "recipes": [
+        "rs-postfix::default"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "postfix/smtp_use_tls": {
+      "display_name": "Postfix SMTP Use TLS?",
+      "description": "Whether SMTP SASL Auth should use TLS encryption",
+      "required": "optional",
+      "choice": [
+        "no",
+        "yes"
+      ],
+      "default": "yes",
+      "recipes": [
+        "rs-postfix::default"
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "postfix/smtp_sasl_user_name": {
+      "display_name": "Postfix SMTP SASL Username",
+      "description": "User to auth SMTP via SASL",
+      "required": "optional",
+      "default": "",
+      "recipes": [
+        "rs-postfix::default"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "postfix/smtp_sasl_passwd": {
+      "display_name": "Postfix SMTP SASL Password",
+      "description": "Password for smtp_sasl_user_name",
+      "required": "optional",
+      "default": "",
+      "recipes": [
+        "rs-postfix::default"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
     }
   },
-  "conflicting": {
+  "groupings": {
   },
-  "version": "13.5.0",
-  "recommendations": {
-  },
-  "maintainer_email": "support@rightscale.com",
-  "replacing": {
-  },
-  "maintainer": "RightScale, Inc.",
   "recipes": {
     "rs-postfix::default": "Default recipe in wrapper cookbook of postfix. Logic is done here based on inputs to determine which recipe in postfix cookbook to run."
   },
-  "license": "Copyright RightScale, Inc. All rights reserved.",
-  "dependencies": {
-    "postfix": ">= 0.0.0"
-  },
-  "platforms": {
-  },
-  "long_description": "# RightScale Postfix Wrapper Cookbook\n\n## DESCRIPTION:\n\nTODO\n\n## REQUIREMENTS:\n\n* TODO\n\n## COOKBOOKS DEPENDENCIES:\n\n* TODO\n\n## KNOWN LIMITATIONS:\n\n* TODO\n\n## SETUP:\n\n* TODO\n\n## USAGE:\n\n* TODO\n\n## DETAILS:\n\n* TODO\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
-  "providing": {
-  },
-  "description": "Installs and configures rs-postfix",
-  "name": "rs-postfix"
+  "version": "13.5.0"
 }
