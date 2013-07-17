@@ -10,17 +10,10 @@
 default[:puppet][:client][:puppet_master_address] = ""
 
 # Optional attributes
-default[:puppet][:client][:version] =  "2.7.13-1"
+default[:puppet][:client][:version] = "2.7.13-1"
 default[:puppet][:client][:puppet_master_port] = "8140"
 default[:puppet][:client][:node_name] = node[:fqdn]
 default[:puppet][:client][:environment] = ""
 
 # Platform specific attributes
-case platform
-when "redhat", "centos"
-  set[:puppet][:client][:packages] = ["puppet"]
-when "ubuntu"
-  set[:puppet][:client][:packages] = ["puppet-common", "puppet"]
-else
-  raise "  Unsupported platform #{platform}"
-end
+default[:puppet][:client][:packages] = []

@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 # Cookbook Name:: puppet
 #
@@ -10,9 +11,8 @@
 # DO NOT EDIT BY HAND
 #
 
-#!/bin/bash
-
-HOST="${COLLECTD_HOSTNAME:-`hostname -f`}"
+UUID="<%= @uuid %>"
+HOST="${COLLECTD_HOSTNAME:-${UUID}}"
 INTERVAL="${COLLECTD_INTERVAL:-20}"
 
 while sleep "$INTERVAL" ; do

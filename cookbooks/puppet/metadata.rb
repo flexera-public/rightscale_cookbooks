@@ -5,6 +5,10 @@ description      "Installs and configures the Puppet Client and Master"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "13.4.0"
 
+supports "centos"
+supports "redhat"
+supports "ubuntu"
+
 depends "rightscale"
 
 recipe "puppet::install_client",
@@ -29,6 +33,7 @@ attribute "puppet/client/version",
     " Puppet Master. Provide the version in version-release format." +
     " Example: 2.7.13-1",
   :required => "optional",
+  :default => "2.7.13-1",
   :recipes => ["puppet::install_client"]
 
 attribute "puppet/client/node_name",

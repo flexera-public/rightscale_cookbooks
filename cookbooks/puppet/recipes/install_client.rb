@@ -14,6 +14,22 @@ t_file = "/var/lib/puppet/ssl/certs/#{node[:puppet][:client][:node_name]}.pem"
 # Sets the version suffix to comply with platform.
 os_suffix = node[:platform] == "ubuntu" ? "puppetlabs1" : ".el6"
 
+# Platform specific attributes
+node[:puppet][:client][:packages] = value_for_platform(
+  ["centos", "redhat"] => {
+    "default" => ["puppet"]
+  },
+  "ubuntu" => {
+    "default" => ["puppet-common", "puppet"]
+  },
+  "default" => []
+)
+
+# Update packages based on OS.  Error out if OS not supported.
+if node[:puppet][:client][:packages].empty?
+  raise "Unsupported platform - #{node[:platform]}"
+end
+
 # Installs the Puppet Client specific to the user provided version.
 node[:puppet][:client][:packages].each do |pkg|
   package pkg do
@@ -37,7 +53,7 @@ end
 # Creates the Puppet Client configuration file.
 template "/etc/puppet/puppet.conf" do
   source "puppet_client.conf.erb"
-  mode "0644"
+  mode 0644
   backup false
   cookbook "puppet"
   variables(
@@ -55,7 +71,7 @@ end
 # ruby_block[registration-status], called by the notifies attribute.
 execute "run puppet-client" do
   command "puppet agent --test"
-  returns [0,1,2]
+  returns [0, 1, 2]
   creates t_file
   notifies :create, "ruby_block[registration-status]"
 end

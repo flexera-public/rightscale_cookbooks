@@ -15,7 +15,7 @@ t_file = "/var/lib/puppet/ssl/certs/#{node[:puppet][:client][:node_name]}.pem"
 # or 2 as success.
 execute "run puppet-client" do
   command "puppet agent --test"
-  returns [0,2]
+  returns [0, 2]
   creates t_file
 end
 
