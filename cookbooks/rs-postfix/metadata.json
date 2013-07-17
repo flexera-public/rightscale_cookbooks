@@ -1,7 +1,7 @@
 {
   "name": "rs-postfix",
   "description": "Installs and configures rs-postfix",
-  "long_description": "# RightScale Postfix Wrapper Cookbook\n\n## DESCRIPTION:\n\nTODO\n\n## REQUIREMENTS:\n\n* TODO\n\n## COOKBOOKS DEPENDENCIES:\n\n* TODO\n\n## KNOWN LIMITATIONS:\n\n* TODO\n\n## SETUP:\n\n* TODO\n\n## USAGE:\n\n* TODO\n\n## DETAILS:\n\n* TODO\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
+  "long_description": "# RightScale Postfix Wrapper Cookbook\n\n## DESCRIPTION:\n\nWrapper cookbook using opscode community cookbook, 'postfix'.\n\n## REQUIREMENTS:\n\n* 'postfix' opsocde community cookbook\n\n## KNOWN LIMITATIONS:\n\n* Must be able to send outgoing traffic to port 25.\n\n## USAGE:\n\nOnly the `setup_local_delivery` recipe is used.  It allows the sending of \nlocal mail by accepting SMTP connections on localhost.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
   "maintainer": "RightScale, Inc.",
   "maintainer_email": "support@rightscale.com",
   "license": "Copyright RightScale, Inc. All rights reserved.",

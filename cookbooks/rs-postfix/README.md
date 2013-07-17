@@ -2,31 +2,20 @@
 
 ## DESCRIPTION:
 
-TODO
+Wrapper cookbook using opscode community cookbook, 'postfix'.
 
 ## REQUIREMENTS:
 
-* TODO
-
-## COOKBOOKS DEPENDENCIES:
-
-* TODO
+* 'postfix' opsocde community cookbook
 
 ## KNOWN LIMITATIONS:
 
-* TODO
-
-## SETUP:
-
-* TODO
+* Must be able to send outgoing traffic to port 25.
 
 ## USAGE:
 
-* TODO
-
-## DETAILS:
-
-* TODO
+Only the `setup_local_delivery` recipe is used.  It allows the sending of 
+local mail by accepting SMTP connections on localhost.
 
 ## LICENSE:
 
