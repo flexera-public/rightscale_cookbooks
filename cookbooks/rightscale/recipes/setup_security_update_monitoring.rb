@@ -29,15 +29,17 @@ package_to_install =
 
 package package_to_install
 
+collectd_lib_dir = node[:rightscale][:collectd_lib]
+
 log "  Install security monitoring package dependencies and plugin"
 # Install custom collectd plugin
-directory ::File.join(node[:rightscale][:collectd_lib], "plugins") do
+directory ::File.join(collectd_lib_dir, "plugins") do
   recursive true
   action :create
 end
 
 cookbook_file ::File.join(
-  node[:rightscale][:collectd_lib],
+  collectd_lib_dir,
   "plugins",
   "update_monitor"
 ) do
@@ -52,7 +54,7 @@ template ::File.join(
 ) do
   source "update_monitor.conf.erb"
   variables(
-    :collectd_lib => node[:rightscale][:collectd_lib],
+    :collectd_lib => collectd_lib_dir,
     :server_uuid => node[:rightscale][:instance_uuid]
   )
   mode 0644

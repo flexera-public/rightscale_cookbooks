@@ -26,6 +26,9 @@ if "#{node[:rightscale][:security_updates]}" == "enable"
         if ::File.exists?("/var/run/reboot-required")
           Chef::Log.info "A reboot is required for the security updates to" +
             " take effect. Adding a 'reboot_required' tag to the server"
+          # rs_tag command line utility is used instead of the right_link_tag
+          # resource as the condition for whether to add or remove the tag is
+          # decided inside this ruby block during converge.
           add_tag_cmd = Mixlib::ShellOut.new(
             "rs_tag -a 'rs_monitoring:reboot_required=true'"
           )
@@ -49,12 +52,9 @@ if "#{node[:rightscale][:security_updates]}" == "enable"
     execute "apply yum security updates" do
       command "yum -y --security update || true"
     end
-    # Checking if a reboot is required after security updates.
-    # CentOS/RedHat doesn't notify if reboot is required after updates. So
-    # check if a new version of kernel is installed, and add a tag for
-    # reboot if the active kernel version is different from recently
-    # installed kernel version. This check doesn't apply to Google cloud
-    # where custom kernels are not supported yet.
+    # Checks if a reboot is required after security updates.
+    # CentOS doesn't notify if reboot is required after updates so the active
+    # kernel version is compared against the recently installed kernel version.
     ruby_block "check and tag if reboot is required" do
       block do
         uname_cmd = Mixlib::ShellOut.new("uname -r")
@@ -71,6 +71,12 @@ if "#{node[:rightscale][:security_updates]}" == "enable"
         Chef::Log.info "Recently installed kernel version:" +
           " #{recently_installed_kernel_version}"
 
+        # The Google cloud is skipped in this kernel version checking as custom
+        # kernels are not supported on this cloud yet. On all other clouds, if
+        # the active kernel version is different from the newly installed
+        # kernel version, a reboot is required for the new kernel to take
+        # effect. A tag 'reboot_required=true' is added if a reboot is required
+        # and this tag is removed after the reboot.
         unless node[:cloud][:provider] == "google"
           if recently_installed_kernel_version != active_kernel_version
             Chef::Log.info "New version of kernel is installed during security" +
