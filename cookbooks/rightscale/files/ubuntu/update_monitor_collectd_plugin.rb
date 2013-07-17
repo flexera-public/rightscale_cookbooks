@@ -50,6 +50,7 @@ end
 
 usage unless hostname
 
+# Initialize the packages count
 security_packages = 0
 regular_packages = 0
 
@@ -74,9 +75,9 @@ loop do
   end
 
   puts "PUTVAL #{hostname}/update_check/gauge-pending_updates" +
-    " interval=#{sample_interval} #{now}:#{packages_to_update[0]}\n"
+    " interval=#{sample_interval} #{now}:#{regular_packages}\n"
   puts "PUTVAL #{hostname}/update_check/gauge-pending_security_updates" +
-    " interval=#{sample_interval} #{now}:#{packages_to_update[1]}\n"
+    " interval=#{sample_interval} #{now}:#{security_packages}\n"
 
   STDOUT.flush
   sleep sample_interval
