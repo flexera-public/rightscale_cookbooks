@@ -18,3 +18,10 @@ attribute "postfix/mail_type",
   :choice => ["client", "master"],
   :default => "master",
   :recipes => ["rs-postfix::default"]
+
+attribute "postfix/relayhost",
+  :display_name => "Postfix Relayhost",
+  :description => "Sets the relayhost value in main.cf",
+  :required => "optional",
+  :default => "",
+  :recipes => ["rs-postfix::default"]
