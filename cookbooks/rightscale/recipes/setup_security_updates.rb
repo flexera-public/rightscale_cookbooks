@@ -9,18 +9,18 @@
 rightscale_marker
 
 if "#{node[:rightscale][:security_updates]}" == "enable"
-
   log "  Enabling security updates."
   case node[:platform]
   when "ubuntu"
-    bash "Unfreeze Ubuntu security repositories" do
-      flags "-ex"
-      code <<-EOH
-        # Set all Ubuntu security repos to latest
-        sed -i "s%ubuntu_daily/.* $(lsb_release -cs)-security%ubuntu_daily/latest $(lsb_release -cs)-security%" /etc/apt/sources.list.d/rightscale.sources.list
-      EOH
+    # Set all Ubuntu security repos to latest
+    execute "unfreeze ubuntu security repositories" do
+      command "sed -i \"s%ubuntu_daily/.* $(lsb_release -cs)-security%ubuntu_daily/latest $(lsb_release -cs)-security%\" /etc/apt/sources.list.d/rightscale.sources.list"
     end
-  when "centos", "redhat"
+    # Update the repositories initially to get the latest security updates
+    execute "apt-get update" do
+      command "apt-get update -y"
+    end
+  when "centos"
     ruby_block "Unfreeze CentOS repositories" do
       block do
         # Set all repos to latest
@@ -38,10 +38,11 @@ if "#{node[:rightscale][:security_updates]}" == "enable"
         end
       end
     end
+    # Update local cache for security updates
+    execute "yum makecache -y" do
+      command "yum makecache -y"
+    end
   end
-
 else
-
   log "  Security updates disabled.  Skipping setup!"
-
 end
