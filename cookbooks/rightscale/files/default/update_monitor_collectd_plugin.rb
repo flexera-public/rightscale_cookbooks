@@ -51,9 +51,10 @@ loop do
   if ( now.to_i - last_update_check ) > update_check_freq
     # List all available updates and count the number of lines and get rid of
     # the line that says "Updated packages"
-    packages_to_update[0] = `yum list -q updates 2>&1 | wc -l`.to_i - 1
+    packages_to_update[0] = `yum list --quiet --cacheonly updates 2>&1 | wc -l`.to_i - 1
+    # There is no line saying "Updated package" if there are no updates
     packages_to_update[0] = 0 if packages_to_update[0] < 0
-    packages_to_update[1] = `yum list-security security -q 2>&1 | wc -l`
+    packages_to_update[1] = `yum list-security security --quiet --cacheonly 2>&1 | wc -l`
 
     # Tag the server if updates are available.
     if (packages_to_update[1].to_i > 0) then
