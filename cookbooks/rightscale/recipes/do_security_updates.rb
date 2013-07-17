@@ -111,7 +111,7 @@ if node[:rightscale][:security_updates] == "enable"
       end
     end
   else
-    log " Security updates not supported for platform #{platform}"
+    log "  Security updates not supported for platform #{platform}"
   end
 else
   log "  Security updates disabled. Skipping update!"
