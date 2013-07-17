@@ -54,7 +54,8 @@ if node[:rightscale][:security_updates] == "enable"
   when "centos"
     # Update security packages
     execute "apply yum security updates" do
-      command "yum --assumeyes --security update || true"
+      command "yum --assumeyes --security update"
+      ignore_failure true
     end
 
     # Checks if a reboot is required after security updates.
