@@ -6,4 +6,5 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-rightscale_marker
+set['postfix']['inet_interfaces'] = "all"
+set['postfix']['mail_type']  = "master"

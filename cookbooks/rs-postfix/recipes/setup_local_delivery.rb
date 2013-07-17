@@ -7,3 +7,5 @@
 # such as a RightScale Master Subscription Agreement.
 
 rightscale_marker
+
+include_recipe "postfix::server"
