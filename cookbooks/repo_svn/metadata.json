@@ -1,34 +1,34 @@
 {
-  "name": "repo_svn",
-  "description": "Manages the Subversion version control system",
-  "long_description": "# RightScale \"repo_svn\" Cookbook\n\n## DESCRIPTION:\n\nProvides the Subversion implementation of the 'repo' resource to\nmanage source code downloaded from Subversion repositories.\n\n## REQUIREMENTS:\n\n* Requires the ['repo' Lightweight Resource cookbook][repo]. See \"repo\" cookbook\n  README for details.\n* Requires a virtual machine launched from a RightScale-managed RightImage.\n\n[repo]: https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/repo\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see `metadata.rb` file for the latest dependencies.\n\n* `rightscale`\n* `repo`\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## SETUP/USAGE:\n\n* Provider will be automatically initialized when you add \"repo:default\" recipe\n  to your ServerTemplate runlist\n* Once setup, use the recipes in the 'repo' cookbook to install and manage your\n  code repo.\n  See the 'repo' cookbook's README.md for usage details.\n* Select 'repo_svn' option in repo/default/provider input.\n* To perform correct operations, values for the 'repo/url', and 'repo/branch'\n  inputs must be provided.\n* To retrieve source code from private svn repositories you must provide values\n  for the 'repo/default/credential' and 'repo/default/account' inputs for\n  authentication purposes.\n\n## DETAILS:\n\n### General\n\nThe 'repo_svn' implementation can be called with the help of the Lightweight\nResource, which can be found in the `repo` cookbook.\n\nFor more information about Lightweight Resources and Providers (LWRPs), please\nsee [Lightweight Resources and Providers][Guide].\n\n[Guide]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)\n\n### LWRPs:\n\nThe `repo_svn` provider is defined in the providers/default.rb file and contains\nsource code for the `:pull` and `:capistrano_pull` actions.\nFor more info about these actions please see `repo` cookbook's README.\n\nThe `repo_svn` provider allows the retrieval of source code from Subversion\nremote repositories.It supports repositories with public and private\n(username/password protected) access.\n\nFor normal operations, it requires \"repo\" resource, which acts as interface to\nall `repo_svn` provider logic.\n\n##### Actions:\n\n`:pull`\n\nStandard repo pull. Pull source code from a remote repository by specifying its\nlocation with a URL.\n\n`:capistrano_pull`\n\nPerform standard pull and then a capistrano deployment style will be applied.\n\n##### Usage Example:\n\nFor usage examples, please see corresponding section in `repo` cookbook's\nREADME.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
-  "maintainer": "RightScale, Inc.",
+  "recommendations": {
+  },
+  "long_description": "# RightScale \"repo_svn\" Cookbook\n\n## DESCRIPTION:\n\nProvides the Subversion implementation of the 'repo' resource to\nmanage source code downloaded from Subversion repositories.\n\n## REQUIREMENTS:\n\n* Requires the ['repo' Lightweight Resource cookbook][repo]. See \"repo\" cookbook\n  README for details.\n* Requires a virtual machine launched from a RightScale-managed RightImage.\n\n[repo]: https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/repo\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see `metadata.rb` file for the latest dependencies.\n\n* `rightscale`\n* `repo`\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## SETUP/USAGE:\n\n* Provider will be automatically initialized when you add \"repo:default\" recipe\n  to your ServerTemplate runlist\n* Once setup, use the recipes in the 'repo' cookbook to install and manage your\n  code repo.\n  See the 'repo' cookbook's README.md for usage details.\n* Select 'repo_svn' option in repo/default/provider input.\n* To perform correct operations, values for the 'repo/url', and 'repo/branch'\n  inputs must be provided.\n* To retrieve source code from private svn repositories you must provide values\n  for the 'repo/default/credential' and 'repo/default/account' inputs for\n  authentication purposes.\n\n## DETAILS:\n\n### General\n\nThe 'repo_svn' implementation can be called with the help of the Lightweight\nResource, which can be found in the `repo` cookbook.\n\nFor more information about Lightweight Resources and Providers (LWRPs), please\nsee [Lightweight Resources and Providers][Guide].\n\n[Guide]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Lightweight_Resources_and_Providers_(LWRP)\n\n### LWRPs:\n\nThe `repo_svn` provider is defined in the providers/default.rb file and contains\nsource code for the `:pull` and `:capistrano_pull` actions.\nFor more info about these actions please see `repo` cookbook's README.\n\nThe `repo_svn` provider allows the retrieval of source code from Subversion\nremote repositories.It supports repositories with public and private\n(username/password protected) access.\n\nFor normal operations, it requires \"repo\" resource, which acts as interface to\nall `repo_svn` provider logic.\n\n##### Actions:\n\n`:pull`\n\nStandard repo pull. Pull source code from a remote repository by specifying its\nlocation with a URL.\n\n`:capistrano_pull`\n\nPerform standard pull and then a capistrano deployment style will be applied.\n\n##### Usage Example:\n\nFor usage examples, please see corresponding section in `repo` cookbook's\nREADME.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
+  "replacing": {
+  },
+  "providing": {
+  },
+  "suggestions": {
+  },
   "maintainer_email": "support@rightscale.com",
-  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "maintainer": "RightScale, Inc.",
+  "version": "13.5.0",
   "platforms": {
-    "centos": ">= 0.0.0",
+    "ubuntu": ">= 0.0.0",
     "redhat": ">= 0.0.0",
-    "ubuntu": ">= 0.0.0"
+    "centos": ">= 0.0.0"
+  },
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "description": "Provides the Subversion implementation of the 'repo' resource to manage source code download from Subversion repositories.",
+  "recipes": {
+    "repo_svn::default": "Installs \"subversion\" package."
+  },
+  "conflicting": {
+  },
+  "attributes": {
   },
   "dependencies": {
     "repo": ">= 0.0.0"
   },
-  "recommendations": {
-  },
-  "suggestions": {
-  },
-  "conflicting": {
-  },
-  "providing": {
-  },
-  "replacing": {
-  },
-  "attributes": {
-  },
+  "name": "repo_svn",
   "groupings": {
-  },
-  "recipes": {
-    "repo_svn::default": "Installs \"subversion\" package."
-  },
-  "version": "13.5.0"
+  }
 }
