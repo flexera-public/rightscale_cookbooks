@@ -6,6 +6,8 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
+# Enables collectd plugin for monitoring instances
+#
 define :rightscale_enable_collectd_plugin do
   if params[:name]
     node[:rightscale][:plugin_list_array] << params[:name] unless node[:rightscale][:plugin_list_array].include?(params[:name])

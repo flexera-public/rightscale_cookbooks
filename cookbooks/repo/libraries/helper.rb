@@ -13,7 +13,7 @@ module RightScale
 
       # Create private key file used to connect via ssh.
       #
-      # @param ssh_key [string] rsync private ssh key
+      # @param ssh_key [String] rsync private ssh key
       #
       # @raise [RuntimeError] if ssh key string is empty
       #
@@ -27,8 +27,8 @@ module RightScale
         end
       end
 
-
       # Delete SSH key created by "create" method.
+      #
       def delete
         Chef::Log.info("  Deleting temporary data")
         ::File.delete(KEYFILE)

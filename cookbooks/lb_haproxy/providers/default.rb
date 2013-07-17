@@ -6,8 +6,11 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
+# @resource lb
+
 include RightScale::LB::Helper
 
+# Installs the load balancer HAProxy on the local instance
 action :install do
 
   log "  Installing haproxy"
@@ -95,6 +98,7 @@ action :install do
 end
 
 
+# Configures HAProxy load balancer to answer for specified virtual host
 action :add_vhost do
 
   pool_name = new_resource.pool_name
@@ -147,6 +151,7 @@ action :add_vhost do
 end
 
 
+# Attaches an application server to the HAProxy load balancer
 action :attach do
 
   pool_name = new_resource.pool_name
@@ -225,6 +230,7 @@ action :attach do
   end
 end
 
+# Performs advanced configuration for the HAProxy load balancer
 action :advanced_configs do
 
   # Creates haproxy service.
@@ -274,6 +280,7 @@ action :advanced_configs do
 end
 
 
+# Sends an attach request from an application server to a HAProxy load balancer.
 action :attach_request do
 
   pool_name = new_resource.pool_name
@@ -296,6 +303,7 @@ action :attach_request do
 end
 
 
+# Detaches an application server from the HAProxy load balancer
 action :detach do
 
   pool_name = new_resource.pool_name
@@ -356,6 +364,7 @@ action :detach do
 end
 
 
+# Sends a detach request from an application server to a HAProxy load balancer.
 action :detach_request do
 
   pool_name = new_resource.pool_name
@@ -375,6 +384,7 @@ action :detach_request do
 
 end
 
+# Installs and configures collectd plugins for the HAProxy server
 action :setup_monitoring do
 
   log "  Setup monitoring for haproxy"
@@ -416,6 +426,7 @@ action :setup_monitoring do
 end
 
 
+# Restarts the HAProxy load balancer service
 action :restart do
 
   log "  Restarting haproxy"

@@ -59,7 +59,7 @@ Custom tuning parameters can be applied by overriding the
 file. For more information and an example override repository, please see:
 [Override Chef Cookbooks][CCDG].
 
-[CCDG]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Override_Chef_Cookbooks
+[CCDG]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/ServerTemplate_Development/08-Common_Development_Tasks/Override_Chef_Cookbooks
 
 The tuning parameters are adjusted based on the database server usage. Shared
 servers are allocated %50 of the resources of a dedicated server.

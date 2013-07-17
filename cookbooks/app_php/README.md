@@ -47,7 +47,7 @@ ServerTemplates)
 
 Please checkout the tutorial: [PHP App Server][Tutorial]
 
-[Tutorial]: http://support.rightscale.com/03-Tutorials/PHP_Application_Server_Setup
+[Tutorial]: http://support.rightscale.com/ServerTemplates/Infinity/ST/PHP_App_Server_(v13_Infinity)/PHP_App_Server_(v13_Infinity)_-_Tutorial
 
 ## DETAILS:
 

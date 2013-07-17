@@ -6,13 +6,14 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-# Verify database node state
-# Make sure our current_master values are set
-# Fail if we think we are a slave, but node state thinks we are a master
+# Verify database node state. Makes sure our current_master values are set.
+# Fails if we think we are a slave, but node state thinks we are a master.
 #
-# @param name [Symbol] Assert the type of server we thing we are. Can be :slave, :master, :either
+# @param name [Symbol] Assert the type of server we thing we are.
+#   Can be :slave, :master, :either
 #
 # @raise [RuntimeError] if we are not the server type (:slave or :master) that we expect
+#
 define :db_state_assert do
 
   class Chef::Recipe

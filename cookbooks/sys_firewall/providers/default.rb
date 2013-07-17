@@ -6,8 +6,11 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
+# @resource sys_firewall
+
 require "timeout"
 
+# Updates firewall rules on a server
 action :update do
 
   # Set local variables from attributes
@@ -108,6 +111,7 @@ action :update do
 
 end
 
+# Updates request to server to update its firewall rules
 action :update_request do
 
   # Deal with attributes

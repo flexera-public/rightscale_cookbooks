@@ -15,9 +15,10 @@ module RightScale
 
         # Create new PostgreSQL object
         #
-        # @param [Object] new_resource Resource which will be initialized
+        # @param new_resource [Object] resource which will be initialized
         #
         # @return [PostgreSQL] PostgreSQL object
+        #
         def init(new_resource)
           begin
             require 'rightscale_tools'
@@ -30,10 +31,11 @@ module RightScale
 
         # Create new PostgreSQL connection
         #
-        # @param [String] username System username, default is 'postgres'
-        # @param [String] hostname Hostname FQDN, default is 'localhost'
+        # @param username [String] system username, default is 'postgres'
+        # @param hostname [String] hostname FQDN, default is 'localhost'
         #
         # @return [PostgreSQL] PostgreSQL connection
+        #
         def self.get_pgsql_handle(hostname = "localhost", username = "postgres")
           info_msg = "  PostgreSQL connection to #{hostname}"
           info_msg << ": opening NEW PostgreSQL connection."
@@ -44,16 +46,17 @@ module RightScale
 
         # Perform sql query to PostgreSQL server
         #
-        # @param [String] query Query text
-        # @param [String] hostname Hostname FQDN, default is 'localhost'
-        # @param [String] username System username, default is 'postgres'
-        # @param [Integer] timeout Timeout value
-        # @param [Integer] tries Connection attempts number, default is 1
+        # @param query [String] query text
+        # @param hostname [String] hostname FQDN, default is 'localhost'
+        # @param username [String] system username, default is 'postgres'
+        # @param timeout [Integer] timeout value for query
+        # @param tries [Integer] connection attempts number, default is 1
         #
-        # @return [PGresult] result Query result
+        # @return [PGresult] query result
         #
-        # @raises [TimeoutError] if timeout exceeded
-        # @raises [RuntimeError] if connection try attempts limit reached
+        # @raise [TimeoutError] if timeout exceeded
+        # @raise [RuntimeError] if connection try attempts limit reached
+        #
         def self.do_query(query, hostname = 'localhost', username = 'postgres', timeout = nil, tries = 1)
           require 'rubygems'
           Gem.clear_paths

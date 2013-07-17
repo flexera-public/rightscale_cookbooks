@@ -1,7 +1,9 @@
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
-description      "Installs the jboss application server."
+description      "Cookbook provides Apache + JBoss implementation of the 'app'" +
+                 " Lightweight Resource Provider (LWRP). Installs and configures" +
+                 " an Apache + JBoss application server."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "13.5.0"
 

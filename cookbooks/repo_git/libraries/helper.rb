@@ -18,7 +18,7 @@ module RightScale
       #
       # @param ssh_key [string] Git private ssh key
       #
-      # @raises [RuntimeError] if ssh key string is empty
+      # @raise [RuntimeError] if ssh key string is empty
       def create(ssh_key, check_host_key)
         @sshkey.create(ssh_key)
 

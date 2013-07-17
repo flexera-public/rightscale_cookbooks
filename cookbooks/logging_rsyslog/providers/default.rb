@@ -6,7 +6,9 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-# Stop rsyslog
+# @resource logging
+
+# Stops rsyslog
 action :stop do
   service "rsyslog" do
     action :stop
@@ -15,7 +17,7 @@ action :stop do
 end
 
 
-# Start rsyslog
+# Starts rsyslog
 action :start do
   service "rsyslog" do
     action :start
@@ -24,7 +26,7 @@ action :start do
 end
 
 
-# Restart rsyslog
+# Restarts rsyslog
 action :restart do
   service "rsyslog" do
     action :restart
@@ -33,14 +35,14 @@ action :restart do
 end
 
 
-# Reload rsyslog
+# Reloads rsyslog
 action :reload do
   log("WARNING: reload not supported in rsyslog - doing restart") { level :warn }
   action_restart
 end
 
 
-# Install rsyslog package
+# Installs rsyslog package
 action :install do
   # The replacing syslog-ng with rsyslog requires low level package
   # manipulation via rpm/dpkg
@@ -48,7 +50,7 @@ action :install do
 end
 
 
-# Configure logging: client side
+# Configures logging: client side
 action :configure do
 
   service "rsyslog" do
@@ -115,7 +117,7 @@ action :configure do
 end
 
 
-# Configure an rsyslog logging server.
+# Configures an rsyslog logging server.
 action :configure_server do
 
   service "rsyslog" do
@@ -157,25 +159,25 @@ action :configure_server do
 end
 
 
-# Call the logging rotate command
+# Calls the logging rotate command
 action :rotate do
   raise "Rsyslog action not implemented"
 end
 
 
-# Add a remote logging server
+# Adds a remote logging server
 action :add_remote_server do
   raise "Rsyslog action not implemented"
 end
 
 
-# Add a logging definition
+# Adds a logging definition
 action :add_definition do
   raise "Rsyslog action not implemented"
 end
 
 
-# Add a logrotate policy
+# Adds a logrotate policy
 action :add_rotate_policy do
   raise "Rsyslog action not implemented"
 end

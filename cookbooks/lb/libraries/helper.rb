@@ -8,11 +8,14 @@
 
 module RightScale
   module LB
+    # Helper modules for loadbalancer cookbook
     module Helper
-
+      # Returns a set of attached servers belonging to the same pool.
+      #
       # @param [String] pool_name virtual hosts name.
       #
-      # @return [Set] attached_servers set of attached servers which will be in the same pool i.e., servers in lb config dir
+      # @return [Set] attached_servers set of attached servers which will be in
+      #   the same pool i.e., servers in lb config dir
       #
       def get_attached_servers(pool_name)
         attached_servers = Set.new
@@ -25,6 +28,8 @@ module RightScale
         attached_servers
       end
 
+      # Queries application servers answering for a specifc pool.
+      #
       # @param [String] pool_name virtual hosts name.
       #
       # @return [Hash] app_servers hash of app servers in deployment answering for pool_name

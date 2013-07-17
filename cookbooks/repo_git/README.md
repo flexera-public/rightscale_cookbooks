@@ -47,7 +47,7 @@ Resource, which can be found in the `repo` cookbook.
 For more information about Lightweight Resources and Providers (LWRPs), please
 see [Lightweight Resources and Providers][Guide].
 
-[Guide]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)
+[Guide]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Lightweight_Resources_and_Providers_(LWRP)
 
 ### Libraries-helpers:
 

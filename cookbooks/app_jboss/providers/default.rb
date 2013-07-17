@@ -6,7 +6,9 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-# Stop jboss service
+# @resource app
+
+# Stops JBoss service
 action :stop do
   log "  Running stop sequence"
   service "jboss" do
@@ -15,7 +17,7 @@ action :stop do
   end
 end
 
-# Start jboss service
+# Starts JBoss service
 action :start do
   log "  Running start sequence"
   service "jboss" do
@@ -24,7 +26,7 @@ action :start do
   end
 end
 
-# Restart jboss service
+# Restarts JBoss service
 action :restart do
   log "  Running restart sequence"
   service "jboss" do
@@ -33,13 +35,13 @@ action :restart do
   end
 end
 
-# Installing required packages and prepare system for jboss
+# Installs required packages and prepares system for JBoss
 action :install do
   packages = new_resource.packages
   app_root = new_resource.root
   install_target = node[:app_jboss][:install_target]
 
-  # Creation of Jboss installation directory, group and user
+  # Creation of JBoss installation directory, group and user
   directory install_target do
     action :create
     recursive true
@@ -78,7 +80,7 @@ action :install do
     package pkg
   end
 
-  # Prepare configuration required for Jboss
+  # Prepare configuration required for JBoss
   log "  Creating run.conf"
   template "#{install_target}/bin/run.conf" do
     action :create
@@ -113,7 +115,7 @@ action :install do
     cookbook "app_jboss"
   end
 
-  # Installation of init script and Jboss service
+  # Installation of init script and JBoss service
   service "jboss" do
     supports :status => true, :start => true, :stop => true, :restart => true
     action :nothing
@@ -132,7 +134,7 @@ action :install do
   end
 
   # Removing unnecessary services and securing required services installed
-  # by default with jboss
+  # by default with JBoss
   jboss_deploy_dir = "#{install_target}/server/default/deploy"
 
   service_dirs = [
@@ -169,7 +171,7 @@ action :install do
     end
   end
 
-  # Moving jboss logs to ephemeral to free space on root filesystem
+  # Moving JBoss logs to ephemeral to free space on root filesystem
   # See cookbooks/rightscale/definitions/rightscale_move_to_ephemeral.rb
   # for the "rightscale_move_to_ephemeral" definition.
   rightscale_move_to_ephemeral "#{install_target}/server/default/log" do
@@ -180,7 +182,7 @@ action :install do
 
 end
 
-# Setup apache virtual host and corresponding jboss configs
+# Sets up apache virtual host and corresponding JBoss configs
 action :setup_vhost do
 
   port = new_resource.port
@@ -201,7 +203,7 @@ action :setup_vhost do
     rotate 4
   end
 
-  # Starting jboss service
+  # Starting JBoss service
   # Calls the :start action.
   action_start
 
@@ -252,7 +254,7 @@ action :setup_vhost do
       package "apr-devel"
       package "httpd-devel"
 
-      # Preparing to install tomcat connectors for jboss.
+      # Preparing to install tomcat connectors for JBoss.
       # Using the same plugin, which already present in app_tomcat cookbook.
       cookbook_file "/tmp/#{connectors_source}" do
         source connectors_source
@@ -358,7 +360,7 @@ action :setup_vhost do
   end
 end
 
-# Setup project db connection
+# Sets up JBoss database connection
 action :setup_db_connection do
 
   db_name = new_resource.database_name
@@ -411,7 +413,7 @@ action :setup_db_connection do
   end
 end
 
-# Setup monitoring tools for jboss
+# Sets up monitoring tools for JBoss
 action :setup_monitoring do
 
   install_target = node[:app_jboss][:install_target]
@@ -466,7 +468,7 @@ EOF
 
 end
 
-# Download/Update application repository
+# Downloads/Updates application repository
 action :code_update do
 
   deploy_dir = new_resource.destination
@@ -486,7 +488,7 @@ action :code_update do
   end
 
   log "  Set ROOT war and code ownership"
-  # Preparing user defined war file for jboss auto deploy.
+  # Preparing user defined war file for JBoss auto deploy.
   # Moving file to application root and renaming it to ROOT.war.
   # Manually un-packing the ROOT.war to document root for apache.
   bash "set_root_war_and_chown_home" do
