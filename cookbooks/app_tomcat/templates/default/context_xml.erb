@@ -30,9 +30,13 @@
     The database driver class name used here is set by the "install_client_driver" action of the
     db provider. See cookbooks/db_<provider>/providers/default.rb for more information.
     -->
-    <Resource name="<%= @vars[:datasource] %>" auth="Container" type="javax.sql.DataSource"
-             maxActive="100" maxIdle="30" maxWait="10000"
-             username="<%= @user %>" password="<%= @password %>" driverClassName="<%= @node[:db][:client][:driver] %>"
-             url="jdbc:<%= @node[:db][:client][:driver].split(".")[1] %>://<%= @fqdn %>:<%= @node[:"#{node[:db][:provider]}"][:port]  %>/<%= @database %>"/>
+    <Resource name="<%= @vars[:datasource] %>" auth="Container"
+        type="javax.sql.DataSource" maxActive="100" maxIdle="30" maxWait="10000"
+        username="<%= @user %>" password="<%= @password %>"
+
+        <%# The db/client/driver node variable isn't available during compile time %>
+        <%# so it can't be passed via the resource %>
+        driverClassName="<%= node[:db][:client][:driver] %>"
+        url="jdbc:<%= node[:db][:client][:driver].split(".")[1] %>://<%= @fqdn %>:<%= @port %>/<%= @database %>"/>
 
 </Context>

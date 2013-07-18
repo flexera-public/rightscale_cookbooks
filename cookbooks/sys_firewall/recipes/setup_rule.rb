@@ -43,5 +43,6 @@ if node[:sys_firewall][:enabled] == "enabled"
     end
   end
 else
-  log "  Firewall not enabled. Not adding rule for #{rule_port}."
+  log "  Firewall not enabled. Not adding rule(s) for" +
+    " #{node[:sys_firewall][:rule][:port]}."
 end

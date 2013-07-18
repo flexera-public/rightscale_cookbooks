@@ -1,7 +1,9 @@
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
-description      "Abstract cookbook for managing source code repositories."
+description      "This cookbook provides abstract 'repo' resource for managing" +
+                 " code download from Git, Subversion or Remote Object Store" +
+                 " (ROS) code  repositories."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "13.5.0"
 
@@ -126,8 +128,8 @@ attribute "repo/default/storage_account_provider",
   :required => "optional",
   :choice => [
     "s3",
-    "cloudfiles",
-    "cloudfilesuk",
+    "Cloud_Files",
+    "Cloud_Files_UK",
     "google",
     "azure",
     "swift",

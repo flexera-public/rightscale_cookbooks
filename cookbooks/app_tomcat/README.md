@@ -44,7 +44,7 @@ ServerTemplates)
 
 Please checkout the tutorial: [Tomcat App Server][Tutorial]
 
-[Tutorial]: http://support.rightscale.com/03-Tutorials/Tomcat_App_Server
+[Tutorial]: http://support.rightscale.com/ServerTemplates/Infinity/ST/Tomcat_App_Server_(v13_Infinity)/Tomcat_App_Server_(v13_Infinity)_-_Tutorial
 
 ## DETAILS:
 

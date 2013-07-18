@@ -6,8 +6,9 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
+# @resource repo
 
-# Pull code from a determined repository to a specified destination.
+# Pulls code from a determined repository to a specified destination.
 action :pull do
 
   repo_source = new_resource.repository
@@ -42,7 +43,8 @@ action :pull do
 end
 
 
-# Pull code from a determined repository to a specified destination and create a capistrano-style deployment.
+# Pulls code from a determined repository to a specified destination and create
+# a capistrano-style deployment.
 action :capistrano_pull do
 
   log "  Recreating project directory for :pull action"

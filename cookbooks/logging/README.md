@@ -89,7 +89,7 @@ Note: This cookbook does not modify the installed logging provider.
 For more information about Lightweight Resources and Providers (LWRPs), please
 see: [Lightweight Resources and Providers][LWRP]
 
-[LWRP]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)
+[LWRP]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Lightweight_Resources_and_Providers_(LWRP)
 
 ### Providers:
 
@@ -102,7 +102,7 @@ By using an override cookbook the default configuration can be customized by
 replacing the default configuration file template for the provider. For more
 information, please see: [Override Chef Cookbooks][CCDG].
 
-[CCDG]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Override_Chef_Cookbooks
+[CCDG]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/ServerTemplate_Development/08-Common_Development_Tasks/Override_Chef_Cookbooks
 
 ## LICENSE:
 

@@ -72,7 +72,7 @@ Server' under ServerTemplates)
 
 Please checkout the tutorial: [Apache-Rails-Passenger App Server][Tutorial]
 
-[Tutorial]: http://support.rightscale.com/03-Tutorials/Apache-Rails-Passenger_App_Server
+[Tutorial]: http://support.rightscale.com/ServerTemplates/Infinity/ST/Apache-Rails-Passenger_App_Server_(v13_Infinity)/Apache-Rails-Passenger_App_Server_(v13_Infinity)_-_Tutorial
 
 ServerTemplate built on this cookbook can be combined in two modes:
 

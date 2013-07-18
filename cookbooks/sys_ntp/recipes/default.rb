@@ -74,6 +74,9 @@ template "/etc/ntp.conf" do
   group "root"
   mode "0644"
   notifies :restart, resources(:service => node[:sys_ntp][:service])
+  variables(
+    :ntp_servers => node[:sys_ntp][:servers]
+  )
 end
 
 # Create ntpstats directory

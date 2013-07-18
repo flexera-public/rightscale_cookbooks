@@ -1,7 +1,8 @@
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
-description      "Installs/Configures block device storage."
+description      "This cookbook provides the building blocks for Multi-Cloud" +
+                 " backup/restore support."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "13.5.0"
 
@@ -84,8 +85,8 @@ backup_recipes = [
 # ROS cloud type choices
 ros_clouds = [
   "s3",
-  "cloudfiles",
-  "cloudfilesuk",
+  "Cloud_Files",
+  "Cloud_Files_UK",
   "google",
   "azure",
   "swift",

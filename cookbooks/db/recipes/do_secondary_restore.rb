@@ -50,7 +50,7 @@ secondary_storage_cloud = get_device_or_default(node, :device1, :backup, :second
 if secondary_storage_cloud =~ /aws/i
   secondary_storage_cloud = "s3"
 elsif secondary_storage_cloud =~ /rackspace/i
-  secondary_storage_cloud = "cloudfiles"
+  secondary_storage_cloud = "Cloud_Files"
 end
 
 log "  Performing Secondary Restore from #{secondary_storage_cloud}..."

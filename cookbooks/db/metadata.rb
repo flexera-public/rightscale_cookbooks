@@ -1,7 +1,11 @@
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
-description      "RightScale Database Manager"
+description      "This cookbook provides a set of database recipes used by" +
+                 " the RightScale Database Manager ServerTemplates. This" +
+                 " cookbook does not contain a specific database implementation," +
+                 " but generic recipes that use the Lightweight Resource" +
+                 " Provider (LWRP) interface."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "13.5.0"
 
@@ -560,8 +564,8 @@ attribute "db/dump/storage_account_provider",
   :required => "required",
   :choice => [
     "s3",
-    "cloudfiles",
-    "cloudfilesuk",
+    "Cloud_Files",
+    "Cloud_Files_UK",
     "google",
     "azure",
     "swift",

@@ -6,7 +6,9 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-# Stop apache/passenger
+# @resource app
+
+# Stops apache/passenger
 action :stop do
   log "  Running stop sequence"
   service "apache2" do
@@ -15,7 +17,7 @@ action :stop do
   end
 end
 
-# Start apache/passenger
+# Starts apache/passenger
 action :start do
   log "  Running start sequence"
   service "apache2" do
@@ -24,7 +26,7 @@ action :start do
   end
 end
 
-# Reload apache/passenger
+# Reloads apache/passenger
 action :reload do
   log "  Running reload sequence"
   service "apache2" do
@@ -33,7 +35,7 @@ action :reload do
   end
 end
 
-# Restart apache/passenger
+# Restarts apache/passenger
 action :restart do
   log "  Running restart sequence"
   # Calls the :stop action.
@@ -43,7 +45,7 @@ action :restart do
   action_start
 end
 
-# Installing required packages to system
+# Installs required packages to system
 action :install do
 
   # Installing some apache development headers required for rubyEE
@@ -101,7 +103,7 @@ action :install do
 end
 
 
-# Setup apache/passenger virtual host
+# Sets up apache/passenger virtual host
 action :setup_vhost do
   port = new_resource.port
 
@@ -164,7 +166,7 @@ action :setup_vhost do
 end
 
 
-# Setup project db connection
+# Sets up Passenger database connection
 action :setup_db_connection do
 
   deploy_dir = new_resource.destination
@@ -181,6 +183,9 @@ action :setup_db_connection do
     group node[:app][:group]
     database db_name
     driver_type "ruby"
+    vars(
+      :environment => node[:app_passenger][:project][:environment]
+    )
   end
 
   # Creating bash file for manual $RAILS_ENV setup
@@ -197,7 +202,7 @@ action :setup_db_connection do
 end
 
 
-# Download/Update application repository
+# Downloads/Updates application repository
 action :code_update do
   deploy_dir = new_resource.destination
 
@@ -257,7 +262,7 @@ action :code_update do
 end
 
 
-# Setup monitoring tools for passenger
+# Sets up monitoring tools for passenger
 action :setup_monitoring do
   plugin_path = "#{node[:rightscale][:collectd_lib]}/plugins/passenger"
 

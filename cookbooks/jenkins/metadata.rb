@@ -121,7 +121,7 @@ attribute "jenkins/private_key",
     "This key is used by Jenkins server/master to connect to the slave" +
     " using SSH.",
   :required => "required",
-  :recipes => ["jenkins::install_server"]
+  :recipes => ["jenkins::default", "jenkins::install_server"]
 
 attribute "jenkins/attach_slave_at_boot",
   :display_name => "Attach Jenkins Slave At Boot",

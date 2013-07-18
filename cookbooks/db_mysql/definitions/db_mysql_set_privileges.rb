@@ -6,6 +6,13 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
+# Sets privileges for MySQL database.
+#
+# @param preset [String] Default privilege
+# @param username [String] Privilege username
+# @param password [String] Privilege password
+# @param db_name [String] Database name
+#
 define :db_mysql_set_privileges,
   :preset => "administrator",
   :username => nil,

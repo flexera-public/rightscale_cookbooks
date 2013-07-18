@@ -76,6 +76,9 @@ end
 template File.join(node[:apache][:dir], 'conf.d', 'maintenance.conf') do
   backup false
   source "maintenance.conf.erb"
+  variables(
+    :maintenance_file => node[:web_apache][:maintenance_file]
+  )
   notifies :restart, resources(:service => "apache2")
 end
 

@@ -17,7 +17,8 @@ module RightScale
 
       # Get the current status of the database server.
       #
-      # @param [Hash] node Server node name to check.
+      # @param node [Hash] server node name to check.
+      #
       def db_state_get(node)
         Chef::Log.info "  Loading master/slave state"
         state = ::File.exist?(DB_MASTER_SLAVE_STATE) ? JSON.load(::File.read(DB_MASTER_SLAVE_STATE)) : {
@@ -34,6 +35,7 @@ module RightScale
       # Gets the local replication interface.
       #
       # @return [String] interface ip address
+      #
       def get_local_replication_interface
         case node[:db][:replication][:network_interface]
         when "private"
@@ -52,9 +54,9 @@ module RightScale
 
       # Set the attribute of a resource during converge phase
       #
-      # @param [Hash] resource Hash representing the resource
-      # @param [Symbol] attribute attribute to be changed
-      # @param [String] value value of the attribute
+      # @param resource [Hash] hash representing the resource
+      # @param attribute [Symbol] attribute to be changed
+      # @param value [String] value of the attribute
       #
       # @example Set the attribute of db resource
       #   set_resource_attribute(
@@ -77,6 +79,7 @@ module RightScale
       # @param usage_factor [Integer] server usage factor used for adjustment
       #
       # @return [String] adjusted value with units
+      #
       def value_with_units(value, units, usage_factor)
         raise "Error: value must convert to an integer." unless value.to_i
         raise "Error: units must be k, m, g" unless units =~ /[KMG]/i
@@ -91,6 +94,7 @@ module RightScale
       # Loads replication information from 'SNAPSHOT_POSITION_FILENAME'.
       #
       # @param node [Hash] node name
+      #
       def self.load_replication_info(node)
         loadfile = ::File.join(node[:db][:data_dir], SNAPSHOT_POSITION_FILENAME)
         Chef::Log.info "  Loading replication information from #{loadfile}"
