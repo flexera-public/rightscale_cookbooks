@@ -9,6 +9,7 @@ supports "centos"
 supports "redhat"
 supports "ubuntu"
 
+depends "rightscale"
 depends "postfix"
 
 recipe "rs-postfix::setup_local_delivery",

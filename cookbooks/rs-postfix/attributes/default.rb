@@ -7,4 +7,4 @@
 # such as a RightScale Master Subscription Agreement.
 
 set['postfix']['inet_interfaces'] = "all"
-set['postfix']['mail_type']  = "master"
+set['postfix']['mail_type'] = "master"
