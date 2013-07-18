@@ -29,7 +29,7 @@ if node[:rightscale][:security_updates] == "enable"
       block do
         if ::File.exists?("/var/run/reboot-required")
           Chef::Log.info "  A reboot is required for the security updates to" +
-            " take effect. Adding a 'reboot_required' tag to the server"
+            " take effect. Adding a 'reboot_required' tag to the server."
           # rs_tag command line utility is used instead of the right_link_tag
           # resource as the condition for whether to add or remove the tag is
           # decided inside this ruby block during converge.
@@ -41,7 +41,7 @@ if node[:rightscale][:security_updates] == "enable"
           Chef::Log.info add_tag_cmd.stdout
         else
           Chef::Log.info "  Reboot is not required after security updates." +
-            " Removing the 'reboot_required' tag if present"
+            " Removing the 'reboot_required' tag if present."
           remove_tag_cmd = Mixlib::ShellOut.new(
             "rs_tag --remove 'rs_monitoring:reboot_required=true'"
           )
@@ -69,7 +69,7 @@ if node[:rightscale][:security_updates] == "enable"
         active_kernel_version = uname_cmd.stdout.chomp
         Chef::Log.info "  Active kernel version: #{active_kernel_version}"
 
-        rpm_cmd = Mixlib::ShellOut.new("rpm -q kernel | tail -1")
+        rpm_cmd = Mixlib::ShellOut.new("rpm --query kernel | tail -1")
         rpm_cmd.run_command
         rpm_cmd.error!
         recently_installed_kernel_version =
@@ -83,14 +83,17 @@ if node[:rightscale][:security_updates] == "enable"
         # kernel version, a reboot is required for the new kernel to take
         # effect. A tag 'reboot_required=true' is added if a reboot is required
         # and this tag is removed after the reboot.
-        unless node[:cloud][:provider] == "google"
+        if node[:cloud][:provider] == "google"
+          log "  Custom kernel upgrades are not supported on cloud provider:" +
+            " #{node[:cloud][:provider]}. Skipping kernel version checking..."
+        else
           if recently_installed_kernel_version != active_kernel_version
             Chef::Log.info "  New version of kernel is installed during" +
               " security update. Reboot required for this version to become" +
-              " active. Adding a 'reboot_required' tag to the server"
+              " active. Adding a 'reboot_required' tag to the server."
 
             add_tag_cmd = Mixlib::ShellOut.new(
-              "rs_tag -a 'rs_monitoring:reboot_required=true'"
+              "rs_tag --add 'rs_monitoring:reboot_required=true'"
             )
             add_tag_cmd.run_command
             add_tag_cmd.error!
@@ -99,15 +102,12 @@ if node[:rightscale][:security_updates] == "enable"
             Chef::Log.info "  Currently active kernel is up-to-date. Removing" +
               " the 'reboot_required' tag if present."
             remove_tag_cmd = Mixlib::ShellOut.new(
-              "rs_tag -r 'rs_monitoring:reboot_required=true'"
+              "rs_tag --remove 'rs_monitoring:reboot_required=true'"
             )
             remove_tag_cmd.run_command
             remove_tag_cmd.error!
             Chef::Log.info remove_tag_cmd.stdout
           end
-        else
-          log "  Custom kernel upgrades are not supported on cloud provider:" +
-            " #{node[:cloud][:provider]}. Skipping kernel version checking..."
         end
       end
     end
