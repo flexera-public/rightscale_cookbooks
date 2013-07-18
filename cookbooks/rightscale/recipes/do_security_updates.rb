@@ -39,6 +39,7 @@ if node[:rightscale][:security_updates] == "enable"
           add_tag_cmd.run_command
           add_tag_cmd.error!
           Chef::Log.info add_tag_cmd.stdout
+          Chef::Log.info add_tag_cmd.stderr unless add_tag_cmd.exitstatus == 0
         else
           Chef::Log.info "  Reboot is not required after security updates." +
             " Removing the 'reboot_required' tag if present."
@@ -48,6 +49,8 @@ if node[:rightscale][:security_updates] == "enable"
           remove_tag_cmd.run_command
           remove_tag_cmd.error!
           Chef::Log.info remove_tag_cmd.stdout
+          Chef::Log.info remove_tag_cmd.stderr \
+            unless remove_tag_cmd.exitstatus == 0
         end
       end
     end
@@ -98,6 +101,7 @@ if node[:rightscale][:security_updates] == "enable"
             add_tag_cmd.run_command
             add_tag_cmd.error!
             Chef::Log.info add_tag_cmd.stdout
+            Chef::Log.info add_tag_cmd.stderr unless add_tag_cmd.exitstatus == 0
           else
             Chef::Log.info "  Currently active kernel is up-to-date. Removing" +
               " the 'reboot_required' tag if present."
@@ -107,6 +111,8 @@ if node[:rightscale][:security_updates] == "enable"
             remove_tag_cmd.run_command
             remove_tag_cmd.error!
             Chef::Log.info remove_tag_cmd.stdout
+            Chef::Log.info remove_tag_cmd.stderr \
+              unless remove_tag_cmd.exitstatus == 0
           end
         end
       end
