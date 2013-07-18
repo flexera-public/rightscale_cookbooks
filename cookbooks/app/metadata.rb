@@ -31,25 +31,25 @@ recipe "app::install_server",
 
 recipe "app::do_loadbalancers_allow",
   "Allows connections from all load balancers within a given listener pool" +
-  " which are tagged with loadbalancer:lb=<applistener_name>." +
+  " which are tagged with loadbalancer:<pool_name>=lb." +
   " This script should be run on an application server before it makes" +
   " a request to be connected to the load balancers."
 
 recipe "app::do_loadbalancers_deny",
   "Denies connections from all load balancers which are tagged with" +
-  " loadbalancer:lb=<applistener_name>. For example, you can run this" +
+  " loadbalancer:<pool_name>=lb. For example, you can run this" +
   " script on an application server to deny connections from all load" +
   " balancers within a given listener pool."
 
 recipe "app::request_loadbalancer_allow",
   "Sends a request to all application servers tagged with" +
-  " loadbalancer:app=<applistener_name> to allow connections from the server's" +
+  " loadbalancer:<pool_name>=app to allow connections from the server's" +
   " private IP address. This script should be run on a load balancer before" +
   " any application servers are attached to it."
 
 recipe "app::request_loadbalancer_deny",
   "Sends a request to all application servers tagged with" +
-  " loadbalancer:app=<applistener_name> to deny connections from the server's" +
+  " loadbalancer:<pool_name>=app to deny connections from the server's" +
   " private IP address. This script should be run on a load balancer after" +
   " disconnecting application servers or upon decommissioning."
 
