@@ -6,11 +6,12 @@ Wrapper cookbook using opscode community cookbook, 'postfix'.
 
 ## REQUIREMENTS:
 
-* 'postfix' opsocde community cookbook
+* 'postfix' opscode community cookbook
+* Ability to send outgoing traffic to port 25.
 
 ## KNOWN LIMITATIONS:
 
-* Must be able to send outgoing traffic to port 25.
+There are no known limitations.
 
 ## USAGE:
 
