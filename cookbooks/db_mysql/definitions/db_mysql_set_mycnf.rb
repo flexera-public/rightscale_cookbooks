@@ -209,7 +209,7 @@ define(:db_mysql_set_mycnf,
       :server_id => params[:server_id],
       :log_bin_enabled => node[:db_mysql][:log_bin_enabled],
       :log_bin => node[:db_mysql][:log_bin],
-      :expire_logs_days => node[:db_mysql][:tunable][:expire_logs_days],
+      :expire_logs_days => node[:db_mysql][:expire_logs_days],
       :binlog_format => node[:db_mysql][:binlog_format],
 
       # InnoDB

@@ -93,7 +93,7 @@ attribute "db_mysql/init_timeout",
     "db_mysql::setup_server_5_5"
   ]
 
-attribute "db_mysql/tunable/expire_logs_days",
+attribute "db_mysql/expire_logs_days",
   :display_name => "MySQL Expire Logs Days",
   :description =>
     "Defines number of days to wait until the log expires. Default: 2",
