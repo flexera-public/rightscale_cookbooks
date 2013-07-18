@@ -17,7 +17,7 @@ if node[:rightscale][:security_updates] == "enable"
       command "sed -i \"s%ubuntu_daily/.* $(lsb_release -cs)-security%ubuntu_daily/latest $(lsb_release -cs)-security%\" /etc/apt/sources.list.d/rightscale.sources.list"
     end
     # Updates the repositories initially to get the latest security updates.
-    execute "apt-get update -y"
+    execute "apt-get update --yes"
   when "centos"
     ruby_block "unfreeze centos repositories" do
       block do

@@ -20,7 +20,7 @@ if node[:rightscale][:security_updates] == "enable"
   when "ubuntu"
     # Update security packages
     execute "apply apt security updates" do
-      command "apt-get -y update && apt-get -y dist-upgrade"
+      command "apt-get --yes update && apt-get --yes dist-upgrade"
       ignore_failure true
     end
 
