@@ -11,8 +11,6 @@ supports "ubuntu"
 
 depends "postfix"
 
-recipe "rs-postfix::default", "Installs and configures postfix"
-
 recipe "rs-postfix::setup_local_delivery",
   "Configures postfix to deliver local mail by accepting SMTP connections" +
   " on localhost."

@@ -28,7 +28,6 @@
   "groupings": {
   },
   "recipes": {
-    "rs-postfix::default": "Installs and configures postfix",
     "rs-postfix::setup_local_delivery": "Configures postfix to deliver local mail by accepting SMTP connections on localhost."
   },
   "version": "13.5.0"
