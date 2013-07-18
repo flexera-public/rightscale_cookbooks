@@ -52,7 +52,10 @@ recipe "rightscale::setup_security_updates",
 
 recipe "rightscale::setup_security_update_monitoring",
   "Sets up collectd plugin to monitor for available security updates."
-
+ 
+recipe "rightscale::install_rightimage_extras",
+  "Installs the RightImage extra packages expected by our ServerTemplates."
+ 
 recipe "rightscale::setup_redhat",
   "Registers a system with the RHN Satellite or Red Hat Network Classic."
 
