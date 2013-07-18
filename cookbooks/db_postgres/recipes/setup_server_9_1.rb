@@ -48,7 +48,8 @@ else
   raise "Platform '#{node[:platform]}' is not supported by this recipe."
 end
 
-node[:db][:init_timeout]= "60"
+# Time out value set for backup operation.
+node[:db][:init_timeout]= "600"
 
 # PostgreSQL specific commands for db_sys_info.log file
 node[:db][:info_file_options] = [
