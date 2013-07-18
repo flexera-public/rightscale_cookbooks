@@ -21,8 +21,8 @@ end
 
 
 opts = GetoptLong.new(
-  [ '--hostname', '-h', GetoptLong::REQUIRED_ARGUMENT ],
-  [ '--sample-interval', '-i',  GetoptLong::OPTIONAL_ARGUMENT ]
+  [ "--hostname", "-h", GetoptLong::REQUIRED_ARGUMENT ],
+  [ "--sample-interval", "-i",  GetoptLong::OPTIONAL_ARGUMENT ]
 )
 
 # Default values
@@ -40,9 +40,9 @@ apt_check = "/usr/lib/update-notifier/apt-check"
 
 opts.each do |opt, arg|
   case opt
-  when '--hostname'
+  when "--hostname"
     hostname = arg
-  when '--sample-interval'
+  when "--sample-interval"
     sample_interval = arg.to_i
   end
   arg.inspect
