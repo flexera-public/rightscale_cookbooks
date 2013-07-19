@@ -20,6 +20,8 @@ depends "repo_rsync"
 
 recipe "repo::default",
   "Sets up repo resource and provider."
+recipe "repo::do_pull",
+  "Performs the specified pull action set in repo/default/perform_action"
 
 attribute "repo/default/provider",
   :display_name => "Repository Provider",
