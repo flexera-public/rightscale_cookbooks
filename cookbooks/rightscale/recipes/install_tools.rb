@@ -20,7 +20,11 @@ RIGHT_CLOUD_API_VERSION = "0.0.1"
 
 # rightscale_tools gem
 RS_TOOLS_GEM = "rightscale_tools"
-RS_TOOLS_VERSION = "1.7.5"
+<<<<<<< HEAD
+RS_TOOLS_VERSION = "1.7.6"
+=======
+RS_TOOLS_VERSION = "1.7.6"
+>>>>>>> b91b9c2a27fa9f7d63cd68a81b30a01ac0afcfe0
 
 COOKBOOK_DEFAULT_GEMS = ::File.join(::File.dirname(__FILE__), "..", "files", "default")
 

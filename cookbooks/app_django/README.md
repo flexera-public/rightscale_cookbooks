@@ -79,7 +79,7 @@ ServerTemplates)
 
 Please checkout the tutorial: [Django App Server][Tutorial]
 
-[Tutorial]: http://support.rightscale.com/03-Tutorials/Django_App_Server_Beta
+[Tutorial]: http://support.rightscale.com/ServerTemplates/Infinity/ST/Django_App_Server_Beta_(v13_Infinity)/Django_App_Server_Beta_(v13_Infinity)_-_Tutorial
 
 ServerTemplate built on this cookbook can be combined in two modes:
 

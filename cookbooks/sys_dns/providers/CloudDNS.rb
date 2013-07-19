@@ -6,6 +6,9 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
+# @resource sys_dns
+
+# Sets Cloud DNS
 action :set do
   log "==================== sys_dns(:set) CloudDNS BEGIN ==================== "
 

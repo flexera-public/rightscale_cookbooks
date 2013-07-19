@@ -11,11 +11,14 @@
 # Please see the action details found in the lightweight providers of other implementing
 # cookbooks: cookbooks/repo_<provider>/providers/default.rb
 
-# Pull code from a determined repository to a specified destination.
+# Pulls code from a determined repository to a specified destination.
 actions :pull
-# Pull code from a determined repository to a specified destination and create a capistrano-style deployment.
+
+# Pulls code from a determined repository to a specified destination and create a
+# capistrano-style deployment.
 actions :capistrano_pull
-# Setup repository URL and other attributes.
+
+# Sets up repository URL and other attributes.
 actions :setup_attributes
 
 
@@ -56,11 +59,11 @@ attribute :svn_arguments, :kind_of => String
 # The prefix that will be used to name/locate the backup of a particular code repo.
 attribute :prefix, :kind_of => String
 
-# Location where dump file will be saved. Used by dump recipes to back up to Amazon S3 or Rackspace Cloud Files.
+# Location where dump file will be saved. Used by dump recipes to back up to
+# a Remote Object Storage (ROS).
 attribute :storage_account_provider, :kind_of => String
 
 # The cloud storage location where the dump file will be restored from.
-#  For Amazon S3, use the bucket name. For Rackspace Cloud Files, use the container name.
 attribute :container, :kind_of => String
 
 # Unpack downloaded source or not Source file must be kind of tar archive

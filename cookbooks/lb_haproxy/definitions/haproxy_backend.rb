@@ -6,8 +6,11 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
+# Sets up HAProxy backend configuration file in "/etc/haproxy".
+#
+# @param pool_name [String] Pool name to which the load balancer listens to.
+#
 define :lb_haproxy_backend, :pool_name => "" do
-
   backend_name = params[:pool_name] + "_backend"
   stats_uri = "stats uri #{node[:lb][:stats_uri]}" unless "#{node[:lb][:stats_uri]}".empty?
   stats_auth = "stats auth #{node[:lb][:stats_user]}:#{node[:lb][:stats_password]}" unless \

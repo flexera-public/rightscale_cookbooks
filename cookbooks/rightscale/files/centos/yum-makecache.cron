@@ -1,15 +1,11 @@
+#!/bin/bash
 #
-# Cookbook Name:: db_postgres
+# Cookbook Name:: rightscale
 #
 # Copyright RightScale, Inc. All rights reserved.
 # All access and use subject to the RightScale Terms of Service available at
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
-#
-# Managed by RightScale
-# DO NOT EDIT BY HAND
-#
 
-# PostgreSQL
--A FWR -p tcp -m tcp --dport 5432 -j ACCEPT
--A FWR -p udp -m udp --dport 5432 -j ACCEPT
+# Updates the metadata cache for yum.
+yum makecache -assumeyes

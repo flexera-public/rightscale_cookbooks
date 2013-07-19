@@ -6,6 +6,9 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
+# @resource sys_reconverge
+
+# Enable cookbook reconverge
 action :enable do
   recipe = new_resource.recipe_name
   interval = new_resource.interval
@@ -30,6 +33,7 @@ action :enable do
 
 end
 
+# Disable cookbook reconverge
 action :disable do
   recipe = new_resource.recipe_name
   log "  Removing #{recipe} from reconverge via cron"

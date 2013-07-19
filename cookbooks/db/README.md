@@ -115,7 +115,7 @@ Lightweight Providers which implement the 'db' interface. See RightScale's
 For more information about Lightweight Resources and Providers (LWRPs), please
 see: [Lightweight Resources and Providers][LWRP]
 
-[LWRP]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)
+[LWRP]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Lightweight_Resources_and_Providers_(LWRP)
 
 ### Backup/Restore
 
@@ -149,7 +149,7 @@ When writing your own database Lightweight Provider:
 
     depends "db"
 
-[Guide]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-RightScale_Support_of_Chef/Chef_Metadata
+[Guide]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/02-End_User/04-RightScale_Support_of_Chef/Chef_Metadata
 
 ## LICENSE:
 

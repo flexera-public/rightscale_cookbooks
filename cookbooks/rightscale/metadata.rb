@@ -1,7 +1,8 @@
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
-description      "RightScale Cookbooks"
+description      "Base recipes used to set up services used by the RightScale" +
+                 " Cloud Management Platform."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "13.5.0"
 
@@ -51,6 +52,12 @@ recipe "rightscale::setup_security_updates",
 
 recipe "rightscale::setup_security_update_monitoring",
   "Sets up collectd plugin to monitor for available security updates."
+ 
+recipe "rightscale::install_rightimage_extras",
+  "Installs the RightImage extra packages expected by our ServerTemplates."
+ 
+recipe "rightscale::setup_redhat",
+  "Registers a system with the RHN Satellite or Red Hat Network Classic."
 
 attribute "rightscale/security_updates",
   :display_name => "Enable security updates",
@@ -257,6 +264,31 @@ attribute "rightscale/rackspace_tenant_id",
   :recipes => [
     "rightscale::default",
     "rightscale::setup_cloud"
+  ]
+
+attribute "rightscale/redhat/username",
+  :display_name => "RedHat Network Username",
+  :description =>
+    "The username to register the system with under RHN Satellite or Red Hat" +
+    " Network Classic. Example: cred:REDHAT_SUBSCRIBER_USERNAME",
+  :required => "optional",
+  :default => "",
+  :recipes => [
+    "rightscale::default",
+    "rightscale::setup_redhat"
+  ]
+
+attribute "rightscale/redhat/password",
+  :display_name => "RedHat Network Password",
+  :description =>
+    "The password associated with the username specified in the" +
+    " rightscale/redhat/username input." +
+    " Example: cred:REDHAT_SUBSCRIBER_PASSWORD",
+  :required => "optional",
+  :default => "",
+  :recipes => [
+    "rightscale::default",
+    "rightscale::setup_redhat"
   ]
 
 # RightScale ENV attributes.

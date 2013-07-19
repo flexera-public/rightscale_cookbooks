@@ -10,7 +10,6 @@
 # DO NOT EDIT BY HAND
 #
 
-<Plugin exec>
-  #    userid    plugin executable                   plugin args
-  Exec "postgres" "<%= node[:rightscale][:collectd_lib] %>/plugins/postgres_ps" "-h" "<%= node[:rightscale][:instance_uuid] %>" 
-</Plugin>
+standby_mode='on'
+primary_conninfo='host=<%= @host %> user=<%= @user %> password=<%= @password %> application_name=<%= @application_name %>'
+trigger_file='<%= @trigger_file %>'

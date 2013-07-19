@@ -15,8 +15,8 @@
 
   # Redirects to a maintenance page if the specified file below exists
   # ...but it still allows images to be served
-  RewriteCond <%= node[:web_apache][:maintenance_file] %> -f
+  RewriteCond <%= @maintenance_file %> -f
   RewriteCond %{SCRIPT_FILENAME} !/system/maintenance.html
   RewriteCond %{SCRIPT_FILENAME} !^(.+).(gif|png|jpg|css|js|swf)$
-  RewriteRule ^.*$ <%= node[:web_apache][:maintenance_file] %> [L]
+  RewriteRule ^.*$ <%= @maintenance_file %> [L]
 </IfModule>

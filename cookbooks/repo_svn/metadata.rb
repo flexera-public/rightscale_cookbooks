@@ -1,7 +1,8 @@
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
-description      "Manages the Subversion version control system"
+description      "Provides the Subversion implementation of the 'repo' resource" +
+                 " to manage source code download from Subversion repositories."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "13.5.0"
 

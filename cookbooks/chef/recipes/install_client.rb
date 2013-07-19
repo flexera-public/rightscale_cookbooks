@@ -53,6 +53,13 @@ template "#{node[:chef][:client][:config_dir]}/validation.pem" do
   )
 end
 
+# Creates secret key file used to decrypt data bags if they are encrypted.
+file "#{node[:chef][:client][:config_dir]}/encrypted_data_bag_secret" do
+  mode 0600
+  content node[:chef][:client][:data_bag_secret]
+  not_if { node[:chef][:client][:data_bag_secret].to_s.empty? }
+end
+
 # Creates runlist.json file.
 template "#{node[:chef][:client][:config_dir]}/runlist.json" do
   source "runlist.json.erb"

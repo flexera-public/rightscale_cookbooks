@@ -6,6 +6,8 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
+# @resource rightscale_server_collection
+
 require 'timeout'
 
 # Provider collects and processes server tags used by the server_collection resource

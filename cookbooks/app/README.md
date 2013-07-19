@@ -95,7 +95,7 @@ RightScale's "Load Balancer" ServerTemplates:
 
 For more info please see: [Load Balancer Setups][Tutorial].
 
-[Tutorial]: http://support.rightscale.com/03-Tutorials/HAProxy_Load_Balancer_Server_Setup
+[Tutorial]: http://support.rightscale.com/ServerTemplates/Infinity/ST/Load_Balancer_with_HAProxy_(v13_Infinity)/Load_Balancer_with_HAProxy_(v13_Infinity)_-_Tutorial
 
 ### Attributes:
 
@@ -151,7 +151,7 @@ as a cap if there is no other app_ Light Weight Provider implementation.
 For more information about Lightweight Resources and Providers (LWRPs), please
 see: [Lightweight Resources and Providers (LWRP)][LWRP].
 
-[LWRP]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)
+[LWRP]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Lightweight_Resources_and_Providers_(LWRP)
 
 ##### App resource actions
 

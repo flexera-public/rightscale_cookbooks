@@ -6,12 +6,16 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
+# @resource lb
+
 include RightScale::ELB::Helper
 
+# Installs the Elastic Load Balancer. Not applicable.
 action :install do
   log "  Install does not apply to ELB"
 end
 
+# Attaches an application server to Elastic Load Balancer
 action :attach do
 
   require "right_cloud_api"
@@ -38,21 +42,27 @@ action :attach do
 
   if selected_elb = existing_elbs.detect { |existing_elb|
     existing_elb["LoadBalancerName"] == new_resource.service_lb_name }
-    log "ELB '#{new_resource.service_lb_name}' exists"
+    log "  ELB '#{new_resource.service_lb_name}' exists"
   else
     raise "ERROR: ELB '#{new_resource.service_lb_name}' does not exist"
   end
 
-  # Checks if this instance's zone is part of the lb. If not, add it.
-  if selected_elb["AvailabilityZones"]["member"].
-    include?(node[:ec2][:placement][:availability_zone])
-    log "...instance already part of ELB zone"
+  if selected_elb["VPCId"].to_s.empty?
+    # Checks if this instance's zone is part of the lb. If not, add it.
+    if selected_elb["AvailabilityZones"]["member"].
+      include?(node[:ec2][:placement][:availability_zone])
+      log "  ...instance already part of ELB zone"
+    else
+      log "  ...activating zone #{node[:ec2][:placement][:availability_zone]}"
+      elb.EnableAvailabilityZonesForLoadBalancer({
+        "LoadBalancerName" => new_resource.service_lb_name,
+        "AvailabilityZones.member" => node[:ec2][:placement][:availability_zone]
+      })
+    end
   else
-    log "...activating zone #{node[:ec2][:placement][:availability_zone]}"
-    elb.EnableAvailabilityZonesForLoadBalancer({
-      "LoadBalancerName" => new_resource.service_lb_name,
-      "AvailabilityZones.member" => node[:ec2][:placement][:availability_zone]
-    })
+    # Enabling the 'AvailabilityZones' is skipped if the ELB is attached to
+    # a VPC.
+    log "  ELB is attached to a VPC"
   end
 
   # Opens the backend_port.
@@ -65,7 +75,7 @@ action :attach do
   end
 
   # Connects the server to ELB.
-  log "...registering with ELB"
+  log "  ...registering with ELB"
   elb.RegisterInstancesWithLoadBalancer({
     "LoadBalancerName" => new_resource.service_lb_name,
     "Instances.member" => {"InstanceId" => node[:ec2][:instance_id]}
@@ -73,6 +83,7 @@ action :attach do
 
 end
 
+# Sends an attach request from an application server to an Elastic Load Balancer
 action :attach_request do
 
   log "  Attach request for #{node[:ec2][:instance_id]}"
@@ -89,6 +100,7 @@ action :attach_request do
 
 end
 
+# Detaches an application server from the Elastic Load Balancer
 action :detach do
 
   require "right_cloud_api"
@@ -104,7 +116,7 @@ action :detach do
   )
 
   # Deregister the server to ELB.
-  log "...DE-registering with ELB"
+  log "  ...DE-registering with ELB"
   elb.DeregisterInstancesFromLoadBalancer({
     "LoadBalancerName" => new_resource.service_lb_name,
     "Instances.member" => {"InstanceId" => node[:ec2][:instance_id]}
@@ -121,6 +133,7 @@ action :detach do
 
 end
 
+# Sends a detach request from an application server to an Elastic Load Balancer
 action :detach_request do
 
   log "  Detach request for #{node[:ec2][:instance_id]}"
@@ -137,10 +150,12 @@ action :detach_request do
 
 end
 
+# Installs and configures collectd plugins for the server. Not applicable.
 action :setup_monitoring do
   log "  Setup monitoring does not apply to ELB"
 end
 
+# Restarts the Elastic Load Balancer service. Not applicable.
 action :restart do
   log "  Restart does not apply to ELB"
 end

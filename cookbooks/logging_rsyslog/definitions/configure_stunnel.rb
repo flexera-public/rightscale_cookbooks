@@ -40,6 +40,9 @@ define :configure_stunnel,
     owner owner
     group group
     mode "0400"
+    variables(
+      :logging_certificate => node[:logging][:certificate]
+    )
   end
 
   # Writing stunnel configuration file
@@ -62,7 +65,8 @@ define :configure_stunnel,
         ["centos", "redhat"] => {"default" => "/stunnel.pid"}
       ),
       :accept => params[:accept],
-      :connect => params[:connect]
+      :connect => params[:connect],
+      :platform_version => node[:platform_version]
     )
   end
 

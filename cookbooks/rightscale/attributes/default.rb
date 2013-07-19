@@ -29,6 +29,10 @@ default[:rightscale][:domain_name] = ""
 default[:rightscale][:search_suffix] = ""
 # Enable/disable security updates
 default[:rightscale][:security_update] = "disable"
+# RedHat Network Username
+default[:rightscale][:redhat][:username] = ""
+# RedHat Network Password
+default[:rightscale][:redhat][:password] = ""
 
 # Required attributes
 

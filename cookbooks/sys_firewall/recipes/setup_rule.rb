@@ -24,7 +24,7 @@ end
 if node[:sys_firewall][:enabled] == "enabled"
   rule_ports = []
   # Generate separate rules to each of rule_protocol element
-  node[:sys_firewall][:rule][:port].split(/\s*,\s*/).each do |rule_port|
+  node[:sys_firewall][:rule][:port].to_s.split(/\s*,\s*/).each do |rule_port|
     rule_port_int = rule_port.to_i
     raise "Invalid port specified: #{rule_port}. Valid range 1-65536" \
       unless rule_port_int > 0 and rule_port_int <= 65536
@@ -43,5 +43,6 @@ if node[:sys_firewall][:enabled] == "enabled"
     end
   end
 else
-  log "  Firewall not enabled. Not adding rule for #{rule_port}."
+  log "  Firewall not enabled. Not adding rule(s) for" +
+    " #{node[:sys_firewall][:rule][:port]}."
 end

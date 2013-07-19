@@ -76,6 +76,12 @@ execute "bundle install" do
   command "bundle install --no-color --system"
 end
 
+log "  Building and Installing Virtualmonkey gem"
+execute "rake install virtualmonkey" do
+  cwd node[:monkey][:virtualmonkey_path]
+  command "rake install"
+end
+
 # Create the VirtualMonkey configuration file from template. Currently, this
 # configuration file is not managed by Chef.
 log "  Creating VirtualMonkey configuration file from template"
@@ -85,16 +91,6 @@ execute "copy virtualmonkey configuration file" do
   not_if do
     ::File.exists?("#{node[:monkey][:virtualmonkey_path]}/.config.yaml")
   end
-end
-
-# Populate all virtualmonkey cloud variables
-log "  Populating virtualmonkey cloud variables"
-execute "populate cloud variables" do
-  command "#{node[:monkey][:virtualmonkey_path]}/bin/monkey" +
-    " populate_all_cloud_vars" +
-    " --force" +
-    " --overwrite" +
-    " --yes"
 end
 
 ###############################################################################
@@ -128,6 +124,12 @@ execute "bundle install" do
   command "bundle install --no-color --system"
 end
 
+log "  Building and Installing Virtualmonkey Nextgen gem"
+execute "rake install virtualmonkey-ng" do
+  cwd "#{node[:monkey][:virtualmonkey_path]}-ng"
+  command "rake install"
+end
+
 # Create the VirtualMonkey configuration file from template. Currently, this
 # configuration file is not managed by Chef.
 log "  Creating VirtualMonkey configuration file from template"
@@ -137,16 +139,6 @@ execute "copy virtualmonkey configuration file" do
   not_if do
     ::File.exists?("#{node[:monkey][:virtualmonkey_path]}-ng/.config.yaml")
   end
-end
-
-# Populate all virtualmonkey cloud variables
-log "  Populating virtualmonkey cloud variables"
-execute "populate cloud variables" do
-  command "#{node[:monkey][:virtualmonkey_path]}-ng/bin/monkey" +
-    " populate_all_cloud_vars" +
-    " --force" +
-    " --overwrite" +
-    " --yes"
 end
 
 # Add virtualmonkey-ng to PATH
@@ -181,6 +173,16 @@ log "  Installing gems required for the nextgen collateral project"
 execute "bundle install on collateral" do
   cwd "#{node[:monkey][:user_home]}/#{nextgen_collateral_name}"
   command "bundle install --no-color --system"
+end
+
+# Populate all virtualmonkey cloud variables
+log "  Populating virtualmonkey cloud variables on nextgen collateral project"
+execute "populate cloud variables" do
+  cwd "#{node[:monkey][:user_home]}/#{nextgen_collateral_name}"
+  command "bundle exec monkey populate_all_cloud_vars" +
+    " --force" +
+    " --overwrite" +
+    " --yes"
 end
 
 ###############################################################################
@@ -243,6 +245,17 @@ execute "bundle install on collateral" do
   cwd "#{node[:monkey][:user_home]}/" +
     "#{node[:monkey][:virtualmonkey][:collateral_name]}"
   command "bundle install --no-color --system"
+end
+
+# Populate all virtualmonkey cloud variables
+log "  Populating virtualmonkey cloud variables"
+execute "populate cloud variables" do
+  cwd "#{node[:monkey][:user_home]}/" +
+    "#{node[:monkey][:virtualmonkey][:collateral_name]}"
+  command "bundle exec monkey populate_all_cloud_vars" +
+    " --force" +
+    " --overwrite" +
+    " --yes"
 end
 
 log "  Updating the ServerTemplate IDs for old collateral"

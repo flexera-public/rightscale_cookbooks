@@ -83,7 +83,7 @@ do_for_all_block_devices node[:block_device] do |device|
     primary_user get_device_or_default(node, device, :backup, :primary, :cred, :user)
     primary_secret get_device_or_default(node, device, :backup, :primary, :cred, :secret)
 
-    # Use snet for cloudfiles on rackspace
+    # Use snet for Cloud_Files on rackspace
     rackspace_snet get_device_or_default(node, device, :backup, :rackspace_snet) == 'true'
 
     action :nothing

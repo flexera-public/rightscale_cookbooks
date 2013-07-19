@@ -12,11 +12,11 @@
 
 <Plugin processes>
   process "collectd"
-<% node[:rightscale][:process_list_array].each do |process| %>
+<% @process_list_array.each do |process| %>
   process "<%= process %>"
 <% end %>
 
-<% node[:rightscale][:process_match_list].split.each do |process| %>
+<% @process_match_list.split.each do |process| %>
 <% p_name, p_regex = process.split("/") %>
   processmatch "<%= p_name %>" "<%= p_regex %>"
 <% end %>

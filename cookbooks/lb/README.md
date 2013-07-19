@@ -21,7 +21,7 @@ Lightweight Providers that implement the 'lb' interface. See the RightScale
 To review information about Lightweight Resources and Providers (LWRPs), see
 [Lightweight Resources and Providers][LWRP].
 
-[LWRP]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)
+[LWRP]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Lightweight_Resources_and_Providers_(LWRP)
 
 ## REQUIREMENTS:
 
@@ -76,7 +76,7 @@ load balancer. The lb_client provider only supports the :attach_request and
 :detach_request actions.
 
 The :attach_request and :detach_request actions will send a remote recipe to all
-load balancers in the deployment with the "loadbalancer:#{pool_name}=lb"
+load balancers in the deployment with the "loadbalancer:&lt;pool_name&gt;=lb"
 machine tag.  The :attach_request action will request them to run the
 "lb::handle_attach" recipe.  The :detach_request will request them to run the
 "lb::handle_dettach" recipe.

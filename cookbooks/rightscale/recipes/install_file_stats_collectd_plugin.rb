@@ -23,6 +23,11 @@ template(::File.join(node[:rightscale][:collectd_plugin_dir], "file-stats.conf")
   backup false
   source "file-stats.conf.erb"
   notifies :restart, resources(:service => "collectd")
+  variables(
+    :collectd_lib => node[:rightscale][:collectd_lib],
+    :instance_uuid => node[:rightscale][:instance_uuid],
+    :db_backup_file => node[:rightscale][:db_backup_file]
+  )
 end
 
 directory ::File.join(node[:rightscale][:collectd_lib], "plugins") do

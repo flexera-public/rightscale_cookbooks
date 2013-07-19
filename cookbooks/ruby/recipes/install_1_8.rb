@@ -8,13 +8,15 @@
 
 rightscale_marker
 
+platform = node[:platform]
+
 version = Mixlib::ShellOut.new("ruby --version")
 version.run_command.error!
 
 if version.stdout =~ /1\.8/
-  log "  Ruby #{version.stdout} is already installed on this system."
+  log "  Ruby '#{version.stdout.chomp}' is already installed on this system."
 else
-  case node[:platform]
+  case platform
   when /centos|redhat/
 
     # Removes ruby packages that are not 1.8 if they are installed.
@@ -52,6 +54,6 @@ else
     end
 
   else
-    raise "Platform #{node[:platform]} is not supported by this recipe."
+    raise "Platform #{platform} is not supported by this recipe."
   end
 end

@@ -8,6 +8,7 @@
 
 # Sets a database server to be a master in a replication db setup.
 # The tasks include setting up DNS, setting tags, and setting node attributes.
+#
 define :db_register_master do
 
   class Chef::Recipe

@@ -14,13 +14,13 @@ reappeared without attaching itself.
 
 The load balancer and application server attach/detach recipes are designed so
 the servers can locate each other using RightScale machine tags. The load
-balancer servers have tags of the form "loadbalancer:lb=APPLISTENER_NAME" where
-APPLISTENER_NAME is the name of the application that the application servers are
-serving; the application server attach and detach recipes use this machine tag
+balancer servers have tags of the form "loadbalancer:<pool_name>=lb" where
+'pool_name' is the name of the pool that the application servers are associated
+with; the application server attach and detach recipes use this machine tag
 to request that corresponding handler recipes are run on the matching load
 balancers when they need to attach or detach. The application servers have tags
-of the form "loadbalancer:app=APPLISTENER_NAME", "server:uuid=UUID", and
-"loadbalancer:backend_ip=IP_ADDRESS" where APPLISTENER is the same application
+of the form "loadbalancer:<pool_name>=app", "server:uuid=<UUID>", and
+"loadbalancer:backend_ip=<IP_ADDRESS>" where 'pool_name' is the same pool
 name, UUID is a unique string that identifies the server, and IP_ADDRESS is the
 IP address of the server; the automatic detection recipe for the load balancer
 servers use these tags to find which application servers are currently
@@ -57,7 +57,7 @@ corresponding server pool backends.
 
 This recipe is used by application servers to request that load balancer servers
 configure themselves to attach to the application server. It requests that
-servers with the "loadbalancer:lb=APPLISTENER_NAME" tag run the corresponding
+servers with the "loadbalancer:<pool_name>=lb" tag run the corresponding
 'handle_attach' recipe. The recipe sends the server's IP address and instance
 UUID as parameters to the remote recipe.
 
@@ -79,7 +79,7 @@ restarted.
 
 This recipe is used by application servers to request that load balancer servers
 configure themselves to detach from the application server. It request that
-servers with the "loadbalancer:lb=APPLISTENER_NAME" tag run the corresponding
+servers with the "loadbalancer:<pool_name>=lb" tag run the corresponding
 'handle_detach' recipe. The recipe sends the server's IP address and instance
 UUID as parameters to the remote recipe.
 
@@ -102,8 +102,8 @@ This recipe is used by the load balancer to automatically detect if application
 servers have disappeared or reappeared without detaching or reattaching using
 the other recipes. This recipe is set to run in the periodic reconverge which
 defaults to a period of 15 minutes between runs. It uses the
-"loadbalancer:app=APPLISTENER_NAME", "server:uuid=UUID", and
-"loadbalancer:backend_ip=IP_ADDRESS" tags to get a list of all of the
+"loadbalancer:<pool_name>=app", "server:uuid=<UUID>", and
+"loadbalancer:backend_ip=<IP_ADDRESS>" tags to get a list of all of the
 application servers that are currently available and uses the list to create,
 update, or delete individual server configuration files in the haproxy.d
 directory depending on their current status. If any of the files in the
