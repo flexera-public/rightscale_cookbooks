@@ -35,11 +35,11 @@ the package manager to apply security updates by unfreezing the
 server's repositories. On apt based systems this unfreezes the security
 repository. On yum based systems this unfreezes all repositories except
 the RightScale-Epel repository. Runs if the `rightscale/security_updates`
-input is set to "enable", otherwise this action is skipped. Note: once
-security updates are enabled they can not be disabled.
+input is set to "enable", otherwise this action is skipped.
+Note: once security updates are enabled they can not be disabled.
 
 The `rightscale::setup_security_update_monitoring` recipe installs a collectd
-plugin that will monitor available regular and security updates. This plugin
+plugin that will monitor available security updates. This plugin
 is always installed regardless of the input `rightscale/security_updates`.
 This plugin will add a tag `rs_monitoring:security_updates_available=true` if
 there are any security updates available. This tag will be removed once the
@@ -52,16 +52,17 @@ server has all available security updates applied. Runs if the
 `rightscale/security_updates` input is set to "enable", otherwise
 this action is skipped. Once the security updates are applied and if a reboot is
 required the `rs_monitoring:reboot_required=true` tag is added to the server.
-This tag is removed when the server reboots. Note: once security updates are
-enabled they can not be disabled.
+This tag is removed when the server reboots.
+Note: once security updates are enabled they can not be disabled.
 
 The `rightscale::install_rightimage_extras` recipe installs the package
 `rightimage-extras`.  This ensures that all non-rightscale created images
 have the same packages as a RightImage does.
 
-The `rightscale::setup_redhat` recipe registers the server with Red Hat Network
-Classic when the server is on a redhat platform and the inputs
-`rightscale/redhat/username` and `rightscale/redhat/password` are set.
+The `rightscale::setup_redhat` recipe registers the server with [Red Hat Network
+Classic](https://access.redhat.com/site/articles/63269) when the server is on
+a redhat platform and the inputs `rightscale/redhat/username` and
+`rightscale/redhat/password` are set.
 
 ## USAGE:
 
