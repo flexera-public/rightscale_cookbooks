@@ -13,13 +13,19 @@ if node[:rightscale][:security_updates] == "enable"
   case node[:platform]
   when "ubuntu"
     # Sets all Ubuntu security repos to latest
-    execute "unfreeze ubuntu security repositories" do
+    unfreeze_ubuntu_repos = execute "unfreeze ubuntu security repositories" do
       command "sed -i \"s%ubuntu_daily/.* $(lsb_release -cs)-security%ubuntu_daily/latest $(lsb_release -cs)-security%\" /etc/apt/sources.list.d/rightscale.sources.list"
+      action :nothing
     end
+    unfreeze_ubuntu_repos.run_action(:run)
+
     # Updates the repositories initially to get the latest security updates.
-    execute "apt-get update --yes"
+    apt_get_update = execute "apt-get update --yes" do
+      action :nothing
+    end
+    apt_get_update.run_action(:run)
   when "centos"
-    ruby_block "unfreeze centos repositories" do
+    unfreeze_centos_repos = ruby_block "unfreeze centos repositories" do
       block do
         # Set all repos to latest
         files = Dir.glob("/etc/yum.repos.d/*.repo")
@@ -35,10 +41,15 @@ if node[:rightscale][:security_updates] == "enable"
           File.open(file_name, "w") { |file| file.puts text }
         end
       end
+      action :nothing
     end
+    unfreeze_centos_repos.run_action(:create)
 
     # Updates local cache for security updates.
-    execute "yum makecache --assumeyes"
+    yum_makecache = execute "yum makecache --assumeyes" do
+      action :nothing
+    end
+    yum_makecache.run_action(:run)
 
     # Adds a cron.daily script to update the yum cache.
     cookbook_file "/etc/cron.daily/yum-makecache.cron" do
