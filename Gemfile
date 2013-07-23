@@ -1,6 +1,10 @@
+# IMPORTANT NOTE:
+#   ALL GEM DEPENDENCIES MUST CALL OUT THE SPECIFIC VERSION OF THE GEM REQUIRED INCLUDING PATCH LEVEL
+#
 source "http://rubygems.org"
+
 gem "chef", "11.4.0"
 gem "foodcritic", :platforms => :ruby_19
 gem "rake"
 gem "yard-chef"
-gem "virtualmonkey", "~> 2.0"
+gem "virtualmonkey", :git => "git@github.com:rightscale/virtualmonkey.git", :branch => "release2.0"
