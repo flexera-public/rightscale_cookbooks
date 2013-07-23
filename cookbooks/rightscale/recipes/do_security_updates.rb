@@ -85,8 +85,9 @@ if node[:rightscale][:security_updates] == "enable"
         # effect. A tag 'reboot_required=true' is added if a reboot is required
         # and this tag is removed after the reboot.
         if node[:cloud][:provider] == "google"
-          log "  Custom kernel upgrades are not supported on cloud provider:" +
-            " #{node[:cloud][:provider]}. Skipping kernel version checking..."
+          Chef::Log.info "  Custom kernel upgrades are not supported on cloud" +
+            " provider: #{node[:cloud][:provider]}. Skipping kernel version" +
+            " checking..."
         else
           if recently_installed_kernel_version != active_kernel_version
             Chef::Log.info "  New version of kernel is installed during" +
