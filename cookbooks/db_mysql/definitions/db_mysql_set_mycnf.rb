@@ -30,6 +30,12 @@ define(:db_mysql_set_mycnf,
   :master_key => nil
 ) do
 
+  # Logs what is being passed into this definition.
+  params.each do |parameter, argument|
+    log "  '#{parameter.inspect} => #{argument.inspect}' passed into" +
+      " 'db_mysql_set_mycnf' definition." unless parameter == :name
+  end
+
   class Chef::Recipe
     include RightScale::Database::Helper
   end
@@ -165,6 +171,17 @@ define(:db_mysql_set_mycnf,
   log "  Installing my.cnf with server_id = #{params[:server_id]}," +
     " relay_log = #{params[:relay_log]}"
 
+  # Overrides any autotuned or passed in values if log file already exists.
+  innodb_log_file_size = ::File.size?("/var/lib/mysql/ib_logfile0")
+  if innodb_log_file_size
+    log "  InnoDB log file found. Size: #{innodb_log_file_size}"
+    log "  Using this value for MySQL configuration."
+    node[:db_mysql][:tunable][:innodb_log_file_size] = innodb_log_file_size
+  else
+    innodb_log_file_size = params[:innodb_log_file_size] ||
+      node[:db_mysql][:tunable][:innodb_log_file_size]
+  end
+
   template "/etc/mysql/conf.d/my.cnf" do
     source "my.cnf.erb"
     owner "root"
@@ -217,8 +234,7 @@ define(:db_mysql_set_mycnf,
         node[:db_mysql][:tunable][:innodb_buffer_pool_size],
       :innodb_additional_mem_pool_size =>
         node[:db_mysql][:tunable][:innodb_additional_mem_pool_size],
-      :innodb_log_file_size => params[:innodb_log_file_size] ||
-        node[:db_mysql][:tunable][:innodb_log_file_size],
+      :innodb_log_file_size => innodb_log_file_size,
       :innodb_log_buffer_size =>
         node[:db_mysql][:tunable][:innodb_log_buffer_size],
       :data_dir => node[:db][:data_dir],
