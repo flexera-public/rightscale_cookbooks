@@ -21,7 +21,6 @@ if node[:rightscale][:security_updates] == "enable"
     # Update security packages
     execute "apply apt security updates" do
       command "apt-get --yes update && apt-get --yes dist-upgrade"
-      ignore_failure true
     end
 
     # Tags the server if a reboot is required
@@ -58,7 +57,6 @@ if node[:rightscale][:security_updates] == "enable"
     # Update security packages
     execute "apply yum security updates" do
       command "yum --assumeyes --security update"
-      ignore_failure true
     end
 
     # Checks if a reboot is required after security updates.
