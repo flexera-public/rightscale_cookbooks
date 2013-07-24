@@ -30,9 +30,6 @@ define :db_postgres_set_privileges, :preset => "administrator", :username => nil
       # Now that we have a Postgresql object, let's sanitize our inputs. These will get pass for log and comparison.
       username_esc = conn.escape_string(username)
       password_esc = conn.escape_string(password)
-      # Following Username and password will get to pass for creation of user.
-      username = conn.quote_ident(username_esc)
-      password = conn.quote_ident(password_esc)
 
       # Create group roles, don't error out if already created.  Users don't inherit "special" attributes
       # from group role, see: http://www.postgresql.org/docs/9.1/static/role-membership.html
@@ -43,11 +40,11 @@ define :db_postgres_set_privileges, :preset => "administrator", :username => nil
         result = conn.exec("SELECT COUNT(*) FROM pg_user WHERE usename='#{username_esc}'")
         userstat = result.getvalue(0, 0)
         if (userstat == '1')
-          Chef::Log.info "  User #{username_esc} already exists, updating user using current inputs"
-          conn.exec("ALTER USER #{username} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password}'")
+          Chef::Log.info "  User '#{username_esc}' already exists, updating user using current inputs"
+          conn.exec("ALTER USER #{username_esc} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password_esc}'")
         else
-          Chef::Log.info "  Creating administrator user #{username_esc}"
-          conn.exec("CREATE USER #{username} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password}'")
+          Chef::Log.info "  Creating administrator user '#{username_esc}'"
+          conn.exec("CREATE USER #{username_esc} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password_esc}'")
         end
 
       when 'user'
@@ -56,17 +53,17 @@ define :db_postgres_set_privileges, :preset => "administrator", :username => nil
         result = conn.exec("SELECT COUNT(*) FROM pg_user WHERE usename='#{username_esc}'")
         userstat = result.getvalue(0, 0)
         if (userstat == '1')
-          Chef::Log.info "  User #{username_esc} already exists, updating user using current inputs"
-          conn.exec("ALTER USER #{username} NOSUPERUSER CREATEDB NOCREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password}'")
+          Chef::Log.info "  User '#{username_esc}' already exists, updating user using current inputs"
+          conn.exec("ALTER USER #{username_esc} NOSUPERUSER CREATEDB NOCREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password_esc}'")
         else
-          Chef::Log.info "  Creating application user #{username_esc}"
-          conn.exec("CREATE USER #{username} NOSUPERUSER CREATEDB NOCREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password}'")
+          Chef::Log.info "  Creating application user '#{username_esc}'"
+          conn.exec("CREATE USER #{username_esc} NOSUPERUSER CREATEDB NOCREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password_esc}'")
         end
 
         # Set default privileges for any future tables, sequences, or functions created.
-        conn.exec("ALTER DEFAULT PRIVILEGES FOR USER #{username} GRANT ALL ON TABLES to #{username}")
-        conn.exec("ALTER DEFAULT PRIVILEGES FOR USER #{username} GRANT ALL ON SEQUENCES to #{username}")
-        conn.exec("ALTER DEFAULT PRIVILEGES FOR USER #{username} GRANT ALL ON FUNCTIONS to #{username}")
+        conn.exec("ALTER DEFAULT PRIVILEGES FOR USER #{username_esc} GRANT ALL ON TABLES to #{username_esc}")
+        conn.exec("ALTER DEFAULT PRIVILEGES FOR USER #{username_esc} GRANT ALL ON SEQUENCES to #{username_esc}")
+        conn.exec("ALTER DEFAULT PRIVILEGES FOR USER #{username_esc} GRANT ALL ON FUNCTIONS to #{username_esc}")
 
       else
         raise "  Only 'administrator' and 'user' type presets are supported!"
