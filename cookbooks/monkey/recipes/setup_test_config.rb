@@ -25,3 +25,21 @@ file "/etc/chef/rightscalevirtualmonkey.pem" do
   content node[:monkey][:test_config][:knife_pem_key]
   action :create
 end
+
+# Creates the YAML file with credentials for "check_smtp" test for the
+# "lamp_chef" feature.
+directory "#{node[:monkey][:user_home]}/.virtualmonkey" do
+  owner node[:monkey][:user]
+  group node[:monkey][:group]
+end
+
+template "#{node[:monkey][:user_home]}/.virtualmonkey/test_creds.yaml" do
+  source "test_creds.yaml.erb"
+  owner node[:monkey][:user]
+  group node[:monkey][:group]
+  variables(
+    :smtp_username => node[:monkey][:test][:smtp_username],
+    :smtp_password => node[:monkey][:test][:smtp_password]
+  )
+  mode 0600
+end
