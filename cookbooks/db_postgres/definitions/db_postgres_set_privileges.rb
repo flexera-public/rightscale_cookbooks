@@ -42,10 +42,12 @@ define :db_postgres_set_privileges, :preset => "administrator", :username => nil
         if (userstat == '1')
           Chef::Log.info "  User '#{username_esc}' already exists, updating" +
             " user using current inputs"
-          conn.exec("ALTER USER #{username_esc} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password_esc}'")
+          conn.exec("ALTER USER #{username_esc} SUPERUSER CREATEDB CREATEROLE" +
+            " INHERIT LOGIN ENCRYPTED PASSWORD '#{password_esc}'")
         else
           Chef::Log.info "  Creating administrator user '#{username_esc}'"
-          conn.exec("CREATE USER #{username_esc} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password_esc}'")
+          conn.exec("CREATE USER #{username_esc} SUPERUSER CREATEDB" +
+            " CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password_esc}'")
         end
 
       when 'user'
@@ -56,16 +58,21 @@ define :db_postgres_set_privileges, :preset => "administrator", :username => nil
         if (userstat == '1')
           Chef::Log.info "  User '#{username_esc}' already exists, updating" +
             " user using current inputs"
-          conn.exec("ALTER USER #{username_esc} NOSUPERUSER CREATEDB NOCREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password_esc}'")
+          conn.exec("ALTER USER #{username_esc} NOSUPERUSER CREATEDB" +
+            " NOCREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password_esc}'")
         else
           Chef::Log.info "  Creating application user '#{username_esc}'"
-          conn.exec("CREATE USER #{username_esc} NOSUPERUSER CREATEDB NOCREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password_esc}'")
+          conn.exec("CREATE USER #{username_esc} NOSUPERUSER CREATEDB" +
+            " NOCREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password_esc}'")
         end
 
         # Set default privileges for any future tables, sequences, or functions created.
-        conn.exec("ALTER DEFAULT PRIVILEGES FOR USER #{username_esc} GRANT ALL ON TABLES to #{username_esc}")
-        conn.exec("ALTER DEFAULT PRIVILEGES FOR USER #{username_esc} GRANT ALL ON SEQUENCES to #{username_esc}")
-        conn.exec("ALTER DEFAULT PRIVILEGES FOR USER #{username_esc} GRANT ALL ON FUNCTIONS to #{username_esc}")
+        conn.exec("ALTER DEFAULT PRIVILEGES FOR USER #{username_esc}" +
+          " GRANT ALL ON TABLES to #{username_esc}")
+        conn.exec("ALTER DEFAULT PRIVILEGES FOR USER #{username_esc}" +
+          " GRANT ALL ON SEQUENCES to #{username_esc}")
+        conn.exec("ALTER DEFAULT PRIVILEGES FOR USER #{username_esc}" +
+          " GRANT ALL ON FUNCTIONS to #{username_esc}")
 
       else
         raise "  Only 'administrator' and 'user' type presets are supported!"
