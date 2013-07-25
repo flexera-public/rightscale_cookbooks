@@ -360,3 +360,17 @@ attribute "monkey/rocketmonkey/repo_branch",
     "Git branch for VirtualMonkey project",
   :required => "required",
   :recipes => ["monkey::setup_rocketmonkey"]
+
+attribute "monkey/test/smtp_username",
+  :display_name => "SMTP Username",
+  :description =>
+    "The SMTP username for lamp's check smtp test",
+  :required => "required",
+  :recipes => ["monkey::setup_test_config"]
+
+attribute "monkey/test/smtp_password",
+  :display_name => "SMTP Password",
+  :description =>
+    "The SMTP password for lamp's check smtp test",
+  :required => "required",
+  :recipes => ["monkey::setup_test_config"]
