@@ -40,7 +40,8 @@ define :db_postgres_set_privileges, :preset => "administrator", :username => nil
         result = conn.exec("SELECT COUNT(*) FROM pg_user WHERE usename='#{username_esc}'")
         userstat = result.getvalue(0, 0)
         if (userstat == '1')
-          Chef::Log.info "  User '#{username_esc}' already exists, updating user using current inputs"
+          Chef::Log.info "  User '#{username_esc}' already exists, updating" +
+            " user using current inputs"
           conn.exec("ALTER USER #{username_esc} SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password_esc}'")
         else
           Chef::Log.info "  Creating administrator user '#{username_esc}'"
@@ -53,7 +54,8 @@ define :db_postgres_set_privileges, :preset => "administrator", :username => nil
         result = conn.exec("SELECT COUNT(*) FROM pg_user WHERE usename='#{username_esc}'")
         userstat = result.getvalue(0, 0)
         if (userstat == '1')
-          Chef::Log.info "  User '#{username_esc}' already exists, updating user using current inputs"
+          Chef::Log.info "  User '#{username_esc}' already exists, updating" +
+            " user using current inputs"
           conn.exec("ALTER USER #{username_esc} NOSUPERUSER CREATEDB NOCREATEROLE INHERIT LOGIN ENCRYPTED PASSWORD '#{password_esc}'")
         else
           Chef::Log.info "  Creating application user '#{username_esc}'"
