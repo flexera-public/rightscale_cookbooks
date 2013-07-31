@@ -42,8 +42,8 @@ module RightScale
             new_resource.user,
             new_resource.password,
             mount_point,
-            new_resource.timeout,
-            Chef::Log
+            Chef::Log,
+            new_resource.timeout
           )
         end
 
