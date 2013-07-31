@@ -68,9 +68,8 @@ helpers do
     end
 
     # Sets server log file path depending on the OS.
-    log_file_path =
-      case get_operating_system(logging_server)
-      when /ubuntu.*12/i
+    log_file_path = case get_operating_system(logging_server)
+      when /ubuntu/i
         "/var/log/syslog"
       else
         "/var/log/messages"
