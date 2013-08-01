@@ -37,7 +37,14 @@ module RightScale
             Chef::Log.warn("  Please contact Rightscale to upgrade your account.")
           end
           mount_point = new_resource.name
-          RightScale::Tools::Database.factory(:postgres, new_resource.user, new_resource.password, mount_point, Chef::Log)
+          RightScale::Tools::Database.factory(
+            :postgres,
+            new_resource.user,
+            new_resource.password,
+            mount_point,
+            Chef::Log,
+            new_resource.timeout.to_i
+          )
         end
 
         # Load replication information
