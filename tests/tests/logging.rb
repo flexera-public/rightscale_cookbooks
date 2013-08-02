@@ -67,16 +67,6 @@ helpers do
       true
     end
 
-    # Sets server log file path depending on the OS.
-    log_file_path =
-      case get_operating_system(logging_server)
-      when /ubuntu.*12/i
-        "/var/log/syslog"
-      else
-        "/var/log/messages"
-      end
-
-    require "timeout"
     begin
       Timeout::timeout(300) do
         while true
@@ -84,7 +74,10 @@ helpers do
 
           # Checks whether the log with the test string is on the
           # Logging server.
-          probe(logging_server, "grep \"#{test_string}\" #{log_file_path}") do
+          probe(
+            logging_server,
+            "grep \"#{test_string}\" #{get_syslog_file(logging_server)}"
+          ) do
           |response, status|
             unless status == 0
               raise FailedProbeCommandError, "Probe error: #{response}"
