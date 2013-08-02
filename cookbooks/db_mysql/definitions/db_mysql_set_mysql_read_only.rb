@@ -5,7 +5,7 @@
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 
-define :db_mysql_set_mycnf_read_only, :read_only => false do
+define :db_mysql_set_mysql_read_only, :read_only => false do
 
   read_only = params[:read_only] ? 1 : 0
   log "  Installing read_write_status.cnf with read_only = #{read_only}"
