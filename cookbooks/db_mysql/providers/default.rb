@@ -56,6 +56,11 @@ action :move_data_dir do
 end
 
 action :reset do
+  # Set read/write in read_write_status.cnf
+  db_mysql_set_mysql_read_only "setup mysql read/write" do
+    read_only false
+  end
+
   @db = init(new_resource)
   @db.reset
 end
@@ -320,7 +325,7 @@ action :install_server do
   end
 
   # Setup read_write_status.cnf
-  db_mysql_set_mycnf_read_only "setup_mycnf_read_only" do
+  db_mysql_set_mysql_read_only "setup mysql read/write" do
     read_only false
   end
 
@@ -467,7 +472,7 @@ action :promote do
   end
 
   # Set read/write read_write_status.cnf
-  db_mysql_set_mycnf_read_only "setup_mycnf_read_only" do
+  db_mysql_set_mysql_read_only "setup mysql read/write" do
     read_only false
   end
 
@@ -667,7 +672,7 @@ action :enable_replication do
   end
 
   # Set read_only in read_write_status.cnf
-  db_mysql_set_mycnf_read_only "setup_mycnf_read_only" do
+  db_mysql_set_mysql_read_only "setup mysql read only" do
     read_only true
   end
 
