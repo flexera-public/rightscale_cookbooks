@@ -192,16 +192,54 @@ if ephemeral_supported_clouds.include?(cloud)
           raise "command exited non-zero! #{command}" unless ignore_failure || $?.success?
         end
 
+        # This method runs the given [pv|vg|lv]display command and returns the
+        # the list of devices, volume groups, or logical volumes as an array.
+        # It can be checked to maintain idempotency when performing LVM
+        # operations.
+        #
+        # @param command [String] the command to run
+        #
+        # @return [Array<String>] array of devices, volume groups, or logical
+        #   volumes
+        #
+        def command_display(command)
+          command = Mixlib::ShellOut.new("#{command} --colon")
+          Chef::Log.info "  Running: #{command.command}"
+          command.run_command.error!
+          output = command.stdout
+          Chef::Log.info "  #{output}"
+          Chef::Log.info "  #{command.stderr}"
+          entries = output.split("\n")
+          entries.map { |entry| entry.strip.split(":")[0] }
+        end
+
         my_devices.each do |device|
-          Chef::Log.info "  Updating device #{device}"
-          run_command("pvcreate -ff -y #{device}")
+          if command_display("pvdisplay").include?(device)
+            Chef::Log.info "  Device '#{device}' is already initialized." +
+              "Skipping.."
+          else
+            Chef::Log.info "  Updating device #{device}"
+            run_command("pvcreate -ff -y #{device}")
+          end
         end
 
         if my_devices.empty?
           Chef::Log.info "  No ephemeral devices attached"
         else
-          run_command("vgcreate vg-data #{my_devices.join(' ')}")
-          run_command("lvcreate vg-data -n #{lvm_device} -i #{my_devices.size} -I 256 -l #{node[:block_device][:ephemeral][:vg_data_percentage]}%VG")
+          if command_display("vgdisplay").include?("vg-data")
+            Chef::Log.info "  Volume group 'vg-data' already exists. Skipping.."
+          else
+            run_command("vgcreate vg-data #{my_devices.join(' ')}")
+          end
+          if command_display("lvdisplay").include?("/dev/vg-data/#{lvm_device}")
+            Chef::Log.info "  Logical volume '#{lvm_device}' already exists." +
+              "Skipping.."
+          else
+            run_command("lvcreate vg-data" +
+              " -n #{lvm_device} -i #{my_devices.size} -I 256" +
+              " -l #{node[:block_device][:ephemeral][:vg_data_percentage]}%VG"
+            )
+          end
           run_command("mkfs.#{filesystem_type} /dev/vg-data/#{lvm_device}")
 
           # Add the fstab_entry to fstab if it does not already exists.
