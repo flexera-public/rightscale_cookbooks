@@ -208,7 +208,6 @@ if ephemeral_supported_clouds.include?(cloud)
           command.run_command.error!
           output = command.stdout
           Chef::Log.info "  #{output}"
-          Chef::Log.info "  #{command.stderr}"
           entries = output.split("\n")
           entries.map { |entry| entry.strip.split(":")[0] }
         end
