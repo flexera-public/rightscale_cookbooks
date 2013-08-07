@@ -480,10 +480,10 @@ action :enable_replication do
   # has to run the start command again.
   ruby_block "Start Postgresql service" do
     block do
-      retries 5
-      retry_delay 2
       action_start
     end
+    retries 5
+    retry_delay 2
   end
 
   # Setup slave monitoring
