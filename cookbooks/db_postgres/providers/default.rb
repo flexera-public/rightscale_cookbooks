@@ -449,32 +449,6 @@ action :enable_replication do
     action :stop
   end
 
-  ruby_block "Sync to Master data" do
-    not_if { current_restore_process == :no_restore }
-    block do
-      # pg_basebackup takes a base backup of a running PostgreSQL server.
-      backup_cmd = "su --login postgres --command=\"env PGCONNECT_TIMEOUT=30"
-      backup_cmd << " #{node[:db_postgres][:bindir]}/pg_basebackup"
-      backup_cmd << " --pgdata='#{node[:db_postgres][:backupdir]}'"
-      backup_cmd << " --username='#{node[:db][:replication][:user]}'"
-      backup_cmd << " --host='#{node[:db][:current_master_ip]}'\""
-
-      backup = Mixlib::ShellOut.new(backup_cmd)
-      backup.run_command
-      # Logs STDERR because 'pg_stop_backup' puts notification messages there.
-      Chef::Log.info backup.stderr
-      # Raises an Exception if command execution fails.
-      backup.error!
-
-      rsync_cmd = "su --login postgres --command=\"rsync --archive"
-      rsync_cmd << " #{node[:db_postgres][:backupdir]}/"
-      rsync_cmd << " #{node[:db_postgres][:datadir]}"
-      rsync_cmd << " --exclude postgresql.conf --exclude pg_hba.conf\""
-
-      Mixlib::ShellOut.new(rsync_cmd).run_command.error!
-    end
-  end
-
   template "#{node[:db_postgres][:confdir]}/recovery.conf" do
     source "recovery.conf.erb"
     owner "postgres"
