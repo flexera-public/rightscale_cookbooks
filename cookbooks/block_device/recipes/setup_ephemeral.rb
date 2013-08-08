@@ -213,6 +213,8 @@ if ephemeral_supported_clouds.include?(cloud)
         end
 
         my_devices.each do |device|
+          # Initialize the device for using with LVM if  the device is not
+          # already initialized
           if command_display("pvdisplay").include?(device)
             Chef::Log.info "  Device '#{device}' is already initialized." +
               " Skipping.."
@@ -225,11 +227,13 @@ if ephemeral_supported_clouds.include?(cloud)
         if my_devices.empty?
           Chef::Log.info "  No ephemeral devices attached"
         else
+          # Create the volume group for ephemeral disk if one doesn't exist
           if command_display("vgdisplay").include?("vg-data")
             Chef::Log.info "  Volume group 'vg-data' already exists. Skipping.."
           else
             run_command("vgcreate vg-data #{my_devices.join(' ')}")
           end
+          # Create a logical volume for ephemeral disk if one doesn't exist
           if command_display("lvdisplay").include?("/dev/vg-data/#{lvm_device}")
             Chef::Log.info "  Logical volume '#{lvm_device}' already exists." +
               " Skipping.."
