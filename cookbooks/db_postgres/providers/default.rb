@@ -467,14 +467,6 @@ action :enable_replication do
     not_if { current_restore_process == :no_restore }
   end
 
-  bash "wipe_existing_xlog_files" do
-    not_if { current_restore_process == :no_restore }
-    flags "-ex"
-    code <<-EOH
-       rm -rf #{node[:db_postgres][:datadir]}/pg_xlog/*
-    EOH
-  end
-
   # Ensure that database started
   # service provider uses the status command to decide if it
   # has to run the start command again.
