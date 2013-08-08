@@ -192,7 +192,7 @@ if ephemeral_supported_clouds.include?(cloud)
           raise "command exited non-zero! #{command}" unless ignore_failure || $?.success?
         end
 
-        # This method runs the given [pv|vg|lv]display command and returns the
+        # This method is used to run [pv|vg|lv]display command and returns the
         # the list of devices, volume groups, or logical volumes as an array.
         # It can be checked to maintain idempotency when performing LVM
         # operations.
@@ -213,7 +213,7 @@ if ephemeral_supported_clouds.include?(cloud)
         end
 
         my_devices.each do |device|
-          # Initialize the device for using with LVM if  the device is not
+          # Initialize the device for using with LVM if the device is not
           # already initialized
           if command_display("pvdisplay").include?(device)
             Chef::Log.info "  Device '#{device}' is already initialized." +
