@@ -232,7 +232,7 @@ if ephemeral_supported_clouds.include?(cloud)
           end
           if command_display("lvdisplay").include?("/dev/vg-data/#{lvm_device}")
             Chef::Log.info "  Logical volume '#{lvm_device}' already exists." +
-              "Skipping.."
+              " Skipping.."
           else
             run_command("lvcreate vg-data" +
               " -n #{lvm_device} -i #{my_devices.size} -I 256" +
