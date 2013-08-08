@@ -215,7 +215,7 @@ if ephemeral_supported_clouds.include?(cloud)
         my_devices.each do |device|
           if command_display("pvdisplay").include?(device)
             Chef::Log.info "  Device '#{device}' is already initialized." +
-              "Skipping.."
+              " Skipping.."
           else
             Chef::Log.info "  Updating device #{device}"
             run_command("pvcreate -ff -y #{device}")
