@@ -156,21 +156,21 @@ end
 
 # Sets database privileges
 action :set_privileges do
-  if ::File.exist?("#{node[:db_postgres][:datadir]}/recovery.conf")
-    log "  No need to rerun on reboot for slave"
-  else
-    priv = new_resource.privilege
-    priv_username = new_resource.privilege_username
-    priv_password = new_resource.privilege_password
-    priv_database = new_resource.privilege_database
-    # See cookbooks/db_postgres/definitions/db_postgres_set_privileges.rb for the "db_postgres_set_privileges" definition.
-    db_postgres_set_privileges "setup db privileges" do
-      preset priv
-      username priv_username
-      password priv_password
-      database priv_database
-    end
+
+  priv = new_resource.privilege
+  priv_username = new_resource.privilege_username
+  priv_password = new_resource.privilege_password
+  priv_database = new_resource.privilege_database
+
+  # See cookbooks/db_postgres/definitions/db_postgres_set_privileges.rb
+  # for the "db_postgres_set_privileges" definition.
+  db_postgres_set_privileges "setup db privileges" do
+    preset priv
+    username priv_username
+    password priv_password
+    database priv_database
   end
+
 end
 
 # Installs database client
