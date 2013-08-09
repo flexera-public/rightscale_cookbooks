@@ -157,18 +157,23 @@ end
 # Sets database privileges
 action :set_privileges do
 
-  priv = new_resource.privilege
-  priv_username = new_resource.privilege_username
-  priv_password = new_resource.privilege_password
-  priv_database = new_resource.privilege_database
+  if ::File.exist?("#{node[:db_postgres][:datadir]}/recovery.conf")
+    log "  No privileges to be set on slave/standby server"
+  else
+    log "  Setting privileges on server"
+    priv = new_resource.privilege
+    priv_username = new_resource.privilege_username
+    priv_password = new_resource.privilege_password
+    priv_database = new_resource.privilege_database
 
-  # See cookbooks/db_postgres/definitions/db_postgres_set_privileges.rb
-  # for the "db_postgres_set_privileges" definition.
-  db_postgres_set_privileges "setup db privileges" do
-    preset priv
-    username priv_username
-    password priv_password
-    database priv_database
+    # See cookbooks/db_postgres/definitions/db_postgres_set_privileges.rb
+    # for the "db_postgres_set_privileges" definition.
+    db_postgres_set_privileges "setup db privileges" do
+      preset priv
+      username priv_username
+      password priv_password
+      database priv_database
+    end
   end
 
 end
@@ -465,7 +470,8 @@ action :enable_replication do
       :trigger_file => "#{node[:db_postgres][:confdir]}/recovery.trigger"
     )
     not_if { current_restore_process == :no_restore }
-  end
+    action :nothing
+  end.run_action(:create)
 
   # Remove old/stale xlog files.
   bash "wipe_existing_xlog_files" do
