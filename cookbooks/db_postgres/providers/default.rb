@@ -147,7 +147,6 @@ action :pre_backup_check do
 
   # Remove old/stale archivedir files
   bash "remove_archivedir_files_before_backup" do
-    not_if { current_restore_process == :no_restore }
     flags "-ex"
     code <<-EOH
        rm -rf #{node[:db_postgres][:datadir]}/archivedir/*
