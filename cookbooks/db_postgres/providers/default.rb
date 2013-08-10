@@ -144,6 +144,16 @@ action :pre_backup_check do
   # See "rightscale_tools" gem for the "pre_backup_check" method.
   @db = init(new_resource)
   @db.pre_backup_check
+
+  # Remove old/stale archivedir files
+  bash "remove_archivedir_files_before_backup" do
+    not_if { current_restore_process == :no_restore }
+    flags "-ex"
+    code <<-EOH
+       rm -rf #{node[:db_postgres][:datadir]}/archivedir/*
+    EOH
+  end
+
 end
 
 # Cleans up instance after backup
