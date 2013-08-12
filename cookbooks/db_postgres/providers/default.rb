@@ -21,10 +21,17 @@ end
 
 # Starts Postgres service
 action :start do
-  # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
-  # See "rightscale_tools" gem for the "start" method.
-  @db = init(new_resource)
-  @db.start
+  # Should not be started when restore slave not completed.
+  if node[:db][:init_status].to_sym == :initialized &&
+    node[:db][:this_is_master] == false &&
+    !::File.exist?("#{node[:db_postgres][:datadir]}/recovery.conf")
+    log "  Skipping start of db with slave/standby not yet configured."
+  else
+    # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
+    # See "rightscale_tools" gem for the "start" method.
+    @db = init(new_resource)
+    @db.start
+  end
 end
 
 # Checks status of Postgres service
