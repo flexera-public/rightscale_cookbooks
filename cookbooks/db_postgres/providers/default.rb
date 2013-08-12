@@ -173,12 +173,12 @@ end
 # Sets database privileges
 action :set_privileges do
 
-  # Privileges should no run if initialized AND this_is_master == false
+  # Privileges should not be set if this is an initialized slave.
   if node[:db][:init_status].to_sym == :initialized &&
     node[:db][:this_is_master] == false
-    log "  No privileges to be set on slave/standby server"
+    log "  No db privileges to be set on slave/standby server"
   else
-    log "  Setting privileges on server"
+    log "  Setting db privileges on server"
     priv = new_resource.privilege
     priv_username = new_resource.privilege_username
     priv_password = new_resource.privilege_password
