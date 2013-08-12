@@ -490,22 +490,32 @@ action :enable_replication do
     not_if { current_restore_process == :no_restore }
   end
 
-  # Remove old/stale xlog files.
-  bash "wipe_existing_xlog_files" do
-    not_if { current_restore_process == :no_restore }
-    flags "-ex"
-    code <<-EOH
-       rm -rf #{node[:db_postgres][:datadir]}/pg_xlog/*
-    EOH
-  end
+  # Backups from master server will have files in archivedir while
+  # backups from slave server will not.  If there are no files in archivedir,
+  # we will keep the pg_xlog dir as is.
 
-  # After removing old/stale xlog files, copy archived xlog files.
-  bash "copy_archived_xlog_files" do
-    not_if { current_restore_process == :no_restore }
-    flags "-ex"
-    code <<-EOH
-       cp -a #{node[:db_postgres][:datadir]}/archivedir/* #{node[:db_postgres][:datadir]}/pg_xlog/
-    EOH
+  if ::Dir["#{node[:db_postgres][:datadir]}/archivedir/*"].empty?
+    log "  archivedir empty - backup was from slave."
+  else
+    log "  archivedir not empty - backup was from master."
+
+    # Remove old/stale xlog files.
+    bash "wipe_existing_xlog_files" do
+      not_if { current_restore_process == :no_restore }
+      flags "-ex"
+      code <<-EOH
+         rm -rf #{node[:db_postgres][:datadir]}/pg_xlog/*
+      EOH
+    end
+
+    # After removing old/stale xlog files, copy archived xlog files.
+    bash "copy_archived_xlog_files" do
+      not_if { current_restore_process == :no_restore }
+      flags "-ex"
+      code <<-EOH
+         cp -a #{node[:db_postgres][:datadir]}/archivedir/* #{node[:db_postgres][:datadir]}/pg_xlog/
+      EOH
+    end
   end
 
   # Ensure that database started
