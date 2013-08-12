@@ -488,8 +488,7 @@ action :enable_replication do
       :trigger_file => "#{node[:db_postgres][:confdir]}/recovery.trigger"
     )
     not_if { current_restore_process == :no_restore }
-    action :nothing
-  end.run_action(:create)
+  end
 
   # Remove old/stale xlog files.
   bash "wipe_existing_xlog_files" do
