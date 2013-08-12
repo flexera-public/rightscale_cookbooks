@@ -166,7 +166,9 @@ end
 # Sets database privileges
 action :set_privileges do
 
-  if ::File.exist?("#{node[:db_postgres][:datadir]}/recovery.conf")
+  # Privileges should no run if initialized AND this_is_master == false
+  if node[:db][:init_status].to_sym == :initialized &&
+    node[:db][:this_is_master] == false
     log "  No privileges to be set on slave/standby server"
   else
     log "  Setting privileges on server"
