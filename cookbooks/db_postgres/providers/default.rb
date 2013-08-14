@@ -500,7 +500,6 @@ action :enable_replication do
       not_if { current_restore_process == :no_restore }
       flags "-ex"
       code "rm -rf #{datadir}/pg_xlog/*"
-      EOH
     end
 
     # After removing old/stale xlog files, copies archived xlog files.
