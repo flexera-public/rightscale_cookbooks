@@ -152,14 +152,11 @@ action :pre_backup_check do
   @db = init(new_resource)
   @db.pre_backup_check
 
-  # Remove old/stale archivedir files
+  # Removes old/stale archivedir files.
   bash "remove_archivedir_files_before_backup" do
     flags "-ex"
-    code <<-EOH
-       rm -rf #{node[:db_postgres][:datadir]}/archivedir/*
-    EOH
+    code "rm -rf #{node[:db_postgres][:datadir]}/archivedir/*"
   end
-
 end
 
 # Cleans up instance after backup
@@ -172,7 +169,6 @@ end
 
 # Sets database privileges
 action :set_privileges do
-
   # Privileges should not be set if this is an initialized slave.
   if node[:db][:init_status].to_sym == :initialized &&
     node[:db][:this_is_master] == false
@@ -193,7 +189,6 @@ action :set_privileges do
       database priv_database
     end
   end
-
 end
 
 # Installs database client
@@ -499,22 +494,19 @@ action :enable_replication do
   else
     log "  archivedir not empty - backup was from master."
 
-    # Remove old/stale xlog files.
+    # Removes old/stale xlog files.
     bash "wipe_existing_xlog_files" do
       not_if { current_restore_process == :no_restore }
       flags "-ex"
-      code <<-EOH
-         rm -rf #{node[:db_postgres][:datadir]}/pg_xlog/*
+      code "rm -rf #{node[:db_postgres][:datadir]}/pg_xlog/*"
       EOH
     end
 
-    # After removing old/stale xlog files, copy archived xlog files.
+    # After removing old/stale xlog files, copies archived xlog files.
     bash "copy_archived_xlog_files" do
       not_if { current_restore_process == :no_restore }
       flags "-ex"
-      code <<-EOH
-         cp -a #{node[:db_postgres][:datadir]}/archivedir/* #{node[:db_postgres][:datadir]}/pg_xlog/
-      EOH
+      code "cp -a #{node[:db_postgres][:datadir]}/archivedir/* #{node[:db_postgres][:datadir]}/pg_xlog/"
     end
   end
 
