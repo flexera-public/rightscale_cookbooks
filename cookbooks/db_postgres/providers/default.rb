@@ -444,6 +444,7 @@ end
 # Configures replication between a slave server and master
 action :enable_replication do
   # See cookbooks/db/libraries/helper.rb for "db_state_get" method.
+  datadir = node[:db_postgres][:datadir]
   db_state_get node
   current_restore_process = new_resource.restore_process
 
@@ -489,7 +490,7 @@ action :enable_replication do
   # backups from slave server will not.  If there are no files in archivedir,
   # we will keep the pg_xlog dir as is.
 
-  if ::Dir["#{node[:db_postgres][:datadir]}/archivedir/*"].empty?
+  if ::Dir["#{datadir}/archivedir/*"].empty?
     log "  archivedir empty - backup was from slave."
   else
     log "  archivedir not empty - backup was from master."
@@ -498,7 +499,7 @@ action :enable_replication do
     bash "wipe_existing_xlog_files" do
       not_if { current_restore_process == :no_restore }
       flags "-ex"
-      code "rm -rf #{node[:db_postgres][:datadir]}/pg_xlog/*"
+      code "rm -rf #{datadir}/pg_xlog/*"
       EOH
     end
 
@@ -506,7 +507,7 @@ action :enable_replication do
     bash "copy_archived_xlog_files" do
       not_if { current_restore_process == :no_restore }
       flags "-ex"
-      code "cp -a #{node[:db_postgres][:datadir]}/archivedir/* #{node[:db_postgres][:datadir]}/pg_xlog/"
+      code "cp -a #{datadir}/archivedir/* #{datadir}/pg_xlog/"
     end
   end
 
