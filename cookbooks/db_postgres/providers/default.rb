@@ -21,10 +21,17 @@ end
 
 # Starts Postgres service
 action :start do
-  # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
-  # See "rightscale_tools" gem for the "start" method.
-  @db = init(new_resource)
-  @db.start
+  # Should not be started when restore slave not completed.
+  if node[:db][:init_status].to_sym == :initialized &&
+    node[:db][:this_is_master] == false &&
+    !::File.exist?("#{node[:db_postgres][:datadir]}/recovery.conf")
+    log "  Skipping start of db with slave/standby not yet configured."
+  else
+    # See cookbooks/db_postgres/libraries/helper.rb for the "init" method.
+    # See "rightscale_tools" gem for the "start" method.
+    @db = init(new_resource)
+    @db.start
+  end
 end
 
 # Checks status of Postgres service
@@ -144,6 +151,12 @@ action :pre_backup_check do
   # See "rightscale_tools" gem for the "pre_backup_check" method.
   @db = init(new_resource)
   @db.pre_backup_check
+
+  # Removes old/stale archivedir files.
+  bash "remove_archivedir_files_before_backup" do
+    flags "-ex"
+    code "rm -rf #{node[:db_postgres][:datadir]}/archivedir/*"
+  end
 end
 
 # Cleans up instance after backup
@@ -156,14 +169,19 @@ end
 
 # Sets database privileges
 action :set_privileges do
-  if ::File.exist?("#{node[:db_postgres][:datadir]}/recovery.conf")
-    log "  No need to rerun on reboot for slave"
+  # Privileges should not be set if this is an initialized slave.
+  if node[:db][:init_status].to_sym == :initialized &&
+    node[:db][:this_is_master] == false
+    log "  No db privileges to be set on slave/standby server"
   else
+    log "  Setting db privileges on server"
     priv = new_resource.privilege
     priv_username = new_resource.privilege_username
     priv_password = new_resource.privilege_password
     priv_database = new_resource.privilege_database
-    # See cookbooks/db_postgres/definitions/db_postgres_set_privileges.rb for the "db_postgres_set_privileges" definition.
+
+    # See cookbooks/db_postgres/definitions/db_postgres_set_privileges.rb
+    # for the "db_postgres_set_privileges" definition.
     db_postgres_set_privileges "setup db privileges" do
       preset priv
       username priv_username
@@ -426,6 +444,7 @@ end
 # Configures replication between a slave server and master
 action :enable_replication do
   # See cookbooks/db/libraries/helper.rb for "db_state_get" method.
+  datadir = node[:db_postgres][:datadir]
   db_state_get node
   current_restore_process = new_resource.restore_process
 
@@ -449,32 +468,6 @@ action :enable_replication do
     action :stop
   end
 
-  ruby_block "Sync to Master data" do
-    not_if { current_restore_process == :no_restore }
-    block do
-      # pg_basebackup takes a base backup of a running PostgreSQL server.
-      backup_cmd = "su --login postgres --command=\"env PGCONNECT_TIMEOUT=30"
-      backup_cmd << " #{node[:db_postgres][:bindir]}/pg_basebackup"
-      backup_cmd << " --pgdata='#{node[:db_postgres][:backupdir]}'"
-      backup_cmd << " --username='#{node[:db][:replication][:user]}'"
-      backup_cmd << " --host='#{node[:db][:current_master_ip]}'\""
-
-      backup = Mixlib::ShellOut.new(backup_cmd)
-      backup.run_command
-      # Logs STDERR because 'pg_stop_backup' puts notification messages there.
-      Chef::Log.info backup.stderr
-      # Raises an Exception if command execution fails.
-      backup.error!
-
-      rsync_cmd = "su --login postgres --command=\"rsync --archive"
-      rsync_cmd << " #{node[:db_postgres][:backupdir]}/"
-      rsync_cmd << " #{node[:db_postgres][:datadir]}"
-      rsync_cmd << " --exclude postgresql.conf --exclude pg_hba.conf\""
-
-      Mixlib::ShellOut.new(rsync_cmd).run_command.error!
-    end
-  end
-
   template "#{node[:db_postgres][:confdir]}/recovery.conf" do
     source "recovery.conf.erb"
     owner "postgres"
@@ -493,12 +486,28 @@ action :enable_replication do
     not_if { current_restore_process == :no_restore }
   end
 
-  bash "wipe_existing_xlog_files" do
-    not_if { current_restore_process == :no_restore }
-    flags "-ex"
-    code <<-EOH
-       rm -rf #{node[:db_postgres][:datadir]}/pg_xlog/*
-    EOH
+  # Backups from master server will have files in archivedir while
+  # backups from slave server will not.  If there are no files in archivedir,
+  # we will keep the pg_xlog dir as is.
+
+  if ::Dir["#{datadir}/archivedir/*"].empty?
+    log "  archivedir empty - backup was from slave."
+  else
+    log "  archivedir not empty - backup was from master."
+
+    # Removes old/stale xlog files.
+    bash "wipe_existing_xlog_files" do
+      not_if { current_restore_process == :no_restore }
+      flags "-ex"
+      code "rm -rf #{datadir}/pg_xlog/*"
+    end
+
+    # After removing old/stale xlog files, copies archived xlog files.
+    bash "copy_archived_xlog_files" do
+      not_if { current_restore_process == :no_restore }
+      flags "-ex"
+      code "cp -a #{datadir}/archivedir/* #{datadir}/pg_xlog/"
+    end
   end
 
   # Ensure that database started
@@ -506,10 +515,10 @@ action :enable_replication do
   # has to run the start command again.
   ruby_block "Start Postgresql service" do
     block do
-      retries 5
-      retry_delay 2
       action_start
     end
+    retries 5
+    retry_delay 2
   end
 
   # Setup slave monitoring

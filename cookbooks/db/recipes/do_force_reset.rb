@@ -55,16 +55,15 @@ end
 # See cookbooks/db/libraries/helper.rb for the "db_state_set" method.
 db_state_set "Reset master/slave state"
 
-log "  Resetting database, then starting database..."
+log "  Setting database state to 'uninitialized'..."
+# See cookbooks/db/definitions/db_init_status.rb for the "db_init_status" definition.
+db_init_status :reset
 
+log "  Resetting database, then starting database..."
 # See cookbooks/db_<provider>/providers/default.rb for the "reset" and "start" action.
 db DATA_DIR do
   action [:reset, :start]
 end
-
-log "  Setting database state to 'uninitialized'..."
-# See cookbooks/db/definitions/db_init_status.rb for the "db_init_status" definition.
-db_init_status :reset
 
 log "  Cleaning cron..."
 

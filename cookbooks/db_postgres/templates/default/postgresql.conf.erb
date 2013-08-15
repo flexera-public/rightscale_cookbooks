@@ -57,7 +57,7 @@ ident_file = '' # ident configuration file
                                         # (change requires restart)
 
 # If external_pid_file is not explicitly set, no extra PID file is written.
-external_pid_file = ''           # write an extra PID file
+#external_pid_file = ''           # write an extra PID file
                                         # (change requires restart)
 
 
@@ -193,10 +193,9 @@ synchronous_commit = on                # synchronization level; on, off, or loca
 
 archive_mode = on             # allows archiving to be done
                                 # (change requires restart)
-archive_command = '/bin/true'           # command to use to archive a logfile segment
+archive_command = 'mkdir -p <%= @datadir %>/archivedir && cp %p <%= @datadir %>/archivedir/%f'  # command to use to archive a logfile segment
 #archive_timeout = 0            # force a logfile segment switch after this
                                 # number of seconds; 0 disables
-
 
 #------------------------------------------------------------------------------
 # REPLICATION

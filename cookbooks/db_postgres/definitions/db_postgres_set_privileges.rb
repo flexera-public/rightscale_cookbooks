@@ -14,12 +14,14 @@
 #
 define :db_postgres_set_privileges, :preset => "administrator", :username => nil, :password => nil do
 
-
   priv_preset = params[:preset]
   username = params[:username]
   password = params[:password]
 
   ruby_block "set admin credentials" do
+    # If recovery.conf file exists, assume this is a slave being set.  If so,
+    # the privileges are already set in the restored data.
+    not_if { ::File.exist?("#{node[:db_postgres][:datadir]}/recovery.conf") }
     block do
       require 'rubygems'
       Gem.clear_paths
