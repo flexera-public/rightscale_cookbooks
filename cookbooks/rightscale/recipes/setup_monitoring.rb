@@ -24,49 +24,22 @@ log "  Collectd package not installed" unless installed
 log "  Checking installed collectd version: installed #{installed_ver}" if installed
 
 # Remove existing version of collectd
-
-# dpkg will remove the older package if it is a different version so do not need to worry about it.
-# This will break if centos releases a newer version of collectd and repos are not frozen to the CR date.
 # Upgrade for rpm does not seem to work so using two step - removal and install.
 package "collectd" do
-  only_if { installed && ! installed_ver =~ /4\.10\.0.*$/ && node[:rightscale][:collectd_remove_existing] }
   action :remove
 end
 
 # Install collectd packages
-collectd_version = node[:rightscale][:collectd_packages_version]
-log "  Installing collectd package(s) version #{collectd_version}"
-packages = node[:rightscale][:collectd_packages]
-packages.each do |p|
-  package p do
-    version "#{collectd_version}" unless collectd_version == "latest"
-    action :install
-  end
-end
+log "  Installing latest collectd package."
 
-# If APT, pin this package version so it can't be updated.
-cookbook_file "/etc/apt/preferences.d/00rightscale" do
-  only_if { node[:platform] == "ubuntu" }
-  source "apt.preferences.rightscale"
-end
-
-# If YUM, lock this collectd package so it can't be updated.
-if node[:platform] =~ /redhat|centos/
-  lockfile = "/etc/yum.repos.d/Epel.repo"
-  bash "Lock package - YUM" do
-    flags "-ex"
-    only_if { `grep -c 'exclude=collectd' /etc/yum.repos.d/Epel.repo`.strip == "0" }
-    code <<-EOF
-      echo -e "\n# Do not allow collectd version to be modified.\nexclude=collectd\n" >> #{lockfile}
-    EOF
-  end
+node[:rightscale][:collectd_packages].each do |pkg|
+  package pkg
 end
 
 # Enable service on system restart
 service "collectd" do
   action :enable
 end
-
 
 # Generate config file
 #
