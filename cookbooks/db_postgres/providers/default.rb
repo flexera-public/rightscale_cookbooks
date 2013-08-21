@@ -389,6 +389,10 @@ end
 
 # Sets database replication privileges for a slave
 action :grant_replication_slave do
+
+  # Make sure DB is running
+  action_start
+
   require 'rubygems'
   Gem.clear_paths
   require 'pg'
