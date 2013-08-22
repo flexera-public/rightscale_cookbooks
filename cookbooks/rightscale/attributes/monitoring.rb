@@ -9,7 +9,7 @@ set_unless[:rightscale][:collectd_lib] = "/usr/lib64/collectd"
 set_unless[:rightscale][:collectd_share] = "/usr/share/collectd"
 
 case platform
-when "ubuntu", "debian"
+when "ubuntu"
   set_unless[:rightscale][:collectd_packages] = ["collectd", "collectd-core", "collectd-utils", "libcollectdclient0"]
   set_unless[:rightscale][:collectd_config] = "/etc/collectd/collectd.conf"
   set_unless[:rightscale][:collectd_plugin_dir] = "/etc/collectd/conf"

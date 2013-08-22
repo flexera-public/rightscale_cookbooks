@@ -33,7 +33,16 @@ end
 log "  Installing latest collectd package."
 
 node[:rightscale][:collectd_packages].each do |pkg|
-  package pkg
+  if node[:platform] =~ /redhat|centos/
+    # The EPEL repository contains both 64bit and 32bit packages:
+    # using 'yum_package' resource to force the architecture of the package that
+    # will be installed.
+    yum_package pkg do
+      arch "x86_64"
+    end
+  else
+    package pkg
+  end
 end
 
 # Enable service on system restart
