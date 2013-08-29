@@ -4,6 +4,9 @@ Welcome to the RightScale cookbooks -- your infrastructure, codified!
 
 ## OVERVIEW:
 
+These cookbooks are available at
+[https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).
+
 These cookbooks are a set of interchangeable parts for your infrastructure
 written using the open-source systems integration framework called
 [Chef](http://wiki.opscode.com/display/chef/About).
