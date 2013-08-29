@@ -2,6 +2,8 @@
 
 ## DESCRIPTION:
 
+This cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).
+
 This cookbook installs and configures an Apache2 web server.
 
 ## REQUIREMENTS:

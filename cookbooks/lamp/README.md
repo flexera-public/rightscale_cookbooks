@@ -2,6 +2,8 @@
 
 ## DESCRIPTION:
 
+This cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).
+
 Basic all-in-one LAMP (Linux, Apache, MySQL, PHP) cookbook designed to work in a
 hybrid cloud setting.
 

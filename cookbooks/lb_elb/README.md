@@ -2,6 +2,8 @@
 
 ## DESCRIPTION:
 
+This cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).
+
 RightScale load balancer cookbook for AWS Elastic Load Balancer (ELB).
 
 This cookbook provides recipes for attaching and detaching application servers

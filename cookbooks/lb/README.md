@@ -2,6 +2,8 @@
 
 ## DESCRIPTION:
 
+This cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).
+
 This cookbook provides a set of load balancer recipes used by RightScale's
 Load Balancer ServerTemplates.
 
