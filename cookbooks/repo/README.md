@@ -2,6 +2,8 @@
 
 ## DESCRIPTION:
 
+This cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).
+
 This cookbook provides abstract 'repo' resource for managing code download from
 Git, Subversion or Remote Object Store code repositories.
 

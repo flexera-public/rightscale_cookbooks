@@ -2,6 +2,8 @@
 
 ## DESCRIPTION:
 
+This cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).
+
 Wrapper cookbook using opscode community cookbook, 'postfix'.
 
 ## REQUIREMENTS:

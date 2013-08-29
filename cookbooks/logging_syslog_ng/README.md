@@ -2,6 +2,7 @@
 
 ## DESCRIPTION:
 
+* This cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).
 * Cookbook provides syslog-ng implementation of the logging LWRP.
 * Configures syslog-ng to log to a remote server, or default local file logging.
 

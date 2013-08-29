@@ -2,6 +2,8 @@
 
 ## DESCRIPTION:
 
+This cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).
+
 This is RightScale's load balancer cookbook for Apache/HAProxy. 
 
 This cookbook provides recipes for setting up and running an Apache/HAProxy load
