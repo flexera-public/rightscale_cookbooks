@@ -286,7 +286,9 @@ action :install_server do
 
   # See cookbooks/db_postgres/definitions/db_postgres_set_psqlconf.rb
   # for the "db_postgres_set_psqlconf" definition.
-  db_postgres_set_psqlconf "setup_postgresql_conf"
+  db_postgres_set_psqlconf "setup_postgresql_conf" do
+    sync_state node[:db_postgres][:sync_mode]
+  end
 
   # Setup pg_hba.conf
   # pg_hba_source = "pg_hba.conf.erb"
