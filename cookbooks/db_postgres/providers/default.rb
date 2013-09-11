@@ -586,11 +586,7 @@ action :setup_monitoring do
     action :nothing
   end
 
-  collectd_version = node[:rightscale][:collectd_packages_version]
-  package "collectd-postgresql" do
-    action :install
-    version "#{collectd_version}" unless collectd_version == "latest"
-  end
+  package "collectd-postgresql"
 
   cookbook_file "#{node[:rightscale][:collectd_share]}/postgresql_default.conf" do
     source "postgresql_default.conf"

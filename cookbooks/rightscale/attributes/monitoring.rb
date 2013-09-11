@@ -6,10 +6,6 @@
 # http://www.rightscale.com/terms.php and, if applicable, other agreements
 # such as a RightScale Master Subscription Agreement.
 
-default[:rightscale][:collectd_packages_version] = "latest"
-default[:rightscale][:collectd_lib] = "/usr/lib64/collectd"
-default[:rightscale][:collectd_share] = "/usr/share/collectd"
-
 default[:rightscale][:plugin_list] = ""
 default[:rightscale][:plugin_list_array] = [
   "cpu",
@@ -24,26 +20,25 @@ default[:rightscale][:plugin_list_array] = [
 default[:rightscale][:process_list] = ""
 default[:rightscale][:process_list_array] = []
 
+default[:rightscale][:collectd_share] = "/usr/share/collectd"
+
+platform = node[:platform]
 case platform
 when "ubuntu"
-  default[:rightscale][:collectd_packages] = ["collectd", "collectd-core", "collectd-utils", "libcollectdclient0"]
+  default[:rightscale][:collectd_packages] = [
+    "collectd",
+    "collectd-core",
+    "collectd-utils",
+    "libcollectdclient0"
+  ]
   default[:rightscale][:collectd_config] = "/etc/collectd/collectd.conf"
   default[:rightscale][:collectd_plugin_dir] = "/etc/collectd/conf"
-  case platform_version
-  when /^10\..+/
-    default[:rightscale][:collectd_packages_version] = "4.10.1-2"
-  when /^12\..+/
-    default[:rightscale][:collectd_lib] = "/usr/lib/collectd"
-  end
+  default[:rightscale][:collectd_lib] = "/usr/lib/collectd"
 when "centos", "redhat"
   default[:rightscale][:collectd_packages] = ["collectd"]
   default[:rightscale][:collectd_config] = "/etc/collectd.conf"
   default[:rightscale][:collectd_plugin_dir] = "/etc/collectd.d"
-  case platform_version
-  when /^5\..+/
-    default[:rightscale][:collectd_packages_version] = "4.10.0-4.el5"
-    default[:rightscale][:collectd_remove_existing] = true
-  end
+  default[:rightscale][:collectd_lib] = "/usr/lib64/collectd"
 else
-  raise "Unrecognized distro #{node[:platform]} for monitoring attributes , exiting "
+  raise "'#{platform}' platform is not supported yet."
 end
