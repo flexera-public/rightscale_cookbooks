@@ -23,10 +23,7 @@ end
 
 if node[:platform] =~ /redhat|centos/
 
-  collectd_version = node[:rightscale][:collectd_packages_version]
-  package "collectd-apache" do
-    version "#{collectd_version}" unless collectd_version == "latest"
-  end
+  package "collectd-apache"
 
   if node[:web_apache][:mpm] == "prefork"
     # See cookbooks/rightscale/definitions/rightscale_monitor_process.rb for the "rightscale_monitor_process" definition.
