@@ -2,6 +2,8 @@
 
 ## DESCRIPTION:
 
+This cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).
+
 This cookbook provides recipes for setting up specific versions of Ruby.
 
 ## REQUIREMENTS:

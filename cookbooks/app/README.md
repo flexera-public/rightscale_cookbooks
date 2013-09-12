@@ -2,6 +2,8 @@
 
 ## DESCRIPTION:
 
+This cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).
+
 RightScale's cookbook for application server management.
 
 This is an abstract cookbook that defines the recipes and interface to

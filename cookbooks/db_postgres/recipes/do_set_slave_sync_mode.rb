@@ -12,12 +12,14 @@ rightscale_marker
 # See cookbooks/db/definitions/db_state_assert.rb for the "db_state_assert" definition.
 db_state_assert :master
 
-log "  Initializing slave to connect to master in sync state..."
-# Sets 'sync_state' to 'sync' mode on master server.
+sync_mode = node[:db_postgres][:sync_mode]
+
+log "  Initializing slave(s) to connect to master in #{sync_mode} mode..."
+# Sets master-slave replication mode.
 # See cookbooks/db_postgres/definitions/db_postgres_set_psqlconf.rb
 # for the "db_postgres_set_psqlconf" definition.
 db_postgres_set_psqlconf "setup_postgresql_conf" do
-  sync_state "sync"
+  sync_state sync_mode
 end
 
 # Reload postgresql to read new updated postgresql.conf

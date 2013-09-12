@@ -2,6 +2,7 @@
 
 ## DESCRIPTION:
 
+* This cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).
 * Cookbook provides rsyslog implementation of the logging LWRP.
 * Configures rsyslog to log to a remote server or use default local file
   logging.

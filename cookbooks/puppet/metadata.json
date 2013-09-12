@@ -1,107 +1,107 @@
 {
-  "providing": {
-  },
-  "recommendations": {
-  },
+  "name": "puppet",
+  "description": "Installs and configures the Puppet Client and Master",
+  "long_description": "# RightScale Puppet Master and Client Cookbook\n\n## DESCRIPTION:\n\nThis cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).\n\nThis cookbook provides recipes for setting up and running the Puppet Client.\n\n## REQUIREMENTS:\n\n* Requires a VM launched from a RightScale managed RightImage\n\n* Tested on the following RightImages: CentOS 6.4, Ubuntu 12.04\n\n* Tested Puppet Client version 2.7.13-1\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see `metadata.rb` file for the latest dependencies.\n* `rightscale`\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## SETUP/USAGE:\n\n* When using a RightScale ServerTemplate, place `puppet::install_client`\n  recipe into your runlist to setup the Puppet Client. Set the address to\n  connect to the Puppet Master.\n* Use the `puppet::setup_client_monitoring` recipe to add Puppet Client\n  monitoring options to your dashboard \"Monitoring\" tab.\n\nFor more info see: [Release Notes](http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/v13.4#Puppet_Client_\\(v13.4\\))\n\n## DETAILS:\n\n### General\n\nThe cookbook installs the Puppet Client with needed configuration for CentOS and\nUbuntu.\n\n### Attributes:\n\nThese are the settings used in recipes and templates. Default values are noted.\n* `node[:puppet][:client][:version]`-\n  The package version. Default: \"2.7.13-1\"\n* `node[:puppet][:client][:puppet_master_address]`-\n  Enter the address to connect to the remote Puppet Master.\n* `node[:puppet][:client][:puppet_master_port]`-\n  The port to connect to the remote Puppet Master. Default: \"8140\"\n* `node[:puppet][:client][:node_name]`-\n  Name which will be used to authenticate the Client on the Puppet Master.\n  Instance FQDN will be used if nothing is specified.\n* `node[:puppet][:client][:environment]`-\n  The environment type for the Puppet Client configs.\n\n### Templates:\n\n* `puppet_client.conf.erb`-\n  The Puppet Client configuration file. Used in `puppet::install_client` recipe.\n* `collectd_puppet_client.erb`-\n  Collectd configuration file. Used in `puppet::setup_monitoring` recipe.\n* `collectd_puppet_client_stats.erb`-\n  Puppet Client monitoring plugin. Used in `puppet::setup_monitoring` recipe.\n\n## Requery the Puppet Master\n\n* `puppet::reload_agent`\n  This recipe is used in the operational phase only. If the Puppet Master is\n  not configured to autosign client certificate, user needs to sign it manually\n  and run this recipe.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
   "maintainer": "RightScale, Inc.",
+  "maintainer_email": "support@rightscale.com",
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "platforms": {
+    "centos": ">= 0.0.0",
+    "redhat": ">= 0.0.0",
+    "ubuntu": ">= 0.0.0"
+  },
   "dependencies": {
     "rightscale": ">= 0.0.0"
   },
-  "name": "puppet",
-  "recipes": {
-    "puppet::do_client_stop": "Stops Puppet service",
-    "puppet::do_client_restart": "Restarts Puppet service",
-    "puppet::do_client_start": "Starts Puppet service",
-    "puppet::setup_client_monitoring": "Configures the collectd monitoring for the Puppet Client",
-    "puppet::reload_agent": "Reloads the Puppet agent configuration",
-    "puppet::setup_client_package_repository": "Installs repo for the Puppet Client packages",
-    "puppet::install_client": "Installs and configures the Puppet Client"
+  "recommendations": {
+  },
+  "suggestions": {
+  },
+  "conflicting": {
+  },
+  "providing": {
   },
   "replacing": {
   },
   "attributes": {
-    "puppet/client/puppet_master_address": {
-      "required": "required",
-      "type": "string",
-      "choice": [
-
-      ],
-      "recipes": [
-        "puppet::install_client"
-      ],
-      "calculated": false,
-      "display_name": "Puppet Master FQDN",
-      "description": "Enter the address to connect to the remote Puppet Master. Example: p_master.example.com"
-    },
-    "puppet/client/environment": {
-      "required": "optional",
-      "type": "string",
-      "choice": [
-
-      ],
-      "recipes": [
-        "puppet::install_client"
-      ],
-      "calculated": false,
-      "display_name": "Puppet Client Environment",
-      "description": "Specify the environment type for the Puppet Client configs. Example: development"
-    },
     "puppet/client/version": {
+      "display_name": "Puppet Client Version",
+      "description": "Specify the Puppet Client version to match the requirements of your Puppet Master. Provide the version in version-release format. Example: 2.7.13-1",
       "required": "optional",
-      "type": "string",
-      "choice": [
-
-      ],
+      "default": "2.7.13-1",
       "recipes": [
         "puppet::install_client"
       ],
-      "default": "2.7.13-1",
+      "choice": [
+
+      ],
       "calculated": false,
-      "display_name": "Puppet Client Version",
-      "description": "Specify the Puppet Client version to match the requirements of your Puppet Master. Provide the version in version-release format. Example: 2.7.13-1"
+      "type": "string"
     },
     "puppet/client/node_name": {
+      "display_name": "Client Node Name",
+      "description": "Name which will be used to authenticate client on the remote Puppet Master. Instance FQDN will be used if nothing is specified. Example: client_101.example.com",
       "required": "optional",
-      "type": "string",
-      "choice": [
-
-      ],
       "recipes": [
         "puppet::install_client"
       ],
+      "choice": [
+
+      ],
       "calculated": false,
-      "display_name": "Client Node Name",
-      "description": "Name which will be used to authenticate client on the remote Puppet Master. Instance FQDN will be used if nothing is specified. Example: client_101.example.com"
+      "type": "string"
+    },
+    "puppet/client/puppet_master_address": {
+      "display_name": "Puppet Master FQDN",
+      "description": "Enter the address to connect to the remote Puppet Master. Example: p_master.example.com",
+      "required": "required",
+      "recipes": [
+        "puppet::install_client"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
     },
     "puppet/client/puppet_master_port": {
+      "display_name": "Puppet Master Port",
+      "description": "Enter the port to connect to the remote Puppet Master. Example: 8140 ",
       "required": "optional",
-      "type": "string",
-      "choice": [
-
-      ],
+      "default": "8140",
       "recipes": [
         "puppet::install_client"
       ],
-      "default": "8140",
+      "choice": [
+
+      ],
       "calculated": false,
-      "display_name": "Puppet Master Port",
-      "description": "Enter the port to connect to the remote Puppet Master. Example: 8140 "
+      "type": "string"
+    },
+    "puppet/client/environment": {
+      "display_name": "Puppet Client Environment",
+      "description": "Specify the environment type for the Puppet Client configs. Example: development",
+      "required": "optional",
+      "recipes": [
+        "puppet::install_client"
+      ],
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string"
     }
   },
-  "suggestions": {
-  },
-  "version": "13.4.0",
-  "platforms": {
-    "redhat": ">= 0.0.0",
-    "ubuntu": ">= 0.0.0",
-    "centos": ">= 0.0.0"
-  },
-  "conflicting": {
-  },
-  "maintainer_email": "support@rightscale.com",
-  "description": "Installs and configures the Puppet Client and Master",
   "groupings": {
   },
-  "license": "Copyright RightScale, Inc. All rights reserved.",
-  "long_description": "# RightScale Puppet Master and Client Cookbook\n\n## DESCRIPTION:\n\nThis cookbook provides recipes for setting up and running the Puppet Client.\n\n## REQUIREMENTS:\n\n* Requires a VM launched from a RightScale managed RightImage\n\n* Tested on the following RightImages: CentOS 6.4, Ubuntu 12.04\n\n* Tested Puppet Client version 2.7.13-1\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see `metadata.rb` file for the latest dependencies.\n* `rightscale`\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## SETUP/USAGE:\n\n* When using a RightScale ServerTemplate, place `puppet::install_client`\n  recipe into your runlist to setup the Puppet Client. Set the address to\n  connect to the Puppet Master.\n* Use the `puppet::setup_client_monitoring` recipe to add Puppet Client\n  monitoring options to your dashboard \"Monitoring\" tab.\n\nFor more info see: [Release Notes](http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/v13.4#Puppet_Client_\\(v13.4\\))\n\n## DETAILS:\n\n### General\n\nThe cookbook installs the Puppet Client with needed configuration for CentOS and\nUbuntu.\n\n### Attributes:\n\nThese are the settings used in recipes and templates. Default values are noted.\n* `node[:puppet][:client][:version]`-\n  The package version. Default: \"2.7.13-1\"\n* `node[:puppet][:client][:puppet_master_address]`-\n  Enter the address to connect to the remote Puppet Master.\n* `node[:puppet][:client][:puppet_master_port]`-\n  The port to connect to the remote Puppet Master. Default: \"8140\"\n* `node[:puppet][:client][:node_name]`-\n  Name which will be used to authenticate the Client on the Puppet Master.\n  Instance FQDN will be used if nothing is specified.\n* `node[:puppet][:client][:environment]`-\n  The environment type for the Puppet Client configs.\n\n### Templates:\n\n* `puppet_client.conf.erb`-\n  The Puppet Client configuration file. Used in `puppet::install_client` recipe.\n* `collectd_puppet_client.erb`-\n  Collectd configuration file. Used in `puppet::setup_monitoring` recipe.\n* `collectd_puppet_client_stats.erb`-\n  Puppet Client monitoring plugin. Used in `puppet::setup_monitoring` recipe.\n\n## Requery the Puppet Master\n\n* `puppet::reload_agent`\n  This recipe is used in the operational phase only. If the Puppet Master is\n  not configured to autosign client certificate, user needs to sign it manually\n  and run this recipe.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n"
+  "recipes": {
+    "puppet::install_client": "Installs and configures the Puppet Client",
+    "puppet::setup_client_package_repository": "Installs repo for the Puppet Client packages",
+    "puppet::do_client_start": "Starts Puppet service",
+    "puppet::do_client_stop": "Stops Puppet service",
+    "puppet::do_client_restart": "Restarts Puppet service",
+    "puppet::reload_agent": "Reloads the Puppet agent configuration",
+    "puppet::setup_client_monitoring": "Configures the collectd monitoring for the Puppet Client"
+  },
+  "version": "13.5.0"
 }

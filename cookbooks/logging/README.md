@@ -2,6 +2,8 @@
 
 ## DESCRIPTION:
 
+This cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).
+
 This cookbook provides a set of recipes used by the RightScale
 ServerTemplates to configure the logging service provider.
 

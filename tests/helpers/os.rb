@@ -1,7 +1,7 @@
 # Include helper objects and methods.
 require_helper "errors"
 
-# Returns the operating system type for an operatinal server.
+# Returns the operating system type for an operational server.
 #
 # @param server [Server] the server to get operating system type
 #
@@ -21,4 +21,19 @@ def get_operating_system(server)
   end
   puts "Found OS type: #{@@operating_systems[server]}"
   @@operating_systems[server]
+end
+
+# Returns the syslog file path based on the operating system in the server.
+#
+# @param server [Server] the server to get the syslog file path
+#
+# @return [String] the syslog file path
+#
+def get_syslog_file(server)
+  case get_operating_system(server)
+  when /ubuntu/i
+    "/var/log/syslog"
+  else
+    "/var/log/messages"
+  end
 end

@@ -2,6 +2,8 @@
 
 ## DESCRIPTION:
 
+This cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).
+
 This cookbook provides the building blocks for multi-cloud backup/restore
 support. It leverages RightScale's 1.0 and 1.5 API for performing volume
 management across multiple clouds.

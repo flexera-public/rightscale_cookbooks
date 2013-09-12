@@ -2,6 +2,8 @@
 
 ## DESCRIPTION:
 
+This cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).
+
 Provides the Remote Object Store implementation of the 'repo' resource to
 manage source code download from Remote Object Store repositories.
 

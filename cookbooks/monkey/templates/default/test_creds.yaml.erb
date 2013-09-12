@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: db_postgres
+# Cookbook Name:: monkey
 #
 # Copyright RightScale, Inc. All rights reserved.
 # All access and use subject to the RightScale Terms of Service available at
@@ -9,8 +9,8 @@
 # Managed by RightScale
 # DO NOT EDIT BY HAND
 #
-
-<Plugin exec>
-  #    userid    plugin executable                   plugin args
-  Exec "postgres" "<%= @collectd_lib %>/plugins/check_hot_standby_delay" "-m" "<%= @current_master_ip %>" "-s" "<%= @private_ip %>" "-h" "<%= @instance_uuid %>"
-</Plugin>
+# Credentials used by tests
+#
+---
+:smtp_username: <%= @smtp_username %>
+:smtp_password: <%= @smtp_password %>

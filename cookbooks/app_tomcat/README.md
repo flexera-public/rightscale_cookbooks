@@ -2,6 +2,7 @@
 
 ## DESCRIPTION:
 
+* This cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).
 * Cookbook provides Tomcat application server implementation of the app LWRP.
 * Installs and configures, Tomcat application server.
 

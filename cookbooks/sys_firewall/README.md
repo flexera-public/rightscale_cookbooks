@@ -2,6 +2,8 @@
 
 ## DESCRIPTION:
 
+This cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).
+
 Built upon Opscode's 'iptables' cookbook. This cookbook provides a LWRP for
 managing access to multiple servers in a deployment using machine tags.
 

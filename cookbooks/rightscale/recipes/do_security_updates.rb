@@ -21,7 +21,6 @@ if node[:rightscale][:security_updates] == "enable"
     # Update security packages
     execute "apply apt security updates" do
       command "apt-get --yes update && apt-get --yes dist-upgrade"
-      ignore_failure true
     end
 
     # Tags the server if a reboot is required
@@ -58,7 +57,6 @@ if node[:rightscale][:security_updates] == "enable"
     # Update security packages
     execute "apply yum security updates" do
       command "yum --assumeyes --security update"
-      ignore_failure true
     end
 
     # Checks if a reboot is required after security updates.
@@ -86,9 +84,10 @@ if node[:rightscale][:security_updates] == "enable"
         # kernel version, a reboot is required for the new kernel to take
         # effect. A tag 'reboot_required=true' is added if a reboot is required
         # and this tag is removed after the reboot.
-        if node[:cloud][:provider] == "google"
-          log "  Custom kernel upgrades are not supported on cloud provider:" +
-            " #{node[:cloud][:provider]}. Skipping kernel version checking..."
+        provider = node[:cloud][:provider]
+        if provider == "google"
+          Chef::Log.info "  Custom kernel upgrades are not supported on cloud" +
+            " provider: #{provider}. Skipping kernel version checking..."
         else
           if recently_installed_kernel_version != active_kernel_version
             Chef::Log.info "  New version of kernel is installed during" +

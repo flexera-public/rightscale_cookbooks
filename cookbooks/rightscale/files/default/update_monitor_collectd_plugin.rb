@@ -54,14 +54,15 @@ regular_packages = 0
 loop do
   now = Time.now.to_i
   if (now - last_update_check) > update_check_freq
-    # List all available updates and count the number of lines and get rid of
-    # the line that says "Updated packages"
+    # List and count all available updates ignoring the "Updated packages"
+    # header line. If local metadata cache is not available,
+    # a message is sent to STDERR which is why we redirect it to /dev/null.
     regular_packages =
-      `yum list --quiet --cacheonly updates 2>&1 | wc -l`.to_i - 1
+      `yum list --quiet --cacheonly updates 2>/dev/null | wc -l`.to_i - 1
     # There is no line saying "Updated package" if there are no updates
     regular_packages = 0 if regular_packages < 0
     security_packages =
-      `yum list-security security --quiet --cacheonly 2>&1 | wc -l`.to_i
+      `yum list-security security --quiet --cacheonly 2>/dev/null | wc -l`.to_i
 
     # Tag the server if updates are available.
     if security_packages > 0
