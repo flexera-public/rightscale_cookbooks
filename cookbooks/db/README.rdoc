@@ -84,7 +84,8 @@ This cookbook is intended to be used in conjunction with cookbooks that contain
 Lightweight Providers which implement the 'db' interface. See RightScale's
 'db_mysql' cookbook for an example.
 
-For more information about Lightweight Resources and Providers (LWRPs), please see: {Lightweight Resources and Providers}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)]
+For more information about Lightweight Resources and Providers (LWRPs), please
+see: {Lightweight Resources and Providers}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Lightweight_Resources_and_Providers_(LWRP)]
 
 === Backup/Restore
 
@@ -112,7 +113,7 @@ When writing your own database Lightweight Provider:
 
 * Any database-specific attributes that you wish to make into user-configurable
   inputs should be added to the cookbook metadata with the default recipe included in
-  the attribute's 'recipes' array. For more about Chef metadata, please see: {Chef Metadata}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-RightScale_Support_of_Chef/Chef_Metadata]
+  the attribute's 'recipes' array. For more about Chef metadata, please see: {Chef Metadata}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/02-End_User/04-RightScale_Support_of_Chef/Chef_Metadata]
 
 * Your provider cookbook metadata should depend on this cookbook by adding a
   'depends' line to its metadata. For example:

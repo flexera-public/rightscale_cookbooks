@@ -87,7 +87,7 @@ This cookbook contains recipes that are required to connect your instance to Rig
 * <tt>request_loadbalancer_allow</tt>
 * <tt>request_loadbalancer_deny</tt>
 
-For more info please see: {Load Balancer Setups}[http://support.rightscale.com/03-Tutorials/HAProxy_Load_Balancer_Server_Setup].
+For more info please see: {Load Balancer Setups}[http://support.rightscale.com/ServerTemplates/v12.11_LTS/ST/Load_Balancer_with_HAProxy_Server_-_Overview/Load_Balancer_with_HAProxy_(v12.11_LTS)_-_Tutorial].
 
 === Attributes:
 
@@ -165,7 +165,7 @@ To avoid unexpected failures, the Provider persisted in this cookbook will act a
 cap if there is no other app_ Light Weight Provider implementation. 
 
 For more information about Lightweight Resources and Providers (LWRPs), please
-see: {Lightweight Resources and Providers (LWRP)}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)].
+see: {Lightweight Resources and Providers (LWRP)}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Lightweight_Resources_and_Providers_(LWRP)].
 
 
 ===== App resource actions

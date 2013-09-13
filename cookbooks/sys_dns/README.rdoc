@@ -43,7 +43,7 @@ of the instance.
 Cookbook currently supports Cloud DNS, DNSMadeEasy, DynDNS, and Amazon Route53 DNS service providers.
 A new chef provider can be created to add support for additional dynamic DNS service providers.
 
-For additional information: {Deployment Prerequisites}[http://support.rightscale.com/03-Tutorials/Deployment_Prerequisites_(Chef)]
+For additional information: {Deployment Prerequisites}[http://support.rightscale.com/ServerTemplates/v12.11_LTS/Supplemental/Deployment_Prerequisites_(Linux)]
 
 -------------
 
@@ -98,7 +98,7 @@ The 'set_private' interface is defined by a Lightweight Resource, which can be f
 
 Used to pass data to the helper file and call the corresponding DNS provider. 
 
-For more information, please see {Lightweight Resources and Providers}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)].
+For more information, please see {Lightweight Resources and Providers}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Lightweight_Resources_and_Providers_(LWRP)].
 
 ==== Example:
 

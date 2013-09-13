@@ -47,7 +47,8 @@ There are no known limitations.
 The 'repo_git' implementation can be called with the help of the Lightweight Resource, which can be
 found in the <tt>repo</tt> cookbook.
 
-For more information about Lightweight Resources and Providers (LWRPs), please see {Lightweight Resources and Providers}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)].
+For more information about Lightweight Resources and Providers (LWRPs), please
+see {Lightweight Resources and Providers}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Lightweight_Resources_and_Providers_(LWRP)].
   
 
 === Attributes:
