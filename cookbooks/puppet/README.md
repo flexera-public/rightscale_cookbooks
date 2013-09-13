@@ -32,7 +32,7 @@ There are no known limitations.
   monitoring options to your dashboard "Monitoring" tab.
 
 For more info see: [Puppet Client Tutorial](
-http://support.rightscale.com/ServerTemplates/Infinity/ST/Puppet_Client_Beta_(v13_Infinity)/Puppet_Client_(v13_Infinity)_-_Tutorial)
+http://support.rightscale.com/ServerTemplates/Infinity/ST/Puppet_Client_Beta_\(v13_Infinity\)/Puppet_Client_\(v13_Infinity\)_-_Tutorial)
 
 ## DETAILS:
 

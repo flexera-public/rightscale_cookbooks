@@ -15,7 +15,7 @@ They can be used without modification by mixing-and-matching recipes or as a
 starting point for your own creations. These cookbooks are built for use within
 RightScale's [ServerTemplates](http://support.rightscale.com/12-Guides/Dashboard_Users_Guide/Design/ServerTemplates/Concepts/About_ServerTemplates)
 to create [3-tier deployment architectures for High Availability in the
-cloud](http://support.rightscale.com/ServerTemplates/v13.5_LTS/Supplemental/3_Tier_Deployment_Setup_(HAProxy-PHP-MySQL)).
+cloud](http://support.rightscale.com/ServerTemplates/v13.5_LTS/Supplemental/3_Tier_Deployment_Setup_\(HAProxy-PHP-MySQL\)).
 These deployments fit the requirements for many auto-scaling HA
 deployments, however no single infrastructure need is exactly the same -- the
 source code is provided here to give you the control over how much (or how
