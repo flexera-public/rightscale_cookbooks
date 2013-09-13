@@ -62,9 +62,7 @@ action :install do
     owner "haproxy"
     group "haproxy"
     mode "0400"
-    stats_file="stats socket /etc/haproxy/status user haproxy group haproxy"
     variables(
-      :stats_file_line => stats_file,
       :timeout_client => node[:lb_haproxy][:timeout_client],
       :global_maxconn => node[:lb_haproxy][:global_maxconn],
       :default_maxconn => node[:lb_haproxy][:default_maxconn],
