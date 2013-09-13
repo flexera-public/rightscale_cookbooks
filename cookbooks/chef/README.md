@@ -32,7 +32,8 @@ There are no known limitations.
 * Set inputs reconverge_list to the value `chef::do_client_converge` and
   interval to minutes.
 
-For more info see: [Release Notes](http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/v13.4#Chef_Client_\(v13.4\))
+For more info see: [Chef Client Tutoria](
+http://support.rightscale.com/ServerTemplates/Infinity/ST/Chef_Client_Beta_(v13_Infinity)/Chef_Client_Beta_(v13_Infinity)_-_Tutorial)
 
 ## DETAILS:
 

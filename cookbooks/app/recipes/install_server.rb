@@ -55,7 +55,7 @@ app "default" do
 end
 
 # Let others know we are an appserver
-# See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RightLinkTag
+# See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Chef_Resources#RightLinkTag
 # for the "right_link_tag" resource.
 right_link_tag "appserver:active=true"
 right_link_tag "appserver:listen_ip=#{node[:app][:ip]}"

@@ -31,7 +31,7 @@ Please see `metadata.rb` file for the latest dependencies.
 * Currently apache uses a static configuration and makes no tuning changes for
   resources available on larger instances. However, configuration can be
   overwritten using cookbook override techniques. See [Override Chef Cookbooks](
-  http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Override_Chef_Cookbooks)
+  http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/ServerTemplate_Development/08-Common_Development_Tasks/Override_Chef_Cookbooks)
 
 ## SETUP/USAGE:
 

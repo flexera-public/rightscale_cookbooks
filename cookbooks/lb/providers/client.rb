@@ -44,7 +44,7 @@ action :attach_request do
     " pool_name = #{pool_name.inspect}"
 
   # Runs remote_recipe for each vhost the app server wants to be part of.
-  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RemoteRecipe
+  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Chef_Resources#RemoteRecipe
   # for the "remote_recipe" resource.
   remote_recipe "Attach to load balancer" do
     recipe "lb::handle_attach"
@@ -74,7 +74,7 @@ action :detach_request do
     " pool_name = #{pool_name.inspect}"
 
   # Runs remote_recipe for each vhost the app server is part of.
-  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RemoteRecipe
+  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Chef_Resources#RemoteRecipe
   # for the "remote_recipe" resource.
   remote_recipe "Detach from load balancer" do
     recipe "lb::handle_detach"

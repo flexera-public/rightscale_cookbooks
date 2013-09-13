@@ -138,7 +138,8 @@ action :update_request do
   attrs[:sys_firewall][:rule][:ip_address] = ip_addr
 
   # Use RightNet to update firewall rules on all tagged servers
-  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RemoteRecipe for the "remote_recipe" resource.
+  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Chef_Resources#RemoteRecipe
+  # for the "remote_recipe" resource.
   remote_recipe "Request firewall update" do
     recipe "sys_firewall::setup_rule"
     recipients_tags machine_tag

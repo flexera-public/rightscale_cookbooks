@@ -15,7 +15,7 @@ They can be used without modification by mixing-and-matching recipes or as a
 starting point for your own creations. These cookbooks are built for use within
 RightScale's [ServerTemplates](http://support.rightscale.com/12-Guides/Dashboard_Users_Guide/Design/ServerTemplates/Concepts/About_ServerTemplates)
 to create [3-tier deployment architectures for High Availability in the
-cloud](http://support.rightscale.com/ServerTemplates/v12.11_LTS/Supplemental/3_Tier_Deployment_Setup_%28PHP%29#Overview).
+cloud](http://support.rightscale.com/ServerTemplates/v13.5_LTS/Supplemental/3_Tier_Deployment_Setup_(HAProxy-PHP-MySQL)).
 These deployments fit the requirements for many auto-scaling HA
 deployments, however no single infrastructure need is exactly the same -- the
 source code is provided here to give you the control over how much (or how
@@ -97,7 +97,7 @@ running any other of the recipes in the cookbook. You should also add the
 default recipe of the cookbooks that your cookbook depends on.
 
 For more information, please see: [What is RightScale's Default
-Pattern](http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-RightScale_Support_of_Chef/RightScale_Cookbook_Design_Conventions#What_is_RightScale's_Default_Pattern.3f).
+Pattern](http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/RightScale_Cookbook_Design_Conventions#What_is_RightScale's_Default_Pattern.3F).
 
 
 ### Abstract Cookbooks and LWRPs
@@ -133,7 +133,7 @@ The only grouping that is currently an exception is the "sys" grouping of
 cookbooks. These are distinct system related cookbooks.
 
 For more information, please see: [Abstract Cookbook
-Pattern](http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-RightScale_Support_of_Chef/RightScale_Cookbook_Design_Conventions#Abstract_Cookbook_Pattern)
+Pattern](http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/RightScale_Cookbook_Design_Conventions#Abstract_Cookbook_Pattern)
 
 ### Definitions
 
@@ -192,7 +192,8 @@ For documentation, see [Chef Resources](http://support.rightscale.com/12-Guides/
 
 If you need to change the behavior of the RightScale cookbooks in a way that
 cannot be achieved using the inputs or in your own cookbooks, you can use a
-cookbook override. For more information see [Override Chef Cookbooks](http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Override_Chef_Cookbooks).
+cookbook override. For more information see [Override Chef Cookbooks](
+http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/ServerTemplate_Development/08-Common_Development_Tasks/Override_Chef_Cookbooks).
 
 ## DEVELOPMENT:
 
