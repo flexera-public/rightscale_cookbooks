@@ -68,21 +68,19 @@ when "unmanaged"
     " maintaining the firewall rules."
 end
 
-# Increase connection tracking table sizes
+# Increases connection tracking table size.
 #
-# Increase the value for the 'conntrack_max' module parameter
-# to avoid dropping packets on high-throughput systems.
-
-nf_module_name = "net.netfilter.nf_conntrack_max"
-
-# The ip_conntrack_max is calculated based on the RAM available on
-# the VM using this formula: conntrack_max=64*n, where n is the amount
+# Increases the value for the 'nf_conntrack_max' module parameter to avoid
+# packets dropping on high-throughput systems.
+# The 'nf_conntrack_max' value is calculated based on the total amount of RAM
+# available using this formula: conntrack_max = 256 * n, where n is the amount
 # of RAM in MB.
-mem_mb = node[:memory][:total].to_i/1024
-nf_conntrack_max = "#{nf_module_name} = #{64*mem_mb}"
+mem_mb = node[:memory][:total].to_i / 1024
+nf_conntrack_max = "net.netfilter.nf_conntrack_max = #{256 * mem_mb}"
 
 log "  Setup IP connection tracking limit: #{nf_conntrack_max}"
-bash "Update #{nf_module_name}" do
+
+bash "Set #{nf_conntrack_max}" do
   flags "-ex"
   code <<-EOH
     echo "#{nf_conntrack_max}" >> /etc/sysctl.conf
