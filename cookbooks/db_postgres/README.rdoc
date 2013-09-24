@@ -49,12 +49,10 @@ details.
 
 === PostgreSQL Tuning and postgresql.conf and pg_hba.conf
 
-Custom tuning parameters can be applied by overriding the <tt>postgres_tuning.rb</tt>
-attributes file. For more information and an example override repository,
-please see:
-
-  https://github.com/ravibhure/cookbooks_public/tree/master/cookbooks/db_postgres
-
+Different tuning parameters can be applied by using a custom
+<tt>postgres_tuning.rb</tt> attributes file. For more information on how to
+change the default configuration, please see:
+{Customize a Chef-based ServerTemplate}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/ServerTemplate_Development/02-Customize_a_Chef-based_ServerTemplate].
 
 === Public Recipes
 Here is the list of db recipes that can be used without the premium

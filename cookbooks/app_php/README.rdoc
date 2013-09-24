@@ -26,8 +26,9 @@ Please see <tt>metadata.rb</tt> file for the latest dependencies.
 
 == KNOWN LIMITATIONS:
 Currently apache uses a static configuration and makes no tuning changes for
-resources available on larger instances. However, configuration can be
-overwritten using cookbook override techniques. See {Override Chef Cookbooks}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/ServerTemplate_Development/08-Common_Development_Tasks/Override_Chef_Cookbooks]
+resources available on larger instances. However, you can change the default
+configuration, if desired. See [Customize a Chef-based ServerTemplate](
+http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/ServerTemplate_Development/02-Customize_a_Chef-based_ServerTemplate).
 
 == SETUP/USAGE:
 
