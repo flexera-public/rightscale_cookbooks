@@ -34,12 +34,12 @@ used throughout this collection. NOTE: This section is not for the faint of
 heart as it deals with some advanced Chef topics.
 
 Whether you are looking to write your own cookbooks or to just make some minor
-tweaks to these, please see the **CUSTOMIZATION** section for some best
-practices regarding overriding vs. forking.  We are happy if you modify and make
-these cookbooks your own, however, if you ever implement a change that you think
-will be useful to others or would like to see the change folded in to next
-release, then please feel free to contribute it back. For more information about
-how to do this see the guidelines under the **CONTRIBUTING** section.
+tweaks to these, please see the **CUSTOMIZATION** section. We are happy if you
+modify and make these cookbooks your own, however, if you ever implement a
+change that you think will be useful to others or would like to see the change
+folded in to next release, then please feel free to contribute it back. For more
+information about how to do this see the guidelines under the **CONTRIBUTING**
+section.
 
 Some of these cookbooks leverage Chef resources that are specific to the
 RightScale Platform -- these resources are used for such things as managing
@@ -58,7 +58,7 @@ Many of the cookbooks use the same overarching design and conventions.
 
 In the cookbooks, resource calls in recipes can be calls to built-in resources,
 light weight resources, or definitions. Built-in resources are part of Chef and
-are documented in [Chef Resources](http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources).
+are documented in [Chef Resources](http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Chef_Resources).
 Light weight resources are often named the same as one of the cookbooks, but
 several are just prefixed with the cookbook name such as
 `rightscale_server_collection`; they are defined in the
@@ -186,14 +186,14 @@ RightImage launched from the RightScale platform. These resources include
 `remote_recipe`, `right_link_tag`, `server_collection`, `rs_shutdown`, and
 `executable_schedule`.
 
-For documentation, see [Chef Resources](http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources).
+For documentation, see [Chef Resources](http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Chef_Resources).
 
 ## CUSTOMIZATION:
 
 If you need to change the behavior of the RightScale cookbooks in a way that
-cannot be achieved using the inputs or in your own cookbooks, you can use a
-cookbook override. For more information see [Override Chef Cookbooks](
-http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/ServerTemplate_Development/08-Common_Development_Tasks/Override_Chef_Cookbooks).
+cannot be achieved by using the inputs, you can customize them. For more
+information see [Customize a Chef-based ServerTemplate](
+http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/ServerTemplate_Development/02-Customize_a_Chef-based_ServerTemplate).
 
 ## DEVELOPMENT:
 
