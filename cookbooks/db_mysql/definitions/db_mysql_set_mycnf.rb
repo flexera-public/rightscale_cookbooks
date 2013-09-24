@@ -31,9 +31,11 @@ define(:db_mysql_set_mycnf,
 ) do
 
   # Logs what is being passed into this definition.
+  exclusions = [:name, :ca_certificate, :master_certificate, :master_key]
+
   params.each do |parameter, argument|
     log "  '#{parameter.inspect} => #{argument.inspect}' passed into" +
-      " 'db_mysql_set_mycnf' definition." unless parameter == :name
+      " 'db_mysql_set_mycnf' definition." unless exclusions.include? parameter
   end
 
   class Chef::Recipe
