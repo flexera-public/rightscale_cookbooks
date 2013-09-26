@@ -18,7 +18,8 @@ This cookbook is intended to be used in conjunction with cookbooks that contain
 Lightweight Providers that implement the 'lb' interface. See the RightScale
 <tt>lb_haproxy</tt> cookbook for an example.
 
-To review information about Lightweight Resources and Providers (LWRPs), see {Lightweight Resources and Providers}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/08-Chef_Development/Lightweight_Resources_and_Providers_(LWRP)].
+To review information about Lightweight Resources and Providers (LWRPs), see
+{Lightweight Resources and Providers}[http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Lightweight_Resources_and_Providers_(LWRP)].
 
 == REQUIREMENTS:
 

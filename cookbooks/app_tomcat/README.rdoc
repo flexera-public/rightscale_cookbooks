@@ -82,7 +82,7 @@ also:
 * <tt>Automatic logrotate file configuration for Tomcat logs</tt>
 * <tt>Collectd monitoring support</tt>
 
-For more information see: {Tomcat App Server}[http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/2012-03-26#Tomcat_App_Server].
+For more information see: {Tomcat App Server}[http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/v12.11_LTS#Tomcat_App_Server].
 
 
 === Attributes:

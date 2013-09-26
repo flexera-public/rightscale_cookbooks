@@ -65,7 +65,7 @@ also:
 * <tt>Automatic application vhost file configuration</tt>
 * <tt>Automatic logrotate file configuration for passenger logs</tt>
 
-For more info see: http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/2012-01-05#Apache-Rails-Passenger_App_Server_-_Beta
+For more info see: http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/v12.11_LTS#Apache-Rails-Passenger_App_Server
 
 ServerTemplate built on this cookbook can be combined in two modes:
 
