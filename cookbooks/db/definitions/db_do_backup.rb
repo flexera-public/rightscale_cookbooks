@@ -70,32 +70,47 @@ define :db_do_backup, :backup_type => "primary" do
     action :snapshot
   end
 
-  log "  Performing unlock DB..."
-  # See cookbooks/db_<provider>/providers/default.rb for the "unlock" action.
-  db DATA_DIR do
-    action :unlock
-  end
-
   log "  Performing (#{do_backup_type}) Backup of lineage #{node[:db][:backup][:lineage]} and post-backup cleanup..."
   # See cookbooks/block_device/libraries/block_device.rb for the "get_device_or_default" method.
   # See cookbooks/block_device/providers/default.rb for the "primary_backup" and "secondary_backup" actions.
-  block_device NICKNAME do
-    # Select the device to backup and set up arguments required for backup.
-    lineage node[:db][:backup][:lineage]
-    max_snapshots get_device_or_default(node, :device1, :backup, :primary, :keep, :max_snapshots)
-    keep_daily get_device_or_default(node, :device1, :backup, :primary, :keep, :keep_daily)
-    keep_weekly get_device_or_default(node, :device1, :backup, :primary, :keep, :keep_weekly)
-    keep_monthly get_device_or_default(node, :device1, :backup, :primary, :keep, :keep_monthly)
-    keep_yearly get_device_or_default(node, :device1, :backup, :primary, :keep, :keep_yearly)
+  
+  case do_backup_type
+  when 'primary'
+    block_device NICKNAME do
+      # Select the device to backup and set up arguments required for backup.
+      lineage node[:db][:backup][:lineage]
+      max_snapshots get_device_or_default(node, :device1, :backup, :primary, :keep, :max_snapshots)
+      keep_daily get_device_or_default(node, :device1, :backup, :primary, :keep, :keep_daily)
+      keep_weekly get_device_or_default(node, :device1, :backup, :primary, :keep, :keep_weekly)
+      keep_monthly get_device_or_default(node, :device1, :backup, :primary, :keep, :keep_monthly)
+      keep_yearly get_device_or_default(node, :device1, :backup, :primary, :keep, :keep_yearly)
+    
+      action :primary_backup
+    end
 
-    # Secondary arguments
-    secondary_cloud get_device_or_default(node, :device1, :backup, :secondary, :cloud)
-    secondary_endpoint get_device_or_default(node, :device1, :backup, :secondary, :endpoint) || ""
-    secondary_container get_device_or_default(node, :device1, :backup, :secondary, :container)
-    secondary_user get_device_or_default(node, :device1, :backup, :secondary, :cred, :user)
-    secondary_secret get_device_or_default(node, :device1, :backup, :secondary, :cred, :secret)
+    log "  Performing unlock DB..."
+    # See cookbooks/db_<provider>/providers/default.rb for the "unlock" action.
+    db DATA_DIR do
+      action :unlock
+    end
+  
+  when 'secondary'
+    log "  Performing unlock DB..."
+    # See cookbooks/db_<provider>/providers/default.rb for the "unlock" action.
+    db DATA_DIR do
+      action :unlock
+    end
+    
+    block_device NICKNAME do
+      # Secondary arguments
+      secondary_cloud get_device_or_default(node, :device1, :backup, :secondary, :cloud)
+      secondary_endpoint get_device_or_default(node, :device1, :backup, :secondary, :endpoint) || ""
+      secondary_container get_device_or_default(node, :device1, :backup, :secondary, :container)
+      secondary_user get_device_or_default(node, :device1, :backup, :secondary, :cred, :user)
+      secondary_secret get_device_or_default(node, :device1, :backup, :secondary, :cred, :secret)
 
-    action do_backup_type == 'primary' ? :primary_backup : :secondary_backup
+      action :secondary_backup
+    end
   end
 
   log "  Performing post backup cleanup..."
