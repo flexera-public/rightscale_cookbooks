@@ -143,7 +143,8 @@ action :add_vhost do
 
   # Tags this server as a load balancer for vhost it will answer for so app servers
   # can send requests to it.
-  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RightLinkTag for the "right_link_tag" resource.
+  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Chef_Resources#RightLinkTag
+  # for the "right_link_tag" resource.
   right_link_tag "loadbalancer:#{pool_name}=lb"
 
 end
@@ -286,7 +287,8 @@ action :attach_request do
   log "  Attach request for #{new_resource.backend_id} / #{new_resource.backend_ip} / #{pool_name}"
 
   # Runs remote_recipe for each vhost the app server wants to be part of.
-  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RemoteRecipe for the "remote_recipe" resource.
+  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Chef_Resources#RemoteRecipe
+  # for the "remote_recipe" resource.
   remote_recipe "Attach me to load balancer" do
     recipe "lb::handle_attach"
     attributes :remote_recipe => {
@@ -370,7 +372,8 @@ action :detach_request do
   log "  Detach request for #{new_resource.backend_id} / #{pool_name}"
 
   # Runs remote_recipe for each vhost the app server is part of.
-  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RemoteRecipe for the "remote_recipe" resource.
+  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Chef_Resources#RemoteRecipe
+  # for the "remote_recipe" resource.
   remote_recipe "Detach me from load balancer" do
     recipe "lb::handle_detach"
     attributes :remote_recipe => {

@@ -51,7 +51,7 @@ unless force_promote
   # Schedule backups on slave
   # This should be done before calling db::do_lookup_master
   # changes current_master from old to new.
-  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RemoteRecipe
+  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Chef_Resources#RemoteRecipe
   # for the "remote_recipe" resource.
   # See cookbooks/db/recipes/do_primary_backup_schedule_enable.rb
   # for the "do_primary_backup_schedule_enable" recipe.
@@ -61,7 +61,7 @@ unless force_promote
   end
 
   # Demote old master
-  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RemoteRecipe
+  # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Chef_Resources#RemoteRecipe
   # for the "remote_recipe" resource.
   # See cookbooks/db/recipes/handle_demote_master.rb
   # for the "db::handle_demote_master" recipe.

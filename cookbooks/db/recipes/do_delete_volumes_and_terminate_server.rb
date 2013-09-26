@@ -32,7 +32,8 @@ block_device NICKNAME do
   action :reset
 end
 
-# See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#Reboot.2c_Stop_or_Terminate_an_Instance for the "rs_shutdown" resource.
+# See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Chef_Resources#Reboot.2C_Stop_or_Terminate_an_Instance
+# for the "rs_shutdown" resource.
 rs_shutdown "Terminate the server now" do
   # And shutdown regardless of any errors.
   immediately true
