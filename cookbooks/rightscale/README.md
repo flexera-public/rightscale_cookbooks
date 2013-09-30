@@ -61,10 +61,10 @@ The `rightscale::install_rightimage_extras` recipe installs the package
 `rightimage-extras`.  This ensures that all non-rightscale created images
 have the same packages as a RightImage does.
 
-The `rightscale::setup_redhat` recipe registers the server with [Red Hat Network
-Classic](https://access.redhat.com/site/articles/63269) when the server is on
-a redhat platform and the inputs `rightscale/redhat/username` and
-`rightscale/redhat/password` are set.
+The `rightscale::setup_redhat` recipe registers the server with the
+[Red Hat Content Delivery Network](https://access.redhat.com/site/articles/63269)
+when the server is on a redhat platform and the inputs
+`rightscale/redhat/username` and `rightscale/redhat/password` are set.
 
 ## USAGE:
 

@@ -20,21 +20,34 @@ ruby_block "register_redhat_system" do
       message << " 'rightscale/redhat/password' inputs should be set."
       Chef::Log.info message
     else
-      # 'rhnreg_ks' is a utility for registering a system with the
-      # RHN Satellite or Red Hat Network Classic.
-      cmd = "rhnreg_ks --username=#{username} --password=#{password}"
-      cmd << " --use-eus-channel --force --verbose"
+      # 'subscription-manager' is a client program that registers a system with
+      # a subscription management service.
+      #
+      #   --auto-attach
+      # Automatically attaches the best-matched, compatible subscriptions to the
+      # system.
 
-      rhnreg_ks = Mixlib::ShellOut.new(cmd)
-      rhnreg_ks.run_command
+      cmd = "subscription-manager register"
+      cmd << " --username=#{username} --password=#{password}"
+      cmd << " --auto-attach --force"
 
-      # During successful run 'rhnreg_ks' doesn't log any messages.
-      # Logs STDOUT and STDERR only if command execution fails.
-      unless rhnreg_ks.exitstatus == 0
-        Chef::Log.info rhnreg_ks.stdout
-        Chef::Log.info rhnreg_ks.stderr
+      subscribe = Mixlib::ShellOut.new(cmd)
+      subscribe.run_command
+      Chef::Log.info subscribe.stdout
+      Chef::Log.info subscribe.stderr unless subscribe.exitstatus == 0
+      subscribe.error!
+
+      # 'product-id' and 'subscription-manager' yum plug-ins provide support for
+      # the certificate-based Content Delivery Network.
+      # Making sure they are enabled.
+      [
+        "/etc/yum/pluginconf.d/product-id.conf",
+        "/etc/yum/pluginconf.d/subscription-manager.conf"
+      ].each do |plugin|
+        text = File.read(plugin)
+        puts = text.gsub(/enabled=0/, "enabled=1")
+        File.open(plugin, "w") { |file| file << puts }
       end
-      rhnreg_ks.error!
     end
   end
 end
