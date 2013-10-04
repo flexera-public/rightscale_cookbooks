@@ -82,6 +82,20 @@ fi
 #add node to CLB($clb_id)
 new_node_json='{"nodes": [{"address": "'$CLB_NODE_IP'", "port": '$CLB_NODE_PORT', "condition": "ENABLED"}]}'
 
-curl -k -X POST -H Content-Type:\ application/json --data "$new_node_json" -H "X-Auth-Token: $x_auth_token" $service_endpoint/loadbalancers/$clb_id/nodes 2>&1
+status="PENDING_UPDATE"
+
+attach() {
+  output=`curl -k -X POST -H Content-Type:\ application/json --data "$new_node_json" -H "X-Auth-Token: $x_auth_token" $service_endpoint/loadbalancers/$clb_id/nodes 2>&1`
+  echo $output
+  status=`grep -o "PENDING_UPDATE"<<<"$output"`
+}
+
+attach
+
+while [[ $status == "PENDING_UPDATE" ]]; do
+  echo "Load balancer is online but configuration changes are being applied to update the service based on a previous request. Retrying..."
+  sleep $(( $RANDOM % 10 ))
+  attach
+done
 
 exit 0

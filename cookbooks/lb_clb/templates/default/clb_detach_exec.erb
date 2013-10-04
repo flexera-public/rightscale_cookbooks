@@ -81,8 +81,23 @@ else
   echo 'Cannot parse node id. Aborting!'
   exit 1
 fi
- 
-#remove a node($node_id) from a load balancer  
-curl -k -X DELETE -H "X-Auth-Token: $x_auth_token" $service_endpoint/loadbalancers/$clb_id/nodes/$node_id 2>&1
+
+#remove a node($node_id) from a load balancer
+
+status="PENDING_UPDATE"
+
+detach() {
+  output=`curl -k -X DELETE -H "X-Auth-Token: $x_auth_token" $service_endpoint/loadbalancers/$clb_id/nodes/$node_id 2>&1`
+  echo $output
+  status=`grep -o "PENDING_UPDATE"<<<"$output"`
+}
+
+detach
+
+while [[ $status == "PENDING_UPDATE" ]]; do
+  echo "Load balancer is online but configuration changes are being applied to update the service based on a previous request. Retrying..."
+  sleep $(( $RANDOM % 10 ))
+  detach
+done
 
 exit 0
