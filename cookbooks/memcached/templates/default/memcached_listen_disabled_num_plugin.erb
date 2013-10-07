@@ -45,7 +45,7 @@ loop do
   listendisabled = 0
   time = Time.now.to_i
 
-  socketmem = TCPSocket.new("localhost", <%= @tcp_port %>)
+  socketmem = TCPSocket.new("<%= @interface %>", <%= @tcp_port %>)
   socketmem.puts("stats")
   while line = socketmem.gets
     if /.+listen_disabled_num (\d)/.match line
