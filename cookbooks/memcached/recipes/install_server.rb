@@ -154,6 +154,7 @@ template "#{node[:rightscale][:collectd_lib]}/memcached_listener_plugin" do
   source "memcached_listen_disabled_num_plugin.erb"
   mode "0755"
   variables(
+    :interface => node[:memcached][:interface],
     :tcp_port => node[:memcached][:tcp_port]
   )
   cookbook "memcached"
