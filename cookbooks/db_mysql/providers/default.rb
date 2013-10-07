@@ -209,31 +209,6 @@ action :post_restore_cleanup do
     ::File.symlink(node[:db][:data_dir], default_datadir)
   end
 
-  # Compares size of node[:db_mysql][:tunable][:innodb_log_file_size] to
-  # actual size of restored /var/lib/mysql/ib_logfile0 (symlink).
-  innodb_log_file_size_to_bytes =
-    case node[:db_mysql][:tunable][:innodb_log_file_size]
-    when /^(\d+)[Kk]$/
-      $1.to_i * 1024
-    when /^(\d+)[Mm]$/
-      $1.to_i * 1024**2
-    when /^(\d+)[Gg]$/
-      $1.to_i * 1024**3
-    when /^(\d+)$/
-      $1
-    else
-      raise "FATAL: unknown log file size"
-    end
-
-  if ::File.stat("/var/lib/mysql/ib_logfile0").size == innodb_log_file_size_to_bytes
-    Chef::Log.info "  innodb log file sizes the same... OK."
-  else # warn if sizes do not match
-    Chef::Log.warn "  innodb log file size does not match."
-    Chef::Log.warn "  Updating my.cnf to match log file from snapshot."
-    Chef::Log.warn "  Discovered size: #{::File.stat("/var/lib/mysql/ib_logfile0").size}"
-    Chef::Log.warn "  Expected size: #{innodb_log_file_size_to_bytes}"
-  end
-
   # Always update the my.cnf file on a restore.
   # See cookbooks/db_mysql/definitions/db_mysql_set_mycnf.rb
   # for the "db_mysql_set_mycnf" definition.
@@ -242,7 +217,6 @@ action :post_restore_cleanup do
   db_mysql_set_mycnf "setup_mycnf" do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
-    innodb_log_file_size ::File.stat("/var/lib/mysql/ib_logfile0").size
     compressed_protocol node[:db_mysql][:compressed_protocol] ==
       "enabled" ? true : false
   end
@@ -582,7 +556,6 @@ action :install_server do
   db_mysql_set_mycnf "setup_mycnf" do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
-    innodb_log_file_size ::File.size?("/var/lib/mysql/ib_logfile0")
     compressed_protocol node[:db_mysql][:compressed_protocol] ==
       "enabled" ? true : false
   end
@@ -856,7 +829,6 @@ action :promote do
   db_mysql_set_mycnf "setup_mycnf" do
     server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
     relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
-    innodb_log_file_size ::File.stat("/var/lib/mysql/ib_logfile0").size
     compressed_protocol node[:db_mysql][:compressed_protocol] ==
       "enabled" ? true : false
   end
@@ -1091,7 +1063,6 @@ action :enable_replication do
     db_mysql_set_mycnf "setup_mycnf" do
       server_id RightScale::Database::MySQL::Helper.mycnf_uuid(node)
       relay_log RightScale::Database::MySQL::Helper.mycnf_relay_log(node)
-      innodb_log_file_size ::File.stat("/var/lib/mysql/ib_logfile0").size
       compressed_protocol node[:db_mysql][:compressed_protocol] ==
         "enabled" ? true : false
     end
