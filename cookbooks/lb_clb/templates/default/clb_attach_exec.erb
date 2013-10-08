@@ -99,7 +99,7 @@ max_retry=32
 # we will loop for $max_retry times and try to attach again after a random wait time.
 while [[ $status == "PENDING_UPDATE" ]]; do
 
-  if [ $current_retry -gt $max_retry ] ; then
+  if [ $current_retry -gt $max_retry ]; then
     echo "Retry limit reached. Failed to attach!"
     exit 1
   fi
