@@ -92,10 +92,24 @@ attach() {
 
 attach
 
+current_retry=0
+max_retry=32
+
+# If previous attach attempt returns 'PENDING_UPDATE' (meaning the CLB is busy)
+# we will loop for $max_retry times and try to attach again after a random wait time.
 while [[ $status == "PENDING_UPDATE" ]]; do
+
+  if [ $current_retry -gt $max_retry ] ; then
+    echo "Retry limit reached. Failed to attach!"
+    exit 1
+  fi
+
   echo "Load balancer is online but configuration changes are being applied to update the service based on a previous request. Retrying..."
   sleep $(( $RANDOM % 10 ))
   attach
+
+  current_retry=$(( $current_retry + 1 ))
+
 done
 
 exit 0
