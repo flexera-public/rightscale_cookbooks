@@ -82,6 +82,34 @@ fi
 #add node to CLB($clb_id)
 new_node_json='{"nodes": [{"address": "'$CLB_NODE_IP'", "port": '$CLB_NODE_PORT', "condition": "ENABLED"}]}'
 
-curl -k -X POST -H Content-Type:\ application/json --data "$new_node_json" -H "X-Auth-Token: $x_auth_token" $service_endpoint/loadbalancers/$clb_id/nodes 2>&1
+status="PENDING_UPDATE"
+
+attach() {
+  output=`curl -k -X POST -H Content-Type:\ application/json --data "$new_node_json" -H "X-Auth-Token: $x_auth_token" $service_endpoint/loadbalancers/$clb_id/nodes 2>&1`
+  echo $output
+  status=`grep -o "PENDING_UPDATE"<<<"$output"`
+}
+
+attach
+
+current_retry=0
+max_retry=32
+
+# If previous attach attempt returns 'PENDING_UPDATE' (meaning the CLB is busy)
+# we will loop for $max_retry times and try to attach again after a random wait time.
+while [[ $status == "PENDING_UPDATE" ]]; do
+
+  if [ $current_retry -gt $max_retry ]; then
+    echo "Retry limit reached. Failed to attach!"
+    exit 1
+  fi
+
+  echo "Load balancer is online but configuration changes are being applied to update the service based on a previous request. Retrying..."
+  sleep $(( $RANDOM % 10 ))
+  attach
+
+  current_retry=$(( $current_retry + 1 ))
+
+done
 
 exit 0
