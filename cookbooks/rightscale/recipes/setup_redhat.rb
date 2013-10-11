@@ -39,7 +39,7 @@ ruby_block "register_redhat_system" do
 
       # 'product-id' and 'subscription-manager' yum plug-ins provide support for
       # the certificate-based Content Delivery Network.
-      # Making sure they are enabled.
+      # We need to make sure they are enabled.
       [
         "/etc/yum/pluginconf.d/product-id.conf",
         "/etc/yum/pluginconf.d/subscription-manager.conf"
@@ -50,6 +50,16 @@ ruby_block "register_redhat_system" do
           File.open(plugin, "w") { |file| file << puts }
         else
           Chef::Log.info "  WARNING: yum plugin '#{plugin}' not found!"
+        end
+
+        # All Red Hat Enterprise Linux Amazon Machine Images (AMIs) come
+        # automatically registered to Red Hat Update Infrastructure (RHUI) in
+        # AWS. We need to de-register with them to receive updates using Red Hat
+        # Subscription Management.
+        ::Dir.glob("/etc/yum.repos.d/*rhui*\.repo").each do |repo|
+          text = File.read(repo)
+          puts = text.gsub(/enabled=1/, "enabled=0")
+          File.open(repo, "w") { |file| file << puts }
         end
       end
     end
