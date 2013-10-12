@@ -269,7 +269,7 @@ attribute "rightscale/rackspace_tenant_id",
 attribute "rightscale/redhat/username",
   :display_name => "RedHat Network Username",
   :description =>
-    "The username to register the system with the Content Delivery Network." +
+    "The username to register the system with Red Hat." +
     " Example: cred:REDHAT_SUBSCRIBER_USERNAME",
   :required => "optional",
   :default => "",
