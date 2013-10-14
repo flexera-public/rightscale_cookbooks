@@ -11,7 +11,8 @@ rightscale_marker
 # Installing server tags
 #
 # The instance is identified as a memcached server.
-# See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RightLinkTag for "right_link_tag" definition
+# See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Chef_Resources#RightLinkTag
+# for "right_link_tag" definition
 right_link_tag "memcached_server:active=true"
 # The server name so that sorts can be done to get the correct order across app servers.
 right_link_tag "memcached_server:uuid=#{node[:rightscale][:instance_uuid]}"
@@ -153,6 +154,7 @@ template "#{node[:rightscale][:collectd_lib]}/memcached_listener_plugin" do
   source "memcached_listen_disabled_num_plugin.erb"
   mode "0755"
   variables(
+    :interface => node[:memcached][:interface],
     :tcp_port => node[:memcached][:tcp_port]
   )
   cookbook "memcached"

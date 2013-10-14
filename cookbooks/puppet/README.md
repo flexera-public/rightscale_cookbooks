@@ -31,7 +31,8 @@ There are no known limitations.
 * Use the `puppet::setup_client_monitoring` recipe to add Puppet Client
   monitoring options to your dashboard "Monitoring" tab.
 
-For more info see: [Release Notes](http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/v13.4#Puppet_Client_\(v13.4\))
+For more info see: [Puppet Client Tutorial](
+http://support.rightscale.com/ServerTemplates/Infinity/ST/Puppet_Client_Beta_\(v13_Infinity\)/Puppet_Client_\(v13_Infinity\)_-_Tutorial)
 
 ## DETAILS:
 

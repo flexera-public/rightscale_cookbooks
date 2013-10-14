@@ -38,7 +38,7 @@ define :db_register_master do
   # and rs_dbrepl:master_instance_uuid
 
   begin
-    # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RightLinkTag
+    # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Chef_Resources#RightLinkTag
     # for the "right_link_tag" resource.
     right_link_tag "rs_dbrepl:slave_instance_uuid=#{node[:rightscale][:instance_uuid]}" do
       action :remove

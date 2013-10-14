@@ -1,99 +1,99 @@
 {
+  "name": "app_django",
+  "description": "Cookbook provides Apache + Django implementation of the 'app' Lightweight Resource Provider (LWRP). Installs and configures an Apache + Django application server.",
+  "long_description": "# RightScale App Django Cookbook\n\n## DESCRIPTION:\n\n* This cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).\n* Cookbook provides Apache + Django implementation of the 'app' LWRP.\n* Installs and configures, Apache + Django application servers.\n\n## REQUIREMENTS:\n\n* Requires [\"app\" Lightweight resource cookbook][app] or your own implementation\n  of the \"app\" resource. See \"app\" cookbook README for details.\n* Requires a VM launched from a RightScale managed RightImage\n* Tested on CentOS 6.2 RightImage\n* Tested on Ubuntu 12.04 RightImage\n\n[app]: https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see `metadata.rb` file for the latest dependencies.\n\n* `rightscale`\n* `web_apache`\n* `repo`\n* `logrotate`\n* `app`\n* `db`\n* `python`\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## SETUP/USAGE:\n\n* Place `app_django::setup_server_1_4` recipe into your runlist to set\n  up the application server specific attributes. This sets up the app provider\n  and version.\n* Place `app::install_server` recipe after setup_server recipe to install\n  the application server.\n\n## DETAILS:\n\n### General:\n\nThe `app_django` cookbook will install and set up an Apache + Django\napplication server configured to connect with a MySQL or Postgres database\nserver.\nSet db/provider_type input in RightScale ServerTemplate to choose database\nprovider. Place `db::default` recipe before application server installation\nto install the database client.\n\n__Apache__\n\nServer version: Apache/2.2.15\n\nServer built: Feb 13 2012 22:31:42\n\n__Django__\n\nDjango version 1.4\n\nPython version 2.6.6 (2012-06-18) (x86_64-linux), Pip version 1.1\n\nalso:\n* `Custom python command input`\n* `Bundler support`\n* `Input for user defined python module installation`\n* `Application code installation from remote git, svn or Remote Object Store\n  (ROS) location`\n* `MySQL or Postgres database connection file configuration`\n* `Automatic application vhost file configuration`\n* `Automatic logrotate file configuration for Apache logs`\n\nFor more info see: [Release Notes][Notes] (Section 'Django App Server' under\nServerTemplates)\n\n[Notes]: http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current\n\nPlease checkout the tutorial: [Django App Server][Tutorial]\n\n[Tutorial]: http://support.rightscale.com/ServerTemplates/Infinity/ST/Django_App_Server_Beta_(v13_Infinity)/Django_App_Server_Beta_(v13_Infinity)_-_Tutorial\n\nServerTemplate built on this cookbook can be combined in two modes:\n\n1 - For apps with bundler support, keep the \"requirements.txt\" file under\napplication ROOT directory, and \"run_custom_python_commands\" for migration\ncommands\n\n2 - For apps without bundler support, provide package(s) name as user input\nwhile server launch, and \"run_custom_python_commands\" for migration commands\n\nNote: In operational mode to install additional python packages for Django app\nserver, provide package(s) name as user input and re-run the `app::default` boot\nrecipe.\n\nMix these recipes in any way to satisfy project requirements.\n\n### Attributes:\n\nThese are settings used in recipes and templates. Default values are noted.\n\nNote: Only \"internal\" cookbook attributes are described here. Descriptions of\nattributes which have inputs you can find in metadata.rb cookbook file.\n\n###### General attributes\n\n* `node[:app_django][:module_dependencies]` - Modules required for Apache.\n* `node[:app_django][:app][:debug_mode]` - Django application debug mode.\n* `node[:app_django][:apache][:serve_local_files]` - Used to enable/disable the\n  serve of any existing local files.\n* `node[:app_django][:deploy_dir]` - Path in the specified repository where\n  application code will be pulled from.\n* `node[:app_django][:pip_bin]` - Path to Python pip bin directory.\n* `node[:app_django][:python_bin]` - Path to Python bin directory.\n* `node[:app_django][:project][:opt_pip_list]` - A list of additional python\n  packages, required for django application\n* `node[:app_django][:project][:custom_cmd]` - A list of python commands\n  required for django application initialization.\n\n### Templates:\n\n* `apache_mod_wsgi_vhost.erb` - Configuration for apache vhost file used in the\n  `app::setup_vhost` recipe and defined in `:setup_vhost` action of the\n  `app_django` LWRP.\n* `wsgi.py.erb` - Configuration for Apache-Django WSGI config file used in the\n  `app::setup_vhost` recipe and defined in `:setup_vhost` action of the\n  `app_django` LWRP.\n* `settings.py.erb` - Rename django \"settings.py\" file under app root to\n  \"settings_default.py\", configure new \"settings.py\" file for project database\n  connection used in the `app::setup_db_connection` recipe and defined in\n  `:setup_db_connection` action of the `app_django` LWRP.\n\n### LWRPs:\n\n`app_django` Lightweight provider is defined in the providers/default.rb file,\nit contains source for the following actions:\n\n* `:install`\n* `:setup_vhost`\n* `:start`\n* `:stop`\n* `:restart`\n* `:reload`\n* `:code_update`\n* `:setup_db_connection`\n\nFor more info about these actions, please see the `app` cookbook README.\n\nFor normal operations it requires \"app\" resource which will act as the interface\nto all `app_django` provider logic.\n\n##### Actions\n\n* `:install` - Install packages required for application server setup.\n* `:setup_vhost` - Set up apache vhost file with wsgi module directives\n  included.\n* `:start` - Start sequence for Django application server.\n* `:stop` - Stop sequence for Django application server.\n* `:reload` - Reload sequence for Django application server.\n* `:restart` - Restart sequence for Django application server.\n* `:code_update` - Perform project source code update/download using user\n  selected \"repo\" LWRP. Set up logrotate configuration.\n* `:setup_db_connection` - Perform project settings.py database connection\n  configuration. The driver type is specified as 'python' and the db_<provider>\n  cookbook's `install_client_driver` action performs necessary steps to install\n  the database adapter.\n\n##### Usage Example:\n\nFor usage examples please see corresponding section in `app` cookbook README.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
+  "maintainer": "RightScale, Inc.",
   "maintainer_email": "support@rightscale.com",
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "platforms": {
+    "centos": ">= 0.0.0",
+    "redhat": ">= 0.0.0",
+    "ubuntu": ">= 0.0.0"
+  },
+  "dependencies": {
+    "app": ">= 0.0.0",
+    "web_apache": ">= 0.0.0",
+    "db_mysql": ">= 0.0.0",
+    "db_postgres": ">= 0.0.0",
+    "repo": ">= 0.0.0",
+    "rightscale": ">= 0.0.0",
+    "python": ">= 0.0.0"
+  },
+  "recommendations": {
+  },
+  "suggestions": {
+  },
+  "conflicting": {
+  },
+  "providing": {
+  },
+  "replacing": {
+  },
   "attributes": {
-    "app_django/project/opt_pip_list": {
+    "app_django/app/debug_mode": {
+      "display_name": "Django App Debug Mode",
+      "description": "Creates a Django application debug environment variable, e.g. should be true for dev and false for prod environment. Example: false",
+      "choice": [
+        "true",
+        "false"
+      ],
       "required": "optional",
+      "default": "false",
+      "recipes": [
+        "app_django::setup_server_1_4"
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "app_django/apache/serve_local_files": {
+      "display_name": "Apache serve local Files",
+      "description": "This option tells Apache whether it should serve the (static) content itself. Currently, it will omit dynamic content, such as *.php, *.action, *.jsp, and *.do. Example: true",
+      "choice": [
+        "true",
+        "false"
+      ],
+      "required": "optional",
+      "default": "true",
+      "recipes": [
+        "app_django::setup_server_1_4"
+      ],
+      "calculated": false,
+      "type": "string"
+    },
+    "app_django/project/opt_pip_list": {
+      "display_name": "Custom Python Package list",
       "description": "A space-separated list of optional python package(s), along with their versions in the Format: py-pkg1==version py-pkg2==version py-pkg3==version. Example: simplejson==1.7.1, Markdown==2.0.3",
+      "required": "optional",
+      "default": "",
       "recipes": [
         "app_django::setup_server_1_4"
       ],
       "choice": [
 
       ],
-      "default": "",
       "calculated": false,
-      "type": "string",
-      "display_name": "Custom Python Package list"
+      "type": "string"
     },
     "app_django/project/custom_cmd": {
-      "required": "optional",
+      "display_name": "Custom Django command",
       "description": "A comma-separated list of optional commands which will be executed in the app directory. Example: manage.py syncdb, manage.py migrate, manage.py loaddata ./fixtures/example_initial_data.json",
+      "required": "optional",
+      "default": "",
       "recipes": [
         "app_django::run_custom_django_commands"
       ],
       "choice": [
 
       ],
-      "default": "",
       "calculated": false,
-      "type": "string",
-      "display_name": "Custom Django command"
-    },
-    "app_django/apache/serve_local_files": {
-      "required": "optional",
-      "description": "This option tells Apache whether it should serve the (static) content itself. Currently, it will omit dynamic content, such as *.php, *.action, *.jsp, and *.do. Example: true",
-      "recipes": [
-        "app_django::setup_server_1_4"
-      ],
-      "choice": [
-        "true",
-        "false"
-      ],
-      "default": "true",
-      "calculated": false,
-      "type": "string",
-      "display_name": "Apache serve local Files"
-    },
-    "app_django/app/debug_mode": {
-      "required": "optional",
-      "description": "Creates a Django application debug environment variable, e.g. should be true for dev and false for prod environment. Example: false",
-      "recipes": [
-        "app_django::setup_server_1_4"
-      ],
-      "choice": [
-        "true",
-        "false"
-      ],
-      "default": "false",
-      "calculated": false,
-      "type": "string",
-      "display_name": "Django App Debug Mode"
+      "type": "string"
     }
   },
-  "maintainer": "RightScale, Inc.",
   "groupings": {
   },
-  "replacing": {
-  },
-  "description": "Cookbook provides Apache + Django implementation of the 'app' Lightweight Resource Provider (LWRP). Installs and configures an Apache + Django application server.",
   "recipes": {
-    "app_django::run_custom_django_commands": "Runs specific user defined commands. Commands will be executed in the app directory.",
-    "app_django::setup_server_1_4": "Installs the Django application server."
+    "app_django::setup_server_1_4": "Installs the Django application server.",
+    "app_django::run_custom_django_commands": "Runs specific user defined commands. Commands will be executed in the app directory."
   },
-  "suggestions": {
-  },
-  "platforms": {
-    "redhat": ">= 0.0.0",
-    "ubuntu": ">= 0.0.0",
-    "centos": ">= 0.0.0"
-  },
-  "name": "app_django",
-  "version": "13.5.0",
-  "license": "Copyright RightScale, Inc. All rights reserved.",
-  "providing": {
-  },
-  "long_description": "# RightScale App Django Cookbook\n\n## DESCRIPTION:\n\n* Cookbook provides Apache + Django implementation of the 'app' LWRP.\n* Installs and configures, Apache + Django application servers.\n\n## REQUIREMENTS:\n\n* Requires [\"app\" Lightweight resource cookbook][app] or your own implementation\n  of the \"app\" resource. See \"app\" cookbook README for details.\n* Requires a VM launched from a RightScale managed RightImage\n* Tested on CentOS 6.2 RightImage\n* Tested on Ubuntu 12.04 RightImage\n\n[app]: https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see `metadata.rb` file for the latest dependencies.\n\n* `rightscale`\n* `web_apache`\n* `repo`\n* `logrotate`\n* `app`\n* `db`\n* `python`\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## SETUP/USAGE:\n\n* Place `app_django::setup_server_1_4` recipe into your runlist to set\n  up the application server specific attributes. This sets up the app provider\n  and version.\n* Place `app::install_server` recipe after setup_server recipe to install\n  the application server.\n\n## DETAILS:\n\n### General:\n\nThe `app_django` cookbook will install and set up an Apache + Django\napplication server configured to connect with a MySQL or Postgres database\nserver.\nSet db/provider_type input in RightScale ServerTemplate to choose database\nprovider. Place `db::default` recipe before application server installation\nto install the database client.\n\n__Apache__\n\nServer version: Apache/2.2.15\n\nServer built: Feb 13 2012 22:31:42\n\n__Django__\n\nDjango version 1.4\n\nPython version 2.6.6 (2012-06-18) (x86_64-linux), Pip version 1.1\n\nalso:\n* `Custom python command input`\n* `Bundler support`\n* `Input for user defined python module installation`\n* `Application code installation from remote git, svn or Remote Object Store\n  (ROS) location`\n* `MySQL or Postgres database connection file configuration`\n* `Automatic application vhost file configuration`\n* `Automatic logrotate file configuration for Apache logs`\n\nFor more info see: [Release Notes][Notes] (Section 'Django App Server' under\nServerTemplates)\n\n[Notes]: http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current\n\nPlease checkout the tutorial: [Django App Server][Tutorial]\n\n[Tutorial]: http://support.rightscale.com/ServerTemplates/Infinity/ST/Django_App_Server_Beta_(v13_Infinity)/Django_App_Server_Beta_(v13_Infinity)_-_Tutorial\n\nServerTemplate built on this cookbook can be combined in two modes:\n\n1 - For apps with bundler support, keep the \"requirements.txt\" file under\napplication ROOT directory, and \"run_custom_python_commands\" for migration\ncommands\n\n2 - For apps without bundler support, provide package(s) name as user input\nwhile server launch, and \"run_custom_python_commands\" for migration commands\n\nNote: In operational mode to install additional python packages for Django app\nserver, provide package(s) name as user input and re-run the `app::default` boot\nrecipe.\n\nMix these recipes in any way to satisfy project requirements.\n\n### Attributes:\n\nThese are settings used in recipes and templates. Default values are noted.\n\nNote: Only \"internal\" cookbook attributes are described here. Descriptions of\nattributes which have inputs you can find in metadata.rb cookbook file.\n\n###### General attributes\n\n* `node[:app_django][:module_dependencies]` - Modules required for Apache.\n* `node[:app_django][:app][:debug_mode]` - Django application debug mode.\n* `node[:app_django][:apache][:serve_local_files]` - Used to enable/disable the\n  serve of any existing local files.\n* `node[:app_django][:deploy_dir]` - Path in the specified repository where\n  application code will be pulled from.\n* `node[:app_django][:pip_bin]` - Path to Python pip bin directory.\n* `node[:app_django][:python_bin]` - Path to Python bin directory.\n* `node[:app_django][:project][:opt_pip_list]` - A list of additional python\n  packages, required for django application\n* `node[:app_django][:project][:custom_cmd]` - A list of python commands\n  required for django application initialization.\n\n### Templates:\n\n* `apache_mod_wsgi_vhost.erb` - Configuration for apache vhost file used in the\n  `app::setup_vhost` recipe and defined in `:setup_vhost` action of the\n  `app_django` LWRP.\n* `wsgi.py.erb` - Configuration for Apache-Django WSGI config file used in the\n  `app::setup_vhost` recipe and defined in `:setup_vhost` action of the\n  `app_django` LWRP.\n* `settings.py.erb` - Rename django \"settings.py\" file under app root to\n  \"settings_default.py\", configure new \"settings.py\" file for project database\n  connection used in the `app::setup_db_connection` recipe and defined in\n  `:setup_db_connection` action of the `app_django` LWRP.\n\n### LWRPs:\n\n`app_django` Lightweight provider is defined in the providers/default.rb file,\nit contains source for the following actions:\n\n* `:install`\n* `:setup_vhost`\n* `:start`\n* `:stop`\n* `:restart`\n* `:reload`\n* `:code_update`\n* `:setup_db_connection`\n\nFor more info about these actions, please see the `app` cookbook README.\n\nFor normal operations it requires \"app\" resource which will act as the interface\nto all `app_django` provider logic.\n\n##### Actions\n\n* `:install` - Install packages required for application server setup.\n* `:setup_vhost` - Set up apache vhost file with wsgi module directives\n  included.\n* `:start` - Start sequence for Django application server.\n* `:stop` - Stop sequence for Django application server.\n* `:reload` - Reload sequence for Django application server.\n* `:restart` - Restart sequence for Django application server.\n* `:code_update` - Perform project source code update/download using user\n  selected \"repo\" LWRP. Set up logrotate configuration.\n* `:setup_db_connection` - Perform project settings.py database connection\n  configuration. The driver type is specified as 'python' and the db_<provider>\n  cookbook's `install_client_driver` action performs necessary steps to install\n  the database adapter.\n\n##### Usage Example:\n\nFor usage examples please see corresponding section in `app` cookbook README.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
-  "conflicting": {
-  },
-  "recommendations": {
-  },
-  "dependencies": {
-    "db_postgres": ">= 0.0.0",
-    "db_mysql": ">= 0.0.0",
-    "python": ">= 0.0.0",
-    "web_apache": ">= 0.0.0",
-    "rightscale": ">= 0.0.0",
-    "repo": ">= 0.0.0",
-    "app": ">= 0.0.0"
-  }
+  "version": "13.5.0"
 }

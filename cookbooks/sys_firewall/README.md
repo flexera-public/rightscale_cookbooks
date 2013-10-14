@@ -44,10 +44,9 @@ When the firewall is set to "unmanaged" no changes are done to the iptables
 service so the cloud provider can manage the firewall rules. RightScale will
 not manage the firewall rules in this case.
 
-`sys_firewall::default` recipe increases the value for the
-'netfilter.nf_conntrack_max' parameter for CentOS images and
-the 'net.ipv4.ip_conntrack_max' for Ubuntu and RHEL images to avoid dropping
-packets on high-throughput systems.
+The `sys_firewall::default` recipe increases the value of the
+'net.netfilter.nf_conntrack_max' parameter to avoid packets dropping on
+high-throughput systems.
 
 ### Updating firewall rules using tags
 

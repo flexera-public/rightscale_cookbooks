@@ -52,3 +52,34 @@ attribute "lb_haproxy/timeout_client",
   :recipes => [
     "lb_haproxy::setup_server"
   ]
+
+attribute "lb_haproxy/httpclose",
+  :display_name => "Passive HTTP connection closing",
+  :description =>
+    "By default, when a client communicates with a server, HAProxy will only" +
+    " analyze, log, and process the first request of each connection. If" +
+    " option httpclose is set, it will check if a 'Connection: close'" +
+    " header is already set in each direction, and will add one if missing." +
+    " Default: on",
+  :required => "optional",
+  :choice => ["on", "off"],
+  :default => "on",
+  :recipes => [
+    "lb_haproxy::setup_server"
+  ]
+
+attribute "lb_haproxy/abortonclose",
+  :display_name => "Early dropping of aborted requests pending in queues",
+  :description =>
+    "By default (without the option) the behaviour is HTTP compliant and" +
+    " aborted requests will be served. But when the option is specified, a" +
+    " session with an incoming channel closed will be aborted while it is" +
+    " still possible, either pending in the queue for a connection slot, or" +
+    " during the connection establishment if the server has not yet" +
+    " acknowledged the connection request. Default: off",
+  :required => "optional",
+  :choice => ["on", "off"],
+  :default => "off",
+  :recipes => [
+    "lb_haproxy::setup_server"
+  ]

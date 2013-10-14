@@ -286,7 +286,9 @@ action :install_server do
 
   # See cookbooks/db_postgres/definitions/db_postgres_set_psqlconf.rb
   # for the "db_postgres_set_psqlconf" definition.
-  db_postgres_set_psqlconf "setup_postgresql_conf"
+  db_postgres_set_psqlconf "setup_postgresql_conf" do
+    sync_state node[:db_postgres][:sync_mode]
+  end
 
   # Setup pg_hba.conf
   # pg_hba_source = "pg_hba.conf.erb"
@@ -524,9 +526,6 @@ action :enable_replication do
     retries 5
     retry_delay 2
   end
-
-  # Setup slave monitoring
-  action_setup_slave_monitoring
 end
 
 # Promotes a slave server to the master server
@@ -584,11 +583,7 @@ action :setup_monitoring do
     action :nothing
   end
 
-  collectd_version = node[:rightscale][:collectd_packages_version]
-  package "collectd-postgresql" do
-    action :install
-    version "#{collectd_version}" unless collectd_version == "latest"
-  end
+  package "collectd-postgresql"
 
   cookbook_file "#{node[:rightscale][:collectd_share]}/postgresql_default.conf" do
     source "postgresql_default.conf"
@@ -615,94 +610,6 @@ action :setup_monitoring do
       :collectd_lib => node[:rightscale][:collectd_lib],
       :instance_uuid => node[:rightscale][:instance_uuid]
     )
-  end
-end
-
-# Sets up monitoring for slave database
-action :setup_slave_monitoring do
-  # See cookbooks/db/libraries/helper.rb for the "db_state_get" method.
-  db_state_get node
-
-  service "collectd" do
-    action :nothing
-  end
-
-  collectd_lib_dir = node[:rightscale][:collectd_lib]
-  collectd_plugin_dir = node[:rightscale][:collectd_plugin_dir]
-  pg_bin_dir = node[:db_postgres][:bindir]
-  pg_data_dir = node[:db_postgres][:datadir]
-
-  # Sets up monitoring for slave replication: since it is hard to define the
-  # lag - we monitor the master/slave sync health status.
-
-  # Installs the 'pg_cluster_status' collectd script into the collectd library
-  # plugins directory.
-  template "#{collectd_lib_dir}/plugins/pg_cluster_status" do
-    source "pg_cluster_status.erb"
-    mode "0755"
-    cookbook "db_postgres"
-    variables(
-      :bindir => pg_bin_dir,
-      :datadir => pg_data_dir
-    )
-  end
-
-  # Adds a collectd configuration file for the 'pg_cluster_status' script with
-  # the exec plugin and restarts collectd if necessary.
-  template "#{collectd_plugin_dir}/pg_cluster_status.conf" do
-    source "pg_cluster_status_exec.erb"
-    notifies :restart, resources(:service => "collectd")
-    cookbook 'db_postgres'
-    variables(
-      :collectd_lib => node[:rightscale][:collectd_lib],
-      :current_master_ip => node[:db][:current_master_ip],
-      :private_ip => node[:cloud][:private_ips][0],
-      :instance_uuid => node[:rightscale][:instance_uuid]
-    )
-  end
-
-  # Installs the 'check_hot_standby_delay' collectd script into the collectd
-  # library plugins directory.
-  template "#{collectd_lib_dir}/plugins/check_hot_standby_delay" do
-    source "check_hot_standby_delay.erb"
-    mode "0755"
-    cookbook "db_postgres"
-    variables(
-      :bindir => pg_bin_dir,
-      :datadir => pg_data_dir
-    )
-  end
-
-  # Adds a collectd configuration file for the 'check_hot_standby_delay' script
-  # with the exec plugin and restarts collectd if necessary.
-  template "#{collectd_plugin_dir}/check_hot_standby_delay.conf" do
-    source "check_hot_standby_delay_exec.erb"
-    notifies :restart, resources(:service => "collectd")
-    cookbook 'db_postgres'
-    variables(
-      :collectd_lib => node[:rightscale][:collectd_lib],
-      :current_master_ip => node[:db][:current_master_ip],
-      :private_ip => node[:cloud][:private_ips][0],
-      :instance_uuid => node[:rightscale][:instance_uuid]
-    )
-  end
-
-  # Adds custom gauges to collectd 'types.db'.
-  cookbook_file "#{collectd_plugin_dir}/psql.types.db" do
-    source "psql.types.db"
-    cookbook "db_postgres"
-    backup false
-  end
-
-  # Adds configuration to use the custom gauges.
-  template "#{collectd_plugin_dir}/psql.types.db.conf" do
-    source "psql.types.db.conf.erb"
-    cookbook "db_postgres"
-    variables(
-      :collectd_plugin_dir => collectd_plugin_dir
-    )
-    backup false
-    notifies :restart, resources(:service => "collectd")
   end
 end
 

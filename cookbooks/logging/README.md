@@ -100,11 +100,9 @@ syslog-ng.
 
 ### Custom Configuration:
 
-By using an override cookbook the default configuration can be customized by
-replacing the default configuration file template for the provider. For more
-information, please see: [Override Chef Cookbooks][CCDG].
-
-[CCDG]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/ServerTemplate_Development/08-Common_Development_Tasks/Override_Chef_Cookbooks
+The default settings can be customized by replacing the default configuration
+template for the provider. For more information, please see:
+[Customize a Chef-based ServerTemplate](http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/ServerTemplate_Development/02-Customize_a_Chef-based_ServerTemplate)
 
 ## LICENSE:
 
