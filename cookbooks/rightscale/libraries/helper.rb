@@ -10,6 +10,8 @@ module RightScale
     module Helper
       NAMESPACE_REGEX = '[a-z](?:[a-z0-9_]*)'
       PREDICATE_REGEX = '[a-zA-Z0-9%_\+\.-](?:[a-zA-Z0-9%_\+\.-]*)'
+      IPADDRESS_REGEX = '\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b'
+
 
       # Determines if a tag matches a given wildcard expression or prefix.
       #
@@ -68,6 +70,15 @@ module RightScale
         if tags.detect { |tag| tag =~ /^#{Regexp.escape(prefix)}=(#{capture})$/ }
           $1
         end
+      end
+
+      # Returns true if a valid IP address is give and false if it is invalid
+      #
+      # @param [String] ip IP addres
+      #
+      # @return [Bool] True if the IP address is valid and false if it is invalid
+      def self.is_valid_ip?(ip)
+        ip =~ /^#{IPADDRESS_REGEX}$/
       end
     end
   end
