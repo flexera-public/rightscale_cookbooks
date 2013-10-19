@@ -67,17 +67,12 @@ action :install do
     only_if do ::File.exists?("/tmp/ruby-enterprise-installed.tar.gz")  end
   end
 
-
   # Installing passenger module
   log "  Installing passenger"
-  bash "Install apache passenger gem" do
-    flags "-ex"
-    code <<-EOH
-      /opt/ruby-enterprise/bin/gem install passenger -q --no-rdoc --no-ri
-    EOH
-    not_if do (::File.exists?("/opt/ruby-enterprise/bin/passenger-install-apache2-module")) end
+  gem_package "passenger" do
+    gem_binary "/opt/ruby-enterprise/bin/gem"
+    version "3.0.21"
   end
-
 
   bash "Install apache passenger module" do
     flags "-ex"
