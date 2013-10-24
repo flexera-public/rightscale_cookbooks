@@ -21,10 +21,7 @@ ruby_block "register_redhat_system" do
       Chef::Log.info message
 
     else
-      cloud = node[:cloud][:provider]
-
-      case cloud
-      when "ec2"
+      if node[:cloud][:provider] == "ec2"
         # 'rhnreg_ks' is a utility for registering a system with the
         # RHN Satellite or Red Hat Network Classic.
         cmd = "rhnreg_ks --username=#{username} --password=#{password}"
@@ -41,7 +38,7 @@ ruby_block "register_redhat_system" do
         end
         rhnreg_ks.error!
 
-      when "rackspace-ng"
+      else
         # 'subscription-manager' is a client program that registers a system
         # with a subscription management service.
         #
@@ -74,9 +71,6 @@ ruby_block "register_redhat_system" do
             Chef::Log.info "  WARNING: yum plugin '#{plugin}' not found!"
           end
         end
-
-      else
-        raise "Red Hat registration is currently not supported for '#{cloud}'."
       end
     end
   end
