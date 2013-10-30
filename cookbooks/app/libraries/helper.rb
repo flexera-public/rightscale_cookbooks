@@ -20,6 +20,32 @@ module RightScale
         pool_norm_name = pool_list.gsub(/\s+/, "").gsub(/[\/]/, "_").split(",").uniq
       end
 
+      # Returns an array of versions of the RightScript-based ServerTemplate
+      # Application servers found in the deployment.
+      #
+      # @param [String] pool_name loadbalancing pool name
+      #
+      # @return [Array<String>] array of ServerTemplate versions found
+      #
+      def get_rsb_app_servers_version(pool_name)
+        # Removes any characters except alphabets and numbers.
+        pool_name.delete!("^0-9A-Za-z]")
+
+        rightscale_server_collection "#{pool_name}_rsb_app_servers" do
+          tags "loadbalancer:#{pool_name}=app"
+          mandatory_tags "server_template:version=*"
+          action :nothing
+        end.run_action(:load)
+
+        versions = Array.new
+        node[:server_collection]["#{pool_name}_rsb_app_servers"].to_hash.values.
+          each do |tags|
+          versions = versions |
+            [RightScale::Utils::Helper.get_tag_value('server_template:version', tags)]
+        end
+        versions
+      end
+
     end
   end
 end

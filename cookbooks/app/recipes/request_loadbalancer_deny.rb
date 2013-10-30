@@ -29,4 +29,24 @@ pool_names(node[:lb][:pools]).each do |pool_name|
     recipients_tags "loadbalancer:#{pool_name}=app"
     attributes attrs
   end
+
+  # Searches for any RightScript-based ServerTemplate Application servers
+  # in the deployment and gets their versions.
+  versions = get_rsb_app_servers_version(pool_name)
+  # Runs remote RightScripts on the found servers to close the firewall port
+  # which was open for the LoadBalancer.
+  versions.each do |version|
+    cmd = "rs_run_right_script"
+    cmd << " --name 'LB Setup firewall rule deny (#{version})'"
+    cmd << " --recipient_tags 'loadbalancer:#{pool_name}=app"
+    cmd << " server_template:version=#{version}'"
+    cmd << " --parameter 'LB_PRIVATE_IP=text:#{node[:cloud][:private_ips][0]}'"
+    cmd << " --parameter 'LB_PUBLIC_IP=text:#{node[:cloud][:public_ips][0]}'"
+
+    remote_rs = Mixlib::ShellOut.new(cmd)
+    remote_rs.run_command
+    log remote_rs.stdout
+    log remote_rs.stderr unless remote_rs.exitstatus == 0
+    remote_rs.error!
+  end
 end
