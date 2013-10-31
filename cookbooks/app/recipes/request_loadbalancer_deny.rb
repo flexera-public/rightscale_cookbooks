@@ -15,11 +15,10 @@ end
 # Sending request to application servers, to remove iptables rule
 # that allowed connection from loadbalancer.
 
-attrs = {:app => Hash.new}
 # Grab the public and private IPs of the current instance to send
 # to the remote recipe.
-attrs[:app][:lb_private_ip] = node[:cloud][:private_ips][0]
-attrs[:app][:lb_public_ip] = node[:cloud][:public_ips][0]
+lb_private_ip = node[:cloud][:private_ips][0]
+lb_public_ip = node[:cloud][:public_ips][0]
 
 pool_names(node[:lb][:pools]).each do |pool_name|
   # See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Chef_Resources#RemoteRecipe
@@ -27,7 +26,12 @@ pool_names(node[:lb][:pools]).each do |pool_name|
   remote_recipe "Removing loadbalancers from app servers firewall" do
     recipe "app::handle_loadbalancers_deny"
     recipients_tags "loadbalancer:#{pool_name}=app"
-    attributes attrs
+    attributes ({
+      :app => {
+        :lb_private_ip => lb_private_ip,
+        :lb_public_ip => lb_public_ip
+      }
+    })
   end
 
   # Searches for any RightScript-based ServerTemplate Application servers
@@ -40,8 +44,9 @@ pool_names(node[:lb][:pools]).each do |pool_name|
     cmd << " --name 'LB Setup firewall rule deny (#{version})'"
     cmd << " --recipient_tags 'loadbalancer:#{pool_name}=app"
     cmd << " server_template:version=#{version}'"
-    cmd << " --parameter 'LB_PRIVATE_IP=text:#{node[:cloud][:private_ips][0]}'"
-    cmd << " --parameter 'LB_PUBLIC_IP=text:#{node[:cloud][:public_ips][0]}'"
+    cmd << " --parameter 'LB_ALLOW_DENY_PRIVATE_IP=text:#{lb_private_ip}'"
+    cmd << " --parameter 'LB_ALLOW_DENY_PUBLIC_IP=text:#{lb_public_ip}'"
+    cmd << " --parameter 'LB_ALLOW_DENY_POOL_NAME=text:#{pool_name}'"
 
     remote_rs = Mixlib::ShellOut.new(cmd)
     remote_rs.run_command
