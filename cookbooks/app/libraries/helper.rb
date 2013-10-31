@@ -31,14 +31,13 @@ module RightScale
         # Removes any characters except alphabets and numbers.
         pool_name.delete!("^0-9A-Za-z]")
 
-        rightscale_server_collection "#{pool_name}_rsb_app_servers" do
-          tags "loadbalancer:#{pool_name}=app"
-          mandatory_tags "server_template:version=*"
+        rightscale_server_collection "#{pool_name}_rsb_servers" do
+          tags "server_template:version=*"
           action :nothing
         end.run_action(:load)
 
         versions = Array.new
-        node[:server_collection]["#{pool_name}_rsb_app_servers"].to_hash.values.
+        node[:server_collection]["#{pool_name}_rsb_servers"].to_hash.values.
           each do |tags|
           versions = versions |
             [RightScale::Utils::Helper.get_tag_value('server_template:version', tags)]
