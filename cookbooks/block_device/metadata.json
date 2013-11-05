@@ -521,12 +521,11 @@
     },
     "block_device/devices/device1/lvm_block_size": {
       "display_name": "LVM Block Size",
-      "description": "The 'stripesize' to use for the LVM logical volume.  Should be 1-4x the block size of the XFS Filesystem. Example: 16",
+      "description": "The 'stripesize' to use for the LVM logical volume.  Should be 1-4x the block size of the XFS Filesystem(4K). Must be 2^n where n <= 9 Example: 16",
       "required": "optional",
       "choice": [
         "4",
         "8",
-        "12",
         "16"
       ],
       "default": "16",
@@ -821,12 +820,11 @@
     },
     "block_device/devices/device2/lvm_block_size": {
       "display_name": "LVM Block Size",
-      "description": "The 'stripesize' to use for the LVM logical volume.  Should be 1-4x the block size of the XFS Filesystem. Example: 16",
+      "description": "The 'stripesize' to use for the LVM logical volume.  Should be 1-4x the block size of the XFS Filesystem(4K). Must be 2^n where n <= 9 Example: 16",
       "required": "optional",
       "choice": [
         "4",
         "8",
-        "12",
         "16"
       ],
       "default": "16",

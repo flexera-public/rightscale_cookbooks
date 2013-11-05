@@ -479,9 +479,10 @@ end.each do |device, number|
     :display_name => "LVM Block Size",
     :description =>
       "The 'stripesize' to use for the LVM logical volume.  Should be 1-4x" +
-      " the block size of the XFS Filesystem. Example: 16",
+      " the block size of the XFS Filesystem(4K). Must be 2^n where n <= 9" + 
+      " Example: 16",
     :required => "optional",
-    :choice => ["4", "8", "12", "16"],
+    :choice => ["4", "8", "16"],
     :default => "16",
     :recipes => ["block_device::setup_block_device", "block_device::default"]
 end
