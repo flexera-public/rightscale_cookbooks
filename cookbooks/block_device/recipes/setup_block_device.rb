@@ -31,6 +31,7 @@ do_for_block_devices node[:block_device] do |device|
     volume_size get_device_or_default(node, device, :volume_size)
     stripe_count get_device_or_default(node, device, :stripe_count)
     vg_data_percentage get_device_or_default(node, device, :vg_data_percentage)
+    lvm_block_size get_device_or_default(node, device, :lvm_block_size)
     iops get_device_or_default(node, device, :iops) || ""
     volume_type get_device_or_default(node, device, :volume_type)
 
