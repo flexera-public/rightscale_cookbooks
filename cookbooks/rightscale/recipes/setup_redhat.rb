@@ -22,6 +22,8 @@ ruby_block "register_redhat_system" do
 
     else
       if node[:cloud][:provider] == "ec2"
+        Chef::Log.info "  Registering the system using 'rhnreg_ks'."
+
         # 'rhnreg_ks' is a utility for registering a system with the
         # RHN Satellite or Red Hat Network Classic.
         cmd = "rhnreg_ks --username=#{username} --password=#{password}"
@@ -39,12 +41,17 @@ ruby_block "register_redhat_system" do
         rhnreg_ks.error!
 
       else
+        Chef::Log.info "  Registering the system using 'subscription-manager'."
+
         # 'subscription-manager' is a client program that registers a system
         # with a subscription management service.
         #
         #   --auto-attach
         # Automatically attaches the best-matched, compatible subscriptions to
         # the system.
+        #   --force
+        # Regenerates the identity certificate for the system using
+        # username/password authentication.
 
         cmd = "subscription-manager register"
         cmd << " --username=#{username} --password=#{password}"
