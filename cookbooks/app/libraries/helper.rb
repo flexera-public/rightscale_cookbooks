@@ -29,7 +29,7 @@ module RightScale
       #
       def get_rsb_app_servers_version(pool_name)
         # Removes any characters except alphabets and numbers.
-        pool_name.delete!("^0-9A-Za-z]")
+        pool_name.delete!("^0-9A-Za-z")
 
         rightscale_server_collection "#{pool_name}_rsb_servers" do
           tags "server_template:version=*"
