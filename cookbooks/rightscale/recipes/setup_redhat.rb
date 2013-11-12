@@ -52,6 +52,10 @@ ruby_block "register_redhat_system" do
         #   --force
         # Regenerates the identity certificate for the system using
         # username/password authentication.
+        #
+        # On stop/start the system gets a different IP, and registration to
+        # Red Hat records all this info. Without re-registration the information
+        # would be out of sync.
 
         cmd = "subscription-manager register"
         cmd << " --username=#{username} --password=#{password}"
