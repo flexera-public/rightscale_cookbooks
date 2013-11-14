@@ -34,8 +34,10 @@ pool_names(node[:lb][:pools]).each do |pool_name|
     })
   end
 
-  # Searches for any RightScript-based ServerTemplate Application servers
-  # in the deployment and gets their versions.
+  # Searches for servers with the 'server_template:version' tag in the
+  # deployment and gets their versions.
+  # See cookbooks/app/libraries/helper.rb
+  # for the "get_rsb_app_servers_version" method.
   versions = get_rsb_app_servers_version(pool_name)
   # Runs remote RightScripts on the found servers to open a firewall port for
   # the LoadBalancer.
