@@ -38,7 +38,7 @@ pool_names(node[:lb][:pools]).each do |pool_name|
   # deployment and gets their versions.
   # See cookbooks/app/libraries/helper.rb
   # for the "get_rsb_app_servers_version" method.
-  versions = get_rsb_app_servers_version(pool_name)
+  versions = get_rsb_app_servers_version
   # Runs remote RightScripts on the found servers to close the firewall port
   # which was open for the LoadBalancer.
   versions.each do |version|

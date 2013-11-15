@@ -23,22 +23,19 @@ module RightScale
       # Returns an array of versions of the RightScript-based ServerTemplate
       # Application servers found in the deployment.
       #
-      # @param [String] pool_name loadbalancing pool name
-      #
       # @return [Array<String>] array of ServerTemplate versions found
       #
-      def get_rsb_app_servers_version(pool_name)
-        rightscale_server_collection "#{pool_name}_rsb_servers" do
+      def get_rsb_app_servers_version
+        rightscale_server_collection "rsb_servers" do
           tags "server_template:version=*"
           action :nothing
         end.run_action(:load)
 
         versions = Array.new
-        node[:server_collection]["#{pool_name}_rsb_servers"].to_hash.values.each do |tags|
-          versions = versions |
-            [RightScale::Utils::Helper.get_tag_value('server_template:version', tags)]
+        node[:server_collection]["rsb_servers"].to_hash.values.each do |tags|
+          versions << RightScale::Utils::Helper.get_tag_value('server_template:version', tags)
         end
-        versions
+        versions.uniq
       end
 
     end
