@@ -62,10 +62,10 @@ on how to change the default configuration, please see:
 The 'db' implementation is defined by a Lightweight Provider, which can be
 found in the `providers/default.rb` file.
 
-The ‘read_only’ flag in the MySQL configuration is set by the definition
-`db_mysql_set_read_only`. This flag is set to ‘false’ by default
-and changed to ‘true’ while initializing a slave server, and set back to
-‘false’ when the slave is promoted to a master server.
+The 'read_only' flag in the MySQL configuration is set by the definition
+`db_mysql_set_read_only`. This flag is set to 'false' by default
+and changed to 'true' while initializing a slave server, and set back to
+'false' when the slave is promoted to a master server.
 
 ### Attributes:
 
