@@ -1,6 +1,7 @@
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
+name             "logging_rsyslog"
 description      "Provides 'rsyslog' implementation of the 'logging' resource" +
                  " to configure 'rsyslog' to log to a remote server or use" +
                  " default local file logging."

@@ -1,6 +1,7 @@
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
+name             "app_jboss"
 description      "Cookbook provides Apache + JBoss implementation of the 'app'" +
                  " Lightweight Resource Provider (LWRP). Installs and configures" +
                  " an Apache + JBoss application server."

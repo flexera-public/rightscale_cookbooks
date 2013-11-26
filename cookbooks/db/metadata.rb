@@ -1,6 +1,7 @@
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
+name             "db"
 description      "This cookbook provides a set of database recipes used by" +
                  " the RightScale Database Manager ServerTemplates. This" +
                  " cookbook does not contain a specific database implementation," +

@@ -1,6 +1,7 @@
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
+name             "lb_clb"
 description      "RightScale load balancer cookbook for Rackspace Cloud Load" +
                  " Balancing (CLB). This cookbook provides recipes for attaching" +
                  " and detaching application servers to and from an existing" +

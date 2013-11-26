@@ -1,6 +1,7 @@
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
+name             "lb"
 description      "This cookbook provides a set of load balancer recipes used" +
                  " by the RightScale Load Balancer ServerTemplates. This" +
                  " cookbook does not  contain a specific load balancer" +

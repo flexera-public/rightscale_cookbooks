@@ -1,6 +1,7 @@
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
+name             "db_postgres"
 description      "Provides the PostgreSQL implementation of the 'db' resource" +
                  " to install and manage PostgreSQL database stand-alone" +
                  " servers and clients."

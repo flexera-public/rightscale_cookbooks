@@ -1,6 +1,7 @@
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
+name             "repo"
 description      "This cookbook provides abstract 'repo' resource for managing" +
                  " code download from Git, Subversion or Remote Object Store" +
                  " (ROS) code  repositories."
