@@ -1,115 +1,115 @@
 {
-  "name": "sys_dns",
-  "description": "This cookbook provides a set of dynamic DNS recipes used by RightScale ServerTemplates including Database Manager ServerTemplates. Cookbook currently supports DNSMadeEasy, DynDns, CloudDNS, and Amazon Route53 DNS service providers.",
-  "long_description": "# RightScale System DNS cookbook\n\n## DESCRIPTION:\n\nThis cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).\n\nThis cookbook provides a set of dynamic DNS recipes used by RightScale\nServerTemplates including the Database Manager ServerTemplates.\n\n## REQUIREMENTS:\n\n* An account with the desired DNS service provider.\n* DNS A recordтАЩs created external to this cookbook.\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see `metadata.rb` file for the latest dependencies.\n\n## KNOWN LIMITATIONS:\n\nCurrently only the first private IP address can be set.\n\n## SETUP/USAGE:\n\n* Place `sys_dns::default` recipe into your runlist to set up the dynamic DNS\n  provider resource. This will install the support tools and chef providers for\n  the dynamic DNS provider selected by the \"DNS Service Provider\" input. When\n  using a RightScale ServerTemplate, this will automatically add the common DNS\n  service provider attributes to your ServerTemplate inputs.\n* Place `sys_dns::do_set_private` recipe in your runlist to set the DNS record\n  identified by the \"DNS Record ID\" input to the first private IP address of\n  the instance if the private IP is desired.\n* Place `sys_dns::do_set_public` recipe in your runlist to set the DNS record\n  identified by the \"DNS Record ID\" input to the first public IP address of the\n  instance if the public IP is desired. This recipe will fail if no valid\n  public IP is found for the instance.\n\n## DETAILS:\n\n### General\n\nCookbook currently supports Cloud DNS, DNSMadeEasy, DynDNS, and Amazon Route53\nDNS service providers.\nA new chef provider can be created to add support for additional dynamic DNS\nservice providers.\n\nFor additional information: [Deployment Prerequisites][link]\n[link]:http://support.rightscale.com/ServerTemplates/Infinity/Supplemental/Deployment_Prerequisites_(Linux)\n\n### Attributes:\n\nThese are settings used in recipes and templates. Default values are noted.\n\n* `node[:sys_dns][:choice]` -\n  The name of your DNS provider.\n* `node[:sys_dns][:id]` -\n  The unique identifier that is associated with the DNS A record of the server.\n* `node[:sys_dns][:user]` -\n  The username that is used to access and modify your DNS A records.\n* `node[:sys_dns][:password]` -\n  The password that is used to access and modify your DNS A records.\n* `node[:sys_dns][:region]` -\n  Region where the A records should be modified. This input only applies to\n  Cloud DNS.\n\n### Libraries-helpers:\n\nUse this section only if your cookbook contains any libraries.\nGive complete description of library purpose and functionality.\nProvide examples of how it is used in recipes.\n\n#### Example:\n\n    RightScale::DnsTools::CloudDNS.new(Chef::Log).action_set(id, user, password, address, region)\n    RightScale::DnsTools::DME.new(Chef::Log).action_set(id, user, password, address)\n    RightScale::DnsTools::DynDNS.new(Chef::Log).action_set(id, user, password, address)\n    RightScale::DnsTools::AWS.new(Chef::Log).action_set(id, user, password, address)\n\nReturn the result of A record update process.\n\nParameters:\n\n* `id::`\n  The unique identifier that is associated with the DNS A record of the server.\n* `user::`\n  The username that is used to access and modify the DNS A records.\n* `password::`\n  The password that is used to access and modify the DNS A records.\n* `address::`\n  Private IP address of the instance running the recipe.\n* `region::`\n  Region where the A records should be modified. This input only applies to\n  Cloud DNS.\n\nReturns:\n\n`Chef::Log::` A record successful update message.\n\nRaise:\n\n`Chef::Log::` Error message that may have occurred during the update process.\n\n### LWRPs:\n\nThe 'set' interface is defined by a Lightweight Resource, which can be found in\nthe resources/default.rb file.\n\nUsed to pass data to the helper file and call the corresponding DNS provider.\n\nFor more information, please see [Lightweight Resources and Providers][Guide].\n[Guide]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Lightweight_Resources_and_Providers_(LWRP)\n\n#### Example:\n\nCommon attributes\n\n* `:id` -\n  The unique identifier that is associated with the DNS A record of the server.\n* `:user` -\n  The username that is used to access and modify your DNS A records.\n* `:password` -\n  The password that is used to access and modify your DNS A records.\n* `:address` -\n  Private IP address of the instance running the recipe.\n* `:region` -\n  Region where the A records should be modified. This input only applies to\n  Cloud DNS.\n* `:choice` -\n  One of the supported DNS providers:\"DNSMadeEasy\"/\"DynDNS\"/\"Route53\"/\"CloudDNS\"\n\n#### Example:\n\n**Update Action**\n\nTo update A record with a server's private IP address:\n\n    sys_dns \"default\" do\n      id node[:db][:dns][:slave][:id]\n      address private_ip\n      action :set\n    end\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
-  "maintainer": "RightScale, Inc.",
-  "maintainer_email": "support@rightscale.com",
-  "license": "Copyright RightScale, Inc. All rights reserved.",
-  "platforms": {
-    "centos": ">= 0.0.0",
-    "redhat": ">= 0.0.0",
-    "ubuntu": ">= 0.0.0"
-  },
-  "dependencies": {
-    "rightscale": ">= 0.0.0"
-  },
-  "recommendations": {
-  },
-  "suggestions": {
-  },
   "conflicting": {
-  },
-  "providing": {
-  },
-  "replacing": {
-  },
-  "attributes": {
-    "sys_dns/choice": {
-      "display_name": "DNS Service Provider",
-      "description": "The name of your DNS provider. Select the DNS provider that you're using to manage the DNS A records of your master/slave database servers (e.g., DNSMadeEasy, DynDNS, Route53, CloudDNS). Note: You must specify the region when using Cloud DNS. Example: DNSMadeEasy ",
-      "required": "required",
-      "choice": [
-        "DNSMadeEasy",
-        "DynDNS",
-        "Route53",
-        "CloudDNS"
-      ],
-      "recipes": [
-        "sys_dns::do_set_private",
-        "sys_dns::do_set_public",
-        "sys_dns::default"
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "sys_dns/id": {
-      "display_name": "DNS Record ID",
-      "description": "The unique identifier that is associated with the DNS A record of the server. The unique identifier is assigned by the DNS provider when you create a dynamic DNS A record. This ID is used to update the associated A record with the private IP address of the server when this recipe is run. If you are using DNS Made Easy as your DNS provider, a 7-digit number is used (e.g., 4403234). If you are using Cloud DNS, provide both Domain ID and Record ID (e.g., DomainID:A-RecordID). Example: 111021",
-      "required": "required",
-      "recipes": [
-        "sys_dns::do_set_private",
-        "sys_dns::do_set_public"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "sys_dns/user": {
-      "display_name": "DNS User",
-      "description": "The username that is used to access and modify the DNS A records. For DNS Made Easy and DynDNS, enter your user name (e.g., cred:DNS_USER). For Amazon DNS, enter your Amazon access key ID (e.g., cred:AWS_ACCESS_KEY_ID). For CloudDNS, enter your login username (e.g., cred:RACKSPACE_USERNAME). Example: cred:CLOUD_ACCOUNT_USERNAME",
-      "required": "required",
-      "recipes": [
-        "sys_dns::do_set_private",
-        "sys_dns::do_set_public",
-        "sys_dns::default"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "sys_dns/password": {
-      "display_name": "DNS Password",
-      "description": "The password that is used to access and modify the DNS A Records. For DNS Made Easy and DynDNS, enter your password (e.g., cred:DNS_PASSWORD). For Amazon DNS, enter your AWS secret access key (e.g., cred:AWS_SECRET_ACCESS_KEY). For CloudDNS, enter your API key (e.g., cred:RACKSPACE_AUTH_KEY). Example: cred:CLOUD_ACCOUNT_KEY ",
-      "required": "required",
-      "recipes": [
-        "sys_dns::do_set_private",
-        "sys_dns::do_set_public",
-        "sys_dns::default"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "sys_dns/region": {
-      "display_name": "Cloud DNS region",
-      "description": "You must specify the region when using CloudDNS. Example: Chicago",
-      "required": "optional",
-      "choice": [
-        "Chicago",
-        "Dallas",
-        "London"
-      ],
-      "recipes": [
-        "sys_dns::do_set_private",
-        "sys_dns::do_set_public",
-        "sys_dns::default"
-      ],
-      "calculated": false,
-      "type": "string"
-    }
-  },
-  "groupings": {
   },
   "recipes": {
     "sys_dns::default": "Installs tools needed by chosen DNS provider.",
     "sys_dns::do_set_private": "Sets the dynamic DNS entry to the first private IP of the server.",
     "sys_dns::do_set_public": "Sets the dynamic DNS entry to the first public IP of the server."
   },
-  "version": "13.5.0"
+  "recommendations": {
+  },
+  "dependencies": {
+    "rightscale": ">= 0.0.0"
+  },
+  "platforms": {
+    "centos": ">= 0.0.0",
+    "redhat": ">= 0.0.0",
+    "ubuntu": ">= 0.0.0"
+  },
+  "suggestions": {
+  },
+  "maintainer_email": "support@rightscale.com",
+  "providing": {
+  },
+  "maintainer": "RightScale, Inc.",
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "replacing": {
+  },
+  "description": "This cookbook provides a set of dynamic DNS recipes used by RightScale ServerTemplates including Database Manager ServerTemplates. Cookbook currently supports DNSMadeEasy, DynDns, CloudDNS, and Amazon Route53 DNS service providers.",
+  "version": "13.5.0",
+  "groupings": {
+  },
+  "attributes": {
+    "sys_dns/user": {
+      "recipes": [
+        "sys_dns::do_set_private",
+        "sys_dns::do_set_public",
+        "sys_dns::default"
+      ],
+      "display_name": "DNS User",
+      "calculated": false,
+      "required": "required",
+      "description": "The username that is used to access and modify the DNS A records. For DNS Made Easy and DynDNS, enter your user name (e.g., cred:DNS_USER). For Amazon DNS, enter your Amazon access key ID (e.g., cred:AWS_ACCESS_KEY_ID). For CloudDNS, enter your login username (e.g., cred:RACKSPACE_USERNAME). Example: cred:CLOUD_ACCOUNT_USERNAME",
+      "choice": [
+
+      ],
+      "type": "string"
+    },
+    "sys_dns/choice": {
+      "recipes": [
+        "sys_dns::do_set_private",
+        "sys_dns::do_set_public",
+        "sys_dns::default"
+      ],
+      "display_name": "DNS Service Provider",
+      "calculated": false,
+      "required": "required",
+      "description": "The name of your DNS provider. Select the DNS provider that you're using to manage the DNS A records of your master/slave database servers (e.g., DNSMadeEasy, DynDNS, Route53, CloudDNS). Note: You must specify the region when using Cloud DNS. Example: DNSMadeEasy ",
+      "choice": [
+        "DNSMadeEasy",
+        "DynDNS",
+        "Route53",
+        "CloudDNS"
+      ],
+      "type": "string"
+    },
+    "sys_dns/region": {
+      "recipes": [
+        "sys_dns::do_set_private",
+        "sys_dns::do_set_public",
+        "sys_dns::default"
+      ],
+      "display_name": "Cloud DNS region",
+      "calculated": false,
+      "required": "optional",
+      "description": "You must specify the region when using CloudDNS. Example: Chicago",
+      "choice": [
+        "Chicago",
+        "Dallas",
+        "London"
+      ],
+      "type": "string"
+    },
+    "sys_dns/password": {
+      "recipes": [
+        "sys_dns::do_set_private",
+        "sys_dns::do_set_public",
+        "sys_dns::default"
+      ],
+      "display_name": "DNS Password",
+      "calculated": false,
+      "required": "required",
+      "description": "The password that is used to access and modify the DNS A Records. For DNS Made Easy and DynDNS, enter your password (e.g., cred:DNS_PASSWORD). For Amazon DNS, enter your AWS secret access key (e.g., cred:AWS_SECRET_ACCESS_KEY). For CloudDNS, enter your API key (e.g., cred:RACKSPACE_AUTH_KEY). Example: cred:CLOUD_ACCOUNT_KEY ",
+      "choice": [
+
+      ],
+      "type": "string"
+    },
+    "sys_dns/id": {
+      "recipes": [
+        "sys_dns::do_set_private",
+        "sys_dns::do_set_public"
+      ],
+      "display_name": "DNS Record ID",
+      "calculated": false,
+      "required": "required",
+      "description": "The unique identifier that is associated with the DNS A record of the server. The unique identifier is assigned by the DNS provider when you create a dynamic DNS A record. This ID is used to update the associated A record with the private IP address of the server when this recipe is run. If you are using DNS Made Easy as your DNS provider, a 7-digit number is used (e.g., 4403234). If you are using Cloud DNS, provide both Domain ID and Record ID (e.g., DomainID:A-RecordID). Example: 111021",
+      "choice": [
+
+      ],
+      "type": "string"
+    }
+  },
+  "long_description": "# RightScale System DNS cookbook\n\n## DESCRIPTION:\n\nThis cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).\n\nThis cookbook provides a set of dynamic DNS recipes used by RightScale\nServerTemplates including the Database Manager ServerTemplates.\n\n## REQUIREMENTS:\n\n* An account with the desired DNS service provider.\n* DNS A record’s created external to this cookbook.\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see `metadata.rb` file for the latest dependencies.\n\n## KNOWN LIMITATIONS:\n\nCurrently only the first private IP address can be set.\n\n## SETUP/USAGE:\n\n* Place `sys_dns::default` recipe into your runlist to set up the dynamic DNS\n  provider resource. This will install the support tools and chef providers for\n  the dynamic DNS provider selected by the \"DNS Service Provider\" input. When\n  using a RightScale ServerTemplate, this will automatically add the common DNS\n  service provider attributes to your ServerTemplate inputs.\n* Place `sys_dns::do_set_private` recipe in your runlist to set the DNS record\n  identified by the \"DNS Record ID\" input to the first private IP address of\n  the instance if the private IP is desired.\n* Place `sys_dns::do_set_public` recipe in your runlist to set the DNS record\n  identified by the \"DNS Record ID\" input to the first public IP address of the\n  instance if the public IP is desired. This recipe will fail if no valid\n  public IP is found for the instance.\n\n## DETAILS:\n\n### General\n\nCookbook currently supports Cloud DNS, DNSMadeEasy, DynDNS, and Amazon Route53\nDNS service providers.\nA new chef provider can be created to add support for additional dynamic DNS\nservice providers.\n\nFor additional information: [Deployment Prerequisites][link]\n[link]:http://support.rightscale.com/ServerTemplates/Infinity/Supplemental/Deployment_Prerequisites_(Linux)\n\n### Attributes:\n\nThese are settings used in recipes and templates. Default values are noted.\n\n* `node[:sys_dns][:choice]` -\n  The name of your DNS provider.\n* `node[:sys_dns][:id]` -\n  The unique identifier that is associated with the DNS A record of the server.\n* `node[:sys_dns][:user]` -\n  The username that is used to access and modify your DNS A records.\n* `node[:sys_dns][:password]` -\n  The password that is used to access and modify your DNS A records.\n* `node[:sys_dns][:region]` -\n  Region where the A records should be modified. This input only applies to\n  Cloud DNS.\n\n### Libraries-helpers:\n\nUse this section only if your cookbook contains any libraries.\nGive complete description of library purpose and functionality.\nProvide examples of how it is used in recipes.\n\n#### Example:\n\n    RightScale::DnsTools::CloudDNS.new(Chef::Log).action_set(id, user, password, address, region)\n    RightScale::DnsTools::DME.new(Chef::Log).action_set(id, user, password, address)\n    RightScale::DnsTools::DynDNS.new(Chef::Log).action_set(id, user, password, address)\n    RightScale::DnsTools::AWS.new(Chef::Log).action_set(id, user, password, address)\n\nReturn the result of A record update process.\n\nParameters:\n\n* `id::`\n  The unique identifier that is associated with the DNS A record of the server.\n* `user::`\n  The username that is used to access and modify the DNS A records.\n* `password::`\n  The password that is used to access and modify the DNS A records.\n* `address::`\n  Private IP address of the instance running the recipe.\n* `region::`\n  Region where the A records should be modified. This input only applies to\n  Cloud DNS.\n\nReturns:\n\n`Chef::Log::` A record successful update message.\n\nRaise:\n\n`Chef::Log::` Error message that may have occurred during the update process.\n\n### LWRPs:\n\nThe 'set' interface is defined by a Lightweight Resource, which can be found in\nthe resources/default.rb file.\n\nUsed to pass data to the helper file and call the corresponding DNS provider.\n\nFor more information, please see [Lightweight Resources and Providers][Guide].\n[Guide]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Lightweight_Resources_and_Providers_(LWRP)\n\n#### Example:\n\nCommon attributes\n\n* `:id` -\n  The unique identifier that is associated with the DNS A record of the server.\n* `:user` -\n  The username that is used to access and modify your DNS A records.\n* `:password` -\n  The password that is used to access and modify your DNS A records.\n* `:address` -\n  Private IP address of the instance running the recipe.\n* `:region` -\n  Region where the A records should be modified. This input only applies to\n  Cloud DNS.\n* `:choice` -\n  One of the supported DNS providers:\"DNSMadeEasy\"/\"DynDNS\"/\"Route53\"/\"CloudDNS\"\n\n#### Example:\n\n**Update Action**\n\nTo update A record with a server's private IP address:\n\n    sys_dns \"default\" do\n      id node[:db][:dns][:slave][:id]\n      address private_ip\n      action :set\n    end\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
+  "name": "sys_dns"
 }

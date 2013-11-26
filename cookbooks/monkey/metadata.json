@@ -1,632 +1,164 @@
 {
-  "name": "monkey",
-  "description": "Installs/Configures Virtual Monkey",
-  "long_description": "# Monkey Cookbook\n\n## DESCRIPTION:\n\nThis cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).\n\nThis cookbook provides recipes to setup a VirtualMonkey test environment for\ntesting RightScale ServerTemplates.\n\n## REQUIREMENTS:\n\nRequires a virtual machine launched from a RightScale managed RightImage.\n\n## COOKBOOK DEPENDENCIES:\n\nPlease see the `metadata.rb` for the latest dependencies.\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## SETUP/USAGE:\n\nTo setup the VirtualMonkey test environment, include the recipes in the\nfollowing order.\n\n1. `monkey::setup_git`\n2. `monkey::setup_ruby`\n3. `monkey::setup_rest_connection`\n4. `monkey::setup_virtualmonkey`\n5. `monkey::setup_test_config`\n6. `monkey::update_fog_credentials`\n\n## DETAILS:\n\n### Attributes:\n\nThese are settings used in recipes and templates. Default values are noted.\n\nNote: Only \"internel\" cookbook attributes are described here. Descriptions of\nattributes which have inputs can be found in the metadata.rb file.\n\n#### General attributes\n\n* `node[:monkey][:rest][:gem_packages]` - List of Rubygems required by the\n  rest_connection library along with the version information.\n* `node[:monkey][:rest][packages]` - List of packages required for the\n  rest_connection library.\n* `node[:monkey][:virtualmonkey][:packages]` - List of packages required for\n  the virtualmonkey library.\n\n### Recipes:\n\n1. `monkey::setup_git` - This recipe sets up the git credentials and\n   configurations to checkout source code from git.\n2. `monkey::setup_ruby` - The VirtualMonkey doesn't support Ruby 1.9.x yet. So\n   this recipe will remove Ruby 1.9.x and install Ruby 1.8.7.\n3. `monkey::setup_rest_connection` - This recipe will setup the rest_connection\n   libraries which is used for communicating with RightScale API.\n4. `monkey::setup_virtualmonkey` - This recipe will setup the virtualmonkey\n   test framework.\n5. `monkey::setup_rocketmonkey` - This recipe will setup rocketmonkey and also\n   install the jenkins server.\n6. `monkey::setup_test_config` - This recipe will setup test specific\n   gems/packages.\n7. `monkey::update_fog_credentials` - This recipe will create/update the fog\n   credentials file with the inputs provided.\n\n### Templates:\n\n* `rest_api_config.yaml.erb` - Configuration for the rest_connection library.\n* `sshconfig.erb` - Configuration for SSH connections.\n* `gitconfig.erb` - Configuration for using Git.\n* `fog.erb` - Cloud credentials to be used with the Fog library.\n* `rocketmonkey_config.yaml.erb` - The RocketMonkey configuration file.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to\nthe RightScale Terms of Service available at http://www.rightscale.com/terms.php\nand, if applicable, other agreements such as a RightScale Master Subscription\nAgreement.\n",
-  "maintainer": "RightScale, Inc.",
-  "maintainer_email": "support@rightscale.com",
-  "license": "Copyright RightScale, Inc. All rights reserved.",
   "platforms": {
     "centos": ">= 0.0.0",
-    "redhat": ">= 0.0.0",
-    "ubuntu": ">= 0.0.0"
-  },
-  "dependencies": {
-    "rightscale": ">= 0.0.0",
-    "jenkins": ">= 0.0.0"
-  },
-  "recommendations": {
+    "ubuntu": ">= 0.0.0",
+    "redhat": ">= 0.0.0"
   },
   "suggestions": {
   },
-  "conflicting": {
-  },
-  "providing": {
-  },
-  "replacing": {
-  },
+  "maintainer_email": "support@rightscale.com",
   "attributes": {
-    "monkey/fog/aws_access_key_id": {
-      "display_name": "AWS_ACCESS_KEY_ID",
-      "description": "Access Key ID for AWS",
+    "monkey/test/smtp_password": {
+      "calculated": false,
+      "type": "string",
+      "description": "The SMTP password for lamp's check smtp test",
       "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
+      "display_name": "SMTP Password",
       "choice": [
 
       ],
-      "calculated": false,
-      "type": "string"
+      "recipes": [
+        "monkey::setup_test_config"
+      ]
     },
-    "monkey/fog/aws_secret_access_key": {
-      "display_name": "AWS_SECRET_ACCESS_KEY",
-      "description": "Secret Access Key for AWS",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
+    "monkey/rest/azure_hack_retry_count": {
+      "calculated": false,
+      "type": "string",
+      "description": "Number of retries for Azure launch failures. Example: 5",
+      "required": "optional",
+      "display_name": "Azure Hack Retry Count",
       "choice": [
 
       ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/aws_publish_key": {
-      "display_name": "AWS_PUBLISH_KEY",
-      "description": "Access Key ID for AWS Publish Account",
-      "required": "required",
+      "default": "5",
       "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/aws_publish_secret_key": {
-      "display_name": "AWS_PUBLISH_SECRET_KEY",
-      "description": "Secret Access Key for AWS Publish Account",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/aws_access_key_id_test": {
-      "display_name": "AWS_ACCESS_KEY_ID_TEST_ACCT",
-      "description": "Access Key ID for AWS Test Account",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/aws_secret_access_key_test": {
-      "display_name": "AWS_SECRET_ACCESS_KEY_TEST_ACCT",
-      "description": "Secret Access Key for AWS Test Account",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/aws_access_key_id_rstemp": {
-      "display_name": "AWS_ACCESS_KEY_ID_RSTEMP",
-      "description": "Access Key ID for AWS RS ServerTemplates Account",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/aws_secret_access_key_rstemp": {
-      "display_name": "AWS_SECRET_ACCESS_KEY_RSTEMP",
-      "description": "Secret Access Key for the AWS RS ServerTemplates Account",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/rackspace_api_key": {
-      "display_name": "RACKSPACE_API_KEY",
-      "description": "API Key for Rackspace",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/rackspace_username": {
-      "display_name": "RACKSPACE_USERNAME",
-      "description": "Username for Rackspace",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/rackspace_api_uk_key_test": {
-      "display_name": "RACKSPACE_API_UK_KEY_TEST",
-      "description": "API Key for Rackspace UK Test Account",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/rackspace_uk_username_test": {
-      "display_name": "RACKSPACE_UK_USERNAME_TEST",
-      "description": "Username for Rackspace UK Test Account",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/softlayer_api_key": {
-      "display_name": "SOFTLAYER_SECRET_ACCESS_KEY",
-      "description": "API Key for Softlayer",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/softlayer_username": {
-      "display_name": "SOFTLAYER_ACCESS_KEY_ID",
-      "description": "Username for Softlayer",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/softlayer_auth_url": {
-      "display_name": "SOFTLAYER_AUTH_URL",
-      "description": "Auth URL for Softlayer",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/rackspace_managed_auth_key": {
-      "display_name": "RACKSPACE_MANAGED_AUTH_KEY_US_TEST",
-      "description": "Auth Key for Rackspace Managed US Test Account",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/rackspace_managed_username": {
-      "display_name": "RACKSPACE_MANAGED_USERNAME_US_TEST",
-      "description": "Username for Rackspace Managed US Test Account",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/rackspace_managed_uk_auth_key": {
-      "display_name": "RACKSPACE_MANAGED_AUTH_KEY_UK_TEST",
-      "description": "Auth Key for Rackspace Managed UK Test Account",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/rackspace_managed_uk_username": {
-      "display_name": "RACKSPACE_MANAGED_USERNAME_UK_TEST",
-      "description": "Username for Rackspace Managed UK Test Account",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/rackspace_auth_url_uk_test": {
-      "display_name": "RACKSPACE_AUTH_URL_UK_TEST",
-      "description": "Auth URL for Rackspace UK Test Account",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/google_access_key_id": {
-      "display_name": "GC_ACCESS_KEY_ID",
-      "description": "Access Key ID for Google",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/google_secret_access_key": {
-      "display_name": "GC_SECRET_ACCESS_KEY",
-      "description": "Secret Access Key for Google",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/azure_access_key_id": {
-      "display_name": "AZURE_ACCESS_KEY_ID",
-      "description": "Access Key ID for Azure",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
+        "monkey::setup_rest_connection"
+      ]
     },
     "monkey/fog/azure_secret_access_key": {
-      "display_name": "AZURE_SECRET_ACCESS_KEY",
+      "calculated": false,
+      "type": "string",
       "description": "Secret Access Key for Azure",
       "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
+      "display_name": "AZURE_SECRET_ACCESS_KEY",
       "choice": [
 
       ],
-      "calculated": false,
-      "type": "string"
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
     },
-    "monkey/fog/openstack_access_key_id": {
-      "display_name": "OPENSTACK_FOLSOM_ACCESS_KEY_ID",
-      "description": "Access Key ID for Openstack Folsom",
+    "monkey/fog/rackspace_managed_uk_auth_key": {
+      "calculated": false,
+      "type": "string",
+      "description": "Auth Key for Rackspace Managed UK Test Account",
       "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
+      "display_name": "RACKSPACE_MANAGED_AUTH_KEY_UK_TEST",
       "choice": [
 
       ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/openstack_secret_access_key": {
-      "display_name": "OPENSTACK_FOLSOM_SECRET_ACCESS_KEY",
-      "description": "Secret Access Key for Openstack Folsom",
-      "required": "required",
       "recipes": [
         "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/openstack_auth_url": {
-      "display_name": "OPENSTACK_AUTH_URL",
-      "description": "Auth URL for Openstack Folsom",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/raxprivatev3_access_key_id": {
-      "display_name": "RACKSPACE_PRIVATEV3_ACCESS_KEY_ID",
-      "description": "Access Key ID for Rackspace Private V3",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/raxprivatev3_secret_access_key": {
-      "display_name": "RACKSPACE_PRIVATEV3_SECRET_ACCESS_KEY",
-      "description": "Secret Access Key for Rackspace Private V3",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/raxprivatev3_auth_url": {
-      "display_name": "RACKSPACE_PRIVATEV3_AUTH_URL",
-      "description": "Auth URL for Rackspace Private V3",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/hp_access_key_id": {
-      "display_name": "HP_ACCESS_KEY_ID",
-      "description": "Access Key ID for HP",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/hp_secret_access_key": {
-      "display_name": "HP_SECRET_ACCESS_KEY",
-      "description": "Secret Access Key for HP",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/fog/hp_auth_url": {
-      "display_name": "HP_AUTH_URL",
-      "description": "Auth URL for HP",
-      "required": "required",
-      "recipes": [
-        "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
+      ]
     },
     "monkey/fog/s3_bucket": {
-      "display_name": "S3_BUCKET_NAME",
+      "calculated": false,
+      "type": "string",
       "description": "The Name of the S3 Bucket to Store Monkey Reports",
       "required": "required",
+      "display_name": "S3_BUCKET_NAME",
+      "choice": [
+
+      ],
       "recipes": [
         "monkey::update_fog_credentials"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
+      ]
     },
-    "monkey/git/user": {
-      "display_name": "Git Username",
-      "description": "Git Username to be used with github",
+    "monkey/fog/rackspace_managed_auth_key": {
+      "calculated": false,
+      "type": "string",
+      "description": "Auth Key for Rackspace Managed US Test Account",
       "required": "required",
-      "recipes": [
-        "monkey::setup_git"
-      ],
+      "display_name": "RACKSPACE_MANAGED_AUTH_KEY_US_TEST",
       "choice": [
 
       ],
-      "calculated": false,
-      "type": "string"
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
     },
-    "monkey/git/email": {
-      "display_name": "Git Email",
-      "description": "Git email address to be used with github",
+    "monkey/fog/aws_publish_key": {
+      "calculated": false,
+      "type": "string",
+      "description": "Access Key ID for AWS Publish Account",
       "required": "required",
-      "recipes": [
-        "monkey::setup_git"
-      ],
+      "display_name": "AWS_PUBLISH_KEY",
       "choice": [
 
       ],
-      "calculated": false,
-      "type": "string"
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
     },
-    "monkey/git/ssh_key": {
-      "display_name": "SSH key for Git",
-      "description": "SSH key for using with Git",
+    "monkey/rocketmonkey/repo_branch": {
+      "calculated": false,
+      "type": "string",
+      "description": "Git branch for VirtualMonkey project",
       "required": "required",
-      "recipes": [
-        "monkey::setup_git"
-      ],
+      "display_name": "RocketMonkey Repo Branch",
       "choice": [
 
       ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/git/host_name": {
-      "display_name": "Git Hostname",
-      "description": "Git Hostname for adding to ssh config",
-      "required": "required",
       "recipes": [
-        "monkey::setup_git"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
+        "monkey::setup_rocketmonkey"
+      ]
     },
-    "monkey/rest/right_passwd": {
-      "display_name": "RightScale password",
-      "description": "RightScale password to connect to the API",
-      "required": "required",
-      "recipes": [
-        "monkey::setup_rest_connection"
-      ],
-      "choice": [
-
-      ],
+    "monkey/rest/azure_hack_sleep_seconds": {
       "calculated": false,
-      "type": "string"
-    },
-    "monkey/rest/right_email": {
-      "display_name": "RightScale Email",
-      "description": "RightScale email address to connect to the API",
-      "required": "required",
-      "recipes": [
-        "monkey::setup_rest_connection"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/rest/right_acct_id": {
-      "display_name": "RightScale account ID",
-      "description": "RightScale account ID used to connect to the API",
-      "required": "required",
-      "recipes": [
-        "monkey::setup_rest_connection"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/rest/right_subdomain": {
-      "display_name": "RightScale Subdomain",
-      "description": "RightScale subdomain. Example. 'my', 'moo.test'",
-      "required": "required",
-      "recipes": [
-        "monkey::setup_rest_connection"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/rest/ssh_key": {
-      "display_name": "API user key",
-      "description": "API user key used by rest_connection",
-      "required": "required",
-      "recipes": [
-        "monkey::setup_rest_connection"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/rest/ssh_pub_key": {
-      "display_name": "Public key of Jenkins master",
-      "description": "Public key of Jenkins master that should be given access",
+      "type": "string",
+      "description": "Number of seconds to sleep between attempts on relaunches",
       "required": "optional",
-      "recipes": [
-        "monkey::setup_rest_connection"
-      ],
+      "display_name": "Azure Hack Sleep Seconds",
       "choice": [
 
       ],
-      "calculated": false,
-      "type": "string"
+      "default": "60",
+      "recipes": [
+        "monkey::setup_rest_connection"
+      ]
     },
-    "monkey/rest/repo_url": {
-      "display_name": "Rest connection Repo URL",
-      "description": "Git URL for checking out rest_connection project",
+    "monkey/fog/aws_secret_access_key_test": {
+      "calculated": false,
+      "type": "string",
+      "description": "Secret Access Key for AWS Test Account",
       "required": "required",
-      "recipes": [
-        "monkey::setup_rest_connection"
-      ],
+      "display_name": "AWS_SECRET_ACCESS_KEY_TEST_ACCT",
       "choice": [
 
       ],
-      "calculated": false,
-      "type": "string"
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
     },
-    "monkey/rest/repo_branch": {
-      "display_name": "Rest connection Repo Branch",
-      "description": "Git branch for checking out rest_connection project",
+    "monkey/fog/rackspace_api_uk_key_test": {
+      "calculated": false,
+      "type": "string",
+      "description": "API Key for Rackspace UK Test Account",
       "required": "required",
-      "recipes": [
-        "monkey::setup_rest_connection"
-      ],
+      "display_name": "RACKSPACE_API_UK_KEY_TEST",
       "choice": [
 
       ],
-      "calculated": false,
-      "type": "string"
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
     },
     "monkey/rest/azure_hack_on": {
-      "display_name": "Azure Hack ON/OFF",
+      "calculated": false,
+      "type": "string",
       "description": "Whether to enable/disable Azure retry hack",
       "required": "optional",
+      "display_name": "Azure Hack ON/OFF",
       "choice": [
         "true",
         "false"
@@ -634,42 +166,599 @@
       "default": "true",
       "recipes": [
         "monkey::setup_rest_connection"
-      ],
-      "calculated": false,
-      "type": "string"
+      ]
     },
-    "monkey/rest/azure_hack_retry_count": {
-      "display_name": "Azure Hack Retry Count",
-      "description": "Number of retries for Azure launch failures. Example: 5",
-      "required": "optional",
-      "default": "5",
-      "recipes": [
-        "monkey::setup_rest_connection"
-      ],
+    "monkey/rest/right_subdomain": {
+      "calculated": false,
+      "type": "string",
+      "description": "RightScale subdomain. Example. 'my', 'moo.test'",
+      "required": "required",
+      "display_name": "RightScale Subdomain",
       "choice": [
 
       ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/rest/azure_hack_sleep_seconds": {
-      "display_name": "Azure Hack Sleep Seconds",
-      "description": "Number of seconds to sleep between attempts on relaunches",
-      "required": "optional",
-      "default": "60",
       "recipes": [
         "monkey::setup_rest_connection"
-      ],
+      ]
+    },
+    "monkey/rest/right_email": {
+      "calculated": false,
+      "type": "string",
+      "description": "RightScale email address to connect to the API",
+      "required": "required",
+      "display_name": "RightScale Email",
       "choice": [
 
       ],
+      "recipes": [
+        "monkey::setup_rest_connection"
+      ]
+    },
+    "monkey/fog/aws_access_key_id_rstemp": {
       "calculated": false,
-      "type": "string"
+      "type": "string",
+      "description": "Access Key ID for AWS RS ServerTemplates Account",
+      "required": "required",
+      "display_name": "AWS_ACCESS_KEY_ID_RSTEMP",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
+    },
+    "monkey/fog/openstack_auth_url": {
+      "calculated": false,
+      "type": "string",
+      "description": "Auth URL for Openstack Folsom",
+      "required": "required",
+      "display_name": "OPENSTACK_AUTH_URL",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
+    },
+    "monkey/fog/openstack_access_key_id": {
+      "calculated": false,
+      "type": "string",
+      "description": "Access Key ID for Openstack Folsom",
+      "required": "required",
+      "display_name": "OPENSTACK_FOLSOM_ACCESS_KEY_ID",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
+    },
+    "monkey/fog/rackspace_managed_uk_username": {
+      "calculated": false,
+      "type": "string",
+      "description": "Username for Rackspace Managed UK Test Account",
+      "required": "required",
+      "display_name": "RACKSPACE_MANAGED_USERNAME_UK_TEST",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
+    },
+    "monkey/virtualmonkey/windows_admin_password": {
+      "calculated": false,
+      "type": "string",
+      "description": "The Administrator password for connecting to Windows servers",
+      "required": "required",
+      "display_name": "Windows Administrator Password",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::setup_virtualmonkey"
+      ]
+    },
+    "monkey/rest/repo_branch": {
+      "calculated": false,
+      "type": "string",
+      "description": "Git branch for checking out rest_connection project",
+      "required": "required",
+      "display_name": "Rest connection Repo Branch",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::setup_rest_connection"
+      ]
+    },
+    "monkey/fog/softlayer_api_key": {
+      "calculated": false,
+      "type": "string",
+      "description": "API Key for Softlayer",
+      "required": "required",
+      "display_name": "SOFTLAYER_SECRET_ACCESS_KEY",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
+    },
+    "monkey/fog/hp_auth_url": {
+      "calculated": false,
+      "type": "string",
+      "description": "Auth URL for HP",
+      "required": "required",
+      "display_name": "HP_AUTH_URL",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
+    },
+    "monkey/fog/openstack_secret_access_key": {
+      "calculated": false,
+      "type": "string",
+      "description": "Secret Access Key for Openstack Folsom",
+      "required": "required",
+      "display_name": "OPENSTACK_FOLSOM_SECRET_ACCESS_KEY",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
+    },
+    "monkey/virtualmonkey/monkey_repo_branch": {
+      "calculated": false,
+      "type": "string",
+      "description": "Git branch for VirtualMonkey",
+      "required": "required",
+      "display_name": "VirtualMonkey Repo Branch",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::setup_virtualmonkey"
+      ]
+    },
+    "monkey/git/user": {
+      "calculated": false,
+      "type": "string",
+      "description": "Git Username to be used with github",
+      "required": "required",
+      "display_name": "Git Username",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::setup_git"
+      ]
+    },
+    "monkey/fog/rackspace_username": {
+      "calculated": false,
+      "type": "string",
+      "description": "Username for Rackspace",
+      "required": "required",
+      "display_name": "RACKSPACE_USERNAME",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
+    },
+    "monkey/fog/google_access_key_id": {
+      "calculated": false,
+      "type": "string",
+      "description": "Access Key ID for Google",
+      "required": "required",
+      "display_name": "GC_ACCESS_KEY_ID",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
+    },
+    "monkey/virtualmonkey/collateral_repo_branch": {
+      "calculated": false,
+      "type": "string",
+      "description": "Git branch for collateral project",
+      "required": "required",
+      "display_name": "Collateral Repo Branch",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::setup_virtualmonkey"
+      ]
+    },
+    "monkey/test_config/knife_pem_key": {
+      "calculated": false,
+      "type": "string",
+      "description": "The PEM key used by the knife commands to communicate with hosted chef server",
+      "required": "required",
+      "display_name": "Knife PEM Key",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::setup_test_config"
+      ]
+    },
+    "monkey/fog/raxprivatev3_access_key_id": {
+      "calculated": false,
+      "type": "string",
+      "description": "Access Key ID for Rackspace Private V3",
+      "required": "required",
+      "display_name": "RACKSPACE_PRIVATEV3_ACCESS_KEY_ID",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
+    },
+    "monkey/fog/hp_secret_access_key": {
+      "calculated": false,
+      "type": "string",
+      "description": "Secret Access Key for HP",
+      "required": "required",
+      "display_name": "HP_SECRET_ACCESS_KEY",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
+    },
+    "monkey/fog/raxprivatev3_auth_url": {
+      "calculated": false,
+      "type": "string",
+      "description": "Auth URL for Rackspace Private V3",
+      "required": "required",
+      "display_name": "RACKSPACE_PRIVATEV3_AUTH_URL",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
+    },
+    "monkey/virtualmonkey/right_api_objects_repo_url": {
+      "calculated": false,
+      "type": "string",
+      "description": "Git repository URL for Right API Objects",
+      "required": "required",
+      "display_name": "Right API Objects Repo URL",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::setup_virtualmonkey"
+      ]
+    },
+    "monkey/virtualmonkey/monkey_repo_url": {
+      "calculated": false,
+      "type": "string",
+      "description": "Git repository URL for VirtualMonkey",
+      "required": "required",
+      "display_name": "VirtualMonkey Repo URL",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::setup_virtualmonkey"
+      ]
+    },
+    "monkey/fog/aws_secret_access_key": {
+      "calculated": false,
+      "type": "string",
+      "description": "Secret Access Key for AWS",
+      "required": "required",
+      "display_name": "AWS_SECRET_ACCESS_KEY",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
+    },
+    "monkey/fog/rackspace_managed_username": {
+      "calculated": false,
+      "type": "string",
+      "description": "Username for Rackspace Managed US Test Account",
+      "required": "required",
+      "display_name": "RACKSPACE_MANAGED_USERNAME_US_TEST",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
+    },
+    "monkey/fog/softlayer_username": {
+      "calculated": false,
+      "type": "string",
+      "description": "Username for Softlayer",
+      "required": "required",
+      "display_name": "SOFTLAYER_ACCESS_KEY_ID",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
+    },
+    "monkey/rest/right_acct_id": {
+      "calculated": false,
+      "type": "string",
+      "description": "RightScale account ID used to connect to the API",
+      "required": "required",
+      "display_name": "RightScale account ID",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::setup_rest_connection"
+      ]
+    },
+    "monkey/fog/aws_access_key_id": {
+      "calculated": false,
+      "type": "string",
+      "description": "Access Key ID for AWS",
+      "required": "required",
+      "display_name": "AWS_ACCESS_KEY_ID",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
+    },
+    "monkey/fog/aws_access_key_id_test": {
+      "calculated": false,
+      "type": "string",
+      "description": "Access Key ID for AWS Test Account",
+      "required": "required",
+      "display_name": "AWS_ACCESS_KEY_ID_TEST_ACCT",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
+    },
+    "monkey/fog/aws_publish_secret_key": {
+      "calculated": false,
+      "type": "string",
+      "description": "Secret Access Key for AWS Publish Account",
+      "required": "required",
+      "display_name": "AWS_PUBLISH_SECRET_KEY",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
+    },
+    "monkey/fog/rackspace_auth_url_uk_test": {
+      "calculated": false,
+      "type": "string",
+      "description": "Auth URL for Rackspace UK Test Account",
+      "required": "required",
+      "display_name": "RACKSPACE_AUTH_URL_UK_TEST",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
+    },
+    "monkey/fog/hp_access_key_id": {
+      "calculated": false,
+      "type": "string",
+      "description": "Access Key ID for HP",
+      "required": "required",
+      "display_name": "HP_ACCESS_KEY_ID",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
+    },
+    "monkey/virtualmonkey/right_api_objects_repo_branch": {
+      "calculated": false,
+      "type": "string",
+      "description": "Git branch for Right API Objects",
+      "required": "required",
+      "display_name": "Right API Objects Repo Branch",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::setup_virtualmonkey"
+      ]
+    },
+    "monkey/rest/ssh_pub_key": {
+      "calculated": false,
+      "type": "string",
+      "description": "Public key of Jenkins master that should be given access",
+      "required": "optional",
+      "display_name": "Public key of Jenkins master",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::setup_rest_connection"
+      ]
+    },
+    "monkey/fog/raxprivatev3_secret_access_key": {
+      "calculated": false,
+      "type": "string",
+      "description": "Secret Access Key for Rackspace Private V3",
+      "required": "required",
+      "display_name": "RACKSPACE_PRIVATEV3_SECRET_ACCESS_KEY",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
+    },
+    "monkey/fog/rackspace_uk_username_test": {
+      "calculated": false,
+      "type": "string",
+      "description": "Username for Rackspace UK Test Account",
+      "required": "required",
+      "display_name": "RACKSPACE_UK_USERNAME_TEST",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
+    },
+    "monkey/rocketmonkey/repo_url": {
+      "calculated": false,
+      "type": "string",
+      "description": "Git repository URL for RocketMonkey",
+      "required": "required",
+      "display_name": "RocketMonkey Repo URL",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::setup_rocketmonkey"
+      ]
+    },
+    "monkey/rest/repo_url": {
+      "calculated": false,
+      "type": "string",
+      "description": "Git URL for checking out rest_connection project",
+      "required": "required",
+      "display_name": "Rest connection Repo URL",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::setup_rest_connection"
+      ]
+    },
+    "monkey/rest/ssh_key": {
+      "calculated": false,
+      "type": "string",
+      "description": "API user key used by rest_connection",
+      "required": "required",
+      "display_name": "API user key",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::setup_rest_connection"
+      ]
+    },
+    "monkey/rest/right_passwd": {
+      "calculated": false,
+      "type": "string",
+      "description": "RightScale password to connect to the API",
+      "required": "required",
+      "display_name": "RightScale password",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::setup_rest_connection"
+      ]
+    },
+    "monkey/git/host_name": {
+      "calculated": false,
+      "type": "string",
+      "description": "Git Hostname for adding to ssh config",
+      "required": "required",
+      "display_name": "Git Hostname",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::setup_git"
+      ]
+    },
+    "monkey/git/email": {
+      "calculated": false,
+      "type": "string",
+      "description": "Git email address to be used with github",
+      "required": "required",
+      "display_name": "Git Email",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::setup_git"
+      ]
+    },
+    "monkey/fog/azure_access_key_id": {
+      "calculated": false,
+      "type": "string",
+      "description": "Access Key ID for Azure",
+      "required": "required",
+      "display_name": "AZURE_ACCESS_KEY_ID",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
+    },
+    "monkey/fog/rackspace_api_key": {
+      "calculated": false,
+      "type": "string",
+      "description": "API Key for Rackspace",
+      "required": "required",
+      "display_name": "RACKSPACE_API_KEY",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::update_fog_credentials"
+      ]
+    },
+    "monkey/test/smtp_username": {
+      "calculated": false,
+      "type": "string",
+      "description": "The SMTP username for lamp's check smtp test",
+      "required": "required",
+      "display_name": "SMTP Username",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::setup_test_config"
+      ]
+    },
+    "monkey/virtualmonkey/collateral_repo_url": {
+      "calculated": false,
+      "type": "string",
+      "description": "Git URL for collateral project",
+      "required": "required",
+      "display_name": "Collateral Repo URL",
+      "choice": [
+
+      ],
+      "recipes": [
+        "monkey::setup_virtualmonkey"
+      ]
     },
     "monkey/rest/api_logging": {
-      "display_name": "API Logging",
+      "calculated": false,
+      "type": "string",
       "description": "Whether to enable/disable API logging",
       "required": "optional",
+      "display_name": "API Logging",
       "choice": [
         "true",
         "false"
@@ -677,176 +766,87 @@
       "default": "false",
       "recipes": [
         "monkey::setup_rest_connection"
-      ],
-      "calculated": false,
-      "type": "string"
+      ]
     },
-    "monkey/test_config/knife_pem_key": {
-      "display_name": "Knife PEM Key",
-      "description": "The PEM key used by the knife commands to communicate with hosted chef server",
+    "monkey/git/ssh_key": {
+      "calculated": false,
+      "type": "string",
+      "description": "SSH key for using with Git",
       "required": "required",
-      "recipes": [
-        "monkey::setup_test_config"
-      ],
+      "display_name": "SSH key for Git",
       "choice": [
 
       ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/virtualmonkey/monkey_repo_url": {
-      "display_name": "VirtualMonkey Repo URL",
-      "description": "Git repository URL for VirtualMonkey",
-      "required": "required",
       "recipes": [
-        "monkey::setup_virtualmonkey"
-      ],
+        "monkey::setup_git"
+      ]
+    },
+    "monkey/fog/google_secret_access_key": {
+      "calculated": false,
+      "type": "string",
+      "description": "Secret Access Key for Google",
+      "required": "required",
+      "display_name": "GC_SECRET_ACCESS_KEY",
       "choice": [
 
       ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/virtualmonkey/monkey_repo_branch": {
-      "display_name": "VirtualMonkey Repo Branch",
-      "description": "Git branch for VirtualMonkey",
-      "required": "required",
       "recipes": [
-        "monkey::setup_virtualmonkey"
-      ],
+        "monkey::update_fog_credentials"
+      ]
+    },
+    "monkey/fog/softlayer_auth_url": {
+      "calculated": false,
+      "type": "string",
+      "description": "Auth URL for Softlayer",
+      "required": "required",
+      "display_name": "SOFTLAYER_AUTH_URL",
       "choice": [
 
       ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/virtualmonkey/collateral_repo_url": {
-      "display_name": "Collateral Repo URL",
-      "description": "Git URL for collateral project",
-      "required": "required",
       "recipes": [
-        "monkey::setup_virtualmonkey"
-      ],
+        "monkey::update_fog_credentials"
+      ]
+    },
+    "monkey/fog/aws_secret_access_key_rstemp": {
+      "calculated": false,
+      "type": "string",
+      "description": "Secret Access Key for the AWS RS ServerTemplates Account",
+      "required": "required",
+      "display_name": "AWS_SECRET_ACCESS_KEY_RSTEMP",
       "choice": [
 
       ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/virtualmonkey/collateral_repo_branch": {
-      "display_name": "Collateral Repo Branch",
-      "description": "Git branch for collateral project",
-      "required": "required",
       "recipes": [
-        "monkey::setup_virtualmonkey"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/virtualmonkey/right_api_objects_repo_url": {
-      "display_name": "Right API Objects Repo URL",
-      "description": "Git repository URL for Right API Objects",
-      "required": "required",
-      "recipes": [
-        "monkey::setup_virtualmonkey"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/virtualmonkey/right_api_objects_repo_branch": {
-      "display_name": "Right API Objects Repo Branch",
-      "description": "Git branch for Right API Objects",
-      "required": "required",
-      "recipes": [
-        "monkey::setup_virtualmonkey"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/virtualmonkey/windows_admin_password": {
-      "display_name": "Windows Administrator Password",
-      "description": "The Administrator password for connecting to Windows servers",
-      "required": "required",
-      "recipes": [
-        "monkey::setup_virtualmonkey"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/rocketmonkey/repo_url": {
-      "display_name": "RocketMonkey Repo URL",
-      "description": "Git repository URL for RocketMonkey",
-      "required": "required",
-      "recipes": [
-        "monkey::setup_rocketmonkey"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/rocketmonkey/repo_branch": {
-      "display_name": "RocketMonkey Repo Branch",
-      "description": "Git branch for VirtualMonkey project",
-      "required": "required",
-      "recipes": [
-        "monkey::setup_rocketmonkey"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/test/smtp_username": {
-      "display_name": "SMTP Username",
-      "description": "The SMTP username for lamp's check smtp test",
-      "required": "required",
-      "recipes": [
-        "monkey::setup_test_config"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "monkey/test/smtp_password": {
-      "display_name": "SMTP Password",
-      "description": "The SMTP password for lamp's check smtp test",
-      "required": "required",
-      "recipes": [
-        "monkey::setup_test_config"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
+        "monkey::update_fog_credentials"
+      ]
     }
   },
+  "long_description": "# Monkey Cookbook\n\n## DESCRIPTION:\n\nThis cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).\n\nThis cookbook provides recipes to setup a VirtualMonkey test environment for\ntesting RightScale ServerTemplates.\n\n## REQUIREMENTS:\n\nRequires a virtual machine launched from a RightScale managed RightImage.\n\n## COOKBOOK DEPENDENCIES:\n\nPlease see the `metadata.rb` for the latest dependencies.\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## SETUP/USAGE:\n\nTo setup the VirtualMonkey test environment, include the recipes in the\nfollowing order.\n\n1. `monkey::setup_git`\n2. `monkey::setup_ruby`\n3. `monkey::setup_rest_connection`\n4. `monkey::setup_virtualmonkey`\n5. `monkey::setup_test_config`\n6. `monkey::update_fog_credentials`\n\n## DETAILS:\n\n### Attributes:\n\nThese are settings used in recipes and templates. Default values are noted.\n\nNote: Only \"internel\" cookbook attributes are described here. Descriptions of\nattributes which have inputs can be found in the metadata.rb file.\n\n#### General attributes\n\n* `node[:monkey][:rest][:gem_packages]` - List of Rubygems required by the\n  rest_connection library along with the version information.\n* `node[:monkey][:rest][packages]` - List of packages required for the\n  rest_connection library.\n* `node[:monkey][:virtualmonkey][:packages]` - List of packages required for\n  the virtualmonkey library.\n\n### Recipes:\n\n1. `monkey::setup_git` - This recipe sets up the git credentials and\n   configurations to checkout source code from git.\n2. `monkey::setup_ruby` - The VirtualMonkey doesn't support Ruby 1.9.x yet. So\n   this recipe will remove Ruby 1.9.x and install Ruby 1.8.7.\n3. `monkey::setup_rest_connection` - This recipe will setup the rest_connection\n   libraries which is used for communicating with RightScale API.\n4. `monkey::setup_virtualmonkey` - This recipe will setup the virtualmonkey\n   test framework.\n5. `monkey::setup_rocketmonkey` - This recipe will setup rocketmonkey and also\n   install the jenkins server.\n6. `monkey::setup_test_config` - This recipe will setup test specific\n   gems/packages.\n7. `monkey::update_fog_credentials` - This recipe will create/update the fog\n   credentials file with the inputs provided.\n\n### Templates:\n\n* `rest_api_config.yaml.erb` - Configuration for the rest_connection library.\n* `sshconfig.erb` - Configuration for SSH connections.\n* `gitconfig.erb` - Configuration for using Git.\n* `fog.erb` - Cloud credentials to be used with the Fog library.\n* `rocketmonkey_config.yaml.erb` - The RocketMonkey configuration file.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to\nthe RightScale Terms of Service available at http://www.rightscale.com/terms.php\nand, if applicable, other agreements such as a RightScale Master Subscription\nAgreement.\n",
   "groupings": {
   },
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "providing": {
+  },
+  "description": "Installs/Configures Virtual Monkey",
+  "version": "13.5.0",
+  "replacing": {
+  },
+  "maintainer": "RightScale, Inc.",
+  "recommendations": {
+  },
+  "name": "monkey",
   "recipes": {
-    "monkey::setup_git": "Setup Git configuration for virtualmonkey.",
-    "monkey::setup_rest_connection": "Setup the rest_connection library.",
     "monkey::setup_virtualmonkey": "Setup virtualmonkey.",
     "monkey::setup_rocketmonkey": "Setup rocketmonkey.",
     "monkey::update_fog_credentials": "Setup or update existing credentials for fog configuration.",
+    "monkey::setup_rest_connection": "Setup the rest_connection library.",
+    "monkey::setup_git": "Setup Git configuration for virtualmonkey.",
     "monkey::setup_test_config": "Setup test specific configuration."
   },
-  "version": "13.5.0"
+  "dependencies": {
+    "jenkins": ">= 0.0.0",
+    "rightscale": ">= 0.0.0"
+  },
+  "conflicting": {
+  }
 }
