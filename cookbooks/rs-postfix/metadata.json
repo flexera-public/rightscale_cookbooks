@@ -1,35 +1,35 @@
 {
+  "replacing": {
+  },
+  "providing": {
+  },
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "description": "Installs and configures rs-postfix",
+  "long_description": "# RightScale Postfix Wrapper Cookbook\n\n## DESCRIPTION:\n\nThis cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).\n\nWrapper cookbook using opscode community cookbook, 'postfix'.\n\n## REQUIREMENTS:\n\n* 'postfix' opscode community cookbook\n* Ability to send outgoing traffic to port 25.\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## USAGE:\n\nOnly the `setup_local_delivery` recipe is used.  It allows the sending of \nlocal mail by accepting SMTP connections on localhost.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
   "suggestions": {
+  },
+  "maintainer_email": "support@rightscale.com",
+  "name": "rs-postfix",
+  "attributes": {
+  },
+  "recommendations": {
+  },
+  "platforms": {
+    "ubuntu": ">= 0.0.0",
+    "redhat": ">= 0.0.0",
+    "centos": ">= 0.0.0"
+  },
+  "maintainer": "RightScale, Inc.",
+  "version": "13.5.0",
+  "conflicting": {
   },
   "dependencies": {
     "rightscale": ">= 0.0.0",
     "postfix": ">= 0.0.0"
   },
-  "maintainer": "RightScale, Inc.",
-  "conflicting": {
-  },
-  "description": "Installs and configures rs-postfix",
-  "maintainer_email": "support@rightscale.com",
-  "version": "13.5.0",
-  "providing": {
-  },
-  "groupings": {
-  },
-  "replacing": {
-  },
-  "recommendations": {
-  },
-  "license": "Copyright RightScale, Inc. All rights reserved.",
-  "name": "rs-postfix",
-  "attributes": {
-  },
   "recipes": {
     "rs-postfix::setup_local_delivery": "Configures postfix to deliver local mail by accepting SMTP connections on localhost."
   },
-  "platforms": {
-    "centos": ">= 0.0.0",
-    "ubuntu": ">= 0.0.0",
-    "redhat": ">= 0.0.0"
-  },
-  "long_description": "# RightScale Postfix Wrapper Cookbook\n\n## DESCRIPTION:\n\nThis cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).\n\nWrapper cookbook using opscode community cookbook, 'postfix'.\n\n## REQUIREMENTS:\n\n* 'postfix' opscode community cookbook\n* Ability to send outgoing traffic to port 25.\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## USAGE:\n\nOnly the `setup_local_delivery` recipe is used.  It allows the sending of \nlocal mail by accepting SMTP connections on localhost.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n"
+  "groupings": {
+  }
 }

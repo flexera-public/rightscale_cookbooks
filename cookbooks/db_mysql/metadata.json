@@ -1,249 +1,249 @@
 {
-  "suggestions": {
+  "providing": {
   },
-  "recommendations": {
-  },
-  "platforms": {
-    "centos": ">= 0.0.0",
-    "ubuntu": ">= 0.0.0",
-    "redhat": ">= 0.0.0"
-  },
-  "replacing": {
-  },
-  "conflicting": {
-  },
-  "dependencies": {
-    "block_device": ">= 0.0.0",
-    "sys_dns": ">= 0.0.0",
-    "db": ">= 0.0.0",
-    "rightscale": ">= 0.0.0"
-  },
+  "long_description": "# RightScale MySQL Database Cookbook\n\n## DESCRIPTION:\n\nThis cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).\n\nProvides the MySQL implementation of the 'db' resource to install and manage\nMySQL database stand-alone servers and clients.\n\n## REQUIREMENTS:\n\n* Requires a server launched from a RightScale managed RightImage.\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see `metadata.rb` file for the latest dependencies.\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## SETUP:\n\n* To setup only the database client, place `db::default` recipe into\n  your runlist. This will pull in generic client inputs, provide provider\n  selection input and install client. Set db/provider_type input in\n  RightScale ServerTemplate to set provider and version for 'db' resource.\n* To setup a MySQL database client and server, place the following recipes\n  in order to your runlist:\n\n    db_mysql::setup_server_<version>\n      loads the MySQL provider, tuning parameters, as well as other\n      MySQL-specific attributes into the node as inputs.\n\n    db::install_server\n      sets up generic server and client inputs. This will also include\n      db::default recipe which installs the client.\n\n  For example: To set up and install MySQL 5.5 client and server\n\n    db_mysql::setup_server_5_5\n    db::install_server\n\n## USAGE:\n\n### Basic usage\n\nOnce setup, use the recipes in the 'db' cookbook to install and manage your\nMySQL database servers and clients. See the `db/README.md` for usage details.\n\n### MySQL Tuning and my.cnf\n\nDifferent tuning parameters can be applied by using a custom `my.cnf.erb`\ntemplate or by setting the values in the attributes file. For more information\non how to change the default configuration, please see:\n[Customize a Chef-based ServerTemplate](http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/ServerTemplate_Development/02-Customize_a_Chef-based_ServerTemplate).\n\n## DETAILS:\n\n### General\n\nThe 'db' implementation is defined by a Lightweight Provider, which can be\nfound in the `providers/default.rb` file.\n\nThe 'read_only' flag in the MySQL configuration is set by the definition\n`db_mysql_set_read_only`. This flag is set to 'false' by default\nand changed to 'true' while initializing a slave server, and set back to\n'false' when the slave is promoted to a master server.\n\n### Attributes:\n\nThese are settings used in recipes and templates. Default values are noted.\n\nNote: Only \"internal\" cookbook attributes are described here. Descriptions of\nattributes which have inputs can be found in the metadata.rb cookbook file. For\ngeneric db attributes, refer to the db cookbook readme.\n\n##### General attributes\n\n* `node[:db_mysql][:collectd_master_slave_mode]` -\n  The mode for collectd in MySQL server.\n* `node[:db_mysql][:port]` -\n  The port on which MySQL server listens.\n* `node[:db_mysql][:log_bin_enabled]` -\n  Determines whether binary logging is enabled or disabled.\n* `node[:db_mysql][:datadir]` -\n  The data directory for MySQL server where the database contents are stored.\n* `node[:db_mysql][:bind_address]` -\n  The IP address that MySQL server uses to bind. It is set to \"0.0.0.0\" allowing\n  mysql clients/GUI tools to connect from the outside.\n* `node[:db_mysql][:dump][:storage_account_provider]` -\n  The storage account provided MySQL dump backup.\n* `node[:db_mysql][:dump][:storage_account_id]` -\n  The storage account ID for MySQL dump backup.\n* `node[:db_mysql][:dump][:storage_account_secret]` -\n  The storage account secret for MySQL dump backup.\n* `node[:db_mysql][:dump][:container]` -\n  The container name to be used for dump backup.\n* `node[:db_mysql][:dump][:prefix]` -\n  The prefix to be used with container name.\n\n##### System tuning parameters\n\n* `node[:db_mysql][:file_ulimit]` -\n  A tuning parameter to set maximum open files for mysql and root users.\n* `node[:db_mysql][:backup][:slave][:max_allowed_lag]` -\n  Maximum allowed lag time for MySQL slave backup.\n\n##### Platform dependent\n\n* `node[:db_mysql][:log]` - The log file location for MySQL server.\n* `node[:db_mysql][:log_error]` - The error log file location for MySQL server.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
   "recipes": {
     "db_mysql::setup_server_5_5": "Sets the DB MySQL provider. Sets version 5.5 and node variables specific to MySQL 5.5.",
     "db_mysql::setup_server_5_1": "Sets the DB MySQL provider. Sets version 5.1 and node variables specific to MySQL 5.1."
   },
+  "suggestions": {
+  },
+  "maintainer": "RightScale, Inc.",
+  "maintainer_email": "support@rightscale.com",
+  "groupings": {
+  },
+  "description": "Provides the MySQL implementation of the 'db' resource to install and manage MySQL database stand-alone servers and clients.",
+  "version": "13.5.0",
+  "conflicting": {
+  },
+  "recommendations": {
+  },
+  "dependencies": {
+    "db": ">= 0.0.0",
+    "block_device": ">= 0.0.0",
+    "rightscale": ">= 0.0.0",
+    "sys_dns": ">= 0.0.0"
+  },
+  "license": "Copyright RightScale, Inc. All rights reserved.",
   "attributes": {
-    "db_mysql/ssl/slave_certificate": {
+    "db_mysql/tmpdir": {
       "type": "string",
+      "calculated": false,
       "recipes": [
         "db_mysql::setup_server_5_1",
         "db_mysql::setup_server_5_5"
       ],
-      "description": "The name of your Slave SSL Certificate. This is one of the 5 inputs needed to do secured replication. Example: cred:SLAVE_CERT. Please DO NOT use this input for LAMP ServerTemplates.",
-      "default": "",
+      "default": "/mnt/ephemeral/mysqltmp",
+      "description": "Defines the location of your MySQL temp directory. Sets the 'tmpdir' variable in the MySQL config file. Example: /tmp",
       "required": "optional",
-      "display_name": "Slave SSL Certificate",
       "choice": [
 
       ],
-      "calculated": false
+      "display_name": "MySQL Temp Directory Destination"
     },
-    "db_mysql/binlog_format": {
+    "db_mysql/ssl/slave_key": {
       "type": "string",
+      "calculated": false,
       "recipes": [
         "db_mysql::setup_server_5_1",
         "db_mysql::setup_server_5_5"
       ],
-      "description": "Defines the format of your MySQL stored binlog files. Sets the 'binlog_format' option in the MySQL config file. Accepted options: STATEMENT, ROW, and MIXED. Example: MIXED",
-      "default": "MIXED",
+      "default": "",
+      "description": "The name of your Slave SSL Key. This is one of the 5 inputs needed to do secured replication. Example: cred:SLAVE_KEY. Please DO NOT use this input for LAMP ServerTemplates.",
       "required": "optional",
-      "display_name": "MySQL Binlog Format",
+      "choice": [
+
+      ],
+      "display_name": "Slave SSL Key"
+    },
+    "db_mysql/ssl/master_key": {
+      "type": "string",
+      "calculated": false,
+      "recipes": [
+        "db_mysql::setup_server_5_1",
+        "db_mysql::setup_server_5_5"
+      ],
+      "default": "",
+      "description": "The name of your Master SSL Key. This is one of the 5 inputs needed to do secured replication. Example: cred:MASTER_KEY. Please DO NOT use this input for LAMP ServerTemplates.",
+      "required": "optional",
+      "choice": [
+
+      ],
+      "display_name": "Master SSL Key"
+    },
+    "db_mysql/expire_logs_days": {
+      "type": "string",
+      "calculated": false,
+      "recipes": [
+        "db_mysql::setup_server_5_1",
+        "db_mysql::setup_server_5_5"
+      ],
+      "default": "2",
+      "description": "Defines number of days to wait until the log expires. Default: 2",
+      "required": "optional",
+      "choice": [
+
+      ],
+      "display_name": "MySQL Expire Logs Days"
+    },
+    "db_mysql/server_usage": {
+      "type": "string",
+      "calculated": false,
+      "recipes": [
+        "db_mysql::setup_server_5_1",
+        "db_mysql::setup_server_5_5"
+      ],
+      "default": "shared",
+      "description": "When set to 'dedicated' all server resources are allocated to MySQL. When set to 'shared' less resources are allocated for MySQL so that it can be run concurrently with other apps like Apache and Rails for example. Example: shared",
+      "choice": [
+        "shared",
+        "dedicated"
+      ],
+      "required": "optional",
+      "display_name": "Server Usage"
+    },
+    "db_mysql/binlog_format": {
+      "type": "string",
+      "calculated": false,
+      "recipes": [
+        "db_mysql::setup_server_5_1",
+        "db_mysql::setup_server_5_5"
+      ],
+      "default": "MIXED",
+      "description": "Defines the format of your MySQL stored binlog files. Sets the 'binlog_format' option in the MySQL config file. Accepted options: STATEMENT, ROW, and MIXED. Example: MIXED",
+      "required": "optional",
       "choice": [
         "STATEMENT",
         "ROW",
         "MIXED"
       ],
-      "calculated": false
+      "display_name": "MySQL Binlog Format"
     },
-    "db_mysql/log_bin": {
+    "db_mysql/ssl/slave_certificate": {
       "type": "string",
+      "calculated": false,
       "recipes": [
         "db_mysql::setup_server_5_1",
         "db_mysql::setup_server_5_5"
       ],
-      "description": "Defines the filename and location of your MySQL stored binlog files. Sets the 'log-bin' variable in the MySQL config file. Example: /mnt/mysql-binlogs/mysql-bin",
-      "default": "/mnt/ephemeral/mysql-binlogs/mysql-bin",
+      "default": "",
+      "description": "The name of your Slave SSL Certificate. This is one of the 5 inputs needed to do secured replication. Example: cred:SLAVE_CERT. Please DO NOT use this input for LAMP ServerTemplates.",
       "required": "optional",
-      "display_name": "MySQL Binlog Destination",
       "choice": [
 
       ],
-      "calculated": false
+      "display_name": "Slave SSL Certificate"
     },
     "db_mysql/ssl/ca_certificate": {
       "type": "string",
+      "calculated": false,
       "recipes": [
         "db_mysql::setup_server_5_1",
         "db_mysql::setup_server_5_5"
       ],
-      "description": "The name of your CA SSL Certificate. This is one of the 5 inputs needed to do secured replication. Example: cred:CA_CERT. Please DO NOT use this input for LAMP ServerTemplates.",
       "default": "",
+      "description": "The name of your CA SSL Certificate. This is one of the 5 inputs needed to do secured replication. Example: cred:CA_CERT. Please DO NOT use this input for LAMP ServerTemplates.",
       "required": "optional",
-      "display_name": "CA SSL Certificate",
       "choice": [
 
       ],
-      "calculated": false
-    },
-    "db_mysql/expire_logs_days": {
-      "type": "string",
-      "recipes": [
-        "db_mysql::setup_server_5_1",
-        "db_mysql::setup_server_5_5"
-      ],
-      "description": "Defines number of days to wait until the log expires. Default: 2",
-      "default": "2",
-      "required": "optional",
-      "display_name": "MySQL Expire Logs Days",
-      "choice": [
-
-      ],
-      "calculated": false
-    },
-    "db_mysql/init_timeout": {
-      "type": "string",
-      "recipes": [
-        "db_mysql::setup_server_5_1",
-        "db_mysql::setup_server_5_5"
-      ],
-      "description": "Defines timeout to wait for a MySQL socket connection. Default: 600",
-      "default": "600",
-      "required": "optional",
-      "display_name": "MySQL Init Timeout",
-      "choice": [
-
-      ],
-      "calculated": false
-    },
-    "db_mysql/tmpdir": {
-      "type": "string",
-      "recipes": [
-        "db_mysql::setup_server_5_1",
-        "db_mysql::setup_server_5_5"
-      ],
-      "description": "Defines the location of your MySQL temp directory. Sets the 'tmpdir' variable in the MySQL config file. Example: /tmp",
-      "default": "/mnt/ephemeral/mysqltmp",
-      "required": "optional",
-      "display_name": "MySQL Temp Directory Destination",
-      "choice": [
-
-      ],
-      "calculated": false
+      "display_name": "CA SSL Certificate"
     },
     "db_mysql/ssl/master_certificate": {
       "type": "string",
+      "calculated": false,
       "recipes": [
         "db_mysql::setup_server_5_1",
         "db_mysql::setup_server_5_5"
       ],
-      "description": "The name of your Master SSL Certificate. This is one of the 5 inputs needed to do secured replication. Example: cred:MASTER_CERT. Please DO NOT use this input for LAMP ServerTemplates.",
       "default": "",
+      "description": "The name of your Master SSL Certificate. This is one of the 5 inputs needed to do secured replication. Example: cred:MASTER_CERT. Please DO NOT use this input for LAMP ServerTemplates.",
       "required": "optional",
-      "display_name": "Master SSL Certificate",
       "choice": [
 
       ],
-      "calculated": false
-    },
-    "db_mysql/server_usage": {
-      "type": "string",
-      "recipes": [
-        "db_mysql::setup_server_5_1",
-        "db_mysql::setup_server_5_5"
-      ],
-      "description": "When set to 'dedicated' all server resources are allocated to MySQL. When set to 'shared' less resources are allocated for MySQL so that it can be run concurrently with other apps like Apache and Rails for example. Example: shared",
-      "default": "shared",
-      "required": "optional",
-      "display_name": "Server Usage",
-      "choice": [
-        "shared",
-        "dedicated"
-      ],
-      "calculated": false
+      "display_name": "Master SSL Certificate"
     },
     "db_mysql/enable_mysql_upgrade": {
       "type": "string",
+      "calculated": false,
       "recipes": [
         "db_mysql::setup_server_5_5"
       ],
-      "description": "Run mysql_upgrade if a restore from an older version of MySQL is detected. Default: false",
       "default": "false",
+      "description": "Run mysql_upgrade if a restore from an older version of MySQL is detected. Default: false",
       "required": "optional",
-      "display_name": "Enable mysql_upgrade",
       "choice": [
         "true",
         "false"
       ],
-      "calculated": false
+      "display_name": "Enable mysql_upgrade"
     },
-    "db_mysql/ssl/master_key": {
+    "db_mysql/log_bin": {
       "type": "string",
+      "calculated": false,
       "recipes": [
         "db_mysql::setup_server_5_1",
         "db_mysql::setup_server_5_5"
       ],
-      "description": "The name of your Master SSL Key. This is one of the 5 inputs needed to do secured replication. Example: cred:MASTER_KEY. Please DO NOT use this input for LAMP ServerTemplates.",
-      "default": "",
+      "default": "/mnt/ephemeral/mysql-binlogs/mysql-bin",
+      "description": "Defines the filename and location of your MySQL stored binlog files. Sets the 'log-bin' variable in the MySQL config file. Example: /mnt/mysql-binlogs/mysql-bin",
       "required": "optional",
-      "display_name": "Master SSL Key",
       "choice": [
 
       ],
-      "calculated": false
+      "display_name": "MySQL Binlog Destination"
     },
-    "db_mysql/compressed_protocol": {
+    "db_mysql/init_timeout": {
       "type": "string",
+      "calculated": false,
       "recipes": [
         "db_mysql::setup_server_5_1",
         "db_mysql::setup_server_5_5"
       ],
-      "description": "Use compression of the slave/master protocol if both the slave and the master support it. Default: disabled",
-      "default": "disabled",
+      "default": "600",
+      "description": "Defines timeout to wait for a MySQL socket connection. Default: 600",
       "required": "optional",
-      "display_name": "Compression of the slave/master protocol",
+      "choice": [
+
+      ],
+      "display_name": "MySQL Init Timeout"
+    },
+    "db_mysql/compressed_protocol": {
+      "type": "string",
+      "calculated": false,
+      "recipes": [
+        "db_mysql::setup_server_5_1",
+        "db_mysql::setup_server_5_5"
+      ],
+      "default": "disabled",
+      "description": "Use compression of the slave/master protocol if both the slave and the master support it. Default: disabled",
+      "required": "optional",
       "choice": [
         "enabled",
         "disabled"
       ],
-      "calculated": false
-    },
-    "db_mysql/ssl/slave_key": {
-      "type": "string",
-      "recipes": [
-        "db_mysql::setup_server_5_1",
-        "db_mysql::setup_server_5_5"
-      ],
-      "description": "The name of your Slave SSL Key. This is one of the 5 inputs needed to do secured replication. Example: cred:SLAVE_KEY. Please DO NOT use this input for LAMP ServerTemplates.",
-      "default": "",
-      "required": "optional",
-      "display_name": "Slave SSL Key",
-      "choice": [
-
-      ],
-      "calculated": false
+      "display_name": "Compression of the slave/master protocol"
     },
     "db_mysql": {
       "type": "hash",
+      "calculated": false,
       "recipes": [
 
       ],
       "required": "optional",
-      "display_name": "General Database Options",
       "choice": [
 
       ],
-      "calculated": false
+      "display_name": "General Database Options"
     }
   },
-  "license": "Copyright RightScale, Inc. All rights reserved.",
-  "description": "Provides the MySQL implementation of the 'db' resource to install and manage MySQL database stand-alone servers and clients.",
+  "platforms": {
+    "redhat": ">= 0.0.0",
+    "ubuntu": ">= 0.0.0",
+    "centos": ">= 0.0.0"
+  },
   "name": "db_mysql",
-  "maintainer": "RightScale, Inc.",
-  "providing": {
-  },
-  "maintainer_email": "support@rightscale.com",
-  "version": "13.5.0",
-  "groupings": {
-  },
-  "long_description": "# RightScale MySQL Database Cookbook\n\n## DESCRIPTION:\n\nThis cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).\n\nProvides the MySQL implementation of the 'db' resource to install and manage\nMySQL database stand-alone servers and clients.\n\n## REQUIREMENTS:\n\n* Requires a server launched from a RightScale managed RightImage.\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see `metadata.rb` file for the latest dependencies.\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## SETUP:\n\n* To setup only the database client, place `db::default` recipe into\n  your runlist. This will pull in generic client inputs, provide provider\n  selection input and install client. Set db/provider_type input in\n  RightScale ServerTemplate to set provider and version for 'db' resource.\n* To setup a MySQL database client and server, place the following recipes\n  in order to your runlist:\n\n    db_mysql::setup_server_<version>\n      loads the MySQL provider, tuning parameters, as well as other\n      MySQL-specific attributes into the node as inputs.\n\n    db::install_server\n      sets up generic server and client inputs. This will also include\n      db::default recipe which installs the client.\n\n  For example: To set up and install MySQL 5.5 client and server\n\n    db_mysql::setup_server_5_5\n    db::install_server\n\n## USAGE:\n\n### Basic usage\n\nOnce setup, use the recipes in the 'db' cookbook to install and manage your\nMySQL database servers and clients. See the `db/README.md` for usage details.\n\n### MySQL Tuning and my.cnf\n\nDifferent tuning parameters can be applied by using a custom `my.cnf.erb`\ntemplate or by setting the values in the attributes file. For more information\non how to change the default configuration, please see:\n[Customize a Chef-based ServerTemplate](http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/ServerTemplate_Development/02-Customize_a_Chef-based_ServerTemplate).\n\n## DETAILS:\n\n### General\n\nThe 'db' implementation is defined by a Lightweight Provider, which can be\nfound in the `providers/default.rb` file.\n\nThe 'read_only' flag in the MySQL configuration is set by the definition\n`db_mysql_set_read_only`. This flag is set to 'false' by default\nand changed to 'true' while initializing a slave server, and set back to\n'false' when the slave is promoted to a master server.\n\n### Attributes:\n\nThese are settings used in recipes and templates. Default values are noted.\n\nNote: Only \"internal\" cookbook attributes are described here. Descriptions of\nattributes which have inputs can be found in the metadata.rb cookbook file. For\ngeneric db attributes, refer to the db cookbook readme.\n\n##### General attributes\n\n* `node[:db_mysql][:collectd_master_slave_mode]` -\n  The mode for collectd in MySQL server.\n* `node[:db_mysql][:port]` -\n  The port on which MySQL server listens.\n* `node[:db_mysql][:log_bin_enabled]` -\n  Determines whether binary logging is enabled or disabled.\n* `node[:db_mysql][:datadir]` -\n  The data directory for MySQL server where the database contents are stored.\n* `node[:db_mysql][:bind_address]` -\n  The IP address that MySQL server uses to bind. It is set to \"0.0.0.0\" allowing\n  mysql clients/GUI tools to connect from the outside.\n* `node[:db_mysql][:dump][:storage_account_provider]` -\n  The storage account provided MySQL dump backup.\n* `node[:db_mysql][:dump][:storage_account_id]` -\n  The storage account ID for MySQL dump backup.\n* `node[:db_mysql][:dump][:storage_account_secret]` -\n  The storage account secret for MySQL dump backup.\n* `node[:db_mysql][:dump][:container]` -\n  The container name to be used for dump backup.\n* `node[:db_mysql][:dump][:prefix]` -\n  The prefix to be used with container name.\n\n##### System tuning parameters\n\n* `node[:db_mysql][:file_ulimit]` -\n  A tuning parameter to set maximum open files for mysql and root users.\n* `node[:db_mysql][:backup][:slave][:max_allowed_lag]` -\n  Maximum allowed lag time for MySQL slave backup.\n\n##### Platform dependent\n\n* `node[:db_mysql][:log]` - The log file location for MySQL server.\n* `node[:db_mysql][:log_error]` - The error log file location for MySQL server.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n"
+  "replacing": {
+  }
 }
