@@ -1,7 +1,7 @@
+name             "rightscale"
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
-name             "rightscale"
 description      "Base recipes used to set up services used by the RightScale" +
                  " Cloud Management Platform."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))

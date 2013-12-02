@@ -1,7 +1,7 @@
+name             "logging_syslog_ng"
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
-name             "logging_syslog_ng"
 description      "Provides 'syslog_ng' implementation of the 'logging' resource" +
                  " to configure 'syslog_ng' to log to a remote server or use" +
                  " default local file logging."

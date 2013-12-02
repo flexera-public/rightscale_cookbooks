@@ -1,7 +1,7 @@
+name             "repo_ros"
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
-name             "repo_ros"
 description      "Provides the Remote Object Store implementation of the 'repo'" +
                  " resource to manage the downloading of source code from" +
                  " Remote Object Store repositories such as Amazon S3," +

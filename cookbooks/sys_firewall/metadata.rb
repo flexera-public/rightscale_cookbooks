@@ -1,7 +1,7 @@
+name             "sys_firewall"
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
-name             "sys_firewall"
 description      "RightScale firewall cookbook. This cookbook provides a LWRP" +
                  " for managing access to multiple servers in a deployment" +
                  " using machine."

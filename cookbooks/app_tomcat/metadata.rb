@@ -1,7 +1,7 @@
+name             "app_tomcat"
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
-name             "app_tomcat"
 description      "Cookbook provides Tomcat application server implementation" +
                  " of the 'app' Lightweight Resource Provider (LWRP). Installs" +
                  " and configures a Tomcat application server."

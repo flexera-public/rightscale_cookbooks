@@ -1,7 +1,7 @@
+name             "app_django"
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
-name             "app_django"
 description      "Cookbook provides Apache + Django implementation of the" +
                  " 'app' Lightweight Resource Provider (LWRP). Installs and" +
                  " configures an Apache + Django application server."

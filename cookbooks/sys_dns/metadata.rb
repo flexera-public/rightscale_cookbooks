@@ -1,7 +1,7 @@
+name             "sys_dns"
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
-name             "sys_dns"
 description      "This cookbook provides a set of dynamic DNS recipes used by" +
                  " RightScale ServerTemplates including Database Manager" +
                  " ServerTemplates. Cookbook currently supports DNSMadeEasy," +

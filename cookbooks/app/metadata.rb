@@ -1,7 +1,7 @@
+name             "app"
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
-name             "app"
 description      "RightScale application server management cookbook. This" +
                  " cookbook contains recipes that are generally applicable to" +
                  " all applications."

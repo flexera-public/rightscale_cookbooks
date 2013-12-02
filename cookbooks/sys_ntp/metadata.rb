@@ -1,7 +1,7 @@
+name             "sys_ntp"
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
-name             "sys_ntp"
 description      "This cookbook provides a recipe for setting up time" +
                  " synchronization using NTP."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))

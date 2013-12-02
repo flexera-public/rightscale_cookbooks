@@ -1,7 +1,7 @@
+name             "lb_haproxy"
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
-name             "lb_haproxy"
 description      "RightScale load balancer cookbook for Apache/HAProxy. This" +
                  " cookbook provides recipes for setting up and running an" +
                  " Apache/HAProxy load balancer server as well as recipes for" +

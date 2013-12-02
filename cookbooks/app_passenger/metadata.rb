@@ -1,7 +1,7 @@
+name             "app_passenger"
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
-name             "app_passenger"
 description      "Cookbook provides an Apache + Passenger implementation of the" +
                  " 'app' Lightweight Resource Provider (LWRP). Installs and" +
                  " configures an Apache + Passenger application server."
