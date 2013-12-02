@@ -38,7 +38,7 @@ There are no known limitations.
 * Set 'jdbc/ConnDB' as your datasource name to set up a database connection with
   the application server.
 
-For more info see: [Release Notes][Notes] (Section ‘Tomcat App Server’ under
+For more info see: [Release Notes][Notes] (Section 'Tomcat App Server' under
 ServerTemplates)
 
 [Notes]: http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current

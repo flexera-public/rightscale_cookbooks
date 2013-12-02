@@ -1,3 +1,4 @@
+name             "logging_syslog_ng"
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."

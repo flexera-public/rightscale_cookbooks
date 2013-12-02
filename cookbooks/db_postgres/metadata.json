@@ -1,81 +1,81 @@
 {
-  "name": "db_postgres",
-  "description": "Provides the PostgreSQL implementation of the 'db' resource to install and manage PostgreSQL database stand-alone servers and clients.",
+  "groupings": {
+  },
   "long_description": "# RightScale PostgreSQL Database Cookbook\n\n## DESCRIPTION:\n\nThis cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).\n\nProvides the PostgreSQL implementation of the 'db' resource to install and\nmanage PostgreSQL database stand-alone servers and clients.\n\n## DETAILS\n\nThe 'db' implementation is defined by a Lightweight Provider, which can be\nfound in the providers/default.rb file.\n\n## REQUIREMENTS:\n\n* Requires a VM launched from a RightScale managed RightImage\n* Needs RightScale ServerTemplate tools gem installed on system.\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see `metadata.rb` file for the latest dependencies.\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## SETUP:\n\n* To setup only the database client, place `db::default` recipe into\n  your runlist. This will pull in generic client inputs, provide\n  provider selection input and install client. Set db/provider_type input in\n  RightScale ServerTemplate to set provider and version for 'db' resource.\n* To setup a PostgreSQL database client and server, place the following recipes\n  in order to your runlist:\n\n    db_postgres::setup_server_<version>\n      loads the PostgreSQL provider, tuning parameters, as well as other\n      PostgreSQL-specific attributes into the node as inputs.\n    db::install_server\n      sets up generic server and client inputs. This will also include\n      db::default recipe which installs the client.\n\n  For example: To set up and install PostgreSQL 9.1 client and server\n\n    db_postgres::setup_server_9_1\n    db::install_server\n\n## USAGE:\n\n### Basic usage\n\nOnce setup, use the recipes in the 'db' cookbook to install and manage your\nPostgreSQL database servers and clients. See the `db/README.md` for usage\ndetails.\n\n### PostgreSQL Tuning and postgresql.conf and pg_hba.conf\n\nDifferent tuning parameters can be applied by using a custom\n`postgresql.conf.erb` template or by setting the values in the attributes file.\nFor more information on how to change the default configuration, please see:\n[Customize a Chef-based ServerTemplate](http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/ServerTemplate_Development/02-Customize_a_Chef-based_ServerTemplate).\n\nThe tuning parameters are adjusted based on the database server usage. Shared\nservers are allocated %50 of the resources of a dedicated server.\n\nThe current implementation sets the following tuning parameters:\n\n* max_connections: Static setting with 400 for a dedicated server\n  and 200 for a shared server\n* shared_buffers: Dynamically set to %25 of available memory.\n\n### PostgreSQL Replication\n\nPostgreSQL streaming replication is asynchronous by default. If the primary\nserver crashes then some transactions that were committed may not have been\nreplicated to the standby server, causing data loss. The amount of data loss is\nproportional to the replication delay at the time of failover. Synchronous\nreplication offers the ability to confirm that all changes made by a transaction\nhave been transferred to one synchronous standby server. This extends the\nstandard level of durability offered by a transaction commit. This level of\nprotection is referred to as 2-safe replication in computer science theory. For\nmore info refer: [warm-standby][WS]\n\n[WS]: http://www.postgresql.org/docs/9.1/static/warm-standby.html#SYNCHRONOUS-REPLICATION\n\n## DETAILS:\n\nThe 'db' implementation is defined by a Lightweight Provider, which can be\nfound in the `providers/default.rb` file.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
-  "maintainer": "RightScale, Inc.",
-  "maintainer_email": "support@rightscale.com",
-  "license": "Copyright RightScale, Inc. All rights reserved.",
-  "platforms": {
-    "centos": ">= 0.0.0",
-    "redhat": ">= 0.0.0"
-  },
-  "dependencies": {
-    "sys_dns": ">= 0.0.0",
-    "db": ">= 0.0.0",
-    "rightscale": ">= 0.0.0",
-    "block_device": ">= 0.0.0"
-  },
-  "recommendations": {
-  },
-  "suggestions": {
+  "recipes": {
+    "db_postgres::setup_server_9_1": "Sets the DB PostgreSQL provider. Sets version 9.1 and node variables specific to PostgreSQL 9.1.",
+    "db_postgres::do_show_slave_sync_mode": "Shows the sync mode used for replication.",
+    "db_postgres::do_set_slave_sync_mode": "Sets master-slave replication mode based on 'db_postgres/sync_mode' input."
   },
   "conflicting": {
   },
-  "providing": {
-  },
-  "replacing": {
-  },
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "version": "13.5.0",
   "attributes": {
-    "db_postgres": {
-      "display_name": "General Database Options",
-      "type": "hash",
-      "choice": [
-
-      ],
-      "calculated": false,
-      "required": "optional",
-      "recipes": [
-
-      ]
-    },
     "db_postgres/server_usage": {
-      "display_name": "Server Usage",
-      "description": "Use 'dedicated' if the PostgreSQL config file allocates all existing resources of the machine. Use 'shared' if the PostgreSQL config file is configured to use less resources so that it can be run concurrently with other apps like Apache and Rails for example. Example: dedicated",
+      "required": "optional",
+      "default": "dedicated",
+      "type": "string",
       "choice": [
         "shared",
         "dedicated"
       ],
-      "default": "dedicated",
-      "required": "optional",
       "recipes": [
         "db_postgres::setup_server_9_1"
       ],
       "calculated": false,
-      "type": "string"
+      "description": "Use 'dedicated' if the PostgreSQL config file allocates all existing resources of the machine. Use 'shared' if the PostgreSQL config file is configured to use less resources so that it can be run concurrently with other apps like Apache and Rails for example. Example: dedicated",
+      "display_name": "Server Usage"
+    },
+    "db_postgres": {
+      "required": "optional",
+      "type": "hash",
+      "choice": [
+
+      ],
+      "recipes": [
+
+      ],
+      "calculated": false,
+      "display_name": "General Database Options"
     },
     "db_postgres/sync_mode": {
-      "display_name": "Streaming replication mode",
-      "description": "Defines master-slave replication mode. Default: async",
+      "required": "optional",
+      "default": "async",
+      "type": "string",
       "choice": [
         "async",
         "sync"
       ],
-      "default": "async",
-      "required": "optional",
       "recipes": [
         "db_postgres::setup_server_9_1",
         "db_postgres::do_set_slave_sync_mode"
       ],
       "calculated": false,
-      "type": "string"
+      "description": "Defines master-slave replication mode. Default: async",
+      "display_name": "Streaming replication mode"
     }
   },
-  "groupings": {
+  "replacing": {
   },
-  "recipes": {
-    "db_postgres::setup_server_9_1": "Sets the DB PostgreSQL provider. Sets version 9.1 and node variables specific to PostgreSQL 9.1.",
-    "db_postgres::do_set_slave_sync_mode": "Sets master-slave replication mode based on 'db_postgres/sync_mode' input.",
-    "db_postgres::do_show_slave_sync_mode": "Shows the sync mode used for replication."
+  "suggestions": {
   },
-  "version": "13.5.0"
+  "maintainer": "RightScale, Inc.",
+  "description": "Provides the PostgreSQL implementation of the 'db' resource to install and manage PostgreSQL database stand-alone servers and clients.",
+  "name": "db_postgres",
+  "maintainer_email": "support@rightscale.com",
+  "platforms": {
+    "redhat": ">= 0.0.0",
+    "centos": ">= 0.0.0"
+  },
+  "recommendations": {
+  },
+  "dependencies": {
+    "rightscale": ">= 0.0.0",
+    "block_device": ">= 0.0.0",
+    "db": ">= 0.0.0",
+    "sys_dns": ">= 0.0.0"
+  },
+  "providing": {
+  }
 }

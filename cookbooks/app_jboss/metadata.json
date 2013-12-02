@@ -1,176 +1,176 @@
 {
-  "name": "app_jboss",
-  "description": "Cookbook provides Apache + JBoss implementation of the 'app' Lightweight Resource Provider (LWRP). Installs and configures an Apache + JBoss application server.",
-  "long_description": "# RightScale App JBoss Cookbook\n\n## DESCRIPTION:\n\n* This cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).\n* Cookbook provides JBoss application server implementation of the app LWRP.\n* Installs and configures the JBoss application server.\n\n## REQUIREMENTS:\n\n* Requires [\"app\" Lightweight resource cookbook][app] or your own implementation\n  of the \"app\" resource. See \"app\" cookbook README for details.\n* Requires a VM launched from a RightScale managed RightImage\n* Tested on the following RightImages:\n  * CentOS 6.2\n  * Ubuntu 12.04\n\n[app]: https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see the `metadata.rb` file for the latest dependencies.\n\n* `app`\n* `repo`\n* `rightscale`\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## SETUP/USAGE:\n\n* Place `app_jboss::setup_server` recipe into your runlist to set up the\n  application server specific attributes.\n* Place `app::install_server` after setup_server recipe to install the\n  application server.\n* Set 'jdbc/ConnDB' as your datasource name to set up a database connection with\n  the application server.\n\n## DETAILS:\n\n### General\n\nThe `app_jboss` cookbook will install and set up the Apache web server\nwith a mod_jk module and the JBoss application server, with support for MySQL or\nPostgres database servers. The Cookbook will create a separate vhost config for\nthe Apache web server, which will allow Apache to handle static content, such as\nimages and HTML documents, and forward all requests for dynamic content to\nJBoss.\n\nFeatures currently supported are\n* User defined war file support\n* Java heap size Xms and Xmx memory limitations tuning\n* Java NewSize, MaxNewSize, PermSize, MaxPermSize limitations tuning\n* Application code installation from the remote git, svn or ROS repository\n* MySQL/Postgesql database JBoss connection file configuration\n* Automatic application vhost file configuration\n* Automatic logrotate file configuration for JBoss logs\n* Collectd monitoring support\n\n### Attributes:\n\nThese are settings used in recipes and templates. Default values are noted.\n\nNote: Only \"internal\" cookbook attributes are described here. Descriptions of\nattributes that are inputs are in the `metadata.rb` cookbook file.\n\n###### General attributes\n\n* `node[:app_jboss][:code][:root_war]` -\n  Path to the directory which will contain the application for JBoss.\n\n###### Java heap tuning attributes\n\n\"Permanent Generation\" space holds Class and Object instances, and their related\nmetadata. \"Young Generation\" space is the location where new objects are\ncreated. It consists of two survivor spaces called `to space` and\n`from space`.\n\n* `node[:app_jboss][:java][:permsize]` -\n  The initial size of \"permanent generation\" space.\n* `node[:app_jboss][:java][:maxpermsize]` -\n  The maximum size of \"permanent generation\" space.\n* `node[:app_jboss][:java][:newsize]` -\n  The initial size of \"young generation\" space.\n* `node[:app_jboss][:java][:maxnewsize]` -\n  The maximum size of \"young generation\" space.\n* `node[:app_jboss][:java][:xmx]` -\n  The maximum size of the heap used by the JVM.\n* `node[:app_jboss][:java][:xms]` -\n  The initial size of the heap used by the JVM.\n\nFor more information about the Java tuning parameters check out [Java Heap\nTuning Parameters][Doc]\n\n[Doc]: http://docs.oracle.com/cd/E19528-01/819-4742/abeik/index.html\n\n###### Platform dependent\n\n* `node[:app][:user]` -\n  Username for changing the owner of created project dirs.\n* `node[:app_jboss][:alternatives_cmd]` -\n  Alternative command for selecting Java.\n\n### Templates:\n\n#### Defined in `:install` LWRP action for the `app::default` recipe.\n\n* `run_conf.erb` - JBoss configuration template used by JBoss start-up\n  script.\n* `jboss_init.erb` - Start-up init script for JBoss.\n\n#### Defined in `:setup_vhost` LWRP action for the `app::setup_vhost` recipe.\n\n* `server_xml.erb` - JBoss server.xml configuration template.\n* `apache_mod_jk_vhost.erb` - Configuration for apache vhost file.\n* `mod_jk.conf.erb` - Mod_jk configuration template.\n* `jboss_workers.properties.erb` - JBoss worker configuration template.\n\n#### Defined in `:setup_db_connection` LWRP action for the\n`app::setup_db_connection` recipe.\n\n* `customdb-ds.xml.erb` - Configuration for project database connection\n  configuration file.\n* `web.xml.erb` - JBoss Content configuration template.\n\n### LWRPs:\n\n`app_jboss` Lightweight provider is defined in the `providers/default.rb` file\nand contains source for the following actions:\n\n* `:install` -\n  Install packages required for application server setup.\n* `:setup_vhost` -\n  Set up Apache vhost file with mod_jk. Install and set up JBoss package\n  dependencies. Set up logrotate for JBoss.\n* `:start` -\n  Start sequence for JBoss application server.\n* `:stop` -\n  Stop sequence for JBoss application server.\n* `:reload` -\n  Reload sequence for JBoss application server.\n* `:restart` -\n  Restart sequence for JBoss application server.\n* `:code_update` -\n  Perform project source code update/download using user selected \"repo\" LWRP.\n* `:setup_db_connection` -\n  Configure `(mysql/postgres)-ds.xml` JBoss db specific configuration\n  file with database connection information.\n* `:setup_monitoring` -\n  Install and set up of required monitoring software.\n\nFor more info about these actions please see `app` cookbook README.\n\nFor normal operations it requires the \"app\" resource which will act as an\ninterface to all `app_jboss` provider logic.\n\n##### Usage Example:\n\nFor usage examples, please see corresponding section in\n`app` cookbook README.\n\n##### Unwanted applications and services\n\nJBoss comes with a lot of services and your enterprise applications may not need\nall of them. After installation, the following applications and services are\nremoved to boost application server performance.\n\n*  Home page server - (deploy/ROOT.war)\n*  JMX Console server - (deploy/jmx-console.war)\n*  Web Console server - (deploy/management)\n*  Unique ID key generator - (deploy/uuid-key-generator.sar)\n*  HTTP Invoker service - (deploy/http-invoker.sar)\n*  Quartz scheduler service - (deploy/quartz-ra.rar)\n*  Mail service - (deploy/mail-service.xml, deploy/mail-ra.rar)\n*  Monitoring service - (deploy/monitoring-service.xml)\n*  Scheduler service - (deploy/scheduler-service.xml,\n   deploy/schedule-manager-service.xml)\n*  Messaging (JMS) service - (deploy/messaging, deploy/jms-ds.xml,\n   deploy/jms-ra.rar)\n*  Admin console - (deploy/admin-console.war)\n*  JBoss Web Services - (deploy/jbossws.sar)\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
-  "maintainer": "RightScale, Inc.",
-  "maintainer_email": "support@rightscale.com",
-  "license": "Copyright RightScale, Inc. All rights reserved.",
-  "platforms": {
-    "centos": ">= 0.0.0",
-    "redhat": ">= 0.0.0",
-    "ubuntu": ">= 0.0.0"
-  },
-  "dependencies": {
-    "app": ">= 0.0.0",
-    "repo": ">= 0.0.0",
-    "rightscale": ">= 0.0.0"
-  },
   "recommendations": {
-  },
-  "suggestions": {
-  },
-  "conflicting": {
-  },
-  "providing": {
-  },
-  "replacing": {
-  },
-  "attributes": {
-    "app_jboss/code/root_war": {
-      "display_name": "War file for ROOT",
-      "description": "The path to the war file relative to project repo root directory. Will be renamed to ROOT.war. Example: /dist/app_test.war",
-      "required": "recommended",
-      "default": "",
-      "recipes": [
-        "app_jboss::setup_server_5_1"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "app_jboss/java/xms": {
-      "display_name": "JBoss Java XMS",
-      "description": "The java Xms argument. Example: 1024m",
-      "required": "optional",
-      "default": "1024m",
-      "recipes": [
-        "app_jboss::setup_server_5_1"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "app_jboss/java/xmx": {
-      "display_name": "JBoss Java XMX",
-      "description": "The java Xmx argument. Example: 1024m",
-      "required": "optional",
-      "default": "1024m",
-      "recipes": [
-        "app_jboss::setup_server_5_1"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "app_jboss/java/permsize": {
-      "display_name": "JBoss Java PermSize",
-      "description": "The java PermSize argument. Example: 256m",
-      "required": "optional",
-      "default": "256m",
-      "recipes": [
-        "app_jboss::setup_server_5_1"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "app_jboss/java/maxpermsize": {
-      "display_name": "JBoss Java MaxPermSize",
-      "description": "The java MaxPermSize argument. Example: 512m",
-      "required": "optional",
-      "default": "512m",
-      "recipes": [
-        "app_jboss::setup_server_5_1"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "app_jboss/java/newsize": {
-      "display_name": "JBoss Java NewSize",
-      "description": "The java NewSize argument. Example: 448m",
-      "required": "optional",
-      "default": "448m",
-      "recipes": [
-        "app_jboss::setup_server_5_1"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "app_jboss/java/maxnewsize": {
-      "display_name": "JBoss Java MaxNewSize",
-      "description": "The java MaxNewSize argument. Example: 448m",
-      "required": "optional",
-      "default": "448m",
-      "recipes": [
-        "app_jboss::setup_server_5_1"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "app_jboss/java/survivor_ratio": {
-      "display_name": "JBoss Java SurvivorRatio",
-      "description": "The java SurvivorRatio argument. Example: 6",
-      "required": "optional",
-      "default": "6",
-      "recipes": [
-        "app_jboss::setup_server_5_1"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "app_jboss/datasource_name": {
-      "display_name": "Container datasource name",
-      "description": "This name is used to set up the database connection with the application server. You should set the attribute if your application is compiled to use a different datasource name. To set custom datasource you must override input value. Example: jdbc/ConnDB",
-      "required": "optional",
-      "default": "jdbc/ConnDB",
-      "recipes": [
-        "app_jboss::setup_server_5_1"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "app_jboss/internal_port": {
-      "display_name": "JBoss Internal Port",
-      "description": "Sets the internal port on which JBoss listens. By default, JBoss listens on localhost port 8080. WARNING: The value for this input should NOT be the same as the value in 'app/port' input as it would conflict with the apache listen port and would cause a fatal error when the apache service is started.",
-      "required": "optional",
-      "default": "8080",
-      "recipes": [
-        "app_jboss::setup_server_5_1"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
-    }
-  },
-  "groupings": {
   },
   "recipes": {
     "app_jboss::setup_server_5_1": "Installs the Jboss application server."
   },
-  "version": "13.5.0"
+  "replacing": {
+  },
+  "maintainer": "RightScale, Inc.",
+  "providing": {
+  },
+  "platforms": {
+    "ubuntu": ">= 0.0.0",
+    "redhat": ">= 0.0.0",
+    "centos": ">= 0.0.0"
+  },
+  "groupings": {
+  },
+  "suggestions": {
+  },
+  "long_description": "# RightScale App JBoss Cookbook\n\n## DESCRIPTION:\n\n* This cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).\n* Cookbook provides JBoss application server implementation of the app LWRP.\n* Installs and configures the JBoss application server.\n\n## REQUIREMENTS:\n\n* Requires [\"app\" Lightweight resource cookbook][app] or your own implementation\n  of the \"app\" resource. See \"app\" cookbook README for details.\n* Requires a VM launched from a RightScale managed RightImage\n* Tested on the following RightImages:\n  * CentOS 6.2\n  * Ubuntu 12.04\n\n[app]: https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see the `metadata.rb` file for the latest dependencies.\n\n* `app`\n* `repo`\n* `rightscale`\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## SETUP/USAGE:\n\n* Place `app_jboss::setup_server` recipe into your runlist to set up the\n  application server specific attributes.\n* Place `app::install_server` after setup_server recipe to install the\n  application server.\n* Set 'jdbc/ConnDB' as your datasource name to set up a database connection with\n  the application server.\n\n## DETAILS:\n\n### General\n\nThe `app_jboss` cookbook will install and set up the Apache web server\nwith a mod_jk module and the JBoss application server, with support for MySQL or\nPostgres database servers. The Cookbook will create a separate vhost config for\nthe Apache web server, which will allow Apache to handle static content, such as\nimages and HTML documents, and forward all requests for dynamic content to\nJBoss.\n\nFeatures currently supported are\n* User defined war file support\n* Java heap size Xms and Xmx memory limitations tuning\n* Java NewSize, MaxNewSize, PermSize, MaxPermSize limitations tuning\n* Application code installation from the remote git, svn or ROS repository\n* MySQL/Postgesql database JBoss connection file configuration\n* Automatic application vhost file configuration\n* Automatic logrotate file configuration for JBoss logs\n* Collectd monitoring support\n\n### Attributes:\n\nThese are settings used in recipes and templates. Default values are noted.\n\nNote: Only \"internal\" cookbook attributes are described here. Descriptions of\nattributes that are inputs are in the `metadata.rb` cookbook file.\n\n###### General attributes\n\n* `node[:app_jboss][:code][:root_war]` -\n  Path to the directory which will contain the application for JBoss.\n\n###### Java heap tuning attributes\n\n\"Permanent Generation\" space holds Class and Object instances, and their related\nmetadata. \"Young Generation\" space is the location where new objects are\ncreated. It consists of two survivor spaces called `to space` and\n`from space`.\n\n* `node[:app_jboss][:java][:permsize]` -\n  The initial size of \"permanent generation\" space.\n* `node[:app_jboss][:java][:maxpermsize]` -\n  The maximum size of \"permanent generation\" space.\n* `node[:app_jboss][:java][:newsize]` -\n  The initial size of \"young generation\" space.\n* `node[:app_jboss][:java][:maxnewsize]` -\n  The maximum size of \"young generation\" space.\n* `node[:app_jboss][:java][:xmx]` -\n  The maximum size of the heap used by the JVM.\n* `node[:app_jboss][:java][:xms]` -\n  The initial size of the heap used by the JVM.\n\nFor more information about the Java tuning parameters check out [Java Heap\nTuning Parameters][Doc]\n\n[Doc]: http://docs.oracle.com/cd/E19528-01/819-4742/abeik/index.html\n\n###### Platform dependent\n\n* `node[:app][:user]` -\n  Username for changing the owner of created project dirs.\n* `node[:app_jboss][:alternatives_cmd]` -\n  Alternative command for selecting Java.\n\n### Templates:\n\n#### Defined in `:install` LWRP action for the `app::default` recipe.\n\n* `run_conf.erb` - JBoss configuration template used by JBoss start-up\n  script.\n* `jboss_init.erb` - Start-up init script for JBoss.\n\n#### Defined in `:setup_vhost` LWRP action for the `app::setup_vhost` recipe.\n\n* `server_xml.erb` - JBoss server.xml configuration template.\n* `apache_mod_jk_vhost.erb` - Configuration for apache vhost file.\n* `mod_jk.conf.erb` - Mod_jk configuration template.\n* `jboss_workers.properties.erb` - JBoss worker configuration template.\n\n#### Defined in `:setup_db_connection` LWRP action for the\n`app::setup_db_connection` recipe.\n\n* `customdb-ds.xml.erb` - Configuration for project database connection\n  configuration file.\n* `web.xml.erb` - JBoss Content configuration template.\n\n### LWRPs:\n\n`app_jboss` Lightweight provider is defined in the `providers/default.rb` file\nand contains source for the following actions:\n\n* `:install` -\n  Install packages required for application server setup.\n* `:setup_vhost` -\n  Set up Apache vhost file with mod_jk. Install and set up JBoss package\n  dependencies. Set up logrotate for JBoss.\n* `:start` -\n  Start sequence for JBoss application server.\n* `:stop` -\n  Stop sequence for JBoss application server.\n* `:reload` -\n  Reload sequence for JBoss application server.\n* `:restart` -\n  Restart sequence for JBoss application server.\n* `:code_update` -\n  Perform project source code update/download using user selected \"repo\" LWRP.\n* `:setup_db_connection` -\n  Configure `(mysql/postgres)-ds.xml` JBoss db specific configuration\n  file with database connection information.\n* `:setup_monitoring` -\n  Install and set up of required monitoring software.\n\nFor more info about these actions please see `app` cookbook README.\n\nFor normal operations it requires the \"app\" resource which will act as an\ninterface to all `app_jboss` provider logic.\n\n##### Usage Example:\n\nFor usage examples, please see corresponding section in\n`app` cookbook README.\n\n##### Unwanted applications and services\n\nJBoss comes with a lot of services and your enterprise applications may not need\nall of them. After installation, the following applications and services are\nremoved to boost application server performance.\n\n*  Home page server - (deploy/ROOT.war)\n*  JMX Console server - (deploy/jmx-console.war)\n*  Web Console server - (deploy/management)\n*  Unique ID key generator - (deploy/uuid-key-generator.sar)\n*  HTTP Invoker service - (deploy/http-invoker.sar)\n*  Quartz scheduler service - (deploy/quartz-ra.rar)\n*  Mail service - (deploy/mail-service.xml, deploy/mail-ra.rar)\n*  Monitoring service - (deploy/monitoring-service.xml)\n*  Scheduler service - (deploy/scheduler-service.xml,\n   deploy/schedule-manager-service.xml)\n*  Messaging (JMS) service - (deploy/messaging, deploy/jms-ds.xml,\n   deploy/jms-ra.rar)\n*  Admin console - (deploy/admin-console.war)\n*  JBoss Web Services - (deploy/jbossws.sar)\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
+  "conflicting": {
+  },
+  "maintainer_email": "support@rightscale.com",
+  "dependencies": {
+    "app": ">= 0.0.0",
+    "rightscale": ">= 0.0.0",
+    "repo": ">= 0.0.0"
+  },
+  "name": "app_jboss",
+  "attributes": {
+    "app_jboss/java/xmx": {
+      "required": "optional",
+      "display_name": "JBoss Java XMX",
+      "recipes": [
+        "app_jboss::setup_server_5_1"
+      ],
+      "calculated": false,
+      "type": "string",
+      "choice": [
+
+      ],
+      "default": "1024m",
+      "description": "The java Xmx argument. Example: 1024m"
+    },
+    "app_jboss/java/xms": {
+      "required": "optional",
+      "display_name": "JBoss Java XMS",
+      "recipes": [
+        "app_jboss::setup_server_5_1"
+      ],
+      "calculated": false,
+      "type": "string",
+      "choice": [
+
+      ],
+      "default": "1024m",
+      "description": "The java Xms argument. Example: 1024m"
+    },
+    "app_jboss/internal_port": {
+      "required": "optional",
+      "display_name": "JBoss Internal Port",
+      "recipes": [
+        "app_jboss::setup_server_5_1"
+      ],
+      "calculated": false,
+      "type": "string",
+      "choice": [
+
+      ],
+      "default": "8080",
+      "description": "Sets the internal port on which JBoss listens. By default, JBoss listens on localhost port 8080. WARNING: The value for this input should NOT be the same as the value in 'app/port' input as it would conflict with the apache listen port and would cause a fatal error when the apache service is started."
+    },
+    "app_jboss/code/root_war": {
+      "required": "recommended",
+      "display_name": "War file for ROOT",
+      "recipes": [
+        "app_jboss::setup_server_5_1"
+      ],
+      "calculated": false,
+      "type": "string",
+      "choice": [
+
+      ],
+      "default": "",
+      "description": "The path to the war file relative to project repo root directory. Will be renamed to ROOT.war. Example: /dist/app_test.war"
+    },
+    "app_jboss/java/newsize": {
+      "required": "optional",
+      "display_name": "JBoss Java NewSize",
+      "recipes": [
+        "app_jboss::setup_server_5_1"
+      ],
+      "calculated": false,
+      "type": "string",
+      "choice": [
+
+      ],
+      "default": "448m",
+      "description": "The java NewSize argument. Example: 448m"
+    },
+    "app_jboss/datasource_name": {
+      "required": "optional",
+      "display_name": "Container datasource name",
+      "recipes": [
+        "app_jboss::setup_server_5_1"
+      ],
+      "calculated": false,
+      "type": "string",
+      "choice": [
+
+      ],
+      "default": "jdbc/ConnDB",
+      "description": "This name is used to set up the database connection with the application server. You should set the attribute if your application is compiled to use a different datasource name. To set custom datasource you must override input value. Example: jdbc/ConnDB"
+    },
+    "app_jboss/java/survivor_ratio": {
+      "required": "optional",
+      "display_name": "JBoss Java SurvivorRatio",
+      "recipes": [
+        "app_jboss::setup_server_5_1"
+      ],
+      "calculated": false,
+      "type": "string",
+      "choice": [
+
+      ],
+      "default": "6",
+      "description": "The java SurvivorRatio argument. Example: 6"
+    },
+    "app_jboss/java/maxnewsize": {
+      "required": "optional",
+      "display_name": "JBoss Java MaxNewSize",
+      "recipes": [
+        "app_jboss::setup_server_5_1"
+      ],
+      "calculated": false,
+      "type": "string",
+      "choice": [
+
+      ],
+      "default": "448m",
+      "description": "The java MaxNewSize argument. Example: 448m"
+    },
+    "app_jboss/java/permsize": {
+      "required": "optional",
+      "display_name": "JBoss Java PermSize",
+      "recipes": [
+        "app_jboss::setup_server_5_1"
+      ],
+      "calculated": false,
+      "type": "string",
+      "choice": [
+
+      ],
+      "default": "256m",
+      "description": "The java PermSize argument. Example: 256m"
+    },
+    "app_jboss/java/maxpermsize": {
+      "required": "optional",
+      "display_name": "JBoss Java MaxPermSize",
+      "recipes": [
+        "app_jboss::setup_server_5_1"
+      ],
+      "calculated": false,
+      "type": "string",
+      "choice": [
+
+      ],
+      "default": "512m",
+      "description": "The java MaxPermSize argument. Example: 512m"
+    }
+  },
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "version": "13.5.0",
+  "description": "Cookbook provides Apache + JBoss implementation of the 'app' Lightweight Resource Provider (LWRP). Installs and configures an Apache + JBoss application server."
 }

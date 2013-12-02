@@ -1,116 +1,116 @@
 {
-  "name": "app_passenger",
-  "description": "Cookbook provides an Apache + Passenger implementation of the 'app' Lightweight Resource Provider (LWRP). Installs and configures an Apache + Passenger application server.",
-  "long_description": "# RightScale App Passenger Cookbook\n\n## DESCRIPTION:\n\n* This cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).\n* Cookbook provides Apache + Passenger implementation of the 'app' LWRP.\n* Installs and configures, Apache + Passenger application servers.\n\n## REQUIREMENTS:\n\n* Requires [\"app\" Lightweight resource cookbook][app] or your own implementation\n  of the \"app\" resource. See \"app\" cookbook README for details.\n* Requires a VM launched from a RightScale managed RightImage\n\n[app]: https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see `metadata.rb` file for the latest dependencies.\n\n* `rightscale`\n* `web_apache`\n* `repo`\n* `app`\n* `db`\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## SETUP/USAGE:\n\n* Place `app_passenger::setup_server_3_0` recipe into your runlist\n  to set up the application server specific attributes. This sets up the app\n  provider and version.\n* Place `app::install_server` recipe after setup_server recipe to install\n  the application server.\n\n## DETAILS:\n\n### General:\n\nThe `app_passenger` cookbook will install and set up Apache +\nPhusion Passenger application server configured to connect with a MySQL or\nPostgres database server. Set db/provider_type input in RightScale\nServerTemplate to choose database provider. Place `db::default` recipe\nbefore application server installation to install the database client.\n\n__Apache__\n\nServer version: Apache/2.2.3\n\nServer built: Jun 6 2012 10:00:42\n\n__Phusion Passenger__\n\nPhusion Passenger version 3.0.19\n\nalso:\n* `Rails spawn method input`\n* `Custom rails command input`\n* `Bundler support`\n* `Input for user defined gems installation`\n* `Application code installation from remote git, svn or Remote Object Store\n  (ROS) location`\n* `MySQL or Postgres database connection file configuration`\n* `Automatic application vhost file configuration`\n\nFor more info see: [Release Notes][Notes] (Section 'Apache-Rails-Passenger App\nServer' under ServerTemplates)\n\n[Notes]: http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current\n\nPlease checkout the tutorial: [Apache-Rails-Passenger App Server][Tutorial]\n\n[Tutorial]: http://support.rightscale.com/ServerTemplates/Infinity/ST/Apache-Rails-Passenger_App_Server_(v13_Infinity)/Apache-Rails-Passenger_App_Server_(v13_Infinity)_-_Tutorial\n\nServerTemplate built on this cookbook can be combined in two modes:\n\n1 - For apps with bundler support, add the \"install_required app gems\" recipe,\nand \"run_custom_rails_commands\" for migration commands\n\n2 - For apps without bundler support, add \"install_custom_gems\" recipe, and\n\"run_custom_rails_commands\" for migration commands\n\nMix these recipes in any way to satisfy project requirements.\n\n### Attributes:\n\nThese are settings used in recipes and templates. Default values are noted.\n\nNote: Only \"internal\" cookbook attributes are described here. Descriptions of\nattributes which have inputs you can find in metadata.rb cookbook file.\n\n###### General attributes\n\n* `node[:app_passenger][:rails_spawn_method]` -\n  The spawn method used by the passenger.\n* `node[:app_passenger][:apache][:serve_local_files]` -\n  Used to enable/disable the serve of any existing local files.\n* `node[:app_passenger][:deploy_dir]` -\n  Path in the specified repository where application code will be pulled from.\n* `node[:app_passenger][:ruby_gem_base_dir]` -\n  Path to Ruby gem directory.\n* `node[:app_passenger][:gem_bin]` -\n  Path to Ruby gem bin directory.\n* `node[:app_passenger][:ruby_bin]` -\n  Path to Ruby bin directory.\n* `node[:app_passenger][:project][:environment]` -\n  The environment of the rails application.\n* `node[:app_passenger][:project][:gem_list]` -\n  A list of additional gems required for rails application.\n* `node[:app_passenger][:project][:custom_cmd]` -\n  A list of rake commands required for rails application initialization.\n\n###### Platform dependent\n\n* `node[:app][:user]` - Apache user. Required for changing owner of created\nproject dirs.\n\n### Templates:\n\n* `basic_vhost.erb` - Configuration for apache vhost file used in the\n  `app::setup_vhost` recipe and defined in `:setup_vhost` action of the\n  `app_passenger` LWRP.\n* `database.yml.erb` - Configuration for project database connection config file\n  used in the `app::setup_db_connection` recipe and defined in\n  `:setup_db_connection` action of the `app_passenger` LWRP.\n* `rails_env.erb` - Template for bash script which will set up ENV for the rails\n  project used in the `app::setup_db_connection` recipe and defined in\n  `:setup_db_connection` action of the `app_passenger` LWRP.\n\n### LWRPs:\n\n`app_passenger` Lightweight provider is defined in the providers/default.rb\nfile, it contains source for the following actions:\n\n* `:install`\n* `:setup_vhost`\n* `:start`\n* `:stop`\n* `:reload`\n* `:restart`\n* `:code_update`\n* `:setup_db_connection`\n\nFor more info about these actions, please see the `app` cookbook README.\n\nFor normal operations it requires \"app\" resource which will act as the interface\nto all `app_passenger` provider logic.\n\n##### Actions\n\n* `:install` - Install packages required for application server setup.\n* `:setup_vhost` - Set up apache vhost file with passenger module directives\n  included.\n* `:start` - Start sequence for Passenger application server.\n* `:stop` - Stop sequence for Passenger application server.\n* `:reload` - Reload sequence for Passenger application server.\n* `:restart` - Restart sequence for Passenger application server.\n* `:code_update` - Perform project source code update/download using user\n  selected \"repo\" LWRP. Set up logrotate configuration.\n* `:setup_db_connection` - Perform project config/database.yml database\n  connection configuration.\n  The driver type is specified as 'ruby' and the db_<provider> cookbook's\n  `install_client_driver` action performs necessary steps to install the\n  database adapter.\n\n##### Usage Example:\n\nFor usage examples please see corresponding section in `app` cookbook README.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
-  "maintainer": "RightScale, Inc.",
-  "maintainer_email": "support@rightscale.com",
-  "license": "Copyright RightScale, Inc. All rights reserved.",
-  "platforms": {
-    "centos": ">= 0.0.0",
-    "redhat": ">= 0.0.0",
-    "ubuntu": ">= 0.0.0"
-  },
-  "dependencies": {
-    "app": ">= 0.0.0",
-    "repo": ">= 0.0.0",
-    "rightscale": ">= 0.0.0",
-    "web_apache": ">= 0.0.0",
-    "logrotate": ">= 0.0.0"
-  },
-  "recommendations": {
-  },
-  "suggestions": {
-  },
-  "conflicting": {
-  },
-  "providing": {
-  },
   "replacing": {
   },
+  "dependencies": {
+    "rightscale": ">= 0.0.0",
+    "logrotate": ">= 0.0.0",
+    "repo": ">= 0.0.0",
+    "web_apache": ">= 0.0.0",
+    "app": ">= 0.0.0"
+  },
+  "name": "app_passenger",
   "attributes": {
-    "app_passenger/rails_spawn_method": {
-      "display_name": "Rails spawn method",
-      "description": "The spawn method that Phusion Passenger will use. The choices are: smart, smart-lv2, and conservative. Example: conservative",
-      "choice": [
-        "conservative",
-        "smart-lv2",
-        "smart"
-      ],
-      "required": "recommended",
-      "default": "conservative",
-      "recipes": [
-        "app_passenger::setup_server_3_0"
-      ],
-      "calculated": false,
-      "type": "string"
-    },
     "app_passenger/project/environment": {
-      "display_name": "Rails Environment",
-      "description": "Creates a Rails RAILS ENV environment variable. Example: development",
       "choice": [
         "development",
         "production",
         "test"
       ],
-      "required": "optional",
+      "calculated": false,
       "default": "development",
+      "required": "optional",
+      "description": "Creates a Rails RAILS ENV environment variable. Example: development",
+      "type": "string",
+      "display_name": "Rails Environment",
       "recipes": [
         "app_passenger::setup_server_3_0"
-      ],
-      "calculated": false,
-      "type": "string"
+      ]
     },
     "app_passenger/apache/serve_local_files": {
-      "display_name": "Apache serve local Files",
-      "description": "This option tells Apache whether it should serve the (static) content itself. Currently, it will omit dynamic content, such as *.php, *.action, *.jsp, and *.do. Example: true",
       "choice": [
         "true",
         "false"
       ],
-      "required": "optional",
+      "calculated": false,
       "default": "true",
+      "required": "optional",
+      "description": "This option tells Apache whether it should serve the (static) content itself. Currently, it will omit dynamic content, such as *.php, *.action, *.jsp, and *.do. Example: true",
+      "type": "string",
+      "display_name": "Apache serve local Files",
       "recipes": [
         "app_passenger::setup_server_3_0"
-      ],
-      "calculated": false,
-      "type": "string"
-    },
-    "app_passenger/project/gem_list": {
-      "display_name": "Custom gems list",
-      "description": "A space-separated list of optional gem(s). Format: ruby-Gem1:version ruby-Gem2:version ruby-Gem3. Example: mygem:1.0, yourgem:2.0",
-      "required": "optional",
-      "default": "",
-      "recipes": [
-        "app_passenger::install_custom_gems"
-      ],
-      "choice": [
-
-      ],
-      "calculated": false,
-      "type": "string"
+      ]
     },
     "app_passenger/project/custom_cmd": {
-      "display_name": "Custom rails/bin/ command",
-      "description": "A comma-separated list of optional commands which will be executed in the app directory. Example: rake gems:install, rake db:create, rake get_common",
-      "required": "optional",
-      "default": "",
-      "recipes": [
-        "app_passenger::run_custom_rails_commands"
-      ],
       "choice": [
 
       ],
       "calculated": false,
-      "type": "string"
+      "default": "",
+      "required": "optional",
+      "description": "A comma-separated list of optional commands which will be executed in the app directory. Example: rake gems:install, rake db:create, rake get_common",
+      "type": "string",
+      "display_name": "Custom rails/bin/ command",
+      "recipes": [
+        "app_passenger::run_custom_rails_commands"
+      ]
+    },
+    "app_passenger/project/gem_list": {
+      "choice": [
+
+      ],
+      "calculated": false,
+      "default": "",
+      "required": "optional",
+      "description": "A space-separated list of optional gem(s). Format: ruby-Gem1:version ruby-Gem2:version ruby-Gem3. Example: mygem:1.0, yourgem:2.0",
+      "type": "string",
+      "display_name": "Custom gems list",
+      "recipes": [
+        "app_passenger::install_custom_gems"
+      ]
+    },
+    "app_passenger/rails_spawn_method": {
+      "choice": [
+        "conservative",
+        "smart-lv2",
+        "smart"
+      ],
+      "calculated": false,
+      "default": "conservative",
+      "required": "recommended",
+      "description": "The spawn method that Phusion Passenger will use. The choices are: smart, smart-lv2, and conservative. Example: conservative",
+      "type": "string",
+      "display_name": "Rails spawn method",
+      "recipes": [
+        "app_passenger::setup_server_3_0"
+      ]
     }
+  },
+  "maintainer_email": "support@rightscale.com",
+  "maintainer": "RightScale, Inc.",
+  "platforms": {
+    "ubuntu": ">= 0.0.0",
+    "redhat": ">= 0.0.0",
+    "centos": ">= 0.0.0"
+  },
+  "suggestions": {
+  },
+  "description": "Cookbook provides an Apache + Passenger implementation of the 'app' Lightweight Resource Provider (LWRP). Installs and configures an Apache + Passenger application server.",
+  "version": "13.5.0",
+  "conflicting": {
   },
   "groupings": {
   },
-  "recipes": {
-    "app_passenger::setup_server_3_0": "Sets provider-specific attributes for rails-passenger",
-    "app_passenger::install_custom_gems": "Installs custom gems.",
-    "app_passenger::install_required_app_gems": "Installs bundler gems. Gemfile must be present in app directory.",
-    "app_passenger::run_custom_rails_commands": "Runs specific user defined commands. Commands will be executed in the app directory."
+  "providing": {
   },
-  "version": "13.5.0"
+  "recipes": {
+    "app_passenger::run_custom_rails_commands": "Runs specific user defined commands. Commands will be executed in the app directory.",
+    "app_passenger::install_required_app_gems": "Installs bundler gems. Gemfile must be present in app directory.",
+    "app_passenger::install_custom_gems": "Installs custom gems.",
+    "app_passenger::setup_server_3_0": "Sets provider-specific attributes for rails-passenger"
+  },
+  "recommendations": {
+  },
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "long_description": "# RightScale App Passenger Cookbook\n\n## DESCRIPTION:\n\n* This cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).\n* Cookbook provides Apache + Passenger implementation of the 'app' LWRP.\n* Installs and configures, Apache + Passenger application servers.\n\n## REQUIREMENTS:\n\n* Requires [\"app\" Lightweight resource cookbook][app] or your own implementation\n  of the \"app\" resource. See \"app\" cookbook README for details.\n* Requires a VM launched from a RightScale managed RightImage\n\n[app]: https://github.com/rightscale/rightscale_cookbooks/tree/master/cookbooks/app\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see `metadata.rb` file for the latest dependencies.\n\n* `rightscale`\n* `web_apache`\n* `repo`\n* `app`\n* `db`\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## SETUP/USAGE:\n\n* Place `app_passenger::setup_server_3_0` recipe into your runlist\n  to set up the application server specific attributes. This sets up the app\n  provider and version.\n* Place `app::install_server` recipe after setup_server recipe to install\n  the application server.\n\n## DETAILS:\n\n### General:\n\nThe `app_passenger` cookbook will install and set up Apache +\nPhusion Passenger application server configured to connect with a MySQL or\nPostgres database server. Set db/provider_type input in RightScale\nServerTemplate to choose database provider. Place `db::default` recipe\nbefore application server installation to install the database client.\n\n__Apache__\n\nServer version: Apache/2.2.3\n\nServer built: Jun 6 2012 10:00:42\n\n__Phusion Passenger__\n\nPhusion Passenger version 3.0.19\n\nalso:\n* `Rails spawn method input`\n* `Custom rails command input`\n* `Bundler support`\n* `Input for user defined gems installation`\n* `Application code installation from remote git, svn or Remote Object Store\n  (ROS) location`\n* `MySQL or Postgres database connection file configuration`\n* `Automatic application vhost file configuration`\n\nFor more info see: [Release Notes][Notes] (Section 'Apache-Rails-Passenger App\nServer' under ServerTemplates)\n\n[Notes]: http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current\n\nPlease checkout the tutorial: [Apache-Rails-Passenger App Server][Tutorial]\n\n[Tutorial]: http://support.rightscale.com/ServerTemplates/Infinity/ST/Apache-Rails-Passenger_App_Server_(v13_Infinity)/Apache-Rails-Passenger_App_Server_(v13_Infinity)_-_Tutorial\n\nServerTemplate built on this cookbook can be combined in two modes:\n\n1 - For apps with bundler support, add the \"install_required app gems\" recipe,\nand \"run_custom_rails_commands\" for migration commands\n\n2 - For apps without bundler support, add \"install_custom_gems\" recipe, and\n\"run_custom_rails_commands\" for migration commands\n\nMix these recipes in any way to satisfy project requirements.\n\n### Attributes:\n\nThese are settings used in recipes and templates. Default values are noted.\n\nNote: Only \"internal\" cookbook attributes are described here. Descriptions of\nattributes which have inputs you can find in metadata.rb cookbook file.\n\n###### General attributes\n\n* `node[:app_passenger][:rails_spawn_method]` -\n  The spawn method used by the passenger.\n* `node[:app_passenger][:apache][:serve_local_files]` -\n  Used to enable/disable the serve of any existing local files.\n* `node[:app_passenger][:deploy_dir]` -\n  Path in the specified repository where application code will be pulled from.\n* `node[:app_passenger][:ruby_gem_base_dir]` -\n  Path to Ruby gem directory.\n* `node[:app_passenger][:gem_bin]` -\n  Path to Ruby gem bin directory.\n* `node[:app_passenger][:ruby_bin]` -\n  Path to Ruby bin directory.\n* `node[:app_passenger][:project][:environment]` -\n  The environment of the rails application.\n* `node[:app_passenger][:project][:gem_list]` -\n  A list of additional gems required for rails application.\n* `node[:app_passenger][:project][:custom_cmd]` -\n  A list of rake commands required for rails application initialization.\n\n###### Platform dependent\n\n* `node[:app][:user]` - Apache user. Required for changing owner of created\nproject dirs.\n\n### Templates:\n\n* `basic_vhost.erb` - Configuration for apache vhost file used in the\n  `app::setup_vhost` recipe and defined in `:setup_vhost` action of the\n  `app_passenger` LWRP.\n* `database.yml.erb` - Configuration for project database connection config file\n  used in the `app::setup_db_connection` recipe and defined in\n  `:setup_db_connection` action of the `app_passenger` LWRP.\n* `rails_env.erb` - Template for bash script which will set up ENV for the rails\n  project used in the `app::setup_db_connection` recipe and defined in\n  `:setup_db_connection` action of the `app_passenger` LWRP.\n\n### LWRPs:\n\n`app_passenger` Lightweight provider is defined in the providers/default.rb\nfile, it contains source for the following actions:\n\n* `:install`\n* `:setup_vhost`\n* `:start`\n* `:stop`\n* `:reload`\n* `:restart`\n* `:code_update`\n* `:setup_db_connection`\n\nFor more info about these actions, please see the `app` cookbook README.\n\nFor normal operations it requires \"app\" resource which will act as the interface\nto all `app_passenger` provider logic.\n\n##### Actions\n\n* `:install` - Install packages required for application server setup.\n* `:setup_vhost` - Set up apache vhost file with passenger module directives\n  included.\n* `:start` - Start sequence for Passenger application server.\n* `:stop` - Stop sequence for Passenger application server.\n* `:reload` - Reload sequence for Passenger application server.\n* `:restart` - Restart sequence for Passenger application server.\n* `:code_update` - Perform project source code update/download using user\n  selected \"repo\" LWRP. Set up logrotate configuration.\n* `:setup_db_connection` - Perform project config/database.yml database\n  connection configuration.\n  The driver type is specified as 'ruby' and the db_<provider> cookbook's\n  `install_client_driver` action performs necessary steps to install the\n  database adapter.\n\n##### Usage Example:\n\nFor usage examples please see corresponding section in `app` cookbook README.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n"
 }
