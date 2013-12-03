@@ -72,11 +72,13 @@ ruby_block "register_redhat_system" do
         [
           "/etc/yum/pluginconf.d/product-id.conf",
           "/etc/yum/pluginconf.d/subscription-manager.conf"
-        ].each do |plugin|
-          if File.exists?(plugin)
-            text = File.read(plugin)
-            puts = text.gsub(/enabled=0/, "enabled=1")
-            File.open(plugin, "w") { |file| file << puts }
+        ].each do |plugin_file|
+          if File.exists?(plugin_file)
+            file_content = File.read(plugin_file)
+            if file_content.gsub!(/enabled=0/, "enabled=1")
+              Chef::Log.info "  Updating #{plugin_file}"
+              File.open(plugin_file, "w") { |f| f.write(file_content) }
+            end
           else
             Chef::Log.info "  WARNING: yum plugin '#{plugin}' not found!"
           end
