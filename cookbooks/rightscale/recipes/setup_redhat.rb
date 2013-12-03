@@ -45,13 +45,12 @@ ruby_block "register_redhat_system" do
 
         # 'subscription-manager' is a client program that registers a system
         # with a subscription management service.
+        #   
+        #   --auto-attach : Automatically attaches the best-matched, compatible
+        #                   subscriptions to the system.
         #
-        #   --auto-attach
-        # Automatically attaches the best-matched, compatible subscriptions to
-        # the system.
-        #   --force
-        # Regenerates the identity certificate for the system using
-        # username/password authentication.
+        #   --force : Regenerates the identity certificate for the system using
+        #             username/password authentication.
         #
         # On stop/start the system gets a different IP, and registration to
         # Red Hat records all this info. Without re-registration the information
