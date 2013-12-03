@@ -45,7 +45,7 @@ ruby_block "register_redhat_system" do
 
         # 'subscription-manager' is a client program that registers a system
         # with a subscription management service.
-        #   
+        #
         #   --auto-attach : Automatically attaches the best-matched, compatible
         #                   subscriptions to the system.
         #
