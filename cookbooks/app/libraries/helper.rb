@@ -20,6 +20,24 @@ module RightScale
         pool_norm_name = pool_list.gsub(/\s+/, "").gsub(/[\/]/, "_").split(",").uniq
       end
 
+      # Returns an array of versions of the RightScript-based ServerTemplate
+      # Application servers found in the deployment.
+      #
+      # @return [Array<String>] array of ServerTemplate versions found
+      #
+      def get_rsb_app_servers_version
+        rightscale_server_collection "rsb_servers" do
+          tags "server_template:version=*"
+          action :nothing
+        end.run_action(:load)
+
+        versions = Array.new
+        node[:server_collection]["rsb_servers"].to_hash.values.each do |tags|
+          versions << RightScale::Utils::Helper.get_tag_value('server_template:version', tags)
+        end
+        versions.uniq
+      end
+
     end
   end
 end
