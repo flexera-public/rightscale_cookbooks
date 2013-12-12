@@ -24,19 +24,14 @@ else
 
     # 'rhnreg_ks' is a utility for registering a system with the
     # RHN Satellite or Red Hat Network Classic.
-    cmd = "rhnreg_ks --username=#{username} --password=#{password}"
-    cmd << " --use-eus-channel --force --verbose"
-
-    rhnreg_ks = Mixlib::ShellOut.new(cmd)
-    rhnreg_ks.run_command
-
-    # During successful run 'rhnreg_ks' doesn't log any messages.
-    # Logs STDOUT and STDERR only if command execution fails.
-    unless rhnreg_ks.exitstatus == 0
-      log rhnreg_ks.stdout
-      log rhnreg_ks.stderr
+    execute "rhnreg_ks" do
+      command "rhnreg_ks
+        --username=#{username}
+        --password=#{password}
+        --use-eus-channel
+        --force
+        --verbose"
     end
-    rhnreg_ks.error!
 
   else
     log "  Registering the system using 'subscription-manager'."
@@ -54,15 +49,13 @@ else
     # Red Hat records all this info. Without re-registration the information
     # would be out of sync.
 
-    cmd = "subscription-manager register"
-    cmd << " --username=#{username} --password=#{password}"
-    cmd << " --auto-attach --force"
-
-    subscribe = Mixlib::ShellOut.new(cmd)
-    subscribe.run_command
-    log subscribe.stdout
-    log subscribe.stderr unless subscribe.exitstatus == 0
-    subscribe.error!
+    execute "subscription-manager register" do
+      command "subscription-manager register
+        --username=#{username}
+        --password=#{password}
+        --auto-attach
+        --force"
+    end
 
     # 'product-id' and 'subscription-manager' yum plug-ins provide support
     # for the certificate-based Content Delivery Network.
