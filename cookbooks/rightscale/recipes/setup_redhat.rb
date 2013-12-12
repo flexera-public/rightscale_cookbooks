@@ -25,12 +25,14 @@ else
     # 'rhnreg_ks' is a utility for registering a system with the
     # RHN Satellite or Red Hat Network Classic.
     execute "rhnreg_ks" do
-      command "rhnreg_ks
-        --username=#{username}
-        --password=#{password}
-        --use-eus-channel
-        --force
-        --verbose"
+      command "rhnreg_ks" +
+        " --username=#{username}" +
+        " --password=#{password}" +
+        " --use-eus-channel" +
+        " --force" +
+        " --verbose"
+      user "root"
+      group "root"
     end
 
   else
@@ -50,11 +52,13 @@ else
     # would be out of sync.
 
     execute "subscription-manager register" do
-      command "subscription-manager register
-        --username=#{username}
-        --password=#{password}
-        --auto-attach
-        --force"
+      command "subscription-manager register" +
+        " --username=#{username}" +
+        " --password=#{password}" +
+        " --auto-attach" +
+        " --force"
+      user "root"
+      group "root"
     end
 
     # 'product-id' and 'subscription-manager' yum plug-ins provide support
