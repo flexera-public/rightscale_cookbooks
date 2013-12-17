@@ -35,8 +35,12 @@ action :snapshot do
   # See cookbooks/block_device/libraries/block_device.rb for definition of
   # init method.
   device = init(new_resource)
+  backup_options = {
+    :description => "RightScale data backup",
+    :from_master => new_resource.is_master
+  }
   # See rightscale_tools gem for implementation of "create" method.
-  device.snapshot
+  device.snapshot(new_resource.backup_type, new_resource.lineage, backup_options)
 end
 
 # Performs primary backup

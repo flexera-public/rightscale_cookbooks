@@ -67,6 +67,11 @@ define :db_do_backup, :backup_type => "primary" do
   # previously. Make sure block_device::default recipe has been run.
   # See cookbooks/block_device/providers/default.rb for the "snapshot" action.
   block_device NICKNAME do
+    # Select the device to backup and set up arguments required for backup.
+    lineage node[:db][:backup][:lineage]
+    # the type of backup (:primary or :secondary)
+    backup_type do_backup_type.to_sym
+
     action :snapshot
   end
 
