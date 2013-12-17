@@ -1,4 +1,4 @@
-# 
+#
 # Cookbook Name:: block_device
 #
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
@@ -17,7 +17,7 @@ end
 
 
 # = Block_device Attributes
-# 
+#
 # Below are the attributes defined by the block_device resource interface.
 #
 
@@ -32,9 +32,14 @@ attribute :is_master, :equal_to => [ true, false ], :default => false
 
 # == Backup/Restore options
 attribute :lineage, :kind_of => String
-attribute :timestamp_override, :kind_of => String # Restore only 
 
- 
+# Override default timestamp on a block device restore
+attribute :timestamp_override, :kind_of => String # Restore only
+
+# Type of backup/snapshot to take
+attribute :backup_type, :equal_to => [:primary, :secondary]
+
+
 # == Primary backup schedule options
 attribute :cron_backup_minute, :kind_of => String
 attribute :cron_backup_hour, :kind_of => String

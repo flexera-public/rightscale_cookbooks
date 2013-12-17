@@ -23,7 +23,12 @@ end
 # Create snapshot of given device
 action :snapshot do
   device = init(new_resource)
-  device.snapshot
+  backup_options = {
+    :description => "RightScale data backup",
+    :from_master => new_resource.is_master
+  }
+  # See rightscale_tools gem for implementation of "create" method.
+  device.snapshot(new_resource.backup_type, new_resource.lineage, backup_options)
 end
 
 # Acquire the backup lock
