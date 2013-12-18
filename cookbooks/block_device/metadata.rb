@@ -4,7 +4,7 @@ license          "Copyright RightScale, Inc. All rights reserved."
 description      "This cookbook provides the building blocks for Multi-Cloud" +
                  " backup/restore support."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "13.5.0"
+version          "13.5.1"
 
 supports "centos"
 supports "redhat"
