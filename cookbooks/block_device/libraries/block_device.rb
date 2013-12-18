@@ -46,7 +46,8 @@ module RightScale
         :lvm,                     # Backup using local LVM snapshot + cloud persistence.
         node[:cloud][:provider],  # The local cloud that we are currently running.
         new_resource.mount_point,
-        new_resource.nickname,    # Nickname for device.
+        new_resource.nickname, # Nickname for device.
+        node[:block_device][:first_server_uuid], # UUID for block device
         options)
     end
 
