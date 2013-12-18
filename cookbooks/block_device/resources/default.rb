@@ -37,7 +37,7 @@ attribute :lineage, :kind_of => String
 attribute :timestamp_override, :kind_of => String # Restore only
 
 # Type of backup/snapshot to take
-attribute :backup_type, :equal_to => [:primary, :secondary]
+attribute :backup_type, :equal_to => [:primary, :secondary], :default => :primary
 
 
 # == Primary backup schedule options
