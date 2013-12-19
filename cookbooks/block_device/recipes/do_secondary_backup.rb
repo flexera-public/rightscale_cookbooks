@@ -24,6 +24,7 @@ do_for_block_devices node[:block_device] do |device|
   log "  Creating snapshot for device #{device}..."
   nickname = get_device_or_default(node, device, :nickname)
   block_device nickname do
+    lineage backup_lineage
     action :snapshot
   end
 
