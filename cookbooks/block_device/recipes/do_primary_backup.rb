@@ -18,12 +18,15 @@ end
 do_for_block_devices node[:block_device] do |device|
   log "  Creating snapshot of device #{device}..."
   nickname = get_device_or_default(node, device, :nickname)
+  lineage = get_device_or_default(node, device, :backup, :lineage)
+
   block_device nickname do
+    lineage lineage
     action :snapshot
   end
 
   log "  Starting primary backup of device #{device}..."
-  lineage = get_device_or_default(node, device, :backup, :lineage)
+
   block_device nickname do
     # Backup/Restore arguments
     lineage lineage
