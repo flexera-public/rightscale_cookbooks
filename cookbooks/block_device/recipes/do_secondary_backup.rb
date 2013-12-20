@@ -24,6 +24,13 @@ do_for_block_devices node[:block_device] do |device|
   log "  Creating snapshot for device #{device}..."
   nickname = get_device_or_default(node, device, :nickname)
   block_device nickname do
+    secondary_cloud get_device_or_default(node, device, :backup, :secondary, :cloud)
+    secondary_endpoint get_device_or_default(node, device, :backup, :secondary, :endpoint) || ""
+    secondary_container get_device_or_default(node, device, :backup, :secondary, :container)
+    secondary_user get_device_or_default(node, device, :backup, :secondary, :cred, :user)
+    secondary_secret get_device_or_default(node, device, :backup, :secondary, :cred, :secret)
+    backup_type :secondary
+    lineage backup_lineage
     action :snapshot
   end
 

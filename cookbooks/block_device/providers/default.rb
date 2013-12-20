@@ -22,8 +22,23 @@ end
 
 # Create snapshot of given device
 action :snapshot do
-  device = init(new_resource)
-  device.snapshot
+  backup_type = new_resource.backup_type
+
+  # See cookbooks/block_device/libraries/block_device.rb for definition of
+  # init method.
+  device = init(new_resource, backup_type)
+  backup_options = {
+    :description => "RightScale data backup",
+    :from_master => new_resource.is_master
+  }
+
+  # Check if all secondary backup inputs are set up. See
+  # cookbooks/block_device/libraries/block_device.rb for definition of
+  # init and secondary_checks methods.
+  secondary_checks(new_resource) if backup_type == :secondary
+
+  # See rightscale_tools gem for implementation of "create" method.
+  device.snapshot(backup_type, new_resource.lineage, backup_options)
 end
 
 # Acquire the backup lock
@@ -82,14 +97,14 @@ end
 # Prepare device for secondary backup
 action :secondary_backup do
   secondary_checks(new_resource)
-  device = init(new_resource)
+  device = init(new_resource, :secondary)
   device.secondary_backup(new_resource.lineage)
 end
 
 # Prepare device for secondary restore
 action :secondary_restore do
   secondary_checks(new_resource)
-  device = init(new_resource)
+  device = init(new_resource, :secondary)
   restore_args = {
     :timestamp => new_resource.timestamp_override == "" ? nil : new_resource.timestamp_override,
     :force => new_resource.force,

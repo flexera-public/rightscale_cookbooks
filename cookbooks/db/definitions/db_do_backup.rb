@@ -56,6 +56,19 @@ define :db_do_backup, :backup_type => "primary" do
   # Requires block_device node[:db][:block_device] to be instantiated
   # previously. Make sure block_device::default recipe has been run.
   block_device NICKNAME do
+    # Select the device to backup and set up arguments required for backup.
+    lineage node[:db][:backup][:lineage]
+
+    # Secondary arguments
+    secondary_cloud get_device_or_default(node, :device1, :backup, :secondary, :cloud)
+    secondary_endpoint get_device_or_default(node, :device1, :backup, :secondary, :endpoint) || ""
+    secondary_container get_device_or_default(node, :device1, :backup, :secondary, :container)
+    secondary_user get_device_or_default(node, :device1, :backup, :secondary, :cred, :user)
+    secondary_secret get_device_or_default(node, :device1, :backup, :secondary, :cred, :secret)
+
+    # the type of backup (:primary or :secondary)
+    backup_type do_backup_type.to_sym
+
     action :snapshot
   end
 
