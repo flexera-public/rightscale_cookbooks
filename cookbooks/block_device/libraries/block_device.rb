@@ -20,7 +20,7 @@ module RightScale
     # @param new_resource [Object] Resource which will be initialized
     #
     # @return [BlockDevice] BlockDevice object
-    def init(new_resource)
+    def init(new_resource, backup_type = :primary)
       # Setup options
       options = {
         :hypervisor => new_resource.hypervisor
@@ -35,12 +35,13 @@ module RightScale
       options[:primary_storage_container] = new_resource.lineage
 
       # Secondary ROS options
-      options[:secondary_storage_cloud] = new_resource.secondary_cloud if new_resource.secondary_cloud
-      options[:secondary_endpoint] = new_resource.secondary_endpoint unless !new_resource.secondary_endpoint || new_resource.secondary_endpoint.empty?
-      options[:secondary_storage_key] = new_resource.secondary_user if new_resource.secondary_user
-      options[:secondary_storage_secret] = new_resource.secondary_secret if new_resource.secondary_secret
-      options[:secondary_storage_container] = new_resource.secondary_container if new_resource.secondary_container
-
+      if backup_type == :secondary
+        options[:secondary_storage_cloud] = new_resource.secondary_cloud if new_resource.secondary_cloud
+        options[:secondary_endpoint] = new_resource.secondary_endpoint unless !new_resource.secondary_endpoint || new_resource.secondary_endpoint.empty?
+        options[:secondary_storage_key] = new_resource.secondary_user if new_resource.secondary_user
+        options[:secondary_storage_secret] = new_resource.secondary_secret if new_resource.secondary_secret
+        options[:secondary_storage_container] = new_resource.secondary_container if new_resource.secondary_container
+      end
       # Create and return BlockDevice object
       ::RightScale::Tools::BlockDevice.factory(
         :lvm,                     # Backup using local LVM snapshot + cloud persistence.
