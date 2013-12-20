@@ -21,6 +21,9 @@ set_unless[:block_device][:devices][:default][:backup][:secondary][:cred][:secre
 
 set_unless[:block_device][:devices_to_use] = 'device1'
 
+# block_device/first_server_uuid will be used to generate unique block device nicknames
+set_unless[:block_device][:first_server_uuid] = node[:rightscale][:instance_uuid]
+
 # Defining initial backup parameters for all block devices
 RightScale::BlockDeviceHelper.do_for_all_block_devices block_device do |device, number|
   # Backup every hour on a randomly calculated minute
