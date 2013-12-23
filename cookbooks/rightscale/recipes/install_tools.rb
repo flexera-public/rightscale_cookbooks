@@ -15,7 +15,7 @@ RACKSPACE_VERSION = "0.0.0.20111110"
 
 # rightscale_tools gem
 RS_TOOLS_GEM = "rightscale_tools"
-RS_TOOLS_VERSION = "1.1.28"
+RS_TOOLS_VERSION = "1.1.29"
 
 COOKBOOK_DEFAULT_GEMS = ::File.join(::File.dirname(__FILE__), "..", "files", "default")
 
