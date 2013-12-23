@@ -5,7 +5,7 @@ description      "Provides the PostgreSQL implementation of the 'db' resource" +
                  " to install and manage PostgreSQL database stand-alone" +
                  " servers and clients."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "13.5.1"
+version          "13.5.0"
 
 supports "centos"
 supports "redhat"
