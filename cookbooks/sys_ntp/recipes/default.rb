@@ -60,7 +60,7 @@ end
 # Update system time
 ntpdate_arg_ntp_servers = node[:sys_ntp][:servers].gsub(","," ").split.join(" ")
 
-log "  Update time using ntpdate and ntp server(s) #{ntpdate_arg_ntp_servers}..."
+log "  Update time using ntpdate with ntp server(s): '#{ntpdate_arg_ntp_servers}'"
 bash "update time" do
   flags "-ex"
   code <<-EOH
