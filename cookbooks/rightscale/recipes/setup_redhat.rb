@@ -57,11 +57,11 @@ else
     "/etc/yum/pluginconf.d/product-id.conf",
     "/etc/yum/pluginconf.d/subscription-manager.conf"
   ].each do |plugin_file|
-    if File.exists?(plugin_file)
-      file_content = File.read(plugin_file)
+    if ::File.exists?(plugin_file)
+      file_content = ::File.read(plugin_file)
       if file_content.gsub!(/enabled=0/, "enabled=1")
         log "  Updating #{plugin_file}"
-        File.open(plugin_file, "w") { |f| f.write(file_content) }
+        ::File.open(plugin_file, "w") { |file| file.write(file_content) }
       end
     else
       log "  WARNING: yum plugin '#{plugin}' not found!"
