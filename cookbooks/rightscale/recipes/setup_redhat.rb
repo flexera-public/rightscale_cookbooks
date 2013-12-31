@@ -38,6 +38,12 @@ else
   else
     log "  Registering the system using 'subscription-manager'."
 
+    # Install subscription-manager before convergence to be available
+    # for the execute resource.
+    package "subscription-manager" do
+      action :nothing
+    end.run_action(:install)
+
     # 'subscription-manager' is a client program that registers a system
     # with a subscription management service.
     #
