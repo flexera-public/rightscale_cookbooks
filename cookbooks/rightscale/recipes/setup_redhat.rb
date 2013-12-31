@@ -19,70 +19,52 @@ if username.to_s.empty? || password.to_s.empty?
   log message
 
 else
-  if node[:cloud][:provider] == "ec2"
-    log "  Registering the system using 'rhnreg_ks'."
+  log "  Registering the system using 'subscription-manager'."
 
-    # 'rhnreg_ks' is a utility for registering a system with the
-    # RHN Satellite or Red Hat Network Classic.
-    execute "rhnreg_ks" do
-      command "rhnreg_ks" +
-        " --username=#{username}" +
-        " --password=#{password}" +
-        " --use-eus-channel" +
-        " --force" +
-        " --verbose"
-      user "root"
-      group "root"
-    end
+  # Install subscription-manager before convergence to be available
+  # for the execute resource.
+  package "subscription-manager" do
+    action :nothing
+  end.run_action(:install)
 
-  else
-    log "  Registering the system using 'subscription-manager'."
+  # 'subscription-manager' is a client program that registers a system
+  # with a subscription management service.
+  #
+  #   --auto-attach : Automatically attaches the best-matched, compatible
+  #                   subscriptions to the system.
+  #
+  #   --force : Regenerates the identity certificate for the system using
+  #             username/password authentication.
+  #
+  # On stop/start the system gets a different IP, and registration to
+  # Red Hat records all this info. Without re-registration the information
+  # would be out of sync.
 
-    # Install subscription-manager before convergence to be available
-    # for the execute resource.
-    package "subscription-manager" do
-      action :nothing
-    end.run_action(:install)
+  execute "subscription-manager register" do
+    command "subscription-manager register" +
+      " --username=#{username}" +
+      " --password=#{password}" +
+      " --auto-attach" +
+      " --force"
+    user "root"
+    group "root"
+  end
 
-    # 'subscription-manager' is a client program that registers a system
-    # with a subscription management service.
-    #
-    #   --auto-attach : Automatically attaches the best-matched, compatible
-    #                   subscriptions to the system.
-    #
-    #   --force : Regenerates the identity certificate for the system using
-    #             username/password authentication.
-    #
-    # On stop/start the system gets a different IP, and registration to
-    # Red Hat records all this info. Without re-registration the information
-    # would be out of sync.
-
-    execute "subscription-manager register" do
-      command "subscription-manager register" +
-        " --username=#{username}" +
-        " --password=#{password}" +
-        " --auto-attach" +
-        " --force"
-      user "root"
-      group "root"
-    end
-
-    # 'product-id' and 'subscription-manager' yum plug-ins provide support
-    # for the certificate-based Content Delivery Network.
-    # We need to make sure they are enabled.
-    [
-      "/etc/yum/pluginconf.d/product-id.conf",
-      "/etc/yum/pluginconf.d/subscription-manager.conf"
-    ].each do |plugin_file|
-      if File.exists?(plugin_file)
-        file_content = File.read(plugin_file)
-        if file_content.gsub!(/enabled=0/, "enabled=1")
-          log "  Updating #{plugin_file}"
-          File.open(plugin_file, "w") { |f| f.write(file_content) }
-        end
-      else
-        log "  WARNING: yum plugin '#{plugin}' not found!"
+  # 'product-id' and 'subscription-manager' yum plug-ins provide support
+  # for the certificate-based Content Delivery Network.
+  # We need to make sure they are enabled.
+  [
+    "/etc/yum/pluginconf.d/product-id.conf",
+    "/etc/yum/pluginconf.d/subscription-manager.conf"
+  ].each do |plugin_file|
+    if File.exists?(plugin_file)
+      file_content = File.read(plugin_file)
+      if file_content.gsub!(/enabled=0/, "enabled=1")
+        log "  Updating #{plugin_file}"
+        File.open(plugin_file, "w") { |f| f.write(file_content) }
       end
+    else
+      log "  WARNING: yum plugin '#{plugin}' not found!"
     end
   end
 end
