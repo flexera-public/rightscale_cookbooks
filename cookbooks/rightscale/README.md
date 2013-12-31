@@ -62,10 +62,8 @@ The `rightscale::install_rightimage_extras` recipe installs the package
 have the same packages as a RightImage does.
 
 The `rightscale::setup_redhat` recipe registers Red Hat servers with Red Hat
-Network Classic on AWS and Red Hat Content Delivery Network on other clouds when
-the `rightscale/redhat/username` and `rightscale/redhat/password` inputs are
-set. For more information on the differences between RHN Classic and Red Hat
-Subscription Management, please see [this article](https://access.redhat.com/site/articles/63269).
+Content Delivery Network when the `rightscale/redhat/username` and
+`rightscale/redhat/password` inputs are set.
 
 ## USAGE:
 
