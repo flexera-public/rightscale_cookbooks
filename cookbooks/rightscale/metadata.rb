@@ -5,7 +5,7 @@ license          "Copyright RightScale, Inc. All rights reserved."
 description      "Base recipes used to set up services used by the RightScale" +
                  " Cloud Management Platform."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "13.5.0"
+version          "13.5.1"
 
 supports "centos"
 supports "redhat"
@@ -270,8 +270,8 @@ attribute "rightscale/rackspace_tenant_id",
 attribute "rightscale/redhat/username",
   :display_name => "RedHat Network Username",
   :description =>
-    "The username to register the system with under RHN Satellite or Red Hat" +
-    " Network Classic. Example: cred:REDHAT_SUBSCRIBER_USERNAME",
+    "The username to register the system with Red Hat." +
+    " Example: cred:REDHAT_SUBSCRIBER_USERNAME",
   :required => "optional",
   :default => "",
   :recipes => [
