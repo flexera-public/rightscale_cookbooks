@@ -21,11 +21,8 @@ if username.to_s.empty? || password.to_s.empty?
 else
   log "  Registering the system using 'subscription-manager'."
 
-  # Install subscription-manager before convergence to be available
-  # for the execute resource.
-  package "subscription-manager" do
-    action :nothing
-  end.run_action(:install)
+  # Install subscription-manager if not already installed
+  package "subscription-manager"
 
   # 'subscription-manager' is a client program that registers a system
   # with a subscription management service.
@@ -64,7 +61,7 @@ else
         ::File.open(plugin_file, "w") { |file| file.write(file_content) }
       end
     else
-      log "  WARNING: yum plugin '#{plugin}' not found!"
+      log "  WARNING: yum plugin '#{plugin_file}' not found!"
     end
   end
 end
