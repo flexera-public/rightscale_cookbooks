@@ -50,18 +50,19 @@ else
   # 'product-id' and 'subscription-manager' yum plug-ins provide support
   # for the certificate-based Content Delivery Network.
   # We need to make sure they are enabled.
-  [
-    "/etc/yum/pluginconf.d/product-id.conf",
-    "/etc/yum/pluginconf.d/subscription-manager.conf"
-  ].each do |plugin_file|
-    if ::File.exists?(plugin_file)
-      file_content = ::File.read(plugin_file)
-      if file_content.gsub!(/enabled=0/, "enabled=1")
-        log "  Updating #{plugin_file}"
-        ::File.open(plugin_file, "w") { |file| file.write(file_content) }
-      end
-    else
-      log "  WARNING: yum plugin '#{plugin_file}' not found!"
-    end
+
+  cookbook_file "/etc/yum/pluginconf.d/product-id.conf" do
+    owner "root"
+    group "root"
+    mode 0644
+    source "product-id.conf"
   end
+
+  cookbook_file "/etc/yum/pluginconf.d/subscription-manager.conf" do
+    owner "root"
+    group "root"
+    mode 0644
+    source "subscription-manager.conf"
+  end
+
 end
