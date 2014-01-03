@@ -1,97 +1,97 @@
 {
+  "conflicting": {
+  },
+  "maintainer": "RightScale, Inc.",
   "attributes": {
-    "logging/protocol": {
-      "display_name": "Logging Protocol",
-      "type": "string",
-      "required": "optional",
+    "logging/certificate": {
+      "choice": [
+
+      ],
       "calculated": false,
+      "description": "Specify the SSL Certificate to enable authentication with stunnel. Should contain both certificate and key. Certificate should be provided for both the Clients and the Logging Server. Example: cred:LOGGING_SSL_CRED",
+      "required": "optional",
       "recipes": [
         "logging::default",
         "logging::install_server"
       ],
+      "type": "string",
+      "display_name": "SSL Certificate"
+    },
+    "logging": {
+      "choice": [
+
+      ],
+      "calculated": false,
+      "required": "optional",
+      "recipes": [
+
+      ],
+      "type": "hash",
+      "display_name": "Log Service Settings"
+    },
+    "logging/protocol": {
       "choice": [
         "udp",
         "relp",
         "relp-secured"
       ],
+      "calculated": false,
       "description": "Protocol used to send logging messages from client to server. Example: udp",
-      "default": "udp"
-    },
-    "logging/remote_server": {
-      "display_name": "Remote Server",
-      "type": "string",
       "required": "optional",
-      "calculated": false,
-      "recipes": [
-        "logging::default"
-      ],
-      "choice": [
-
-      ],
-      "description": "Configures an instance to forward its log data to a remote server. Specify either the remote server's FQDN or IP address. Example: syslog.example.com or 192.168.0.1"
-    },
-    "logging": {
-      "display_name": "Log Service Settings",
-      "type": "hash",
-      "required": "optional",
-      "calculated": false,
-      "recipes": [
-
-      ],
-      "choice": [
-
-      ]
-    },
-    "logging/certificate": {
-      "display_name": "SSL Certificate",
-      "type": "string",
-      "required": "optional",
-      "calculated": false,
       "recipes": [
         "logging::default",
         "logging::install_server"
       ],
+      "type": "string",
+      "default": "udp",
+      "display_name": "Logging Protocol"
+    },
+    "logging/remote_server": {
       "choice": [
 
       ],
-      "description": "Specify the SSL Certificate to enable authentication with stunnel. Should contain both certificate and key. Certificate should be provided for both the Clients and the Logging Server. Example: cred:LOGGING_SSL_CRED"
+      "calculated": false,
+      "description": "Configures an instance to forward its log data to a remote server. Specify either the remote server's FQDN or IP address. Example: syslog.example.com or 192.168.0.1",
+      "required": "optional",
+      "recipes": [
+        "logging::default"
+      ],
+      "type": "string",
+      "display_name": "Remote Server"
     }
   },
-  "suggestions": {
-  },
-  "replacing": {
+  "description": "This cookbook provides a set of recipes used by the RightScale ServerTemplates to configure the logging service provider. This cookbook does not contain a specific logging server implementation but generic recipes that use the LWRP interface.",
+  "version": "13.5.1",
+  "recipes": {
+    "logging::do_server_reload": "Reloads logging server.",
+    "logging::install_server": "Configures a logging server.",
+    "logging::default": "Sets up logging server..",
+    "logging::do_server_start": "Starts logging server.",
+    "logging::do_server_restart": "Restarts logging server.",
+    "logging::do_server_stop": "Stops logging server."
   },
   "groupings": {
   },
-  "name": "logging",
-  "conflicting": {
-  },
-  "version": "13.5.0",
-  "dependencies": {
-    "logging_rsyslog": ">= 0.0.0",
-    "logging_syslog_ng": ">= 0.0.0",
-    "rightscale": ">= 0.0.0"
+  "suggestions": {
   },
   "platforms": {
     "ubuntu": ">= 0.0.0",
-    "centos": ">= 0.0.0",
-    "redhat": ">= 0.0.0"
+    "redhat": ">= 0.0.0",
+    "centos": ">= 0.0.0"
   },
-  "maintainer_email": "support@rightscale.com",
   "recommendations": {
   },
+  "name": "logging",
+  "dependencies": {
+    "rightscale": ">= 0.0.0",
+    "logging_syslog_ng": ">= 0.0.0",
+    "logging_rsyslog": ">= 0.0.0"
+  },
   "license": "Copyright RightScale, Inc. All rights reserved.",
-  "recipes": {
-    "logging::do_server_stop": "Stops logging server.",
-    "logging::do_server_restart": "Restarts logging server.",
-    "logging::install_server": "Configures a logging server.",
-    "logging::default": "Sets up logging server..",
-    "logging::do_server_reload": "Reloads logging server.",
-    "logging::do_server_start": "Starts logging server."
+  "replacing": {
   },
   "providing": {
   },
-  "maintainer": "RightScale, Inc.",
-  "description": "This cookbook provides a set of recipes used by the RightScale ServerTemplates to configure the logging service provider. This cookbook does not contain a specific logging server implementation but generic recipes that use the LWRP interface.",
-  "long_description": "# RightScale Logging Cookbook\n\n## DESCRIPTION:\n\nThis cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).\n\nThis cookbook provides a set of recipes used by the RightScale\nServerTemplates to configure the logging service provider.\n\nThis cookbook configures the default logging provider installed on the image.\nIf a remote server is defined it will configure an instance to send its\nlog messages to the specified remote server based on its FQDN or IP address.\nIf a remote server is not defined, the default configuration is used, which\nsaves the log files locally on the instance.\n\n## REQUIREMENTS:\n\n* Must be used with a 'logging' provider in the cookbook path\n* Requires a virtual machine launched from a RightScale-managed RightImage.\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see `metadata.rb` file for the latest dependencies.\n\n* `rightscale`\n* `logging_rsyslog`\n* `logging_syslog_ng`\n\n## KNOWN LIMITATIONS:\n\n* Currently only supports the logging provider installed on the image:\n  rsyslog or syslog-ng\n* Cookbook supports client configuration for a single remote server using\n  several protocols.\n* Requires customer maintained remote server for remote logging.\n\n## SETUP:\n\n* Place `logging::default` recipe into your runlist to setup the logging\n  resource. When using a RightScale ServerTemplate, this will also automatically\n  configure logging service provider (rsyslog/syslog-ng). If a remote server is\n  specified the default  recipe will determine the logging provider installed\n  (rsyslog/syslog-ng) and configure it for remote logging.\n* To setup a logging server, place the following recipes in order to your\n  runlist:\n\n    logging_<provider>::setup_server\n      sets up the logging provider.\n\n    logging::install_server\n      sets up generic server inputs and configures a logging server.\n\n  For example: To set up and install an rsyslog logging server\n\n    logging_rsyslog::setup_server\n    logging::install_server\n\n## USAGE:\n\n1. Local Logging - Set the 'logging/remote_server' input to 'ignore' to use\n   the default configuration installed.\n2. Remote Logging - Set the 'logging/remote_server' input to the FQDN or IP of\n   the designated remote logging server to adjust the default configuration to\n   the remote logging configuration.\n3. Transfer protocol - Set the 'logging/protocol' input to one of the listed\n   options:\n   1. UDP: the most generic and common-used option. UDP is the default logging\n      protocol option.\n   2. RELP: RELP stands for Reliable Event Logging Protocol.\n      RELP ensures that no message is lost, not even when connections break and\n      a peer becomes unavailable.\n   3. RELP-secured: while using RELP to ensure a safe and loss-free transmission\n      between two machines the traffic also gets encrypted with an SSL\n      certificate the user should provide with the 'logging/certificate' input.\n      As stunnel is configured with the \"verify = 3\" option the server would\n      require and verify the client certificate against the locally installed\n      certificate providing client authentication.\n\n## DETAILS:\n\n### General\n\nThe 'logging' interface is defined by a Lightweight Resource, which can be found\nin the `resources/default.rb` file.\n\nThis cookbook is intended as a framework for logging providers. The current\nimplementation supports the minimum configuration for rsyslog and syslog-ng.\n\nNote: This cookbook does not modify the installed logging provider.\n\nFor more information about Lightweight Resources and Providers (LWRPs), please\nsee: [Lightweight Resources and Providers][LWRP]\n\n[LWRP]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Lightweight_Resources_and_Providers_(LWRP)\n\n### Providers:\n\nThe current implementation does not support providers other than rsyslog and\nsyslog-ng.\n\n### Custom Configuration:\n\nThe default settings can be customized by replacing the default configuration\ntemplate for the provider. For more information, please see:\n[Customize a Chef-based ServerTemplate](http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/ServerTemplate_Development/02-Customize_a_Chef-based_ServerTemplate)\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n"
+  "long_description": "# RightScale Logging Cookbook\n\n## DESCRIPTION:\n\nThis cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).\n\nThis cookbook provides a set of recipes used by the RightScale\nServerTemplates to configure the logging service provider.\n\nThis cookbook configures the default logging provider installed on the image.\nIf a remote server is defined it will configure an instance to send its\nlog messages to the specified remote server based on its FQDN or IP address.\nIf a remote server is not defined, the default configuration is used, which\nsaves the log files locally on the instance.\n\n## REQUIREMENTS:\n\n* Must be used with a 'logging' provider in the cookbook path\n* Requires a virtual machine launched from a RightScale-managed RightImage.\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see `metadata.rb` file for the latest dependencies.\n\n* `rightscale`\n* `logging_rsyslog`\n* `logging_syslog_ng`\n\n## KNOWN LIMITATIONS:\n\n* Currently only supports the logging provider installed on the image:\n  rsyslog or syslog-ng\n* Cookbook supports client configuration for a single remote server using\n  several protocols.\n* Requires customer maintained remote server for remote logging.\n\n## SETUP:\n\n* Place `logging::default` recipe into your runlist to setup the logging\n  resource. When using a RightScale ServerTemplate, this will also automatically\n  configure logging service provider (rsyslog/syslog-ng). If a remote server is\n  specified the default  recipe will determine the logging provider installed\n  (rsyslog/syslog-ng) and configure it for remote logging.\n* To setup a logging server, place the following recipes in order to your\n  runlist:\n\n    logging_<provider>::setup_server\n      sets up the logging provider.\n\n    logging::install_server\n      sets up generic server inputs and configures a logging server.\n\n  For example: To set up and install an rsyslog logging server\n\n    logging_rsyslog::setup_server\n    logging::install_server\n\n## USAGE:\n\n1. Local Logging - Set the 'logging/remote_server' input to 'ignore' to use\n   the default configuration installed.\n2. Remote Logging - Set the 'logging/remote_server' input to the FQDN or IP of\n   the designated remote logging server to adjust the default configuration to\n   the remote logging configuration.\n3. Transfer protocol - Set the 'logging/protocol' input to one of the listed\n   options:\n   1. UDP: the most generic and common-used option. UDP is the default logging\n      protocol option.\n   2. RELP: RELP stands for Reliable Event Logging Protocol.\n      RELP ensures that no message is lost, not even when connections break and\n      a peer becomes unavailable.\n   3. RELP-secured: while using RELP to ensure a safe and loss-free transmission\n      between two machines the traffic also gets encrypted with an SSL\n      certificate the user should provide with the 'logging/certificate' input.\n      As stunnel is configured with the \"verify = 3\" option the server would\n      require and verify the client certificate against the locally installed\n      certificate providing client authentication.\n\n## DETAILS:\n\n### General\n\nThe 'logging' interface is defined by a Lightweight Resource, which can be found\nin the `resources/default.rb` file.\n\nThis cookbook is intended as a framework for logging providers. The current\nimplementation supports the minimum configuration for rsyslog and syslog-ng.\n\nNote: This cookbook does not modify the installed logging provider.\n\nFor more information about Lightweight Resources and Providers (LWRPs), please\nsee: [Lightweight Resources and Providers][LWRP]\n\n[LWRP]: http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/06-Development_Resources/Lightweight_Resources_and_Providers_(LWRP)\n\n### Providers:\n\nThe current implementation does not support providers other than rsyslog and\nsyslog-ng.\n\n### Custom Configuration:\n\nThe default settings can be customized by replacing the default configuration\ntemplate for the provider. For more information, please see:\n[Customize a Chef-based ServerTemplate](http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/04-Developer/ServerTemplate_Development/02-Customize_a_Chef-based_ServerTemplate)\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
+  "maintainer_email": "support@rightscale.com"
 }
