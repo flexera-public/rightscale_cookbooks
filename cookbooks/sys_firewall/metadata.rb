@@ -6,7 +6,7 @@ description      "RightScale firewall cookbook. This cookbook provides a LWRP" +
                  " for managing access to multiple servers in a deployment" +
                  " using machine."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "13.5.0"
+version          "13.5.1"
 
 supports "centos"
 supports "redhat"

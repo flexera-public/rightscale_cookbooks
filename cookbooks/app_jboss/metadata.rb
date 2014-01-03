@@ -6,7 +6,7 @@ description      "Cookbook provides Apache + JBoss implementation of the 'app'" 
                  " Lightweight Resource Provider (LWRP). Installs and configures" +
                  " an Apache + JBoss application server."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "13.5.0"
+version          "13.5.1"
 
 supports "centos"
 supports "redhat"

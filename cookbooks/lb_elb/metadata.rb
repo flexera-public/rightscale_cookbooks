@@ -7,7 +7,7 @@ description      "RightScale load balancer cookbook for AWS Elastic Load" +
                  " and detaching application servers to and from an existing" +
                  " AWS Elastic Load Balancer (ELB)."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "13.5.0"
+version          "13.5.1"
 
 supports "centos"
 supports "redhat"

@@ -1,110 +1,110 @@
 {
-  "attributes": {
-    "lb_haproxy/abortonclose": {
-      "description": "By default (without the option) the behaviour is HTTP compliant and aborted requests will be served. But when the option is specified, a session with an incoming channel closed will be aborted while it is still possible, either pending in the queue for a connection slot, or during the connection establishment if the server has not yet acknowledged the connection request. Default: off",
-      "display_name": "Early dropping of aborted requests pending in queues",
-      "type": "string",
-      "default": "off",
-      "required": "optional",
-      "choice": [
-        "on",
-        "off"
-      ],
-      "recipes": [
-        "lb_haproxy::setup_server"
-      ],
-      "calculated": false
-    },
-    "lb_haproxy/algorithm": {
-      "description": "The algorithm that the load balancer will use to direct traffic. Example: roundrobin",
-      "display_name": "Load Balancing Algorithm",
-      "type": "string",
-      "default": "roundrobin",
-      "required": "optional",
-      "choice": [
-        "roundrobin",
-        "leastconn",
-        "source"
-      ],
-      "recipes": [
-        "lb_haproxy::setup_server"
-      ],
-      "calculated": false
-    },
-    "lb_haproxy/timeout_client": {
-      "description": "The maximum inactivity time on the client side in milliseconds. Example: 60000",
-      "display_name": "Client Timeout",
-      "type": "string",
-      "default": "60000",
-      "required": "optional",
-      "choice": [
-
-      ],
-      "recipes": [
-        "lb_haproxy::setup_server"
-      ],
-      "calculated": false
-    },
-    "lb_haproxy/httpclose": {
-      "description": "By default, when a client communicates with a server, HAProxy will only analyze, log, and process the first request of each connection. If option httpclose is set, it will check if a 'Connection: close' header is already set in each direction, and will add one if missing. Default: on",
-      "display_name": "Passive HTTP connection closing",
-      "type": "string",
-      "default": "on",
-      "required": "optional",
-      "choice": [
-        "on",
-        "off"
-      ],
-      "recipes": [
-        "lb_haproxy::setup_server"
-      ],
-      "calculated": false
-    },
-    "lb_haproxy/timeout_server": {
-      "description": "The maximum inactivity time on the server side to direct traffic. Example: 60000",
-      "display_name": "Server Timeout",
-      "type": "string",
-      "default": "60000",
-      "required": "optional",
-      "choice": [
-
-      ],
-      "recipes": [
-        "lb_haproxy::setup_server"
-      ],
-      "calculated": false
-    }
-  },
-  "replacing": {
-  },
-  "providing": {
+  "recommendations": {
   },
   "maintainer": "RightScale, Inc.",
-  "description": "RightScale load balancer cookbook for Apache/HAProxy. This cookbook provides recipes for setting up and running an Apache/HAProxy load balancer server as well as recipes for attaching and detaching application servers.",
-  "conflicting": {
-  },
-  "dependencies": {
-    "lb": ">= 0.0.0",
-    "rightscale": ">= 0.0.0",
-    "app": ">= 0.0.0"
-  },
   "license": "Copyright RightScale, Inc. All rights reserved.",
-  "long_description": "# RightScale Apache/HAProxy Load Balancer Cookbook \n\n## DESCRIPTION:\n\nThis cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).\n\nThis is RightScale's load balancer cookbook for Apache/HAProxy. \n\nThis cookbook provides recipes for setting up and running an Apache/HAProxy load\nbalancer server as well as recipes for attaching and detaching application\nservers to and from load balancers. There is also support for automatically\ndetecting and reconfiguring when an application server has disappeared or\nreappeared without attaching itself.\n\n## DETAILS:\n\nThe load balancer and application server attach/detach recipes are designed so\nthe servers can locate each other using RightScale machine tags. The load\nbalancer servers have tags of the form \"loadbalancer:<pool_name>=lb\" where\n'pool_name' is the name of the pool that the application servers are associated\nwith; the application server attach and detach recipes use this machine tag\nto request that corresponding handler recipes are run on the matching load\nbalancers when they need to attach or detach. The application servers have tags\nof the form \"loadbalancer:<pool_name>=app\", \"server:uuid=<UUID>\", and\n\"loadbalancer:backend_ip=<IP_ADDRESS>\" where 'pool_name' is the same pool\nname, UUID is a unique string that identifies the server, and IP_ADDRESS is the\nIP address of the server; the automatic detection recipe for the load balancer\nservers use these tags to find which application servers are currently\navailable. This mechanism was chosen to support machines in multiple\navailability zones where in the case of failures, load balancers and application \nservers may start while some machines, including RightScale, are not reachable \nand thus the configuration cannot be fully determined. For this reason, the\nautomatic detection recipe is configured to run every 15 minutes by default.\n\n## REQUIREMENTS:\n\n* Requires a virtual machine launched from a RightScale managed RightImage\n\n## SETUP:\n\nBy default load balancer has only one pool called \"default\", which act as a\ndefault pool for all application servers which has \"loadbalancer::app=default\"\ntag.\nTo setup multiple pools configuration, lb/pools input value must be overridden\nwith comma-separated list of URIs or FQDNs for which the load balancer will\ncreate server pools to answer website requests.\nLast entry will be the default backend and will answer for all URIs and FQDNs\nnot listed in lb/pools input.\nAny combination of URIs or FQDNs or web root relative path can be entered.\n\nApplication servers can provide any numbers of URIs or FQDNs to join\ncorresponding server pool backends.\n\n## USAGE:\n\n### Application Server Attach\n\n#### do_attach_request\n\nThis recipe is used by application servers to request that load balancer servers\nconfigure themselves to attach to the application server. It requests that\nservers with the \"loadbalancer:<pool_name>=lb\" tag run the corresponding\n'handle_attach' recipe. The recipe sends the server's IP address and instance\nUUID as parameters to the remote recipe.\n\n#### handle_attach recipes\n\nThis recipe is used by the load balancer servers to reconfigure HAProxy and\nreload it, if necessary, when an application server requests to be attached. It\nuses the IP address and instance UUID parameters it receives from the\n'do_attach_request' recipe called on the application server to construct an\nindividual configuration file in the haproxy.d directory with the instance UUID\nas the file name. If the file didn't exist before or if its contents change, the\nmain HAProxy configuration information and all of the files in the haproxy.d\ndirectory are concatenated into the HAProxy configuration file and HAProxy is\nrestarted.\n\n### Application Server Detach\n\n#### do_detach_request\n\nThis recipe is used by application servers to request that load balancer servers\nconfigure themselves to detach from the application server. It request that\nservers with the \"loadbalancer:<pool_name>=lb\" tag run the corresponding\n'handle_detach' recipe. The recipe sends the server's IP address and instance\nUUID as parameters to the remote recipe.\n\n#### handle_detach recipes\n\nThis recipe is used by the load balancer servers to reconfigure HAProxy and\nreload it, if necessary, when an application server requests to be detached. It\nuses the instance UUID parameter it receives from the 'do_attach_request' recipe\ncalled on the application server to delete the corresponding file from the\nhaproxy.d directory which has the instance UUID as its file name. If the file\nwas deleted, the main HAProxy configuration information and all of the remaining\nfiles in the haproxy.d directory are concatenated into the HAProxy configuration\nfile and HAProxy is restarted.\n\n### Automatic Server Detection\n\n#### do_attach_all recipe\n\nThis recipe is used by the load balancer to automatically detect if application\nservers have disappeared or reappeared without detaching or reattaching using\nthe other recipes. This recipe is set to run in the periodic reconverge which\ndefaults to a period of 15 minutes between runs. It uses the\n\"loadbalancer:<pool_name>=app\", \"server:uuid=<UUID>\", and\n\"loadbalancer:backend_ip=<IP_ADDRESS>\" tags to get a list of all of the\napplication servers that are currently available and uses the list to create,\nupdate, or delete individual server configuration files in the haproxy.d\ndirectory depending on their current status. If any of the files in the\nhaproxy.d directory have been created, changed, or deleted, the main HAProxy\nconfiguration and the new set of files in the haproxy.d directory are\nconcatenated into the HAProxy configuration file and HAProxy is restarted.\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## LICENSE\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
-  "name": "lb_haproxy",
-  "maintainer_email": "support@rightscale.com",
-  "suggestions": {
-  },
   "recipes": {
     "lb_haproxy::setup_server": "This loads the required 'lb' resource using the HAProxy provider."
   },
   "platforms": {
     "ubuntu": ">= 0.0.0",
-    "centos": ">= 0.0.0",
-    "redhat": ">= 0.0.0"
+    "redhat": ">= 0.0.0",
+    "centos": ">= 0.0.0"
   },
-  "version": "13.5.0",
+  "long_description": "# RightScale Apache/HAProxy Load Balancer Cookbook \n\n## DESCRIPTION:\n\nThis cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).\n\nThis is RightScale's load balancer cookbook for Apache/HAProxy. \n\nThis cookbook provides recipes for setting up and running an Apache/HAProxy load\nbalancer server as well as recipes for attaching and detaching application\nservers to and from load balancers. There is also support for automatically\ndetecting and reconfiguring when an application server has disappeared or\nreappeared without attaching itself.\n\n## DETAILS:\n\nThe load balancer and application server attach/detach recipes are designed so\nthe servers can locate each other using RightScale machine tags. The load\nbalancer servers have tags of the form \"loadbalancer:<pool_name>=lb\" where\n'pool_name' is the name of the pool that the application servers are associated\nwith; the application server attach and detach recipes use this machine tag\nto request that corresponding handler recipes are run on the matching load\nbalancers when they need to attach or detach. The application servers have tags\nof the form \"loadbalancer:<pool_name>=app\", \"server:uuid=<UUID>\", and\n\"loadbalancer:backend_ip=<IP_ADDRESS>\" where 'pool_name' is the same pool\nname, UUID is a unique string that identifies the server, and IP_ADDRESS is the\nIP address of the server; the automatic detection recipe for the load balancer\nservers use these tags to find which application servers are currently\navailable. This mechanism was chosen to support machines in multiple\navailability zones where in the case of failures, load balancers and application \nservers may start while some machines, including RightScale, are not reachable \nand thus the configuration cannot be fully determined. For this reason, the\nautomatic detection recipe is configured to run every 15 minutes by default.\n\n## REQUIREMENTS:\n\n* Requires a virtual machine launched from a RightScale managed RightImage\n\n## SETUP:\n\nBy default load balancer has only one pool called \"default\", which act as a\ndefault pool for all application servers which has \"loadbalancer::app=default\"\ntag.\nTo setup multiple pools configuration, lb/pools input value must be overridden\nwith comma-separated list of URIs or FQDNs for which the load balancer will\ncreate server pools to answer website requests.\nLast entry will be the default backend and will answer for all URIs and FQDNs\nnot listed in lb/pools input.\nAny combination of URIs or FQDNs or web root relative path can be entered.\n\nApplication servers can provide any numbers of URIs or FQDNs to join\ncorresponding server pool backends.\n\n## USAGE:\n\n### Application Server Attach\n\n#### do_attach_request\n\nThis recipe is used by application servers to request that load balancer servers\nconfigure themselves to attach to the application server. It requests that\nservers with the \"loadbalancer:<pool_name>=lb\" tag run the corresponding\n'handle_attach' recipe. The recipe sends the server's IP address and instance\nUUID as parameters to the remote recipe.\n\n#### handle_attach recipes\n\nThis recipe is used by the load balancer servers to reconfigure HAProxy and\nreload it, if necessary, when an application server requests to be attached. It\nuses the IP address and instance UUID parameters it receives from the\n'do_attach_request' recipe called on the application server to construct an\nindividual configuration file in the haproxy.d directory with the instance UUID\nas the file name. If the file didn't exist before or if its contents change, the\nmain HAProxy configuration information and all of the files in the haproxy.d\ndirectory are concatenated into the HAProxy configuration file and HAProxy is\nrestarted.\n\n### Application Server Detach\n\n#### do_detach_request\n\nThis recipe is used by application servers to request that load balancer servers\nconfigure themselves to detach from the application server. It request that\nservers with the \"loadbalancer:<pool_name>=lb\" tag run the corresponding\n'handle_detach' recipe. The recipe sends the server's IP address and instance\nUUID as parameters to the remote recipe.\n\n#### handle_detach recipes\n\nThis recipe is used by the load balancer servers to reconfigure HAProxy and\nreload it, if necessary, when an application server requests to be detached. It\nuses the instance UUID parameter it receives from the 'do_attach_request' recipe\ncalled on the application server to delete the corresponding file from the\nhaproxy.d directory which has the instance UUID as its file name. If the file\nwas deleted, the main HAProxy configuration information and all of the remaining\nfiles in the haproxy.d directory are concatenated into the HAProxy configuration\nfile and HAProxy is restarted.\n\n### Automatic Server Detection\n\n#### do_attach_all recipe\n\nThis recipe is used by the load balancer to automatically detect if application\nservers have disappeared or reappeared without detaching or reattaching using\nthe other recipes. This recipe is set to run in the periodic reconverge which\ndefaults to a period of 15 minutes between runs. It uses the\n\"loadbalancer:<pool_name>=app\", \"server:uuid=<UUID>\", and\n\"loadbalancer:backend_ip=<IP_ADDRESS>\" tags to get a list of all of the\napplication servers that are currently available and uses the list to create,\nupdate, or delete individual server configuration files in the haproxy.d\ndirectory depending on their current status. If any of the files in the\nhaproxy.d directory have been created, changed, or deleted, the main HAProxy\nconfiguration and the new set of files in the haproxy.d directory are\nconcatenated into the HAProxy configuration file and HAProxy is restarted.\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## LICENSE\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
+  "attributes": {
+    "lb_haproxy/httpclose": {
+      "default": "on",
+      "display_name": "Passive HTTP connection closing",
+      "recipes": [
+        "lb_haproxy::setup_server"
+      ],
+      "type": "string",
+      "description": "By default, when a client communicates with a server, HAProxy will only analyze, log, and process the first request of each connection. If option httpclose is set, it will check if a 'Connection: close' header is already set in each direction, and will add one if missing. Default: on",
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+        "on",
+        "off"
+      ]
+    },
+    "lb_haproxy/algorithm": {
+      "default": "roundrobin",
+      "display_name": "Load Balancing Algorithm",
+      "recipes": [
+        "lb_haproxy::setup_server"
+      ],
+      "type": "string",
+      "description": "The algorithm that the load balancer will use to direct traffic. Example: roundrobin",
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+        "roundrobin",
+        "leastconn",
+        "source"
+      ]
+    },
+    "lb_haproxy/abortonclose": {
+      "default": "off",
+      "display_name": "Early dropping of aborted requests pending in queues",
+      "recipes": [
+        "lb_haproxy::setup_server"
+      ],
+      "type": "string",
+      "description": "By default (without the option) the behaviour is HTTP compliant and aborted requests will be served. But when the option is specified, a session with an incoming channel closed will be aborted while it is still possible, either pending in the queue for a connection slot, or during the connection establishment if the server has not yet acknowledged the connection request. Default: off",
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+        "on",
+        "off"
+      ]
+    },
+    "lb_haproxy/timeout_server": {
+      "default": "60000",
+      "display_name": "Server Timeout",
+      "recipes": [
+        "lb_haproxy::setup_server"
+      ],
+      "type": "string",
+      "description": "The maximum inactivity time on the server side to direct traffic. Example: 60000",
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+
+      ]
+    },
+    "lb_haproxy/timeout_client": {
+      "default": "60000",
+      "display_name": "Client Timeout",
+      "recipes": [
+        "lb_haproxy::setup_server"
+      ],
+      "type": "string",
+      "description": "The maximum inactivity time on the client side in milliseconds. Example: 60000",
+      "required": "optional",
+      "calculated": false,
+      "choice": [
+
+      ]
+    }
+  },
+  "replacing": {
+  },
+  "dependencies": {
+    "rightscale": ">= 0.0.0",
+    "app": ">= 0.0.0",
+    "lb": ">= 0.0.0"
+  },
+  "conflicting": {
+  },
+  "description": "RightScale load balancer cookbook for Apache/HAProxy. This cookbook provides recipes for setting up and running an Apache/HAProxy load balancer server as well as recipes for attaching and detaching application servers.",
+  "name": "lb_haproxy",
   "groupings": {
   },
-  "recommendations": {
-  }
+  "version": "13.5.1",
+  "providing": {
+  },
+  "suggestions": {
+  },
+  "maintainer_email": "support@rightscale.com"
 }

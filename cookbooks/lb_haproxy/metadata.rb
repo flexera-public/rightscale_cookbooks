@@ -7,7 +7,7 @@ description      "RightScale load balancer cookbook for Apache/HAProxy. This" +
                  " Apache/HAProxy load balancer server as well as recipes for" +
                  " attaching and detaching application servers."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "13.5.0"
+version          "13.5.1"
 
 supports "centos"
 supports "redhat"
