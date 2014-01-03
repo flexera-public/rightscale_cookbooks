@@ -28,8 +28,6 @@ module RightScale
         :hypervisor => new_resource.hypervisor
       }
       options[:rackspace_use_snet] = new_resource.rackspace_snet if new_resource.rackspace_snet
-      # Appends RightScale instance uuid to make the nickname unique.
-      modified_nickname = new_resource.nickname + '_' + node[:block_device][:first_server_uuid] if new_resource.nickname
 
       # Primary ROS options - some options needed regardless of backup type
       options[:primary_storage_cloud] = new_resource.primary_cloud if new_resource.primary_cloud
@@ -52,7 +50,8 @@ module RightScale
         :lvm, # Backup using local LVM snapshot + cloud persistence.
         node[:cloud][:provider], # The local cloud that we are currently running.
         new_resource.mount_point,
-        modified_nickname, # Nickname for device.
+        new_resource.nickname, # Nickname for device.
+        node[:block_device][:first_server_uuid], # UUID for block device
         options)
     end
 
