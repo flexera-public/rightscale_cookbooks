@@ -7,7 +7,7 @@ description      "This cookbook provides a set of load balancer recipes used" +
                  " cookbook does not  contain a specific load balancer" +
                  " implementation, but generic recipes that use the LWRP interface."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "13.5.0"
+version          "13.5.1"
 
 supports "centos"
 supports "redhat"
