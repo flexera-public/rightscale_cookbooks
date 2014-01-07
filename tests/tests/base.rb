@@ -138,7 +138,7 @@ helpers do
     # Run sys_firewall::setup_rule recipe. Running this recipe will rebuild
     # iptables.
     #
-    run_recipe("sys_firewall::setup_rule", s_one)
+    run_recipe("sys_firewall::setup_rule", server)
 
     # Vefify that conntrack_max value is unchanged (not reset).
     # Obtain the conntrack_max value returned by the sysctl command after
