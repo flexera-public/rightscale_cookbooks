@@ -454,9 +454,6 @@ action :enable_replication do
   db_state_get node
   current_restore_process = new_resource.restore_process
 
-  # Declare master_info before use in ruby_block to set scope to whole action.
-  master_info = Hash.new
-
   # Check the volume before performing any actions.  If invalid raise error and exit.
   ruby_block "validate_master" do
     not_if { current_restore_process == :no_restore }
@@ -477,20 +474,21 @@ action :enable_replication do
     action :stop
   end
 
-  template "#{node[:db_postgres][:confdir]}/recovery.conf" do
-    source "recovery.conf.erb"
-    owner "postgres"
-    group "postgres"
-    mode "0644"
-    cookbook "db_postgres"
-    variables(
-      :host => master_info["Master_IP"],
-      :user => node[:db][:replication][:user],
-      :password => node[:db][:replication][:password],
-      :application_name => node[:rightscale][:instance_uuid],
-      :trigger_file => "#{node[:db_postgres][:confdir]}/recovery.trigger"
-    )
-    not_if { current_restore_process == :no_restore }
+  unless current_restore_process == :no_restore
+    template "#{node[:db_postgres][:confdir]}/recovery.conf" do
+      source "recovery.conf.erb"
+      owner "postgres"
+      group "postgres"
+      mode "0644"
+      cookbook "db_postgres"
+      variables(
+        :host => RightScale::Database::Helper.load_replication_info(node)["Master_IP"],
+        :user => node[:db][:replication][:user],
+        :password => node[:db][:replication][:password],
+        :application_name => node[:rightscale][:instance_uuid],
+        :trigger_file => "#{node[:db_postgres][:confdir]}/recovery.trigger"
+      )
+    end
   end
 
   # Backups from master server will have files in archivedir while
