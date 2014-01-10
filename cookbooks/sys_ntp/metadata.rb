@@ -1,10 +1,11 @@
+name             "sys_ntp"
 maintainer       "RightScale, Inc."
 maintainer_email "support@rightscale.com"
 license          "Copyright RightScale, Inc. All rights reserved."
 description      "This cookbook provides a recipe for setting up time" +
                  " synchronization using NTP."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "13.5.0"
+version          "13.5.1"
 
 supports "centos"
 supports "redhat"

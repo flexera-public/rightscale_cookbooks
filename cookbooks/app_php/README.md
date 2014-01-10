@@ -41,7 +41,7 @@ Please see `metadata.rb` file for the latest dependencies.
 * Place `app::install_server` recipe after setup_server recipe to install
   the application server.
 
-For more info see: [Release Notes][Notes] (Section ‘PHP App Server’ under
+For more info see: [Release Notes][Notes] (Section 'PHP App Server' under
 ServerTemplates)
 
 [Notes]: http://support.rightscale.com/18-Release_Notes/ServerTemplates_and_RightImages/current

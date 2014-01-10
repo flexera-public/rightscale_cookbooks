@@ -58,12 +58,13 @@ bash "independent wallclock" do
 end
 
 # Update system time
-first_ntp_server = node[:sys_ntp][:servers].split(',')[0].strip
-log "  Update time using ntpdate and ntp server #{first_ntp_server}..."
+ntpdate_arg_ntp_servers = node[:sys_ntp][:servers].gsub(",", " ").split.join(" ")
+
+log "  Update time using ntpdate with ntp server(s): '#{ntpdate_arg_ntp_servers}'"
 bash "update time" do
   flags "-ex"
   code <<-EOH
-    ntpdate #{first_ntp_server}
+    ntpdate -b #{ntpdate_arg_ntp_servers}
   EOH
 end
 

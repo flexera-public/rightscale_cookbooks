@@ -41,6 +41,9 @@ attribute :lineage, :kind_of => String
 # Override default timestamp on a block device restore
 attribute :timestamp_override, :kind_of => String # Restore only
 
+# Type of backup/snapshot to take
+attribute :backup_type, :equal_to => [:primary, :secondary], :default => :primary
+
 
 # == Primary backup schedule options
 

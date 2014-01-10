@@ -474,22 +474,21 @@ action :enable_replication do
     action :stop
   end
 
-  template "#{node[:db_postgres][:confdir]}/recovery.conf" do
-    source "recovery.conf.erb"
-    owner "postgres"
-    group "postgres"
-    mode "0644"
-    cookbook "db_postgres"
-    variables(
-      :host => RightScale::Database::Helper.load_replication_info(
-        node
-      )["Master_IP"],
-      :user => node[:db][:replication][:user],
-      :password => node[:db][:replication][:password],
-      :application_name => node[:rightscale][:instance_uuid],
-      :trigger_file => "#{node[:db_postgres][:confdir]}/recovery.trigger"
-    )
-    not_if { current_restore_process == :no_restore }
+  unless current_restore_process == :no_restore
+    template "#{node[:db_postgres][:confdir]}/recovery.conf" do
+      source "recovery.conf.erb"
+      owner "postgres"
+      group "postgres"
+      mode "0644"
+      cookbook "db_postgres"
+      variables(
+        :host => RightScale::Database::Helper.load_replication_info(node)["Master_IP"],
+        :user => node[:db][:replication][:user],
+        :password => node[:db][:replication][:password],
+        :application_name => node[:rightscale][:instance_uuid],
+        :trigger_file => "#{node[:db_postgres][:confdir]}/recovery.trigger"
+      )
+    end
   end
 
   # Backups from master server will have files in archivedir while
