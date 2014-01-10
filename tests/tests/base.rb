@@ -7,6 +7,7 @@ require_helper "os"
 require_helper "input"
 require_helper "rackspace_managed"
 require_helper "monitoring"
+
 # Test specific helpers.
 #
 helpers do

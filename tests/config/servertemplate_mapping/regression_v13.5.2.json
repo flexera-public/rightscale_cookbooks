@@ -1,7 +1,8 @@
 /*
- * These are the v13.5 regression ServerTemplates which starts 2014-01-07.
+ * These are the v13.5.2 regression ServerTemplates which starts 2014-01-07.
+  },
  *
- * This uses the latest versions of the ServerTemplates with v13.5 in their
+ * This uses the latest versions of the ServerTemplates with v13.5.2 in their
  * name.
  */
 {
