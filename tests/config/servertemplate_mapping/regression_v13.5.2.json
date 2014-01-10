@@ -1,0 +1,32 @@
+/*
+ * These are the v13.5 regression ServerTemplates which starts 2014-01-07.
+ *
+ * This uses the latest versions of the ServerTemplates with v13.5 in their
+ * name.
+ */
+{
+  "base_rsb": {
+    "nickname": "Base ServerTemplate for Linux (RSB) (v13.5.2-LTS)",
+    "rev": "latest"
+  },
+  "base_chef": {
+    "nickname": "Base ServerTemplate for Linux (v13.5.2-LTS)",
+    "rev": "latest"
+  },
+  "memcached": {
+    "nickname": "Memcached Server (v13.5.2-LTS)",
+    "rev": "latest"
+  },
+  "api_tester": {
+    "nickname": "TESTING BlockDevice API Tester (v13.5.2-LTS)",
+    "rev": "latest"
+  },
+  "rightscale_tools_tester": {
+    "nickname": "TESTING RightScale Tools Tester (v13.5.2-LTS)",
+    "rev": "latest"
+  },
+  "logging": {
+    "nickname": "Logging with rsyslog (v13.5.2-LTS)",
+    "rev": "latest"
+  }
+}
