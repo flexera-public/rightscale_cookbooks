@@ -7,6 +7,5 @@ gem "chef", "11.4.0"
 gem "foodcritic", :platforms => :ruby_19
 gem "rake"
 gem "yard-chef"
-gem "virtualmonkey", :git => "git@github.com:rightscale/virtualmonkey.git", :branch => "release2.0"
-gem "right_api_objects", :git => "git@github.com:rightscale/right_api_objects.git", :tag => "v0.1.1"
-gem "mime-types", "~> 1.0"
+gem "virtualmonkey", :git => "git@github.com:rightscale/virtualmonkey.git", :branch => "release2.6"
+gem "right_api_objects", :git => "git@github.com:rightscale/right_api_objects.git", :tag => "v0.1.2"

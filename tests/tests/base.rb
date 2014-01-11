@@ -6,6 +6,7 @@ require_helper "errors"
 require_helper "os"
 require_helper "input"
 require_helper "rackspace_managed"
+require_helper "monitoring"
 
 # Test specific helpers.
 #
@@ -138,7 +139,7 @@ helpers do
     # Run sys_firewall::setup_rule recipe. Running this recipe will rebuild
     # iptables.
     #
-    run_recipe("sys_firewall::setup_rule", s_one)
+    run_recipe("sys_firewall::setup_rule", server)
 
     # Vefify that conntrack_max value is unchanged (not reset).
     # Obtain the conntrack_max value returned by the sysctl command after
@@ -287,7 +288,7 @@ test_case "smoke_test" do
   end
 
   # Check if the server's basic monitoring is working.
-  check_monitoring
+  check_monitoring(server)
 
   # Reboot to check if functionality works after a reboot on clouds that
   # support reboot.
@@ -309,7 +310,7 @@ test_case "smoke_test" do
   end
 
   # Check if the server's basic monitoring is working.
-  check_monitoring
+  check_monitoring(server)
 
   # Check if security updates are disabled can not be done.  Servers can
   # can be launched with unfrozen repositories.  This case was considered
@@ -330,8 +331,7 @@ test_case "stop_start" do
   # Single server in deployment.
   server = servers.first
 
-  # Only some clouds support stop/start.
-  skip unless cloud.supports_stop_start?(server)
+  skip("cloud does not support stop/start") unless cloud.supports_stop_start?(server)
 
   # Stop server.
   puts "Stopping current server."
@@ -360,7 +360,7 @@ test_case "stop_start" do
   end
 
   # Check if the server's basic monitoring is working.
-  check_monitoring
+  check_monitoring(server)
 end
 
 # The Base ephemeral_file_system_type test makes sure the file system type
@@ -378,7 +378,8 @@ test_case "ephemeral_file_system_type" do
   # Skip this test if the cloud does not support ephemeral drives and if the
   # ServerTemplate is not chef based. Ephemeral drives are supported only on
   # Chef ServerTemplates.
-  skip unless cloud.supports_ephemeral?(server) && is_chef?
+  skip("the ServerTemplate is not chef based") unless is_chef?
+  skip("cloud does not support ephemeral drives") unless cloud.supports_ephemeral?(server)
 
   # Get the OS used by the server
   os = get_operating_system(server)
@@ -434,7 +435,8 @@ test_case "comma_separated_firewall_ports" do
   cloud = Cloud.factory
   # Skip this test if the cloud is a Rackconnect cloud because the firewall is
   # disabled in the server for this cloud.
-  skip unless cloud.supports_sys_firewall? && is_chef?
+  skip("the ServerTemplate is not chef based") unless is_chef?
+  skip("the cloud does not support firewall") unless cloud.supports_sys_firewall?
 
   # Test 1: firewall should have all rules specified in the comma-separated
   # list of input rules.

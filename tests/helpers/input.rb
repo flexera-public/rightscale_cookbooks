@@ -37,3 +37,23 @@ def verify_instance_input_settings?(server, inputs)
 
   correct_settings
 end
+
+
+def get_input_from_server(server)
+  server_inputs = {} ## initialize a hash
+
+  if server.multicloud && server.current_instance
+    server.current_instance.inputs.each do |hsh|
+      server_inputs[hsh["name"]] = hsh["value"]
+    end
+  elsif server.current_instance_href
+    server.reload_as_current
+    server.settings
+    server.parameters.each do |name, input_value|
+      server_inputs[name] = input_value
+    end
+    server.reload_as_next
+  end
+
+  return server_inputs
+end
