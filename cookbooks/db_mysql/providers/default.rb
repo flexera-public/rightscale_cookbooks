@@ -221,6 +221,15 @@ action :post_restore_cleanup do
       "enabled" ? true : false
   end
 
+  # After a restore, the socket file may have also been restored.
+  # Specifically on mysql 5.1, the server will fail to start start if this file
+  # exists.  This socket file should be removed before starting.
+  if ::File.exists?(node[:db][:socket])
+    Chef::Log.info "Restored data included socket." +
+      " Removing restored socket file #{node[:db][:socket]}."
+    FileUtils.rm_rf(node[:db][:socket])
+  end
+
   # See cookbooks/db_mysql/libraries/helper.rb for the "init" method.
   # See "rightscale_tools" gem for the "post_restore_cleanup" method.
   @db = init(new_resource)
