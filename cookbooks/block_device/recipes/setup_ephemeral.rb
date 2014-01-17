@@ -32,15 +32,6 @@ cloud = node[:cloud][:provider]
 mount_point = "/mnt/ephemeral"
 lvm_device = "lvol0"
 
-# The default mount point for ephemeral device in image.
-# Azure mounts the ephemeral drive at '/mnt/resource' while EC2 and openstack mount the ephemeral drive at
-# '/mnt/ephemeral' by default.
-if cloud == 'azure'
-  ephemeral_mount_point = '/mnt/resource'
-else
-  ephemeral_mount_point = '/mnt/ephemeral'
-end
-
 # Ubuntu systems using upstart require the 'bootwait' option, otherwise
 # upstart will try to boot without waiting for the LVM volume to be mounted.
 options = "defaults,noatime"
@@ -61,8 +52,9 @@ end
 
 root_device = `mount`.find { |dev| dev.include? " on / " }.split[0]
 
-current_mnt_device = `mount`.find { |dev| dev.include? " on #{ephemeral_mount_point} " }
-current_mnt_device = current_mnt_device ? current_mnt_device.split[0] : nil
+# Assume ephemeral will be mounted by default in /mnt/ephemeral on all clouds
+# supporting ephemeral
+ephemeral_mount_point = '/mnt/ephemeral'
 
 # Only EC2, Google, Azure, and openstack clouds are currently supported
 ephemeral_supported_clouds = ["ec2", "openstack", "azure", "google"]
@@ -101,7 +93,19 @@ if ephemeral_supported_clouds.include?(cloud)
   # hard-coded at the moment
   when 'azure'
     device = '/dev/sdb1'
-    device = Pathname.new(device).realpath.to_s if File.exists?(device)
+    if File.exists?(device)
+      # On Azure ephemeral device is mounted on '/mnt' or '/mnt/resource' by
+      # default. Find the mount point from the fstab file.
+      device_fstab_entry = File.open('/etc/fstab', 'r') { |f| f.read }.select { |line| line =~ /^#{device}/ }
+      if device_fstab_entry.empty?
+        ephemeral_mount_point = nil
+      else
+        ephemeral_mount_point = device_fstab_entry.first.split[1]
+      end
+
+      device = Pathname.new(device).realpath.to_s
+    end
+
     if (File.exists?(device) && File.ftype(device) == "blockSpecial")
       my_devices << device
     else
@@ -122,6 +126,9 @@ if ephemeral_supported_clouds.include?(cloud)
       my_devices << "/dev/#{device}"
     end
   end
+
+  current_mnt_device = `mount`.find { |dev| dev.include? " on #{ephemeral_mount_point} " }
+  current_mnt_device = current_mnt_device ? current_mnt_device.split[0] : nil
 
   # Check if /mnt is actually on a seperate device.
   # ec2 instances and images that do now have ephemeral will be caught by this,
