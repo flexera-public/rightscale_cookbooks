@@ -58,6 +58,9 @@ These are the settings used in recipes and templates. Default values are noted.
   located on the Server and in the Client configuration file must match.
 * `node[:chef][:client][:node_name]`-
   The node's name to register on the Chef Server.
+  Valid node name must contain only alpabetic, numeric and `.-_:` characters.
+  The other characters will be removed. If nothing is specified, the instance
+  FQDN will be used. Example: chef-client-host1
 * `node[:chef][:client][:roles]`-
   Comma separated list of roles which will be applied to this instance. Roles
   should be defined on the Chef Server else recipe will fail.

@@ -63,7 +63,9 @@ attribute "chef/client/node_name",
   :description =>
     "Name which will be used to authenticate the Chef Client on the remote" +
     " Chef Server. If nothing is specified, the instance FQDN will be used." +
-    " Example: chef-client-host1",
+    " Valid node name must contain only alpabetic, numeric and .-_: characters." +
+    " Example: chef-client-host1." +
+    " The other characters in the node name will be removed.",
   :required => "optional",
   :recipes => ["chef::install_client"]
 
