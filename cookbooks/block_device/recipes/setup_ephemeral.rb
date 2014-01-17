@@ -95,14 +95,10 @@ if ephemeral_supported_clouds.include?(cloud)
     device = '/dev/sdb1'
     if File.exists?(device)
       # On Azure ephemeral device is mounted on '/mnt' or '/mnt/resource' by
-      # default. Find the mount point from the fstab file.
-      device_fstab_entry = File.open('/etc/fstab', 'r') { |f| f.read }.select { |line| line =~ /^#{device}/ }
-      if device_fstab_entry.empty?
-        ephemeral_mount_point = nil
-      else
-        ephemeral_mount_point = device_fstab_entry.first.split[1]
-      end
-
+      # default. Find the mount point from the mount system call because
+      # the fstab is not populated with the mount point at the time of boot.
+      ephemeral_mount_point = `mount`.find { |dev| dev.include?("#{device} on ") }
+      ephemeral_mount_point = ephemeral_mount_point ? ephemeral_mount_point.split[2] : nil
       device = Pathname.new(device).realpath.to_s
     end
 
