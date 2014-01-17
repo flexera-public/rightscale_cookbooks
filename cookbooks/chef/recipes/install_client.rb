@@ -27,6 +27,10 @@ log "  Chef Client version #{node[:chef][:client][:version]} installation is" +
 # Creates the Chef Client configuration directory.
 directory node[:chef][:client][:config_dir]
 
+name_from_input = node[:chef][:client][:node_name]
+# For node name constraints see http://wiki.opscode.com/display/chef10/Nodes .
+valid_node_name = (name_from_input || node[:fqdn]).gsub(/[^\-[:alnum:]_:.]+/, '')
+
 # Creates the Chef Client configuration file.
 template "#{node[:chef][:client][:config_dir]}/client.rb" do
   source "client.rb.erb"
@@ -36,7 +40,7 @@ template "#{node[:chef][:client][:config_dir]}/client.rb" do
   variables(
     :server_url => node[:chef][:client][:server_url],
     :validation_name => node[:chef][:client][:validation_name],
-    :node_name => node[:chef][:client][:node_name],
+    :node_name => valid_node_name,
     :log_level => node[:chef][:client][:log_level],
     :log_location => node[:chef][:client][:log_location]
   )
@@ -67,7 +71,7 @@ template "#{node[:chef][:client][:config_dir]}/runlist.json" do
   mode "0440"
   backup false
   variables(
-    :node_name => node[:chef][:client][:node_name],
+    :node_name => valid_node_name,
     :environment => node[:chef][:client][:environment],
     :company => node[:chef][:client][:company],
     :roles => node[:chef][:client][:roles]
