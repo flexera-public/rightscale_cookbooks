@@ -311,6 +311,7 @@ class Openstack < Cloud
   # @see Cloud#supports_ephemeral?
   #
   def supports_ephemeral?(server)
+    return false if @cloud_name =~ /havana/i
     true
   end
 
