@@ -274,6 +274,7 @@ if ephemeral_supported_clouds.include?(cloud)
       recursive false
       action :delete
       only_if { cloud == 'azure' }
+      not_if { ephemeral_mount_point == '/mnt' || ephemeral_mount_point == '/mnt/ephemeral' }
     end
   end
 else
