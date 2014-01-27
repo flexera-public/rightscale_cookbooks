@@ -90,9 +90,11 @@ define :db_do_backup, :backup_type => "primary" do
     block do
       begin
         block_device_resource.run_action(:snapshot)
-      rescue RightApi::Exceptions::ApiException => e
-        self.notifies :unlock, "db[#{DATA_DIR}]", :immediately
-        raise e
+      rescue
+        # If the :snapshot action fails unlock the database by calling the
+        # unlock action of the db resource
+        resources(:db => DATA_DIR).run_action(:unlock)
+        raise
       end
     end
   end
