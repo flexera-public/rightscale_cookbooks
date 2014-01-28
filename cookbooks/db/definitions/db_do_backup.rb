@@ -63,11 +63,11 @@ define :db_do_backup, :backup_type => "primary" do
   end
 
   log "  Performing (#{do_backup_type} backup) Snapshot with lineage #{node[:db][:backup][:lineage]}.."
+
   # Requires block_device node[:db][:block_device] to be instantiated
   # previously. Make sure block_device::default recipe has been run.
   # See cookbooks/block_device/providers/default.rb for the "snapshot" action.
-  block_device NICKNAME do
-    # Select the device to backup and set up arguments required for backup.
+  block_device_resource = block_device NICKNAME do
     lineage node[:db][:backup][:lineage]
 
     # Secondary arguments
@@ -80,7 +80,23 @@ define :db_do_backup, :backup_type => "primary" do
     # the type of backup (:primary or :secondary)
     backup_type do_backup_type.to_sym
 
-    action :snapshot
+    action :nothing
+  end
+
+  # block_device resource is enclosed within a ruby_block because we can use
+  # ruby's exception handling. Chef does not seem to have an easy to implement
+  # exception handler.
+  ruby_block "do backup" do
+    block do
+      begin
+        block_device_resource.run_action(:snapshot)
+      rescue
+        # If the :snapshot action fails unlock the database by calling the
+        # unlock action of the db resource
+        resources(:db => DATA_DIR).run_action(:unlock)
+        raise
+      end
+    end
   end
 
   log "  Performing unlock DB..."
