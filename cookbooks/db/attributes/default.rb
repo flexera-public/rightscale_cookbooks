@@ -67,35 +67,30 @@ default[:db][:current_master_uuid] = nil
 default[:db][:current_master_ip] = nil
 
 
-# Calculate recommended backup times for master/slave
-#
-# Offset the start time by a random number. Skip the minutes near the exact
-# hour and 1/2 hour. This is done to prevent overloading the API and cloud
-# providers. If every rightscale server sent a request at the same time to
-# perform a snapshot it would be a huge usage spike. The random start time
-# evens out these spikes.
+# By default master should not do automated backups.
+default[:db][:backup][:primary][:master][:cron][:hour] = ""
+default[:db][:backup][:primary][:master][:cron][:minute] = ""
+default[:db][:backup][:secondary][:master][:cron][:hour] = ""
+default[:db][:backup][:secondary][:master][:cron][:minute] = ""
 
-# Primary backup.
+# Calculate recommended backup times for slave
 #
-# Generates random time.
-cron_min = 5 + rand(24)
-# Master backup daily at a random hour and a random minute between 5-29
-default[:db][:backup][:primary][:master][:cron][:hour] = rand(23)
-default[:db][:backup][:primary][:master][:cron][:minute] = cron_min
-# Slave backup every hour at a random minute 30 minutes offset from the master.
+# Randomly set the slave backup time. This is done to prevent overloading
+# the API and cloud providers. If every rightscale server sent a request
+# at the same time to perform a snapshot it would be a huge usage spike.
+# The random start time evens out these spikes.
+
+# Primary slave backup.
+#
+# Slave backup every hour at a random minute.
 default[:db][:backup][:primary][:slave][:cron][:hour] = "*"
-default[:db][:backup][:primary][:slave][:cron][:minute] = cron_min + 30
+default[:db][:backup][:primary][:slave][:cron][:minute] = rand(60)
 
-# Secondary backup.
+# Secondary slave backup.
 #
-# Generates random time.
-cron_min = 5 + rand(24)
-# Master backup daily at a random hour and a random minute between 5-29
-default[:db][:backup][:secondary][:master][:cron][:hour] = rand(23)
-default[:db][:backup][:secondary][:master][:cron][:minute] = cron_min
-# Slave backup daily at a random hour and a random minute between 29-59
-default[:db][:backup][:secondary][:slave][:cron][:hour] = rand(23)
-default[:db][:backup][:secondary][:slave][:cron][:minute] = cron_min + 30
+# Slave backup daily at a random hour and a random minute
+default[:db][:backup][:secondary][:slave][:cron][:hour] = rand(24)
+default[:db][:backup][:secondary][:slave][:cron][:minute] = rand(60)
 
 # DB manager type specific commands array for db_sys_info.log file
 default[:db][:info_file_options] = []
