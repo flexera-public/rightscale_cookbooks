@@ -460,13 +460,9 @@ attribute "db/backup/primary/master/cron/hour",
   :display_name => "Master Backup Cron Hour",
   :description =>
     "Defines the hour of the day when the primary backup will be taken of" +
-    " the master database. Backups of the master are taken daily." +
-    " By default, an hour will be randomly chosen at launch time." +
-    " Otherwise, the time of the backup is defined by 'Master Backup" +
-    " Cron Hour' and 'Master Backup Cron Minute'. However, if you specify" +
-    " a value in this input (e.g., 23 for 11:00 PM)," +
-    " then backups will occur once per day at the specified hour," +
-    " rather than hourly. Uses standard crontab format. Example: 23 ",
+    " the master database. By default, primary backups on master databases" +
+    " are not automated unless this AND 'Master Backup Cron Minute' is set." +
+    " Uses standard crontab format. Example: 23 ",
   :required => "optional",
   :recipes => ["db::do_primary_backup_schedule_enable"]
 
@@ -484,10 +480,8 @@ attribute "db/backup/primary/master/cron/minute",
   :display_name => "Master Backup Cron Minute",
   :description =>
     "Defines the minute of the hour when the backup of the master database" +
-    " will be taken. Backups of the master are taken daily." +
-    " By default, a minute will be randomly chosen at launch time." +
-    " Otherwise, the time of the backup is defined" +
-    " by 'Master Backup Cron Hour' and 'Master Backup Cron Minute'." +
+    " will be taken. By default, primary backups on master databases" +
+    " are not automated unless this and 'Master Backup Cron Hour' is set." +
     " Uses standard crontab format. Example: 30",
   :required => "optional",
   :recipes => ["db::do_primary_backup_schedule_enable"]
