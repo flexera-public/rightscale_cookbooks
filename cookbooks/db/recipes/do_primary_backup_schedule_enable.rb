@@ -28,13 +28,17 @@ master_minute = node[:db][:backup][:primary][:master][:cron][:minute].to_s
 slave_hour = node[:db][:backup][:primary][:slave][:cron][:hour].to_s
 slave_minute = node[:db][:backup][:primary][:slave][:cron][:minute].to_s
 
+log "  Using default setting to skip scheduling primary backup cron job on master db server" do
+  only_if { node[:db][:this_is_master] && ( master_hour.empty? || master_minute.empty? ) }
+end
+
 log "  Setting up Master primary backup cron job to run at hour: #{master_hour} and minute #{master_minute}" do
-  only_if { node[:db][:this_is_master] }
+  only_if { node[:db][:this_is_master] && ( !master_hour.empty? && !master_minute.empty? ) }
 end
 
 # See cookbooks/block_device/providers/default.rb for the "backup_schedule_enable" action.
 block_device NICKNAME do
-  only_if { node[:db][:this_is_master] }
+  only_if { node[:db][:this_is_master] && ( !master_hour.empty? && !master_minute.empty? ) }
   lineage snap_lineage
   cron_backup_recipe "db::do_primary_backup"
   cron_backup_hour master_hour
