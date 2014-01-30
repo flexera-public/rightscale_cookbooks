@@ -51,7 +51,6 @@ else
 
   # See cookbooks/block_device/providers/default.rb for the "backup_schedule_enable" action.
   block_device NICKNAME do
-    only_if { true }
     lineage snap_lineage
     cron_backup_recipe "db::do_primary_backup"
     cron_backup_hour slave_hour
