@@ -10,7 +10,7 @@ rightscale_marker
 
 # Set up all db/dump/* attributes
 dumpfilename = node[:db][:dump][:prefix] + "-" + Time.now.strftime("%Y%m%d%H%M") + ".gz"
-dumpfilepath = "/tmp/#{dumpfilename}"
+dumpfilepath = "#{node[:db][:dump][:location]}/#{dumpfilename}"
 
 databasename = node[:db][:dump][:database_name]
 

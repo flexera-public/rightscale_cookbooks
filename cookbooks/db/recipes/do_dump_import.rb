@@ -28,7 +28,7 @@ else
 
   db_name = node[:db][:dump][:database_name]
   prefix = node[:db][:dump][:prefix]
-  dumpfilepath_without_extension = "/tmp/" + prefix
+  dumpfilepath_without_extension = "#{node[:db][:dump][:location]}/" + prefix
   container = node[:db][:dump][:container]
   cloud = node[:db][:dump][:storage_account_provider]
   command_to_execute = "/opt/rightscale/sandbox/bin/ros_util get" +

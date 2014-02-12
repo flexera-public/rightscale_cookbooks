@@ -53,6 +53,9 @@ default[:db][:data_dir] = "/mnt/storage"
 # Database driver class to be used based on the type of driver
 default[:db][:client][:driver] = ""
 
+# Database import/export dump temp location
+default[:db][:dump][:location] = '/tmp'
+
 # Server state variables
 #
 # Default value for DB status

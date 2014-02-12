@@ -554,6 +554,23 @@ attribute "db/dump",
   :display_name => "Import/export settings for database dump file management.",
   :type => "hash"
 
+attribute 'db/dump/location',
+  :display_name => 'Database Dump Location',
+  :description => 'The location where database dumps for import and export will' +
+    'be stored temporarily. Set to the desired location, ensuring the filesystem' +
+    'the folder resides in has enough space.',
+  :required => 'optional',
+  :choice => [
+    '/tmp',
+    '/mnt/ephemeral',
+    '/mnt/storage'
+  ],
+  :default => '/tmp',
+  :recipes => [
+    "db::do_dump_import",
+    "db::do_dump_export"
+  ]
+
 attribute "db/dump/storage_account_provider",
   :display_name => "Dump Storage Account Provider",
   :description =>
