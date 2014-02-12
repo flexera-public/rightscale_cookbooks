@@ -1,11 +1,12 @@
 #
 # Cookbook Name:: web_apache
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Installing only for RHEL based systems
 package "mod_ssl" do
@@ -14,14 +15,15 @@ end
 
 # Setup Apache vhost on following ports
 https_port = "443"
-http_port  = "80"
+http_port = "80"
 
-# Disable default vhost
+# Disable default vhost.
+# See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_site.rb for the "apache_site" definition.
 apache_site "000-default" do
   enable false
 end
 
-ssl_dir =  "/etc/#{node[:apache][:config_subdir]}/rightscale.d/key"
+ssl_dir = "/etc/#{node[:web_apache][:config_subdir]}/rightscale.d/key"
 
 # Creating directory where certificate files will be stored
 directory ssl_dir do
@@ -36,18 +38,24 @@ ssl_key_file = ::File.join(ssl_dir, "#{node[:web_apache][:server_name]}.key")
 template ssl_certificate_file do
   mode "0400"
   source "ssl_certificate.erb"
+  variables(
+    :ssl_certificate => node[:web_apache][:ssl_certificate]
+  )
 end
 
 # Updating key file config
 template ssl_key_file do
   mode "0400"
   source "ssl_key.erb"
+  variables(
+    :ssl_key => node[:web_apache][:ssl_key]
+  )
 end
 
 log "  Using passphrase to decrypt certificate"
 bash "decrypt openssl keyfile" do
   flags "-ex"
-  environment({ :OPT_SSL_PASSPHRASE => node[:web_apache][:ssl_passphrase] })
+  environment({:OPT_SSL_PASSPHRASE => node[:web_apache][:ssl_passphrase]})
   code "openssl rsa -passin env:OPT_SSL_PASSPHRASE -in #{ssl_key_file} -passout env:OPT_SSL_PASSPHRASE -out #{ssl_key_file}"
   only_if { node[:web_apache][:ssl_passphrase]!=nil }
 end
@@ -60,6 +68,9 @@ if node[:web_apache][:ssl_certificate_chain]
   template "#{ssl_certificate_chain_file}" do
     mode "0400"
     source "ssl_certificate_chain.erb"
+    variables(
+      :ssl_certificate_chain => node[:web_apache][:ssl_certificate_chain]
+    )
   end
 else
   ssl_certificate_chain_file = nil
@@ -77,6 +88,7 @@ template "#{node[:apache][:dir]}/ports.conf" do
 end
 
 # Configure apache ssl vhost
+# See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/web_app.rb for the "web_app" definition.
 web_app "#{node[:web_apache][:application_name]}.frontend.https" do
   template "apache_ssl_vhost.erb"
   docroot node[:web_apache][:docroot]
@@ -86,6 +98,8 @@ web_app "#{node[:web_apache][:application_name]}.frontend.https" do
   ssl_passphrase node[:web_apache][:ssl_passphrase]
   ssl_certificate_file ssl_certificate_file
   ssl_key_file ssl_key_file
+  allow_override node[:web_apache][:allow_override]
+  apache_log_dir node[:apache][:log_dir]
   notifies :restart, resources(:service => "apache2")
 end
 
@@ -95,7 +109,7 @@ web_app "#{node[:web_apache][:application_name]}.frontend.http" do
   docroot node[:web_apache][:docroot]
   vhost_port http_port
   server_name node[:web_apache][:server_name]
+  allow_override node[:web_apache][:allow_override]
+  apache_log_dir node[:apache][:log_dir]
   notifies :restart, resources(:service => "apache2"), :immediately
 end
-
-rightscale_marker :end

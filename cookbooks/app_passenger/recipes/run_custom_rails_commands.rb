@@ -1,11 +1,12 @@
 #
-# Cookbook Name::app_passenger
+# Cookbook Name:: app_passenger
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Run specific to application user defined commands
 # for example  rake gem:install or rake db:create
@@ -21,14 +22,13 @@ bash "run commands" do
   flags "-ex"
   cwd "#{node[:app][:destination]}/"
   code <<-EOH
+    PATH=${PATH}:/usr/local/bin
     IFS=,  read -a ARRAY1 <<< "#{node[:app_passenger][:project][:custom_cmd]}"
     for i in "${ARRAY1[@]}"
     do
       tmp=`echo $i | sed 's/^[ \t]*//'`
-      /usr/bin/$tmp
+      $tmp
     done
   EOH
-  only_if do (node[:app_passenger][:project][:custom_cmd]!="") end
+  only_if { node[:app_passenger][:project][:custom_cmd] != "" }
 end
-
-rightscale_marker :end

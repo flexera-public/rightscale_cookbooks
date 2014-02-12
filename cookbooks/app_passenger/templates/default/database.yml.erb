@@ -1,45 +1,25 @@
 #
 # Cookbook Name:: app_passenger
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 #
 # Managed by RightScale
 # DO NOT EDIT BY HAND
 #
 # DB Config file
 #
-
-<%  case node[:app][:db_adapter]
-    when "mysql" %>
-<%= node[:app_passenger][:project][:environment] %>:
-  adapter: <%= node[:app][:db_adapter] %>
+# The database adapter used here is set by the "install_client_driver" action of db_provider.
+# See cookbooks/db_<provider>/providers/default.rb for more information.
+<%= @vars[:environment] %>:
+  <%# The db/client/driver node variable isn't available during compile time %>
+  <%# so it can't be passed via the resource %>
+  adapter: <%= node[:db][:client][:driver] %>
   database: <%= @database %>
   username: <%= @user %>
   password: <%= @password %>
   host: <%= @fqdn %>
   encoding: utf8
-  #socket: /var/lib/mysql/mysql.sock
-<%  when "sqlite3","sqlite"%>
-# SQLite version 3.x
-<%= node[:app_passenger][:project][:environment] %>:
-  host: <%= @fqdn %>
-  adapter: <%= node[:app][:db_adapter] %>
-  database: <%= @database %>
-  pool: 5
-  timeout: 5000
-<%  when "postgres"%>
-<%= node[:app_passenger][:project][:environment] %>:
-  host: <%= @fqdn %>
-  adapter: postgresql
-  database: <%= @database %>
-  username: <%= @user %>
-  password: <%= @password %>
-<%  else%>
-<%= node[:app_passenger][:project][:environment] %>:
-  host: <%= @sever %>
-  adapter: <%= node[:app][:db_adapter] %>
-  database: <%= @database %>
 
-<%end%>

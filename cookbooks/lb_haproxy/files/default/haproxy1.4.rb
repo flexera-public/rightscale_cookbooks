@@ -1,10 +1,11 @@
 #!/usr/bin/env ruby
-# 
+#
 # Cookbook Name:: lb_haproxy
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 
 # HAProxy 1.3.14+ collectd plugin.
@@ -33,7 +34,6 @@ HAPROXY_COMMAND="show stat\n"
   :interval => 20
 }
 
-
 def usage(code = 0)
   out = "\n" + $0.split(' ')[0] + " usage:\n"
   out << "\e[1mDESCRIPTION\e[0m\n"
@@ -50,7 +50,6 @@ def usage(code = 0)
   puts "\n" + out
   Kernel.exit(code)
 end
-
 
 # Read stats from socket as CSV values.
 def readstats

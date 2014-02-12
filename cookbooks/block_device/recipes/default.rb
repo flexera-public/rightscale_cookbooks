@@ -1,11 +1,12 @@
 #
 # Cookbook Name:: block_device
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 include_recipe "rightscale::install_tools"
 
@@ -27,7 +28,7 @@ package "xfsprogs" do
 end
 
 log "Inputs volume_size and stripe_count are not used in Rackspace cloud provider. For further information, please visit http://support.rightscale.com/09-Clouds/Rackspace_Hosting#Unsupported_Features" do
-  only_if {node[:cloud][:provider] == 'rackspace'}
+  only_if { node[:cloud][:provider] == 'rackspace' }
 end
 
 bash "Load kernel modules" do
@@ -48,7 +49,14 @@ bash "Load xfs kernel module" do
   only_if { File.exists?("/proc/modules") }
 end
 
-# Setup block_device resources
+# In this code block, we loop through all block devices listed in
+# node[:block_device][:devices] and set up all block device resource attributes
+# for each device. See, cookbooks/block_device/resources/default.rb for the
+# list of block device resource attributes. We persist the devices at the node
+# level so they can be used in other run lists.
+# See cookbooks/block_device/libraries/block_device.rb for the definition of
+# "do_for_all_block_devices" and "get_device_or_default" methods.
+#
 do_for_all_block_devices node[:block_device] do |device|
   block_device get_device_or_default(node, device, :nickname) do
     cloud node[:cloud][:provider]
@@ -70,19 +78,18 @@ do_for_all_block_devices node[:block_device] do |device|
     stripe_count get_device_or_default(node, device, :stripe_count)
     vg_data_percentage get_device_or_default(node, device, :vg_data_percentage)
     iops get_device_or_default(node, device, :iops) || ""
+    volume_type get_device_or_default(node, device, :volume_type)
 
     primary_cloud get_device_or_default(node, device, :backup, :primary, :cloud)
     primary_endpoint get_device_or_default(node, device, :backup, :primary, :endpoint) || ""
     primary_user get_device_or_default(node, device, :backup, :primary, :cred, :user)
     primary_secret get_device_or_default(node, device, :backup, :primary, :cred, :secret)
 
-    # Use snet for cloudfiles on rackspace
+    # Use snet for Cloud_Files on rackspace
     rackspace_snet get_device_or_default(node, device, :backup, :rackspace_snet) == 'true'
 
     action :nothing
 
-    persist true  # store resource to node for use in other run lists
+    persist true # store resource to node for use in other run lists
   end
 end
-
-rightscale_marker :end

@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: app
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 # Adds a port to the apache listen ports.conf file and node attribute
 # The node[:apache][:listen_ports] is an array of strings for the webserver to listen on.
@@ -11,6 +12,11 @@
 # Then update the apache port.conf file. If the ports are already configured correctly
 # nothing happens.
 
+# Adds a port to to apache 'ports.conf' configuration file and restarts apache
+# service.
+#
+# @param name [Object] port to be added to the configuration file
+#
 define :app_add_listen_port do
 
   # listens_ports is an array of strings, make sure to compare string to string, not string to integer.
@@ -18,11 +24,13 @@ define :app_add_listen_port do
   node[:apache][:listen_ports] << port_str unless node[:apache][:listen_ports].include?(port_str)
   log "Apache listen ports: #{node[:apache][:listen_ports].inspect}"
 
-  # Creating pots.conf for apache which will contain all ports apache listen on.
+  # Creating ports.conf for apache which will contain all ports apache listen on.
   template "#{node[:apache][:dir]}/ports.conf" do
     cookbook "apache2"
     source "ports.conf.erb"
-    variables :apache_listen_ports => node[:apache][:listen_ports]
+    variables(
+      :apache_listen_ports => node[:apache][:listen_ports]
+    )
     notifies :restart, resources(:service => "apache2")
   end
 

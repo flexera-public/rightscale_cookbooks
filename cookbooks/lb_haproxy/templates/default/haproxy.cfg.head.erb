@@ -1,9 +1,10 @@
-# 
+#
 # Cookbook Name:: lb_haproxy
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 #
 # File created by RightScale
@@ -12,8 +13,8 @@
 
 global
         <%= @stats_file_line %>
-        log 127.0.0.1        syslog info
-        maxconn 4096
+        log /dev/log syslog info
+        maxconn <%= @global_maxconn %>
         ulimit-n 8250
         chroot /etc/haproxy
         user haproxy
@@ -29,8 +30,20 @@ defaults
         option  dontlognull
         retries 3
         option  redispatch
-        maxconn 2000
+        maxconn <%= @default_maxconn %>
         contimeout        5000
-        clitimeout        60000
-        srvtimeout        60000
+        timeout client <%= @timeout_client %>
 
+        # Option to enable/disable httpclose parameter
+      <% if @httpclose == "on" %>
+        option httpclose
+      <% else %>
+        no option httpclose
+      <% end %>
+
+        # Option to enable/disable abortonclose parameter
+      <% if @abortonclose == "on" %>
+        option abortonclose
+      <% else %>
+        no option abortonclose
+      <% end %>

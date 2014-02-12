@@ -1,11 +1,12 @@
 #
 # Cookbook Name:: sys_dns
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Installing packages depending on platform
 package value_for_platform(
@@ -13,7 +14,7 @@ package value_for_platform(
     "10.04" => "libdigest-sha1-perl",
     "default" => "libdigest-sha-perl"
   },
-  [ "centos", "redhat" ] => {
+  ["centos", "redhat"] => {
     "default" => "perl-Digest-SHA1"
   }
 )
@@ -22,7 +23,7 @@ package value_for_platform(
   "ubuntu" => {
     "default" => "libdigest-hmac-perl"
   },
-  [ "centos", "redhat" ] => {
+  ["centos", "redhat"] => {
     "default" => "perl-Digest-HMAC"
   }
 )
@@ -53,5 +54,3 @@ sys_dns "default" do
   persist true
   action :nothing
 end
-
-rightscale_marker :end

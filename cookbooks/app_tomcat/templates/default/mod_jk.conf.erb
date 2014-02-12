@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: app_tomcat
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 #
 # Managed by RightScale
 # DO NOT EDIT BY HAND
@@ -14,7 +15,7 @@
 # Load mod_jk module
 LoadModule    jk_module  modules/mod_jk.so
 
-<% if node[:platform_version] == "10.04" %>
+<% if @platform_version == "10.04" %>
 # Where to find workers.properties
 JkWorkersFile <%= @jkworkersfile %>
 <% end %>

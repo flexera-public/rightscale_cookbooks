@@ -1,9 +1,10 @@
-# 
+#
 # Cookbook Name:: rightscale
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 # 
 # Managed by RightScale
 # DO NOT EDIT BY HAND
@@ -11,11 +12,11 @@
 
 <Plugin processes>
   process "collectd"
-<% node[:rightscale][:process_list_array].each do |process| %>
+<% @process_list_array.each do |process| %>
   process "<%= process %>"
 <% end %>
 
-<% node[:rightscale][:process_match_list].split.each do |process| %>
+<% @process_match_list.split.each do |process| %>
 <% p_name, p_regex = process.split("/") %>
   processmatch "<%= p_name %>" "<%= p_regex %>"
 <% end %>

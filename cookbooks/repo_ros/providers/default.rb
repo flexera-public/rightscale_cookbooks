@@ -1,10 +1,16 @@
 #
 # Cookbook Name:: repo_ros
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
+# @resource repo
+
+require 'json'
+
+# Sets up repository attributes.
 action :setup_attributes do
 
   # Checking ros_util presence it is required for repo_ros correct operations
@@ -19,26 +25,48 @@ action :setup_attributes do
   raise "  Storage account provider ID input is unset" unless new_resource.account
   raise "  Storage account secret input is unset" unless new_resource.credential
   raise "  Repo container name input is unset." unless new_resource.repository
-
+  if new_resource.endpoint
+      log "  Using input provided ROS endpoint: #{new_resource.endpoint}"
+  end
 end
 
+
+# Pulls code from a determined repository to a specified destination.
 action :pull do
 
   # Checking attributes
+  # Calls the :setup_attributes action.
   action_setup_attributes
 
   log "  Trying to get ros repo from: #{new_resource.storage_account_provider}, bucket: #{new_resource.repository}"
 
   # Backup project directory if it is not empty
   ruby_block "Backup of existing project directory" do
-     block do
-       ::File.rename("#{new_resource.destination}", "#{new_resource.destination}_" + ::Time.now.gmtime.strftime("%Y%m%d%H%M"))
-     end
-     not_if { ::Dir["#{new_resource.destination}/*"].empty? }
+    block do
+      ::File.rename("#{new_resource.destination}", "#{new_resource.destination}_" + ::Time.now.gmtime.strftime("%Y%m%d%H%M"))
+    end
+    not_if { ::Dir["#{new_resource.destination}/*"].empty? }
   end
 
   # Ensure that destination directory exists after all backups.
   directory "#{new_resource.destination}"
+
+  # Overrides default endpoint or for generic storage clouds such as Swift.
+  # Is set as ENV['STORAGE_OPTIONS'] for ros_util.
+  options =
+    unless new_resource.endpoint.empty?
+      {'STORAGE_OPTIONS' => JSON.dump({
+        :endpoint => new_resource.endpoint,
+        :cloud => new_resource.storage_account_provider.to_sym
+      })}
+    else
+      {}
+    end
+
+  environment_variables = {
+    'STORAGE_ACCOUNT_ID' => new_resource.account,
+    'STORAGE_ACCOUNT_SECRET' => new_resource.credential
+  }.merge(options)
 
   # "true" we just put downloaded file into "destination" folder
   # "false" we put downloaded file into /tmp and unpack it into "destination" folder
@@ -52,12 +80,8 @@ action :pull do
   # Obtain the source from ROS
   execute "Download #{new_resource.repository} from Remote Object Store" do
     command "/opt/rightscale/sandbox/bin/ros_util get --cloud #{new_resource.storage_account_provider} --container #{new_resource.repository} --dest #{tmp_repo_path} --source #{new_resource.prefix} --latest"
-    environment ({
-      'STORAGE_ACCOUNT_ID' => new_resource.account,
-      'STORAGE_ACCOUNT_SECRET' => new_resource.credential
-    })
+    environment environment_variables
   end
-
 
   bash "Unpack #{tmp_repo_path} to #{new_resource.destination}" do
     cwd "/tmp"
@@ -71,12 +95,14 @@ action :pull do
 end
 
 
+# Pulls code from a determined repository to a specified destination and create
+# a capistrano-style deployment.
 action :capistrano_pull do
 
   log "  Recreating project directory for :pull action"
 
-  repo_dir="/home"
-  capistrano_dir="/home/capistrano_repo"
+  repo_dir = "/home"
+  capistrano_dir = "/home/capistrano_repo"
 
   # Delete if destination is a symlink
   link "#{new_resource.destination}" do
@@ -91,7 +117,7 @@ action :capistrano_pull do
 
     block do
       Chef::Log.info("  Check previous repo in case of action change")
-      timestamp  = ::Time.now.gmtime.strftime("%Y%m%d%H%M")
+      timestamp = ::Time.now.gmtime.strftime("%Y%m%d%H%M")
       if ::File.exists?("#{capistrano_dir}")
         ::File.rename("#{new_resource.destination}", "#{capistrano_dir}/releases/_initial_#{timestamp}")
         Chef::Log.info("  Destination directory is not empty. Backup to #{capistrano_dir}/releases/_initial_#{timestamp}")
@@ -108,6 +134,7 @@ action :capistrano_pull do
   directory "#{new_resource.destination}"
 
   log "  Pulling source from ROS"
+  # Calls the :action_pull action.
   action_pull
 
   # The embedded chef capistrano resource can work only with git or svn repositories
@@ -139,7 +166,7 @@ action :capistrano_pull do
     action :delete
   end
 
-  #initialisation of new git repo with initial commit
+  # Initialize new git repo with initial commit.
   bash "Git init in project folder" do
     cwd "#{repo_dir}/ros_repo"
     code <<-EOH
@@ -153,6 +180,7 @@ action :capistrano_pull do
   log "  Deploy provider #{scm_provider}"
 
   # Applying capistrano style deployment
+  # See cookbooks/repo/definition/repo_capistranize.rb for the "repo_capistranize" definition.
   repo_capistranize "Source repo" do
     repository "#{repo_dir}/ros_repo/"
     destination destination
@@ -161,7 +189,7 @@ action :capistrano_pull do
     create_dirs_before_symlink create_dirs_before_symlink
     symlinks symlinks
     scm_provider scm_provider
-    environment  environment
+    environment environment
   end
 
   log "  Cleaning transformation temp files"

@@ -17,7 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Install ntpdate package if "ubuntu"
 case node[:platform]
@@ -72,20 +72,21 @@ template "/etc/ntp.conf" do
   source "ntp.conf.erb"
   owner "root"
   group "root"
-  mode 0644
+  mode "0644"
   notifies :restart, resources(:service => node[:sys_ntp][:service])
+  variables(
+    :ntp_servers => node[:sys_ntp][:servers]
+  )
 end
 
 # Create ntpstats directory
 directory "/var/log/ntpstats" do
   owner "ntp"
   group "ntp"
-  mode 0755
+  mode "0755"
 end
 
 # Start NTP service after configuration
 service node[:sys_ntp][:service] do
   action :start
 end
-
-rightscale_marker :end

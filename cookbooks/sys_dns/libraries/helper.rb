@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: sys_dns
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 require 'cgi'
 require 'logger'
@@ -17,16 +18,22 @@ module RightScale
 
       # Applicable to the below classes
       #
-      # @param [String] id unique identifier that is associated with the DNS A record of the server.
-      # @param [String] user user name that is used to access and modify your DNS A records.
-      # @param [String] password password that is used to access and modify your DNS A records.
-      # @param [String] address Private IP of instance running the recipe.
-      # @param [Hash{Symbol => String}] options optional parameters to pass:
-      # * the +:region+ option is CloudDNS specific: region where the A records should be modified.
+      # @param id [String] unique identifier that is associated with the DNS A
+      #   record of the server.
+      # @param user [String] user name that is used to access and modify your
+      #   DNS A records.
+      # @param password [String] password that is used to access and modify your
+      #   DNS A records.
+      # @param address [String] Private IP of instance running the recipe.
+      # @param options [Hash{Symbol => String}] optional parameters to pass:
+      #   * the +:region+ option is CloudDNS specific: region where the A records
+      #     should be modified.
       #
       # @return [String] A record successful update message.
       #
-      # @raise [String] Error message that may have occurred during the update process.
+      # @raise [RuntimeError] Error message that may have occurred during the
+      #   update process.
+      #
       def action_set(id, user, password, address, options = {})
         raise "Not implemented!"
       end

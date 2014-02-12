@@ -1,20 +1,23 @@
 #
 # Cookbook Name:: logging_syslog_ng
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
-# Stop syslog-ng
+# @resource logging
+
+# Stops syslog-ng
 action :stop do
   service "syslog-ng" do
-    action :start
+    action :stop
     persist false
   end
 end
 
 
-# Start syslog-ng
+# Starts syslog-ng
 action :start do
   service "syslog-ng" do
     action :start
@@ -23,7 +26,7 @@ action :start do
 end
 
 
-# Restart syslog-ng
+# Restarts syslog-ng
 action :restart do
   service "syslog-ng" do
     action :restart
@@ -32,7 +35,7 @@ action :restart do
 end
 
 
-# Reload syslog-ng
+# Reloads syslog-ng
 action :reload do
   service "syslog-ng" do
     action :reload
@@ -41,6 +44,7 @@ action :reload do
 end
 
 
+# Installs syslog-ng package
 action :install do
   # The replacing syslog-ng with rsyslog requires low level package
   # manipulation via rpm/dpkg
@@ -48,6 +52,7 @@ action :install do
 end
 
 
+# Configures logging: client side
 action :configure do
   remote_server = new_resource.remote_server
   # Keep the default configuration (local file only logging) unless a
@@ -69,21 +74,25 @@ action :configure do
 end
 
 
+# Calls the logging rotate command
 action :rotate do
   raise "syslog-ng action not implemented"
 end
 
 
+# Adds a remote logging server
 action :add_remote_server do
   raise "syslog-ng action not implemented"
 end
 
 
+# Adds a logging definition
 action :add_definition do
   raise "syslog-ng action not implemented"
 end
 
 
+# Adds a logrotate policy
 action :add_rotate_policy do
   raise "syslog-ng action not implemented"
 end

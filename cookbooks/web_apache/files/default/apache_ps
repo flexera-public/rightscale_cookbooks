@@ -1,10 +1,11 @@
 #! /usr/bin/ruby
-# 
+#
 # Cookbook Name:: web_apache
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 
 # Arguments: hostname to use to report the stats (Instance ID or UUID)
@@ -19,8 +20,8 @@ def usage
 end
 
 opts = GetoptLong.new(
-    [ '--hostname', '-h', GetoptLong::REQUIRED_ARGUMENT ],
-    [ '--sample-interval', '-i',  GetoptLong::OPTIONAL_ARGUMENT ]
+  ['--hostname', '-h', GetoptLong::REQUIRED_ARGUMENT],
+  ['--sample-interval', '-i', GetoptLong::OPTIONAL_ARGUMENT]
 )
 
 # default values
@@ -30,9 +31,9 @@ sample_interval = 20
 opts.each do |opt, arg|
   case opt
   when '--hostname'
-      hostname = arg
+    hostname = arg
   when '--sample-interval'
-      sample_interval = arg.to_i
+    sample_interval = arg.to_i
   end
   arg.inspect
 end
@@ -73,8 +74,8 @@ loop do
   ps_out.each_line do |line|
     processes = processes + 1
     threads += line.to_i
-  end 
-  
+  end
+
   print "PUTVAL #{hostname}/apache/ps_count interval=#{sample_interval} #{now.to_i}:#{processes}:#{threads}\n"
 
   STDOUT.flush

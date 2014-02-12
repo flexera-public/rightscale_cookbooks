@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: app_tomcat
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 #
 # Managed by RightScale
 # DO NOT EDIT BY HAND
@@ -35,6 +36,7 @@ CATALINA_TMPDIR="/var/tmp/tomcat<%=@version%>"
 JAVA_OPTS="${JAVA_OPTS} -Djavax.sql.DataSource.Factory=org.apache.commons.dbcp.BasicDataSourceFactory"
   <% end %>
 <% end %>
+
 
 # You can pass some parameters to java here if you wish to
 #JAVA_OPTS="-Xminf0.1 -Xmaxf0.3"
@@ -80,4 +82,3 @@ CATALINA_OPTS="$CATALINA_OPTS -XX:PermSize=<%=@java_permsize%> -XX:MaxPermSize=<
 CATALINA_OPTS="$CATALINA_OPTS -XX:NewSize=<%=@java_newsize%> -XX:MaxNewSize=<%=@java_maxnewsize%>"
 
 #Collectd
-

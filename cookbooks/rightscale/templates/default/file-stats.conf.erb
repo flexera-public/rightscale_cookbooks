@@ -1,9 +1,10 @@
-# 
+#
 # Cookbook Name:: rightscale
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 # 
 # Managed by RightScale
 # DO NOT EDIT BY HAND
@@ -11,5 +12,5 @@
 
 <Plugin exec>
   #    userid    plugin executable                   plugin args
-  Exec "nobody" "<%= node[:rightscale][:collectd_lib] %>/plugins/file-stats.rb" "-h" "<%= node[:rightscale][:instance_uuid] %>" "-i" "20" "<%= node[:rightscale][:db_backup_file] %>"
+  Exec "nobody" "<%= @collectd_lib %>/plugins/file-stats.rb" "-h" "<%= @instance_uuid %>" "-i" "20" "<%= @db_backup_file %>"
 </Plugin>

@@ -1,15 +1,33 @@
 #
 # Cookbook Name:: repo
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 # This is an adaptation of Opscode "deploy" resource to be used with RightScale repository LWRPs:
 # cookbooks/repo, cookbooks/repo_git, cookbooks/repo_ros, cookbooks/repo_svn
 
-capistrano_dir="/home/capistrano_repo"
-# More detailed parameters descriptions you can find in repo/resources/default.rb
+capistrano_dir = "/home/capistrano_repo"
+
+# Capistranize repository
+#
+# @param destination [String] Path to where project repo will be pulled
+# @param repository [String] Repository Url
+# @param revision [String] Remote repo Branch or revision
+# @param svn_username [String] SVN username
+# @param svn_password [String] SVN password
+# @param app_user [String] System user to run the deploy as
+# @param environment [String] A hash of the form {"ENV_VARIABLE"=>"VALUE"}
+# @param create_dirs_before_symlink [String] Directories to create before
+#   symlinking. Runs after purge_before_symlink
+# @param purge_before_symlink [String] An array of paths, relative to app root,
+#   to be removed from a checkout before symlinking
+# @param symlinks [String] A hash that maps files in the shared directory to
+#   their paths in the current release
+# @param scm_provider [String] Source Control Management provider
+#
 define :repo_capistranize,
   :destination => "",
   :repository => "",
@@ -106,7 +124,5 @@ define :repo_capistranize,
       Chef::Log.info("  linking #{capistrano_dir}/current/ directory to project root -  #{repo_dest}")
       system("cp -d #{capistrano_dir}/current #{repo_dest}")
     end
-
   end
-
 end

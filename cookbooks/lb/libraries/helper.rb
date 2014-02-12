@@ -1,17 +1,21 @@
 #
 # Cookbook Name:: lb
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 module RightScale
   module LB
+    # Helper modules for loadbalancer cookbook
     module Helper
-
+      # Returns a set of attached servers belonging to the same pool.
+      #
       # @param [String] pool_name virtual hosts name.
       #
-      # @return [Set] attached_servers set of attached servers which will be in the same pool i.e., servers in lb config dir
+      # @return [Set] attached_servers set of attached servers which will be in
+      #   the same pool i.e., servers in lb config dir
       #
       def get_attached_servers(pool_name)
         attached_servers = Set.new
@@ -24,6 +28,8 @@ module RightScale
         attached_servers
       end
 
+      # Queries application servers answering for a specifc pool.
+      #
       # @param [String] pool_name virtual hosts name.
       #
       # @return [Hash] app_servers hash of app servers in deployment answering for pool_name
@@ -31,14 +37,16 @@ module RightScale
       def query_appservers(pool_name)
         app_servers = Hash.new
 
+        # See cookbooks/rightscale/providers/server_collection.rb for the "load" action
         r=rightscale_server_collection 'app_servers' do
           tags ["loadbalancer:#{pool_name}=app"]
-          secondary_tags ["server:uuid=*", "appserver:listen_ip=*", "appserver:listen_port=*"]
+          mandatory_tags ["server:uuid=*", "appserver:listen_ip=*", "appserver:listen_port=*"]
           action :nothing
         end
         r.run_action(:load)
 
         node[:server_collection]['app_servers'].to_hash.values.each do |tags|
+          # See cookbooks/rightscale/libraries/helper.rb for the "get_tag_value" method.
           uuid = RightScale::Utils::Helper.get_tag_value('server:uuid', tags)
           ip = RightScale::Utils::Helper.get_tag_value('appserver:listen_ip', tags)
           port = RightScale::Utils::Helper.get_tag_value('appserver:listen_port', tags)

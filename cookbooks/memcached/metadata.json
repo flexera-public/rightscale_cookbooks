@@ -1,75 +1,32 @@
 {
+  "providing": {
+  },
   "dependencies": {
     "logrotate": ">= 0.0.0",
-    "rightscale": ">= 0.0.0",
-    "sys_firewall": ">= 0.0.0"
+    "sys_firewall": ">= 0.0.0",
+    "rightscale": ">= 0.0.0"
   },
-  "name": "memcached",
+  "replacing": {
+  },
+  "platforms": {
+    "ubuntu": ">= 0.0.0",
+    "redhat": ">= 0.0.0",
+    "centos": ">= 0.0.0"
+  },
   "maintainer_email": "support@rightscale.com",
+  "version": "13.5.0",
+  "suggestions": {
+  },
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "name": "memcached",
+  "recommendations": {
+  },
+  "description": "This cookbook provides a set of recipes used by the RightScale Memcached ServerTemplates to install and configure a Memcached server.",
+  "groupings": {
+  },
   "attributes": {
-    "memcached/connection_limit": {
-      "required": "recommended",
-      "calculated": false,
-      "choice": [
-
-      ],
-      "default": "1024",
-      "type": "string",
-      "recipes": [
-        "memcached::install_server"
-      ],
-      "display_name": "Memcached connection limit",
-      "description": "Option to either reduce the number of connections (to prevent overloading memcached service) or to increase the number making more effective use of the server running memcached. Default: 1024"
-    },
-    "memcached/tcp_port": {
-      "required": "recommended",
-      "calculated": false,
-      "choice": [
-
-      ],
-      "default": "11211",
-      "type": "string",
-      "recipes": [
-        "memcached::install_server",
-        "memcached::default"
-      ],
-      "display_name": "Memcached TCP Port",
-      "description": "The TCP port to use for connections. Default : 11211"
-    },
-    "memcached/interface": {
-      "required": "recommended",
-      "calculated": false,
-      "choice": [
-        "localhost",
-        "private",
-        "any"
-      ],
-      "default": "any",
-      "type": "string",
-      "recipes": [
-        "memcached::install_server"
-      ],
-      "display_name": "Memcached listening interface",
-      "description": "Interface used for memcached connections. Default: any"
-    },
-    "memcached/cluster_id": {
-      "required": "optional",
-      "calculated": false,
-      "choice": [
-
-      ],
-      "default": "cache_cluster",
-      "type": "string",
-      "recipes": [
-        "memcached::install_server",
-        "memcached::default"
-      ],
-      "display_name": "Memcached cluster_id",
-      "description": "Used to associate server with a memcached cluster."
-    },
     "memcached/memtotal_percent": {
-      "required": "recommended",
-      "calculated": false,
+      "description": "Set the amount of memory allocated to memcached for object storage in percentage from total system memory. Example: 80",
       "choice": [
         "10",
         "20",
@@ -81,100 +38,145 @@
         "80",
         "90"
       ],
+      "required": "recommended",
       "default": "90",
+      "calculated": false,
       "type": "string",
-      "recipes": [
-        "memcached::install_server"
-      ],
       "display_name": "Memcached Cache size percentage",
-      "description": "Set the amount of memory allocated to memcached for object storage in percentage from total system memory. Example: 80"
-    },
-    "memcached/user": {
-      "required": "recommended",
-      "calculated": false,
-      "choice": [
-
-      ],
-      "default": "nobody",
-      "type": "string",
       "recipes": [
         "memcached::install_server"
-      ],
-      "display_name": "Memcached user",
-      "description": "The user for executing memcached. Default: nobody"
+      ]
     },
-    "memcached/udp_port": {
-      "required": "recommended",
-      "calculated": false,
+    "memcached/threads": {
+      "description": "The number of threads to use when processing incoming requests. Example: 4",
       "choice": [
 
       ],
-      "default": "11211",
+      "required": "recommended",
+      "default": "1",
+      "calculated": false,
       "type": "string",
+      "display_name": "Memcached used threads",
+      "recipes": [
+        "memcached::install_server"
+      ]
+    },
+    "memcached/interface": {
+      "description": "Interface used for memcached connections. Example: any",
+      "choice": [
+        "localhost",
+        "private",
+        "any"
+      ],
+      "required": "recommended",
+      "default": "any",
+      "calculated": false,
+      "type": "string",
+      "display_name": "Memcached listening interface",
+      "recipes": [
+        "memcached::install_server"
+      ]
+    },
+    "memcached/tcp_port": {
+      "description": "The TCP port to use for connections. Example: 11211",
+      "choice": [
+
+      ],
+      "required": "recommended",
+      "default": "11211",
+      "calculated": false,
+      "type": "string",
+      "display_name": "Memcached TCP Port",
       "recipes": [
         "memcached::install_server",
         "memcached::default"
+      ]
+    },
+    "memcached/cluster_id": {
+      "description": "Used to associate server with a memcached cluster. Example: cache_cluster",
+      "choice": [
+
       ],
+      "required": "optional",
+      "default": "cache_cluster",
+      "calculated": false,
+      "type": "string",
+      "display_name": "Memcached cluster_id",
+      "recipes": [
+        "memcached::install_server",
+        "memcached::default"
+      ]
+    },
+    "memcached/connection_limit": {
+      "description": "Option to either reduce the number of connections (to prevent overloading memcached service) or to increase the number making more effective use of the server running memcached. Example: 1024",
+      "choice": [
+
+      ],
+      "required": "recommended",
+      "default": "1024",
+      "calculated": false,
+      "type": "string",
+      "display_name": "Memcached connection limit",
+      "recipes": [
+        "memcached::install_server"
+      ]
+    },
+    "memcached/udp_port": {
+      "description": "The UDP port to use for connections. Example: 11211",
+      "choice": [
+
+      ],
+      "required": "recommended",
+      "default": "11211",
+      "calculated": false,
+      "type": "string",
       "display_name": "Memcached UDP Port",
-      "description": "The UDP port to use for connections. Default : 11211"
+      "recipes": [
+        "memcached::install_server",
+        "memcached::default"
+      ]
     },
     "memcached/log_level": {
-      "required": "optional",
-      "calculated": false,
+      "description": "Without the verbose options, memcached normally produces no output during normal operating. Example: off",
       "choice": [
         "off",
         "verbose",
         "debug",
         "extremely verbose"
       ],
+      "required": "optional",
       "default": "off",
+      "calculated": false,
       "type": "string",
+      "display_name": "Memcached logging output level",
       "recipes": [
         "memcached::install_server"
-      ],
-      "display_name": "Memcached logging output level",
-      "description": "Without the verbose options, memcached normally produces no output during normal operating."
+      ]
     },
-    "memcached/threads": {
-      "required": "recommended",
-      "calculated": false,
+    "memcached/user": {
+      "description": "The user for executing memcached. Example: nobody",
       "choice": [
 
       ],
-      "default": "1",
+      "required": "recommended",
+      "default": "nobody",
+      "calculated": false,
       "type": "string",
+      "display_name": "Memcached user",
       "recipes": [
         "memcached::install_server"
-      ],
-      "display_name": "Memcached used threads",
-      "description": "The number of threads to use when processing incoming requests. Example: 4"
+      ]
     }
-  },
-  "license": "Copyright RightScale, Inc. All rights reserved.",
-  "suggestions": {
-  },
-  "platforms": {
-  },
-  "maintainer": "RightScale, Inc.",
-  "long_description": "= RightScale Memcached Server Template\n\n== DESCRIPTION:\n\nThis cookbook provides recipes for setting up and running a Memcached server.\n\n== REQUIREMENTS:\n\n* Requires a VM launched from a RightScale managed RightImage\n\n== COOKBOOKS DEPENDENCIES:\n\nPlease see <tt>metadata.rb</tt> file for the latest dependencies.\n\n== KNOWN LIMITATIONS:\n\n* If you need memcached to listen on public interface must set to listen on any.\n\n== SETUP/USAGE:\n\n* Choose image and cloud.\n* Fill required input fields.\n* When using a RightScale ServerTemplate, place <tt>memcached::install_server</tt> recipe into your runlist to setup the memcached server and add the server tags.\n\n== DETAILS:\n\n=== General\n\nThe cookbook installs memcached with needed configuration for CentOS, Redhat and Ubuntu.\nOpens listening port in systems' firewall, setups server tags, monitoring and log rotation.\n\n=== Attributes:\n\nThese are the settings used in recipes and templates. Default values are noted.\n* <tt>node[:memcached][:tcp_port]</tt> - The TCP port to use for connections. Default : 11211\n* <tt>node[:memcached][:udp_port]</tt> - The UDP port to use for connections. Default : 11211\n* <tt>node[:memcached][:user]</tt> - The user for executing memcached. Default: nobody\n* <tt>node[:memcached][:connection_limit]</tt> - Option to either reduce the number of connections (to prevent overloading memcached service) or to increase the number making more effective use of the server running memcached. Default: 1024\n* <tt>node[:memcached][:memtotal_percent]</tt> - The amount of memory allocated to memcached for object storage in percentage from total system memory. Example: 80\n* <tt>node[:memcached][:threads]</tt> - The number of threads to use when processing incoming requests. Example: 4\n* <tt>node[:memcached][:interface]</tt> - Interface used for memcached connections. Default: any\n* <tt>node[:memcached][:log_level]</tt> - Memcached logging output level\n* <tt>node[:memcached][:cluster_id]</tt> - Cluster assosiation string.\n\n* <tt>node[:platform][:memcached][:config_file]</tt> - Location of memcached configuration file.\n\n=== Templates:\n\n* <tt>memcached.conf.erb</tt> - Memcached configuration file. Unique for CentOS and Ubuntu. Used is the <tt>memcached::install_server</tt> recipe.\n\n* <tt>memcached_collectd.conf.erb</tt> - Memcached collectd plugin template. Used is the <tt>memcached::install_server</tt> recipe.\n\n= LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.  All access and use subject to\nthe RightScale Terms of Service available at http://www.rightscale.com/terms.php\nand, if applicable, other agreements such as a RightScale Master Subscription\nAgreement.",
-  "version": "13.2.0",
-  "recommendations": {
-  },
-  "recipes": {
-    "memcached::do_stop": "Stop memcached service.",
-    "memcached::do_reload": "Reload memcached service.",
-    "memcached::do_start": "Start memcached service.",
-    "memcached::install_server": "Installation and configuration recipe for memcached. Does memcached setup and configuration, opens port in firewall, configures collectd and logrotate.",
-    "memcached::do_restart": "Restart memcached service.",
-    "memcached::default": "Default recipe for memcached setup."
-  },
-  "groupings": {
   },
   "conflicting": {
   },
-  "replacing": {
-  },
-  "description": "Installs/Configures a memcached server",
-  "providing": {
+  "maintainer": "RightScale, Inc.",
+  "long_description": "# RightScale Memcached Cookbook\n\n## DESCRIPTION:\n\nThis cookbook provides recipes for setting up and running a Memcached server.\n\n## REQUIREMENTS:\n\n* Requires a VM launched from a RightScale managed RightImage\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see `metadata.rb` file for the latest dependencies.\n\n## KNOWN LIMITATIONS:\n\n* If you need memcached to listen on public interface must set to listen on any.\n\n## SETUP/USAGE:\n\n* Choose image and cloud.\n* Fill required input fields.\n* When using a RightScale ServerTemplate, place `memcached::install_server`\n  recipe into your runlist to setup the memcached server and add the server\n  tags.\n\n## DETAILS:\n\n### General\n\nThe cookbook installs memcached with needed configuration for CentOS, Redhat and\nUbuntu.\nOpens listening port in systems' firewall, setups server tags, monitoring and\nlog rotation.\n\n### Attributes:\n\nThese are the settings used in recipes and templates. Default values are noted.\n* `node[:memcached][:tcp_port]` -\n  The TCP port to use for connections. Default: 11211\n* `node[:memcached][:udp_port]` -\n  The UDP port to use for connections. Default: 11211\n* `node[:memcached][:user]` -\n  The user for executing memcached. Default: nobody\n* `node[:memcached][:connection_limit]` -\n  Option to either reduce the number of connections (to prevent overloading\n  memcached service) or to increase the number making more effective use of the\n  server running memcached. Default: 1024\n* `node[:memcached][:memtotal_percent]` -\n  The amount of memory allocated to memcached for object storage in percentage\n  from total system memory. Example: 80\n* `node[:memcached][:threads]` -\n  The number of threads to use when processing incoming requests. Example: 4\n* `node[:memcached][:interface]` -\n  Interface used for memcached connections. Default: any\n* `node[:memcached][:log_level]` -\n  Memcached logging output level\n* `node[:memcached][:cluster_id]` -\n  Cluster assosiation string.\n\n### Templates:\n\n* `memcached.conf.erb` -\n  Memcached configuration file. Unique for CentOS and Ubuntu. Used is the\n  `memcached::install_server` recipe.\n* `memcached_collectd.conf.erb` - Memcached collectd plugin template. Used is\n  the `memcached::install_server` recipe.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
+  "recipes": {
+    "memcached::do_start": "Starts memcached service.",
+    "memcached::do_stop": "Stops memcached service.",
+    "memcached::install_server": "Installs and configures memcached, opens port in firewall, and configures collectd and logrotate.",
+    "memcached::do_restart": "Restarts memcached service.",
+    "memcached::default": "Sets up mecached.."
   }
 }

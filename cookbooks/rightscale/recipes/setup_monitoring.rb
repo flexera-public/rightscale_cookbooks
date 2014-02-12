@@ -1,11 +1,12 @@
 #
 # Cookbook Name:: rightscale
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # These are not conditional assignments, but array joins.
 node[:rightscale][:plugin_list_array] = node[:rightscale][:plugin_list].split | node[:rightscale][:plugin_list_array]
@@ -48,6 +49,7 @@ end
 cookbook_file "/etc/apt/preferences.d/00rightscale" do
   only_if { node[:platform] == "ubuntu" }
   source "apt.preferences.rightscale"
+  mode 0644
 end
 
 # If YUM, lock this collectd package so it can't be updated.
@@ -76,6 +78,12 @@ template node[:rightscale][:collectd_config] do
   backup 5
   source "collectd.config.erb"
   notifies :restart, resources(:service => "collectd")
+  variables(
+    :instance_uuid => node[:rightscale][:instance_uuid],
+    :sketchy_hostname => node[:rightscale][:servers][:sketchy][:hostname],
+    :plugin_list_array => node[:rightscale][:plugin_list_array],
+    :collectd_plugin_dir => node[:rightscale][:collectd_plugin_dir]
+  )
 end
 
 # Create plugin conf dir
@@ -86,10 +94,10 @@ directory "#{node[:rightscale][:collectd_plugin_dir]}" do
   action :create
 end
 
-# Install a Nightly Crontask to Restart Collectd
-#
-# Add the task to /etc/crontab, at 04:00 localtime.
+# Installs a nightly cron job (at 04:00 localtime) to restart collectd.
+# Sets the cron PATH environment variable to follow root PATH.
 cron "collectd" do
+  path ENV["PATH"]
   command "service collectd restart > /dev/null"
   minute "00"
   hour "4"
@@ -102,6 +110,10 @@ template File.join(node[:rightscale][:collectd_plugin_dir], 'processes.conf') do
   backup false
   source "processes.conf.erb"
   notifies :restart, resources(:service => "collectd")
+  variables(
+    :process_list_array => node[:rightscale][:process_list_array],
+    :process_match_list => node[:rightscale][:process_match_list]
+  )
 end
 
 # Patch collectd init script, so it uses collectdmon.
@@ -109,13 +121,13 @@ end
 if node[:platform] =~ /redhat|centos/
   cookbook_file "/etc/init.d/collectd" do
     source "collectd-init-centos-with-monitor"
-    mode 0755
+    mode "0755"
     notifies :restart, resources(:service => "collectd")
   end
 end
 
 # Tag required to enable monitoring
-#
+# See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RightLinkTag for the "right_link_tag" resource.
 right_link_tag "rs_monitoring:state=active"
 
 # Start monitoring
@@ -125,5 +137,3 @@ service "collectd" do
 end
 
 log "  RightScale monitoring setup complete."
-
-rightscale_marker :end

@@ -1,8 +1,10 @@
+#
 # Cookbook Name:: db_postgres
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 #
 # Managed by RightScale
 # DO NOT EDIT BY HAND
@@ -10,5 +12,5 @@
 
 <Plugin exec>
   #    userid    plugin executable                   plugin args
-  Exec "postgres" "<%= node[:rightscale][:collectd_lib] %>/plugins/pg_cluster_status" "-m" "<%= node[:db][:current_master_ip] %>" "-s" "<%= node[:cloud][:private_ips][0] %>" "-h" "<%= node[:rightscale][:instance_uuid] %>"
+  Exec "postgres" "<%= @collectd_lib %>/plugins/pg_cluster_status" "-m" "<%= @current_master_ip %>" "-s" "<%= @private_ip %>" "-h" "<%= @instance_uuid %>"
 </Plugin>

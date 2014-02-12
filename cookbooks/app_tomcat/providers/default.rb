@@ -1,14 +1,17 @@
 #
 # Cookbook Name:: app_tomcat
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
-# Stop tomcat service
+# @resource app
+
+# Stops tomcat service
 action :stop do
 
-  version = node[:app_tomcat][:version].to_i
+  version = node[:app][:version].to_i
   log "  Running stop sequence"
   service "tomcat#{version}" do
     action :stop
@@ -16,10 +19,10 @@ action :stop do
   end
 end
 
-# Start tomcat service
+# Starts tomcat service
 action :start do
 
-  version = node[:app_tomcat][:version].to_i
+  version = node[:app][:version].to_i
   log "  Running start sequence"
   service "tomcat#{version}" do
     action :start
@@ -27,23 +30,25 @@ action :start do
   end
 end
 
-# Restart tomcat service
+# Restarts tomcat service
 action :restart do
   log "  Running restart sequence"
+  # Calls the :stop action.
   action_stop
   sleep 5
+  # Calls the :start action.
   action_start
 end
 
-# Reload tomcat service
+# Reloads tomcat service
 action :reload do
   log "  Action not implemented"
 end
 
-#Installing required packages and prepare system for tomcat
+#Installs required packages and prepares system for tomcat
 action :install do
 
-  version = node[:app_tomcat][:version].to_i
+  version = node[:app][:version].to_i
 
   packages = new_resource.packages
   log "  Packages which will be installed: #{packages}"
@@ -69,55 +74,18 @@ action :install do
     action :run
   end
 
-  # Installing database adapter for tomcat
-  db_adapter = node[:app][:db_adapter]
-  if db_adapter == "mysql"
-    # Removing existing links to database connector
-    file "/usr/share/tomcat#{version}/lib/mysql-connector-java.jar" do
-      action :delete
-    end
-    # Link mysql-connector plugin to Tomcat6 lib
-    link "/usr/share/tomcat#{version}/lib/mysql-connector-java.jar" do
-      to "/usr/share/java/mysql-connector-java.jar"
-    end
-  elsif db_adapter == "postgres"
-    # Copy to /usr/share/java/postgresql-9.1-901.jdbc4.jar
-    cookbook_file "/usr/share/tomcat#{version}/lib/postgresql-9.1-901.jdbc4.jar" do
-      source "postgresql-9.1-901.jdbc4.jar"
-      owner node[:app][:user]
-      group "root"
-      mode "0660"
-      cookbook 'app_tomcat'
-    end
-  else
-    raise "Unrecognized database adapter #{db_adapter}, exiting"
-  end
-
   # Linking RightImage JAVA_HOME to what Tomcat6 expects to be...
   link "/usr/lib/jvm/java" do
     to "/usr/java/default"
   end
 
   # Moving tomcat logs to ephemeral
-
-  # Deleting old tomcat log directory
-  directory "/var/log/tomcat#{version}" do
-    recursive true
-    action :delete
-  end
-
-  # Creating new directory for tomcat logs on ephemeral volume
-  directory "/mnt/ephemeral/log/tomcat#{version}" do
-    owner node[:app][:user]
+  # See cookbooks/rightscale/definitions/rightscale_move_to_ephemeral.rb
+  # for the "rightscale_move_to_ephemeral" definition.
+  rightscale_move_to_ephemeral "/var/log/tomcat#{version}" do
+    location_on_ephemeral "tomcat#{version}"
+    user node[:app][:user]
     group node[:app][:group]
-    mode "0755"
-    action :create
-    recursive true
-  end
-
-  # Create symlink from /var/log/tomcat#{version} to ephemeral volume
-  link "/var/log/tomcat#{version}" do
-    to "/mnt/ephemeral/log/tomcat#{version}"
   end
 
   # Symlinking to new jvm-exports
@@ -137,15 +105,15 @@ action :install do
 
 end
 
-# Setup apache virtual host and corresponding tomcat configs
+# Sets up apache virtual host and corresponding tomcat configs
 action :setup_vhost do
 
   port = new_resource.port
   app_root = new_resource.root
-  version = node[:app_tomcat][:version].to_i
+  version = node[:app][:version].to_i
 
-  log "  Creating tomcat#{version}.conf"
-  template "/etc/tomcat#{version}/tomcat#{version}.conf" do
+  log "  Creating tomcat#{version} configuration file"
+  template "#{node[:app_tomcat][:configuration_file_path]}" do
     action :create
     source "tomcat_conf.erb"
     group "root"
@@ -165,8 +133,6 @@ action :setup_vhost do
     )
   end
 
-  # Define internal port for tomcat. It must be different than apache ports
-  tomcat_port = port + 1
   log "  Creating server.xml"
   template "/etc/tomcat#{version}/server.xml" do
     action :create
@@ -176,26 +142,29 @@ action :setup_vhost do
     mode "0644"
     cookbook 'app_tomcat'
     variables(
-            :doc_root => app_root,
-            :app_port => tomcat_port.to_s
-          )
+      :tomcat_version => node[:app][:version],
+      :doc_root => app_root,
+      :app_port => node[:app_tomcat][:internal_port]
+    )
   end
 
   log "  Setup logrotate for tomcat"
+  # See cookbooks/rightscale/definition/rightscale_logrotate_app.rb for the "rightscale_logrotate_app" definition.
   rightscale_logrotate_app "tomcat" do
     cookbook "rightscale"
     template "logrotate.erb"
-    path [ "/var/log/tomcat#{version}/*log", "/var/log/tomcat#{version}/*.out" ]
+    path ["/var/log/tomcat#{version}/*log", "/var/log/tomcat#{version}/*.out"]
     frequency "size 10M"
     rotate 4
   end
 
   # Starting tomcat service
+  # Calls the :start action.
   action_start
 
   log "  Setup mod_jk vhost"
   # Setup mod_jk vhost start
-  etc_apache = "/etc/#{node[:apache][:config_subdir]}"
+  etc_apache = "/etc/#{node[:web_apache][:config_subdir]}"
 
   # Check if mod_jk is installed
   if !::File.exists?("#{etc_apache}/conf.d/mod_jk.conf")
@@ -205,7 +174,7 @@ action :setup_vhost do
     # Installing required packages depending on platform
     case node[:platform]
     when "ubuntu"
-      ubuntu_p = [ "apache2-mpm-prefork", "apache2-threaded-dev", "libapr1-dev", "libapache2-mod-jk" ]
+      ubuntu_p = ["apache2-mpm-prefork", "apache2-threaded-dev", "libapr1-dev", "libapache2-mod-jk"]
       ubuntu_p.each do |p|
         package p do
           retries 15
@@ -213,15 +182,11 @@ action :setup_vhost do
         end
       end
 
-    when "centos","redhat"
+    when "centos", "redhat"
 
-      package "apr-devel" do
-        options "-y"
-      end
+      package "apr-devel"
 
-      package "httpd-devel" do
-        options "-y"
-      end
+      package "httpd-devel"
 
       # Preparing to install tomcat connectors
       cookbook_file "/tmp/#{connectors_source}" do
@@ -253,7 +218,7 @@ action :setup_vhost do
       source "tomcat_workers.properties.erb"
       variables(
         :version => version,
-        :config_subdir => node[:apache][:config_subdir]
+        :config_subdir => node[:web_apache][:config_subdir]
       )
       cookbook 'app_tomcat'
     end
@@ -265,15 +230,20 @@ action :setup_vhost do
       source "mod_jk.conf.erb"
       variables(
         :jkworkersfile => node[:app_tomcat][:jkworkersfile],
-        :apache_log_dir => node[:apache][:log_dir]
+        :apache_log_dir => node[:apache][:log_dir],
+        :platform_version => node[:platform_version]
       )
       cookbook 'app_tomcat'
     end
 
     log "  Finished configuring mod_jk, creating the application vhost"
 
+    log "  Module dependencies which will be installed:" +
+      " #{node[:app_tomcat][:module_dependencies]}"
     # Enabling required apache modules
-    node[:app][:module_dependencies].each do |mod|
+    node[:app_tomcat][:module_dependencies].each do |mod|
+      # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/apache_module.rb
+      # for the "apache_module" definition.
       apache_module mod
     end
 
@@ -290,6 +260,7 @@ action :setup_vhost do
   end
 
   log "  Generating new apache ports.conf"
+  # See cookbooks/app/definitions/app_add_listen_port.rb for the "app_add_listen_port" definition.
   app_add_listen_port port
 
   # Configuring document root for apache
@@ -302,13 +273,15 @@ action :setup_vhost do
   end
 
   log "  Configuring apache vhost for tomcat"
+  # See https://github.com/rightscale/cookbooks/blob/master/apache2/definitions/web_app.rb for the "web_app" definition.
   web_app "http-#{port}-#{node[:web_apache][:server_name]}.vhost" do
-    template        'apache_mod_jk_vhost.erb'
-    cookbook        'app_tomcat'
-    docroot         apache_docroot
-    vhost_port      port.to_s
-    server_name     node[:web_apache][:server_name]
-    apache_log_dir  node[:apache][:log_dir]
+    template 'apache_mod_jk_vhost.erb'
+    cookbook 'app_tomcat'
+    docroot apache_docroot
+    vhost_port port.to_s
+    server_name node[:web_apache][:server_name]
+    allow_override node[:web_apache][:allow_override]
+    apache_log_dir node[:apache][:log_dir]
   end
 
   # Apache server restart
@@ -319,23 +292,26 @@ action :setup_vhost do
 
 end
 
-# Setup project db connection
+# Sets up database connection
 action :setup_db_connection do
 
   db_name = new_resource.database_name
-  db_adapter = node[:app][:db_adapter]
   datasource = node[:app_tomcat][:datasource_name]
-  version = node[:app_tomcat][:version].to_i
+  version = node[:app][:version].to_i
 
-  log "  Creating context.xml for DB: #{db_name} using adapter #{db_adapter} and datasource #{datasource}"
+  log "  Creating context.xml for DB: #{db_name} using datasource #{datasource}"
+  # See cookbooks/db/definitions/db_connect_app.rb for the "db_connect_app" definition.
   db_connect_app "/etc/tomcat#{version}/context.xml" do
-    template      "context_xml.erb"
-    owner         "#{node[:app][:user]}"
-    group         "root"
-    mode          "0644"
-    database      db_name
-    datasource    datasource
-    cookbook      'app_tomcat'
+    template "context_xml.erb"
+    owner "#{node[:app][:user]}"
+    group "root"
+    mode "0644"
+    database db_name
+    cookbook "app_tomcat"
+    driver_type "java"
+    vars(
+      :datasource => datasource
+    )
   end
 
   log "  Creating web.xml"
@@ -348,6 +324,17 @@ action :setup_db_connection do
       :datasource => datasource
     )
     cookbook 'app_tomcat'
+  end
+
+  # Creating catalina.properties file with /usr/share/java included in the common loader
+  # so tomcat will pick up all jar files available in that directory
+  log "  Creating catalina.properties"
+  template "/etc/tomcat#{version}/catalina.properties" do
+    source "catalina.properties.erb"
+    owner "#{node[:app][:user]}"
+    group "root"
+    mode "0644"
+    cookbook "app_tomcat"
   end
 
   # Installing JavaServer Pages Standard Tag Library API
@@ -369,11 +356,12 @@ action :setup_db_connection do
   end
 end
 
-# Setup monitoring tools for tomcat
+# Sets up monitoring tools for tomcat
 action :setup_monitoring do
 
-  version=node[:app_tomcat][:version].to_i
+  version=node[:app][:version].to_i
   log "  Setup of collectd monitoring for tomcat"
+  # See cookbooks/rightscale/definitions/rightscale_enable_collectd_plugin.rb for the "rightscale_enable_collectd_plugin" definition.
   rightscale_enable_collectd_plugin 'exec'
 
   # Installing and configuring collectd for tomcat
@@ -390,10 +378,10 @@ action :setup_monitoring do
   end
 
   # Add collectd support to tomcat.conf
-  bash "Add collectd to tomcat.conf" do
+  bash "Add collectd to tomcat configuration file" do
     flags "-ex"
     code <<-EOH
-      cat <<'EOF'>>"/etc/tomcat#{version}/tomcat#{version}.conf"
+      cat <<'EOF'>>"#{node[:app_tomcat][:configuration_file_path]}"
 CATALINA_OPTS="\$CATALINA_OPTS -Djcd.host=#{node[:rightscale][:instance_uuid]} -Djcd.instance=tomcat#{version} -Djcd.dest=udp://#{node[:rightscale][:servers][:sketchy][:hostname]}:3011 -Djcd.tmpl=javalang,tomcat -javaagent:/usr/share/tomcat#{version}/lib/collectd.jar"
     EOH
   end
@@ -401,7 +389,7 @@ CATALINA_OPTS="\$CATALINA_OPTS -Djcd.host=#{node[:rightscale][:instance_uuid]} -
 
 end
 
-# Download/Update application repository
+# Downloads/Updates application repository
 action :code_update do
 
   deploy_dir = new_resource.destination
@@ -410,6 +398,7 @@ action :code_update do
 
   log "  Downloading project repo"
   # Calling "repo" LWRP to download remote project repository
+  # See cookbooks/repo/resources/default.rb for the "repo" resource.
   repo "default" do
     destination deploy_dir
     action node[:repo][:default][:perform_action].to_sym
@@ -433,8 +422,5 @@ action :code_update do
     EOH
     only_if { node[:app_tomcat][:code][:root_war] != "ROOT.war" }
   end
-  # Restarting tomcat service.
-  # This will automatically deploy ROOT.war if it is available in application root directory
-  action_restart
 
 end

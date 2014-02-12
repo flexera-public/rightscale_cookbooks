@@ -1,21 +1,23 @@
 #
-# Cookbook Name::memcached
+# Cookbook Name:: memcached
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 # Installing server tags
 #
 # The instance is identified as a memcached server.
+# See http://support.rightscale.com/12-Guides/Chef_Cookbooks_Developer_Guide/Chef_Resources#RightLinkTag for "right_link_tag" definition
 right_link_tag "memcached_server:active=true"
 # The server name so that sorts can be done to get the correct order across app servers.
 right_link_tag "memcached_server:uuid=#{node[:rightscale][:instance_uuid]}"
-# The instance is associated with a cluster
+# The instance is associated with a cluster.
 right_link_tag "memcached_server:cluster=#{node[:memcached][:cluster_id]}"
-# The listening port
+# The listening port tag is set.
 right_link_tag "memcached_server:port=#{node[:memcached][:tcp_port]}"
 
 log "  Server tags installed."
@@ -63,7 +65,7 @@ when "any"
   node[:memcached][:interface] = "0.0.0.0"
 end
 
-# Logging output level
+# Determine logging output level.
 log_level = ""
 case node[:memcached][:log_level]
 when "verbose"
@@ -147,11 +149,23 @@ log "  Configuring collectd memcached plugin."
 # Writing settings to memcached.conf plugin.
 rightscale_monitor_process "memcached"
 
+template "#{node[:rightscale][:collectd_lib]}/memcached_listener_plugin" do
+  source "memcached_listen_disabled_num_plugin.erb"
+  mode "0755"
+  variables(
+    :tcp_port => node[:memcached][:tcp_port]
+  )
+  cookbook "memcached"
+end
+
 template "#{node[:rightscale][:collectd_plugin_dir]}/memcached.conf" do
   source "memcached_collectd.conf.erb"
   variables(
     :interface => node[:memcached][:interface],
-    :tcp_port => node[:memcached][:tcp_port]
+    :tcp_port => node[:memcached][:tcp_port],
+    :user => node[:memcached][:user],
+    :location => "#{node[:rightscale][:collectd_lib]}/memcached_listener_plugin",
+    :uuid => node[:rightscale][:instance_uuid]
   )
   cookbook "memcached"
   # Need to restart/start after configuration in order for the monitoring to run correctly.
@@ -163,7 +177,7 @@ log "  Collectd configuration done."
 
 # Setting up log rotation: no restarts or anything needed: logrotate is a cron task.
 #
-log "  Generating new logrotatate config for memcached application."
+log "  Generating new logrotate config for memcached application."
 
 rightscale_logrotate_app "memcached" do
   cookbook "rightscale"
@@ -173,5 +187,3 @@ rightscale_logrotate_app "memcached" do
   rotate 4
   create "644 root root"
 end
-
-rightscale_marker :end

@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: app_django
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 #
 # Managed by RightScale
 # DO NOT EDIT BY HAND
@@ -43,24 +44,25 @@
   WSGIScriptAlias / <%=@params[:docroot]%>/wsgi.py
 
   <Directory "<%=@params[:docroot]%>">
+    AllowOverride <%= @params[:allow_override] %>
+    Order deny,allow
+    Allow from all
     <Files wsgi.py>
       Order allow,deny
       Allow from all
     </Files>
   </Directory>
 
+  RewriteEngine on
+
+  # Include Rewrite rules from server config for maintenance mode.
+  # Rewrite rules are not inherited in VirtualHost Directive, so must
+  # explicitly include it here.
+  Include conf.d/maintenance.conf
+
   # Enable status page for monitoring purposes
   RewriteCond %{REMOTE_ADDR} ^(127.0.0.1)
   RewriteRule ^(/server-status) $1 [H=server-status,L]
-
-
-  # Redirects to a maintenance page if the specified file below exists
-  # ...but it still allows images to be served
-  RewriteCond %{DOCUMENT_ROOT}/system/maintenance.html -f
-  RewriteCond %{SCRIPT_FILENAME} !/system/maintenance.html
-  RewriteCond %{SCRIPT_FILENAME} !^(.+).(gif|png|jpg|css|js|swf)$
-  RewriteRule ^.*$ /system/maintenance.html [L]
-
 
   <% if (@params[:apache_serve_local_files]=="true") %>
   # Serve any existing local files directly (except actionable ones)

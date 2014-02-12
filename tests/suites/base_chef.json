@@ -1,0 +1,8 @@
+{
+  "description": "Tests the functionality of Base ServerTemplate for Linux",
+  "server_templates": ["base_chef"],
+  "tests": ["base.rb"],
+  "variables": {
+    "server_template_type": "chef"
+  }
+}

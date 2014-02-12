@@ -2,9 +2,10 @@
 <!--
   Cookbook Name:: app_tomcat
 
-  Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-  RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-  if applicable, other agreements such as a RightScale Master Subscription Agreement.
+  Copyright RightScale, Inc. All rights reserved.
+  All access and use subject to the RightScale Terms of Service available at
+  http://www.rightscale.com/terms.php and, if applicable, other agreements
+  such as a RightScale Master Subscription Agreement.
 
   Managed by RightScale
   DO NOT EDIT BY HAND
@@ -14,7 +15,7 @@
 
     <!-- Default set of monitored resources -->
     <WatchedResource>WEB-INF/web.xml</WatchedResource>
-	
+
     <!-- Uncomment this to disable session persistence across Tomcat restarts -->
     <!--
     <Manager pathname="" />
@@ -25,15 +26,17 @@
     <!--
     <Valve className="org.apache.catalina.valves.CometConnectionManagerValve" />
     -->
+    <!--
+    The database driver class name used here is set by the "install_client_driver" action of the
+    db provider. See cookbooks/db_<provider>/providers/default.rb for more information.
+    -->
+    <Resource name="<%= @vars[:datasource] %>" auth="Container"
+        type="javax.sql.DataSource" maxActive="100" maxIdle="30" maxWait="10000"
+        username="<%= @user %>" password="<%= @password %>"
 
-    <Resource name="<%= @datasource %>" auth="Container" type="javax.sql.DataSource"
-             maxActive="100" maxIdle="30" maxWait="10000"
-             <% if node[:app][:db_adapter] == "mysql" -%>
-               username="<%= @user %>" password="<%= @password %>" driverClassName="com.mysql.jdbc.Driver"
-               url="jdbc:mysql://<%= @fqdn %>:3306/<%= @database %>"/>
-             <% elsif node[:app][:db_adapter] == "postgres"-%>
-               username="<%= @user %>" password="<%= @password %>" driverClassName="org.postgresql.Driver"
-               url="jdbc:postgresql://<%= @fqdn %>:5432/<%= @database %>"/>
-             <% end -%>
+        <%# The db/client/driver node variable isn't available during compile time %>
+        <%# so it can't be passed via the resource %>
+        driverClassName="<%= node[:db][:client][:driver] %>"
+        url="jdbc:<%= node[:db][:client][:driver].split(".")[1] %>://<%= @fqdn %>:<%= @port %>/<%= @database %>"/>
 
 </Context>

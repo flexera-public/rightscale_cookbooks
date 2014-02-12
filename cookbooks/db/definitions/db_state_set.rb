@@ -1,16 +1,18 @@
 #
 # Cookbook Name:: db
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
 # Set or reset the master/slave status, UUID, and IP.
 #
-# @param [String, nil] master_uuid the UUID of the master server to set
-# @param [String, nil] master_ip the IP address of the master server to set
-# @param [Boolean] is_master set whether this server is the master
-# @param [Boolean] immediate run the resource actions immediately
+# @param master_uuid [String, nil] the UUID of the master server to set
+# @param master_ip [String, nil] the IP address of the master server to set
+# @param is_master [Boolean] set whether this server is the master
+# @param immediate [Boolean] run the resource actions immediately
+#
 define :db_state_set, :master_uuid => nil, :master_ip => nil, :is_master => false, :immediate => false do
   name = params[:name]
   master_uuid = params[:master_uuid]
@@ -33,6 +35,7 @@ define :db_state_set, :master_uuid => nil, :master_ip => nil, :is_master => fals
   end
   r.run_action(:create) if immediate
 
+  # See cookbooks/db/libraries/helper.rb for the "DB_MASTER_SLAVE_STATE" variable.
   r = file RightScale::Database::Helper::DB_MASTER_SLAVE_STATE do
     backup false
     content JSON.dump({

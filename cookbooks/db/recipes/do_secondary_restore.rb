@@ -1,11 +1,12 @@
 #
 # Cookbook Name:: db
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 class Chef::Recipe
   include RightScale::BlockDeviceHelper
@@ -16,43 +17,46 @@ class Chef::Resource::BlockDevice
 end
 
 DATA_DIR = node[:db][:data_dir]
+# See cookbooks/block_device/libraries/block_device.rb for the "get_device_or_default" method.
 NICKNAME = get_device_or_default(node, :device1, :nickname)
 
+# See cookbooks/db/definitions/db_init_status.rb for the "db_init_status" definition.
 db_init_status :check do
   expected_state :uninitialized
   error_message "Database already restored.  To over write existing database run do_force_reset before this recipe"
 end
 
 log "  Running pre-restore checks..."
+# See cookbooks/db_<provider>/providers/default.rb for the "pre_restore_check" action.
 db DATA_DIR do
   action :pre_restore_check
 end
 
 log "  Stopping database..."
+# See cookbooks/db_<provider>/providers/default.rb for the "stop" action.
 db DATA_DIR do
   action :stop
 end
 
-lineage = node[:db][:backup][:lineage]
-lineage_override = node[:db][:backup][:lineage_override]
-restore_lineage = lineage_override == nil || lineage_override.empty? ? lineage : lineage_override
-restore_timestamp_override = node[:db][:backup][:timestamp_override]
-log "  Input lineage #{restore_lineage.inspect}"
-log "  Input lineage_override #{lineage_override.inspect}"
-log "  Using lineage #{restore_lineage.inspect}"
-log "  Input timestamp_override #{restore_timestamp_override.inspect}"
-restore_timestamp_override ||= ""
+# See cookbooks/block_device/libraries/block_device.rb for
+# "set_restore_params" and "get_device_or_default" methods.
+restore_lineage, restore_timestamp_override = set_restore_params(
+  node[:db][:backup][:lineage],
+  node[:db][:backup][:lineage_override],
+  node[:db][:backup][:timestamp_override]
+)
 
 secondary_storage_cloud = get_device_or_default(node, :device1, :backup, :secondary, :cloud)
 if secondary_storage_cloud =~ /aws/i
   secondary_storage_cloud = "s3"
 elsif secondary_storage_cloud =~ /rackspace/i
-  secondary_storage_cloud = "cloudfiles"
+  secondary_storage_cloud = "Cloud_Files"
 end
 
-log "  Performing Secondary Restore from #{node[:db][:backup][:secondary_location]}..."
+log "  Performing Secondary Restore from #{secondary_storage_cloud}..."
 # Requires block_device DATA_DIR to be previously instantiated.
 # Make sure block_device::default recipe has been run.
+# See cookbooks/block_device/providers/default.rb for the "secondary_restore" action.
 block_device NICKNAME do
   lineage restore_lineage
   timestamp_override restore_timestamp_override
@@ -68,33 +72,25 @@ block_device NICKNAME do
   action :secondary_restore
 end
 
-log "  Setting state of database to be 'initialized'..."
-db_init_status :set
-
 log "  Running post-restore cleanup..."
+# See cookbooks/db_<provider>/providers/default.rb for the "post_restore_cleanup" action.
 db DATA_DIR do
   action :post_restore_cleanup
 end
 
+log "  Setting state of database to be 'initialized'..."
+# See cookbooks/db/definitions/db_init_status.rb for the "db_init_status" definition.
+db_init_status :set
+
 log "  Starting database..."
+# See cookbooks/db_<provider>/providers/default.rb for the "start" and "status" actions.
 db DATA_DIR do
-  action [ :start, :status ]
+  action [:start, :status]
 end
 
 # Restoring admin and application user privileges
-cred = [["administrator", [node[:db][:admin][:user], node[:db][:admin][:password]]],\
-        ["user", [node[:db][:application][:user], node[:db][:application][:password]]]]
-
-cred.each do |role, role_cred_values|
-  log "  Restoring #{role} privileges."
-  db DATA_DIR do
-    privilege role
-    privilege_username role_cred_values[0]
-    privilege_password role_cred_values[1]
-    privilege_database "*.*"
-    action :set_privileges
-  end
-end
-
-
-rightscale_marker :end
+# See cookbooks/db/definitions/db_set_privileges.rb for the "db_set_privileges" definition.
+db_set_privileges [
+  {:role => "administrator", :username => node[:db][:admin][:user], :password => node[:db][:admin][:password]},
+  {:role => "user", :username => node[:db][:application][:user], :password => node[:db][:application][:password]}
+]

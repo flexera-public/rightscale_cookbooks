@@ -1,9 +1,10 @@
 #
 # Cookbook Name:: app_tomcat
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 #
 # Managed by RightScale
 # DO NOT EDIT BY HAND
@@ -23,15 +24,10 @@
      </DirectoryMatch>
      <Directory "<%=@params[:docroot]%>">
       Options FollowSymLinks
-      AllowOverride None
+      AllowOverride <%= @params[:allow_override] %>
       Order allow,deny
       Allow from all
      </Directory>
-
-     RewriteEngine On
-     # Uncomment for rewrite debugging
-     #RewriteLog /var/log/httpd/http_rewrite_log
-     #RewriteLogLevel 9
 
      # <CUSTOM RULES BEFORE ANYTHING BEGIN>
 
@@ -55,17 +51,19 @@
      JkUnMount /*.css  ajp13
      JkUnMount /*.js  ajp13
 
+     RewriteEngine On
+     # Uncomment for rewrite debugging
+     #RewriteLog /var/log/httpd/http_rewrite_log
+     #RewriteLogLevel 9
+
+     # Include Rewrite rules from server config for maintenance mode.
+     # Rewrite rules are not inherited in VirtualHost Directive, so must
+     # explicitly include it here.
+     Include conf.d/maintenance.conf
 
      # Enable status page for monitoring purposes
      RewriteCond %{REMOTE_ADDR} ^(127.0.0.1)
      RewriteRule ^(/server-status) $1 [H=server-status,L]
-
-     # Redirects to a maintenance page if the specified file below exists
-     # ...but it still allows images to be served
-     RewriteCond %{DOCUMENT_ROOT}/system/maintenance.html -f
-     RewriteCond %{SCRIPT_FILENAME} !/system/maintenance.html
-     RewriteCond %{SCRIPT_FILENAME} !^(.+).(gif|png|jpg|css|js|swf)$
-     RewriteRule ^.*$ /system/maintenance.html [L]
 
      # <CUSTOM RULES BEFORE FORWARDING BEGIN>
 

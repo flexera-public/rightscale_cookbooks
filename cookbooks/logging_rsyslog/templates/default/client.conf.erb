@@ -1,15 +1,18 @@
 #
 # Cookbook Name:: logging_rsyslog
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 #
 # Managed by RightScale
 # DO NOT EDIT BY HAND
 #
 
-<% if node[:platform_version] =~ /^5\..+/ %>
+<%# CentOS/RedHat 5.8 don't have an rsyslog.d directory %>
+<%# so we shouldn't overwrite the default configuration file %>
+<% if @platform_version =~ /^5\..+/ %>
 # Use traditional timestamp format
 $ActionFileDefaultTemplate RSYSLOG_TraditionalFileFormat
 
@@ -38,5 +41,23 @@ uucp,news.crit                                          /var/log/spooler
 local7.*                                                /var/log/boot.log
 <% end %>
 
+<%# Setting up remote_server and protocol depending on user input %>
+<% case @logging_protocol %>
+<% when "udp" %>
 $ModLoad imudp
 *.* @<%= @remote_server %>:514
+<% when "relp" %>
+$ModLoad omrelp
+$ActionQueueType LinkedList   # Use asynchronous processing
+$ActionQueueFileName srvrfwd  # Set file name, also enables disk mode
+$ActionResumeRetryCount -1    # Infinite retries on insert failure
+$ActionQueueSaveOnShutdown on # Save in-memory data if rsyslog shuts down
+*.* :omrelp:<%= @remote_server %>:514
+<% when "relp-secured" %>
+$ModLoad omrelp
+$ActionQueueType LinkedList   # Use asynchronous processing
+$ActionQueueFileName srvrfwd  # Set file name, also enables disk mode
+$ActionResumeRetryCount -1    # Infinite retries on insert failure
+$ActionQueueSaveOnShutdown on # Save in-memory data if rsyslog shuts down
+*.* :omrelp:127.0.0.1:515     # Sending logs to stunnel
+<% end %>

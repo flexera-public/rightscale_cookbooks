@@ -1,11 +1,12 @@
 #
 # Cookbook Name:: rightscale
 #
-# Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
-# RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
-# if applicable, other agreements such as a RightScale Master Subscription Agreement.
+# Copyright RightScale, Inc. All rights reserved.
+# All access and use subject to the RightScale Terms of Service available at
+# http://www.rightscale.com/terms.php and, if applicable, other agreements
+# such as a RightScale Master Subscription Agreement.
 
-rightscale_marker :begin
+rightscale_marker
 
 if "#{node[:rightscale][:private_ssh_key]}" != ""
 
@@ -16,7 +17,10 @@ if "#{node[:rightscale][:private_ssh_key]}" != ""
   end
   template "/root/.ssh/id_rsa" do
     source "id_rsa.erb"
-    mode 0600
+    mode "0600"
+    variables(
+      :private_ssh_key => node[:rightscale][:private_ssh_key]
+    )
   end
 
 else
@@ -24,5 +28,3 @@ else
   raise "  Private SSH key is empty!"
 
 end
-
-rightscale_marker :end
