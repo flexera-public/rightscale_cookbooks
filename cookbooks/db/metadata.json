@@ -457,7 +457,7 @@
       ]
     },
     "db/dump/location": {
-      "display_name": "Dump Location",
+      "display_name": "Database Dump Location",
       "description": "The location where database dumps for import and export willbe stored temporarily. Set to the desired location, ensuring the filesystemthe folder resides in has enough space.",
       "required": "optional",
       "choice": [
