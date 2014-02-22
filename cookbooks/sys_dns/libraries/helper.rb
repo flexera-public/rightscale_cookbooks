@@ -8,6 +8,7 @@
 
 require 'cgi'
 require 'logger'
+require 'json'
 
 module RightScale
   module DnsTools
@@ -170,30 +171,28 @@ EOF
         # Setting the right URLs for selected region
         case region
         when "Chicago", "Dallas"
-          auth_url = "https://auth.api.rackspacecloud.com/v1.0"
-          service_endpoint = "https://dns.api.rackspacecloud.com/v1.0/"
+          auth_url = "https://identity.api.rackspacecloud.com/v2.0"
         when "London"
-          auth_url = "https://lon.auth.api.rackspacecloud.com/v1.0"
-          service_endpoint = "https://lon.dns.api.rackspacecloud.com/v1.0/"
+          auth_url = "https://lon.identity.api.rackspacecloud.com/v2.0"
         else
           raise "Unsupported region '#{region}'."
         end
 
-        # Getting the Authentication Token and new Service Endpoint
-        output = `curl -D - -H "X-Auth-Key: #{password}" -H "X-Auth-User: #{user}" #{auth_url}`
+        # Obtains Authentication Token and Service Catalog with endpoints
+        output = `curl -s -k #{auth_url}/tokens \
+          -X POST \
+          -d '{ "auth":{ "RAX-KSKEY:apiKeyCredentials":{ "username":"#{user}", "apiKey":"#{password}" } } }' \
+          -H "Content-type: application/json"`
         raise "curl returned with an error: #{$?.exitstatus}" unless $?.exitstatus == 0
-        x_auth_token = "empty"
-        output.each do |line|
-          if line =~ /X-Auth-Token:/
-            x_auth_token = line.gsub(/X-Auth-Token: /, '').chomp
-          end
-          if line =~ /X-Server-Management-Url:/
-            service_endpoint += line.chomp[/\d+$/]
-          end
-        end
-        if x_auth_token == "empty"
-          raise "An error occurred during authentication: verify user and password."
-        end
+        auth_info = JSON.parse(output)
+
+        raise "Initial API authentication failed: #{output}" unless auth_info.has_key?('access')
+        raise "No auth token found: #{output}" unless auth_info['access']['token']['id']
+
+        x_auth_token = auth_info['access']['token']['id']
+        service_endpoint = auth_info['access']['serviceCatalog'].detect{ |services| services['name'] == "cloudDNS" }['endpoints'][0]['publicURL']
+
+        @logger.info("CloudDNS service_endpoint = #{service_endpoint}")
 
         # Verifying Domain ID
         output = `curl -k -H "X-Auth-Token: #{x_auth_token}" #{service_endpoint}/domains`
