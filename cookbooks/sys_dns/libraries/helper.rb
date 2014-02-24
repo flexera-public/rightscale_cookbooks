@@ -190,7 +190,9 @@ EOF
         raise "No auth token found: #{output}" unless auth_info['access']['token']['id']
 
         x_auth_token = auth_info['access']['token']['id']
-        service_endpoint = auth_info['access']['serviceCatalog'].detect{ |services| services['name'] == "cloudDNS" }['endpoints'][0]['publicURL']
+        service = auth_info['access']['serviceCatalog'].detect{ |services| services['name'] == "cloudDNS" }
+        raise 'CloudDNS service is not an available service to this account' unless service
+        service_endpoint = service['endpoints'][0]['publicURL']
 
         @logger.info("CloudDNS service_endpoint = #{service_endpoint}")
 
