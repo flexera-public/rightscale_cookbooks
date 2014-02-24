@@ -7,7 +7,7 @@ description      "This cookbook provides a set of dynamic DNS recipes used by" +
                  " ServerTemplates. Cookbook currently supports DNSMadeEasy," +
                  " DynDns, CloudDNS, and Amazon Route53 DNS service providers."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "13.5.1"
+version          "13.5.2"
 
 supports "centos"
 supports "redhat"
