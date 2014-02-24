@@ -87,3 +87,7 @@ attribute :symlinks, :kind_of => Hash, :default => ({})
 
 # @group[Capistrano attributes] A hash of the form {"ENV_VARIABLE"=>"VALUE"}
 attribute :environment, :kind_of => Hash, :default => ({})
+
+# shallow clone attibute to only clone down recent commits vs the whole history
+attribute :shallow_clone, :equal_to => [true, false], :default => false
+

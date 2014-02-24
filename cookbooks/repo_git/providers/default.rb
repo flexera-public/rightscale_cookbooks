@@ -112,6 +112,7 @@ action :capistrano_pull do
   symlinks = new_resource.symlinks
   scm_provider = new_resource.provider
   environment = new_resource.environment
+  shallow_clone = new_resource.shallow_clone
 
   log "  Deploying branch: #{revision} of the #{repository} to #{destination}. New owner #{app_user}"
   log "  Deploy provider #{scm_provider}"
@@ -128,6 +129,7 @@ action :capistrano_pull do
     symlinks symlinks
     scm_provider scm_provider
     environment environment
+    shallow_clone shallow_clone
   end
 
   # Delete SSH key & clear GIT_SSH

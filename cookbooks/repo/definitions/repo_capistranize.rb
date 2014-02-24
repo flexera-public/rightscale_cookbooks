@@ -90,7 +90,7 @@ define :repo_capistranize,
     svn_password params[:svn_password]
     svn_arguments svn_args
     enable_submodules enable_submodules
-    shallow_clone false
+    shallow_clone params[:shallow_clone]
     user params[:app_user]
     migrate false
     purge_before_symlink params[:purge_before_symlink]
