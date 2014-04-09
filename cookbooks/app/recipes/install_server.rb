@@ -40,6 +40,9 @@ log "  Installing #{node[:app][:packages]}" if node[:app][:packages]
 
 if node[:app][:provider] == "app_passenger"
   node[:app][:root] = node[:app][:destination] + "/public"
+elsif !node[:app][:append_docroot].blank?
+ node[:app][:root]="#{node[:app][:destination]}/#{node[:app][:append_docroot]}"
+ log "DocumentRoot is #{node[:app][:root]}"
 else
   node[:app][:root]="#{node[:app][:destination]}"
 end
