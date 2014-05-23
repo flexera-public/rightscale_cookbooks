@@ -42,6 +42,18 @@ template "#{node[:chef][:client][:config_dir]}/client.rb" do
   )
 end
 
+directory "/root/.chef" do
+  owner "root"
+  group "root"
+  mode 00600
+  action :create
+end
+
+# required by knife
+link "/root/.chef/knife.rb" do
+  to "/etc/chef/client.rb"
+end
+
 # Creates the private key to register the Chef Client with the Chef Server.
 template "#{node[:chef][:client][:config_dir]}/validation.pem" do
   source "validation_key.erb"
