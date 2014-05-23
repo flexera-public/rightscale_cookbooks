@@ -51,7 +51,7 @@ end
 
 # required by knife
 link "/root/.chef/knife.rb" do
-  to "/etc/chef/client.rb"
+  to "#{node[:chef][:client][:config_dir]}/client.rb"
 end
 
 # Creates the private key to register the Chef Client with the Chef Server.
