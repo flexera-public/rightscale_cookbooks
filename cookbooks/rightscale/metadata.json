@@ -1,150 +1,99 @@
 {
+  "replacing": {
+  },
+  "conflicting": {
+  },
+  "recommendations": {
+  },
+  "dependencies": {
+    "cloudmonitoring": ">= 0.0.0",
+    "driveclient": ">= 0.0.0"
+  },
+  "platforms": {
+    "redhat": ">= 0.0.0",
+    "centos": ">= 0.0.0",
+    "ubuntu": ">= 0.0.0"
+  },
+  "maintainer_email": "support@rightscale.com",
   "name": "rightscale",
-  "version": "13.5.1",
+  "version": "13.5.2",
+  "license": "Copyright RightScale, Inc. All rights reserved.",
+  "maintainer": "RightScale, Inc.",
   "attributes": {
-    "rightscale/rackspace_api_key": {
+    "rightscale/short_hostname": {
       "choice": [
 
-      ],
-      "description": "The API Key for Rackspace cloud account. This is required for registering instances with Rackspace Managed Cloud.",
-      "recipes": [
-        "rightscale::default",
-        "rightscale::setup_cloud"
       ],
       "calculated": false,
-      "required": "optional",
       "type": "string",
-      "default": "",
-      "display_name": "Rackspace API Key"
-    },
-    "rightscale/redhat/password": {
-      "choice": [
-
-      ],
-      "description": "The password associated with the username specified in the rightscale/redhat/username input. Example: cred:REDHAT_SUBSCRIBER_PASSWORD",
-      "recipes": [
-        "rightscale::default",
-        "rightscale::setup_redhat"
-      ],
-      "calculated": false,
-      "required": "optional",
-      "type": "string",
-      "default": "",
-      "display_name": "RedHat Network Password"
-    },
-    "rightscale/rackspace_username": {
-      "choice": [
-
-      ],
-      "description": "The username for Rackspace cloud account. This is required for registering instances with Rackspace Managed Cloud.",
-      "recipes": [
-        "rightscale::default",
-        "rightscale::setup_cloud"
-      ],
-      "calculated": false,
-      "required": "optional",
-      "type": "string",
-      "default": "",
-      "display_name": "Rackspace Username"
-    },
-    "rightscale/search_suffix": {
-      "choice": [
-
-      ],
-      "description": "The domain search suffix you would like this node to have. Example: example.com",
+      "display_name": "Short Hostname",
       "recipes": [
         "rightscale::setup_hostname"
       ],
-      "calculated": false,
-      "required": "optional",
-      "type": "string",
-      "default": "",
-      "display_name": "Domain Search Suffix"
+      "required": "required",
+      "description": "The short hostname that you would like this node to have. Example: myhost"
     },
-    "rightscale/process_list": {
+    "rightscale/process_match_list": {
       "choice": [
 
       ],
-      "description": "A space-separated list of additional processes to monitor in the RightScale Dashboard. Example: sshd crond",
+      "calculated": false,
+      "type": "string",
+      "display_name": "Process Match List",
+      "default": "",
       "recipes": [
         "rightscale::install_mysql_collectd_plugin",
         "rightscale::setup_monitoring",
         "rightscale::default"
       ],
-      "calculated": false,
       "required": "optional",
-      "type": "string",
-      "default": "",
-      "display_name": "Process List"
+      "description": "A space-separated list of pairs used to match the name(s) of additional processes to monitor in the RightScale Dashboard. Paired arguments are passed in using the following syntax 'name/regex'. Example: ssh/ssh* cron/cron*"
     },
-    "rightscale/redhat/username": {
+    "rightscale/redhat/password": {
       "choice": [
 
       ],
-      "description": "The username to register the system with Red Hat. Example: cred:REDHAT_SUBSCRIBER_USERNAME",
+      "calculated": false,
+      "type": "string",
+      "display_name": "RedHat Network Password",
+      "default": "",
       "recipes": [
         "rightscale::default",
         "rightscale::setup_redhat"
       ],
-      "calculated": false,
       "required": "optional",
-      "type": "string",
-      "default": "",
-      "display_name": "RedHat Network Username"
+      "description": "The password associated with the username specified in the rightscale/redhat/username input. Example: cred:REDHAT_SUBSCRIBER_PASSWORD"
     },
     "rightscale/rackspace_tenant_id": {
       "choice": [
 
       ],
-      "description": "The tenant ID for Rackspace cloud account. This is required for registering instances with Rackspace Managed Cloud.",
+      "calculated": false,
+      "type": "string",
+      "display_name": "Rackspace Tenant ID",
+      "default": "",
       "recipes": [
         "rightscale::default",
         "rightscale::setup_cloud"
       ],
-      "calculated": false,
       "required": "optional",
+      "description": "The tenant ID for Rackspace cloud account. This is required for registering instances with Rackspace Managed Cloud."
+    },
+    "rightscale/process_list": {
+      "choice": [
+
+      ],
+      "calculated": false,
       "type": "string",
+      "display_name": "Process List",
       "default": "",
-      "display_name": "Rackspace Tenant ID"
-    },
-    "rightscale": {
-      "choice": [
-
-      ],
       "recipes": [
-
+        "rightscale::install_mysql_collectd_plugin",
+        "rightscale::setup_monitoring",
+        "rightscale::default"
       ],
-      "calculated": false,
       "required": "optional",
-      "type": "hash",
-      "display_name": "RightScale Attributes"
-    },
-    "rightscale/domain_name": {
-      "choice": [
-
-      ],
-      "description": "The domain name that you would like this node to have. Example: example.com",
-      "recipes": [
-        "rightscale::setup_hostname"
-      ],
-      "calculated": false,
-      "required": "optional",
-      "type": "string",
-      "default": "",
-      "display_name": "Domain Name"
-    },
-    "rightscale/private_ssh_key": {
-      "choice": [
-
-      ],
-      "description": "The private SSH key of another instance that gets installed on this instance. Select input type 'key' from the dropdown and then select an SSH key that is installed on the other instance. Example: key:my_key",
-      "recipes": [
-        "rightscale::setup_ssh"
-      ],
-      "calculated": false,
-      "required": "required",
-      "type": "string",
-      "display_name": "Private SSH Key"
+      "description": "A space-separated list of additional processes to monitor in the RightScale Dashboard. Example: sshd crond"
     },
     "rightscale/timezone": {
       "choice": [
@@ -216,105 +165,156 @@
         "UTC",
         "localtime"
       ],
-      "description": "Sets the system time to the timezone of the specified input, which must be a valid zoneinfo/tz database entry. If the input is 'unset' the timezone will use the 'localtime' that's defined in your RightScale account under Settings -> User Settings -> Preferences tab. You can find a list of valid examples from the timezone pulldown bar in the Preferences tab. Example: US/Pacific",
+      "calculated": false,
+      "type": "string",
+      "display_name": "Timezone",
+      "default": "UTC",
       "recipes": [
         "rightscale::setup_timezone",
         "rightscale::default"
       ],
-      "calculated": false,
       "required": "optional",
-      "type": "string",
-      "default": "UTC",
-      "display_name": "Timezone"
+      "description": "Sets the system time to the timezone of the specified input, which must be a valid zoneinfo/tz database entry. If the input is 'unset' the timezone will use the 'localtime' that's defined in your RightScale account under Settings -> User Settings -> Preferences tab. You can find a list of valid examples from the timezone pulldown bar in the Preferences tab. Example: US/Pacific"
     },
-    "rightscale/short_hostname": {
+    "rightscale/redhat/username": {
       "choice": [
 
       ],
-      "description": "The short hostname that you would like this node to have. Example: myhost",
+      "calculated": false,
+      "type": "string",
+      "display_name": "RedHat Network Username",
+      "default": "",
+      "recipes": [
+        "rightscale::default",
+        "rightscale::setup_redhat"
+      ],
+      "required": "optional",
+      "description": "The username to register the system with Red Hat. Example: cred:REDHAT_SUBSCRIBER_USERNAME"
+    },
+    "rightscale/rackspace_api_key": {
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string",
+      "display_name": "Rackspace API Key",
+      "default": "",
+      "recipes": [
+        "rightscale::default",
+        "rightscale::setup_cloud"
+      ],
+      "required": "optional",
+      "description": "The API Key for Rackspace cloud account. This is required for registering instances with Rackspace Managed Cloud."
+    },
+    "rightscale/private_ssh_key": {
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string",
+      "display_name": "Private SSH Key",
+      "recipes": [
+        "rightscale::setup_ssh"
+      ],
+      "required": "required",
+      "description": "The private SSH key of another instance that gets installed on this instance. Select input type 'key' from the dropdown and then select an SSH key that is installed on the other instance. Example: key:my_key"
+    },
+    "rightscale": {
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "hash",
+      "display_name": "RightScale Attributes",
+      "recipes": [
+
+      ],
+      "required": "optional"
+    },
+    "rightscale/search_suffix": {
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string",
+      "display_name": "Domain Search Suffix",
+      "default": "",
       "recipes": [
         "rightscale::setup_hostname"
       ],
-      "calculated": false,
-      "required": "required",
-      "type": "string",
-      "display_name": "Short Hostname"
+      "required": "optional",
+      "description": "The domain search suffix you would like this node to have. Example: example.com"
     },
-    "rightscale/process_match_list": {
+    "rightscale/rackspace_username": {
       "choice": [
 
       ],
-      "description": "A space-separated list of pairs used to match the name(s) of additional processes to monitor in the RightScale Dashboard. Paired arguments are passed in using the following syntax 'name/regex'. Example: ssh/ssh* cron/cron*",
-      "recipes": [
-        "rightscale::install_mysql_collectd_plugin",
-        "rightscale::setup_monitoring",
-        "rightscale::default"
-      ],
       "calculated": false,
-      "required": "optional",
       "type": "string",
+      "display_name": "Rackspace Username",
       "default": "",
-      "display_name": "Process Match List"
+      "recipes": [
+        "rightscale::default",
+        "rightscale::setup_cloud"
+      ],
+      "required": "optional",
+      "description": "The username for Rackspace cloud account. This is required for registering instances with Rackspace Managed Cloud."
     },
     "rightscale/security_updates": {
       "choice": [
         "enable",
         "disable"
       ],
-      "description": "Unfreezes software repositories after booting and installing packages, allowing for security updates to be installed.",
+      "calculated": false,
+      "type": "string",
+      "display_name": "Enable security updates",
+      "default": "disable",
       "recipes": [
         "rightscale::do_security_updates",
         "rightscale::setup_security_updates",
         "rightscale::setup_security_update_monitoring"
       ],
-      "calculated": false,
       "required": "optional",
+      "description": "Unfreezes software repositories after booting and installing packages, allowing for security updates to be installed."
+    },
+    "rightscale/domain_name": {
+      "choice": [
+
+      ],
+      "calculated": false,
       "type": "string",
-      "default": "disable",
-      "display_name": "Enable security updates"
+      "display_name": "Domain Name",
+      "default": "",
+      "recipes": [
+        "rightscale::setup_hostname"
+      ],
+      "required": "optional",
+      "description": "The domain name that you would like this node to have. Example: example.com"
     }
   },
-  "description": "Base recipes used to set up services used by the RightScale Cloud Management Platform.",
-  "recommendations": {
-  },
-  "maintainer": "RightScale, Inc.",
-  "recipes": {
-    "rightscale::do_security_updates": "Do a system package update to pull in the latest security patches.",
-    "rightscale::setup_ssh": "Installs the private ssh key.",
-    "rightscale::setup_redhat": "Registers a system with the Red Hat Network Classic.",
-    "rightscale::install_mysql_collectd_plugin": "Installs the mysql collectd plugin for monitoring support.",
-    "rightscale::setup_security_update_monitoring": "Sets up collectd plugin to monitor for available security updates.",
-    "rightscale::install_rightimage_extras": "Installs the RightImage extra packages expected by our ServerTemplates.",
-    "rightscale::setup_cloud": "Sets up cloud specific functions.",
-    "rightscale::setup_server_tags": "Sets machine tags that are common to all RightScale managed servers.",
-    "rightscale::setup_timezone": "Sets the system timezone.",
-    "rightscale::default": "Installs the utilities that are required for RightScale support.",
-    "rightscale::setup_security_updates": "Sets up package manager software for security updates.",
-    "rightscale::install_file_stats_collectd_plugin": "Installs the file-stats.rb collectd plugin for monitoring support. It is also used for mysql binary backup alerting.",
-    "rightscale::setup_hostname": "Sets the system hostname.",
-    "rightscale::install_tools": "Installs RightScale's instance tools.",
-    "rightscale::setup_monitoring": "Installs and configures RightScale dashboard monitoring features."
-  },
-  "replacing": {
-  },
-  "maintainer_email": "support@rightscale.com",
   "providing": {
+  },
+  "long_description": "# RightScale Cookbook\n\n## DESCRIPTION:\n\nThis cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).\n\nThis cookbook provides base recipes used to set up services used by the\nRightScale Cloud Management Platform.\n\n## REQUIREMENTS:\n\nRequires a virtual machine launched from a RightScale managed RightImage.\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see the `metadata.rb` file for the latest dependencies.\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## SETUP:\n\nThe `rightscale::default` recipe performs common server configuration\nsteps such as enabling monitoring on an instance so that graphs can be\ndisplayed in the RightScale Dashboard.\n\nThe `rightscale::install_tools` recipe installs the\n`rightscale_tools` gem which provides tools for dealing with databases,\nvolumes, and remote object storage providers.\n\nThe `rightscale::setup_cloud` recipe performs cloud specific setup such\nas setting up the monitoring agents for the Rackspace Managed Open cloud.\n\nThe `rightscale::setup_security_updates` recipe configures\nthe package manager to apply security updates by unfreezing the\nserver's repositories. On apt based systems this unfreezes the security\nrepository. On yum based systems this unfreezes all repositories except\nthe RightScale-Epel repository. Runs if the `rightscale/security_updates`\ninput is set to \"enable\", otherwise this action is skipped.\nNote: once security updates are enabled they can not be disabled.\n\nThe `rightscale::setup_security_update_monitoring` recipe installs a collectd\nplugin that will monitor available security updates. This plugin\nis always installed regardless of the input `rightscale/security_updates`.\nThis plugin will add a tag `rs_monitoring:security_updates_available=true` if\nthere are any security updates available. This tag will be removed once the\nsecurity updates are applied.\n\nThe `rightscale::do_security_updates` recipe updates a server with\nthe latest available security patches. Non-security related software updates\nare not installed. It runs as the last boot script to ensure a new\nserver has all available security updates applied. Runs if the\n`rightscale/security_updates` input is set to \"enable\", otherwise\nthis action is skipped. Once the security updates are applied and if a reboot is\nrequired the `rs_monitoring:reboot_required=true` tag is added to the server.\nThis tag is removed when the server reboots.\nNote: once security updates are enabled they can not be disabled.\n\nThe `rightscale::install_rightimage_extras` recipe installs the package\n`rightimage-extras`.  This ensures that all non-rightscale created images\nhave the same packages as a RightImage does.\n\nThe `rightscale::setup_redhat` recipe registers Red Hat servers with Red Hat\nContent Delivery Network when the `rightscale/redhat/username` and\n`rightscale/redhat/password` inputs are set.\n\n## USAGE:\n\n### Update a server with latest security updates\n\n1. Prior to launching a server set the advanced input\n   `rightscale/security_updates` to \"enable\"\n2. When the server is operational all current security updates are applied.\n3. Apply security updates using:\n\n    \"rightscale::do_security_updates\"\n\n   to bring the server to the latest patch level. Reboot the server if tag\n   `rs_monitoring:reboot_required=true` is set.\n\n### Enable security updates on a running server\n\n1. On a running a server set the advanced input `rightscale/security_updates`\n   to `enable`\n2. Setup the package manager for security updates using:\n\n    \"rightscale::setup_security_updates\"\n\n   to unfreeze the security related repositories.\n3. Setup monitoring for available security updates using:\n\n    \"rightscale::setup_security_update_monitoring\"\n\n   for the monitoring and alerts to work properly.\n4. To update the server with the latest security updates follow the steps above.\n\n## DETAILS:\n\n### Definitions:\n\n#### rightscale_enable_collectd_plugin\n\n* Accepts only one parameter \"name\" which is the name of the collectd plugin to\n  enable.\n* The plugin name is added to `node[:rightscale][:plugin_list_array]` which is\n  used to create the list of plugins in the `/etc/collectd/collectd.conf` file.\n* The `node[:rightscale][:plugin_list_array]` will have any plugins listed\n  in the `node[:rightscale][:plugin_list]` merged into it, which\n  supports any legacy recipes, as well as allow the input to be manipulated in\n  the RightScale Dashboard.\n\nSyntax:\n\n    rightscale_enable_collectd_plugin \"curl_json\"\n\n#### rightscale_monitor_process\n\n* Accepts only one parameter, \"name\" which is the name of the process to\n  monitor.\n* The process name is added to the `node[:rightscale][:process_list_array]`\n  which is used to create the list of processes in the\n  `/etc/collectd/conf/processes.conf` file.\n* The `node[:rightscale][:process_list_array]` will have any processes\n  listed in `node[:rightscale][:process_list]` merged into it, which supports\n  any legacy recipes, as well as allow the input to be manipulated in the\n  RightScale Dashboard.\n\nSyntax:\n\n    rightscale_monitor_process \"nginx\"\n\n#### rightscale_marker\n\n* Accepts only one parameter, \"location\" which can be used to denote\n  the :start or :end of a recipe. It can also be :begin, :stop, and\n  the string versions. The default value for this parameter is :begin.\n* Used to log the start and end of a recipe using the `Chef::Log.info` Chef\n  Logger class.\n  Should be added at the beginning of a recipe. No need for marking the end of\n  the recipe.\n* Example:\n  `================= cookbook_name::recipe_name : START/END ===================`\n\nSyntax:\n\n    rightscale_marker\n    ...\n\n### Resources:\n\n#### rightscale_server_collection\n\nThe server collection resource finds a set of servers in a deployment with a set\nof tags. The `tags` attribute specifies the tag or tags to search for (if\nmultiple tags are specified, servers with any of the tags will match) and the\noptional `mandatory_tags` attribute specifies tags that need to also\nappear on the servers, it will wait one minute for the `mandatory_tags`\nto appear, which can be overridden with the `timeout` attribute.\n\nSyntax:\n\n    rightscale_server_collection \"rightscale_servers\" do\n      tags \"rs_login:state=active\"\n      mandatory_tags \"server:uuid=*\"\n    end\n\nNOTE: The `secondary_tags` attribute is deprecated in favor of `mandatory_tags`.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n",
+  "recipes": {
+    "rightscale::setup_timezone": "Sets the system timezone.",
+    "rightscale::setup_monitoring": "Installs and configures RightScale dashboard monitoring features.",
+    "rightscale::install_file_stats_collectd_plugin": "Installs the file-stats.rb collectd plugin for monitoring support. It is also used for mysql binary backup alerting.",
+    "rightscale::install_mysql_collectd_plugin": "Installs the mysql collectd plugin for monitoring support.",
+    "rightscale::setup_hostname": "Sets the system hostname.",
+    "rightscale::install_rightimage_extras": "Installs the RightImage extra packages expected by our ServerTemplates.",
+    "rightscale::do_security_updates": "Do a system package update to pull in the latest security patches.",
+    "rightscale::install_tools": "Installs RightScale's instance tools.",
+    "rightscale::setup_cloud": "Sets up cloud specific functions.",
+    "rightscale::setup_security_updates": "Sets up package manager software for security updates.",
+    "rightscale::setup_security_update_monitoring": "Sets up collectd plugin to monitor for available security updates.",
+    "rightscale::setup_redhat": "Registers a system with the Red Hat Network Classic.",
+    "rightscale::setup_ssh": "Installs the private ssh key.",
+    "rightscale::default": "Installs the utilities that are required for RightScale support.",
+    "rightscale::setup_server_tags": "Sets machine tags that are common to all RightScale managed servers."
+  },
+  "groupings": {
   },
   "suggestions": {
   },
-  "conflicting": {
-  },
-  "license": "Copyright RightScale, Inc. All rights reserved.",
-  "groupings": {
-  },
-  "dependencies": {
-    "cloudmonitoring": ">= 0.0.0",
-    "driveclient": ">= 0.0.0"
-  },
-  "platforms": {
-    "ubuntu": ">= 0.0.0",
-    "redhat": ">= 0.0.0",
-    "centos": ">= 0.0.0"
-  },
-  "long_description": "# RightScale Cookbook\n\n## DESCRIPTION:\n\nThis cookbook is available at [https://github.com/rightscale/rightscale_cookbooks](https://github.com/rightscale/rightscale_cookbooks).\n\nThis cookbook provides base recipes used to set up services used by the\nRightScale Cloud Management Platform.\n\n## REQUIREMENTS:\n\nRequires a virtual machine launched from a RightScale managed RightImage.\n\n## COOKBOOKS DEPENDENCIES:\n\nPlease see the `metadata.rb` file for the latest dependencies.\n\n## KNOWN LIMITATIONS:\n\nThere are no known limitations.\n\n## SETUP:\n\nThe `rightscale::default` recipe performs common server configuration\nsteps such as enabling monitoring on an instance so that graphs can be\ndisplayed in the RightScale Dashboard.\n\nThe `rightscale::install_tools` recipe installs the\n`rightscale_tools` gem which provides tools for dealing with databases,\nvolumes, and remote object storage providers.\n\nThe `rightscale::setup_cloud` recipe performs cloud specific setup such\nas setting up the monitoring agents for the Rackspace Managed Open cloud.\n\nThe `rightscale::setup_security_updates` recipe configures\nthe package manager to apply security updates by unfreezing the\nserver's repositories. On apt based systems this unfreezes the security\nrepository. On yum based systems this unfreezes all repositories except\nthe RightScale-Epel repository. Runs if the `rightscale/security_updates`\ninput is set to \"enable\", otherwise this action is skipped.\nNote: once security updates are enabled they can not be disabled.\n\nThe `rightscale::setup_security_update_monitoring` recipe installs a collectd\nplugin that will monitor available security updates. This plugin\nis always installed regardless of the input `rightscale/security_updates`.\nThis plugin will add a tag `rs_monitoring:security_updates_available=true` if\nthere are any security updates available. This tag will be removed once the\nsecurity updates are applied.\n\nThe `rightscale::do_security_updates` recipe updates a server with\nthe latest available security patches. Non-security related software updates\nare not installed. It runs as the last boot script to ensure a new\nserver has all available security updates applied. Runs if the\n`rightscale/security_updates` input is set to \"enable\", otherwise\nthis action is skipped. Once the security updates are applied and if a reboot is\nrequired the `rs_monitoring:reboot_required=true` tag is added to the server.\nThis tag is removed when the server reboots.\nNote: once security updates are enabled they can not be disabled.\n\nThe `rightscale::install_rightimage_extras` recipe installs the package\n`rightimage-extras`.  This ensures that all non-rightscale created images\nhave the same packages as a RightImage does.\n\nThe `rightscale::setup_redhat` recipe registers Red Hat servers with Red Hat\nContent Delivery Network when the `rightscale/redhat/username` and\n`rightscale/redhat/password` inputs are set.\n\n## USAGE:\n\n### Update a server with latest security updates\n\n1. Prior to launching a server set the advanced input\n   `rightscale/security_updates` to \"enable\"\n2. When the server is operational all current security updates are applied.\n3. Apply security updates using:\n\n    \"rightscale::do_security_updates\"\n\n   to bring the server to the latest patch level. Reboot the server if tag\n   `rs_monitoring:reboot_required=true` is set.\n\n### Enable security updates on a running server\n\n1. On a running a server set the advanced input `rightscale/security_updates`\n   to `enable`\n2. Setup the package manager for security updates using:\n\n    \"rightscale::setup_security_updates\"\n\n   to unfreeze the security related repositories.\n3. Setup monitoring for available security updates using:\n\n    \"rightscale::setup_security_update_monitoring\"\n\n   for the monitoring and alerts to work properly.\n4. To update the server with the latest security updates follow the steps above.\n\n## DETAILS:\n\n### Definitions:\n\n#### rightscale_enable_collectd_plugin\n\n* Accepts only one parameter \"name\" which is the name of the collectd plugin to\n  enable.\n* The plugin name is added to `node[:rightscale][:plugin_list_array]` which is\n  used to create the list of plugins in the `/etc/collectd/collectd.conf` file.\n* The `node[:rightscale][:plugin_list_array]` will have any plugins listed\n  in the `node[:rightscale][:plugin_list]` merged into it, which\n  supports any legacy recipes, as well as allow the input to be manipulated in\n  the RightScale Dashboard.\n\nSyntax:\n\n    rightscale_enable_collectd_plugin \"curl_json\"\n\n#### rightscale_monitor_process\n\n* Accepts only one parameter, \"name\" which is the name of the process to\n  monitor.\n* The process name is added to the `node[:rightscale][:process_list_array]`\n  which is used to create the list of processes in the\n  `/etc/collectd/conf/processes.conf` file.\n* The `node[:rightscale][:process_list_array]` will have any processes\n  listed in `node[:rightscale][:process_list]` merged into it, which supports\n  any legacy recipes, as well as allow the input to be manipulated in the\n  RightScale Dashboard.\n\nSyntax:\n\n    rightscale_monitor_process \"nginx\"\n\n#### rightscale_marker\n\n* Accepts only one parameter, \"location\" which can be used to denote\n  the :start or :end of a recipe. It can also be :begin, :stop, and\n  the string versions. The default value for this parameter is :begin.\n* Used to log the start and end of a recipe using the `Chef::Log.info` Chef\n  Logger class.\n  Should be added at the beginning of a recipe. No need for marking the end of\n  the recipe.\n* Example:\n  `================= cookbook_name::recipe_name : START/END ===================`\n\nSyntax:\n\n    rightscale_marker\n    ...\n\n### Resources:\n\n#### rightscale_server_collection\n\nThe server collection resource finds a set of servers in a deployment with a set\nof tags. The `tags` attribute specifies the tag or tags to search for (if\nmultiple tags are specified, servers with any of the tags will match) and the\noptional `mandatory_tags` attribute specifies tags that need to also\nappear on the servers, it will wait one minute for the `mandatory_tags`\nto appear, which can be overridden with the `timeout` attribute.\n\nSyntax:\n\n    rightscale_server_collection \"rightscale_servers\" do\n      tags \"rs_login:state=active\"\n      mandatory_tags \"server:uuid=*\"\n    end\n\nNOTE: The `secondary_tags` attribute is deprecated in favor of `mandatory_tags`.\n\n## LICENSE:\n\nCopyright RightScale, Inc. All rights reserved.\nAll access and use subject to the RightScale Terms of Service available at\nhttp://www.rightscale.com/terms.php and, if applicable, other agreements\nsuch as a RightScale Master Subscription Agreement.\n"
+  "description": "Base recipes used to set up services used by the RightScale Cloud Management Platform."
 }
