@@ -77,7 +77,7 @@ end
 
 # Sets up apache PHP virtual host
 action :setup_vhost do
-
+  log "DocumentRoot is #{new_resource.root}"
   project_root = new_resource.root
   php_port = new_resource.port
 
