@@ -238,25 +238,21 @@ action :post_restore_cleanup do
   if run_mysql_upgrade
     # Calls the "start" action.
     db node[:db][:data_dir] do
-      action :nothing
+      action :start
       persist false
-    end.run_action(:start)
+    end
 
-    output = %x[mysql_upgrade]
-    exitstatus = $?
-    Chef::Log.info output
-
-    if exitstatus.success?
-      Chef::Log.info "  mysql_upgrade ran successfully."
-    else
-      raise "FATAL: mysql_upgrade execution failed!"
+    # Execute mysql_upgrade.
+    execute 'mysql upgrade command' do
+      command 'mysql_upgrade'
+      action :run
     end
 
     # Calls the "stop" action.
     db node[:db][:data_dir] do
-      action :nothing
+      action :stop
       persist false
-    end.run_action(:stop)
+    end
   end
 
 end
