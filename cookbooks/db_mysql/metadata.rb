@@ -5,7 +5,7 @@ license          "Copyright RightScale, Inc. All rights reserved."
 description      "Provides the MySQL implementation of the 'db' resource to" +
                  " install and manage MySQL database stand-alone servers and clients."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "13.5.1"
+version          "13.5.2"
 
 supports "centos"
 supports "redhat"
