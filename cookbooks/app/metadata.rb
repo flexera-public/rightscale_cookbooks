@@ -5,7 +5,7 @@ description      "RightScale application server management cookbook. This" +
                  " cookbook contains recipes that are generally applicable to" +
                  " all applications."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "13.5.0"
+version          "13.6.0"
 
 supports "centos"
 supports "redhat"
@@ -20,6 +20,7 @@ depends "app_tomcat"
 depends "db"
 depends "app_django"
 depends "app_jboss"
+depends "app_php54"
 
 recipe "app::install_server",
   "Adds the appserver:active=true, appserver:listen_ip=<ip> and" +
