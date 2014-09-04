@@ -16,7 +16,7 @@ private_ip = node[:cloud][:private_ips][0]
 
 # See cookbooks/rightscale/libraries/helper.rb for the "is_valid_ip?" method.
 if node[:app][:backend_ip_type] == "public" &&
-  RightScale::Utils::Helper.is_valid_ip?(public_ip)
+    RightScale::Utils::Helper.is_valid_ip?(public_ip)
   node[:app][:ip] = public_ip
 elsif RightScale::Utils::Helper.is_valid_ip?(private_ip)
   node[:app][:ip] = private_ip
@@ -40,6 +40,9 @@ log "  Installing #{node[:app][:packages]}" if node[:app][:packages]
 
 if node[:app][:provider] == "app_passenger"
   node[:app][:root] = node[:app][:destination] + "/public"
+elsif !node[:app][:append_docroot].blank?
+  node[:app][:root]="#{node[:app][:destination]}/#{node[:app][:append_docroot]}"
+  log "DocumentRoot is #{node[:app][:root]}"
 else
   node[:app][:root]="#{node[:app][:destination]}"
 end

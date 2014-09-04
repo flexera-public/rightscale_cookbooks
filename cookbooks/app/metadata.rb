@@ -106,6 +106,15 @@ attribute "app/port",
   ],
   :required => "optional"
 
+attribute "app/append_docroot",
+  :display_name => "Append value to the DocumentRoot ",
+  :description =>
+  "Change the default DocumentRoot to include a directory inside the"+
+  " destination.  For example a value of www will create a DocumentRoot"+
+  " of /home/webapps/myapps/www/",
+  :recipes => ["app::install_server"],
+  :required => "optional"
+
 attribute "app/database_name",
   :display_name => "Database Schema Name",
   :description =>
