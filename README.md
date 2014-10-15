@@ -232,4 +232,4 @@ the RightScale Terms of Service available at http://www.rightscale.com/terms.php
 and, if applicable, other agreements such as a RightScale Master Subscription
 Agreement.
 
-Maintained by the RightScale White Team
+Maintained by the RightScale ServerTemplate Team
