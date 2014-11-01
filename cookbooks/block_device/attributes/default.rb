@@ -90,4 +90,5 @@ end.each do |device, number|
   default[:block_device][:devices][device][:mount_point] = "/mnt/storage#{number}"
   default[:block_device][:devices][device][:iops] = ""
   default[:block_device][:devices][device][:volume_type] = "SATA"
+  default[:block_device][:devices][device][:lvm_block_size] = "16"
 end

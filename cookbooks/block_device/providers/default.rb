@@ -20,6 +20,7 @@ action :create do
     :volume_size => new_resource.volume_size,
     :stripe_count => new_resource.stripe_count,
     :vg_data_percentage => new_resource.vg_data_percentage,
+    :lvm_block_size => new_resource.lvm_block_size,
     :force => new_resource.force
   }
   if new_resource.iops && !new_resource.iops.empty?

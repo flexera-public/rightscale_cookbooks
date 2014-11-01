@@ -88,6 +88,9 @@ attribute :vg_data_percentage, :kind_of => String
 # Set IOPS value for a block device. Only available on EC2 clouds
 attribute :iops, :kind_of => String
 
+# LVM Block Size
+attribute :lvm_block_size, :kind_of => String
+
 # Type of the block device
 attribute :volume_type,
   :kind_of => String,

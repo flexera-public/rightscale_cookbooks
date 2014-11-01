@@ -474,7 +474,19 @@ end.each do |device, number|
     :choice => ["SATA", "SSD"],
     :default => "SATA",
     :recipes => ["block_device::setup_block_device", "block_device::default"]
+  
+  attribute "block_device/devices/#{device}/lvm_block_size",
+    :display_name => "LVM Block Size",
+    :description =>
+      "The 'stripesize' to use for the LVM logical volume.  Should be 1-4x" +
+      " the block size of the XFS Filesystem(4K). Must be 2^n where n <= 9" + 
+      " Example: 16",
+    :required => "optional",
+    :choice => ["4", "8", "16"],
+    :default => "16",
+    :recipes => ["block_device::setup_block_device", "block_device::default"]
 end
+
 
 attribute "block_device/terminate_safety",
   :display_name => "Terminate Safety",
