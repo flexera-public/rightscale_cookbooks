@@ -8,6 +8,8 @@
 
 rightscale_marker
 
+include_recipe "rightscale::install_tools"
+
 class Chef::Recipe
   include RightScale::BlockDeviceHelper
 end
