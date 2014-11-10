@@ -37,7 +37,7 @@ attribute "chef/client/server_url",
     " https://api.opscode.com/organizations/ORGNAME." +
     " Example: http://example.com:4000/chef",
   :required => "required",
-  :recipes => ["chef::install_client"]
+  :recipes => ["chef::install_client", "chef::do_unregister_request"]
 
 attribute "chef/client/validator_pem",
   :display_name => "Private Key to Register the Chef Client with the Chef" +
