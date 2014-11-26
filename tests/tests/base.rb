@@ -7,7 +7,7 @@ require_helper "os"
 require_helper "input"
 require_helper "rackspace_managed"
 require_helper "monitoring"
-require 'pry'
+
 # Test specific helpers.
 #
 helpers do
@@ -207,7 +207,7 @@ before "smoke_test", "stop_start", "enable_security_updates_on_running_server",
   puts "Running before with security updates disabled"
   # Assume a single server in the deployment
   server = servers.first
-binding.pry
+
   # Get the current cloud.
   cloud = ::RSCookbookHelpers::Cloud.factory
 
