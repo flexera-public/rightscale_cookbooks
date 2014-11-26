@@ -7,7 +7,7 @@ require_helper "os"
 require_helper "input"
 require_helper "rackspace_managed"
 require_helper "monitoring"
-
+require 'pry'
 # Test specific helpers.
 #
 helpers do
@@ -207,9 +207,9 @@ before "smoke_test", "stop_start", "enable_security_updates_on_running_server",
   puts "Running before with security updates disabled"
   # Assume a single server in the deployment
   server = servers.first
-
+binding.pry
   # Get the current cloud.
-  cloud = Cloud.factory
+  cloud = ::RSCookbookHelpers::Cloud.factory
 
   # Set the required credential inputs for Rackspace Managed cloud.
   setup_rackspace_managed_credentials(server) \
@@ -241,7 +241,7 @@ before "enable_security_updates_on_boot" do
   server = servers.first
 
   # Get the current cloud.
-  cloud = Cloud.factory
+  cloud = ::RSCookbookHelpers::Cloud.factory
 
   # Set the required credential inputs for Rackspace Managed cloud.
   setup_rackspace_managed_credentials(server) \
@@ -272,7 +272,7 @@ end
 #
 test_case "smoke_test" do
   # Get current cloud.
-  cloud = Cloud.factory
+  cloud = ::RSCookbookHelpers::Cloud.factory
 
   # Single server in deployment.
   server = servers.first
@@ -326,7 +326,7 @@ end
 #
 test_case "stop_start" do
   # Get the current cloud.
-  cloud = Cloud.factory
+  cloud = ::RSCookbookHelpers::Cloud.factory
 
   # Single server in deployment.
   server = servers.first
@@ -370,7 +370,7 @@ end
 #
 test_case "ephemeral_file_system_type" do
   # Get the current cloud.
-  cloud = Cloud.factory
+  cloud = ::RSCookbookHelpers::Cloud.factory
 
   # Get the single server in the deployment.
   server = servers.first
@@ -432,7 +432,7 @@ test_case "comma_separated_firewall_ports" do
   server = servers.first
 
   # Get the current cloud
-  cloud = Cloud.factory
+  cloud = ::RSCookbookHelpers::Cloud.factory
   # Skip this test if the cloud is a Rackconnect cloud because the firewall is
   # disabled in the server for this cloud.
   skip("the ServerTemplate is not chef based") unless is_chef?
