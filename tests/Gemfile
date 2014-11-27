@@ -1,0 +1,9 @@
+source 'https://rubygems.org'
+
+gem 'virtualmonkey', git: 'git@github.com:rightscale/virtualmonkey.git', branch: 'master'
+gem 'mixlib-shellout', '~> 1.4.0'
+gem 'http-cookie', '~> 1.0.2'
+gem 'machine_tag'
+gem 'right_api_objects', git: 'git@github.com:rightscale/right_api_objects.git', tag: 'v0.1.7'
+gem 'channelizer', git: 'git@github.com:rightscale/channelizer.git', branch: 'ruby_1_9_support'
+gem 'rubocop'
