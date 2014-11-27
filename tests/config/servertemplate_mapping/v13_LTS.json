@@ -1,0 +1,38 @@
+{
+  "base_chef": {
+    "nickname": "Base ServerTemplate for Linux (v13.5.11",
+    "rev": "latest"
+  },
+  "base_rsb": {
+    "nickname": "Base ServerTemplate for Linux (RSB) (v13.5.11",
+    "rev": "latest"
+  },
+  "lamp": {
+    "nickname": "LAMP All-In-One (v14",
+    "rev": "latest"
+  },
+  "php": {
+    "nickname": "PHP App Server (v14",
+    "rev": "latest"
+  },
+  "haproxy": {
+    "nickname": "Load Balancer with HAProxy (v14",
+    "rev": "latest"
+  },
+  "mysql": {
+    "nickname": "Database Manager for MySQL (v14",
+    "rev": "latest"
+  },
+  "storage": {
+    "nickname": "Storage Toolbox (v14",
+    "rev": "latest"
+  },
+  "memcached": {
+    "nickname": "Memcached Server (v13.5.11",
+    "rev": "latest"
+  },
+  "virtual_monkey": {
+    "nickname": "VirtualMonkey Test Controller PRODUCTION",
+    "rev": "latest"
+  }
+}
