@@ -21,7 +21,7 @@ GIT
 
 GIT
   remote: git@github.com:rightscale/virtualmonkey.git
-  revision: d0c2cbfc6987b12609d855efd688737208b5eb3a
+  revision: 196138533cb563e641f696360021f41f4a63536b
   branch: master
   specs:
     virtualmonkey (3.3)
