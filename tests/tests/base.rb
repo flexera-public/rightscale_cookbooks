@@ -211,11 +211,6 @@ before "smoke_test", "stop_start", "enable_security_updates_on_running_server",
   # Get the current cloud.
   cloud = ::RSCookbookHelpers::Cloud.factory
 
-  # Remove the public IP address tag if the cloud requires SSHing on the private
-  # IP address.
-  #
-  server.remove_tags ["server:public_ip_0=#{server.public_ip}"] if cloud.needs_private_ssh?
-
   # Set the required credential inputs for Rackspace Managed cloud.
   setup_rackspace_managed_credentials(server) \
     if cloud.cloud_name =~ /Rackmanaged/
@@ -235,6 +230,12 @@ before "smoke_test", "stop_start", "enable_security_updates_on_running_server",
   end
 
   wait_for_server_state(server, "operational")
+
+  # Remove the public IP address tag if the cloud requires SSHing on the private
+  # IP address.
+  #
+  server.remove_tags ["server:public_ip_0=#{server.public_ip}"] if cloud.needs_private_ssh?
+
 end
 
 # Before tests that require security updates enabled.
