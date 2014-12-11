@@ -261,7 +261,7 @@ module ::RSCookbookHelpers
     #
     def needs_private_ssh?
       case @cloud_name
-      when /^IDC Frontier /, "Logicworks"
+      when /^IDC Frontier /, 'Logicworks', 'CS 4.2.1 - VMwareAN'
         true
       else
         false
