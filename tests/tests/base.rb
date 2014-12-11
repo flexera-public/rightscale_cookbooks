@@ -211,6 +211,11 @@ before "smoke_test", "stop_start", "enable_security_updates_on_running_server",
   # Get the current cloud.
   cloud = ::RSCookbookHelpers::Cloud.factory
 
+  # Remove the public IP address tag if the cloud requires SSHing on the private
+  # IP address.
+  #
+  server.remove_tags ["server:public_ip_0=#{server.public_ip}"] if cloud.needs_private_ssh?
+
   # Set the required credential inputs for Rackspace Managed cloud.
   setup_rackspace_managed_credentials(server) \
     if cloud.cloud_name =~ /Rackmanaged/
@@ -344,11 +349,6 @@ test_case "stop_start" do
   wait_for_server_state(server, "operational")
   # It takes about a minute for ips to get repopulated.
   wait_for_ip_repopulation(server)
-
-  # Remove the public IP address tag if the cloud requires SSHing on the private
-  # IP address.
-  #
-  server.remove_tags ["server:public_ip_0=#{server.public_ip}"] if cloud.needs_private_ssh?
 
   # Ephemeral, swap file support, and conntrack_max parameter are currently only
   # implemented on the Chef ServerTemplate.
