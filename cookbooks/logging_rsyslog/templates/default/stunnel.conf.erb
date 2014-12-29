@@ -17,8 +17,10 @@ cert = /etc/stunnel/stunnel.pem
 ; Protocol version (all, SSLv2, SSLv3, TLSv1)
 <% unless @platform_version =~ /^5\..+/ %>
 <%# Cannot force this option for CentOS/RedHat 5.8 %>
-sslVersion = SSLv3
+sslVersion = TLSv1
 <% end %>
+<%# Do not use vulnerable SSLv3 (POODLE) %>
+options = NO_SSLv3
 <%# Making sure we don't use insecure SSLv2. %>
 options = NO_SSLv2
 
