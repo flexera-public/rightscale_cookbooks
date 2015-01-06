@@ -46,12 +46,10 @@ if swap_size == 0
     backup false
     action :delete
   end
-
 else
-
   # Check and create swap file
   fs_size_threshold_percent = 75
-  swap_dir=File.dirname(swap_file)
+  swap_dir = File.dirname(swap_file)
 
   directory swap_dir do
     recursive true
@@ -59,10 +57,10 @@ else
     not_if { swap_dir == '/' }
   end
 
-  # If swap file exists and it is not the requested size then deactivate, disable, and delete it to be recreated.
+  # If swap file exists and is not the requested size then deactivate, disable, and delete it to be recreated.
   bash 'validate existing swapfile' do
     flags '-ex'
-    not_if { File.exists?(swap_file) && File.stat(swap_file).size/1048576 == swap_size }
+    only_if { File.exists?(swap_file) && File.stat(swap_file).size/1048576 != swap_size }
     code <<-eof
       swapoff #{swap_file}
     eof
