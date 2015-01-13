@@ -1,0 +1,14 @@
+{
+  "base_chef": {
+    "nickname": "Base ServerTemplate for Linux (v13.5.11",
+    "rev": "latest"
+  },
+  "base_rsb": {
+    "nickname": "Base ServerTemplate for Linux (RSB) (v13.5.11",
+    "rev": "latest"
+  },
+  "memcached": {
+    "nickname": "Memcached Server (v13.5.11",
+    "rev": "latest"
+  }
+}

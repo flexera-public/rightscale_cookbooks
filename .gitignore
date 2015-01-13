@@ -6,7 +6,6 @@
 .idea
 .rake_test_cache
 .yardoc
-Gemfile.lock
 chefignoredoc
 doc/*
 tests/config/servertemplate_mapping/acu*.json

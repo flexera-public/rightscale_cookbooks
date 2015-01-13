@@ -21,7 +21,7 @@ end
 #
 before do
   # Get the current cloud
-  cloud = Cloud.factory
+  cloud = ::RSCookbookHelpers::Cloud.factory
 
   # Single server in deployment.
   server = servers.first
